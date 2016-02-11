@@ -27,8 +27,8 @@ except ImportError:
 
 from gui.gtk.mwi.ModuleBook import ModuleView
 
-import Configuration as _conf
-import Utilities as _util
+import Configuration
+import Utilities
 
 from dao.DAO import DAO
 from datamodels.matrix.Matrix import Matrix
@@ -65,7 +65,7 @@ from survival.ModuleBook import ModuleView as mvwSurvival
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 _ = gettext.gettext
@@ -126,15 +126,15 @@ def _read_configuration():
 
     # Import the test data file if we are executing in developer mode.
     if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
-        _conf.MODE = 'developer'
+        Configuration.MODE = 'developer'
 
     # Read the configuration file.
-    _util.read_configuration()
+    Utilities.read_configuration()
 
     if os.name == 'posix':
-        _conf.OS = 'Linux'
+        Configuration.OS = 'Linux'
     elif os.name == 'nt':
-        _conf.OS = 'Windows'
+        Configuration.OS = 'Windows'
 
     return False
 
@@ -151,33 +151,86 @@ def _initialize_loggers():
     # information for RTK developers.  The second is to log errors for the
     # user.  The user can use these errors to help find problems with their
     # inputs and sich.
-    __user_log = _conf.LOG_DIR + '/RTK_user.log'
-    __error_log = _conf.LOG_DIR + '/RTK_error.log'
-    __import_log = _conf.LOG_DIR + '/RTK_import.log'
+    __user_log = Configuration.LOG_DIR + '/RTK_user.log'
+    __error_log = Configuration.LOG_DIR + '/RTK_error.log'
+    __import_log = Configuration.LOG_DIR + '/RTK_import.log'
 
-    if not _util.dir_exists(_conf.LOG_DIR):
-        os.makedirs(_conf.LOG_DIR)
+    if not Utilities.dir_exists(Configuration.LOG_DIR):
+        os.makedirs(Configuration.LOG_DIR)
 
-    if _util.file_exists(__user_log):
+    if Utilities.file_exists(__user_log):
         os.remove(__user_log)
-    if _util.file_exists(__error_log):
+    if Utilities.file_exists(__error_log):
         os.remove(__error_log)
-    if _util.file_exists(__import_log):
+    if Utilities.file_exists(__import_log):
         os.remove(__import_log)
 
-    _debug_log = _util.create_logger("RTK.debug", logging.DEBUG,
-                                     __error_log)
-    _user_log = _util.create_logger("RTK.user", logging.WARNING,
-                                    __user_log)
-    _import_log = _util.create_logger("RTK.import", logging.WARNING,
-                                      __import_log)
+    _debug_log = Utilities.create_logger("RTK.debug", logging.DEBUG,
+                                         __error_log)
+    _user_log = Utilities.create_logger("RTK.user", logging.WARNING,
+                                        __user_log)
+    _import_log = Utilities.create_logger("RTK.import", logging.WARNING,
+                                          __import_log)
 
     return(_debug_log, _user_log, _import_log)
 
 
 class RTK(object):
     """
-    This is the RTK controller class.
+    This is the RTK controller class.  The attributes of RTK are:
+
+    :ivar bool loaded:
+    :ivar site_dao:
+    :ivar project_dao:
+    :ivar dtcMatrices: the :py:class:`rtk.datamodels.Matrix.Matrix` data
+                       controller.
+    :ivar dtcRevision: the :py:class:`rtk.revision.Revision.Revision` data
+                       controller.
+    :ivar dtcProfile: the :py:class:`rtk.usage.UsageProfile.UsageProfile` data
+                      controller.
+    :ivar dtcDefinitions: the :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
+                          data controller.
+    :ivar dtcFunction: the :py:class:`rtk.function.Function.Function` data
+                       controller.
+    :ivar dtcFMEA: the :py:class:`rtk.analyses.fmea.FMEA.FMEA` data
+                   controller.
+    :ivar dtcRequirement: the
+                          :py:class:`rtk.requirement.Requirement.Requirement`
+                          data controller.
+    :ivar dtcStakeholder: the
+                          :py:class:`rtk.stakeholder.Stakeholder.Stakeholder`
+                          data controller.
+    :ivar dtcHardwareBoM: the :py:class:`rtk.hardware.BoM.BoM` data controller.
+    :ivar dtcAllocation: the :py:class:`rtk.analyses.allocation.Allocation.Allocation`
+                         data controller.
+    :ivar dtcHazard: the :py:class:`rtk.analyses.hazard.Hazard.Hazard` data
+                     controller.
+    :ivar dtcSimilarItem: the :py:class:`rtk.analyses.similar_item.SimilarItem.SimilarItem`
+                          data controller.
+    :ivar dtcPoF: the :py:class:`rtk.analyses.pof.PoF.PoF` data controller.
+    :ivar dtcSoftwareBoM: the :py:class:`rtk.software.BoM.BoM` data controller.
+    :ivar dtcTesting: the :py:class:`rtk.testing.Testing.Testing` data
+                      controller.
+    :ivar dtcGrowth: the :py:class:`rtk.testing.growth.Growth.Growth` data
+                     controller.
+    :ivar dtcValidation: the :py:class:`rtk.validation.Validation.Validation`
+                         data controller.
+    :ivar dtcIncident: the :py:class:`rtk.incident.Incident.Incident` data
+                       controller.
+    :ivar dtcAction: the :py:class:`rtk.incident.action.Action.Action` data
+                     controller.
+    :ivar dtcComponent: the
+                        :py:class:`rtk.incident.component.Component.Component`
+                        data controller.
+    :ivar dtcSurvival: the :py:class:`rtk.survival.Survival.Survival` data
+                       controller.
+    :ivar gtk.StatusIcon() icoStatus: the WM bar status icon.
+    :ivar list_book: the :py:class:`rtk.gui.gtk.mwi.ListBook.ListView`
+                     for the current instance of RTK.
+    :ivar module_book: the :py:class:`rtk.gui.gtk.mwi.ModuleBook.ModuleView`
+                       for the current instance of RTK.
+    :ivar work_book: the :py:class:`rtk.gui.gtk.mwi.WorkBook.WorkView`
+                     for the current instance of RTK.
     """
 
     def __init__(self):                     # pylint: disable=R0914
@@ -185,32 +238,27 @@ class RTK(object):
         Method to initialize the RTK controller.
         """
 
-        RTK_INTERFACE = 1
-
-        # Initialize public scalar attributes.
-        self.loaded = False
-        self.project_dao = None
-
         # Read the site configuration file.
         _read_configuration()
 
-        # Connect to the site database.
-        _database = _conf.SITE_DIR + '/' + _conf.RTK_COM_INFO[2] + '.rfb'
-        self.site_dao = DAO(_database)
+        RTK_INTERFACE = 1
 
-        # Validate the license.
-        if self._validate_license():
-            sys.exit(2)
+        # Define private dictionary attributes.
 
-        # Create loggers.
-        (self.debug_log,
-         self.user_log,
-         self.import_log) = _initialize_loggers()
+        # Define private list attributes.
 
-        # Load common lists and variables.
-        self._load_commons()
+        # Define private scalar attributes.
 
-        # Create data controllers.
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.loaded = False
+        self.site_dao = None
+        self.project_dao = None
+
+        # Data controllers.
         self.dtcMatrices = Matrix()
         self.dtcRevision = Revision()
         self.dtcProfile = UsageProfile()
@@ -233,7 +281,19 @@ class RTK(object):
         self.dtcComponent = Component()
         self.dtcSurvival = Survival()
 
-        # Initialize RTK views.
+        self.icoStatus = gtk.StatusIcon()
+
+        self.module_book = None
+        self.list_book = None
+        self.work_book = None
+
+        # Connect to the site database.
+        _database = Configuration.SITE_DIR + '/' + \
+                    Configuration.RTK_COM_INFO[2] + '.rfb'
+        self.site_dao = DAO(_database)
+
+        # Create RTK views.  These need to be initialized after reading the
+        # configuration.
         if RTK_INTERFACE == 0:              # Single window.
             pass
         else:                               # Multiple windows.
@@ -241,44 +301,55 @@ class RTK(object):
             self.list_book = self.module_book.create_listview()
             self.work_book = self.module_book.create_workview()
 
+        # Validate the license.
+        if self._validate_license():
+            sys.exit(2)
+
+        # Create loggers.
+        (self.debug_log,
+         self.user_log,
+         self.import_log) = _initialize_loggers()
+
+        # Load common lists and variables.
+        self._load_commons()
+
         # Plug-in each of the RTK module views.
         _modview = self.module_book.create_module_page(mvwRevision, self, -1)
-        _conf.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwFunction, self, -1)
-        _conf.RTK_MODULES.append(_modview)
+        Configuration.RTK_MODULES.append(_modview)
+        _modview = self.module_book.create_module_page(mvwFunction, self, -1)   # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwRequirement,
                                                        self.dtcRequirement, -1,
                                                        self.dtcStakeholder,
                                                        self.dtcMatrices,
-                                                       self.site_dao)
-        _conf.RTK_MODULES.append(_modview)
+                                                       self.site_dao)           # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwHardware,
                                                        self.dtcHardwareBoM, -1,
                                                        self.dtcAllocation,
                                                        self.dtcHazard,
                                                        self.dtcSimilarItem,
-                                                       self.dtcFMEA, self.dtcPoF)
-        _conf.RTK_MODULES.append(_modview)
+                                                       self.dtcFMEA, self.dtcPoF)   # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwSoftware,
-                                                       self.dtcSoftwareBoM, -1)
-        _conf.RTK_MODULES.append(_modview)
+                                                       self.dtcSoftwareBoM, -1)     # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwTesting,
                                                        self.dtcTesting, -1,
-                                                       self.dtcGrowth)
-        _conf.RTK_MODULES.append(_modview)
+                                                       self.dtcGrowth)          # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwValidation,
-                                                       self.dtcValidation, -1)
-        _conf.RTK_MODULES.append(_modview)
+                                                       self.dtcValidation, -1)  # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwIncident,
                                                        self.dtcIncident, -1,
-                                                       self.dtcAction, self.dtcComponent)
-        _conf.RTK_MODULES.append(_modview)
+                                                       self.dtcAction, self.dtcComponent)   # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwSurvival,
-                                                       self.dtcSurvival, -1)
-        _conf.RTK_MODULES.append(_modview)
+                                                       self.dtcSurvival, -1)    # pylint: disable=R0204
+        Configuration.RTK_MODULES.append(_modview)
 
-        self.icoStatus = gtk.StatusIcon()
-        _icon = _conf.ICON_DIR + '32x32/db-disconnected.png'
+        _icon = Configuration.ICON_DIR + '32x32/db-disconnected.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
@@ -301,14 +372,14 @@ class RTK(object):
 
         # Read the license file and compare to the product key in the site
         # database.  If they are not equal, quit the application.
-        _license_file = _conf.DATA_DIR + '/license.key'
+        _license_file = Configuration.DATA_DIR + '/license.key'
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            _util.rtk_warning(_(u"Cannot find license file %s.  "
-                                u"If your license file is elsewhere, "
-                                u"please place it in %s." %
-                                (_license_file, _conf.DATA_DIR)))
+            Utilities.rtk_warning(_(u"Cannot find license file %s.  "
+                                    u"If your license file is elsewhere, "
+                                    u"please place it in %s." %
+                                    (_license_file, Configuration.DATA_DIR)))
             return True
 
         _license_key = _license_file.readline().rstrip('\n')
@@ -319,17 +390,17 @@ class RTK(object):
         (_results, _error_code, __) = self.site_dao.execute(_query, None)
 
         if _license_key != _results[0][0]:
-            _util.rtk_error(_(u"Invalid license (Invalid key).  Your license "
-                              u"key is incorrect.  Closing the RTK "
-                              u"application."))
+            Utilities.rtk_error(_(u"Invalid license (Invalid key).  Your "
+                                  u"license key is incorrect.  Closing the "
+                                  u"RTK application."))
             return True
 
         if datetime.datetime.today().toordinal() > _results[0][1]:
             _expire_date = str(datetime.datetime.fromordinal(int(
                 _results[0][1])).strftime('%Y-%m-%d'))
-            _util.rtk_error(_(u"Invalid license (Expired).  Your license "
-                              u"expired on %s.  Closing RTK application." %
-                              _expire_date))
+            Utilities.rtk_error(_(u"Invalid license (Expired).  Your license "
+                                  u"expired on %s.  Closing RTK application." %
+                                  _expire_date))
             return True
 
         return False
@@ -360,9 +431,9 @@ class RTK(object):
                                                             commit=False)
 
         for i in range(_n_cats):
-            _conf.RTK_CATEGORIES[i + 1] = [_cats[i][1], _cats[i][0]]
-            _conf.RTK_SUBCATEGORIES[i + 1] = [x[1:] for x in _subcats
-                                              if x[0] == i + 1]
+            Configuration.RTK_CATEGORIES[i + 1] = [_cats[i][1], _cats[i][0]]
+            Configuration.RTK_SUBCATEGORIES[i + 1] = [x[1:] for x in _subcats
+                                                      if x[0] == i + 1]
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         _query = "SELECT DISTINCT fld_stakeholder \
@@ -370,24 +441,24 @@ class RTK(object):
                   ORDER BY fld_stakeholder ASC"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_STAKEHOLDERS = _results
+        Configuration.RTK_STAKEHOLDERS = _results
 
         _query = "SELECT DISTINCT fld_group \
                   FROM rtk_affinity_groups \
                   ORDER BY fld_group ASC"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_AFFINITY_GROUPS = _results
+        Configuration.RTK_AFFINITY_GROUPS = _results
 
         _query = "SELECT * FROM tbl_severity"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_SEVERITY = _results
+        Configuration.RTK_SEVERITY = _results
 
         _query = "SELECT * FROM tbl_failure_probability"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_FAILURE_PROBABILITY = _results
+        Configuration.RTK_FAILURE_PROBABILITY = _results
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         # Load the RPN category lists.                                      #
@@ -395,7 +466,7 @@ class RTK(object):
         _query = "SELECT * FROM tbl_rpn_severity"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_RPN_SEVERITY = _results
+        Configuration.RTK_RPN_SEVERITY = _results
 
         _query = "SELECT fld_occurrence_id, fld_occurrence_name, \
                          fld_occurrence_description \
@@ -403,7 +474,7 @@ class RTK(object):
                   WHERE fld_fmeca_type=0"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_RPN_OCCURRENCE = _results
+        Configuration.RTK_RPN_OCCURRENCE = _results
 
         _query = "SELECT fld_detection_id, fld_detection_name, \
                          fld_detection_description \
@@ -411,9 +482,9 @@ class RTK(object):
                   WHERE fld_fmeca_type=0"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_RPN_DETECTION = _results
+        Configuration.RTK_RPN_DETECTION = _results
 
-        _conf.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
+        Configuration.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         # Load the hazards list.                                            #
@@ -422,7 +493,7 @@ class RTK(object):
                   FROM tbl_hazards"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_HAZARDS = _results
+        Configuration.RTK_HAZARDS = _results
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         # Load the active and dormant environment lists.                    #
@@ -431,49 +502,50 @@ class RTK(object):
                   FROM tbl_active_environs"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_ACTIVE_ENVIRON = [[_environ[1], _environ[0]]
-                                    for _environ in _results]
+        Configuration.RTK_ACTIVE_ENVIRON = [[_environ[1], _environ[0]]
+                                            for _environ in _results]
 
         _query = "SELECT fld_dormant_environ_noun \
                   FROM tbl_dormant_environs"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_DORMANT_ENVIRON = [_environ[0] for _environ in _results]
+        Configuration.RTK_DORMANT_ENVIRON = [_environ[0] for _environ
+                                             in _results]
 
-        # _conf.RTK_QUALITY_LEVELS
+        # Configuration.RTK_QUALITY_LEVELS
         _query = "SELECT fld_criticality_id, fld_criticality_name, \
                          fld_criticality_cat \
                   FROM tbl_criticality"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_CRITICALITY = _results
+        Configuration.RTK_CRITICALITY = _results
 
         _query = "SELECT fld_action_name FROM tbl_action_category"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_ACTION_CATEGORY = [i[0] for i in _results]
+        Configuration.RTK_ACTION_CATEGORY = [i[0] for i in _results]
 
         _query = "SELECT fld_status_name FROM tbl_status"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_STATUS = _results
+        Configuration.RTK_STATUS = _results
 
         _query = "SELECT fld_validation_type_desc FROM tbl_validation_type"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_TASK_TYPE = [_task[0] for _task in _results]
+        Configuration.RTK_TASK_TYPE = [_task[0] for _task in _results]
 
         _query = "SELECT fld_measurement_code FROM tbl_measurement_units"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_MEASUREMENT_UNITS = [_unit[0] for _unit in _results]
+        Configuration.RTK_MEASUREMENT_UNITS = [_unit[0] for _unit in _results]
 
         _query = "SELECT fld_user_lname || ', ' || fld_user_fname \
                   FROM tbl_users \
                   ORDER BY fld_user_lname ASC"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_USERS = [_user[0] for _user in _results]
+        Configuration.RTK_USERS = [_user[0] for _user in _results]
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         # Load the program incident lists.                                  #
@@ -481,83 +553,88 @@ class RTK(object):
         _query = "SELECT fld_incident_cat_name FROM tbl_incident_category"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_INCIDENT_CATEGORY = [_category[0] for _category in _results]
+        Configuration.RTK_INCIDENT_CATEGORY = [_category[0] for _category
+                                               in _results]
 
         _query = "SELECT fld_incident_type_name FROM tbl_incident_type"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_INCIDENT_TYPE = [_type[0] for _type in _results]
+        Configuration.RTK_INCIDENT_TYPE = [_type[0] for _type in _results]
 
         _query = "SELECT fld_status_name FROM tbl_status"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_INCIDENT_STATUS = [_status[0] for _status in _results]
+        Configuration.RTK_INCIDENT_STATUS = [_status[0] for _status
+                                             in _results]
 
         _query = "SELECT fld_criticality_name FROM tbl_criticality"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_INCIDENT_CRITICALITY = [_crit[0] for _crit in _results]
+        Configuration.RTK_INCIDENT_CRITICALITY = [_crit[0] for _crit
+                                                  in _results]
 
         _query = "SELECT fld_lifecycle_name FROM tbl_lifecycles"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_LIFECYCLE = [_lifecycle[0] for _lifecycle in _results]
+        Configuration.RTK_LIFECYCLE = [_lifecycle[0] for _lifecycle
+                                       in _results]
 
         _query = "SELECT fld_detection_method FROM rtk_detection_methods"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_DETECTION_METHODS = [_method[0] for _method in _results]
+        Configuration.RTK_DETECTION_METHODS = [_method[0] for _method
+                                               in _results]
 
         _query = "SELECT fld_manufacturers_noun, fld_location, fld_cage_code \
                   FROM tbl_manufacturers \
                   ORDER BY fld_manufacturers_noun ASC"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_MANUFACTURERS = [[_man[0], _man[1], _man[2]]
-                                   for _man in _results]
+        Configuration.RTK_MANUFACTURERS = [[_man[0], _man[1], _man[2]]
+                                           for _man in _results]
 
         _query = "SELECT fld_hr_type_noun FROM tbl_hr_type"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_HR_TYPE = [_type[0] for _type in _results]
+        Configuration.RTK_HR_TYPE = [_type[0] for _type in _results]
 
         _query = "SELECT fld_model_noun FROM tbl_calculation_model"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_HR_MODEL = [_model[0] for _model in _results]
+        Configuration.RTK_HR_MODEL = [_model[0] for _model in _results]
 
         _query = "SELECT fld_distribution_noun FROM tbl_distributions"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_S_DIST = [_dist[0] for _dist in _results]
+        Configuration.RTK_S_DIST = [_dist[0] for _dist in _results]
 
         _query = "SELECT fld_mttr_type_noun FROM tbl_mttr_type"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_MTTR_TYPE = [_type[0] for _type in _results]
+        Configuration.RTK_MTTR_TYPE = [_type[0] for _type in _results]
 
         _query = "SELECT fld_cost_type_noun FROM tbl_cost_type"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_COST_TYPE = [_type[0] for _type in _results]
+        Configuration.RTK_COST_TYPE = [_type[0] for _type in _results]
 
         _query = "SELECT fld_level_desc, fld_level_id FROM tbl_software_level"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_SW_LEVELS = [_level[0] for _level in _results]
+        Configuration.RTK_SW_LEVELS = [_level[0] for _level in _results]
 
         _query = "SELECT fld_category_name, fld_category_id, \
                          fld_category_description \
                   FROM tbl_software_category"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_SW_APPLICATION = [_app[0] for _app in _results]
+        Configuration.RTK_SW_APPLICATION = [_app[0] for _app in _results]
 
         _query = "SELECT fld_phase_desc, fld_phase_id \
                   FROM tbl_development_phase"
         (_results, _error_code, __) = self.site_dao.execute(_query,
                                                             commit=False)
-        _conf.RTK_SW_DEV_PHASES = [_phase[0] for _phase in _results]
+        Configuration.RTK_SW_DEV_PHASES = [_phase[0] for _phase in _results]
 
         return False
 
@@ -569,11 +646,11 @@ class RTK(object):
         self.module_book.statusbar.push(2, _(u"Opening Program Database..."))
 
         # Connect to the project database.
-        self.project_dao = DAO(_conf.RTK_PROG_INFO[2])
+        self.project_dao = DAO(Configuration.RTK_PROG_INFO[2])
 
         self.project_dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
-        self.dtcMatrices._dao = self.project_dao
+        #self.dtcMatrices._dao = self.project_dao
 
         # Get a connection to the program database and then retrieve the
         # program information.
@@ -589,15 +666,16 @@ class RTK(object):
                   FROM tbl_program_info"
         (_results, _error_code, __) = self.project_dao.execute(_query,
                                                                commit=None)
-        _conf.RTK_PREFIX = [_element for _element in _results[0]]
+        Configuration.RTK_PREFIX = [_element for _element in _results[0]]
 
-        _icon = _conf.ICON_DIR + '32x32/db-connected.png'
+        _icon = Configuration.ICON_DIR + '32x32/db-connected.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is connected to program database "
-                                     u"{0:s}.".format(_conf.RTK_PROG_INFO[2])))
+                                     u"{0:s}.".format(
+                                         Configuration.RTK_PROG_INFO[2])))
         self.module_book.set_title(_(u"RTK - Analyzing {0:s}".format(
-            _conf.RTK_PROG_INFO[2])))
+            Configuration.RTK_PROG_INFO[2])))
 
         # Find which modules are active in this project.
         _query = "SELECT fld_revision_active, fld_function_active, \
@@ -615,18 +693,18 @@ class RTK(object):
         i = 0
         _first_revision = None
         for _module in _results[0]:
-            if _module == 1 and i < len(_conf.RTK_MODULES):
-                self.module_book.load_module_page(_conf.RTK_MODULES[i],
+            if _module == 1 and i < len(Configuration.RTK_MODULES):
+                self.module_book.load_module_page(Configuration.RTK_MODULES[i],
                                                   self.project_dao,
                                                   _first_revision)
                 if i == 0:
                     _first_revision = min(self.dtcRevision.dicRevisions.keys())
-                _conf.RTK_PAGE_NUMBER.append(i)
+                Configuration.RTK_PAGE_NUMBER.append(i)
             else:
                 self.module_book.notebook.remove_page(i)
             i += 1
 
-        # _conf.METHOD = results[0][36]
+        # Configuration.METHOD = results[0][36]
 
         self.module_book.statusbar.pop(2)
 
@@ -642,7 +720,7 @@ class RTK(object):
         :rtype: bool
         """
 
-        for _moduleview in _conf.RTK_MODULES[1:]:
+        for _moduleview in Configuration.RTK_MODULES[1:]:
             self.module_book.load_module_page(_moduleview, self.project_dao,
                                               revision_id)
 
