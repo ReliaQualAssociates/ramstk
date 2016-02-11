@@ -17,11 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +29,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -163,10 +163,10 @@ class Model(object):
             self.level = int(values[20])
             self.safety_critical = int(values[21])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Function Model - Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Function Model - Converting one or more inputs " \
                    "to the correct data type."
 
@@ -218,7 +218,7 @@ class Model(object):
             self.hazard_rate = float(inputs[0])
             self.mission_hazard_rate = float(inputs[1])
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to float."
         else:
             # Calculate the logistics and mission MTBF.
@@ -226,7 +226,7 @@ class Model(object):
                 self.mtbf = 1.0 / self.hazard_rate
                 self.mission_mtbf = 1.0 / self.mission_hazard_rate
             except ZeroDivisionError as _err:
-                _code = _util.error_handler(_err.args)
+                _code = Utilities.error_handler(_err.args)
                 _msg = "ERROR: Calculating logistics or mission MTBF."
 
         return(_code, _msg)
@@ -260,7 +260,7 @@ class Model(object):
             self.mttr = float(inputs[2])
             self.mmt = float(inputs[3])
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "FAIL: Convert one or more inputs to float."
         else:
             # Calculate logistics and mission availability.
@@ -269,7 +269,7 @@ class Model(object):
                 self.mission_availability = self.mission_mtbf / \
                     (self.mission_mtbf + self.mttr)
             except ZeroDivisionError as _err:
-                _code = _util.error_handler(_err.args)
+                _code = Utilities.error_handler(_err.args)
                 _msg = "FAIL: Calculate logistics or mission availability."
 
         return(_code, _msg)
@@ -295,15 +295,14 @@ class Model(object):
         try:
             self.cost = float(inputs)
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "FAIL: Convert one or more inputs to float."
         else:
-            # Calculate costs.
             _cost_per_failure = self.cost * self.hazard_rate
             try:
                 _cost_per_hour = self.cost / mission_time
             except ZeroDivisionError as _err:
-                _code = _util.error_handler(_err.args)
+                _code = Utilities.error_handler(_err.args)
                 _msg = "FAIL: Calculate cost per failure or cost per hour."
 
         return(_code, _msg)
@@ -329,12 +328,20 @@ class Function(object):
         Initializes a Function data controller instance.
         """
 
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
         # Define private scalar attributes.
         self._dao = None
         self._last_id = None
 
         # Define public dictionary attributes.
         self.dicFunctions = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
 
     def request_functions(self, dao, revision_id):
         """
@@ -377,7 +384,7 @@ class Function(object):
 
         return(_results, _error_code)
 
-    def add_function(self, revision_id, parent_id=None, code=None, name=None,
+    def add_function(self, revision_id, parent_id=-1, code=None, name=None,
                      remarks=''):
         """
         Adds a new Function to the RTK Project for the selected Revision.
@@ -390,6 +397,13 @@ class Function(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
+
+        if parent_id is None:
+            parent_id = -1
+        if code is None:
+            code = 'FUNC'
+        if name is None:
+            name = 'New Function'
 
         _query = "INSERT INTO tbl_functions \
                   (fld_revision_id, fld_name, fld_remarks, fld_code, \
@@ -405,7 +419,7 @@ class Function(object):
         #   1. Retrieve the ID of the newly inserted function.
         #   2. Create a new Function model instance.
         #   3. Set the attributes of the new Function model instance.
-        #   2. Add the new Function model to the controller dictionary.
+        #   4. Add the new Function model to the controller dictionary.
         if _results:
             self._last_id = self._dao.get_last_id('tbl_functions')[0]
             _function = Model()
@@ -422,23 +436,29 @@ class Function(object):
         Deletes a Function from the RTK Project.
 
         :param int function_id: the Function ID to delete.
-        :return: (_results, _error_code)
+        :return: (_results, _error_codes)
         :rtype: tuple
         """
 
-        # Delete all the child functions, if any.
+        _error_codes = [0, 0]
+
+        # Delete all the child Functions, if any.
         _query = "DELETE FROM tbl_functions \
                   WHERE fld_parent_id={0:d}".format(function_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results,
+         _error_codes[0],
+         __) = self._dao.execute(_query, commit=True)
 
-        # Then delete the parent function.
+        # Then delete the parent Function.
         _query = "DELETE FROM tbl_functions \
                   WHERE fld_function_id={0:d}".format(function_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results,
+         _error_codes[1],
+         __) = self._dao.execute(_query, commit=True)
 
         self.dicFunctions.pop(function_id)
 
-        return(_results, _error_code)
+        return(_results, _error_codes)
 
     def copy_function(self, revision_id):
         """
@@ -449,7 +469,7 @@ class Function(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+# TODO: Write one or more integration tests for this method.
         # Find the existing maximum Function ID already in the RTK Project
         # database and increment it by one.  If there are no existing Functions
         # set the first Function ID to zero.
@@ -499,43 +519,52 @@ class Function(object):
 
         return False
 
-    def calculate_function(self, function_id, mission_time, hr_multiplier=1.0):
+    def calculate_function(self, mission_time):
         """
-        Calculates reliability, availability, and cost information for a
-        Function.
+        Calculates reliability, availability, and cost information for all
+        Functionl.
 
-        :param int function_id: the Function ID to calculate.
         :param float mission_time: the time to use in the calculations.
-        :keyword float hr_multiplier: the multiplier to use for the hazard rate
-                                      calculations.
-        :return: _error_code
-        :rtype: int
+        :return: _error_codes; a list of tuples where each tuple is:
+                 (Function ID, Error Code Returned from it's Calculation)
+        :rtype: list
         """
 
-        _function = self.dicFunctions[function_id]
+        _error_codes = []
 
-        # All the calculations are pretty simple, so just do them using SQL.
-        _query = "SELECT SUM(t2.fld_failure_rate_predicted), \
-                         SUM(t2.fld_failure_rate_mission), \
-                         COUNT(t2.fld_assembly_id), \
-                         SUM(1.0 / fld_mpmt), SUM(1.0 / fld_mcmt), \
-                         SUM(1.0 / mttr), SUM(1.0 / fld_mmt), \
-                         SUM(t2.fld_cost) \
-                  FROM rtk_hardware AS t2 \
-                  INNER JOIN tbl_functional_matrix AS t1 \
-                  ON t2.fld_assembly_id = t1.fld_assembly_id \
-                  WHERE t1.fld_function_id={0:d} \
-                  AND t2.fld_part=1".format(function_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        for __, _function_id in enumerate(self.dicFunctions.keys()):
 
-        # Perform the calculations if the query returned the proper values.
-        if _error_code == 0:
-            _function.calculate_reliability(_results[0][0:3], mission_time,
-                                            hr_multiplier)
-            _function.calculate_availability(_results[0][3:7])
-            _function.calculate_costs(_results[0][8], mission_time)
+            _function = self.dicFunctions[_function_id]
 
-        return _error_code
+            # All the calculations are pretty simple, so just do them using
+            # SQL.
+            _query = "SELECT SUM(t2.fld_hazard_rate_logistics), \
+                             SUM(t2.fld_hazard_rate_mission), \
+                             COUNT(t2.fld_hardware_id), \
+                             SUM(1.0 / t4.fld_mpmt), SUM(1.0 / t4.fld_mcmt), \
+                             SUM(1.0 / t4.fld_mttr), SUM(1.0 / t4.fld_mmt), \
+                             SUM(t3.fld_cost) \
+                      FROM rtk_reliability AS t2 \
+                      INNER JOIN rtk_matrix AS t1 \
+                      ON t2.fld_hardware_id = t1.fld_col_item_id \
+                      INNER JOIN rtk_hardware AS t3 \
+                      ON t3.fld_hardware_id = t1.fld_col_item_id \
+                      INNER JOIN rtk_maintainability AS t4 \
+                      ON t4.fld_hardware_id = t1.fld_col_item_id \
+                      WHERE t1.fld_value='2' \
+                      AND t1.fld_row_item_id={0:d}".format(_function_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=False)
+
+            _error_codes.append((_function.function_id, _error_code))
+
+            # Perform the calculations if the query returned the proper values.
+            if _error_code == 0:
+                _function.calculate_reliability(_results[0][0:3])
+                _function.calculate_availability(_results[0][3:7])
+                _function.calculate_costs(_results[0][7], mission_time)
+
+        return _error_codes
 
     def save_function(self, function_id):
         """
@@ -578,12 +607,17 @@ class Function(object):
         """
         Saves all Function data models managed by the controller.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: _error_codes; a list of tuples where each tuple is:
+                 (Function ID, Error Code Returned from it's Save)
+        :rtype: list
         """
+
+        _error_codes = []
 
         for _function in self.dicFunctions.values():
             (_results,
              _error_code) = self.save_function(_function.function_id)
 
-        return False
+            _error_codes.append((_function.function_id, _error_code))
+
+        return _error_codes
