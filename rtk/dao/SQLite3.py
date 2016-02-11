@@ -27,13 +27,13 @@ def error_handler(message):
     """
     Method to handle SQLite3 errors and return actionable error codes.
 
-    :param str msg: the error message to parse.
+    :param str message: the error message to parse.
     :return: _err_code
     :rtype: int
     """
 
     _error_code = 0
-    print message
+
     if "PRIMARY KEY must be unique" in message[0]:  # Primary key not unique.
         _error_code = 1555
     elif "syntax error" in message[0]:              # Syntax error in SQL statement.
@@ -41,6 +41,7 @@ def error_handler(message):
     elif "database is locked" in message[0]:        # Database is locked.
         _error_code = 5
     else:
+        print message
         _error_code = message[0]
 
     return _error_code

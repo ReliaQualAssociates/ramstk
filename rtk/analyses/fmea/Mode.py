@@ -36,28 +36,6 @@ except locale.Error:                        # pragma: no cover
 _ = gettext.gettext
 
 
-def _error_handler(message):
-    """
-    Function to convert string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    elif('invalid literal' in message[0] or
-         'could not convert string to float' in message[0]):   # Value error
-        _error_code = 50
-    else:                                   # Unhandled error
-        _error_code = 1000
-
-    return _error_code
-
-
 class OutOfRangeError(Exception):
     """
     Exception raised when an input value is outside legal limits.
@@ -195,18 +173,14 @@ class Model(object):
         Method to retrieve the current values of the Mode data model
         attributes.
 
-        :return: (self.assembly_id, self.function_id, self.mode_id,
-                  self.description, self.mission, self.mission_phase,
-                  self.local_effect, self.next_effect, self.end_effect,
-                  self.detection_method, self.other_indications,
-                  self.isolation_method, self.design_provisions,
-                  self.operator_actions, self.severity_class,
-                  self.hazard_rate_source, self.mode_probability,
-                  self.effect_probability, self.mode_ratio,
-                  self.mode_hazard_rate, self.mode_op_time,
-                  self.mode_criticality, self.rpn_severity,
-                  self.rpn_severity_new, self.critical_item, self.single_point,
-                  self.remarks)
+        :return: (assembly_id, function_id, mode_id, description, mission,
+                  mission_phase, local_effect, next_effect, end_effect,
+                  detection_method, other_indications, isolation_method,
+                  design_provisions, operator_actions, severity_class,
+                  hazard_rate_source, mode_probability, effect_probability,
+                  mode_ratio, mode_hazard_rate, mode_op_time, mode_criticality,
+                  rpn_severity, rpn_severity_new, critical_item, single_point,
+                  remarks)
         :rtype: tuple
         """
 
@@ -226,7 +200,8 @@ class Model(object):
         """
         Calculate the Criticality for the Mode.
 
-            Mode Criticality = Item Hazard Rate * Mode Ratio * Mode Operating Time * Effect Probability
+            Mode Criticality = Item Hazard Rate * Mode Ratio * \
+                               Mode Operating Time * Effect Probability
 
         :param float item_hr: the hazard rate of the hardware item being
                               calculated.
