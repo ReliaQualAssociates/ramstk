@@ -5,16 +5,15 @@ This is the test class for testing Requirement module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.requirement.TestRequirement.py is part of The RTK Project
+#       tests.unit.TestRequirement.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+import unittest
+from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 from requirement.Requirement import Model, Requirement
@@ -34,9 +33,6 @@ class TestRequirementModel(unittest.TestCase):
         """
         Setup the test fixture for the Requirement class.
         """
-
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -170,9 +166,6 @@ class TestRequirementController(unittest.TestCase):
         Sets up the test fixture for the Requirement class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Requirement()
 
     @attr(all=True, unit=True)
@@ -185,71 +178,3 @@ class TestRequirementController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicRequirements, {})
-
-    @attr(all=True, integration=True)
-    def test_request_requirements(self):
-        """
-        (TestRequirement) request_requirements should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
-# TODO: Test that method fails when no Requirements exist in database.
-    @attr(all=True, integration=True)
-    def test_add_requirement(self):
-        """
-        (TestRequirement) add_requirement returns 0 on success and new Requirement data model added to dictionary
-        """
-
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
-        (_results,
-         _error_code) = self.DUT.add_requirement(0, 0)
-
-        self.assertTrue(isinstance(self.DUT.dicRequirements[self.DUT._last_id],
-                                   Model))
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_add_requirement_no_parent(self):
-        """
-        (TestRequirement) add_requirement uses default parent ID when none is passed
-        """
-
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
-        (_results,
-         _error_code) = self.DUT.add_requirement(0)
-        self.assertEqual(self.DUT.dicRequirements[self.DUT._last_id].parent_id,
-                         -1)
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_delete_requirement(self):
-        """
-        (TestRequirement) delete_requirement returns 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_requirement(self.DUT._last_id)
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_save_requirement(self):
-        """
-        (TestRequirement) save_requirement returns (True, 0) on success
-        """
-
-        self.DUT.request_requirements(self._dao, 0)
-        self.assertEqual(self.DUT.save_requirement(1), (True, 0))
-
-    @attr(all=True, integration=True)
-    def test_save_all_requirements(self):
-        """
-        (TestRequirement) save_all_requirements returns False on success
-        """
-
-        self.DUT.request_requirements(self._dao, 0)
-        self.assertFalse(self.DUT.save_all_requirements())

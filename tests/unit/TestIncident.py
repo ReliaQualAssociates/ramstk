@@ -164,9 +164,6 @@ class TestIncidentController(unittest.TestCase):
         Sets up the test fixture for the Incident class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Incident()
 
     @attr(all=True, unit=True)
@@ -179,41 +176,3 @@ class TestIncidentController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicIncidents, {})
-
-    @attr(all=True, integration=True)
-    def test_request_incidents(self):
-        """
-        (TestIncident) request_tasks should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_incidents(self._dao, 0)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_add_incident(self):
-        """
-        (TestIncident) add_task should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_incidents(self._dao, 0)[1], 0)
-        self.assertEqual(self.DUT.add_incident(0)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_save_incident(self):
-        """
-        (TestIncident) save_task returns 0 on success
-        """
-
-        _values = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
-                   5, 'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
-                   12, 1, 719163, True, 1, 719163, False, 1, 719164, False, 1,
-                   719163, 3, 'Analysis', True)
-
-        self.assertEqual(self.DUT.request_incidents(self._dao, 0)[1], 0)
-        _incident = self.DUT.dicIncidents[min(self.DUT.dicIncidents.keys())]
-        _incident.set_attributes(_values)
-
-        (_results, _error_code) = self.DUT.save_incident(min(
-                                                self.DUT.dicIncidents.keys()))
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)

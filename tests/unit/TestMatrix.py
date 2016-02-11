@@ -16,8 +16,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from datamodels.matrix.Matrix import Model, Matrix, ParentError, NoMatrixError
+from datamodels.matrix.Matrix import Model, Matrix      # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -117,9 +116,6 @@ class TestMatrixController(unittest.TestCase):
 
     def setUp(self):
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Matrix()
 
     @attr(all=True, unit=True)
@@ -130,5 +126,5 @@ class TestMatrixController(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Matrix))
 
-        self.assertEqual(self.DUT._dao, None)
+        self.assertEqual(self.DUT._dao, None)           # pylint: disable=W0212
         self.assertEqual(self.DUT.dicMatrices, {})

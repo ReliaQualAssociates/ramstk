@@ -3,6 +3,37 @@ BEGIN TRANSACTION;
 
 -- Ordinal date 719163 = January 1, 1970
 
+DROP TABLE IF EXISTS "tbl_revisions";
+CREATE TABLE "tbl_revisions" (
+    "fld_revision_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Indentifier for the revision.
+    "fld_availability" REAL NOT NULL DEFAULT(1),                    -- Assessed availability of the revision.
+    "fld_availability_mission" REAL NOT NULL DEFAULT(1),            -- Assessed mission availability of the revision.
+    "fld_cost" REAL NOT NULL DEFAULT(0),                            -- Assessed cost of the revision.
+    "fld_cost_failure" REAL NOT NULL DEFAULT(0),                    -- Assessed cost per failure of the revision.
+    "fld_cost_hour" REAL NOT NULL DEFAULT(0),                       -- Assessed cost to operate the revision for one hour.
+    "fld_failure_rate_active" REAL NOT NULL DEFAULT(0),             -- Assessed active failure intensity of the revision.
+    "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),            -- Assessed dormant failure intensity of the revision.
+    "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),            -- Assessed mission failure intensity of the revision.
+    "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),          -- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
+    "fld_failure_rate_sftwr" REAL NOT NULL DEFAULT(0),              -- Assessed software failure intensity of the revision.
+    "fld_mmt" REAL NOT NULL DEFAULT(0),                             -- Mean maintenance time (MMT) of the revision.
+    "fld_mcmt" REAL NOT NULL DEFAULT(0),                            -- Mean corrective maintenance time (MCMT) of the revision.
+    "fld_mpmt" REAL NOT NULL DEFAULT(0),                            -- Mean preventive maintenance time (MPMT) of the revision.
+    "fld_mtbf_mission" REAL NOT NULL DEFAULT(0),                    -- Assessed mission MTBF of the revision.
+    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),                  -- Assessed MTBF of the revision.
+    "fld_mttr" REAL NOT NULL DEFAULT(0),                            -- Assessed MTTR of the revision.
+    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),                   -- Noun name of the revision.
+    "fld_reliability_mission" REAL NOT NULL DEFAULT(1),             -- Assessed mission reliability of the revision.
+    "fld_reliability_predicted" REAL NOT NULL DEFAULT(1),           -- Assessed reliability of the revision.
+    "fld_remarks" BLOB NOT NULL,                                    -- Remarks about the revision.
+    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(1),          -- Total number of components comprising the revision.
+    "fld_revision_code" VARCHAR(8) DEFAULT(''),                     -- Alphnumeric code for the revision.
+    "fld_program_time" REAL DEFAULT(0),                             -- Total expected time for all tasks in the development program.
+    "fld_program_time_sd" REAL DEFAULT(0),                          -- Standard error on the total expected program time.
+    "fld_program_cost" REAL DEFAULT(0),                             -- Total expected cost for all tasks in the development program.
+    "fld_program_cost_sd" REAL DEFAULT(0)                           -- Standard error on the total expected program cost.
+);
+INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision of the system.',0,'', 0.0, 0.0, 0.0, 0.0);
 --
 -- Create tables for storing program information.
 --
@@ -66,7 +97,8 @@ CREATE TABLE "rtk_matrix" (
     PRIMARY KEY("fld_matrix_id", "fld_row_id", "fld_col_id"),
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
-
+INSERT INTO "rtk_matrix" VALUES(0, 0, 0, 0, 0, -1, '0', 0, 0);      -- Insert one row for the System hardware.
+INSERT INTO "rtk_matrix" VALUES(0, 1, 1, 0, 0, -1, '0', 0, 0);      -- Insert one row for the System software.
 
 DROP TABLE IF EXISTS "tbl_reviews";
 CREATE TABLE "tbl_reviews" (
@@ -135,39 +167,8 @@ CREATE TABLE "tbl_failure_definitions" (
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS "tbl_revisions";
-CREATE TABLE "tbl_revisions" (
-    "fld_revision_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Indentifier for the revision.
-    "fld_availability" REAL NOT NULL DEFAULT(1),                    -- Assessed availability of the revision.
-    "fld_availability_mission" REAL NOT NULL DEFAULT(1),            -- Assessed mission availability of the revision.
-    "fld_cost" REAL NOT NULL DEFAULT(0),                            -- Assessed cost of the revision.
-    "fld_cost_failure" REAL NOT NULL DEFAULT(0),                    -- Assessed cost per failure of the revision.
-    "fld_cost_hour" REAL NOT NULL DEFAULT(0),                       -- Assessed cost to operate the revision for one hour.
-    "fld_failure_rate_active" REAL NOT NULL DEFAULT(0),             -- Assessed active failure intensity of the revision.
-    "fld_failure_rate_dormant" REAL NOT NULL DEFAULT(0),            -- Assessed dormant failure intensity of the revision.
-    "fld_failure_rate_mission" REAL NOT NULL DEFAULT(0),            -- Assessed mission failure intensity of the revision.
-    "fld_failure_rate_predicted" REAL NOT NULL DEFAULT(0),          -- Assessed failure intensity of the revision (sum of active, dormant, and software failure intensities).
-    "fld_failure_rate_sftwr" REAL NOT NULL DEFAULT(0),              -- Assessed software failure intensity of the revision.
-    "fld_mmt" REAL NOT NULL DEFAULT(0),                             -- Mean maintenance time (MMT) of the revision.
-    "fld_mcmt" REAL NOT NULL DEFAULT(0),                            -- Mean corrective maintenance time (MCMT) of the revision.
-    "fld_mpmt" REAL NOT NULL DEFAULT(0),                            -- Mean preventive maintenance time (MPMT) of the revision.
-    "fld_mtbf_mission" REAL NOT NULL DEFAULT(0),                    -- Assessed mission MTBF of the revision.
-    "fld_mtbf_predicted" REAL NOT NULL DEFAULT(0),                  -- Assessed MTBF of the revision.
-    "fld_mttr" REAL NOT NULL DEFAULT(0),                            -- Assessed MTTR of the revision.
-    "fld_name" VARCHAR(128) NOT NULL DEFAULT(''),                   -- Noun name of the revision.
-    "fld_reliability_mission" REAL NOT NULL DEFAULT(1),             -- Assessed mission reliability of the revision.
-    "fld_reliability_predicted" REAL NOT NULL DEFAULT(1),           -- Assessed reliability of the revision.
-    "fld_remarks" BLOB NOT NULL,                                    -- Remarks about the revision.
-    "fld_total_part_quantity" INTEGER NOT NULL DEFAULT(1),          -- Total number of components comprising the revision.
-    "fld_revision_code" VARCHAR(8) DEFAULT(''),                     -- Alphnumeric code for the revision.
-    "fld_program_time" REAL DEFAULT(0),                             -- Total expected time for all tasks in the development program.
-    "fld_program_time_sd" REAL DEFAULT(0),                          -- Standard error on the total expected program time.
-    "fld_program_cost" REAL DEFAULT(0),                             -- Total expected cost for all tasks in the development program.
-    "fld_program_cost_sd" REAL DEFAULT(0)                           -- Standard error on the total expected program cost.
-);
-INSERT INTO "tbl_revisions" VALUES(0,1.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,'Original',1.0,1.0,'This is the original revision of the system.',0,'', 0.0, 0.0, 0.0, 0.0);
-
-CREATE TABLE "tbl_units" (
+DROP TABLE IF EXISTS "rtk_units";
+CREATE TABLE "rtk_units" (
     "fld_serial_no" VARCHAR(128) NOT NULL PRIMARY KEY,
     "fld_model" VARCHAR(64),
     "fld_market" VARCHAR(16),
@@ -584,7 +585,7 @@ CREATE TABLE "rtk_similar_item" (
     PRIMARY KEY("fld_hardware_id", "fld_sia_id"),
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
-/* INSERT INTO "rtk_similar_item" VALUES(0, 0, 0, 0, 0, 0, 30.0, 30.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, NULL, NULL, NULL, NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0); */
+-- INSERT INTO "rtk_similar_item" VALUES(0, 0, 0, 0, 0, 0, 30.0, 30.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, NULL, NULL, NULL, NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0);
 
 DROP TABLE IF EXISTS "rtk_maintainability";
 CREATE TABLE "rtk_maintainability" (
@@ -1226,7 +1227,7 @@ CREATE TABLE "rtk_growth_testing" (
     "fld_o_cum_mean_ul" REAL DEFAULT(0),                            -- Observed upper limit on the cumulative mean.
     "fld_o_inst_mean_ll" REAL DEFAULT(0),                           -- Observed lower limit on the instantaneous mean.
     "fld_o_inst_mean" REAL DEFAULT(0),                              -- Observed point estimate for the instantaneous mean.
-    "fld_o_inst_mean_ll" REAL DEFAULT(0),                           -- Observed upper limit on the instantaneous mean.
+    "fld_o_inst_mean_ul" REAL DEFAULT(0),                           -- Observed upper limit on the instantaneous mean.
     PRIMARY KEY ("fld_test_id", "fld_phase_id")
 );
 
@@ -1295,7 +1296,8 @@ CREATE TABLE "rtk_validation_status" (
     "fld_cost_remaining" REAL DEFAULT(0)
 );
 
-CREATE TABLE "tbl_validation_matrix" (
+DROP TABLE IF EXISTS "rtk_validation_matrix";
+CREATE TABLE "rtk_validation_matrix" (
     "fld_validation_id" INTEGER NOT NULL,
     "fld_requirement_id" INTEGER NOT NULL,
     "fld_revision_id" INTEGER DEFAULT(1),
@@ -1489,7 +1491,8 @@ CREATE TABLE "rtk_survival_data" (
 --
 -- Create tables for storing maintenance planning analysis information.
 --
-CREATE TABLE "tbl_significant_item" (
+DROP TABLE IF EXISTS "rtk_significant_item";
+CREATE TABLE "rtk_significant_item" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_q1" INTEGER DEFAULT(1),                                    -- Is item a major load carrying element?
     "fld_q2" INTEGER DEFAULT(1),                                    -- Does failure have adverse effect on safety or result in mission failure?
@@ -1499,7 +1502,8 @@ CREATE TABLE "tbl_significant_item" (
     "fld_fsi" INTEGER DEFAULT(1)                                    -- Assembly is or is not a functionally significant item.
 );
 
-CREATE TABLE "tbl_failure_consequences" (
+DROP TABLE IF EXISTS "rtk_failure_consequences";
+CREATE TABLE "rtk_failure_consequences" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
     "fld_q1" INTEGER DEFAULT(0),                                    -- Is failure evident to operator while performing normal duties?
@@ -1513,7 +1517,8 @@ CREATE TABLE "tbl_failure_consequences" (
     "fld_operation_hidden" INTEGER DEFAULT(0)                       -- Failure mode has hidden operational consequences.
 );
 
-CREATE TABLE "tbl_on_condition" (
+DROP TABLE IF EXISTS "rtk_on_condition";
+CREATE TABLE "rtk_on_condition" (
     "tbl_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "tbl_mode_id" INTEGER NOT NULL DEFAULT(0),
     "fld_q1" INTEGER DEFAULT(0),                                    --
@@ -1542,7 +1547,8 @@ CREATE TABLE "tbl_on_condition" (
     "fld_num_insp" INTEGER DEFAULT(0)                               -- Number of inspections.
 );
 
-CREATE TABLE "tbl_hard_time" (
+DROP TABLE IF EXISTS "rtk_hard_time";
+CREATE TABLE "rtk_hard_time" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
     "fld_q1" INTEGER DEFAULT(0),                        --
@@ -1555,14 +1561,16 @@ CREATE TABLE "tbl_hard_time" (
     "fld_cbr" REAL                                      -- Cost Benefit Ratio (fld_cpm / fld_cnpm).
 );
 
-CREATE TABLE "tbl_failure_finding" (
+DROP TABLE IF EXISTS "rtk_failure_finding";
+CREATE TABLE "rtk_failure_finding" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
     "fld_q1" INTEGER DEFAULT(0),                        --
     "fld_q1_justify" BLOB                               -- Justification for the answer to question 1.
 );
 
-CREATE TABLE "tbl_tasks" (
+DROP TABLE IF EXISTS "rtk_tasks";
+CREATE TABLE "rtk_tasks" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
     "fld_task_id" INTEGER NOT NULL DEFAULT(0),
@@ -1581,7 +1589,8 @@ CREATE TABLE "tbl_tasks" (
     "fld_approved" INTEGER DEFAULT(0)                   --
 );
 
-CREATE TABLE "tbl_age_exploration" (
+DROP TABLE IF EXISTS "rtk_age_exploration";
+CREATE TABLE "rtk_age_exploration" (
     "fld_assembly_id" INTEGER NOT NULL DEFAULT(0),
     "fld_mode_id" INTEGER NOT NULL DEFAULT(0),
     "fld_task_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -1603,13 +1612,13 @@ CREATE TABLE "tbl_age_exploration" (
     "fld_approved" INTEGER DEFAULT(0)                   --
 );
 
-DELETE FROM "sqlite_sequence";
-INSERT INTO "sqlite_sequence" VALUES('tbl_system', 0);
-INSERT INTO "sqlite_sequence" VALUES('tbl_similar_item', 0);
-INSERT INTO "sqlite_sequence" VALUES('tbl_program_info', 0);
-INSERT INTO "sqlite_sequence" VALUES('tbl_functions', 0);
-INSERT INTO "sqlite_sequence" VALUES('tbl_revisions', 0);
-INSERT INTO "sqlite_sequence" VALUES('tbl_requirements', 0);
-INSERT INTO "sqlite_sequence" VALUES('tbl_validation', 0);
+--DELETE FROM "sqlite_sequence";
+--INSERT INTO "sqlite_sequence" VALUES('tbl_system', 0);
+--INSERT INTO "sqlite_sequence" VALUES('tbl_similar_item', 0);
+--INSERT INTO "sqlite_sequence" VALUES('tbl_program_info', 0);
+--INSERT INTO "sqlite_sequence" VALUES('tbl_functions', 0);
+--INSERT INTO "sqlite_sequence" VALUES('tbl_revisions', 0);
+--INSERT INTO "sqlite_sequence" VALUES('tbl_requirements', 0);
+--INSERT INTO "sqlite_sequence" VALUES('tbl_validation', 0);
 
-END TRANSACTION;
+--END TRANSACTION;

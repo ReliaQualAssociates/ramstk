@@ -5,10 +5,9 @@ This is the test class for testing Survival module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.survival.TestSurvival.py is part of The RTK Project
+#       tests.unit.TestSurvival.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -175,9 +174,6 @@ class TestSurvivalController(unittest.TestCase):
         Sets up the test fixture for the Survival class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Survival()
 
     @attr(all=True, unit=True)
@@ -190,91 +186,3 @@ class TestSurvivalController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicSurvival, {})
-
-    @attr(all=True, integration=True)
-    def test_request_survival(self):
-        """
-        (TestSurvival) request_survival should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_add_survival(self):
-        """
-        (TestSurvival) add_survival should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
-        self.assertEqual(self.DUT.add_survival(0)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_delete_survival(self):
-        """
-        (TestSurvival) delete_survival should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
-        _survival = self.DUT.dicSurvival[max(self.DUT.dicSurvival.keys())]
-
-        self.assertEqual(self.DUT.delete_survival(_survival.survival_id)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_save_survival(self):
-        """
-        (TestSurvival) save_survival returns 0 on success
-        """
-
-        _values = (0, 1, 2, 'Test Description', 3, 4, 0.5, 6, 7, 8, 90.0, 10,
-                   11, 12, 13.0, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21,
-                   22, 23, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0,
-                   32.0, 33.0, 34.0, 35.0, 36.0, 37.0)
-
-        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
-        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-        _survival.set_attributes(_values)
-
-        (_results, _error_code) = self.DUT.save_survival(min(
-            self.DUT.dicSurvival.keys()))
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_save_all_survivals(self):
-        """
-        (TestSurvival) save_all_survivals returns False on success
-        """
-
-        self.assertEqual(self.DUT.request_survival(self._dao, 0)[1], 0)
-        self.assertFalse(self.DUT.save_all_survivals())
-
-    @attr(all=True, integration=True)
-    def test_add_record(self):
-        """
-        (TestSurvival) add_record should return 0 on success
-        """
-
-        self.DUT.request_survival(self._dao, 0)
-        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-
-        (_results, _error_code) = self.DUT.add_record(_survival.survival_id)
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_delete_record(self):
-        """
-        (TestSurvival) delete_record should return 0 on success
-        """
-
-        self.DUT.request_survival(self._dao, 0)
-        _survival = self.DUT.dicSurvival[min(self.DUT.dicSurvival.keys())]
-        _record = _survival.dicRecords[min(_survival.dicRecords.keys())]
-
-        (_results, _error_code) = self.DUT.delete_record(_survival.survival_id,
-                                                         _record[0])
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
