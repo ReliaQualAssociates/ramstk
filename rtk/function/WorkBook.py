@@ -39,13 +39,13 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
 from Assistants import AddFunction
 
 __author__ = 'Andrew Rowland'
@@ -54,7 +54,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -165,50 +165,51 @@ class WorkView(gtk.VBox):
         self.dtcMatrices = modulebook.mdcRTK.dtcMatrices
 
         # General data page widgets.
-        self.chkSafetyCritical = _widg.make_check_button(label=_(u"Function "
-                                                                 u"is safety "
-                                                                 u"critical."))
-        self.txtCode = _widg.make_entry()
-        self.txtTotalCost = _widg.make_entry(width=75, editable=False,
-                                             bold=True)
-        self.txtName = _widg.make_text_view(width=400)
-        self.txtModeCount = _widg.make_entry(width=75, editable=False,
-                                             bold=True)
-        self.txtPartCount = _widg.make_entry(width=75, editable=False,
-                                             bold=True)
-        self.txtRemarks = _widg.make_text_view(width=400)
+        self.chkSafetyCritical = Widgets.make_check_button(label=_(u"Function "
+                                                                   u"is "
+                                                                   u"safety "
+                                                                   u"critical."))
+        self.txtCode = Widgets.make_entry()
+        self.txtTotalCost = Widgets.make_entry(width=75, editable=False,
+                                               bold=True)
+        self.txtName = Widgets.make_text_view(width=400)
+        self.txtModeCount = Widgets.make_entry(width=75, editable=False,
+                                               bold=True)
+        self.txtPartCount = Widgets.make_entry(width=75, editable=False,
+                                               bold=True)
+        self.txtRemarks = Widgets.make_text_view(width=400)
 
         # FMECA worksheet tab widgets.
         self.tvwFMECA = gtk.TreeView()
         self._FMECA_col_order = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]
-        self.btnAddMode = _widg.make_button(width=35, image='add')
-        self.btnRemoveMode = _widg.make_button(width=35, image='remove')
-        self.btnSaveFMEA = _widg.make_button(width=35, image='save')
+        self.btnAddMode = Widgets.make_button(width=35, image='add')
+        self.btnRemoveMode = Widgets.make_button(width=35, image='remove')
+        self.btnSaveFMEA = Widgets.make_button(width=35, image='save')
 
         # Functional matrix tab widgets.
-        self.chkParts = _widg.make_check_button(label=_(u"Show components."))
-        self.chkAssemblies = _widg.make_check_button(label=_(u"Show "
-                                                             u"assemblies."))
+        self.chkParts = Widgets.make_check_button(label=_(u"Show components."))
+        self.chkAssemblies = Widgets.make_check_button(label=_(u"Show "
+                                                               u"assemblies."))
         self.tvwFunctionMatrix = gtk.TreeView()
 
         # Diagram tab widgets.
 
         # Assessment results tab widgets.
-        self.txtPredictedHt = _widg.make_entry(width=100, editable=False,
+        self.txtPredictedHt = Widgets.make_entry(width=100, editable=False,
+                                                 bold=True)
+        self.txtMissionHt = Widgets.make_entry(width=100, editable=False,
                                                bold=True)
-        self.txtMissionHt = _widg.make_entry(width=100, editable=False,
-                                             bold=True)
-        self.txtMTBF = _widg.make_entry(width=100, editable=False, bold=True)
-        self.txtMissionMTBF = _widg.make_entry(width=100, editable=False,
+        self.txtMTBF = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMissionMTBF = Widgets.make_entry(width=100, editable=False,
+                                                 bold=True)
+        self.txtMPMT = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMCMT = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMTTR = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMMT = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtAvailability = Widgets.make_entry(width=100, editable=False,
+                                                  bold=True)
+        self.txtMissionAt = Widgets.make_entry(width=100, editable=False,
                                                bold=True)
-        self.txtMPMT = _widg.make_entry(width=100, editable=False, bold=True)
-        self.txtMCMT = _widg.make_entry(width=100, editable=False, bold=True)
-        self.txtMTTR = _widg.make_entry(width=100, editable=False, bold=True)
-        self.txtMMT = _widg.make_entry(width=100, editable=False, bold=True)
-        self.txtAvailability = _widg.make_entry(width=100, editable=False,
-                                                bold=True)
-        self.txtMissionAt = _widg.make_entry(width=100, editable=False,
-                                             bold=True)
 
         # Put it all together.
         _toolbar = self._create_toolbar()
@@ -234,8 +235,9 @@ class WorkView(gtk.VBox):
                                    u"hierarchy level as the selected function "
                                    u"(i.e., a sibling function)."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
-        _button.set_icon_widget(_image)
+        _image.set_from_file(Configuration.ICON_DIR +
+                             '32x32/insert_sibling.png')
+        _button.set_iconWidgetset(_image)
         _button.connect('clicked', self._request_add_function, 0)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -246,8 +248,8 @@ class WorkView(gtk.VBox):
                                    u"subordinate to the selected function "
                                    u"(i.e., a child function)."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
-        _button.set_icon_widget(_image)
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/insert_child.png')
+        _button.set_iconWidgetset(_image)
         _button.connect('clicked', self._request_add_function, 1)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -257,8 +259,8 @@ class WorkView(gtk.VBox):
         _button.set_tooltip_text(_(u"Removes the currently selected "
                                    u"function."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        _button.set_icon_widget(_image)
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
+        _button.set_iconWidgetset(_image)
         _button.connect('clicked', self._request_delete_function)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -270,8 +272,8 @@ class WorkView(gtk.VBox):
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Calculate the functions."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        _button.set_icon_widget(_image)
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/calculate.png')
+        _button.set_iconWidgetset(_image)
         _button.connect('clicked', self._request_calculate_function)
         _toolbar.insert(_button, _position)
         _position += 1
@@ -283,8 +285,8 @@ class WorkView(gtk.VBox):
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Saves changes to the selected function."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        _button.set_icon_widget(_image)
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
+        _button.set_iconWidgetset(_image)
         _button.connect('clicked', self._request_save_functions)
         _toolbar.insert(_button, _position)
 
@@ -303,11 +305,11 @@ class WorkView(gtk.VBox):
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
-        if _conf.TABPOS[2] == 'left':
+        if Configuration.TABPOS[2] == 'left':
             _notebook.set_tab_pos(gtk.POS_LEFT)
-        elif _conf.TABPOS[2] == 'right':
+        elif Configuration.TABPOS[2] == 'right':
             _notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif _conf.TABPOS[2] == 'top':
+        elif Configuration.TABPOS[2] == 'top':
             _notebook.set_tab_pos(gtk.POS_TOP)
         else:
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
@@ -338,7 +340,7 @@ class WorkView(gtk.VBox):
                                  gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
-        _frame = _widg.make_frame(label=_(u"General Information"))
+        _frame = Widgets.make_frame(label=_(u"General Information"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -347,12 +349,12 @@ class WorkView(gtk.VBox):
         # the function.                                                 #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _labels = [_(u"Function Code:"), _(u"Function Name:")]
-        (_max1, _y_pos1) = _widg.make_labels(_labels, _fixed, 5, 5)
+        (_max1, _y_pos1) = Widgets.make_labels(_labels, _fixed, 5, 5)
 
         _labels = [_(u"Total Cost:"), _(u"Total Mode Count:"),
                    _(u"Total Part Count:"), _(u"Remarks:")]
         _y_start = self.txtName.size_request()[1] + _y_pos1[1] + 5
-        (_max2, _y_pos2) = _widg.make_labels(_labels, _fixed, 5, _y_start)
+        (_max2, _y_pos2) = Widgets.make_labels(_labels, _fixed, 5, _y_start)
         _x_pos = max(_max1, _max2) + 50
 
         # Set the tooltips.
@@ -437,7 +439,7 @@ class WorkView(gtk.VBox):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
-        _frame = _widg.make_frame(label=_(u"Reliability Results"))
+        _frame = Widgets.make_frame(label=_(u"Reliability Results"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -445,7 +447,7 @@ class WorkView(gtk.VBox):
 
         _labels = [_(u"Predicted h(t):"), _(u"Mission h(t):"), _(u"MTBF:"),
                    _(u"Mission MTBF:")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos += 50
 
         self.txtPredictedHt.set_tooltip_text(_(u"Displays the predicted "
@@ -484,7 +486,7 @@ class WorkView(gtk.VBox):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
-        _frame = _widg.make_frame(label=_(u"Maintainability Results"))
+        _frame = Widgets.make_frame(label=_(u"Maintainability Results"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -492,7 +494,7 @@ class WorkView(gtk.VBox):
 
         _labels = [_(u"MPMT:"), _(u"MCMT:"), _(u"MTTR:"), _(u"MMT:"),
                    _(u"Availability:"), _(u"Mission Availability:")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos += 50
 
         self.txtMPMT.set_tooltip_text(_(u"Displays the mean preventive "
@@ -667,7 +669,7 @@ class WorkView(gtk.VBox):
                               "</span>")
             _label.set_use_markup(True)
             _label.show_all()
-            _column.set_widget(_label)
+            _column.setWidgetset(_label)
             _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
 
             self.tvwFMECA.append_column(_column)
@@ -686,8 +688,8 @@ class WorkView(gtk.VBox):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwFMECA)
 
-        _frame = _widg.make_frame(label=_(u"Failure Mode and Effects "
-                                          u"Analysis"))
+        _frame = Widgets.make_frame(label=_(u"Failure Mode and Effects "
+                                            u"Analysis"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -718,7 +720,7 @@ class WorkView(gtk.VBox):
         _cellmodel.append([""])
         _cell = _column.get_cell_renderers()[0]
         _cell.set_property('model', _cellmodel)
-        for _severity in _conf.RTK_SEVERITY:
+        for _severity in Configuration.RTK_SEVERITY:
             _cellmodel.append([_severity[2] + " - " + _severity[1]])
 
         # Insert the tab.
@@ -747,8 +749,6 @@ class WorkView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         self._function_model = model
         self._fmea_model = fmea_model
@@ -826,7 +826,7 @@ class WorkView(gtk.VBox):
         _model = self.tvwFMECA.get_model()
         _model.clear()
         for _mode in self._fmea_model.dicModes.values():
-            _icon = _conf.ICON_DIR + '32x32/mode.png'
+            _icon = Configuration.ICON_DIR + '32x32/mode.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _attributes = _mode.get_attributes()
             _data = (_icon, _attributes[2], _attributes[3], _attributes[4],
@@ -857,7 +857,7 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         self.txtAvailability.set_text(
             str(fmt.format(self._function_model.availability)))
@@ -901,7 +901,7 @@ class WorkView(gtk.VBox):
             (__, __,
              _mode_id) = self.dtcFMEA.add_mode(None, _function_id)
             _attributes = self._fmea_model.dicModes[_mode_id].get_attributes()
-            _icon = _conf.ICON_DIR + '32x32/mode.png'
+            _icon = Configuration.ICON_DIR + '32x32/mode.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[2], _attributes[3], _attributes[4],
                      _attributes[5], _attributes[6], _attributes[7],
@@ -1038,7 +1038,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while attempting to update the "
                         u"attributes of failure mode {0:d}.".format(_id))
-            _util.rtk_error(_prompt)
+            Utilities.rtk_error(_prompt)
 
             _return = True
 
@@ -1105,7 +1105,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while saving one or more "
                         u"function.")
-            _util.rtk_error(_prompt)
+            Utilities.rtk_error(_prompt)
 
             _return = True
 
@@ -1165,7 +1165,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while attempting to delete "
                         u"function {0:s}.".format(self._function_model.name))
-            _util.rtk_error(_prompt)
+            Utilities.rtk_error(_prompt)
 
             _return = True
 
@@ -1200,7 +1200,7 @@ class WorkView(gtk.VBox):
 
         _return = False
 
-        _error_codes = self.dtcFunction.calculate_function(_conf.RTK_MTIME)
+        _error_codes = self.dtcFunction.calculate_function(Configuration.RTK_MTIME)
         _error_codes = [_code for _code in _error_codes if _code[1] != 0]
 
         if len(_error_codes) == 0:
@@ -1215,7 +1215,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while attempting to calculate "
                         u"functions.")
-            _util.rtk_error(_prompt)
+            Utilities.rtk_error(_prompt)
 
             _return = True
 
