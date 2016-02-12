@@ -76,7 +76,11 @@ class AddFunction(gtk.Assistant):
 
         gtk.Assistant.__init__(self)
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._modulebook = modulebook
         self._controller = modulebook.mdcRTK
         if level == 0:
@@ -88,7 +92,11 @@ class AddFunction(gtk.Assistant):
 
         self.set_title(_(u"RTK Add Function Assistant"))
 
-        # Initialize public scalar attributes.
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.txtQuantity = Widgets.make_entry(width=50)
         self.txtFunctionCode = Widgets.make_entry(width=100)
         self.txtFunctionName = Widgets.make_entry()
@@ -183,6 +191,8 @@ class AddFunction(gtk.Assistant):
 
         :param gtk.Assistant __assistant: the current instance of the
                                           assistant.
+        :return: False
+        :rtype: bool
         """
 # TODO: Re-write _add_function; current McCabe metric = 11
         # Find out how many Functions to add.  Defaults to one Function if the
@@ -239,7 +249,7 @@ class AddFunction(gtk.Assistant):
 
                 # Add the new Function to each of the Function matrices.
                 _matrix_ids = self._controller.dtcMatrices.dicMatrices.keys()
-                for __, _matrix_id in enumerate(_matrix_ids):
+                for _matrix_id in [0, 1, 2]:
                     self._controller.dtcMatrices.add_row(_matrix_id,
                                                          self._parent_id,
                                                          _function_id,
@@ -252,7 +262,7 @@ class AddFunction(gtk.Assistant):
         # Handle any errors returned.  Write each of them to the debug log and
         # then raise an error dialog.
         for __, _code in enumerate(_error_codes):
-            _content = "rtk.function.WorkBook._add_function: " \
+            _content = "rtk.function.Assistant._add_function: " \
                        "Received error code {1:d} while adding function " \
                        "{0:d} of {3:d}.".format(_code[0], _code[1],
                                                 _n_functions)

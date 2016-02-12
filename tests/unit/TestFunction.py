@@ -3,26 +3,24 @@
 This is the test class for testing Function module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestFunction.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from function.Function import Model, Function
+import unittest
+from nose.plugins.attrib import attr
+
+from function.Function import Model, Function   # pylint: disable=E0401
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestFunctionModel(unittest.TestCase):
@@ -253,6 +251,6 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Function))
-        self.assertEqual(self.DUT._dao, None)
-        self.assertEqual(self.DUT._last_id, None)
+        self.assertEqual(self.DUT._dao, None)       # pylint: disable=W0212
+        self.assertEqual(self.DUT._last_id, None)   # pylint: disable=W0212
         self.assertEqual(self.DUT.dicFunctions, {})

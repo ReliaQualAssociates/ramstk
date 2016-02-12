@@ -148,18 +148,22 @@ class WorkView(gtk.VBox):
 
         gtk.VBox.__init__(self)
 
-        # Initialize private scalar attributes.
+        # Define private dict attributes.
+
+        # Define private list attributes.
+        self._lst_handler_id = []
+
+        # Define private scalar attributes.
         self._modulebook = modulebook
         self._function_model = None
         self._fmea_model = None
         self._profile_model = None
 
-        # Initialize private dict attributes.
+        # Define public dict attributes.
 
-        # Initialize private list attributes.
-        self._lst_handler_id = []
+        # Define public list attributes.
 
-        # Initialize public scalar attributes.
+        # Define public scalar attributes.
         self.dtcFunction = modulebook.mdcRTK.dtcFunction
         self.dtcFMEA = modulebook.mdcRTK.dtcFMEA
         self.dtcMatrices = modulebook.mdcRTK.dtcMatrices

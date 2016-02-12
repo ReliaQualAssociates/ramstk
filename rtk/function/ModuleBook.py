@@ -167,9 +167,10 @@ class ModuleView(object):
 
     def request_load_data(self, dao, revision_id):
         """
-        Loads the Function Module Book view gtk.TreeModel() with function
-        information.
+        Method to load the Function Module Book view gtk.TreeModel() with
+        Function information.
 
+        :param int revision_id: the ID of the Revision to load the Functions.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -293,17 +294,18 @@ class ModuleView(object):
 
         (_model, _row) = treeview.get_selection().get_selected()
 
-        _function_id = _model.get_value(_row, 1)
-        self._model = self._dtc_function.dicFunctions[_function_id]
+        if _row is not None:
+            _function_id = _model.get_value(_row, 1)
+            self._model = self._dtc_function.dicFunctions[_function_id]
 
-        try:
-            self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
-        except KeyError:
-            self._dtc_fmea.add_fmea(None, _function_id)
-            self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
+            try:
+                self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
+            except KeyError:
+                self._dtc_fmea.add_fmea(None, _function_id)
+                self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
 
-        _profile_model = self._dtc_profile.dicProfiles[self._model.revision_id]
-        self.workbook.load(self._model, self._fmea_model, _profile_model)
+            _profile_model = self._dtc_profile.dicProfiles[self._model.revision_id]
+            self.workbook.load(self._model, self._fmea_model, _profile_model)
 
         return False
 
