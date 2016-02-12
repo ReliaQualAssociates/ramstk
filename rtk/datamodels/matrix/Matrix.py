@@ -335,14 +335,15 @@ class Matrix(object):
         :rtype: bool
         """
 
-        _matrix = self.dicMatrices[matrix_id]
+        if matrix_id in self.dicMatrices.keys():
+            _matrix = self.dicMatrices[matrix_id]
 
-        for _row_id in _matrix.dicRows.keys():
-            for _col_id in range(len(_matrix.dicRows[_row_id][4:])):
-                (_results,
-                 _error_code) = self.save_cell(matrix_id, _row_id, _col_id,
-                                               _matrix.dicRows[_row_id][0],
-                                               _matrix.dicRows[_row_id][_col_id + 4])
+            for _row_id in _matrix.dicRows.keys():
+                for _col_id in range(len(_matrix.dicRows[_row_id][4:])):
+                    (_results,
+                     _error_code) = self.save_cell(matrix_id, _row_id, _col_id,
+                                                   _matrix.dicRows[_row_id][0],
+                                                   _matrix.dicRows[_row_id][_col_id + 4])
 
         return False
 
@@ -376,45 +377,47 @@ class Matrix(object):
         _cells = []
 
         # Retrieve the matrix to add the row to.
-        _matrix = self.dicMatrices[matrix_id]
+        if matrix_id in self.dicMatrices.keys():
+            _matrix = self.dicMatrices[matrix_id]
 
-        # Retrieve the existing column IDs and column item IDs.
-        _query = "SELECT DISTINCT fld_col_id, fld_col_item_id \
-                  FROM rtk_matrix \
-                  WHERE fld_matrix_id={0:d}".format(matrix_id)
-        (_results, _error_code, __) = self._dao.execute(_query,
-                                                        commit=False)
+            # Retrieve the existing column IDs and column item IDs.
+            _query = "SELECT DISTINCT fld_col_id, fld_col_item_id \
+                      FROM rtk_matrix \
+                      WHERE fld_matrix_id={0:d}".format(matrix_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=False)
 
-        try:
-            _n_col = len(_results)
-        except TypeError:
-            _n_col = 0
+            try:
+                _n_col = len(_results)
+            except TypeError:
+                _n_col = 0
 
-        # Add one cell for each column in the matrix.
-        for i in range(_n_col):
-            _query = "INSERT INTO rtk_matrix \
-                      (fld_revision_id, fld_matrix_id, fld_matrix_type, \
-                       fld_row_id, fld_col_id, fld_parent_id, fld_value, \
-                       fld_row_item_id, fld_col_item_id) \
-                      VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, '', \
-                              {6:d}, {7:d})".format(_matrix.revision_id,
-                                                    matrix_id,
-                                                    _matrix.matrix_type,
-                                                    _matrix.n_row,
-                                                    _results[i][0], parent_id,
-                                                    row_item_id,
-                                                    _results[i][1])
-            (__, _error_code, __) = self._dao.execute(_query, commit=True)
+            # Add one cell for each column in the matrix.
+            for i in range(_n_col):
+                _query = "INSERT INTO rtk_matrix \
+                          (fld_revision_id, fld_matrix_id, fld_matrix_type, \
+                           fld_row_id, fld_col_id, fld_parent_id, fld_value, \
+                           fld_row_item_id, fld_col_item_id) \
+                          VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
+                                  ''. {6:d}, {7:d})".format(
+                                  _matrix.revision_id, matrix_id,
+                                  _matrix.matrix_type, _matrix.n_row,
+                                  _results[i][0], parent_id, row_item_id,
+                                  _results[i][1])
+                (__, _error_code, __) = self._dao.execute(_query, commit=True)
 
-            _cells.append('')
+                _cells.append('')
 
-        # If the row was successfully added to the open RTK Project database
-        # add a new row to the Matrix's row dictionary and update the count of
-        # rows in the Matrix.
-        if _results:
-            _row.extend(_cells)
-            _matrix.dicRows[_matrix.n_row] = _row
-            _matrix.n_row += 1
+            # If the row was successfully added to the open RTK Project
+            # database add a new row to the Matrix's row dictionary and update
+            # the count of rows in the Matrix.
+            if _results:
+                _row.extend(_cells)
+                _matrix.dicRows[_matrix.n_row] = _row
+                _matrix.n_row += 1
+        else:
+            _results = True
+            _error_code = 110
 
         return(_results, _error_code)
 
@@ -428,30 +431,33 @@ class Matrix(object):
         :rtype: tuple
         """
 
-        _matrix = self.dicMatrices[matrix_id]
+        if matrix_id in self.dicMatrices.keys():
+            _matrix = self.dicMatrices[matrix_id]
 
-        _query = "DELETE FROM rtk_matrix \
-                  WHERE fld_revision_id={0:d} \
-                  AND fld_matrix_id={1:d} \
-                  AND fld_row_id={2:d}".format(_matrix.revision_id, matrix_id,
-                                               row_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
-        # If the row was successfully deleted, remove it from the Matrix's row
-        # dictionary and decrement the count of rows by one.  Then update the
-        # remaining row IDs in case the removed row wasn't the last one.
-        if _results:
-            _query = "UPDATE rtk_matrix \
-                      SET fld_row_id=fld_row_id-1 \
+            _query = "DELETE FROM rtk_matrix \
                       WHERE fld_revision_id={0:d} \
                       AND fld_matrix_id={1:d} \
-                      AND fld_row_id>{2:d}".format(_matrix.revision_id,
+                      AND fld_row_id={2:d}".format(_matrix.revision_id,
                                                    matrix_id, row_id)
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=True)
 
-            _matrix.dicRows.pop(row_id)
-            _matrix.n_row -= 1
+            # If the row was successfully deleted, remove it from the Matrix's
+            # row dictionary and decrement the count of rows by one.  Then
+            # update the remaining row IDs in case the removed row wasn't the
+            # last one.
+            if _results:
+                _query = "UPDATE rtk_matrix \
+                          SET fld_row_id=fld_row_id-1 \
+                          WHERE fld_revision_id={0:d} \
+                          AND fld_matrix_id={1:d} \
+                          AND fld_row_id>{2:d}".format(_matrix.revision_id,
+                                                       matrix_id, row_id)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
+
+                _matrix.dicRows.pop(row_id)
+                _matrix.n_row -= 1
 
         return(_results, _error_code)
 
@@ -466,46 +472,44 @@ class Matrix(object):
         :rtype: tuple
         """
 
-        # Retrieve the matrix to add the row to.
-        _matrix = self.dicMatrices[matrix_id]
+        # Retrieve the matrix to add the column to.
+        if matrix_id in self.dicMatrices.keys():
+            _matrix = self.dicMatrices[matrix_id]
 
-        # Retrieve the existing column IDs and column item IDs.
-        _query = "SELECT DISTINCT fld_row_id, fld_row_item_id \
-                  FROM rtk_matrix \
-                  WHERE fld_matrix_id={0:d}".format(matrix_id)
-        (_results, _error_code, __) = self._dao.execute(_query,
-                                                        commit=False)
+            # Retrieve the existing column IDs and column item IDs.
+            _query = "SELECT DISTINCT fld_row_id, fld_row_item_id \
+                      FROM rtk_matrix \
+                      WHERE fld_matrix_id={0:d}".format(matrix_id)
+            (_results, _error_code, __) = self._dao.execute(_query,
+                                                            commit=False)
 
-        try:
-            _n_row = len(_results)
-        except TypeError:
-            _n_row = 0
+            try:
+                _n_row = len(_results)
+            except TypeError:
+                _n_row = 0
 
-        # Add one cell for each row in the matrix.
-        for i in range(_n_row):
-            _query = "INSERT INTO rtk_matrix \
-                      (fld_revision_id, fld_matrix_id, fld_matrix_type, \
-                       fld_row_id, fld_col_id, fld_parent_id, fld_value, \
-                       fld_row_item_id, fld_col_item_id) \
-                      VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, '0', \
-                              {6:d}, {7:d})".format(_matrix.revision_id,
-                                                    matrix_id,
-                                                    _matrix.matrix_type,
-                                                    _results[i][0],
-                                                    _matrix.n_col,
-                                                    _matrix.dicRows[i][0],
-                                                    _results[i][1],
-                                                    col_item_id)
-            (__, _error_code, __) = self._dao.execute(_query, commit=True)
+            # Add one cell for each row in the matrix.
+            for i in range(_n_row):
+                _query = "INSERT INTO rtk_matrix \
+                          (fld_revision_id, fld_matrix_id, fld_matrix_type, \
+                           fld_row_id, fld_col_id, fld_parent_id, fld_value, \
+                           fld_row_item_id, fld_col_item_id) \
+                          VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
+                                  '0', {6:d}, {7:d})".format(
+                                  _matrix.revision_id, matrix_id,
+                                  _matrix.matrix_type, _results[i][0],
+                                  _matrix.n_col, _matrix.dicRows[i][0],
+                                  _results[i][1], col_item_id)
+                (__, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        # If the column was successfully added to the open RTK Project database
-        # add a new column to each of the Matrix's rows and update the count of
-        # columns in the Matrix.
-        if _results:
-            for _row in _matrix.dicRows.values():
-                _row.append('0')
+            # If the column was successfully added to the open RTK Project
+            # database add a new column to each of the Matrix's rows and update
+            # the count of columns in the Matrix.
+            if _results:
+                for _row in _matrix.dicRows.values():
+                    _row.append('0')
 
-            _matrix.n_col += 1
+                _matrix.n_col += 1
 
         return(_results, _error_code)
 
@@ -519,34 +523,36 @@ class Matrix(object):
         :rtype: tuple
         """
 
-        _matrix = self.dicMatrices[matrix_id]
+        # Retrieve the matrix to delete the column from.
+        if matrix_id in self.dicMatrices.keys():
+            _matrix = self.dicMatrices[matrix_id]
 
-        _query = "DELETE FROM rtk_matrix \
-                  WHERE fld_revision_id={0:d} \
-                  AND fld_matrix_id={1:d} \
-                  AND fld_col_id={2:d}".format(_matrix.revision_id, matrix_id,
-                                               col_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
-        # If the column was successfully deleted, remove it's values from the
-        # Matrix's row dictionary and decrement the count of columns by one.
-        # Then update the remaining column IDs in case the removed column
-        # wasn't the last one.
-        if _results:
-            _query = "UPDATE rtk_matrix \
-                      SET fld_col_id=fld_col_id-1 \
+            _query = "DELETE FROM rtk_matrix \
                       WHERE fld_revision_id={0:d} \
                       AND fld_matrix_id={1:d} \
-                      AND fld_col_id>{2:d}".format(_matrix.revision_id,
+                      AND fld_col_id={2:d}".format(_matrix.revision_id,
                                                    matrix_id, col_id)
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=True)
 
-            for _row in _matrix.dicRows.values():
-                print _row, col_id
-                _row.pop(col_id + 3)
+            # If the column was successfully deleted, remove it's values from
+            # the Matrix's row dictionary and decrement the count of columns by
+            # one.  Then update the remaining column IDs in case the removed
+            # column wasn't the last one.
+            if _results:
+                _query = "UPDATE rtk_matrix \
+                          SET fld_col_id=fld_col_id-1 \
+                          WHERE fld_revision_id={0:d} \
+                          AND fld_matrix_id={1:d} \
+                          AND fld_col_id>{2:d}".format(_matrix.revision_id,
+                                                       matrix_id, col_id)
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
 
-            _matrix.n_col -= 1
+                for _row in _matrix.dicRows.values():
+                    _row.pop(col_id + 3)
+
+                _matrix.n_col -= 1
 
         return(_results, _error_code)
 
