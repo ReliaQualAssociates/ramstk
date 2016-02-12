@@ -3,11 +3,6 @@
 This is the test class for testing Function module algorithms and models.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       tests.integration.TestFunction.py is part of The RTK Project
@@ -22,6 +17,11 @@ from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 from function.Function import Model, Function
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
 class TestFunctionController(unittest.TestCase):
@@ -110,7 +110,7 @@ class TestFunctionController(unittest.TestCase):
         (_results,
          _error_code,
          _function_id) = self.DUT.add_function(0, 0, 'F-T', None,
-                                              'This is a test function')
+                                               'This is a test function')
         self.assertEqual(self.DUT.dicFunctions[self.DUT._last_id].name,
                          'New Function')
         self.assertTrue(_results)
@@ -126,7 +126,7 @@ class TestFunctionController(unittest.TestCase):
         (_results,
          _error_code,
          _function_id) = self.DUT.add_function(0, 0, 'F-T', 'New Function',
-                                              '')
+                                               '')
         self.assertEqual(self.DUT.dicFunctions[self.DUT._last_id].remarks,
                          '')
         self.assertTrue(_results)

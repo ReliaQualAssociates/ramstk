@@ -64,7 +64,7 @@ class ListView(gtk.VBox):
     The List Book view displays all the matrices and lists associated with the
     Function Class.  The attributes of a Function List Book view are:
 
-    :ivar _dtc_matrices: the :py:class:`rtk.datamodles.Matrix.Matrix` data
+    :ivar _dtc_matrices: the :py:class:`rtk.datamodels.Matrix.Matrix` data
                          controller instance.
     :ivar _lst_handler_id: list containing the signal handler ID's for each of
                            the gtk.Widget()s who have a callback method.
@@ -139,7 +139,7 @@ class ListView(gtk.VBox):
 
     def _create_notebook(self):
         """
-        Method to create the Revision class gtk.Notebook().
+        Method to create the Function class List View gtk.Notebook().
 
         :return: _notebook
         :rtype: gtk.Notebook

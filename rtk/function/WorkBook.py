@@ -169,10 +169,8 @@ class WorkView(gtk.VBox):
         self.dtcMatrices = modulebook.mdcRTK.dtcMatrices
 
         # General data page widgets.
-        self.chkSafetyCritical = Widgets.make_check_button(label=_(u"Function "
-                                                                   u"is "
-                                                                   u"safety "
-                                                                   u"critical."))
+        self.chkSafetyCritical = Widgets.make_check_button(
+            label=_(u"Function is safety critical."))
         self.txtCode = Widgets.make_entry()
         self.txtTotalCost = Widgets.make_entry(width=75, editable=False,
                                                bold=True)
@@ -583,7 +581,7 @@ class WorkView(gtk.VBox):
 
         for i in range(12):
             _column = gtk.TreeViewColumn()
-            if i == 0:
+            if i == 0:                      # Image, mode ID
                 _cell = gtk.CellRendererPixbuf()
                 _cell.set_property('xalign', 0.5)
                 _column.pack_start(_cell, False)
@@ -597,8 +595,7 @@ class WorkView(gtk.VBox):
                 _cell.set_property('yalign', 0.1)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=1)
-
-            elif i == 1:
+            elif i == 1:                    # Mode description
                 _cell = gtk.CellRendererText()
                 _cell.set_property('editable', 1)
                 _cell.set_property('wrap-width', 250)
@@ -607,8 +604,7 @@ class WorkView(gtk.VBox):
                 _cell.connect('edited', self._on_fmea_cell_edited, 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=2)
-
-            elif i == 2 or i == 3:
+            elif i == 2 or i == 3:          # Mission, mission phase
                 _cell = gtk.CellRendererCombo()
                 _cell.set_property('editable', 1)
                 _cell.set_property('has-entry', False)
@@ -623,9 +619,9 @@ class WorkView(gtk.VBox):
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 1)
 
-            elif i > 3 and i < 9:
+            elif i > 3 and i < 9:           # Local, next, end effect, design provisions
                 _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
+                _cell.set_property('editable', 1)
                 _cell.set_property('wrap-width', 250)
                 _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
                 _cell.set_property('yalign', 0.1)
@@ -634,7 +630,7 @@ class WorkView(gtk.VBox):
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 1)
 
-            elif i == 9:
+            elif i == 9:                    # Severity classification
                 _cell = gtk.CellRendererCombo()
                 _cell.set_property('editable', 1)
                 _cell.set_property('has-entry', False)
@@ -647,15 +643,15 @@ class WorkView(gtk.VBox):
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 1)
 
-            elif i == 10:
+            elif i == 10:                   # Critical function
                 _cell = gtk.CellRendererToggle()
                 _cell.set_property('activatable', 1)
                 _cell.connect('toggled', self._on_fmea_cell_edited, -1,
-                              i + 2, _model)
+                              i + 1, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, active=i + 1)
 
-            elif i == 11:
+            elif i == 11:                   # Remarks
                 _cell = gtk.CellRendererText()
                 _cell.set_property('editable', 1)
                 _cell.set_property('wrap-width', 250)
@@ -1026,18 +1022,19 @@ class WorkView(gtk.VBox):
         elif _type == 'gfloat':
             model[path][position] = float(new_text)
 
-        _values = (-1, _function_id, _id) + \
+        _mode = self._fmea_model.dicModes[_id]
+        _values = (_mode.assembly_id, _function_id, _id) + \
                   model.get(_row, 2, 3, 4, 5, 6, 7) + ('', '', '') + \
                   model.get(_row, 8, 9, 10) + \
                   ('', '', 1.0, 0.0, 0.0, 0.0, 0.0, 10, 10) + \
                   (model.get_value(_row, 11), 0, model.get_value(_row, 12))
-        _mode = self._fmea_model.dicModes[_id]
         (_error_code, _error_msg) = _mode.set_attributes(_values)
 
         if _error_code != 0:
             _content = "rtk.function.WorkBook._on_fmea_cell_edited: " \
-                       "Received error {1:s} while attempting to " \
-                       "calculate functions.".format(_error_msg)
+                       "Received error {0:s} while attempting to " \
+                       "edit the FMEA for function {1:d}.".format(_error_msg,
+                                                                  _function_id)
             self._modulebook.mdcRTK.debug_log.error(_content)
 
             _prompt = _(u"An error occurred while attempting to update the "
@@ -1090,7 +1087,7 @@ class WorkView(gtk.VBox):
         controller.
 
         :param gtk.ToolButton __button: the gtk.ToolButton() that called this
-                                         method.
+                                        method.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -1182,10 +1179,11 @@ class WorkView(gtk.VBox):
                 _row_ids = [_key for _key, _vals in _matrix.dicRows.items()
                             if _vals[0] == _function_id or
                             _vals[1] == _function_id]
+                _row_ids = sorted(_row_ids, reverse=True)
                 for _row_id in _row_ids:
                     self.dtcMatrices.delete_row(_matrix_id, _row_id)
 
-            # Delete from treeview and refresh Module Book view.
+            # Refresh Module Book view.
             self._modulebook.request_load_data(
                 self._modulebook.mdcRTK.project_dao, _revision_id)
 

@@ -248,7 +248,6 @@ class AddFunction(gtk.Assistant):
                 self._controller.dtcFMEA.add_mode(None, _function_id)
 
                 # Add the new Function to each of the Function matrices.
-                _matrix_ids = self._controller.dtcMatrices.dicMatrices.keys()
                 for _matrix_id in [0, 1, 2]:
                     self._controller.dtcMatrices.add_row(_matrix_id,
                                                          self._parent_id,
