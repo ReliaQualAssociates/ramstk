@@ -211,17 +211,36 @@ class Matrix(object):
         self._dao = dao
 
         for __, _matrix_type in enumerate(matrix_types):
+            if _matrix_type in [0, 1, 2]:
+                _id_field = "function_id"
+                _code_field = "code"
+                _name_field = "name"
+                _row_table = "tbl_functions"
+            elif _matrix_type in [3, 4, 5]:
+                _id_field = "requirement_id"
+                _code_field = "code"
+                _name_field = "description"
+                _row_table = "tbl_requirements"
+            elif _matrix_type in [6, 7]:
+                _id_field = "hardware_id"
+                _code_field = "ref_des"
+                _name_field = "name"
+                _row_table = "rtk_hardware"
+
             _query = "SELECT t1.fld_matrix_id, t1.fld_matrix_type, \
-                             t2.fld_code, t2.fld_name, t2.fld_function_id, \
+                             t2.fld_{6:s}, t2.fld_{5:s}, t2.fld_{2:s}, \
                              t1.fld_parent_id, t1.fld_row_id, t1.fld_col_id, \
                              t1.fld_value, t1.fld_col_item_id \
                       FROM rtk_matrix AS t1 \
-                      INNER JOIN tbl_functions AS t2 \
-                      ON t2.fld_function_id=t1.fld_row_item_id \
+                      INNER JOIN {3:s} AS t2 \
+                      ON t2.fld_{4:s}=t1.fld_row_item_id \
                       WHERE t1.fld_revision_id={0:d} \
                       AND t1.fld_matrix_type={1:d} \
                       ORDER BY t1.fld_matrix_id, t1.fld_row_id, \
-                               t1.fld_col_id".format(revision_id, _matrix_type)
+                               t1.fld_col_id".format(revision_id, _matrix_type,
+                                                     _id_field, _row_table,
+                                                     _id_field, _name_field,
+                                                     _code_field)
             (_results, _error_code, __) = self._dao.execute(_query)
 
             if len(_results) > 0:
@@ -253,7 +272,7 @@ class Matrix(object):
         # Create a list of the row values for the Matrix.
         # _rows = [function code, function name, function id, parent_id,
         #          row id, col id, value, col_item_id]
-        _rows = [_m[2:len(_m) - 1] for _m in results]
+        _rows = [_m[2:len(_m)] for _m in results]
 
         # Create a new Matrix data model, set it's attributes, and add it to
         # the Matrix dictionary.
@@ -399,11 +418,11 @@ class Matrix(object):
                            fld_row_id, fld_col_id, fld_parent_id, fld_value, \
                            fld_row_item_id, fld_col_item_id) \
                           VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
-                                  ''. {6:d}, {7:d})".format(
-                                  _matrix.revision_id, matrix_id,
-                                  _matrix.matrix_type, _matrix.n_row,
-                                  _results[i][0], parent_id, row_item_id,
-                                  _results[i][1])
+                                  '', {6:d}, {7:d})".format(
+                                      _matrix.revision_id, matrix_id,
+                                      _matrix.matrix_type, _matrix.n_row,
+                                      _results[i][0], parent_id, row_item_id,
+                                      _results[i][1])
                 (__, _error_code, __) = self._dao.execute(_query, commit=True)
 
                 _cells.append('')
@@ -447,17 +466,21 @@ class Matrix(object):
             # update the remaining row IDs in case the removed row wasn't the
             # last one.
             if _results:
+                _matrix.dicRows.pop(row_id)
+                _last_id = max(_matrix.dicRows.keys())
+                for i in range(row_id + 1, _last_id + 1):
+                    _matrix.dicRows[i - 1] = _matrix.dicRows[i]
+
+                _matrix.dicRows.pop(_last_id)
+                _matrix.n_row -= 1
+
                 _query = "UPDATE rtk_matrix \
                           SET fld_row_id=fld_row_id-1 \
                           WHERE fld_revision_id={0:d} \
                           AND fld_matrix_id={1:d} \
                           AND fld_row_id>{2:d}".format(_matrix.revision_id,
-                                                       matrix_id, row_id)
-                (_results, _error_code, __) = self._dao.execute(_query,
-                                                                commit=True)
-
-                _matrix.dicRows.pop(row_id)
-                _matrix.n_row -= 1
+                                                       matrix_id, row_id - 1)
+                (__, __, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
@@ -496,10 +519,10 @@ class Matrix(object):
                            fld_row_item_id, fld_col_item_id) \
                           VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
                                   '0', {6:d}, {7:d})".format(
-                                  _matrix.revision_id, matrix_id,
-                                  _matrix.matrix_type, _results[i][0],
-                                  _matrix.n_col, _matrix.dicRows[i][0],
-                                  _results[i][1], col_item_id)
+                                      _matrix.revision_id, matrix_id,
+                                      _matrix.matrix_type, _results[i][0],
+                                      _matrix.n_col, _matrix.dicRows[i][0],
+                                      _results[i][1], col_item_id)
                 (__, _error_code, __) = self._dao.execute(_query, commit=True)
 
             # If the column was successfully added to the open RTK Project
