@@ -14,7 +14,7 @@ FMEA Action Module
 # Import other RTK modules.
 try:
     import Utilities as _util
-except ImportError:
+except ImportError:                         # pragma: no cover
     import rtk.Utilities as _util
 
 __author__ = 'Andrew Rowland'

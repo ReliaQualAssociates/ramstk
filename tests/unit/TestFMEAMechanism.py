@@ -17,7 +17,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-from analyses.fmea.Mechanism import Model, OutOfRangeError
+from analyses.fmea.Mechanism import Model, Mechanism, OutOfRangeError
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -141,24 +141,77 @@ class TestMechanismModel(unittest.TestCase):
     #                              range(1, 1001))
 
     @attr(all=True, unit=True)
-    def test_rpn_out_of_range_inputs(self):
+    def test_rpn_out_of_range_severity_inputs(self):
         """
-        (TestMechanism) calculate raises OutOfRangeError for 10 < input < 1
+        (TestMechanism) calculate raises OutOfRangeError for 11 < severity inputs < 0
+        """
+
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 0, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 11, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 0)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 11)
+
+    @attr(all=True, unit=True)
+    def test_rpn_out_of_range_occurrence_inputs(self):
+        """
+        (TestMechanism) calculate raises OutOfRangeError for 11 < occurrence inputs < 0
         """
 
         self.DUT.rpn_occurrence = 0
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
         self.DUT.rpn_occurrence = 11
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
-        self.DUT.rpn_detection = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
-        self.DUT.rpn_detection = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+
+    @attr(all=True, unit=True)
+    def test_rpn_out_of_range_new_occurrence_inputs(self):
+        """
+        (TestMechanism) calculate raises OutOfRangeError for 11 < new occurrence inputs < 0
+        """
+
         self.DUT.rpn_occurrence_new = 0
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
         self.DUT.rpn_occurrence_new = 11
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+
+    @attr(all=True, unit=True)
+    def test_rpn_out_of_range_detection_inputs(self):
+        """
+        (TestMechanism) calculate raises OutOfRangeError for 11 < detection inputs < 0
+        """
+
+        self.DUT.rpn_detection = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.DUT.rpn_detection = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+
+    @attr(all=True, unit=True)
+    def test_rpn_out_of_range_new_detection_inputs(self):
+        """
+        (TestMechanism) calculate raises OutOfRangeError for 11 < new detection inputs < 0
+        """
+
         self.DUT.rpn_detection_new = 0
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
         self.DUT.rpn_detection_new = 11
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+
+
+class TestMechanismController(unittest.TestCase):
+    """
+    Class for testing the FMEA Mechanism data controller.
+    """
+
+    def setUp(self):
+        """
+        Method to setup the test fixture for the Mechanism model class.
+        """
+
+        self.DUT = Mechanism()
+
+    @attr(all=True, unit=True)
+    def test_mechanism_create(self):
+        """
+        (TestMechanism) __init__ should return instance of Mechanism data controller
+        """
+
+        self.assertTrue(isinstance(self.DUT, Mechanism))

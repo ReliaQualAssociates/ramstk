@@ -13,9 +13,9 @@ FMEA Control Module
 
 # Import other RTK modules.
 try:
-    import Utilities as _util
-except ImportError:
-    import rtk.Utilities as _util
+    import Utilities
+except ImportError:                         # pragma: no cover
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -71,13 +71,13 @@ class Model(object):
             self.description = str(values[4])
             self.control_type = int(values[5])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)

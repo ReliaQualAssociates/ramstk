@@ -1066,8 +1066,15 @@ class WorkView(gtk.VBox):
 
         # Retrieve the list of Phase models associated with the newly selected
         # Mission.
-        _mission_id = cellmodel.get_value(new_iter, 1)
-        _mission = self._profile_model.dicMissions.values()[_mission_id]
+        try:
+            _mission_id = cellmodel.get_value(new_iter, 1)
+        except TypeError:
+            return True
+        try:
+            _mission = self._profile_model.dicMissions.values()[_mission_id]
+        except IndexError:
+            return True
+
         _phases = _mission.dicPhases.values()
 
         # Load the mission phase gtk.CellRendererCombo().

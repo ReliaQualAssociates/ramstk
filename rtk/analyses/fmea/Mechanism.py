@@ -13,9 +13,9 @@ FMEA Mechanism Module
 
 # Import other RTK modules.
 try:
-    import Utilities as _util
-except ImportError:
-    import rtk.Utilities as _util
+    import Utilities
+except ImportError:                         # pragma: no cover
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -95,13 +95,13 @@ class Model(object):
             self.rpn_new = int(values[8])
             self.include_pof = int(values[9])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)
@@ -153,11 +153,6 @@ class Model(object):
                    int(self.rpn_detection)
         self.rpn_new = int(severity_new) * int(self.rpn_occurrence_new) * \
                    int(self.rpn_detection_new)
-
-        if not 0 < self.rpn < 1001:
-            raise OutOfRangeError
-        if not 0 < self.rpn_new < 1001:
-            raise OutOfRangeError
 
         return False
 

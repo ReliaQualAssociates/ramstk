@@ -3,28 +3,25 @@
 This is the test class for testing the Cause class.
 """
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.fmea.TestCause.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
-# We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
 
-from analyses.fmea.Cause import Model
+import dao.DAO as _dao
+from analyses.fmea.Cause import Model, Cause
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
 
 
 class TestCauseModel(unittest.TestCase):
@@ -125,3 +122,24 @@ class TestCauseModel(unittest.TestCase):
         self.DUT.set_attributes(values)
         result = self.DUT.get_attributes()
         self.assertEqual(result, values)
+
+
+class TestCauseController(unittest.TestCase):
+    """
+    Class for testing the FMEA Cause data controller.
+    """
+
+    def setUp(self):
+        """
+        Method to setup the test fixture for the Cause model class.
+        """
+
+        self.DUT = Cause()
+
+    @attr(all=True, unit=True)
+    def test_cause_create(self):
+        """
+        (TestCause) __init__ should return instance of Cause data controller
+        """
+
+        self.assertTrue(isinstance(self.DUT, Cause))

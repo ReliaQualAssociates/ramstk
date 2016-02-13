@@ -8,7 +8,6 @@ This is the test class for testing the Action class.
 #       rtk.tests.fmea.TestAction.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,8 +15,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from analyses.fmea.Action import Model
+from analyses.fmea.Action import Model, Action
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -133,3 +131,24 @@ class TestActionModel(unittest.TestCase):
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
         self.assertEqual(_result, _values)
+
+
+class TestActionController(unittest.TestCase):
+    """
+    Class for testing the FMEA Action data controller.
+    """
+
+    def setUp(self):
+        """
+        Method to setup the test fixture for the Action model class.
+        """
+
+        self.DUT = Action()
+
+    @attr(all=True, unit=True)
+    def test_action_create(self):
+        """
+        (TestAction) __init__ should return instance of Action data controller
+        """
+
+        self.assertTrue(isinstance(self.DUT, Action))

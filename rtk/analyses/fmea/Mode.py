@@ -17,11 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +29,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -157,13 +157,13 @@ class Model(object):
             self.single_point = int(values[25])
             self.remarks = str(values[26])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)
@@ -234,7 +234,7 @@ class Model(object):
         if _mode_hr < 0.0:
             raise OutOfRangeError(_(u"Failure mode hazard rate has a negative "
                                     u"value."))
-        if _mode_crit < 0.0:
+        if not _mode_crit > 0.0:
             raise OutOfRangeError(_(u"Failure mode criticality has a negative "
                                     u"value."))
 
