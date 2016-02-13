@@ -153,7 +153,7 @@ class FMEA(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Refactor request_fmea; current McCabe Complexity Metrix = 13
         # Controller must be associated with either a Function or Hardware
         # item.
         if assembly_id is None and function_id is None:
@@ -605,7 +605,7 @@ class FMEA(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Consider refactoring save_fmea; current McCabe Complexity Metrix = 10
         # Controller must be associated with either a Function or Hardware
         # item.
         if assembly_id is None and function_id is None:
@@ -660,9 +660,10 @@ class FMEA(object):
                       fld_mode_hazard_rate={16:f}, fld_mode_op_time={17:f}, \
                       fld_mode_criticality={18:f}, fld_rpn_severity={19:d}, \
                       fld_rpn_severity_new={20:d}, fld_critical_item={21:d}, \
-                      fld_single_point={22:d}, fld_remarks='{23:s}', \
-                      fld_hardware_id={24:d}, fld_function_id={25:d} \
-                  WHERE fld_mode_id={26:d}".format(
+                      fld_single_point={22:d}, fld_remarks='{23:s}' \
+                  WHERE fld_mode_id={26:d} \
+                  AND fld_hardware_id={24:d} \
+                  AND fld_function_id={25:d}".format(
                       mode.description, mode.mission, mode.mission_phase,
                       mode.local_effect, mode.next_effect, mode.end_effect,
                       mode.detection_method, mode.other_indications,

@@ -40,8 +40,10 @@ def error_handler(message):
         _error_code = 78
     elif "database is locked" in message[0]:        # Database is locked.
         _error_code = 5
+    elif "foreign key constraint failed" in message[0]:
+        _error_code = 787
     else:
-        print message
+        print "Unhandled error in SQLite3.py: {0:s}".format(message)
         _error_code = message[0]
 
     return _error_code
