@@ -29,7 +29,8 @@ def setUp():
     _cursor = _connection.cursor()
 
     # Create the temporary database.
-    _sqlfile = open('../../config/newprogram_sqlite3.sql', 'r')
+    _sqlfile = open('/home/andrew/projects/RTK/config/newprogram_sqlite3.sql',
+                    'r')
     for _query in _sqlfile.read().split(';'):
         try:
             _cursor.execute(_query)

@@ -1187,6 +1187,7 @@ class WorkView(gtk.VBox):
                             if _vals[0] == _function_id or
                             _vals[1] == _function_id]
                 _row_ids = sorted(_row_ids, reverse=True)
+
                 for _row_id in _row_ids:
                     self.dtcMatrices.delete_row(_matrix_id, _row_id)
 

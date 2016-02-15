@@ -264,9 +264,9 @@ class Matrix(object):
         :rtype: bool
         """
 
-        # _results = [matrix_id, matrix_type, function code, function name,
-        #             function id, parent_id, row id, col id, value,
-        #             col_item_id]
+        # Each results record is:
+        #     [matrix_id, matrix_type, function code, function name,
+        #      function id, parent_id, row id, col id, value, col_item_id]
         _matrix_id = results[0][0]
 
         # Create a list of the row values for the Matrix.
@@ -277,20 +277,21 @@ class Matrix(object):
         # Create a new Matrix data model, set it's attributes, and add it to
         # the Matrix dictionary.
         _matrix = Model()
-        _n_row = len(set([_m[4] for _m in _rows]))
+        _row_ids = list(set([_m[4] for _m in _rows]))
         _n_col = len(set([_m[5] for _m in _rows]))
-        _matrix.set_attributes([revision_id, results[0][1], _matrix_id, _n_row,
-                                _n_col])
+        _matrix.set_attributes([revision_id, results[0][1], _matrix_id,
+                                len(_row_ids), _n_col])
         self.dicMatrices[_matrix_id] = _matrix
 
         # Populate the row dictionary for the Matrix.
-        for j in range(_n_row):
-            _name = list(set([_r[0:4] for _r in _rows if _r[4] == j]))
-            # _values = [parent_id, function id, function code, function name,
-            #            value1, value2, ... valueN]
+        for __, _row_id in enumerate(_row_ids):
+            _name = list(set([_r[0:4] for _r in _rows if _r[4] == _row_id]))
+            # A _values record is:
+            #     [parent_id, function id, function code, function name,
+            #      value1, value2, ... valueN]
             _values = [_name[0][3], _name[0][2], _name[0][0], _name[0][1]]
-            _values.extend([_r[6] for _r in _rows if _r[4] == j])
-            _matrix.dicRows[j] = _values
+            _values.extend([_r[6] for _r in _rows if _r[4] == _row_id])
+            _matrix.dicRows[_row_id] = _values
 
         return False
 
@@ -403,11 +404,11 @@ class Matrix(object):
             _query = "SELECT DISTINCT fld_col_id, fld_col_item_id \
                       FROM rtk_matrix \
                       WHERE fld_matrix_id={0:d}".format(matrix_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_columns, _error_code, __) = self._dao.execute(_query,
                                                             commit=False)
 
             try:
-                _n_col = len(_results)
+                _n_col = len(_columns)
             except TypeError:
                 _n_col = 0
 
@@ -421,9 +422,10 @@ class Matrix(object):
                                   '', {6:d}, {7:d})".format(
                                       _matrix.revision_id, matrix_id,
                                       _matrix.matrix_type, _matrix.n_row,
-                                      _results[i][0], parent_id, row_item_id,
-                                      _results[i][1])
-                (__, _error_code, __) = self._dao.execute(_query, commit=True)
+                                      _columns[i][0], parent_id, row_item_id,
+                                      _columns[i][1])
+                (_results, _error_code, __) = self._dao.execute(_query,
+                                                                commit=True)
 
                 _cells.append('')
 
@@ -466,21 +468,10 @@ class Matrix(object):
             # update the remaining row IDs in case the removed row wasn't the
             # last one.
             if _results:
-                _matrix.dicRows.pop(row_id)
-                _last_id = max(_matrix.dicRows.keys())
-                for i in range(row_id + 1, _last_id + 1):
-                    _matrix.dicRows[i - 1] = _matrix.dicRows[i]
-
-                _matrix.dicRows.pop(_last_id)
-                _matrix.n_row -= 1
-
-                _query = "UPDATE rtk_matrix \
-                          SET fld_row_id=fld_row_id-1 \
-                          WHERE fld_revision_id={0:d} \
-                          AND fld_matrix_id={1:d} \
-                          AND fld_row_id>{2:d}".format(_matrix.revision_id,
-                                                       matrix_id, row_id - 1)
-                (__, __, __) = self._dao.execute(_query, commit=True)
+                try:
+                    _matrix.dicRows.pop(row_id)
+                except KeyError:
+                    pass
 
         return(_results, _error_code)
 
@@ -563,15 +554,6 @@ class Matrix(object):
             # one.  Then update the remaining column IDs in case the removed
             # column wasn't the last one.
             if _results:
-                _query = "UPDATE rtk_matrix \
-                          SET fld_col_id=fld_col_id-1 \
-                          WHERE fld_revision_id={0:d} \
-                          AND fld_matrix_id={1:d} \
-                          AND fld_col_id>{2:d}".format(_matrix.revision_id,
-                                                       matrix_id, col_id)
-                (_results, _error_code, __) = self._dao.execute(_query,
-                                                                commit=True)
-
                 for _row in _matrix.dicRows.values():
                     _row.pop(col_id + 3)
 

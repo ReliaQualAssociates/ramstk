@@ -396,6 +396,7 @@ class ListView(gtk.VBox):
         _headings = [_(u"Function\nID"), _(u"Function\nCode"),
                      _(u"Function\nName")] + matrix.lstColumnHeaders
         _editable = [False, False, False] + [True, True] * (matrix.n_col)
+
         for _index, _heading in enumerate(_headings):
             self.mtxHardware.add_column(_heading, _index,
                                         editable=_editable[_index])

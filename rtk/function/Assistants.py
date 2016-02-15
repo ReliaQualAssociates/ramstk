@@ -91,6 +91,8 @@ class AddFunction(gtk.Assistant):
         self._parent_id = parent_id
 
         self.set_title(_(u"RTK Add Function Assistant"))
+        self.set_transient_for(modulebook.mdcRTK.work_book)
+        self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
 
         # Define public dictionary attributes.
 
@@ -194,7 +196,7 @@ class AddFunction(gtk.Assistant):
         :return: False
         :rtype: bool
         """
-# TODO: Re-write _add_function; current McCabe metric = 11
+        # TODO: Re-write _add_function; current McCabe metric = 11
         # Find out how many Functions to add.  Defaults to one Function if the
         # user hasn't entered and value.
         try:

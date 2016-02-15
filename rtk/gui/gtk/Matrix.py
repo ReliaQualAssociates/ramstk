@@ -183,6 +183,7 @@ class Matrix(gobject.GObject):
         _label.set_angle(90)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_markup("<span weight='bold'>" + heading + "</span>")
+        _label.set_tooltip_markup("<span weight='bold'>" + heading + "</span>")
         _label.set_use_markup(True)
         _label.show_all()
 
