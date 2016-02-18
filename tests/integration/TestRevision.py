@@ -35,7 +35,7 @@ class TestRevisionController(unittest.TestCase):
         Method to setup the test fixture for the Revision class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        _database = '/tmp/tempdb.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 

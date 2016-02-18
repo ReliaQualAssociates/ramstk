@@ -35,7 +35,7 @@ class TestAssemblyModel(unittest.TestCase):
         Setup the test fixture for the Assembly class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        _database = '/tmp/tempdb.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()

@@ -35,7 +35,7 @@ class TestAllocationController(unittest.TestCase):
         Sets up the test fixture for the Allocation class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        _database = '/tmp/tempdb.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 

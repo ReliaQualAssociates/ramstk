@@ -116,7 +116,7 @@ class TestUsageProfileController(unittest.TestCase):
 
     def setUp(self):
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        _database = '/tmp/tempdb.rtk'
         self._dao = _dao(_database)
 
         self.DUT = FailureDefinition()

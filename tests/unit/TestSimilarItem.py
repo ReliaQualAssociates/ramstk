@@ -34,7 +34,7 @@ class TestSimilarItemModel(unittest.TestCase):
         Setup the test fixture for the SimilarItem class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        _database = '/tmp/tempdb.rtk'
         self._dao = _dao(_database)
 
         self.DUT = Model()
