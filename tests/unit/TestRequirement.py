@@ -15,13 +15,12 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from requirement.Requirement import Model, Requirement
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2016 Andrew "Weibullguy" Rowland'
 
 
 class TestRequirementModel(unittest.TestCase):
@@ -136,7 +135,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(self.DUT.pack_values(_values), '0111001011001')
 
     @attr(all=True, unit=True)
-    def test_pack_values(self):
+    def test_unpack_values(self):
         """
         (TestRequirement) unpack_values should return a list of integers the same as the passed string
         """

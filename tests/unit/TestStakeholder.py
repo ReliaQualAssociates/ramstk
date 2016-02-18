@@ -15,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from stakeholder.Stakeholder import Model, Stakeholder
 
 __author__ = 'Andrew Rowland'

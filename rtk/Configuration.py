@@ -270,6 +270,9 @@ Global list for risk level cutoffs.
 |   1   | Medium to high            |
 +-------+---------------------------+
 
+:const RTK_REQUIREMENT_TYPES: default value: []
+Global list of requirement types.
+
 :const RTK_FMECA_METHOD: default value: 1
 Global indicator variable for the criticality method used.  1=Task 102, 2=RPN.
 
@@ -379,6 +382,7 @@ RTK_MANUFACTURERS = []
 # ------------------------------------------------------------------------- #
 # Requirement analysis configuration options.                               #
 # ------------------------------------------------------------------------- #
+RTK_REQUIREMENT_TYPES = []
 RTK_STAKEHOLDERS = []
 RTK_AFFINITY_GROUPS = []
 
@@ -467,7 +471,7 @@ class RTKConf(object):
         :param str level: indicates which configuration file is to be read.
                           One of 'site' or 'user'.
         """
-
+# TODO: Re-write __init__; current McCabe Complexity metric = 22.
         if name == 'posix':
             self.OS = 'Linux'
             _SITEDIR = '/etc/RTK/'
@@ -544,7 +548,7 @@ class RTKConf(object):
         Creates a default configuration file in the user's configuration
         directory.
         """
-
+# TODO: Re-write create_default_configuration; current McCabe Complexity metric = 11
         import glob
         import shutil
         from os.path import basename

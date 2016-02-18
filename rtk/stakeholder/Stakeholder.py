@@ -17,11 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +29,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -39,20 +39,27 @@ _ = gettext.gettext
 class Model(object):
     """
     The Stakeholder data model contains the attributes and methods of a
-    stakeholder input.  A :class:`rtk.requirement.Requirement` will consist of
-    one or more Stakeholder inputs.  The attributes of a Stakeholder are:
+    stakeholder input.  A :py :class:`rtk.requirement.Requirement` will consist
+    of one or more Stakeholder inputs.  The attributes of a Stakeholder are:
 
-    :ivar lst_user_floats: default value: [0.0, 0.0, 0.0, 0.0, 0.0]
-    :ivar revision_id: default value: None
-    :ivar input_id: default value: None
-    :ivar stakeholder: default value: ''
-    :ivar description: default value: ''
-    :ivar group: default value: ''
-    :ivar priority: default value: 1
-    :ivar customer_rank: default value: 1
-    :ivar planned_rank: default value: 3
-    :ivar improvement: default value: 1.0
-    :ivar overall_weight: default value: 0.0
+    :ivar list lst_user_floats: default value: [0.0, 0.0, 0.0, 0.0, 0.0]
+
+    :ivar int revision_id: the ID of the :py:class:`rtk.revision.Revision` the
+                           Stakeholder input is associated with.
+    :ivar int input_id: the ID of the Stakeholder input.
+    :ivar str stakeholder: the stakeholder providing the input.
+    :ivar str description: the description of the Stakeholder input.
+    :ivar str group: the affinity group the Stakeholder input belongs to.
+    :ivar int priority: the priority of implementing the Stakeholder input.
+    :ivar int customer_rank: the customer ranking of the Stakeholder input.
+    :ivar int planned_rank: the planned custmer ranking of the Stakeholder
+                            input.
+    :ivar float improvement: the calculated improvement factor for the
+                             Stakeholder input.
+    :ivar float overall_weight: the weighting of the Stakeholder input relative
+                                to all the other Stakeholder inputs.
+    :ivar str requirement: the requirement that encompasses the Stakeholder
+                           input.
     """
 
     def __init__(self):
@@ -60,18 +67,18 @@ class Model(object):
         Method to initialize a Stakeholder data model instance.
         """
 
-        # Initialize private dict attributes.
+        # Define private dict attributes.
 
-        # Initialize private list attributes.
+        # Define private list attributes.
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
 
-        # Initialize public dict attributes.
+        # Define public dict attributes.
 
-        # Initialize public list attributes.
+        # Define public list attributes.
         self.lst_user_floats = [1.0, 1.0, 1.0, 1.0, 1.0]
 
-        # Initialize public scalar attributes.
+        # Define public scalar attributes.
         self.revision_id = None
         self.input_id = None
         self.stakeholder = ''
@@ -115,17 +122,18 @@ class Model(object):
             self.lst_user_floats[3] = float(values[14])
             self.lst_user_floats[4] = float(values[15])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Stakeholder data model attributes.
+        Method to retrieve the current values of the Stakeholder data model
+        attributes.
 
         :return: (revision_id, input_id, stakeholder, description, group,
                   priority, customer_rank, planned_rank, improvement,
@@ -147,7 +155,8 @@ class Model(object):
 
     def calculate_weight(self):
         """
-        Calculates the overall weighting of a Stakeholder input.
+        Method to calculate the improvement factor and overall weighting of a
+        Stakeholder input.
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
@@ -170,29 +179,39 @@ class Stakeholder(object):
     controller can manage one or more Stakeholder data models.  The attributes
     of a Stakeholder data controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-    Project database.
-    :ivar _last_id: the last Stakeholder ID used.
-    :ivar dicStakeholders: Dictionary of the Stakeholder data models managed.  Key is the Stakeholder ID; value is a pointer to the Stakeholder data model instance.
+    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
+                the RTK Project database.
+    :ivar int _last_id: the last Stakeholder ID used.
+    :ivar dict dicStakeholders: Dictionary of the Stakeholder data models
+                                managed.  Key is the Stakeholder ID; value is a
+                                pointer to the Stakeholder data model instance.
     """
 
     def __init__(self):
         """
-        Initializes a Stakeholder data controller instance.
+        Method to initialize a Stakeholder data controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._dao = None
         self._last_id = None
 
         # Initialize public dictionary attributes.
         self.dicStakeholders = {}
 
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
     def request_inputs(self, dao, revision_id):
         """
-        Reads the RTK Project database and loads all the stakeholder inputs
-        associated with the selected Revision.  For each stakeholder input
-        returned:
+        Method to read the RTK Project database and load all the stakeholder
+        inputs associated with the selected Revision.  For each stakeholder
+        input returned:
 
         #. Retrieve the inputs from the RTK Project database.
         #. Create a Stakeholder data model instance.
@@ -201,8 +220,8 @@ class Stakeholder(object):
         #. Add the instance to the dictionary of Stakeholders being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
+        :param dao: the :py:class:`rtk.dao.DAO.DAO` object to use for
+                    communicating with the RTK Project database.
         :param int revision_id: the Revision ID to select the stakeholders for.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -231,7 +250,8 @@ class Stakeholder(object):
 
     def add_input(self, revision_id):
         """
-        Adds a new Stakeholder to the RTK Project for the selected Revision.
+        method to add a new Stakeholder input to the RTK Project for the
+        selected Revision.
 
         :param int revision_id: the Revision ID to add the new Stakeholder(s).
         :return: (_results, _error_code)
@@ -262,7 +282,7 @@ class Stakeholder(object):
 
     def delete_input(self, input_id):
         """
-        Deletes a Stakeholder input from the RTK Project.
+        Method to delete a Stakeholder input from the RTK Project database.
 
         :param int input_id: the Stakeholder input ID to delete.
         :return: (_results, _error_code)
@@ -280,7 +300,7 @@ class Stakeholder(object):
 
     def save_input(self, input_id):
         """
-        Saves the Stakeholder attributes to the RTK Project database.
+        Method to save the Stakeholder attributes to the RTK Project database.
 
         :param int input_id: the ID of the stakeholder input to save.
         :return: (_results, _error_code)
@@ -311,7 +331,7 @@ class Stakeholder(object):
 
     def save_all_inputs(self):
         """
-        Saves all Stakeholder data models managed by the controller.
+        Method to save all Stakeholder data models managed by the controller.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -325,7 +345,7 @@ class Stakeholder(object):
 
     def calculate_stakeholder(self, input_id):
         """
-        Requests the model calculate the Stakeholder.
+        Method to request the model calculate the Stakeholder input.
 
         :param int input_id: the Stakholder ID to calculate.
         :return: (improvement, overall_weight)

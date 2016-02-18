@@ -5,15 +5,12 @@ This is the test class for testing the Environment class.
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.dao.TestDAO.py is part of The RTK Project
+#       rtk.tests.unit.TestDAO.py is part of The RTK Project
 #
 # All rights reserved.
-
-import os
 import sys
-sys.path.insert(0, os.path.abspath(".."))
-sys.path.insert(0, os.path.abspath("../.."))
-sys.path.insert(0, os.path.abspath("../../.."))
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import sqlite3
 
@@ -38,10 +35,10 @@ class TestSQLite3Model(unittest.TestCase):
         (TestSQLite3) setup the test fixture for the SQLite3 model class
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        _database = '/tmp/tempdb.rtk'
         self.DUT = _dao(_database)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, integration=True)
     def test_create_sqlite3(self):
         """
         (TestSQLite3) SQLite3 __init__() should return an sqlite3.Connection
@@ -51,7 +48,7 @@ class TestSQLite3Model(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT.model.connection,
                                    sqlite3.Connection))
 
-    @attr(all=True, unit=True)
+    @attr(all=True, integration=True)
     def test_execute(self):
         """
         (TestSQLite3) execute should return 0 when an SQL query is successfully executed
@@ -61,7 +58,7 @@ class TestSQLite3Model(unittest.TestCase):
 
         self.assertEqual(self.DUT.execute(_query)[1], 0)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, integration=True)
     def test_get_next_id(self):
         """
         (TestSQLite3) Tests that the next ID can be retrieved.

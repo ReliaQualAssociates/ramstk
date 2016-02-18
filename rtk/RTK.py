@@ -319,10 +319,7 @@ class RTK(object):
         _modview = self.module_book.create_module_page(mvwFunction, self, -1)   # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwRequirement,
-                                                       self.dtcRequirement, -1,
-                                                       self.dtcStakeholder,
-                                                       self.dtcMatrices,
-                                                       self.site_dao)           # pylint: disable=R0204
+                                                       self, -1)                # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwHardware,
                                                        self.dtcHardwareBoM, -1,
@@ -413,6 +410,13 @@ class RTK(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+        # TODO: Re-write _load_commons; current McCabe Complexity metrix = 25.
+        _query = "SELECT fld_group_name, fld_group_id \
+                  FROM tbl_groups \
+                  ORDER BY fld_group_name ASC"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        Configuration.RTK_WORKGROUPS = _results
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         # Load the component category and component sub-category lists.     #
@@ -436,6 +440,16 @@ class RTK(object):
                                                       if x[0] == i + 1]
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        # Load the Requirements lists.                                      #
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        _query = "SELECT fld_requirement_type_desc, \
+                         fld_requirement_type_code, \
+                         fld_requirement_type_id \
+                  FROM tbl_requirement_type"
+        (_results, _error_code, __) = self.site_dao.execute(_query,
+                                                            commit=False)
+        Configuration.RTK_REQUIREMENT_TYPES = _results
+
         _query = "SELECT DISTINCT fld_stakeholder \
                   FROM tbl_stakeholders \
                   ORDER BY fld_stakeholder ASC"
@@ -649,8 +663,6 @@ class RTK(object):
         self.project_dao = DAO(Configuration.RTK_PROG_INFO[2])
 
         self.project_dao.execute("PRAGMA foreign_keys = ON", commit=False)
-
-        #self.dtcMatrices._dao = self.project_dao
 
         # Get a connection to the program database and then retrieve the
         # program information.

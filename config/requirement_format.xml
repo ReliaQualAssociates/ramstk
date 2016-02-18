@@ -3,7 +3,7 @@
 
       requirement_format.xml is part of The RTK Project
 
-      Copyright (C) 2007-2015 Andrew "Weibullguy" Rowland
+      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland
       <andrew.rowland@reliaqual.com>
 -->
 
@@ -29,25 +29,25 @@ experience. -->
             <widget>text</widget>
             <position>1</position>
             <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Assembly ID</defaulttitle>
-            <usertitle>Assembly ID</usertitle>
-            <datatype>gint</datatype>
-            <widget>text</widget>
-            <position>2</position>
-            <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
         </column>
         <column>
             <defaulttitle>Requirement</defaulttitle>
             <usertitle>Requirement</usertitle>
             <datatype>gchararray</datatype>
+            <position>2</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Requirement Code</defaulttitle>
+            <usertitle>Requirement Code</usertitle>
+            <datatype>gchararray</datatype>
             <position>3</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
+            <visible>0</visible>
         </column>
         <column>
             <defaulttitle>Requirement Type</defaulttitle>
@@ -55,48 +55,48 @@ experience. -->
             <datatype>gchararray</datatype>
             <position>4</position>
             <widget>combo</widget>
-            <editable>0</editable>
+            <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Requirement Code</defaulttitle>
-            <usertitle>Requirement Code</usertitle>
-            <datatype>gchararray</datatype>
+            <defaulttitle>Priority</defaulttitle>
+            <usertitle>Priority</usertitle>
+            <datatype>gint</datatype>
             <position>5</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Specification</defaulttitle>
+            <usertitle>Specification</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
             <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Page Number</defaulttitle>
+            <usertitle>Page Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Figure Number</defaulttitle>
+            <usertitle>Figure Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
         </column>
         <column>
             <defaulttitle>Derived?</defaulttitle>
             <usertitle>Derived?</usertitle>
-            <datatype>gint</datatype>
-            <position>6</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Parent Requirement</defaulttitle>
-            <usertitle>Parent Requirement</usertitle>
-            <datatype>gchararray</datatype>
-            <position>7</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Validated?</defaulttitle>
-            <usertitle>Validated?</usertitle>
-            <datatype>gint</datatype>
-            <position>8</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Validated Date</defaulttitle>
-            <usertitle>Validated Date</usertitle>
             <datatype>gint</datatype>
             <position>9</position>
             <widget>text</widget>
@@ -109,32 +109,23 @@ experience. -->
             <datatype>gchararray</datatype>
             <position>10</position>
             <widget>combo</widget>
-            <editable>0</editable>
+            <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
-            <defaulttitle>Specification</defaulttitle>
-            <usertitle>Specification</usertitle>
-            <datatype>gchararray</datatype>
+            <defaulttitle>Validated?</defaulttitle>
+            <usertitle>Validated?</usertitle>
+            <datatype>gint</datatype>
             <position>11</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Page Number</defaulttitle>
-            <usertitle>Page Number</usertitle>
-            <datatype>gchararray</datatype>
+            <defaulttitle>Validated Date</defaulttitle>
+            <usertitle>Validated Date</usertitle>
+            <datatype>gint</datatype>
             <position>12</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Figure Number</defaulttitle>
-            <usertitle>Figure Number</usertitle>
-            <datatype>gchararray</datatype>
-            <position>13</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
@@ -143,349 +134,43 @@ experience. -->
             <defaulttitle>Parent ID</defaulttitle>
             <usertitle>Parent ID</usertitle>
             <datatype>gint</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Clear</defaulttitle>
+            <usertitle>Clear</usertitle>
+            <datatype>gchararray</datatype>
             <position>14</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Software ID</defaulttitle>
-            <usertitle>Software ID</usertitle>
-            <datatype>gint</datatype>
+            <defaulttitle>Complete</defaulttitle>
+            <usertitle>Complete</usertitle>
+            <datatype>gchararray</datatype>
             <position>15</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Analysis Q1</defaulttitle>
-            <usertitle>Analysis Q1</usertitle>
-            <datatype>gint</datatype>
+            <defaulttitle>Consistent</defaulttitle>
+            <usertitle>Consistent</usertitle>
+            <datatype>gchararray</datatype>
             <position>16</position>
-            <widget>toggle</widget>
+            <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Analysis Q2</defaulttitle>
-            <usertitle>Analysis Q2</usertitle>
-            <datatype>gint</datatype>
+            <defaulttitle>Verifiable</defaulttitle>
+            <usertitle>Verifiable</usertitle>
+            <datatype>gchararray</datatype>
             <position>17</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q3</defaulttitle>
-            <usertitle>Analysis Q3</usertitle>
-            <datatype>gint</datatype>
-            <position>18</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q4</defaulttitle>
-            <usertitle>Analysis Q4</usertitle>
-            <datatype>gint</datatype>
-            <position>19</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q5</defaulttitle>
-            <usertitle>Analysis Q5</usertitle>
-            <datatype>gint</datatype>
-            <position>20</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q6</defaulttitle>
-            <usertitle>Analysis Q6</usertitle>
-            <datatype>gint</datatype>
-            <position>21</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q7</defaulttitle>
-            <usertitle>Analysis Q7</usertitle>
-            <datatype>gint</datatype>
-            <position>22</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q8</defaulttitle>
-            <usertitle>Analysis Q8</usertitle>
-            <datatype>gint</datatype>
-            <position>23</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q9</defaulttitle>
-            <usertitle>Analysis Q9</usertitle>
-            <datatype>gint</datatype>
-            <position>24</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q10</defaulttitle>
-            <usertitle>Analysis Q10</usertitle>
-            <datatype>gint</datatype>
-            <position>25</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q11</defaulttitle>
-            <usertitle>Analysis Q11</usertitle>
-            <datatype>gint</datatype>
-            <position>26</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q12</defaulttitle>
-            <usertitle>Analysis Q12</usertitle>
-            <datatype>gint</datatype>
-            <position>27</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q13</defaulttitle>
-            <usertitle>Analysis Q13</usertitle>
-            <datatype>gint</datatype>
-            <position>28</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q14</defaulttitle>
-            <usertitle>Analysis Q14</usertitle>
-            <datatype>gint</datatype>
-            <position>29</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q15</defaulttitle>
-            <usertitle>Analysis Q15</usertitle>
-            <datatype>gint</datatype>
-            <position>30</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q16</defaulttitle>
-            <usertitle>Analysis Q16</usertitle>
-            <datatype>gint</datatype>
-            <position>31</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q17</defaulttitle>
-            <usertitle>Analysis Q17</usertitle>
-            <datatype>gint</datatype>
-            <position>32</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q18</defaulttitle>
-            <usertitle>Analysis Q18</usertitle>
-            <datatype>gint</datatype>
-            <position>33</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q19</defaulttitle>
-            <usertitle>Analysis Q19</usertitle>
-            <datatype>gint</datatype>
-            <position>34</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q20</defaulttitle>
-            <usertitle>Analysis Q20</usertitle>
-            <datatype>gint</datatype>
-            <position>35</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q21</defaulttitle>
-            <usertitle>Analysis Q21</usertitle>
-            <datatype>gint</datatype>
-            <position>36</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q22</defaulttitle>
-            <usertitle>Analysis Q22</usertitle>
-            <datatype>gint</datatype>
-            <position>37</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q23</defaulttitle>
-            <usertitle>Analysis Q23</usertitle>
-            <datatype>gint</datatype>
-            <position>38</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q24</defaulttitle>
-            <usertitle>Analysis Q24</usertitle>
-            <datatype>gint</datatype>
-            <position>39</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q25</defaulttitle>
-            <usertitle>Analysis Q25</usertitle>
-            <datatype>gint</datatype>
-            <position>40</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q26</defaulttitle>
-            <usertitle>Analysis Q26</usertitle>
-            <datatype>gint</datatype>
-            <position>41</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q27</defaulttitle>
-            <usertitle>Analysis Q27</usertitle>
-            <datatype>gint</datatype>
-            <position>42</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q28</defaulttitle>
-            <usertitle>Analysis Q28</usertitle>
-            <datatype>gint</datatype>
-            <position>43</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q29</defaulttitle>
-            <usertitle>Analysis Q29</usertitle>
-            <datatype>gint</datatype>
-            <position>44</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q30</defaulttitle>
-            <usertitle>Analysis Q30</usertitle>
-            <datatype>gint</datatype>
-            <position>45</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q31</defaulttitle>
-            <usertitle>Analysis Q31</usertitle>
-            <datatype>gint</datatype>
-            <position>46</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q32</defaulttitle>
-            <usertitle>Analysis Q32</usertitle>
-            <datatype>gint</datatype>
-            <position>47</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q33</defaulttitle>
-            <usertitle>Analysis Q33</usertitle>
-            <datatype>gint</datatype>
-            <position>48</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q34</defaulttitle>
-            <usertitle>Analysis Q34</usertitle>
-            <datatype>gint</datatype>
-            <position>49</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q35</defaulttitle>
-            <usertitle>Analysis Q35</usertitle>
-            <datatype>gint</datatype>
-            <position>50</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Analysis Q36</defaulttitle>
-            <usertitle>Analysis Q36</usertitle>
-            <datatype>gint</datatype>
-            <position>51</position>
-            <widget>toggle</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Priority</defaulttitle>
-            <usertitle>Priority</usertitle>
-            <datatype>gint</datatype>
-            <position>52</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>

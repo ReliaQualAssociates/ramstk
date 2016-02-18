@@ -8,7 +8,6 @@ This is the test class for testing Stakeholder module algorithms and models.
 #       tests.integration.TestStakeholder.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -17,7 +16,7 @@ import unittest
 from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
-from stakeholder.Stakeholder import Stakeholder
+from stakeholder.Stakeholder import Model, Stakeholder
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,14 +34,15 @@ class TestStakeholderController(unittest.TestCase):
         Sets up the test fixture for the Stakeholder class.
         """
 
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        _database = '/tmp/tempdb.rtk'
+
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Stakeholder()
 
     @attr(all=True, integration=True)
-    def test_request_inputs(self):
+    def test1_request_inputs(self):
         """
         (TestStakeholder) request_inputs should return 0 on success
         """
@@ -50,7 +50,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
 # TODO: Test that method fails when no Stakeholder inputs exist in database.
     @attr(all=True, integration=True)
-    def test_add_input(self):
+    def test2_add_input(self):
         """
         (TestStakeholder) add_input returns 0 on success and new Stakeholder data model added to dictionary
         """
@@ -65,7 +65,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test_delete_input(self):
+    def test3_delete_input(self):
         """
         (TestStakeholder) delete_input returns 0 on success
         """
@@ -78,7 +78,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test_save_input(self):
+    def test4_save_input(self):
         """
         (TestStakeholder) save_input returns (True, 0) on success
         """
@@ -87,7 +87,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(self.DUT.save_input(1), (True, 0))
 
     @attr(all=True, integration=True)
-    def test_save_all_inputs(self):
+    def test5_save_all_inputs(self):
         """
         (TestStakeholder) save_all_inputs returns False on success
         """
@@ -96,7 +96,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertFalse(self.DUT.save_all_inputs())
 
     @attr(all=True, integration=True)
-    def test_calculate_stakeholder(self):
+    def test6_calculate_stakeholder(self):
         """
         (TestStakeholder) calculate_stakeholder returns 0 on success
         """
