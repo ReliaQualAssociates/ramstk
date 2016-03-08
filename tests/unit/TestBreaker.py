@@ -6,18 +6,16 @@ models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestBreaker.py is part of The RTK Project
+#       tests.unit.TestBreaker.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
+
 from hardware.component.switch.Breaker import Breaker
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +33,6 @@ class TestBreakerModel(unittest.TestCase):
         """
         Setup the test fixture for the Breaker Switch class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Breaker()
 
@@ -210,14 +205,14 @@ class TestBreakerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestBreaker) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestBreaker) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 1.6)
@@ -227,7 +222,7 @@ class TestBreakerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_magnetic(self):
         """
-        (TestBreaker) calculate should return False on success when calculating MIL-HDBK-217F stress results for a magnetic actuation breaker
+        (TestBreaker) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a magnetic actuation breaker
         """
 
         self.DUT.environment_active = 2
@@ -237,7 +232,7 @@ class TestBreakerModel(unittest.TestCase):
         self.DUT.contact_form = 1
         self.DUT.use = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piC * piU * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.02)
@@ -250,7 +245,7 @@ class TestBreakerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_thermal(self):
         """
-        (TestBreaker) calculate should return False on success when calculating MIL-HDBK-217F stress results for a thermal actuation breaker
+        (TestBreaker) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a thermal actuation breaker
         """
 
         self.DUT.environment_active = 2
@@ -260,7 +255,7 @@ class TestBreakerModel(unittest.TestCase):
         self.DUT.contact_form = 2
         self.DUT.use = 2
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piC * piU * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.038)
@@ -273,7 +268,7 @@ class TestBreakerModel(unittest.TestCase):
     @attr(all=True, unit=False)
     def test_calculate_217_stress_lamp(self):
         """
-        (TestBreaker) calculate should return False on success when calculating MIL-HDBK-217F stress results with a lamp load
+        (TestBreaker) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with a lamp load
         """
 
         self.DUT.environment_active = 2
@@ -285,7 +280,7 @@ class TestBreakerModel(unittest.TestCase):
         self.DUT.operating_current = 0.023
         self.DUT.rated_current = 0.05
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          '(lambdab + piN * lambdab2) * piCYC * piL * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.086)
@@ -299,7 +294,7 @@ class TestBreakerModel(unittest.TestCase):
     @attr(all=True, unit=False)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestBreaker) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestBreaker) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -310,12 +305,12 @@ class TestBreakerModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.000000000000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=False)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestBreaker) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestBreaker) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -326,4 +321,4 @@ class TestBreakerModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

@@ -15,13 +15,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.switch.Switch import Model as \
         Switch
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.switch.Switch import Model as \
         Switch
 
@@ -32,7 +32,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -44,22 +44,22 @@ class Breaker(Switch):
     The Breaker Switch data model contains the attributes and methods of a
     Breaker Switch component.  The attributes of a Breaker Switch are:
 
-    :cvar subcategory: default value: 71
+    :cvar int subcategory: Switch subcategory
 
-    :ivar construction: default value: 0
-    :ivar contact_form: default value: 0
-    :ivar use: default value: 0
-    :ivar piC: default value: 0.0
-    :ivar piU: default value: 0.0
-    :ivar piQ: default value: 0.0
+    :ivar int construction: the MIL-HDBK-217FN2 construction input index.
+    :ivar int contact_form: the MIL-HDBK-217FN2 contact form input index.
+    :ivar int use: the MIL-HDBK-217FN2 application input index.
+    :ivar float piC: the MIL-HDBK-217FN2 configuration factor.
+    :ivar float piU: the MIL-HDBK-217FN2 usage factor.
+    :ivar float piQ: the MIL-HDBK-217FN2 quality factor.
 
     Covers specifications MIL-C-39019, MIL-C-55629, MIL-C-83383, and W-C-375.
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, section 14.5.
+        # MIL-HDBK-217FN2, section 14.5.
     """
 
-    # MIL-HDK-217F hazard rate calculation variables.
+    # MIL-HDBK-217FN2 hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piC = [1.0, 2.0, 3.0, 4.0]
     _lst_piE = [1.0, 2.0, 15.0, 8.0, 27.0, 7.0, 9.0, 11.0, 12.0, 46.0, 0.5,
@@ -73,12 +73,22 @@ class Breaker(Switch):
 
     def __init__(self):
         """
-        Initialize a Breaker Switch data model instance.
+        Method to initialize a Breaker Switch data model instance.
         """
 
         super(Breaker, self).__init__()
 
-        # Initialize public scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.construction = 0
         self.contact_form = 0
         self.use = 0
@@ -88,7 +98,7 @@ class Breaker(Switch):
 
     def set_attributes(self, values):
         """
-        Sets the Breaker Switch data model attributes.
+        Method to set the Breaker Switch data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -109,17 +119,17 @@ class Breaker(Switch):
             self.piU = float(values[100])
             self.piQ = float(values[101])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Breaker Switch data model
+        Method to retrieve the current values of the Breaker Switch data model
         attributes.
 
         :return: (construction, contact_form, use, piC, piU, piQ)
@@ -133,9 +143,9 @@ class Breaker(Switch):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Breaker Switch data model.
+        Method to calculate the hazard rate for the Breaker Switch data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -173,4 +183,4 @@ class Breaker(Switch):
                 self.piQ = 8.4
             self.hazard_rate_model['piQ'] = self.piQ
 
-        return Switch.calculate(self)
+        return Switch.calculate_part(self)

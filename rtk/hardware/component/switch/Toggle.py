@@ -15,12 +15,12 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.switch.Switch import Model as Switch
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.switch.Switch import Model as Switch
 
 __author__ = 'Andrew Rowland'
@@ -30,7 +30,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,24 +42,24 @@ class Toggle(Switch):
     The Toggle Switch data model contains the attributes and methods of a
     Toggle Switch component.  The attributes of a Toggle Switch are:
 
-    :cvar subcategory: default value: 67
+    :cvar int subcategory: the Switch subcategory.
 
-    :ivar construction: default value: 0
-    :ivar contact_form: default value: 0
-    :ivar load_type: default value: 0
-    :ivar cycles_per_hour: default value: 0.0
-    :ivar piCYC: default value: 0.0
-    :ivar piL: default value: 0.0
-    :ivar piC: default value: 0.0
+    :ivar int construction: the MIL-HDBK-217FN2 contruction index.
+    :ivar int contact_form: the MIL-HDBK-217FN2 contact form index.
+    :ivar int load_type: the MIL-HDBK-217FN2 load type index.
+    :ivar float cycles_per_hour: the MIL-HDBK-217FN2 switch cycles per hour.
+    :ivar float piCYC: the MIL-HDBK-217FN2 cycles factor.
+    :ivar float piL: the MIL-HDBK-217FN2 load type factor.
+    :ivar float piC: the MIL-HDBK-217FN2 contact form factor.
 
     Covers specifications MIL-S-3650, MIL-S-8805, MIL-S-8834, MIL-S-22885, and
     MIL-S-83731.
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, section 14.1.
+        # MIL-HDBK-217FN2, section 14.1.
     """
 
-    # MIL-HDK-217F hazard rate calculation variables.
+    # MIL-HDBK-217FN2 hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piC = [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0]
     _lst_piE = [1.0, 3.0, 18.0, 8.0, 29.0, 10.0, 18.0, 13.0, 22.0, 46.0, 0.5,
@@ -73,12 +73,22 @@ class Toggle(Switch):
 
     def __init__(self):
         """
-        Initialize a Toggle Switch data model instance.
+        Method to initialize a Toggle Switch data model instance.
         """
 
         super(Toggle, self).__init__()
 
-        # Initialize public scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.construction = 0
         self.contact_form = 0
         self.load_type = 0
@@ -89,7 +99,7 @@ class Toggle(Switch):
 
     def set_attributes(self, values):
         """
-        Sets the Toggle Switch data model attributes.
+        Method to set the Toggle Switch data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -111,17 +121,17 @@ class Toggle(Switch):
             self.piL = float(values[101])
             self.piC = float(values[102])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Toggle Switch data model
+        Method to retrieve the current values of the Toggle Switch data model
         attributes.
 
         :return: (construction, contact_form, load_type, cycles_per_hour,
@@ -137,15 +147,14 @@ class Toggle(Switch):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Unijunction
-        Toggle Switch data model.
+        Method to calculate the hazard rate for the Toggle Switch data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 13.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -187,4 +196,4 @@ class Toggle(Switch):
             self.piC = self._lst_piC[self.contact_form - 1]
             self.hazard_rate_model['piC'] = self.piC
 
-        return Switch.calculate(self)
+        return Switch.calculate_part(self)
