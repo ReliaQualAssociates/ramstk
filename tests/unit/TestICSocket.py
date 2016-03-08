@@ -5,10 +5,9 @@ This is the test class for testing IC Socket Connection module algorithms and mo
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestSocket.py is part of The RTK Project
+#       tests.unit.TestSocket.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.connection.Socket import Socket
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestSocketModel(unittest.TestCase):
         """
         Setup the test fixture for the IC Socket Connection class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Socket()
 
@@ -212,14 +207,14 @@ class TestSocketModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestSocket) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestSocket) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.configuration = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -230,7 +225,7 @@ class TestSocketModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestSocket) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestSocket) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -238,7 +233,7 @@ class TestSocketModel(unittest.TestCase):
 
         self.DUT.n_active_contacts = 20
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piP')
@@ -251,7 +246,7 @@ class TestSocketModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_no_active_contacts(self):
         """
-        (TestSocket) calculate should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
+        (TestSocket) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
         """
 
         self.DUT.environment_active = 2
@@ -259,7 +254,7 @@ class TestSocketModel(unittest.TestCase):
 
         self.DUT.n_active_contacts = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piP')

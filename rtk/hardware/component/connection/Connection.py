@@ -17,13 +17,13 @@ import locale
 
 try:
     import calculations as _calc
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.Component import Model as Component
 except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.Component import Model as Component
 
 __author__ = 'Andrew Rowland'
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -45,29 +45,37 @@ class Model(Component):
     The Connection data model contains the attributes and methods of a
     connection component.  The attributes of a Connection are:
 
-    :cvar category: default value: 8
+    :cvar int category: the Component category of a Connection.
 
-    :ivar base_hr: default value: 0.0
-    :ivar reason: default value: ""
-    :ivar piE: default value: 0.0
+    :ivar float base_hr: the MIL-HDBK-217FN2 base/generic hazard rate.
+    :ivar str reason: the reason(s) the connection is overstressed.
+    :ivar float piE: the MIL-HDBK-217FN2 operating environment factor.
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, sections 15, 16, and 17.
+        # MIL-HDBK-217FN2, sections 15, 16, and 17.
     """
 
     category = 8
 
     def __init__(self):
         """
-        Initialize a Connection data model instance.
+        Method to initialize a Connection data model instance.
         """
 
         super(Model, self).__init__()
 
-        # Initialize public list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
         self.lst_derate_criteria = [[0.7, 0.7, 0.0], [0.9, 0.9, 0.0]]
 
-        # Initialize public scalar attributes.
+        # Define public scalar attributes.
         self.quality = 0                    # Quality level.
         self.q_override = 0.0
         self.base_hr = 0.0                  # Base hazard rate.
@@ -77,7 +85,7 @@ class Model(Component):
 
     def set_attributes(self, values):
         """
-        Sets the Connection data model attributes.
+        Method to set the Connection data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -96,20 +104,21 @@ class Model(Component):
             self.piQ = float(values[98])
             self.piE = float(values[99])
             self.quality = int(values[116])
-            # TODO: Add field to rtk_stress to hold overstress reason.
+# TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Connection data model attributes.
+        Method to retrieve the current values of the Connection data model
+        attributes.
 
         :return: (q_override, base_hr, piQ, piE, quality, reason)
         :rtype: tuple
@@ -122,9 +131,9 @@ class Model(Component):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Connection data model.
+        Method to calculate the hazard rate for the Connection data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -159,7 +168,8 @@ class Model(Component):
                                    self.add_adj_factor) * \
                                   (self.duty_cycle / 100.0) * \
                                   self.mult_adj_factor * self.quantity
-        self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
+        self.hazard_rate_active = self.hazard_rate_active / \
+                                  Configuration.FRMULT
 
         # Calculate overstresses.
         self._overstressed()
@@ -173,14 +183,15 @@ class Model(Component):
 
     def _overstressed(self):
         """
-        Determines whether the Connection is overstressed based on it's rated
-        values and operating environment.
+        Method to determine whether the Connection is overstressed based on
+        it's rated values and operating environment.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _reason_num = 1
+        _reason = ''
         _harsh = True
 
         self.overstress = False
@@ -193,31 +204,33 @@ class Model(Component):
         if _harsh:
             if self.operating_voltage > 0.7 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                    _(u". Operating voltage > 70% rated voltage.\n")
+                _reason = _reason + str(_reason_num) + \
+                          _(u". Operating voltage > 70% rated voltage.\n")
                 _reason_num += 1
             if self.operating_current > 0.7 * self.rated_current:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                    _(u". Operating current > 70% rated current.\n")
+                _reason = _reason + str(_reason_num) + \
+                          _(u". Operating current > 70% rated current.\n")
                 _reason_num += 1
             if (self.temperature_rise + self.temperature_active -
                     self.max_rated_temperature) < 25:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                    _(u". Operating temperature within 25.0C of maximum rated "
-                      u"temperature.\n")
+                _reason = _reason + str(_reason_num) + \
+                          _(u". Operating temperature within 25.0C of maximum "
+                            u"rated temperature.\n")
                 _reason_num += 1
         else:
             if self.operating_voltage > 0.9 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                    _(u". Operating voltage > 90% rated voltage.\n")
+                _reason = _reason + str(_reason_num) + \
+                          _(u". Operating voltage > 90% rated voltage.\n")
                 _reason_num += 1
             if self.operating_current > 0.9 * self.rated_current:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                    _(u". Operating current > 90% rated current.\n")
+                _reason = _reason + str(_reason_num) + \
+                          _(u". Operating current > 90% rated current.\n")
                 _reason_num += 1
+
+        self.reason = _reason
 
         return False

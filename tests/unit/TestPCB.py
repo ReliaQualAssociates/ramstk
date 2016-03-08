@@ -5,18 +5,16 @@ This is the test class for testing PCB Connection module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestPCB.py is part of The RTK Project
+#       tests.unit.TestPCB.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
+
 from hardware.component.connection.PCB import PCB
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestPCBModel(unittest.TestCase):
         """
         Setup the test fixture for the PCB Connection class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = PCB()
 
@@ -219,13 +214,13 @@ class TestPCBModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPCB) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPCB) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -236,7 +231,7 @@ class TestPCBModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestPCB) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestPCB) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -246,7 +241,7 @@ class TestPCBModel(unittest.TestCase):
         self.DUT.n_active_contacts = 20
         self.DUT.mate_unmate_cycles = 10.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')
@@ -260,7 +255,7 @@ class TestPCBModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_no_active_contacts(self):
         """
-        (TestPCB) calculate should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
+        (TestPCB) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
         """
 
         self.DUT.environment_active = 2
@@ -270,7 +265,7 @@ class TestPCBModel(unittest.TestCase):
         self.DUT.n_active_contacts = 1
         self.DUT.mate_unmate_cycles = 10.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')

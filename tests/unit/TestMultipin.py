@@ -5,10 +5,9 @@ This is the test class for testing Multi-Pin Connection module algorithms and mo
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestMultipin.py is part of The RTK Project
+#       tests.unit.TestMultipin.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.connection.Multipin import Multipin
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestMultipinModel(unittest.TestCase):
         """
         Setup the test fixture for the Multi-Pin Connection class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Multipin()
 
@@ -218,14 +213,14 @@ class TestMultipinModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestMultipin) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestMultipin) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.configuration = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -236,7 +231,7 @@ class TestMultipinModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_insert_a(self):
         """
-        (TestMultipin) calculate should return False on success when calculating MIL-HDBK-217F parts stress results for insert group A
+        (TestMultipin) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results for insert group A
         """
 
         self.DUT.temperature_active = 30.0
@@ -252,7 +247,7 @@ class TestMultipinModel(unittest.TestCase):
         self.DUT.mate_unmate_cycles = 10
         self.DUT.n_active_contacts = 15
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')
@@ -267,7 +262,7 @@ class TestMultipinModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_insert_b(self):
         """
-        (TestMultipin) calculate should return False on success when calculating MIL-HDBK-217F parts stress results for insert group B
+        (TestMultipin) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results for insert group B
         """
 
         self.DUT.temperature_active = 30.0
@@ -283,7 +278,7 @@ class TestMultipinModel(unittest.TestCase):
         self.DUT.mate_unmate_cycles = 10
         self.DUT.n_active_contacts = 15
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')
@@ -298,7 +293,7 @@ class TestMultipinModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_insert_c(self):
         """
-        (TestMultipin) calculate should return False on success when calculating MIL-HDBK-217F parts stress results for insert group C
+        (TestMultipin) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results for insert group C
         """
 
         self.DUT.temperature_active = 30.0
@@ -314,7 +309,7 @@ class TestMultipinModel(unittest.TestCase):
         self.DUT.mate_unmate_cycles = 10
         self.DUT.n_active_contacts = 15
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')
@@ -329,7 +324,7 @@ class TestMultipinModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_insert_d(self):
         """
-        (TestMultipin) calculate should return False on success when calculating MIL-HDBK-217F parts stress results for insert group D
+        (TestMultipin) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results for insert group D
         """
 
         self.DUT.temperature_active = 30.0
@@ -345,7 +340,7 @@ class TestMultipinModel(unittest.TestCase):
         self.DUT.mate_unmate_cycles = 10
         self.DUT.n_active_contacts = 15
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')

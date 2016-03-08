@@ -7,7 +7,7 @@ Connection Package Component Specific Work Book View
 
 # -*- coding: utf-8 -*-
 #
-#       hardware.gui.gtk.Connection.py is part of The RTK Project
+#       rtk.hardware.gui.gtk.Connection.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -34,17 +34,16 @@ except ImportError:
 
 # Modules required for plotting.
 import matplotlib
-matplotlib.use('GTK')
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -52,17 +51,42 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
+
+matplotlib.use('GTK')
 
 
 class Inputs(gtk.Frame):
     """
     The Work Book view for displaying all the attributes for a connection.  The
     attributes of a connection Work Book view are:
+
+    :cvar dict dicQuality:
+
+    :ivar list _lst_count_labels:
+    :ivar list _lst_stress_labels:
+    :ivar list _lst_quality:
+    :ivar list _lst_handler_id:
+    :ivar :py:class:`rtk.hardware.connection.Connection.Model` _hardware_model:
+    :ivar int _subcategory:
+    :ivar gtk.ComboBox cmbConfiguration:
+    :ivar gtk.ComboBox cmbConnectionType:
+    :ivar gtk.ComboBox cmbInsert:
+    :ivar gtk.ComboBox cmbQuality:
+    :ivar gtk.ComboBox cmbSpecification:
+    :ivar gtk.ComboBox cmbTechnology:
+    :ivar gtk.Entry txtActiveContacts:
+    :ivar gtk.Entry txtAmpsPerContact:
+    :ivar gtk.Entry txtCommercialPiQ:
+    :ivar gtk.Entry txtContactGauge:
+    :ivar gtk.Entry txtMateCycles:
+    :ivar gtk.Entry txtNumberWave:
+    :ivar gtk.Entry txtNumberHand:
+    :ivar gtk.Entry txtNumberPlanes:
     """
 
     dicQuality = {72: ["", "MIL-SPEC", _(u"Lower")],
@@ -78,42 +102,60 @@ class Inputs(gtk.Frame):
 
     def __init__(self, model):
         """
-        Creates an input frame for the Connection data model.
+        Method to create an input frame for the Connection data model.
 
-        :param :class `rtk.hardware.Connection.model`: the Connection data
-                                                       model whose attributes
-                                                       will be displayed.
+        :param model: the :py:class:`rtk.hardware.connection.Connection.Model`
+                      whose attributes will be displayed.
         """
 
         gtk.Frame.__init__(self)
 
         self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
 
-        # ===== ===== === Initialize private list attributes === ===== ===== #
-        self._lst_labels = [_(u"Quality:"),
-                            _(u"\u03C0<sub>Q</sub> Override:")]
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+        self._lst_count_labels = [_(u"Quality:")]
+        self._lst_stress_labels = [_(u"Quality:"),
+                                   _(u"\u03C0<sub>Q</sub> Override:")]
         self._lst_quality = self.dicQuality[model.subcategory]
 
         self._lst_handler_id = []
 
-        # ===== ===== == Initialize private scalar attributes == ===== ===== #
+        # Define private scalar attributes.
         self._hardware_model = model
         self._subcategory = model.subcategory
 
-        # ===== Create the input widgets common to all Connection types ===== #
-        self.cmbQuality = _widg.make_combo(simple=True)
-        self.txtCommercialPiQ = _widg.make_entry(width=100)
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.cmbConfiguration = Widgets.make_combo(simple=True)
+        self.cmbConnectionType = Widgets.make_combo(simple=True)
+        self.cmbInsert = Widgets.make_combo(simple=True)
+        self.cmbQuality = Widgets.make_combo(simple=True)
+        self.cmbSpecification = Widgets.make_combo(simple=True)
+        self.cmbTechnology = Widgets.make_combo(simple=True)
+        self.txtActiveContacts = Widgets.make_entry(width=100)
+        self.txtAmpsPerContact = Widgets.make_entry(width=100)
+        self.txtCommercialPiQ = Widgets.make_entry(width=100)
+        self.txtContactGauge = Widgets.make_entry(width=100)
+        self.txtMateCycles = Widgets.make_entry(width=100)
+        self.txtNumberWave = Widgets.make_entry(width=100)
+        self.txtNumberHand = Widgets.make_entry(width=100)
+        self.txtNumberPlanes = Widgets.make_entry(width=100)
 
         # Subcategory specific attributes.
         if self._subcategory == 72:         # Multi-pin
-            self._lst_labels.append(_(u"Configuration:"))
-            self._lst_labels.append(_(u"Specification:"))
-            self._lst_labels.append(_(u"Insert Material:"))
-            self._lst_labels.append(_(u"Contact Gauge:"))
-            self._lst_labels.append(_(u"# of Active Pins:"))
-            self._lst_labels.append(_(u"Amperes per Contact:"))
-            self._lst_labels.append(_(u"Mate/Unmate Cycles\n"
-                                      u"(per 1000 hours):"))
+            self._lst_stress_labels.append(_(u"Configuration:"))
+            self._lst_stress_labels.append(_(u"Specification:"))
+            self._lst_stress_labels.append(_(u"Insert Material:"))
+            self._lst_stress_labels.append(_(u"Contact Gauge:"))
+            self._lst_stress_labels.append(_(u"# of Active Pins:"))
+            self._lst_stress_labels.append(_(u"Amperes per Contact:"))
+            self._lst_stress_labels.append(_(u"Mate/Unmate Cycles\n"
+                                             u"(per 1000 hours):"))
 
             self._lst_configuration = ["", _(u"Rack and Panel"),
                                        _(u"Circular"), _(u"Power"),
@@ -171,30 +213,15 @@ class Inputs(gtk.Frame):
                                   9: _lst_B + list(x for x in _lst_C
                                                    if x not in _lst_B)}}
 
-            self.cmbConfiguration = _widg.make_combo(simple=True)
-            self.cmbSpecification = _widg.make_combo(simple=True)
-            self.cmbInsert = _widg.make_combo(simple=True)
-            self.txtContactGauge = _widg.make_entry(width=100)
-            self.txtActiveContacts = _widg.make_entry(width=100)
-            self.txtAmpsPerContact = _widg.make_entry(width=100)
-            self.txtMateCycles = _widg.make_entry(width=100)
-
         elif self._subcategory == 73:       # PCB
-            self._lst_labels.append(_(u"Contact Gauge:"))
-            self._lst_labels.append(_(u"# of Active Pins:"))
-            self._lst_labels.append(_(u"Amperes per Contact:"))
-            self._lst_labels.append(_(u"Mate/Unmate Cycles\n"
-                                      u"(per 1000 hours):"))
-
-            self.txtContactGauge = _widg.make_entry(width=100)
-            self.txtActiveContacts = _widg.make_entry(width=100)
-            self.txtAmpsPerContact = _widg.make_entry(width=100)
-            self.txtMateCycles = _widg.make_entry(width=100)
+            self._lst_stress_labels.append(_(u"Contact Gauge:"))
+            self._lst_stress_labels.append(_(u"# of Active Pins:"))
+            self._lst_stress_labels.append(_(u"Amperes per Contact:"))
+            self._lst_stress_labels.append(_(u"Mate/Unmate Cycles\n"
+                                             u"(per 1000 hours):"))
 
         elif self._subcategory == 74:       # IC Socket
-            self._lst_labels.append(_(u"# of Active Pins:"))
-
-            self.txtActiveContacts = _widg.make_entry(width=100)
+            self._lst_stress_labels.append(_(u"# of Active Pins:"))
 
         elif self._subcategory == 75:       # PTH
             self._lst_technology = ["",
@@ -202,15 +229,10 @@ class Inputs(gtk.Frame):
                                     _(u"Discrete Wiring with Electroless "
                                       u"Deposited PTH")]
 
-            self._lst_labels.append(_(u"Technology:"))
-            self._lst_labels.append(_(u"# of Wave Soldered PTH:"))
-            self._lst_labels.append(_(u"# of Hand Soldered PTH:"))
-            self._lst_labels.append(_(u"# of Circuit Planes:"))
-
-            self.cmbTechnology = _widg.make_combo(simple=True)
-            self.txtNumberWave = _widg.make_entry(width=100)
-            self.txtNumberHand = _widg.make_entry(width=100)
-            self.txtNumberPlanes = _widg.make_entry(width=100)
+            self._lst_stress_labels.append(_(u"Technology:"))
+            self._lst_stress_labels.append(_(u"# of Wave Soldered PTH:"))
+            self._lst_stress_labels.append(_(u"# of Hand Soldered PTH:"))
+            self._lst_stress_labels.append(_(u"# of Circuit Planes:"))
 
         elif self._subcategory == 76:
             self._lst_connections = ["",
@@ -221,13 +243,64 @@ class Inputs(gtk.Frame):
                                      _(u"Clip Termination"),
                                      _(u"Reflow Solder")]
 
-            self._lst_labels.append(_(u"Connection Type:"))
+            self._lst_stress_labels.append(_(u"Connection Type:"))
 
-            self.cmbConnectionType = _widg.make_combo(simple=True)
+        # Create the tooltips for all the input widgets.
+        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
+                                           u"level for the selected "
+                                           u"connection."))
+        self.txtCommercialPiQ.set_tooltip_text(_(u"Displays the user-defined "
+                                                 u"quality factor for the "
+                                                 u"selected connection.  This "
+                                                 u"value over rides the "
+                                                 u"quality factor selected "
+                                                 u"above."))
+
+        # Connect signals to callback functions.
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
+        self._lst_handler_id.append(
+            self.txtCommercialPiQ.connect('focus-out-event',
+                                          self._on_focus_out, 1))
+        self._lst_handler_id.append(
+            self.cmbConfiguration.connect('changed',
+                                          self._on_combo_changed, 2))
+        self._lst_handler_id.append(
+            self.cmbSpecification.connect('changed',
+                                          self._on_combo_changed, 3))
+        self._lst_handler_id.append(
+            self.cmbInsert.connect('changed', self._on_combo_changed, 4))
+        self._lst_handler_id.append(
+            self.txtContactGauge.connect('focus-out-event',
+                                         self._on_focus_out, 5))
+        self._lst_handler_id.append(
+            self.txtActiveContacts.connect('focus-out-event',
+                                           self._on_focus_out, 6))
+        self._lst_handler_id.append(
+            self.txtAmpsPerContact.connect('focus-out-event',
+                                           self._on_focus_out, 7))
+        self._lst_handler_id.append(
+            self.txtMateCycles.connect('focus-out-event',
+                                       self._on_focus_out, 8))
+        self._lst_handler_id.append(
+            self.cmbTechnology.connect('changed', self._on_combo_changed, 9))
+        self._lst_handler_id.append(
+            self.txtNumberWave.connect('focus-out-event',
+                                       self._on_focus_out, 10))
+        self._lst_handler_id.append(
+            self.txtNumberHand.connect('focus-out-event',
+                                       self._on_focus_out, 11))
+        self._lst_handler_id.append(
+            self.txtNumberPlanes.connect('focus-out-event',
+                                         self._on_focus_out, 12))
+        self._lst_handler_id.append(
+            self.cmbConnectionType.connect('changed',
+                                           self._on_combo_changed, 13))
 
     def create_217_count_inputs(self, x_pos=5):
         """
-        Creates the MIL-HDBK-217FN2 part count input widgets for Connections.
+        Method to create the MIL-HDBK-217FN2 parts count input gtk.Widgets()
+        for Connections.
 
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
@@ -255,22 +328,13 @@ class Inputs(gtk.Frame):
             self.cmbQuality.insert_text(i, self._lst_quality[i])
 
         # Create and place all the labels for the inputs.
-        (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels[0], _fixed, 5, 5)
+        (_x_pos,
+         _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
-        # Create the tooltips for all the input widgets.
-        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
-                                           u"level for the selected "
-                                           u"connection."))
-
         # Place all the input widgets.
+        self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
-
-        # Connect signals to callback functions.
-        _index = 0
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, _index))
-        _index += 1
 
         _fixed.show_all()
 
@@ -278,7 +342,8 @@ class Inputs(gtk.Frame):
 
     def create_217_stress_inputs(self, x_pos=5):
         """
-        Creates the MIL-HDBK-217FN2 part stress input widgets for Connections.
+        Method to create the MIL-HDBK-217FN2 part stress input gtk.Widgets()
+        for Connections.
 
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
@@ -306,39 +371,20 @@ class Inputs(gtk.Frame):
             self.cmbQuality.insert_text(i, self._lst_quality[i])
 
         # Create and place all the labels for the inputs.
-        (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels, _fixed, 5, 5)
+        (_x_pos,
+         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
-        # Create the tooltips for all the input widgets.
-        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
-                                           u"level for the selected "
-                                           u"connection."))
-        self.txtCommercialPiQ.set_tooltip_text(_(u"Displays the user-defined "
-                                                 u"quality factor for the "
-                                                 u"selected connection.  This "
-                                                 u"value over rides the "
-                                                 u"quality factor selected "
-                                                 u"above."))
-
         # Place all the input widgets.
+        self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtCommercialPiQ, _x_pos, _y_pos[1])
 
-        # Connect signals to callback functions.
-        _index = 0
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, _index))
-        _index += 1
-        self._lst_handler_id.append(
-            self.txtCommercialPiQ.connect('focus-out-event',
-                                          self._on_focus_out, _index))
-        _index += 1
-
         if self._subcategory == 72:         # Multi-Pin
             # Populate the gtk.ComboBox().
-            for i in range(len(self._lst_configuration)):
-                self.cmbConfiguration.insert_text(i,
-                                                  self._lst_configuration[i])
+            for _index, _configuration in enumerate(self._lst_configuration):
+                self.cmbConfiguration.insert_text(_index, _configuration)
+
             try:
                 _specifications = self._lst_specification[self._hardware_model.configuration - 1]
             except IndexError:
@@ -355,35 +401,6 @@ class Inputs(gtk.Frame):
             _fixed.put(self.txtAmpsPerContact, _x_pos, _y_pos[7])
             _fixed.put(self.txtMateCycles, _x_pos, _y_pos[8])
 
-            # Connect signals to callback functions.
-            self._lst_handler_id.append(
-                self.cmbConfiguration.connect('changed',
-                                              self._on_combo_changed, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.cmbSpecification.connect('changed',
-                                              self._on_combo_changed, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.cmbInsert.connect('changed',
-                                       self._on_combo_changed, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtContactGauge.connect('focus-out-event',
-                                             self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtActiveContacts.connect('focus-out-event',
-                                               self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtAmpsPerContact.connect('focus-out-event',
-                                               self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtMateCycles.connect('focus-out-event',
-                                           self._on_focus_out, _index))
-
         elif self._subcategory == 73:       # PCB
             # Place all the input widgets.
             _fixed.put(self.txtContactGauge, _x_pos, _y_pos[2])
@@ -391,36 +408,14 @@ class Inputs(gtk.Frame):
             _fixed.put(self.txtAmpsPerContact, _x_pos, _y_pos[4])
             _fixed.put(self.txtMateCycles, _x_pos, _y_pos[5])
 
-            # Connect signals to callback functions.
-            self._lst_handler_id.append(
-                self.txtContactGauge.connect('focus-out-event',
-                                             self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtActiveContacts.connect('focus-out-event',
-                                               self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtAmpsPerContact.connect('focus-out-event',
-                                               self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtMateCycles.connect('focus-out-event',
-                                           self._on_focus_out, _index))
-
         elif self._subcategory == 74:       # IC Socket
             # Place the input widgets.
             _fixed.put(self.txtActiveContacts, _x_pos, _y_pos[2])
 
-            # Connect signals to callback functions.
-            self._lst_handler_id.append(
-                self.txtActiveContacts.connect('focus-out-event',
-                                               self._on_focus_out, _index))
-
         elif self._subcategory == 75:       # PTH
             # Load the gtk.ComboBox().
-            for i in range(len(self._lst_technology)):
-                self.cmbTechnology.insert_text(i, self._lst_technology[i])
+            for _index, _technology in enumerate(self._lst_technology):
+                self.cmbTechnology.insert_text(_index, _technology)
 
             # Place the input widgets.
             _fixed.put(self.cmbTechnology, _x_pos, _y_pos[2])
@@ -428,50 +423,45 @@ class Inputs(gtk.Frame):
             _fixed.put(self.txtNumberHand, _x_pos, _y_pos[4])
             _fixed.put(self.txtNumberPlanes, _x_pos, _y_pos[5])
 
-            # Connect signals to callback methods.
-            self._lst_handler_id.append(
-                self.cmbTechnology.connect('changed',
-                                           self._on_combo_changed, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtNumberWave.connect('focus-out-event',
-                                           self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtNumberHand.connect('focus-out-event',
-                                           self._on_focus_out, _index))
-            _index += 1
-            self._lst_handler_id.append(
-                self.txtNumberPlanes.connect('focus-out-event',
-                                             self._on_focus_out, _index))
-
         elif self._subcategory == 76:
             # Load the gtk.ComboBox().
-            for i in range(len(self._lst_connections)):
-                self.cmbConnectionType.insert_text(i, self._lst_connections[i])
+            for _index, _connection in enumerate(self._lst_connections):
+                self.cmbConnectionType.insert_text(_index, _connection)
 
             # Place the input widgets.
             _fixed.put(self.cmbConnectionType, _x_pos, _y_pos[2])
-
-            # Connect signals to callback methods.
-            self._lst_handler_id.append(
-                self.cmbConnectionType.connect('changed',
-                                               self._on_combo_changed, _index))
 
         _fixed.show_all()
 
         return _x_pos
 
-    def load_217_stress_inputs(self, model):
+    def load_217_count_inputs(self, model):
         """
-        Loads the Connection class gtk.Widgets().
+        Method to load the Connection class MIL-HDBK-217FN2 parts count input
+        gtk.Widgets().
 
-        :param model: the Hardware data model to load the attributes from.
+        :param model: the :py:class:`rtk.hardware.connection.Connection.Model`
+                      to load the attributes from.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'G}'
+        self.cmbQuality.set_active(int(model.quality))
+
+        return False
+
+    def load_217_stress_inputs(self, model):
+        """
+        Method to load the Connection class MIL-HDBK-217FN2 part stress input
+        gtk.Widgets().
+
+        :param model: the :py:class:`rtk.hardware.connection.Connection.Model`
+                      to load the attributes from.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'G}'
 
         self.cmbQuality.set_active(int(model.quality))
         self.txtCommercialPiQ.set_text(str(fmt.format(model.q_override)))
@@ -515,8 +505,8 @@ class Inputs(gtk.Frame):
 
     def _on_combo_changed(self, combo, index):
         """
-        Responds to gtk.ComboBox() changed signals and calls the correct
-        function or method, passing any parameters as needed.
+        Method to respond to gtk.ComboBox() 'changed' signals and calls the
+        correct function or method, passing any parameters as needed.
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list oc the callback
@@ -530,19 +520,19 @@ class Inputs(gtk.Frame):
 
         if index == 0:
             self._hardware_model.quality = combo.get_active()
-        elif index == 2 and self._subcategory == 72:
+        elif index == 2:
             self._hardware_model.configuration = combo.get_active()
             self._load_specification(self._hardware_model.configuration)
-        elif index == 2 and self._subcategory == 75:
-            self._hardware_model.technology = combo.get_active()
-        elif index == 2 and self._subcategory == 76:
-            self._hardware_model.connection_type = combo.get_active()
-        elif index == 3 and self._subcategory == 72:
+        elif index == 3:
             self._hardware_model.specification = combo.get_active()
             self._load_insert_material(self._hardware_model.configuration,
                                        self._hardware_model.specification)
-        elif index == 4 and self._subcategory == 72:
+        elif index == 4:
             self._hardware_model.insert_material = combo.get_active()
+        elif index == 9:
+            self._hardware_model.technology = combo.get_active()
+        elif index == 13:
+            self._hardware_model.connection_type = combo.get_active()
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -550,8 +540,8 @@ class Inputs(gtk.Frame):
 
     def _on_focus_out(self, entry, __event, index):
         """
-        Responds to gtk.Entry() focus_out signals and calls the correct
-        function or method, passing any parameters as needed.
+        Method to respond to gtk.Entry() 'focus_out' signals and calls the
+        correct function or method, passing any parameters as needed.
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -567,22 +557,20 @@ class Inputs(gtk.Frame):
 
         if index == 1:
             self._hardware_model.q_override = float(entry.get_text())
-        elif index == 2 and self._subcategory == 74:
-            self._hardware_model.n_active_contacts = int(entry.get_text())
-        elif index == 3 and self._subcategory == 75:
-            self._hardware_model.n_wave_soldered = int(entry.get_text())
-        elif index == 4 and self._subcategory == 75:
-            self._hardware_model.n_hand_soldered = int(entry.get_text())
-        elif index == 5 and self._subcategory == 72:
+        elif index == 5:
             self._hardware_model.contact_gauge = int(entry.get_text())
-        elif index == 5 and self._subcategory == 75:
-            self._hardware_model.n_circuit_planes = int(entry.get_text())
-        elif index == 6 and self._subcategory == 72:
+        elif index == 6:
             self._hardware_model.n_active_contacts = int(entry.get_text())
-        elif index == 7 and self._subcategory == 72:
+        elif index == 7:
             self._hardware_model.amps_per_contact = float(entry.get_text())
-        elif index == 8 and self._subcategory == 72:
+        elif index == 8:
             self._hardware_model.mate_unmate_cycles = float(entry.get_text())
+        elif index == 10:
+            self._hardware_model.n_wave_soldered = int(entry.get_text())
+        elif index == 11:
+            self._hardware_model.n_hand_soldered = int(entry.get_text())
+        elif index == 12:
+            self._hardware_model.n_circuit_planes = int(entry.get_text())
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -653,27 +641,44 @@ class Results(gtk.Frame):
 
     def __init__(self, model):
         """
-        Initializes an instance of the Connection assessment results view.
+        Method to initialize an instance of the Connection assessment results
+        view.
 
-        :param model: the instance of the Connection data model to create the
-                      view for.
+        :param model: the :py:class:`rtk.hardware.connection.Connection.Model`
+                      to create the view for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         gtk.Frame.__init__(self)
 
-        # Initialize private list attributes.
-        self._lst_labels = ['', u"\u03BB<sub>b</sub>:", u"\u03C0<sub>E</sub>:"]
+        # Define private dictionary attributes.
 
-        # ===== ===== == Initialize private scalar attributes == ===== ===== #
+        # Define private list attributes.
+        self._lst_count_labels = [u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>",
+                                  u"\u03BB<sub>g</sub>:",
+                                  u"\u03C0<sub>Q</sub>:"]
+        self._lst_stress_labels = ['', u"\u03BB<sub>b</sub>:",
+                                   u"\u03C0<sub>E</sub>:"]
+
+        # Define private scalar attributes.
         self._hardware_model = model
         self._subcategory = model.subcategory
 
-        # Create the result widgets.
-        self.txtLambdaB = _widg.make_entry(width=100, editable=False,
-                                           bold=True)
-        self.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.txtLambdaB = Widgets.make_entry(width=100, editable=False,
+                                             bold=True)
+        self.txtPiQ = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtPiE = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtPiK = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtPiP = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtPiC = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtInternalTemp = Widgets.make_entry(width=100, editable=False,
+                                                  bold=True)
 
         self.figDerate = Figure(figsize=(6, 4))
         self.axsDerateV = self.figDerate.add_subplot(111)
@@ -682,45 +687,89 @@ class Results(gtk.Frame):
 
         # Subcategory specific attributes.
         if self._subcategory in [72, 73]:   # Multi-pin or PCB
-            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub></span>"
-            self._lst_labels.append(u"\u03C0<sub>K</sub>:")
-            self._lst_labels.append(u"\u03C0<sub>P</sub>:")
-            self._lst_labels.append(u"Internal Contact Temp:")
-
-            self.txtPiK = _widg.make_entry(width=100,
-                                           editable=False, bold=True)
-            self.txtPiP = _widg.make_entry(width=100,
-                                           editable=False, bold=True)
-            self.txtInternalTemp = _widg.make_entry(width=100,
-                                                    editable=False, bold=True)
+            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub>\u03C0<sub>K</sub>\u03C0<sub>P</sub></span>"
+            self._lst_stress_labels.append(u"\u03C0<sub>K</sub>:")
+            self._lst_stress_labels.append(u"\u03C0<sub>P</sub>:")
+            self._lst_stress_labels.append(u"Internal Contact Temp:")
 
         elif self._subcategory == 74:       # IC Socket
-            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub>\u03C0<sub>P</sub></span>"
-            self._lst_labels.append(u"\u03C0<sub>P</sub>:")
-
-            self.txtPiP = _widg.make_entry(width=100, editable=False,
-                                           bold=True)
+            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub>\u03C0<sub>P</sub></span>"
+            self._lst_stress_labels.append(u"\u03C0<sub>P</sub>:")
 
         elif self._subcategory == 75:       # PTH
-            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + N<sub>2</sub>(\u03C0<sub>C</sub> + 13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
-            self._lst_labels.append(u"\u03C0<sub>C</sub>:")
-            self._lst_labels.append(u"\u03C0<sub>Q</sub>:")
-
-            self.txtPiC = _widg.make_entry(width=100, editable=False,
-                                           bold=True)
-            self.txtPiQ = _widg.make_entry(width=100, editable=False,
-                                           bold=True)
+            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>[N<sub>1</sub>\u03C0<sub>C</sub> + N<sub>2</sub>(\u03C0<sub>C</sub> + 13)]\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+            self._lst_stress_labels.append(u"\u03C0<sub>C</sub>:")
+            self._lst_stress_labels.append(u"\u03C0<sub>Q</sub>:")
 
         elif self._subcategory == 76:
-            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
-            self._lst_labels.append(u"\u03C0<sub>Q</sub>:")
+            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+            self._lst_stress_labels.append(u"\u03C0<sub>Q</sub>:")
 
-            self.txtPiQ = _widg.make_entry(width=100, editable=False,
-                                           bold=True)
+        # Create the tooltips for all the results display widgets.
+        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
+                                           u"for the selected connection."))
+        self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for the "
+                                       u"selected connection."))
+        self.txtPiE.set_tooltip_text(_(u"Displays the environment factor for "
+                                       u"the selected connection."))
+        self.txtPiK.set_tooltip_text(_(u"Displays the mating/unmating "
+                                       u"correction factor for the selected "
+                                       u"connection."))
+        self.txtPiP.set_tooltip_text(_(u"Displays the active pins factor for "
+                                       u"the selected connection."))
+        self.txtInternalTemp.set_tooltip_text(_(u"Displays the internal "
+                                                u"contact operating "
+                                                u"temperature for the "
+                                                u"selected connection."))
+        self.txtPiC.set_tooltip_text(_(u"Displays the complexity factor for "
+                                       u"the selected connection."))
+
+    def create_217_count_results(self, x_pos=5):
+        """
+        Method to create the MIL-HDBK-217FN2 parts count result gtk.Widgets()
+        for Connections.
+
+        :keyword int x_pos: the x position of the display widgets.
+        :return: _x_pos: the x-coordinate of the widgets.
+        :rtype: int
+        """
+
+        _label = gtk.Label()
+        _label.set_markup("<span weight='bold'>" +
+                          _(u"MIL-HDBK-217FN2 Parts Count Results") +
+                          "</span>")
+        _label.set_justify(gtk.JUSTIFY_LEFT)
+        _label.set_alignment(xalign=0.5, yalign=0.5)
+        _label.show_all()
+        self.set_label_widget(_label)
+
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+
+        self.add(_scrollwindow)
+
+        # Create and place all the labels for the inputs.
+        (_x_pos,
+         _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 25)
+        _x_pos = max(x_pos, _x_pos) + 30
+
+        # Place the reliability result display widgets.
+        self.txtLambdaB.reparent(_fixed)
+        self.txtPiQ.reparent(_fixed)
+        _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
+        _fixed.put(self.txtPiQ, _x_pos, _y_pos[2])
+
+        _fixed.show_all()
+
+        return _x_pos
 
     def create_217_stress_results(self, x_pos=5):
         """
-        Creates the MIL-HDBK-217FN2 part stress result widgets for Connections.
+        Method to create the MIL-HDBK-217FN2 part stress result gtk.Widgets()
+        for Connections.
 
         :keyword int x_pos: the x position of the display widgets.
         :return: _x_pos: the x-coordinate of the widgets.
@@ -745,70 +794,71 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels, _fixed, 5, 25)
+        (_x_pos,
+         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
 
-        # Create the tooltips for all the results display widgets.
-        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
-                                           u"for the selected connection."))
-        self.txtPiE.set_tooltip_text(_(u"Displays the environement factor for "
-                                       u"the selected connection."))
-
         # Place the reliability result display widgets.
+        self.txtLambdaB.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiE, _x_pos, _y_pos[2])
 
         # Subcategory specific widgets.
         if self._subcategory in [72, 73]:   # Multi-pin or PCB
-            self.txtPiK.set_tooltip_text(_(u"Displays the mating/unmating "
-                                           u"correction factor for the "
-                                           u"selected connection."))
-            self.txtPiP.set_tooltip_text(_(u"Displays the active pins factor "
-                                           u"for the selected connection."))
-            self.txtInternalTemp.set_tooltip_text(_(u"Displays the internal "
-                                                    u"contact operating "
-                                                    u"temperature for the "
-                                                    u"selected connection."))
-
             _fixed.put(self.txtPiK, _x_pos, _y_pos[3])
             _fixed.put(self.txtPiP, _x_pos, _y_pos[4])
             _fixed.put(self.txtInternalTemp, _x_pos, _y_pos[5])
 
         elif self._subcategory == 74:       # IC Socket
-            self.txtPiP.set_tooltip_text(_(u"Displays the effective series "
-                                           u"resistance factor for the "
-                                           u"selected connection."))
             _fixed.put(self.txtPiP, _x_pos, _y_pos[3])
 
         elif self._subcategory == 75:       # PTH
-            self.txtPiC.set_tooltip_text(_(u"Displays the complexity factor "
-                                           u"for the selected connection."))
-            self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for "
-                                           u" the selected connection."))
-
+            self.txtPiQ.reparent(_fixed)
             _fixed.put(self.txtPiC, _x_pos, _y_pos[3])
             _fixed.put(self.txtPiQ, _x_pos, _y_pos[4])
 
         elif self._subcategory == 76:
-            self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for "
-                                           u" the selected connection."))
+            self.txtPiP.set_tooltip_text(_(u"Displays the effective series "
+                                           u"resistance factor for the "
+                                           u"selected connection."))
 
+            self.txtPiQ.reparent(_fixed)
             _fixed.put(self.txtPiQ, _x_pos, _y_pos[3])
 
         _fixed.show_all()
 
         return _x_pos
 
-    def load_217_stress_results(self, model):
+    def load_217_count_results(self, model):
         """
-        Loads the Connection class result gtk.Widgets().
+        Method to load the Connection class MIL-HDBK-217FN2 parts count result
+        gtk.Widgets().
 
-        :param model: the Hardware data model to load the attributes from.
+        :param model: the :py:class:`rtk.hardware.connection.Connection.Model`
+                      to load the attributes from.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'G}'
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'G}'
+
+        self.txtLambdaB.set_text(str(fmt.format(model.base_hr)))
+        self.txtPiQ.set_text(str(fmt.format(model.piQ)))
+
+        return False
+
+    def load_217_stress_results(self, model):
+        """
+        Method to load the Connection class MIL-HDBK-217FN2 part stress result
+        gtk.Widgets().
+
+        :param model: the :py:class:`rtk.hardware.connection.Connection.Model`
+                      to load the attributes from.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'G}'
 
         self.txtLambdaB.set_text(str(fmt.format(model.base_hr)))
         self.txtPiE.set_text(str(fmt.format(model.piE)))
@@ -833,9 +883,10 @@ class Results(gtk.Frame):
 
     def load_derate_plot(self, model, frame):
         """
-        Loads the stress derate plot for the Connection class.
+        Method to load the stress derate plot for the Connection class.
 
-        :param model: the Hardware data model to load the attributes from.
+        :param model: the :py:class:`rtk.hardware.connection.Connection.Model`
+                      to load the attributes from.
         :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -858,6 +909,8 @@ class Results(gtk.Frame):
                                       model.voltage_ratio, 'go')
         _line3 = self.axsDerateI.plot(model.temperature_active,
                                       model.current_ratio, 'ms')
+        _lines = _line0 + _line1 + _line2 + _line3
+
         if(_x[0] != _x[2] and
            model.lst_derate_criteria[1][0] != model.lst_derate_criteria[1][2]):
             self.axsDerateV.axis([0.95 * _x[0], 1.05 * _x[2],
@@ -878,8 +931,7 @@ class Results(gtk.Frame):
         _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                          _(u"Voltage Operating Point"),
                          _(u"Current Operating Point")])
-        _lines = _line0 + _line1 + _line2 + _line3
-        _leg = self.axsDerateV.legend(_lines, _legend, 'upper right',
+        _leg = self.axsDerateV.legend(_lines, _legend, loc='upper right',
                                       shadow=True)
         for _text in _leg.get_texts():
             _text.set_fontsize('small')

@@ -5,10 +5,9 @@ This is the test class for testing Connection module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestConnection.py is part of The RTK Project
+#       tests.unit.TestConnection.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.connection.Connection import Model
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestConnectionModel(unittest.TestCase):
         """
         Setup the test fixture for the Connection class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -290,9 +285,9 @@ class TestConnectionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_attribute_error(self):
         """
-        (TestConnection) calculate should return True when there is an AttributeError.
+        (TestConnection) calculate_part should return True when there is an AttributeError.
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 1
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
