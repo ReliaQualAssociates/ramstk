@@ -5,7 +5,7 @@ This is the test class for testing Assembly module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestAssembly.py is part of The RTK Project
+#       tests.unit.TestAssembly.py is part of The RTK Project
 #
 # All rights reserved.
 

@@ -39,7 +39,7 @@ _ = gettext.gettext
 class Model(object):
     """
     The Function data model contains the attributes and methods of a function.
-    A :class:`rtk.revision.Revision` will consist of one or more Functions.
+    A :py:class:`rtk.revision.Revision` will consist of one or more Functions.
     The attributes of a Function are:
 
     :ivar int revision_id: the ID of the

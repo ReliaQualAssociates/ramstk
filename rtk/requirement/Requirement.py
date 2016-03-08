@@ -408,6 +408,7 @@ class Requirement(object):
                                                             commit=True)
 
             # Add the new Requirement to the requirements analysis table.
+# TODO: Removed this when refactoring REVISION.
             _query = "INSERT INTO rtk_requirement_analysis \
                       (fld_requirement_id) \
                       VALUES ({0:d})".format(_requirement_id)

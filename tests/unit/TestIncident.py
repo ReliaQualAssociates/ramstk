@@ -5,19 +5,17 @@ This is the test class for testing Incident module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.incident.TestIncident.py is part of The RTK Project
+#       tests.unit.TestIncident.py is part of The RTK Project
 #
 # All rights reserved.
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 import numpy as np
 
-import sys
-from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
-
-import dao.DAO as _dao
 from incident.Incident import Model, Incident
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +33,6 @@ class TestIncidentModel(unittest.TestCase):
         """
         Setup the test fixture for the Incident class.
         """
-
-        _database = '/tmp/tempdb.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 

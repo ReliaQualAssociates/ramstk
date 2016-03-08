@@ -599,7 +599,7 @@ def format_cell(__column, cell, model, row, data):
     """
 
     if data[1] == 'gfloat':
-        fmt = '{0:0.' + str(_conf.PLACES) + 'f}'
+        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
     elif data[1] == 'gint':
         fmt = '{0:0.0f}'
     else:
