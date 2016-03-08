@@ -15,10 +15,10 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.component.relay.Relay import Model as Relay
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.component.relay.Relay import Model as Relay
 
 __author__ = 'Andrew Rowland'
@@ -28,7 +28,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -40,13 +40,13 @@ class SolidState(Relay):
     The SolidState Relay data model contains the attributes and methods of a
     SolidState Relay component.  The attributes of a SolidState Relay are:
 
-    :cvar subcategory: default value: 65
+    :cvar int subcategory: default value: 65
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, section 13.2.
+        # MIL-HDBK-217FN2, section 13.2.
     """
 
-    # MIL-HDK-217F hazard rate calculation variables.
+    # MIL-HDBK-217FN2 hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piQ = [1.0, 4.0]
     _lst_piE = [1.0, 3.0, 12.0, 6.0, 17.0, 12.0, 19.0, 21.0, 32.0, 23.0, 0.4,
@@ -61,14 +61,15 @@ class SolidState(Relay):
 
     def __init__(self):
         """
-        Initialize an SolidState Relay data model instance.
+        Method to initialize an Solid State Relay data model instance.
         """
 
         super(SolidState, self).__init__()
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Mechanical Relay data model.
+        Method to calculate the hazard rate for the Mechanical Relay data
+        model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -105,4 +106,4 @@ class SolidState(Relay):
             self.piE = self._lst_piE[self.environment_active - 1]
             self.hazard_rate_model['piE'] = self.piE
 
-        return Relay.calculate(self)
+        return Relay.calculate_part(self)
