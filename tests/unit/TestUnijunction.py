@@ -5,19 +5,17 @@ This is the test class for testing Unijunction module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestUnijunction.py is part of The RTK Project
+#       tests.unit.TestUnijunction.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from hardware.component.semiconductor.transistor.Unijunction import *
+import unittest
+from nose.plugins.attrib import attr
+
+from hardware.component.semiconductor.transistor.Unijunction import Unijunction
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +32,6 @@ class TestUnijunctionModel(unittest.TestCase):
         """
         Setup the test fixture for the Unijunction class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Unijunction()
 
@@ -131,7 +126,7 @@ class TestUnijunctionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestUnijunction) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestUnijunction) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -139,7 +134,7 @@ class TestUnijunctionModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.42)
@@ -149,7 +144,7 @@ class TestUnijunctionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestUnijunction) calculate should return False on success when calculating MIL-HDBK-217F stress results for a Unijunction transistor
+        (TestUnijunction) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a Unijunction transistor
         """
 
         self.DUT.environment_active = 2
@@ -157,7 +152,7 @@ class TestUnijunctionModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.junction_temperature = 32.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.0083)

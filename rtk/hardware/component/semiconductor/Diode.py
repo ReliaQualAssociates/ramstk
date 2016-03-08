@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-#####################################################
-Hardware.Component.Semiconductor Package Diode Module
-#####################################################
+##################################
+Semiconductor Package Diode Module
+##################################
 """
 
 # -*- coding: utf-8 -*-
@@ -16,13 +16,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -46,12 +46,12 @@ class LowFrequency(Semiconductor):
     Low Frequency Diode component.  The attributes of a Low Frequency Diode
     are:
 
-    :cvar subcategory: default value: 12
+    :cvar int subcategory: default value: 12
 
-    :ivar application: default value: 0
-    :ivar construction: default value: 0
-    :ivar piS: default value: 0.0
-    :ivar piC: default value: 0.0
+    :ivar int application: default value: 0
+    :ivar int construction: default value: 0
+    :ivar float piS: default value: 0.0
+    :ivar float piC: default value: 0.0
 
     Hazard Rate Models:
         # MIL-HDBK-217F, section 6.1.
@@ -85,15 +85,23 @@ class LowFrequency(Semiconductor):
 
     def __init__(self):
         """
-        Initialize a Low Frequency Diode data model instance.
+        Method to initialize a Low Frequency Diode data model instance.
         """
 
         super(LowFrequency, self).__init__()
 
-        # Initialize private list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lst_lambdab_count = []
 
-        # Initialize public scalar attributes.
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.application = 0                # Application index.
         self.construction = 0               # Construction index.
         self.piS = 0.0                      # Electrical stress pi factor.
@@ -101,7 +109,7 @@ class LowFrequency(Semiconductor):
 
     def set_attributes(self, values):
         """
-        Sets the Low Frequency Diode data model attributes.
+        Method to set the Low Frequency Diode data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -120,18 +128,18 @@ class LowFrequency(Semiconductor):
             self.piS = float(values[101])
             self.piC = float(values[102])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Low Frequency Diode data model
-        attributes.
+        Method to retrieve the current values of the Low Frequency Diode data
+        model attributes.
 
         :return: (application, construction, piS, piC)
         :rtype: tuple
@@ -144,9 +152,10 @@ class LowFrequency(Semiconductor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Low Frequency Diode data model.
+        Method to calculate the hazard rate for the Low Frequency Diode data
+        model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -169,9 +178,11 @@ class LowFrequency(Semiconductor):
 
             # Set the temperature factor for the model.
             if self.application < 7:
-                self.piT = exp(-3091.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-3091.0 * ((1.0 / (self.junction_temperature +
+                                                  273.0)) - (1.0 / 298.0)))
             else:
-                self.piT = exp(-1925.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-1925.0 * ((1.0 / (self.junction_temperature +
+                                                  273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the voltage stress factor for the model.
@@ -189,12 +200,12 @@ class LowFrequency(Semiconductor):
             self.piC = self._lst_piC[self.construction - 1]
             self.hazard_rate_model['piC'] = self.piC
 
-        return Semiconductor.calculate(self)
+        return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
         """
-        Determines whether the Low Frequency Diode is overstressed based on
-        it's rated values and operating environment.
+        Method to determine whether the Low Frequency Diode is overstressed
+        based on it's rated values and operating environment.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -235,12 +246,12 @@ class HighFrequency(Semiconductor):
     a High Frequency Diode component.  The attributes of a High Frequency Diode
     are:
 
-    :cvar subcategory: default value: 13
+    :cvar int subcategory: default value: 13
 
-    :ivar application: default value: 0
-    :ivar type: default value: 0
-    :ivar piA: default value: 0.0
-    :ivar piR: default value: 0.0
+    :ivar int application: default value: 0
+    :ivar int type: default value: 0
+    :ivar float piA: default value: 0.0
+    :ivar float piR: default value: 0.0
 
     Hazard Rate Models:
         # MIL-HDBK-217F, section 6.2.
@@ -272,7 +283,7 @@ class HighFrequency(Semiconductor):
 
     def __init__(self):
         """
-        Initialize a High Frequency Diode data model instance.
+        Method to initialize a High Frequency Diode data model instance.
         """
 
         super(HighFrequency, self).__init__()
@@ -289,7 +300,7 @@ class HighFrequency(Semiconductor):
 
     def set_attributes(self, values):
         """
-        Sets the High Frequency Diode data model attributes.
+        Method to set the High Frequency Diode data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -308,18 +319,18 @@ class HighFrequency(Semiconductor):
             self.piA = float(values[101])
             self.piR = float(values[102])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the High Frequency Diode data model
-        attributes.
+        Method to retrieve the current values of the High Frequency Diode data
+        model attributes.
 
         :return: (application, type, piA, piR)
         :rtype: tuple
@@ -331,14 +342,15 @@ class HighFrequency(Semiconductor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the High Frequency Diode data model.
+        Method to calculate the hazard rate for the High Frequency Diode data
+        model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 12.
         from math import exp, log
 
         self.hazard_rate_model = {}
@@ -361,9 +373,11 @@ class HighFrequency(Semiconductor):
 
             # Set the temperature factor for the model.
             if self.type == 1:
-                self.piT = exp(-2100.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-2100.0 * ((1.0 / (self.junction_temperature +
+                                                  273.0)) - (1.0 / 298.0)))
             else:
-                self.piT = exp(-5260.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-5260.0 * ((1.0 / (self.junction_temperature +
+                                                  273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the application factor for the model.
@@ -382,18 +396,19 @@ class HighFrequency(Semiconductor):
                 self.piR = 1.0
             self.hazard_rate_model['piR'] = self.piR
 
-        return Semiconductor.calculate(self)
+        return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
         """
-        Determines whether the High Frequency Diode is overstressed based on
-        it's rated values and operating environment.
+        Method to determine whether the High Frequency Diode is overstressed
+        based on it's rated values and operating environment.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _reason_num = 1
+        _reason = ''
         _harsh = True
 
         self.overstress = False
@@ -406,17 +421,19 @@ class HighFrequency(Semiconductor):
         if _harsh:
             if self.operating_power > 0.7 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
+                _reason = _reason + str(_reason_num) + \
                               ". Operating power > 70% rated power.\n"
                 _reason_num += 1
             if self.junction_temperature > 125.0:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
+                _reason = _reason + str(_reason_num) + \
                               ". Junction temperature > 125.0C.\n"
         else:
             if self.operating_power > 0.9 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
+                _reason = _reason + str(_reason_num) + \
                               ". Operating power > 90% rated power.\n"
+
+        self.reason = _reason
 
         return False

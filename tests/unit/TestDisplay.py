@@ -5,18 +5,16 @@ This is the test class for testing Display module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestDisplay.py is part of The RTK Project
+#       tests.unit.TestDisplay.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
+
 from hardware.component.semiconductor.optoelectronic.Display import *
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestDisplayModel(unittest.TestCase):
         """
         Setup the test fixture for the Optoelectronic Display class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Display()
 
@@ -240,14 +235,14 @@ class TestDisplayModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestDisplay) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestDisplay) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.10)
@@ -257,7 +252,7 @@ class TestDisplayModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_no_logic(self):
         """
-        (TestDisplay) calculate should return False on success when calculating MIL-HDBK-217F stress results with no logic chip
+        (TestDisplay) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with no logic chip
         """
 
         self.DUT.environment_active = 2
@@ -270,7 +265,7 @@ class TestDisplayModel(unittest.TestCase):
         self.DUT.construction = 1
         self.DUT.n_characters = 7
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -283,7 +278,7 @@ class TestDisplayModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_with_logic(self):
         """
-        (TestDisplay) calculate should return False on success when calculating MIL-HDBK-217F stress results with a logic chip
+        (TestDisplay) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with a logic chip
         """
 
         self.DUT.environment_active = 2
@@ -296,7 +291,7 @@ class TestDisplayModel(unittest.TestCase):
         self.DUT.construction = 2
         self.DUT.n_characters = 2
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

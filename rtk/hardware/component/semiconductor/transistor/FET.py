@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-##################################################################################
-Hardware.Component.Semiconductor.Transistor Package Field Effect Transistor Module
-##################################################################################
+#################################################
+Transistor Package Field Effect Transistor Module
+#################################################
 """
 
 # -*- coding: utf-8 -*-
@@ -16,13 +16,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -70,7 +70,8 @@ class HFSiFET(Semiconductor):
 
     def __init__(self):
         """
-        Initialize a High Frequency Field Effect Transistor data model instance.
+        Method to initialize a High Frequency Field Effect Transistor data
+        model instance.
         """
 
         super(HFSiFET, self).__init__()
@@ -96,10 +97,10 @@ class HFSiFET(Semiconductor):
         try:
             self.type = int(values[117])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -119,7 +120,7 @@ class HFSiFET(Semiconductor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
         Calculates the hazard rate for the High Frequency Field Effect
         Transistor data model.
@@ -143,10 +144,11 @@ class HFSiFET(Semiconductor):
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
-            self.piT = exp(-1925.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+            self.piT = exp(-1925.0 * ((1.0 / (self.junction_temperature +
+                                              273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
-        return Semiconductor.calculate(self)
+        return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
         """
@@ -158,6 +160,7 @@ class HFSiFET(Semiconductor):
         """
 
         _reason_num = 1
+        _reason = ''
         _harsh = True
 
         self.overstress = False
@@ -170,30 +173,32 @@ class HFSiFET(Semiconductor):
         if _harsh:
             if self.operating_power > 0.70 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 70% rated power.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating power > 70% rated power.\n"
                 _reason_num += 1
             if self.operating_voltage > 0.75 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 70% rated voltage.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating voltage > 70% rated voltage.\n"
                 _reason_num += 1
             if self.junction_temperature > 125.0:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Junction temperature > 125.0C.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Junction temperature > 125.0C.\n"
                 _reason_num += 1
         else:
             if self.operating_power > 0.90 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 90% rated power.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating power > 90% rated power.\n"
                 _reason_num += 1
             if self.operating_voltage > 0.90 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 90% rated voltage.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating voltage > 90% rated voltage.\n"
                 _reason_num += 1
+
+        self.reason = _reason
 
         return False
 
@@ -262,10 +267,10 @@ class LFSiFET(Semiconductor):
             self.type = int(values[118])
             self.piA = float(values[101])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -285,7 +290,7 @@ class LFSiFET(Semiconductor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
         Calculates the hazard rate for the Low Frequency Silicon FET
         Transistor data model.
@@ -293,7 +298,7 @@ class LFSiFET(Semiconductor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 11.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -309,7 +314,8 @@ class LFSiFET(Semiconductor):
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
-            self.piT = exp(-1925.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+            self.piT = exp(-1925.0 * ((1.0 / (self.junction_temperature +
+                                              273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the application factor for the model.
@@ -324,11 +330,11 @@ class LFSiFET(Semiconductor):
                 self.piA = 4.0
             elif self.rated_power >= 50.0 and self.rated_power < 250.0:
                 self.piA = 8.0
-            elif self.rated_power >= 250.0: # pragma: no cover
+            elif self.rated_power >= 250.0:
                 self.piA = 10.0
             self.hazard_rate_model['piA'] = self.piA
 
-        return Semiconductor.calculate(self)
+        return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
         """
@@ -340,6 +346,7 @@ class LFSiFET(Semiconductor):
         """
 
         _reason_num = 1
+        _reason = ''
         _harsh = True
 
         self.overstress = False
@@ -352,30 +359,32 @@ class LFSiFET(Semiconductor):
         if _harsh:
             if self.operating_power > 0.70 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 70% rated power.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating power > 70% rated power.\n"
                 _reason_num += 1
             if self.operating_voltage > 0.75 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 70% rated voltage.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating voltage > 70% rated voltage.\n"
                 _reason_num += 1
             if self.junction_temperature > 125.0:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Junction temperature > 125.0C.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Junction temperature > 125.0C.\n"
                 _reason_num += 1
         else:
             if self.operating_power > 0.90 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 90% rated power.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating power > 90% rated power.\n"
                 _reason_num += 1
             if self.operating_voltage > 0.90 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 90% rated voltage.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating voltage > 90% rated voltage.\n"
                 _reason_num += 1
+
+        self.reason = _reason
 
         return False
 
@@ -418,8 +427,8 @@ class HFGaAsFET(Semiconductor):
 
     def __init__(self):
         """
-        Initialize a High Frequency GaAs Field Effect Transistor data model
-        instance.
+        Method to initialize a High Frequency GaAs Field Effect Transistor data
+        model instance.
         """
 
         super(HFGaAsFET, self).__init__()
@@ -436,8 +445,8 @@ class HFGaAsFET(Semiconductor):
 
     def set_attributes(self, values):
         """
-        Sets the High Frequency GaAs Field Effect Transistor data model
-        attributes.
+        Method to set the High Frequency GaAs Field Effect Transistor data
+        model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -457,18 +466,18 @@ class HFGaAsFET(Semiconductor):
             self.piA = float(values[102])
             self.piM = float(values[103])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the High Frequency GaAs FET data model
-        attributes.
+        Method to retrieve the current values of the High Frequency GaAs FET
+        data model attributes.
 
         :return: (application, matching, frequency, piA, piM)
         :rtype: tuple
@@ -481,9 +490,10 @@ class HFGaAsFET(Semiconductor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the High Frequency GaAs FET data model.
+        Method to calculate the hazard rate for the High Frequency GaAs FET
+        data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -512,7 +522,8 @@ class HFGaAsFET(Semiconductor):
 
             # Set the temperature factor for the model.
 # TODO: Adjust equation to account for CR voltages as in MIL-HDBK-217F.
-            self.piT = 0.1 * exp(-4485.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+            self.piT = 0.1 * exp(-4485.0 * ((1.0 / (self.junction_temperature +
+                                                    273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the power rating factor for the model.
@@ -526,18 +537,20 @@ class HFGaAsFET(Semiconductor):
             self.piM = self._lst_piM[self.matching - 1]
             self.hazard_rate_model['piM'] = self.piM
 
-        return Semiconductor.calculate(self)
+        return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
         """
-        Determines whether the High Frequency GaAs Field Effect Transistor is
-        overstressed based on it's rated values and operating environment.
+        Method to determine whether the High Frequency GaAs Field Effect
+        Transistor is overstressed based on it's rated values and operating
+        environment.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _reason_num = 1
+        _reason = ''
         _harsh = True
 
         self.overstress = False
@@ -550,29 +563,31 @@ class HFGaAsFET(Semiconductor):
         if _harsh:
             if self.operating_power > 0.70 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 70% rated power.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating power > 70% rated power.\n"
                 _reason_num += 1
             if self.operating_voltage > 0.70 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 70% rated voltage.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating voltage > 70% rated voltage.\n"
                 _reason_num += 1
             if self.junction_temperature > 135.0:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Junction temperature > 125.0C.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Junction temperature > 125.0C.\n"
                 _reason_num += 1
         else:
             if self.operating_power > 0.90 * self.rated_power:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 90% rated power.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating power > 90% rated power.\n"
                 _reason_num += 1
             if self.operating_voltage > 0.90 * self.rated_voltage:
                 self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 90% rated voltage.\n"
+                _reason = _reason + str(_reason_num) + \
+                          ". Operating voltage > 90% rated voltage.\n"
                 _reason_num += 1
+
+        self.reason = _reason
 
         return False

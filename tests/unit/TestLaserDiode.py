@@ -5,18 +5,16 @@ This is the test class for testing Laser Diode module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestLaserDiode.py is part of The RTK Project
+#       tests.unit.TestLaserDiode.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
+
 from hardware.component.semiconductor.optoelectronic.LaserDiode import *
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestLaserDiodeModel(unittest.TestCase):
         """
         Setup the test fixture for the Optoelectronic Laser Diode class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = LaserDiode()
 
@@ -247,7 +242,7 @@ class TestLaserDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_gaas(self):
         """
-        (TestLaserDiode) calculate should return False on success when calculating MIL-HDBK-217F parts count results for a GaAs laser
+        (TestLaserDiode) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results for a GaAs laser
         """
 
         self.DUT.quality = 1
@@ -255,7 +250,7 @@ class TestLaserDiodeModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 110.0)
@@ -265,7 +260,7 @@ class TestLaserDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_ingaas(self):
         """
-        (TestLaserDiode) calculate should return False on success when calculating MIL-HDBK-217F parts count results for an InGaAs laser
+        (TestLaserDiode) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results for an InGaAs laser
         """
 
         self.DUT.quality = 1
@@ -273,7 +268,7 @@ class TestLaserDiodeModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 2
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 190.0)
@@ -283,7 +278,7 @@ class TestLaserDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_gaas(self):
         """
-        (TestLaserDiode) calculate should return False on success when calculating MIL-HDBK-217F stress results
+        (TestLaserDiode) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -295,7 +290,7 @@ class TestLaserDiodeModel(unittest.TestCase):
         self.DUT.application = 1
         self.DUT.required_power = 15.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piQ * piI * piA * piP * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 3.23)
@@ -310,7 +305,7 @@ class TestLaserDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_ingaas(self):
         """
-        (TestLaserDiode) calculate should return False on success when calculating MIL-HDBK-217F stress results
+        (TestLaserDiode) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -322,7 +317,7 @@ class TestLaserDiodeModel(unittest.TestCase):
         self.DUT.application = 1
         self.DUT.required_power = 15.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piQ * piI * piA * piP * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 5.65)

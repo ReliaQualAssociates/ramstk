@@ -5,19 +5,19 @@ This is the test class for testing BiPolar module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestLFBipolar.py is part of The RTK Project
+#       tests.unit.TestBipolar.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from hardware.component.semiconductor.transistor.Bipolar import *
+import unittest
+from nose.plugins.attrib import attr
+
+from hardware.component.semiconductor.transistor.Bipolar import HFHPBipolar, \
+                                                                HFLNBipolar, \
+                                                                LFBipolar
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +34,6 @@ class TestLFBipolarModel(unittest.TestCase):
         """
         Setup the test fixture for the BiPolar class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = LFBipolar()
 
@@ -277,7 +274,7 @@ class TestLFBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_low_power(self):
         """
-        (TestLFBipolar) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestLFBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -285,7 +282,7 @@ class TestLFBipolarModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.rated_power = 0.075
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.0037)
@@ -295,7 +292,7 @@ class TestLFBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_high_power(self):
         """
-        (TestLFBipolar) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestLFBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -303,7 +300,7 @@ class TestLFBipolarModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.rated_power = 0.75
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.15)
@@ -313,7 +310,7 @@ class TestLFBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_power(self):
         """
-        (TestLFBipolar) calculate should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
+        (TestLFBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
         """
 
         self.DUT.environment_active = 2
@@ -325,7 +322,7 @@ class TestLFBipolarModel(unittest.TestCase):
         self.DUT.junction_temperature = 32.0
         self.DUT.application = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piA * piR * piS * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.00074)
@@ -340,7 +337,7 @@ class TestLFBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_power(self):
         """
-        (TestLFBipolar) calculate should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
+        (TestLFBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
         """
 
         self.DUT.environment_active = 2
@@ -352,7 +349,7 @@ class TestLFBipolarModel(unittest.TestCase):
         self.DUT.junction_temperature = 32.0
         self.DUT.application = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piA * piR * piS * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.00074)
@@ -375,9 +372,6 @@ class TestHFLNBipolarModel(unittest.TestCase):
         """
         Setup the test fixture for the BiPolar class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = HFLNBipolar()
 
@@ -609,14 +603,14 @@ class TestHFLNBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestHFLNBipolar) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestHFLNBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 1.4)
@@ -626,7 +620,7 @@ class TestHFLNBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_power(self):
         """
-        (TestHFLNBipolar) calculate should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
+        (TestHFLNBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
         """
 
         self.DUT.environment_active = 2
@@ -637,7 +631,7 @@ class TestHFLNBipolarModel(unittest.TestCase):
         self.DUT.rated_voltage = 33.0
         self.DUT.junction_temperature = 32.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piR * piS * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.18)
@@ -651,7 +645,7 @@ class TestHFLNBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_power(self):
         """
-        (TestHFLNBipolar) calculate should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
+        (TestHFLNBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a low power transistor
         """
 
         self.DUT.environment_active = 2
@@ -662,7 +656,7 @@ class TestHFLNBipolarModel(unittest.TestCase):
         self.DUT.rated_voltage = 33.0
         self.DUT.junction_temperature = 32.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piR * piS * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.18)
@@ -684,9 +678,6 @@ class TestHFHPBipolarModel(unittest.TestCase):
         """
         Setup the test fixture for the BiPolar class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = HFHPBipolar()
 
@@ -927,14 +918,14 @@ class TestHFHPBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestHFHPBipolar) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestHFHPBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.81)
@@ -944,7 +935,7 @@ class TestHFHPBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_continuous(self):
         """
-        (TestHFHPBipolar) calculate should return False on success when calculating MIL-HDBK-217F stress results for a continuous duty transistor
+        (TestHFHPBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a continuous duty transistor
         """
 
         self.DUT.environment_active = 2
@@ -957,7 +948,7 @@ class TestHFHPBipolarModel(unittest.TestCase):
         self.DUT.matching = 1
         self.DUT.frequency = 1.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piA * piM * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -972,7 +963,7 @@ class TestHFHPBipolarModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_pulsed(self):
         """
-        (TestHFHPBipolar) calculate should return False on success when calculating MIL-HDBK-217F stress results for a pulsed transistor
+        (TestHFHPBipolar) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a pulsed transistor
         """
 
         self.DUT.environment_active = 2
@@ -986,7 +977,7 @@ class TestHFHPBipolarModel(unittest.TestCase):
         self.DUT.matching = 2
         self.DUT.frequency = 1.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piA * piM * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

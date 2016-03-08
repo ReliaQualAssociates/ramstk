@@ -5,7 +5,7 @@ This is the test class for testing Semiconductor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestSemiconductor.py is part of The RTK Project
+#       tests.unit.TestSemiconductor.py is part of The RTK Project
 #
 # All rights reserved.
 

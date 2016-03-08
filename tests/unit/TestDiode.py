@@ -5,24 +5,22 @@ This is the test class for testing Diode module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestDiode.py is part of The RTK Project
+#       tests.unit.TestDiode.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from hardware.component.semiconductor.Diode import *
+import unittest
+from nose.plugins.attrib import attr
+
+from hardware.component.semiconductor.Diode import HighFrequency, LowFrequency
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2015 - 2016 Andrew "weibullguy" Rowland'
 
 
 class TestLowFrequencyDiodeModel(unittest.TestCase):
@@ -34,9 +32,6 @@ class TestLowFrequencyDiodeModel(unittest.TestCase):
         """
         Setup the test fixture for the Low Frequency Diode class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = LowFrequency()
 
@@ -274,7 +269,7 @@ class TestLowFrequencyDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestLowFrequencyDiode) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestLowFrequencyDiode) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -282,7 +277,7 @@ class TestLowFrequencyDiodeModel(unittest.TestCase):
         self.DUT.application = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.027)
@@ -292,7 +287,7 @@ class TestLowFrequencyDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestLowFrequencyDiode) calculate should return False on success when calculating MIL-HDBK-217F stress results
+        (TestLowFrequencyDiode) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -304,7 +299,7 @@ class TestLowFrequencyDiodeModel(unittest.TestCase):
         self.DUT.application = 2
         self.DUT.construction = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piS * piC * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -326,9 +321,6 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
         """
         Setup the test fixture for the High Frequency Diode class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = HighFrequency()
 
@@ -565,7 +557,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestHighFrequencyDiode) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestHighFrequencyDiode) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -574,7 +566,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 4.6)
@@ -584,7 +576,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_schottky(self):
         """
-        (TestHighFrequencyDiode) calculate should return False on success when calculating MIL-HDBK-217F parts count results for a Schottky diode
+        (TestHighFrequencyDiode) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results for a Schottky diode
         """
 
         self.DUT.quality = 1
@@ -593,7 +585,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.68)
@@ -603,7 +595,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestHighFrequencyDiode) calculate should return False on success when calculating MIL-HDBK-217F stress results
+        (TestHighFrequencyDiode) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -615,7 +607,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
         self.DUT.application = 7
         self.DUT.type = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piA * piR * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -630,7 +622,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_impatt(self):
         """
-        (TestHighFrequencyDiode) calculate should return False on success when calculating MIL-HDBK-217F stress results for an IMPATT diode
+        (TestHighFrequencyDiode) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for an IMPATT diode
         """
 
         self.DUT.environment_active = 2
@@ -642,7 +634,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
         self.DUT.application = 7
         self.DUT.type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piA * piR * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -657,7 +649,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_pin(self):
         """
-        (TestHighFrequencyDiode) calculate should return False on success when calculating MIL-HDBK-217F stress results for a PIN diode
+        (TestHighFrequencyDiode) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a PIN diode
         """
 
         self.DUT.environment_active = 2
@@ -670,7 +662,7 @@ class TestHighFrequencyDiodeModel(unittest.TestCase):
         self.DUT.application = 4
         self.DUT.type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piA * piR * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'],
