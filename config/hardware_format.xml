@@ -823,7 +823,7 @@ experience. -->
         <column>
             <defaulttitle>Total Power Dissipation</defaulttitle>
             <usertitle>Total Power Dissipation</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>89</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -851,7 +851,7 @@ experience. -->
         <column>
             <defaulttitle>Junction Temperature</defaulttitle>
             <usertitle>Junction Temperature</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>92</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -860,7 +860,7 @@ experience. -->
         <column>
             <defaulttitle>Knee Temperature</defaulttitle>
             <usertitle>Knee Temperature</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>93</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -869,7 +869,7 @@ experience. -->
         <column>
             <defaulttitle>Thermal Resistance</defaulttitle>
             <usertitle>Thermal Resistance</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>94</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -878,7 +878,7 @@ experience. -->
         <column>
             <defaulttitle>Reference Temperature</defaulttitle>
             <usertitle>Reference Temperature</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gfloat</datatype>
             <position>95</position>
             <widget>text</widget>
             <editable>0</editable>

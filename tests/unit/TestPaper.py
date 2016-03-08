@@ -5,10 +5,9 @@ This is the test class for testing Paper capacitor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestPaper.py is part of The RTK Project
+#       tests.unit.TestPaper.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.capacitor.fixed.Paper import Bypass, Feedthrough, Metallized
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestPaperBypassModel(unittest.TestCase):
         """
         Setup the test fixture for the Capacitor class.
         """
-
-        _database = '/tmp/tempdb.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Bypass()
 
@@ -219,7 +214,7 @@ class TestPaperBypassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_low_temp(self):
         """
-        (TestPaperBypass) calculate should return False on success when calculating MIL-HDBK-217F parts count results for the 85C specification
+        (TestPaperBypass) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results for the 85C specification
         """
 
         self.DUT.quality = 1
@@ -227,7 +222,7 @@ class TestPaperBypassModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.07)
@@ -237,7 +232,7 @@ class TestPaperBypassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_high_temp(self):
         """
-        (TestPaperBypass) calculate should return False on success when calculating MIL-HDBK-217F parts count results for the 125C specification
+        (TestPaperBypass) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results for the 125C specification
         """
 
         self.DUT.quality = 1
@@ -245,7 +240,7 @@ class TestPaperBypassModel(unittest.TestCase):
         self.DUT.specification = 1
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.055)
@@ -255,7 +250,7 @@ class TestPaperBypassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestPaperBypass) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestPaperBypass) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -267,7 +262,7 @@ class TestPaperBypassModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -280,7 +275,7 @@ class TestPaperBypassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestPaperBypass) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestPaperBypass) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -292,7 +287,7 @@ class TestPaperBypassModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -305,7 +300,7 @@ class TestPaperBypassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestPaperBypass) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestPaperBypass) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -317,12 +312,12 @@ class TestPaperBypassModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestPaperBypass) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestPaperBypass) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -334,7 +329,7 @@ class TestPaperBypassModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestPaperFeedthroughModel(unittest.TestCase):
@@ -346,9 +341,6 @@ class TestPaperFeedthroughModel(unittest.TestCase):
         """
         Setup the test fixture for the Paper, Feedthrough capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Feedthrough()
 
@@ -524,14 +516,14 @@ class TestPaperFeedthroughModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPaperFeedthrough) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPaperFeedthrough) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.073)
@@ -541,7 +533,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestPaperFeedthrough) calculate should return False on success when calculating MIL-HDBK-217F stress results for 85C specification
+        (TestPaperFeedthrough) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -552,7 +544,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.max_rated_temperature = 85.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -565,7 +557,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_temp(self):
         """
-        (TestPaperFeedthrough) calculate should return False on success when calculating MIL-HDBK-217F stress results for 125C specification
+        (TestPaperFeedthrough) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -576,7 +568,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 398.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -589,7 +581,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestPaperFeedthrough) calculate should return False on success when calculating MIL-HDBK-217F stress results for 150C specification
+        (TestPaperFeedthrough) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for 150C specification
         """
 
         self.DUT.environment_active = 2
@@ -600,7 +592,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 423.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -613,7 +605,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestPaperFeedthrough) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestPaperFeedthrough) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -624,12 +616,12 @@ class TestPaperFeedthroughModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestPaperFeedthrough) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestPaperFeedthrough) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -640,7 +632,7 @@ class TestPaperFeedthroughModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestPaperMetallizedModel(unittest.TestCase):
@@ -652,9 +644,6 @@ class TestPaperMetallizedModel(unittest.TestCase):
         """
         Setup the test fixture for the Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Metallized()
 
@@ -833,7 +822,7 @@ class TestPaperMetallizedModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPaperMetallized) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPaperMetallized) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -841,7 +830,7 @@ class TestPaperMetallizedModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.041)
@@ -851,7 +840,7 @@ class TestPaperMetallizedModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestPaperMetallized) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestPaperMetallized) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -863,7 +852,7 @@ class TestPaperMetallizedModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -876,7 +865,7 @@ class TestPaperMetallizedModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestPaperMetallized) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestPaperMetallized) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -888,7 +877,7 @@ class TestPaperMetallizedModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -901,7 +890,7 @@ class TestPaperMetallizedModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestPaperMetallized) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestPaperMetallized) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -913,12 +902,12 @@ class TestPaperMetallizedModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestPaperMetallized) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestPaperMetallized) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -930,4 +919,4 @@ class TestPaperMetallizedModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

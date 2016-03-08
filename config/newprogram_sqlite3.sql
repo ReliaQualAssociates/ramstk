@@ -395,7 +395,7 @@ CREATE TABLE "rtk_reliability" (
     "fld_hazard_rate_mission" REAL DEFAULT(0),                      -- Mission hazard rate.
     "fld_hazard_rate_model" VARCHAR(512) DEFAULT(''),               -- Hazard rate mathematical model.
     "fld_hazard_rate_percent" REAL DEFAULT(0),                      -- Percent of system hazard rate attributable to this hardware item.
-    "fld_hazard_rate_sftwr" REAL DEFAULT(0),                        -- Software hazard rate.
+    "fld_hazard_rate_software" REAL DEFAULT(0),                     -- Software hazard rate.
     "fld_hazard_rate_specified" REAL DEFAULT(0),                    -- Specified hazard rate.
     "fld_hazard_rate_type" INTEGER DEFAULT(1),                      -- How the hazard rate is determined (1=Assessed, 2=Specified, Failure Rate, 3=Specified, MTBF)
     "fld_hr_active_variance" REAL DEFAULT(0),                       -- Variance of the active hazard rate estimate.

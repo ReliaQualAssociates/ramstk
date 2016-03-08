@@ -5,7 +5,7 @@ This is the test class for testing Capacitor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestCapacitor.py is part of The RTK Project
+#       tests.unit.TestCapacitor.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -273,19 +273,19 @@ class TestCapacitorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_overflow_error(self):
         """
-        (TestCapacitor) calculate should return True when there is an OverflowError.
+        (TestCapacitor) calculate_part should return True when there is an OverflowError.
         """
 
         self.DUT.hazard_rate_type = 2
         self.DUT.operating_voltage = 1.25
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_attribute_error(self):
         """
-        (TestCapacitor) calculate should return True when there is an AttributeError.
+        (TestCapacitor) calculate_part should return True when there is an AttributeError.
         """
 
         self.DUT.hazard_rate_type = 2
@@ -293,4 +293,4 @@ class TestCapacitorModel(unittest.TestCase):
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
         self.DUT.reference_temperature = 358.0
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

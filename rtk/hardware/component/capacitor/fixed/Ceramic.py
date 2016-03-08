@@ -16,10 +16,10 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
 __author__ = 'Andrew Rowland'
@@ -29,7 +29,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,13 +42,15 @@ class Chip(Capacitor):
     of a ceramic chip capacitor.  The attributes of a ceramic chip capacitor
     are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 40
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 40
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-20 and MIL-C-55681.
 
@@ -70,7 +72,7 @@ class Chip(Capacitor):
 
     def __init__(self):
         """
-        Initialize a Ceramic Chip capacitor data model instance.
+        Method to initialize a Ceramic Chip capacitor data model instance.
         """
 
         super(Chip, self).__init__()
@@ -81,9 +83,9 @@ class Chip(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Ceramic Chip capacitor data
+        Method to calculate the hazard rate for the Ceramic Chip capacitor data
         model.
 
         :return: False if successful or True if an error is encountered.
@@ -115,7 +117,7 @@ class Chip(Capacitor):
             self.piCV = 0.59 * (self.capacitance * 1000000.0)**0.12
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)
 
 
 class General(Capacitor):
@@ -124,13 +126,15 @@ class General(Capacitor):
     methods of a general ceramic capacitor.  The attributes of a general
     ceramic capacitor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 41
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 49
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-11015 and MIL-C-39014.
 
@@ -152,7 +156,7 @@ class General(Capacitor):
 
     def __init__(self):
         """
-        Initialize a General Ceramic capacitor data model instance.
+        Method to initialize a General Ceramic capacitor data model instance.
         """
 
         super(General, self).__init__()
@@ -160,13 +164,13 @@ class General(Capacitor):
         # Initialize public scalar attributes.
         self.specificaiton = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
             self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Fixed Paper Feedthrough capacitor
-        data model.
+        Method to calculate the hazard rate for the Fixed Paper Feedthrough
+        capacitor data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -197,4 +201,4 @@ class General(Capacitor):
             self.piCV = 0.41 * (self.capacitance * 1000000.0)**0.11
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)

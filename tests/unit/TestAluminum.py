@@ -5,10 +5,9 @@ This is the test class for testing Aluminum capacitor module algorithms and mode
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestAluminum.py is part of The RTK Project
+#       tests.unit.TestAluminum.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.capacitor.electrolytic.Aluminum import Dry, Wet
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestDryAluminumModel(unittest.TestCase):
         """
         Setup the test fixture for the Capacitor class.
         """
-
-        _database = '/tmp/tempdb.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Dry()
 
@@ -198,14 +193,14 @@ class TestDryAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestDryAluminum) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestDryAluminum) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.operating_voltage = 1.25
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 28.0)
@@ -215,7 +210,7 @@ class TestDryAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestDryAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results
+        (TestDryAluminum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -228,7 +223,7 @@ class TestDryAluminumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -241,7 +236,7 @@ class TestDryAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestDryAluminum) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestDryAluminum) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -252,12 +247,12 @@ class TestDryAluminumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestDryAluminum) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestDryAluminum) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -268,7 +263,7 @@ class TestDryAluminumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestWetAluminumModel(unittest.TestCase):
@@ -280,9 +275,6 @@ class TestWetAluminumModel(unittest.TestCase):
         """
         Setup the test fixture for the Wet Aluminum capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Wet()
 
@@ -443,7 +435,7 @@ class TestWetAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestWetAluminum) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.hazard_rate_type = 1
@@ -451,7 +443,7 @@ class TestWetAluminumModel(unittest.TestCase):
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 21.0)
@@ -461,7 +453,7 @@ class TestWetAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestWetAluminum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -474,7 +466,7 @@ class TestWetAluminumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -487,7 +479,7 @@ class TestWetAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_temp(self):
         """
-        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestWetAluminum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -500,7 +492,7 @@ class TestWetAluminumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -513,7 +505,7 @@ class TestWetAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestWetAluminum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 150C specification
+        (TestWetAluminum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 150C specification
         """
 
         self.DUT.environment_active = 2
@@ -526,7 +518,7 @@ class TestWetAluminumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -539,7 +531,7 @@ class TestWetAluminumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestWetAluminum) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestWetAluminum) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -550,12 +542,12 @@ class TestWetAluminumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestWetAluminum) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestWetAluminum) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -566,4 +558,4 @@ class TestWetAluminumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

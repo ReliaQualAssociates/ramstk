@@ -16,10 +16,10 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
 __author__ = 'Andrew Rowland'
@@ -29,7 +29,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -41,13 +41,15 @@ class Glass(Capacitor):
     The Glass capacitor data model contains the attributes and methods of a
     glass capacitor.  The attributes of a glass capacitor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: the subcategory ID in the RTK common database.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: the subcategory ID in the RTK common database.
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-11272 and MIL-C-23269.
 
@@ -69,7 +71,7 @@ class Glass(Capacitor):
 
     def __init__(self):
         """
-        Initialize a Ceramic Chip capacitor data model instance.
+        Method to initialize a Ceramic Chip capacitor data model instance.
         """
 
         super(Glass, self).__init__()
@@ -77,12 +79,12 @@ class Glass(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
             self.reference_temperature = 398.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Ceramic Chip capacitor data
+        Method to calculate the hazard rate for the Ceramic Chip capacitor data
         model.
 
         :return: False if successful or True if an error is encountered.
@@ -114,4 +116,4 @@ class Glass(Capacitor):
             self.piCV = 0.62 * (self.capacitance * 1000000.0)**0.14
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)

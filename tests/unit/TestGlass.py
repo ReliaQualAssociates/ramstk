@@ -5,10 +5,9 @@ This is the test class for testing Glass capacitor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestGlass.py is part of The RTK Project
+#       tests.unit.TestGlass.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.capacitor.fixed.Glass import Glass
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestGlassModel(unittest.TestCase):
         """
         Setup the test fixture for the Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Glass()
 
@@ -217,7 +212,7 @@ class TestGlassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestGlass) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestGlass) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -225,7 +220,7 @@ class TestGlassModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.0094)
@@ -235,7 +230,7 @@ class TestGlassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestGlass) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestGlass) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -247,7 +242,7 @@ class TestGlassModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -260,7 +255,7 @@ class TestGlassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestGlass) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestGlass) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -272,7 +267,7 @@ class TestGlassModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -285,7 +280,7 @@ class TestGlassModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestGlass) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestGlass) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -297,12 +292,12 @@ class TestGlassModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestGlass) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestGlass) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -314,4 +309,4 @@ class TestGlassModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

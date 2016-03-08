@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-#################################################################
-Hardware.Component.Capacitor.Electrolytic Package Aluminum Module
-#################################################################
+#############################################
+Hardware Package Electrolytic Aluminum Module
+#############################################
 """
 
 # -*- coding: utf-8 -*-
@@ -11,15 +11,14 @@ Hardware.Component.Capacitor.Electrolytic Package Aluminum Module
 #       the RTK Project
 #
 # All rights reserved.
-
 import gettext
 import locale
 
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
 __author__ = 'Andrew Rowland'
@@ -29,7 +28,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -64,7 +63,8 @@ class Dry(Capacitor):
 
     def __init__(self):
         """
-        Initialize a dry aluminum electrolytic capacitor data model instance.
+        Method to initialize a dry aluminum electrolytic capacitor data model
+        instance.
         """
 
         super(Dry, self).__init__()
@@ -73,9 +73,10 @@ class Dry(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Dry Aluminum capacitor data model.
+        Method to calculate the hazard rate for the Dry Aluminum capacitor data
+        model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -99,14 +100,14 @@ class Dry(Capacitor):
                     exp(4.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5.9)
             except(OverflowError, ZeroDivisionError):
-                # TODO: Handle overflow error.
+                # TODO: Handle overflow and zer division errors.
                 return True
 
             # Capacitance correction factor.
             self.piCV = 0.34 * (self.capacitance * 1000000.0)**0.18
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)
 
 
 class Wet(Capacitor):
@@ -135,13 +136,14 @@ class Wet(Capacitor):
 
     def __init__(self):
         """
-        Initializes the Wet Aluminum Electrolytic Capacitor Component Class.
+        Method to initialize the Wet Aluminum Electrolytic Capacitor Component
+        Class.
         """
 
         super(Wet, self).__init__()
 
-        # Initialize public scalar attributes.
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        # Define public scalar attributes.
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
             if self.max_rated_temperature == 105.0:
                 self.reference_temperature = 378.0
             elif self.max_rated_temperature == 125.0:
@@ -149,9 +151,10 @@ class Wet(Capacitor):
             else:
                 self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Wet Aluminum capacitor data model.
+        Method to calculate the hazard rate for the Wet Aluminum capacitor data
+        model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -175,11 +178,11 @@ class Wet(Capacitor):
                     exp(5.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5)
             except(OverflowError, ZeroDivisionError):
-                # TODO: Handle overflow error.
+                # TODO: Handle overflow and zer division errors.
                 return True
 
             # Capacitance correction factor.
             self.piCV = 0.34 * (self.capacitance * 1000000.0)**0.18
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)

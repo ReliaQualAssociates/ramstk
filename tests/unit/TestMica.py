@@ -5,10 +5,9 @@ This is the test class for testing Mica capacitor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestMica.py is part of The RTK Project
+#       tests.unit.TestMica.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.capacitor.fixed.Mica import Button, Mica
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestMicaButtonModel(unittest.TestCase):
         """
         Setup the test fixture for the Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Button()
 
@@ -214,7 +209,7 @@ class TestMicaButtonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestMicaButton) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestMicaButton) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -222,7 +217,7 @@ class TestMicaButtonModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.31)
@@ -232,7 +227,7 @@ class TestMicaButtonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestMicaButton) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestMicaButton) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -244,7 +239,7 @@ class TestMicaButtonModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -257,7 +252,7 @@ class TestMicaButtonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestMicaButton) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestMicaButton) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -269,7 +264,7 @@ class TestMicaButtonModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -282,7 +277,7 @@ class TestMicaButtonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestMicaButton) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestMicaButton) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -294,12 +289,12 @@ class TestMicaButtonModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestMicaButton) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestMicaButton) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -311,7 +306,7 @@ class TestMicaButtonModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestMicaMicaModel(unittest.TestCase):
@@ -323,9 +318,6 @@ class TestMicaMicaModel(unittest.TestCase):
         """
         Setup the test fixture for the Mica Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Mica()
 
@@ -505,7 +497,7 @@ class TestMicaMicaModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestMicaMica) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestMicaMica) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -513,7 +505,7 @@ class TestMicaMicaModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.014)
@@ -523,7 +515,7 @@ class TestMicaMicaModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestMicaMica) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 70C specification
+        (TestMicaMica) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 70C specification
         """
 
         self.DUT.environment_active = 2
@@ -535,7 +527,7 @@ class TestMicaMicaModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -548,7 +540,7 @@ class TestMicaMicaModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid1_temp(self):
         """
-        (TestMicaMica) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestMicaMica) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -560,7 +552,7 @@ class TestMicaMicaModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -573,7 +565,7 @@ class TestMicaMicaModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid2_temp(self):
         """
-        (TestMicaMica) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestMicaMica) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -585,7 +577,7 @@ class TestMicaMicaModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -598,7 +590,7 @@ class TestMicaMicaModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestMicaMica) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 150C specification
+        (TestMicaMica) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 150C specification
         """
 
         self.DUT.environment_active = 2
@@ -610,7 +602,7 @@ class TestMicaMicaModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -623,7 +615,7 @@ class TestMicaMicaModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestMicaMica) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestMicaMica) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -635,12 +627,12 @@ class TestMicaMicaModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestMicaMica) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestMicaMica) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -652,4 +644,4 @@ class TestMicaMicaModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

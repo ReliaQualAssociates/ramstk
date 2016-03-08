@@ -16,10 +16,10 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
 __author__ = 'Andrew Rowland'
@@ -29,7 +29,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,18 +42,20 @@ class Film(Capacitor):
     of a plastic film capacitor.  The attributes of a plastic film capacitor
     are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: the subcategory ID in the RTK common database.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: the subcategory ID in the RTK common database.
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-14157 and MIL-C-19978.
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, section 10.3
+        # MIL-HDBK-217FN2, section 10.3
     """
 
     # MIL-HDK-217F hazard rate calculation variables.
@@ -70,7 +72,7 @@ class Film(Capacitor):
 
     def __init__(self):
         """
-        Initialize a Plastic Film capacitor data model instance.
+        Method to initialize a Plastic Film capacitor data model instance.
         """
 
         super(Film, self).__init__()
@@ -78,12 +80,12 @@ class Film(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
             self.reference_temperature = 338.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Plastic Film capacitor data
+        Method to calculate the hazard rate for the Plastic Film capacitor data
         model.
 
         :return: False if successful or True if an error is encountered.
@@ -118,7 +120,7 @@ class Film(Capacitor):
                 self.piCV = 1.3 * (self.capacitance * 1000000.0)**0.077
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)
 
 
 class Plastic(Capacitor):
@@ -126,13 +128,15 @@ class Plastic(Capacitor):
     The Plastic capacitor data model contains the attributes and methods of
     a plastic capacitor.  The attributes of a plastic capacitor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: the subcategory ID in the RTK common database.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: the subcategory ID in the RTK common database.
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-55514.
 
@@ -154,7 +158,7 @@ class Plastic(Capacitor):
 
     def __init__(self):
         """
-        Initialize a Plastic capacitor data model instance.
+        Method to initialize a Plastic capacitor data model instance.
         """
 
         super(Plastic, self).__init__()
@@ -162,12 +166,12 @@ class Plastic(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
             self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Ceramic Chip capacitor data
+        Method to calculate the hazard rate for the Ceramic Chip capacitor data
         model.
 
         :return: False if successful or True if an error is encountered.
@@ -199,7 +203,7 @@ class Plastic(Capacitor):
             self.piCV = 1.1 * (self.capacitance * 1000000.0)**0.085
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)
 
 
 class SuperMetallized(Capacitor):
@@ -208,13 +212,15 @@ class SuperMetallized(Capacitor):
     and methods of a super-metallized plastic capacitor.  The attributes of a
     super-metallized plastic capacitor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: the subcategory ID in the RTK common database.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: the subcategory ID in the RTK common database.
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-83421.
 
@@ -236,7 +242,8 @@ class SuperMetallized(Capacitor):
 
     def __init__(self):
         """
-        Initialize a Super-Metallized Plastic capacitor data model instance.
+        Method to initialize a Super-Metallized Plastic capacitor data model
+        instance.
         """
 
         super(SuperMetallized, self).__init__()
@@ -244,12 +251,12 @@ class SuperMetallized(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
             self.reference_temperature = 398.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Ceramic Chip capacitor data
+        Method to calculate the hazard rate for the Ceramic Chip capacitor data
         model.
 
         :return: False if successful or True if an error is encountered.
@@ -281,4 +288,4 @@ class SuperMetallized(Capacitor):
             self.piCV = 1.2 * (self.capacitance * 1000000.0)**0.092
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)

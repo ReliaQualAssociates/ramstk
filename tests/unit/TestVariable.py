@@ -5,19 +5,19 @@ This is the test class for testing Variable capacitor module algorithms and mode
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestVariable.py is part of The RTK Project
+#       tests.unit.TestVariable.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from hardware.component.capacitor.variable.Variable import *
+import unittest
+from nose.plugins.attrib import attr
+
+from hardware.component.capacitor.variable.Variable import AirTrimmer, \
+                                                           Ceramic, Piston, \
+                                                           Vacuum
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +34,6 @@ class TestAirTrimmerModel(unittest.TestCase):
         """
         Setup the test fixture for the Variable Air Trimmer Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = AirTrimmer()
 
@@ -213,7 +210,7 @@ class TestAirTrimmerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestAirTrimmer) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestAirTrimmer) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -221,7 +218,7 @@ class TestAirTrimmerModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 3.0)
@@ -231,7 +228,7 @@ class TestAirTrimmerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestAirTrimmer) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 65C specification
+        (TestAirTrimmer) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 65C specification
         """
 
         self.DUT.environment_active = 2
@@ -244,7 +241,7 @@ class TestAirTrimmerModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -256,7 +253,7 @@ class TestAirTrimmerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestAirTrimmer) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestAirTrimmer) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -268,12 +265,12 @@ class TestAirTrimmerModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestAirTrimmer) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestAirTrimmer) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -285,7 +282,7 @@ class TestAirTrimmerModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestVariableCeramicModel(unittest.TestCase):
@@ -297,9 +294,6 @@ class TestVariableCeramicModel(unittest.TestCase):
         """
         Setup the test fixture for the Variable Ceramic Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Ceramic()
 
@@ -476,7 +470,7 @@ class TestVariableCeramicModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestVariableCeramic) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestVariableCeramic) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -484,7 +478,7 @@ class TestVariableCeramicModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 2.3)
@@ -494,7 +488,7 @@ class TestVariableCeramicModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestVariableCeramic) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestVariableCeramic) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -506,7 +500,7 @@ class TestVariableCeramicModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -518,7 +512,7 @@ class TestVariableCeramicModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestVariableCeramic) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestVariableCeramic) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -530,7 +524,7 @@ class TestVariableCeramicModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -542,7 +536,7 @@ class TestVariableCeramicModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestVariableCeramic) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestVariableCeramic) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -554,12 +548,12 @@ class TestVariableCeramicModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestVariableCeramic) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestVariableCeramic) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -571,7 +565,7 @@ class TestVariableCeramicModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestVariablePistonModel(unittest.TestCase):
@@ -583,9 +577,6 @@ class TestVariablePistonModel(unittest.TestCase):
         """
         Setup the test fixture for the Variable Piston Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Piston()
 
@@ -763,7 +754,7 @@ class TestVariablePistonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestVariablePiston) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestVariablePiston) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -771,7 +762,7 @@ class TestVariablePistonModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.93)
@@ -781,7 +772,7 @@ class TestVariablePistonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestVariablePiston) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestVariablePiston) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -793,7 +784,7 @@ class TestVariablePistonModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -805,7 +796,7 @@ class TestVariablePistonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestVariablePiston) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestVariablePiston) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -817,7 +808,7 @@ class TestVariablePistonModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -829,7 +820,7 @@ class TestVariablePistonModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestVariablePiston) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestVariablePiston) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -841,12 +832,12 @@ class TestVariablePistonModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestVariablePiston) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestVariablePiston) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -858,7 +849,7 @@ class TestVariablePistonModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestVariableVacuumModel(unittest.TestCase):
@@ -870,9 +861,6 @@ class TestVariableVacuumModel(unittest.TestCase):
         """
         Setup the test fixture for the Variable Vacuum Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Vacuum()
 
@@ -1055,7 +1043,7 @@ class TestVariableVacuumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestVariableVacuum) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestVariableVacuum) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.configuration = 1
@@ -1064,7 +1052,7 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 13.0)
@@ -1074,7 +1062,7 @@ class TestVariableVacuumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp_fixed(self):
         """
-        (TestVariableVacuum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the fixed 85C specification
+        (TestVariableVacuum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the fixed 85C specification
         """
 
         self.DUT.configuration = 1
@@ -1087,7 +1075,7 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCF')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1100,7 +1088,7 @@ class TestVariableVacuumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp_fixed(self):
         """
-        (TestVariableVacuum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the fixed 125C specification
+        (TestVariableVacuum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the fixed 125C specification
         """
 
         self.DUT.configuration = 1
@@ -1113,7 +1101,7 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCF')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1126,7 +1114,7 @@ class TestVariableVacuumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_variable(self):
         """
-        (TestVariableVacuum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the variable capacitor
+        (TestVariableVacuum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the variable capacitor
         """
 
         self.DUT.configuration = 2
@@ -1139,7 +1127,7 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCF')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1152,7 +1140,7 @@ class TestVariableVacuumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestVariableVacuum) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestVariableVacuum) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -1164,12 +1152,12 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestVariableVacuum) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestVariableVacuum) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -1181,4 +1169,4 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

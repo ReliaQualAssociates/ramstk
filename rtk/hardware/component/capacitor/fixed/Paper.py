@@ -16,10 +16,10 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
 __author__ = 'Andrew Rowland'
@@ -29,7 +29,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,13 +42,15 @@ class Bypass(Capacitor):
     methods of a fixed paper bypass capacitor.  The attributes of a fixed paper
     bypass  capacitor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 40
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 40
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-25 and MIL-C-12889.
 
@@ -72,7 +74,8 @@ class Bypass(Capacitor):
 
     def __init__(self):
         """
-        Initialize a fixed paper bypass capacitor data model instance.
+        Method to initialize a fixed paper bypass capacitor data model
+        instance.
         """
 
         super(Bypass, self).__init__()
@@ -83,10 +86,10 @@ class Bypass(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Fixed Paper Bypass capacitor data
-        model.
+        Method to calculate the hazard rate for the Fixed Paper Bypass
+        capacitor data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -118,7 +121,7 @@ class Bypass(Capacitor):
             self.piCV = 1.2 * (self.capacitance * 1000000.0)**0.095
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)
 
 
 class Feedthrough(Capacitor):
@@ -127,13 +130,15 @@ class Feedthrough(Capacitor):
     and methods of a fixed paper feedthrough capacitor.  The attributes of a
     fixed paper feedthrough capacitor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 41
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 41
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specification MIL-C-11693.
 
@@ -155,7 +160,8 @@ class Feedthrough(Capacitor):
 
     def __init__(self):
         """
-        Initialize a fixed paper feedthrough capacitor data model instance.
+        Method to initialize a fixed paper feedthrough capacitor data model
+        instance.
         """
 
         super(Feedthrough, self).__init__()
@@ -165,10 +171,10 @@ class Feedthrough(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Fixed Paper Feedthrough capacitor
-        data model.
+        Method to calculate the hazard rate for the Fixed Paper Feedthrough
+        capacitor data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -199,7 +205,7 @@ class Feedthrough(Capacitor):
             self.piCV = 1.4 * (self.capacitance * 1000000.0)**0.12
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)
 
 
 class Metallized(Capacitor):
@@ -208,13 +214,15 @@ class Metallized(Capacitor):
     and methods of a fixed metallized paper capacitor.  The attributes of a
     fixed metallized paper capacitor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ: list of quality factor values.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 41
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ: list of MIL-HDBK-217FN2 quality factor values.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 41
 
-    :ivar specification: default value: 0
-    :ivar spec_sheet: default value: 0
+    :ivar int specification: default value: 0
+    :ivar int spec_sheet: default value: 0
 
     Covers specifications MIL-C-18312 and MIL-C-39022.
 
@@ -236,7 +244,8 @@ class Metallized(Capacitor):
 
     def __init__(self):
         """
-        Initialize a fixed metallized paper capacitor data model instance.
+        Method to initialize a fixed metallized paper capacitor data model
+        instance.
         """
 
         super(Metallized, self).__init__()
@@ -246,10 +255,10 @@ class Metallized(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Fixed Metallized Paper capacitor
-        data model.
+        Method to calculates the hazard rate for the Fixed Metallized Paper
+        capacitor data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -280,4 +289,4 @@ class Metallized(Capacitor):
             self.piCV = 1.2 * (self.capacitance * 1000000.0)**0.092
             self.hazard_rate_model['piCV'] = self.piCV
 
-        return Capacitor.calculate(self)
+        return Capacitor.calculate_part(self)

@@ -5,10 +5,9 @@ This is the test class for testing Plastic capacitor module algorithms and model
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestPlastic.py is part of The RTK Project
+#       tests.unit.TestPlastic.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.capacitor.fixed.Plastic import *
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestPlasticFilmModel(unittest.TestCase):
         """
         Setup the test fixture for the Plastic Film Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Film()
 
@@ -214,7 +209,7 @@ class TestPlasticFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPlasticFilm) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPlasticFilm) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -222,7 +217,7 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.030)
@@ -232,7 +227,7 @@ class TestPlasticFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestPlasticFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 65C specification
+        (TestPlasticFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 65C specification
         """
 
         self.DUT.environment_active = 2
@@ -245,7 +240,7 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -258,7 +253,7 @@ class TestPlasticFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp_CQR(self):
         """
-        (TestPlasticFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 65C CQR specification
+        (TestPlasticFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 65C CQR specification
         """
 
         self.DUT.environment_active = 2
@@ -271,7 +266,7 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -284,7 +279,7 @@ class TestPlasticFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid1_temp(self):
         """
-        (TestPlasticFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestPlasticFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -297,7 +292,7 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -310,7 +305,7 @@ class TestPlasticFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid2_temp(self):
         """
-        (TestPlasticFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestPlasticFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -323,7 +318,7 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -336,7 +331,7 @@ class TestPlasticFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestPlasticFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 170C specification
+        (TestPlasticFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 170C specification
         """
 
         self.DUT.environment_active = 2
@@ -349,7 +344,7 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -362,7 +357,7 @@ class TestPlasticFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestPlasticFilm) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestPlasticFilm) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -374,12 +369,12 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestPlasticFilm) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestPlasticFilm) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -391,7 +386,7 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestPlasticPlasticModel(unittest.TestCase):
@@ -403,9 +398,6 @@ class TestPlasticPlasticModel(unittest.TestCase):
         """
         Setup the test fixture for the Plastic Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Plastic()
 
@@ -583,7 +575,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPlasticPlastic) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPlasticPlastic) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -591,7 +583,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.067)
@@ -601,7 +593,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
-        (TestPlasticPlastic) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestPlasticPlastic) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -613,7 +605,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -626,7 +618,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
-        (TestPlasticPlastic) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+        (TestPlasticPlastic) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
         """
 
         self.DUT.environment_active = 2
@@ -638,7 +630,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -651,7 +643,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestPlasticPlastic) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestPlasticPlastic) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -663,12 +655,12 @@ class TestPlasticPlasticModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestPlasticPlastic) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestPlasticPlastic) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -680,7 +672,7 @@ class TestPlasticPlasticModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestSuperMetallizedPlasticModel(unittest.TestCase):
@@ -692,9 +684,6 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
         """
         Setup the test fixture for the Super-Metallized Plastic Capacitor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = SuperMetallized()
 
@@ -873,7 +862,7 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestSuperMetallizedPlastic) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestSuperMetallizedPlastic) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -881,7 +870,7 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.033)
@@ -891,7 +880,7 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestSuperMetallizedPlastic) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+        (TestSuperMetallizedPlastic) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
         """
 
         self.DUT.environment_active = 2
@@ -903,7 +892,7 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -916,7 +905,7 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestSuperMetallizedPlastic) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestSuperMetallizedPlastic) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -928,12 +917,12 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
-        (TestSuperMetallizedPlastic) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+        (TestSuperMetallizedPlastic) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -945,4 +934,4 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
