@@ -5,10 +5,9 @@ This is the test class for testing Transformer module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestTransformer.py is part of The RTK Project
+#       tests.unit.TestTransformer.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,8 +15,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from hardware.component.inductor.Transformer import *
+from hardware.component.inductor.Transformer import Transformer
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +32,6 @@ class TestTransformerModel(unittest.TestCase):
         """
         Setup the test fixture for the Transformer class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Transformer()
 
@@ -221,14 +216,14 @@ class TestTransformerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestTransformer) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestTransformer) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
         self.DUT.family = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -239,7 +234,7 @@ class TestTransformerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_pl_sa(self):
         """
-        (TestTransformer) calculate should return False on success when calculating MIL-HDBK-217F parts stress results using power loss and surface area to calculate hot spot temperature
+        (TestTransformer) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results using power loss and surface area to calculate hot spot temperature
         """
 
         self.DUT.environment_active = 2
@@ -252,7 +247,7 @@ class TestTransformerModel(unittest.TestCase):
         self.DUT.power_loss = 2.25
         self.DUT.case_area = 11.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertAlmostEqual(self.DUT.hot_spot_temperature, 58.125)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -266,7 +261,7 @@ class TestTransformerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_pl_wt(self):
         """
-        (TestTransformer) calculate should return False on success when calculating MIL-HDBK-217F parts stress results using power loss and weight to calculate hot spot temperature
+        (TestTransformer) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results using power loss and weight to calculate hot spot temperature
         """
 
         self.DUT.environment_active = 2
@@ -279,7 +274,7 @@ class TestTransformerModel(unittest.TestCase):
         self.DUT.power_loss = 2.25
         self.DUT.weight = 0.25
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertAlmostEqual(self.DUT.hot_spot_temperature, 102.7154730)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -293,7 +288,7 @@ class TestTransformerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_wt_ip(self):
         """
-        (TestTransformer) calculate should return False on success when calculating MIL-HDBK-217F parts stress results using weight and input power to calculate hot spot temperature
+        (TestTransformer) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results using weight and input power to calculate hot spot temperature
         """
 
         self.DUT.environment_active = 2
@@ -306,7 +301,7 @@ class TestTransformerModel(unittest.TestCase):
         self.DUT.weight = 0.25
         self.DUT.input_power = 3.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertAlmostEqual(self.DUT.hot_spot_temperature, 47.7046369)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -320,7 +315,7 @@ class TestTransformerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_class_4(self):
         """
-        (TestTransformer) calculate should return False on success when calculating MIL-HDBK-217F parts stress results for insulation class 4
+        (TestTransformer) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results for insulation class 4
         """
 
         self.DUT.environment_active = 2
@@ -333,7 +328,7 @@ class TestTransformerModel(unittest.TestCase):
         self.DUT.power_loss = 2.25
         self.DUT.case_area = 11.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertAlmostEqual(self.DUT.hot_spot_temperature, 58.125)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -347,7 +342,7 @@ class TestTransformerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_class_5(self):
         """
-        (TestTransformer) calculate should return False on success when calculating MIL-HDBK-217F parts stress results for insulation class 5
+        (TestTransformer) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results for insulation class 5
         """
 
         self.DUT.environment_active = 2
@@ -360,7 +355,7 @@ class TestTransformerModel(unittest.TestCase):
         self.DUT.power_loss = 2.25
         self.DUT.weight = 0.25
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertAlmostEqual(self.DUT.hot_spot_temperature, 102.7154730)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -374,7 +369,7 @@ class TestTransformerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_class_6(self):
         """
-        (TestTransformer) calculate should return False on success when calculating MIL-HDBK-217F parts stress results for insulation class 6
+        (TestTransformer) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results for insulation class 6
         """
 
         self.DUT.environment_active = 2
@@ -387,7 +382,7 @@ class TestTransformerModel(unittest.TestCase):
         self.DUT.weight = 0.25
         self.DUT.input_power = 3.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertAlmostEqual(self.DUT.hot_spot_temperature, 47.7046369)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
