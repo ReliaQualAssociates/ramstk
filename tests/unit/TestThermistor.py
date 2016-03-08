@@ -5,18 +5,16 @@ This is the test class for testing Thermistor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestThermistor.py is part of The RTK Project
+#       tests.unit.TestThermistor.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
+
 from hardware.component.resistor.variable.Thermistor import *
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestThermistorModel(unittest.TestCase):
         """
         Setup the test fixture for the Thermistor resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Thermistor()
 
@@ -167,14 +162,14 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 1.6)
@@ -184,7 +179,7 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_bead(self):
         """
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F stress results for a bead thermistor
+        (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a bead thermistor
         """
 
         self.DUT.environment_active = 2
@@ -192,7 +187,7 @@ class TestThermistorModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.021)
@@ -203,7 +198,7 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_disk(self):
         """
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F stress results for a disk thermistor
+        (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a disk thermistor
         """
 
         self.DUT.environment_active = 2
@@ -211,7 +206,7 @@ class TestThermistorModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.type = 2
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.065)
@@ -222,7 +217,7 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_rod(self):
         """
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F stress results for a rod thermistor
+        (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a rod thermistor
         """
 
         self.DUT.environment_active = 2
@@ -230,7 +225,7 @@ class TestThermistorModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.type = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.105)

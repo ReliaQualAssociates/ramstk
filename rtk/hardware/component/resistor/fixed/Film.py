@@ -16,12 +16,12 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.resistor.Resistor import Model as Resistor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
 
 __author__ = 'Andrew Rowland'
@@ -31,7 +31,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -43,16 +43,18 @@ class Film(Resistor):
     The Carbon Film resistor data model contains the attributes and methods of
     a Carbon Film resistor.  The attributes of a carbon film resistor are:
 
-    :cvar _lst_piR: list of resistance factor values.
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 26
+    :cvar list _lst_piR: list of MIL-HDBK-217FN2 resistance factor values.
+    :cvar list _lst_piE: list of environment factor values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 26
 
-    :ivar specification: default value: 0
+    :ivar int specification: the index of the MIL-SPEC/MIL-PRF covering the
+                             resistor.
 
     Covers specifications MIL-R-10509, MIL-R-22684, MIL-R-39017, and
     MIL-R-55182.
@@ -82,7 +84,7 @@ class Film(Resistor):
 
     def __init__(self):
         """
-        Initialize a Carbon Film resistor data model instance.
+        Method to initialize a Carbon Film resistor data model instance.
         """
 
         super(Film, self).__init__()
@@ -93,7 +95,7 @@ class Film(Resistor):
 
     def set_attributes(self, values):
         """
-        Sets the carbon Film network resistor data model attributes.
+        Method to set the carbon Film network resistor data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -109,17 +111,18 @@ class Film(Resistor):
         try:
             self.specification = int(values[117])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Resistor data model attributes.
+        Method to retrieve the current values of the Resistor data model
+        attributes.
 
         :return: (specification)
         :rtype: tuple
@@ -131,9 +134,10 @@ class Film(Resistor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Carbon Film resistor data model.
+        Method to calculate the hazard rate for the Carbon Film resistor data
+        model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -154,13 +158,17 @@ class Film(Resistor):
                 if self.specification < 3:
                     self.base_hr = \
                         3.25E-4 * \
-                        exp(((self.temperature_active + 273.0) / 343.0)**3.0) * \
-                        exp(_stress * ((self.temperature_active + 273.0) / 273.0))
+                        exp(((self.temperature_active + 273.0) /
+                             343.0)**3.0) * \
+                        exp(_stress * ((self.temperature_active + 273.0) /
+                                       273.0))
                 elif self.specification > 2:
                     self.base_hr = \
                         5.0E-5 * \
-                        exp(3.5 * ((self.temperature_active + 273.0) / 343.0)) * \
-                        exp(_stress * ((self.temperature_active + 273.0) / 273.0))
+                        exp(3.5 * ((self.temperature_active + 273.0) /
+                                   343.0)) * \
+                        exp(_stress * ((self.temperature_active + 273.0) /
+                                       273.0))
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -177,7 +185,7 @@ class Film(Resistor):
                 self.piR = 2.5
             self.hazard_rate_model['piR'] = self.piR
 
-        return Resistor.calculate(self)
+        return Resistor.calculate_part(self)
 
 
 class FilmPower(Resistor):
@@ -186,14 +194,15 @@ class FilmPower(Resistor):
     methods of a Carbon Film power resistor.  The attributes of a carbon film
     power resistor are:
 
-    :cvar _lst_piR: list of resistance factor values.
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 27
+    :cvar list _lst_piR: list of resistance factor values.
+    :cvar list _lst_piE: list of environment factor values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 27
 
     Covers specifications MIL-R-11804.
 
@@ -216,15 +225,15 @@ class FilmPower(Resistor):
 
     def __init__(self):
         """
-        Initialize a Carbon Film power resistor data model instance.
+        Method to initialize a Carbon Film power resistor data model instance.
         """
 
         super(FilmPower, self).__init__()
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Carbon Film power resistor data
-        model.
+        Method to calculate the hazard rate for the Carbon Film power resistor
+        data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -242,8 +251,10 @@ class FilmPower(Resistor):
             try:
                 self.base_hr = \
                     7.33E-3 * \
-                    exp(0.202 * ((self.temperature_active + 273.0) / 298.0)**2.6) * \
-                    exp((_stress / 1.45) * ((self.temperature_active + 273.0) / 273.0)**0.89)
+                    exp(0.202 * ((self.temperature_active + 273.0) /
+                                 298.0)**2.6) * \
+                    exp((_stress / 1.45) * ((self.temperature_active + 273.0) /
+                                            273.0)**0.89)
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -260,7 +271,7 @@ class FilmPower(Resistor):
                 self.piR = 3.5
             self.hazard_rate_model['piR'] = self.piR
 
-        return Resistor.calculate(self)
+        return Resistor.calculate_part(self)
 
 
 class FilmNetwork(Resistor):
@@ -269,13 +280,15 @@ class FilmNetwork(Resistor):
     methods of a Carbon Film network resistor.  The attributes of a carbon film
     network resistor are:
 
-    :cvar _lst_piR: list of resistance factor values.
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
+    :cvar list _lst_piR: list of MIL-HDBK-217FN2 resistance factor values.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
     :cvar subcategory: default value: 28
 
     Covers specifications MIL-R-83401.
@@ -298,7 +311,8 @@ class FilmNetwork(Resistor):
 
     def __init__(self):
         """
-        Initialize a Carbon Film network resistor data model instance.
+        Method to initialize a Carbon Film network resistor data model
+        instance.
         """
 
         super(FilmNetwork, self).__init__()
@@ -309,7 +323,7 @@ class FilmNetwork(Resistor):
 
     def set_attributes(self, values):
         """
-        Sets the Carbon Film network resistor data model attributes.
+        Method to set the Carbon Film network resistor data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -327,18 +341,18 @@ class FilmNetwork(Resistor):
             self.piT = float(values[102])
             self.piNR = int(values[103])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Carbon Film network resistor data
-        model attributes.
+        Method to retrieve the current values of the Carbon Film network
+        resistor data model attributes.
 
         :return: (n_resistors, piT, piNR)
         :rtype: tuple
@@ -350,10 +364,10 @@ class FilmNetwork(Resistor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Carbon Film network resistor data
-        model.
+        Method to calculate the hazard rate for the Carbon Film network
+        resistor data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -375,11 +389,12 @@ class FilmNetwork(Resistor):
                 _stress = self.operating_power / self.rated_power
                 self.junction_temperature = self.temperature_active + \
                                             55.0 * _stress
-            self.piT = exp(-4056.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+            self.piT = exp(-4056.0 * ((1.0 / (self.junction_temperature +
+                                              273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Number of resistors factor.
             self.piNR = float(self.n_resistors)
             self.hazard_rate_model['piNR'] = self.piNR
 
-        return Resistor.calculate(self)
+        return Resistor.calculate_part(self)

@@ -16,10 +16,10 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.component.resistor.Resistor import Model as Resistor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
 
 __author__ = 'Andrew Rowland'
@@ -29,7 +29,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,14 +42,15 @@ class Composition(Resistor):
     methods of a Carbon Composition resistor.  The attributes of a carbon
     composition resistor are:
 
-    :cvar _lst_piR: list of resistance factor values.
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 25
+    :cvar list _lst_piR: list of resistance factor values.
+    :cvar list _lst_piE: list of environment factor values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for
+                                   MIL-HDBK-217FN2 parts count.
+    :cvar int subcategory: default value: 25
 
     Covers specifications MIL-R-11 and MIL-R-39008.
 
@@ -73,15 +74,15 @@ class Composition(Resistor):
 
     def __init__(self):
         """
-        Initialize a Carbon Composition resistor data model instance.
+        Method to initialize a Carbon Composition resistor data model instance.
         """
 
         super(Composition, self).__init__()
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Carbon Composition resistor data
-        model.
+        Method to calculate the hazard rate for the Carbon Composition resistor
+        data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -100,7 +101,8 @@ class Composition(Resistor):
                 self.hazard_rate_model['lambdab'] = \
                     4.5E-9 * \
                     exp(12.0 * ((self.temperature_active + 273.0) / 343.0)) * \
-                    exp((_stress / 0.6) * ((self.temperature_active + 273.0) / 273.0))
+                    exp((_stress / 0.6) * ((self.temperature_active +
+                                            273.0) / 273.0))
             except OverflowError:
                 # TODO: Handle overflow error.
                 return True
@@ -116,4 +118,4 @@ class Composition(Resistor):
                 self.piR = 2.5
             self.hazard_rate_model['piR'] = self.piR
 
-        return Resistor.calculate(self)
+        return Resistor.calculate_part(self)

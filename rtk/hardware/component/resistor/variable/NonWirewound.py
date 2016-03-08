@@ -16,12 +16,12 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.resistor.Resistor import Model as Resistor
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
 
 __author__ = 'Andrew Rowland'
@@ -31,7 +31,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -44,17 +44,19 @@ class NonWirewound(Resistor):
     methods of a NonWirewound Variable resistor.  The attributes of a
     NonWirewound Variable resistor are:
 
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 33
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 33
 
-    :ivar n_taps: default value: 3
-    :ivar piTAPS: default value: 0.0
-    :ivar piV: default value: 0.0
+    :ivar int n_taps: the number of taps on the potentiometer.
+    :ivar float piTAPS: the MIL-HDBK-217FN2 taps factor.
+    :ivar float piV: the MIL-HDBK-217FN2 voltage stress factor.
 
     Covers specifications MIL-R-22097 and MIL-R-39035.
 
@@ -76,7 +78,8 @@ class NonWirewound(Resistor):
 
     def __init__(self):
         """
-        Initialize a NonWirewound Variable resistor data model instance.
+        Method to initialize a NonWirewound Variable resistor data model
+        instance.
         """
 
         super(NonWirewound, self).__init__()
@@ -87,7 +90,7 @@ class NonWirewound(Resistor):
 
     def set_attributes(self, values):
         """
-        Sets the NonWirewound Variable resistor data model attributes.
+        Method to set the NonWirewound Variable resistor data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -105,18 +108,18 @@ class NonWirewound(Resistor):
             self.piTAPS = float(values[104])
             self.piV = float(values[105])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the NonWirewound Variable resistor data
-        model attributes.
+        Method to retrieve the current values of the NonWirewound Variable
+        resistor data model attributes.
 
         :return: (n_taps, piTAPS, piV)
         :rtype: tuple
@@ -128,10 +131,10 @@ class NonWirewound(Resistor):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the NonWirewound Variable resistor data
-        model.
+        Method to calculate the hazard rate for the NonWirewound Variable
+        resistor data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -148,8 +151,11 @@ class NonWirewound(Resistor):
             _stress = self.operating_power / self.rated_power
             try:
                 self.base_hr = 0.019 * \
-                               exp(0.445 * ((self.temperature_active + 273.0) / 358.0)**7.3) * \
-                               exp((_stress / 2.69) * ((self.temperature_active + 273.0) / 273.0)**2.46)
+                               exp(0.445 * ((self.temperature_active + 273.0) /
+                                            358.0)**7.3) * \
+                               exp((_stress / 2.69) *
+                                   ((self.temperature_active + 273.0) /
+                                    273.0)**2.46)
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -177,11 +183,11 @@ class NonWirewound(Resistor):
             if _v_applied / self.rated_voltage <= 0.8:
                 self.piV = 1.00
             elif(_v_applied / self.rated_voltage > 0.8 and
-                 _v_applied / self.rated_voltage <= 0.9):   # pragma: no cover
+                 _v_applied / self.rated_voltage <= 0.9):
                 self.piV = 1.05
             elif(_v_applied / self.rated_voltage > 0.9 and
-                 _v_applied / self.rated_voltage <= 1.0):   # pragma: no cover
+                 _v_applied / self.rated_voltage <= 1.0):
                 self.piV = 1.20
             self.hazard_rate_model['piV'] = self.piV
 
-        return Resistor.calculate(self)
+        return Resistor.calculate_part(self)

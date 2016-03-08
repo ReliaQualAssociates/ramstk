@@ -5,18 +5,16 @@ This is the test class for testing Resistor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestResistor.py is part of The RTK Project
+#       tests.unit.TestResistor.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
+
 from hardware.component.resistor.Resistor import Model
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +32,6 @@ class TestResistorModel(unittest.TestCase):
         """
         Setup the test fixture for the Resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 

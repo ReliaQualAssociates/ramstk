@@ -5,20 +5,23 @@ This is the test class for testing fixed and variable Wirewound resistor module 
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestWirewound.py is part of The RTK Project
+#       tests.unit.TestWirewound.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
-from hardware.component.resistor.fixed.Wirewound import *
-from hardware.component.resistor.variable.Wirewound import *
+import unittest
+from nose.plugins.attrib import attr
+
+from hardware.component.resistor.fixed.Wirewound import Wirewound, \
+                                                        WirewoundChassisMount, \
+                                                        WirewoundPower
+from hardware.component.resistor.variable.Wirewound import PowerWirewound, \
+                                                           PrecisionWirewound, \
+                                                           SemiPrecisionWirewound, \
+                                                           VarWirewound
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,9 +38,6 @@ class TestWirewoundModel(unittest.TestCase):
         """
         Setup the test fixture for the Wirewound resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Wirewound()
 
@@ -75,14 +75,14 @@ class TestWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestWirewound) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.16)
@@ -92,7 +92,7 @@ class TestWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
-        (TestWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for low resistances
+        (TestWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for low resistances
         """
 
         self.DUT.environment_active = 2
@@ -103,7 +103,7 @@ class TestWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -116,7 +116,7 @@ class TestWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid1_resistance(self):
         """
-        (TestWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+        (TestWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -126,7 +126,7 @@ class TestWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E4
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -139,7 +139,7 @@ class TestWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid2_resistance(self):
         """
-        (TestWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistances
+        (TestWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -149,7 +149,7 @@ class TestWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -162,7 +162,7 @@ class TestWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
-        (TestWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+        (TestWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
         """
 
         self.DUT.environment_active = 2
@@ -172,7 +172,7 @@ class TestWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E7
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -185,7 +185,7 @@ class TestWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestWirewound) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestWirewound) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -195,7 +195,7 @@ class TestWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestWirewoundPowerModel(unittest.TestCase):
@@ -207,9 +207,6 @@ class TestWirewoundPowerModel(unittest.TestCase):
         """
         Setup the test fixture for the Wirewound Power resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = WirewoundPower()
 
@@ -228,8 +225,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
         # Verify Resistor class was properly initialized.
         self.assertEqual(self.DUT.quality, 0)
 
-        # Verify the Wirewound Power resistor class was properly
-        # initialized.
+        # Verify the Wirewound Power resistor class was properly initialized.
         self.assertEqual(self.DUT._lst_piE, [1.0, 2.0, 10.0, 5.0, 16.0, 4.0,
                                              8.0, 9.0, 18.0, 23.0, 0.3, 13.0,
                                              34.0, 610.0])
@@ -348,7 +344,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestWirewoundPower) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestWirewoundPower) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
@@ -356,7 +352,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.specification = 2
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.24)
@@ -366,7 +362,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_rwr(self):
         """
-        (TestWirewoundPower) calculate should return False on success when calculating MIL-HDBK-217F stress results with RWR style resistors
+        (TestWirewoundPower) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with RWR style resistors
         """
 
         self.DUT.environment_active = 2
@@ -379,7 +375,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
         self.DUT.specification = 1
         self.DUT.style = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -392,7 +388,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_rw(self):
         """
-        (TestWirewoundPower) calculate should return False on success when calculating MIL-HDBK-217F stress results with RW style resistors
+        (TestWirewoundPower) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with RW style resistors
         """
 
         self.DUT.environment_active = 2
@@ -404,7 +400,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.style = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -417,7 +413,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestWirewoundPower) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestWirewoundPower) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -427,7 +423,7 @@ class TestWirewoundPowerModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestWirewoundChassisMountModel(unittest.TestCase):
@@ -439,9 +435,6 @@ class TestWirewoundChassisMountModel(unittest.TestCase):
         """
         Setup the test fixture for the Wirewound Network resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = WirewoundChassisMount()
 
@@ -576,14 +569,14 @@ class TestWirewoundChassisMountModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestWirewoundChassisMount) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestWirewoundChassisMount) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.15)
@@ -593,7 +586,7 @@ class TestWirewoundChassisMountModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestWirewoundChassisMount) calculate should return False on success when calculating MIL-HDBK-217F stress results with case temperature known
+        (TestWirewoundChassisMount) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with case temperature known
         """
 
         self.DUT.environment_active = 2
@@ -606,7 +599,7 @@ class TestWirewoundChassisMountModel(unittest.TestCase):
         self.DUT.specification = 1
         self.DUT.style = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -626,9 +619,6 @@ class TestVarWirewoundModel(unittest.TestCase):
         """
         Setup the test fixture for the Variable Wirewound resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = VarWirewound()
 
@@ -765,14 +755,14 @@ class TestVarWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestVarWirewound) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestVarWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.58)
@@ -782,7 +772,7 @@ class TestVarWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
-        (TestWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
+        (TestWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -794,7 +784,7 @@ class TestVarWirewoundModel(unittest.TestCase):
         self.DUT.resistance = 3.3E1
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -809,7 +799,7 @@ class TestVarWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_resistance(self):
         """
-        (TestVarWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+        (TestVarWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -821,7 +811,7 @@ class TestVarWirewoundModel(unittest.TestCase):
         self.DUT.resistance = 3.3E3
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -836,7 +826,7 @@ class TestVarWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
-        (TestWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+        (TestWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
         """
 
         self.DUT.environment_active = 2
@@ -848,7 +838,7 @@ class TestVarWirewoundModel(unittest.TestCase):
         self.DUT.resistance = 1.3E4
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -863,7 +853,7 @@ class TestVarWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestWirewound) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestWirewound) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -873,7 +863,7 @@ class TestVarWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestPrecisionWirewoundModel(unittest.TestCase):
@@ -887,9 +877,6 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
         Setup the test fixture for the Precision Variable Wirewound resistor
         class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = PrecisionWirewound()
 
@@ -1030,14 +1017,14 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 12.0)
@@ -1047,7 +1034,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
-        (TestPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
+        (TestPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -1060,7 +1047,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.n_taps = 5
         self.DUT.construction = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piC * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1076,7 +1063,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_resistance(self):
         """
-        (TestPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+        (TestPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -1089,7 +1076,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.n_taps = 5
         self.DUT.construction = 2
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piC * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1105,7 +1092,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
-        (TestPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+        (TestPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
         """
 
         self.DUT.environment_active = 2
@@ -1118,7 +1105,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.n_taps = 5
         self.DUT.construction = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piC * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1134,7 +1121,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestPrecisionWirewound) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestPrecisionWirewound) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -1144,7 +1131,7 @@ class TestPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestSemiPrecisionWirewoundModel(unittest.TestCase):
@@ -1158,9 +1145,6 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
         Setup the test fixture for the SemiPrecision Variable Wirewound resistor
         class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = SemiPrecisionWirewound()
 
@@ -1296,14 +1280,14 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestSemiPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestSemiPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 5.4)
@@ -1313,7 +1297,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
-        (TestSemiPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
+        (TestSemiPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -1325,7 +1309,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.resistance = 3.3E2
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1340,7 +1324,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_resistance(self):
         """
-        (TestSemiPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+        (TestSemiPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -1352,7 +1336,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.resistance = 3.3E3
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1367,7 +1351,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
-        (TestSemiPrecisionWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+        (TestSemiPrecisionWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
         """
 
         self.DUT.environment_active = 2
@@ -1379,7 +1363,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.resistance = 8.3E3
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1394,7 +1378,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestSemiPrecisionWirewound) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestSemiPrecisionWirewound) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -1404,7 +1388,7 @@ class TestSemiPrecisionWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E3
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestPowerWirewoundModel(unittest.TestCase):
@@ -1418,9 +1402,6 @@ class TestPowerWirewoundModel(unittest.TestCase):
         Setup the test fixture for the Power Variable Wirewound resistor
         class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = PowerWirewound()
 
@@ -1561,14 +1542,14 @@ class TestPowerWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPowerWirewound) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPowerWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 5.0)
@@ -1578,7 +1559,7 @@ class TestPowerWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
-        (TestPowerWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
+        (TestPowerWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for low-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -1591,7 +1572,7 @@ class TestPowerWirewoundModel(unittest.TestCase):
         self.DUT.n_taps = 5
         self.DUT.construction = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piC * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1607,7 +1588,7 @@ class TestPowerWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_resistance(self):
         """
-        (TestPowerWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+        (TestPowerWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -1620,7 +1601,7 @@ class TestPowerWirewoundModel(unittest.TestCase):
         self.DUT.n_taps = 5
         self.DUT.construction = 2
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piC * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1636,7 +1617,7 @@ class TestPowerWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
-        (TestPowerWirewound) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+        (TestPowerWirewound) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
         """
 
         self.DUT.environment_active = 2
@@ -1649,7 +1630,7 @@ class TestPowerWirewoundModel(unittest.TestCase):
         self.DUT.n_taps = 5
         self.DUT.construction = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piC * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -1665,7 +1646,7 @@ class TestPowerWirewoundModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestPowerWirewound) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestPowerWirewound) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -1675,4 +1656,4 @@ class TestPowerWirewoundModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

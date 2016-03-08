@@ -6,18 +6,16 @@ algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestComposition.py is part of The RTK Project
+#       tests.unit.TestComposition.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-import dao.DAO as _dao
+import unittest
+from nose.plugins.attrib import attr
+
 from hardware.component.resistor.fixed.Composition import Composition
 from hardware.component.resistor.variable.Composition import VarComposition
 
@@ -36,9 +34,6 @@ class TestCompositionModel(unittest.TestCase):
         """
         Setup the test fixture for the Carbon Composition resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Composition()
 
@@ -77,14 +72,14 @@ class TestCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestCarbonComposition) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestCarbonComposition) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.012)
@@ -94,7 +89,7 @@ class TestCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
-        (TestCarbonComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results with low resistance
+        (TestCarbonComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with low resistance
         """
 
         self.DUT.environment_active = 2
@@ -104,7 +99,7 @@ class TestCompositionModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -117,7 +112,7 @@ class TestCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid1_resistance(self):
         """
-        (TestCarbonComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+        (TestCarbonComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
         """
 
         self.DUT.environment_active = 2
@@ -127,7 +122,7 @@ class TestCompositionModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -140,7 +135,7 @@ class TestCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid2_resistance(self):
         """
-        (TestCarbonComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+        (TestCarbonComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
         """
 
         self.DUT.environment_active = 2
@@ -150,7 +145,7 @@ class TestCompositionModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E6
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -163,7 +158,7 @@ class TestCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
-        (TestCarbonComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+        (TestCarbonComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
         """
 
         self.DUT.environment_active = 2
@@ -173,7 +168,7 @@ class TestCompositionModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E7
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -186,7 +181,7 @@ class TestCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestCarbonComposition) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestCarbonComposition) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -196,7 +191,7 @@ class TestCompositionModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestVarCompositionModel(unittest.TestCase):
@@ -208,9 +203,6 @@ class TestVarCompositionModel(unittest.TestCase):
         """
         Setup the test fixture for the VarComposition Variable resistor class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = VarComposition()
 
@@ -346,14 +338,14 @@ class TestVarCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestVarComposition) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestVarComposition) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 1.7)
@@ -363,7 +355,7 @@ class TestVarCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
-        (TestVarComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results for low resistances
+        (TestVarComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for low resistances
         """
 
         self.DUT.environment_active = 2
@@ -376,7 +368,7 @@ class TestVarCompositionModel(unittest.TestCase):
         self.DUT.resistance = 3.3E3
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -391,7 +383,7 @@ class TestVarCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid1_resistance(self):
         """
-        (TestVarComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+        (TestVarComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -403,7 +395,7 @@ class TestVarCompositionModel(unittest.TestCase):
         self.DUT.resistance = 1.3E5
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -418,7 +410,7 @@ class TestVarCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid2_resistance(self):
         """
-        (TestVarComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistances
+        (TestVarComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistances
         """
 
         self.DUT.environment_active = 2
@@ -430,7 +422,7 @@ class TestVarCompositionModel(unittest.TestCase):
         self.DUT.resistance = 3.3E5
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -445,7 +437,7 @@ class TestVarCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
-        (TestVarComposition) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+        (TestVarComposition) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
         """
 
         self.DUT.environment_active = 2
@@ -457,7 +449,7 @@ class TestVarCompositionModel(unittest.TestCase):
         self.DUT.resistance = 6.1E5
         self.DUT.n_taps = 5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -472,7 +464,7 @@ class TestVarCompositionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
-        (TestVarComposition) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+        (TestVarComposition) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
         """
 
         self.DUT.environment_active = 2
@@ -482,4 +474,4 @@ class TestVarCompositionModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
