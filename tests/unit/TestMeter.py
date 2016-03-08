@@ -5,10 +5,9 @@ This is the test class for testing Meter module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestMeter.py is part of The RTK Project
+#       tests.unit.TestMeter.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,8 +15,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from hardware.component.meter.Meter import *
+from hardware.component.meter.Meter import Model, ElapsedTime, Panel
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +32,6 @@ class TestMeterModel(unittest.TestCase):
         """
         Setup the test fixture for the Meter class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -195,12 +190,12 @@ class TestMeterModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_attribute_error(self):
         """
-        (TestMeter) calculate should return True when there is an AttributeError.
+        (TestMeter) calculate_part should return True when there is an AttributeError.
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 1
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())
 
 
 class TestElapsedTimeModel(unittest.TestCase):
@@ -212,9 +207,6 @@ class TestElapsedTimeModel(unittest.TestCase):
         """
         Setup the test fixture for the Elapsed Time Meter class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = ElapsedTime()
 
@@ -337,14 +329,14 @@ class TestElapsedTimeModel(unittest.TestCase):
     @attr(all=False, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestElapsedTime) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestElapsedTime) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
         self.DUT.application = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab')
@@ -354,7 +346,7 @@ class TestElapsedTimeModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestElapsedTime) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestElapsedTime) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -365,7 +357,7 @@ class TestElapsedTimeModel(unittest.TestCase):
         self.DUT.temperature_active = 45.0
         self.DUT.max_rated_temperature = 105.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piE')
@@ -384,9 +376,6 @@ class TestPanelModel(unittest.TestCase):
         """
         Setup the test fixture for the Panel Meter class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Panel()
 
@@ -520,13 +509,13 @@ class TestPanelModel(unittest.TestCase):
     @attr(all=False, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestPanel) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestPanel) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.application = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab')
@@ -536,7 +525,7 @@ class TestPanelModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestPanel) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestPanel) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -546,7 +535,7 @@ class TestPanelModel(unittest.TestCase):
         self.DUT.application = 1
         self.DUT.function = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piA * piF * piQ * piE')
