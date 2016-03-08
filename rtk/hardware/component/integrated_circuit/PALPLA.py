@@ -16,13 +16,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -128,10 +128,10 @@ class PALPLA(IntegratedCircuit):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -154,14 +154,14 @@ class PALPLA(IntegratedCircuit):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
         Calculates the hazard rate for the PAL/PLA IC data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write calculate_part; current McCabe Complexity metric = 14.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -183,11 +183,11 @@ class PALPLA(IntegratedCircuit):
             self.hazard_rate_model['equation'] = '(C1 * piT + C2 * piE) * piQ * piL'
 
             # Die complexity failure rate.
-            if self.n_gates < 201:                             # pragma: nocover
+            if self.n_gates < 201:
                 self.C1 = self._C1[self.technology - 1][0]
             elif self.n_gates > 200 and self.n_gates < 1001:
                 self.C1 = self._C1[self.technology - 1][1]
-            elif self.n_gates > 1000 and self.n_gates < 5001:     # pragma: nocover
+            elif self.n_gates > 1000 and self.n_gates < 5001:
                 self.C1 = self._C1[self.technology - 1][2]
             self.hazard_rate_model['C1'] = self.C1
 
@@ -222,4 +222,4 @@ class PALPLA(IntegratedCircuit):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
-        return IntegratedCircuit.calculate(self)
+        return IntegratedCircuit.calculate_part(self)

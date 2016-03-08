@@ -5,7 +5,7 @@ This is the test class for testing Integrated Circuit module algorithms and mode
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestIC.py is part of The RTK Project
+#       tests.unit.TestIC.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -16,7 +16,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.integrated_circuit.IntegratedCircuit import Model
 
 __author__ = 'Andrew Rowland'
@@ -34,9 +33,6 @@ class TestICModel(unittest.TestCase):
         """
         Setup the test fixture for the Integrated Circuit class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -299,9 +295,9 @@ class TestICModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_attribute_error(self):
         """
-        (TestIC) calculate should return True when there is an AttributeError.
+        (TestIC) calculate_part should return True when there is an AttributeError.
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 1
-        self.assertTrue(self.DUT.calculate())
+        self.assertTrue(self.DUT.calculate_part())

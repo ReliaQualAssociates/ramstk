@@ -16,13 +16,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -75,15 +75,23 @@ class Linear(IntegratedCircuit):
 
     def __init__(self):
         """
-        Initialize a Linear IC data model instance.
+        Method to initialize a Linear IC data model instance.
         """
 
         super(Linear, self).__init__()
 
-        # Initialize private list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lambdab_count = []
 
-        # Initialize public scalar attributes.
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.technology = 0
         self.package = 0
         self.n_transistors = 0
@@ -96,7 +104,7 @@ class Linear(IntegratedCircuit):
 
     def set_attributes(self, values):
         """
-        Sets the Linear IC data model attributes.
+        Method to set the Linear IC data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -122,17 +130,17 @@ class Linear(IntegratedCircuit):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Linear IC data model
+        Method to retrieve the current values of the Linear IC data model
         attributes.
 
         :return: (technology, package, n_transistors, n_pins, years_production,
@@ -148,14 +156,14 @@ class Linear(IntegratedCircuit):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Linear IC data model.
+        Method to calculate the hazard rate for the Linear IC data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write calculate; current McCabe Complexity metrix = 16.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -183,9 +191,9 @@ class Linear(IntegratedCircuit):
                 self.C1 = self._C1[self.technology - 1][0]
             elif self.n_transistors > 100 and self.n_transistors < 301:
                 self.C1 = self._C1[self.technology - 1][1]
-            elif self.n_transistors > 300 and self.n_transistors < 1001:    # pragma: nocover
+            elif self.n_transistors > 300 and self.n_transistors < 1001:
                 self.C1 = self._C1[self.technology - 1][2]
-            elif self.n_transistors > 1000 and self.n_transistors < 10001:  # pragma: nocover
+            elif self.n_transistors > 1000 and self.n_transistors < 10001:
                 self.C1 = self._C1[self.technology - 1][3]
             self.hazard_rate_model['C1'] = self.C1
 
@@ -220,4 +228,4 @@ class Linear(IntegratedCircuit):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
-        return IntegratedCircuit.calculate(self)
+        return IntegratedCircuit.calculate_part(self)

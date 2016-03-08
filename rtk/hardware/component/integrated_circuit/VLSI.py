@@ -16,13 +16,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -132,10 +132,10 @@ class VLSI(IntegratedCircuit):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -162,14 +162,14 @@ class VLSI(IntegratedCircuit):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the VLSI IC data model.
+        Method to calculate the hazard rate for the VLSI IC data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write calculate_part; current McCabe Complexity metric = 13.
         from math import exp, log
 
         self.hazard_rate_model = {}
@@ -202,7 +202,7 @@ class VLSI(IntegratedCircuit):
             self.hazard_rate_model['lambda_eos'] = self.lambda_eos
 
             # Manufacturing process factor.
-            if self.manufacturing == 1:     # pragma: no cover
+            if self.manufacturing == 1:
                 self.piMFG = 0.55
             else:
                 self.piMFG = 2.0
@@ -241,4 +241,4 @@ class VLSI(IntegratedCircuit):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
-        return IntegratedCircuit.calculate(self)
+        return IntegratedCircuit.calculate_part(self)

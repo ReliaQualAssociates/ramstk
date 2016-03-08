@@ -5,7 +5,7 @@ This is the test class for testing Memory IC module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestMemory.py is part of The RTK Project
+#       tests.unit.TestMemory.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -16,8 +16,8 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from hardware.component.integrated_circuit.Memory import *
+from hardware.component.integrated_circuit.Memory import Memory, DRAM, \
+                                                         EEPROM, ROM, SRAM
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +34,6 @@ class TestMemoryModel(unittest.TestCase):
         """
         Setup the test fixture for the Memory IC class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Memory()
 
@@ -242,9 +239,6 @@ class TestDRAMModel(unittest.TestCase):
         Setup the test fixture for the DRAM class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = DRAM()
 
     @attr(all=True, unit=True)
@@ -347,13 +341,13 @@ class TestDRAMModel(unittest.TestCase):
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """
-        (TestDRAM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestDRAM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -361,7 +355,7 @@ class TestDRAMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_all(self):
         """
-        (TestDRAM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestDRAM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.memory_size = 4096
@@ -391,7 +385,7 @@ class TestDRAMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestDRAM) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestDRAM) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -408,7 +402,7 @@ class TestDRAMModel(unittest.TestCase):
         self.DUT.years_production = 1.5
         self.DUT.case_temperature = 35.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.junction_temperature, 50.0)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -432,9 +426,6 @@ class TestEEPROMModel(unittest.TestCase):
         """
         Setup the test fixture for the EEPROM class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = EEPROM()
 
@@ -538,13 +529,13 @@ class TestEEPROMModel(unittest.TestCase):
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """
-        (TestEEPROM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestEEPROM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -552,7 +543,7 @@ class TestEEPROMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_all(self):
         """
-        (TestEEPROM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestEEPROM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.technology = 2
@@ -586,7 +577,7 @@ class TestEEPROMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestEEPROM) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestEEPROM) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -604,7 +595,7 @@ class TestEEPROMModel(unittest.TestCase):
         self.DUT.years_production = 1.5
         self.DUT.case_temperature = 35.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.junction_temperature, 50.0)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -629,9 +620,6 @@ class TestROMModel(unittest.TestCase):
         """
         Setup the test fixture for the ROM class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = ROM()
 
@@ -735,13 +723,13 @@ class TestROMModel(unittest.TestCase):
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """
-        (TestROM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestROM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -749,7 +737,7 @@ class TestROMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_all(self):
         """
-        (TestROM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestROM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.memory_size = 4096
@@ -779,7 +767,7 @@ class TestROMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestROM) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestROM) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -796,7 +784,7 @@ class TestROMModel(unittest.TestCase):
         self.DUT.years_production = 1.5
         self.DUT.case_temperature = 35.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.junction_temperature, 50.0)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
@@ -820,9 +808,6 @@ class TestSRAMModel(unittest.TestCase):
         """
         Setup the test fixture for the SRAM class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = SRAM()
 
@@ -926,13 +911,13 @@ class TestSRAMModel(unittest.TestCase):
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """
-        (TestSRAM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestSRAM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -940,7 +925,7 @@ class TestSRAMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_all(self):
         """
-        (TestSRAM) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestSRAM) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.memory_size = 4096
@@ -970,7 +955,7 @@ class TestSRAMModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestSRAM) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestSRAM) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.environment_active = 2
@@ -987,7 +972,7 @@ class TestSRAMModel(unittest.TestCase):
         self.DUT.years_production = 1.5
         self.DUT.case_temperature = 35.0
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
 
         self.assertEqual(self.DUT.junction_temperature, 50.0)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],

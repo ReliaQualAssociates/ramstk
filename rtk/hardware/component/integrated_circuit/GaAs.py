@@ -16,13 +16,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -62,7 +62,7 @@ class GaAs(IntegratedCircuit):
             34.0, 610.0]
     _piQ = [0.25, 1.0, 2.0]
     _piA = [1.0, 3.0, 3.0, 1.0]
-    _C1 = [[4.5, 7.2], [25.0, 51.0]]
+    _C1 = [[4.5, 7.2], [4.5, 7.2], [4.5, 7.2], [25.0, 51.0]]
     _lst_lambdab_count = [[0.019, 0.034, 0.046, 0.039, 0.052, 0.065, 0.068,
                            0.11, 0.12, 0.076, 0.019, 0.049, 0.086, 0.61],
                           [0.025, 0.047, 0.067, 0.058, 0.079, 0.091, 0.097,
@@ -126,10 +126,10 @@ class GaAs(IntegratedCircuit):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -152,14 +152,14 @@ class GaAs(IntegratedCircuit):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the GaAs IC data model.
+        Method to calculate the hazard rate for the GaAs IC data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write calculate_part; current McCabe Complexity metric = 14.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -227,4 +227,4 @@ class GaAs(IntegratedCircuit):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
-        return IntegratedCircuit.calculate(self)
+        return IntegratedCircuit.calculate_part(self)

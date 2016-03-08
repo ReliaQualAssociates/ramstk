@@ -16,13 +16,13 @@ import gettext
 import locale
 
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -123,10 +123,10 @@ class Memory(IntegratedCircuit):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -153,9 +153,9 @@ class Memory(IntegratedCircuit):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Memory IC data model.
+        Method to calculate the hazard rate for the Memory IC data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -186,13 +186,13 @@ class Memory(IntegratedCircuit):
             # Package failure rate.
             if self.package in [1, 2, 3]:
                 _constant = [2.8E-4, 1.08]
-            elif self.package == 4:         # pragma: nocover
+            elif self.package == 4:
                 _constant = [9.0E-5, 1.51]
-            elif self.package == 5:         # pragma: nocover
+            elif self.package == 5:
                 _constant = [3.0E-5, 1.82]
-            elif self.package == 6:         # pragma: nocover
+            elif self.package == 6:
                 _constant = [3.0E-5, 2.01]
-            else:                           # pragma: nocover
+            else:
                 _constant = [3.6E-4, 1.08]
             self.C2 = _constant[0] * self.n_pins**_constant[1]
             self.hazard_rate_model['C2'] = self.C2
@@ -204,7 +204,7 @@ class Memory(IntegratedCircuit):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
-        return IntegratedCircuit.calculate(self)
+        return IntegratedCircuit.calculate_part(self)
 
 
 class DRAM(Memory):
@@ -237,14 +237,14 @@ class DRAM(Memory):
 
         super(DRAM, self).__init__()
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the DRAM data model.
+        Method to calculate the hazard rate for the DRAM data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write DRAM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
@@ -259,19 +259,19 @@ class DRAM(Memory):
 
         elif self.hazard_rate_type == 2:
             # Die complexity failure rate.
-            if self.memory_size < 16001:                            # pragma: nocover
+            if self.memory_size < 16001:
                 self.C1 = self._C1[0]
             elif self.memory_size > 16000 and self.memory_size < 64001:
                 self.C1 = self._C1[1]
-            elif self.memory_size > 64000 and self.memory_size < 256001:    # pragma: nocover
+            elif self.memory_size > 64000 and self.memory_size < 256001:
                 self.C1 = self._C1[2]
-            elif self.memory_size > 256000 and self.memory_size < 1000001:  # pragma: nocover
+            elif self.memory_size > 256000 and self.memory_size < 1000001:
                 self.C1 = self._C1[3]
             self.hazard_rate_model['C1'] = self.C1
 
             self.hazard_rate_model['lambdacyc'] = 0.0
 
-        return Memory.calculate(self)
+        return Memory.calculate_part(self)
 
 
 class EEPROM(Memory):
@@ -315,14 +315,14 @@ class EEPROM(Memory):
 
         self.piECC = 0.0
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the EEPROM data model.
+        Method to calculate the hazard rate for the EEPROM data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write EEPROM.calculate_part; current McCabe Complexity metric = 23.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -341,13 +341,13 @@ class EEPROM(Memory):
 
         elif self.hazard_rate_type == 2:
             # Die complexity failure rate.
-            if self.memory_size < 16001:                            # pragma: nocover
+            if self.memory_size < 16001:
                 self.C1 = self._C1[self.technology - 1][0]
             elif self.memory_size > 16000 and self.memory_size < 64001:
                 self.C1 = self._C1[self.technology - 1][1]
-            elif self.memory_size > 64000 and self.memory_size < 256001:    # pragma: nocover
+            elif self.memory_size > 64000 and self.memory_size < 256001:
                 self.C1 = self._C1[self.technology - 1][2]
-            elif self.memory_size > 256000 and self.memory_size < 1000001:  # pragma: nocover
+            elif self.memory_size > 256000 and self.memory_size < 1000001:
                 self.C1 = self._C1[self.technology - 1][3]
             self.hazard_rate_model['C1'] = self.C1
 
@@ -368,22 +368,22 @@ class EEPROM(Memory):
                     _A1 = 0.0097
                 elif self.n_cycles > 100 and self.n_cycles < 201:
                     _A1 = 0.014
-                elif self.n_cycles > 200 and self.n_cycles < 501:   # pragma: nocover
+                elif self.n_cycles > 200 and self.n_cycles < 501:
                     _A1 = 0.023
-                elif self.n_cycles > 500 and self.n_cycles < 1001:  # pragma: nocover
+                elif self.n_cycles > 500 and self.n_cycles < 1001:
                     _A1 = 0.033
-                elif self.n_cycles > 1000 and self.n_cycles < 3001: # pragma: nocover
+                elif self.n_cycles > 1000 and self.n_cycles < 3001:
                     _A1 = 0.061
-                elif self.n_cycles > 3000 and self.n_cycles < 7001: # pragma: nocover
+                elif self.n_cycles > 3000 and self.n_cycles < 7001:
                     _A1 = 0.14
-                else:                                               # pragma: nocover
+                else:
                     _A1 = 0.3
 
                 if self.n_cycles < 300001:
                     _A2 = 0.0
-                elif self.n_cycles > 300000 and self.n_cycles < 400001: # pragma: nocover
+                elif self.n_cycles > 300000 and self.n_cycles < 400001:
                     _A2 = 1.1
-                else:                                               # pragma: nocover
+                else:
                     _A2 = 2.3
 
                 _B1 = ((self.memory_size / 64000.0)**0.25) * \
@@ -398,7 +398,7 @@ class EEPROM(Memory):
             self.lambda_cyc = (_A1 * _B1 + _A2 * _B2 / self.piQ) * self.piECC
             self.hazard_rate_model['lambdacyc'] = self.lambda_cyc
 
-        return Memory.calculate(self)
+        return Memory.calculate_part(self)
 
 
 class ROM(Memory):
@@ -439,14 +439,14 @@ class ROM(Memory):
 
         super(ROM, self).__init__()
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the ROM data model.
+        Method to calculate the hazard rate for the ROM data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write ROM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
@@ -461,19 +461,19 @@ class ROM(Memory):
 
         elif self.hazard_rate_type == 2:
             # Die complexity failure rate.
-            if self.memory_size < 16001:                            # pragma: nocover
+            if self.memory_size < 16001:
                 self.C1 = self._C1[self.technology - 1][0]
             elif self.memory_size > 16000 and self.memory_size < 64001:
                 self.C1 = self._C1[self.technology - 1][1]
-            elif self.memory_size > 64000 and self.memory_size < 256001:    # pragma: nocover
+            elif self.memory_size > 64000 and self.memory_size < 256001:
                 self.C1 = self._C1[self.technology - 1][2]
-            elif self.memory_size > 256000 and self.memory_size < 1000001:  # pragma: nocover
+            elif self.memory_size > 256000 and self.memory_size < 1000001:
                 self.C1 = self._C1[self.technology - 1][3]
             self.hazard_rate_model['C1'] = self.C1
 
             self.hazard_rate_model['lambdacyc'] = 0.0
 
-        return Memory.calculate(self)
+        return Memory.calculate_part(self)
 
 
 class SRAM(Memory):
@@ -509,19 +509,19 @@ class SRAM(Memory):
 
     def __init__(self):
         """
-        Initialize a SRAM data model instance.
+        Method to initialize a SRAM data model instance.
         """
 
         super(SRAM, self).__init__()
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the SRAM data model.
+        Method to calculate the hazard rate for the SRAM data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write SRAM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
@@ -536,16 +536,16 @@ class SRAM(Memory):
 
         elif self.hazard_rate_type == 2:
             # Die complexity failure rate.
-            if self.memory_size < 16001:                            # pragma: nocover
+            if self.memory_size < 16001:
                 self.C1 = self._C1[self.technology - 1][0]
             elif self.memory_size > 16000 and self.memory_size < 64001:
                 self.C1 = self._C1[self.technology - 1][1]
-            elif self.memory_size > 64000 and self.memory_size < 256001:    # pragma: nocover
+            elif self.memory_size > 64000 and self.memory_size < 256001:
                 self.C1 = self._C1[self.technology - 1][2]
-            elif self.memory_size > 256000 and self.memory_size < 1000001:  # pragma: nocover
+            elif self.memory_size > 256000 and self.memory_size < 1000001:
                 self.C1 = self._C1[self.technology - 1][3]
             self.hazard_rate_model['C1'] = self.C1
 
             self.hazard_rate_model['lambdacyc'] = 0.0
 
-        return Memory.calculate(self)
+        return Memory.calculate_part(self)
