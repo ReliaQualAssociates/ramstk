@@ -5,10 +5,9 @@ This is the test class for testing Filter module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestFilter.py is part of The RTK Project
+#       tests.unit.TestFilter.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,8 +15,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from hardware.component.miscellaneous.Filter import *
+from hardware.component.miscellaneous.Filter import Filter
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +32,6 @@ class TestFilterModel(unittest.TestCase):
         """
         Setup the test fixture for the Filter class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Filter()
 
@@ -204,21 +199,21 @@ class TestFilterModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestFilter) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestFilter) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 5
         self.DUT.quality = 1
         self.DUT.style = 1
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.20)
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 2.0E-7)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestFilter) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestFilter) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -227,7 +222,7 @@ class TestFilterModel(unittest.TestCase):
         self.DUT.specification = 1
         self.DUT.style = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.022)

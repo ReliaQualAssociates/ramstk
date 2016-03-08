@@ -5,10 +5,9 @@ This is the test class for testing Crystal module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestCrystal.py is part of The RTK Project
+#       tests.unit.TestCrystal.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,8 +15,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from hardware.component.miscellaneous.Crystal import *
+from hardware.component.miscellaneous.Crystal import Crystal
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,9 +32,6 @@ class TestCrystalModel(unittest.TestCase):
         """
         Setup the test fixture for the Crystal class.
         """
-
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Crystal()
 
@@ -201,19 +196,19 @@ class TestCrystalModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestCrystal) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestCrystal) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 5
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.51)
         self.assertEqual(self.DUT.hazard_rate_active, 5.1E-7)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestCrystal) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestCrystal) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.hazard_rate_type = 2
@@ -221,7 +216,7 @@ class TestCrystalModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.frequency = 2.5
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

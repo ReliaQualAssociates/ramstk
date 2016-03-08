@@ -5,10 +5,9 @@ This is the test class for testing Fuse module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestFuse.py is part of The RTK Project
+#       tests.unit.TestFuse.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from hardware.component.miscellaneous.Fuse import *
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +33,6 @@ class TestFuseModel(unittest.TestCase):
         Setup the test fixture for the Fuse class.
         """
 
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
         self.DUT = Fuse()
 
     @attr(all=True, unit=True)
@@ -53,8 +48,8 @@ class TestFuseModel(unittest.TestCase):
         self.assertEqual(self.DUT.category_id, 0)
 
         # Verify Fuse class was properly initialized.
-        self.assertEqual(self.DUT.category, 10)
-        self.assertEqual(self.DUT.subcategory, 82)
+        self.assertEqual(self.DUT.category, 6)
+        self.assertEqual(self.DUT.subcategory, 3)
         self.assertEqual(self.DUT.base_hr, 0.01)
         self.assertEqual(self.DUT.piE, 0.0)
 
@@ -189,25 +184,25 @@ class TestFuseModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-        (TestFuse) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+        (TestFuse) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
         """
 
         self.DUT.hazard_rate_type = 1
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.01)
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 1.0E-8)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-        (TestFuse) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+        (TestFuse) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
         """
 
         self.DUT.hazard_rate_type = 2
         self.DUT.environment_active = 3
 
-        self.assertFalse(self.DUT.calculate())
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.01)

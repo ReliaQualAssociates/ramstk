@@ -17,13 +17,13 @@ import locale
 
 try:
     import calculations as _calc
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.component.Component import Model as Component
 except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.component.Component import Model as Component
 
 __author__ = 'Andrew Rowland'
@@ -33,7 +33,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -45,41 +45,51 @@ class Fuse(Component):
     The Fuse data model contains the attributes and methods of a Fuse
     component.  The attributes of an Fuse are:
 
-    :cvar category: default value: 10
-    :cvar subcategory: default value: 82
+    :cvar int category: the Component category.
+    :cvar int subcategory: the Component subcategory.
 
-    :ivar base_hr: default value: 0.0
-    :ivar piE: default value: 0.0
-    :ivar reason: default value: ""
+    :ivar float base_hr: the base/generic hazard rate.
+    :ivar float piE: the MIL-HDBK-217FN2 operating environment factor.
+    :ivar str reason: the reason(s) the Fuse is overstressed.
 
     Hazard Rate Models:
-        # MIL-HDBK-217F, section 22.1.
+        # MIL-HDBK-217FN2, section 22.1.
     """
 
-    # MIL-HDK-217F hazard rate calculation variables.
+    # MIL-HDBK-217FN2 hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piE = [1.0, 2.0, 8.0, 5.0, 11.0, 9.0, 12.0, 15.0, 18.0, 16.0, 0.9,
                 10.0, 21.0, 230.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    category = 10
-    subcategory = 82
+    category = 6
+    subcategory = 3
 
     def __init__(self):
         """
-        Initialize an Fuse data model instance.
+        Method to initialize an Fuse data model instance.
         """
 
         super(Fuse, self).__init__()
 
-        # Initialize public scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.base_hr = 0.01                 # Base hazard rate.
         self.piE = 0.0                      # Environment pi factor.
         self.reason = ""                    # Overstress reason.
 
     def set_attributes(self, values):
         """
-        Sets the Fuse data model attributes.
+        Method to set the Fuse data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -94,20 +104,20 @@ class Fuse(Component):
 
         try:
             self.piE = float(values[96])
-            # TODO: Add field to rtk_stress to hold overstress reason.
+# TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Fuse data model
+        Method to retrieve the current values of the Fuse data model
         attributes.
 
         :return: (base_hr, piE, reason)
@@ -120,9 +130,9 @@ class Fuse(Component):
 
         return _values
 
-    def calculate(self):
+    def calculate_part(self):
         """
-        Calculates the hazard rate for the Fuse data model.
+        Method to calculate the hazard rate for the Fuse data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -152,7 +162,8 @@ class Fuse(Component):
                                    self.add_adj_factor) * \
                                   (self.duty_cycle / 100.0) * \
                                   self.mult_adj_factor * self.quantity
-        self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
+        self.hazard_rate_active = self.hazard_rate_active / \
+                                  Configuration.FRMULT
 
         # Calculate operating point ratios.
         self.current_ratio = self.operating_current / self.rated_current
