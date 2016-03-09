@@ -17,9 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
+    import Configuration
+    import Utilities
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -27,30 +29,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
 
 
 class Model(object):
@@ -80,7 +63,7 @@ class Model(object):
 
     def __init__(self):
         """
-        Initializes an Allocation data model instance.
+        Method to initialize an Allocation data model instance.
         """
 
         # Initialize private scalar attributes.  These are set as a convenience
@@ -113,7 +96,7 @@ class Model(object):
 
     def set_attributes(self, values):
         """
-        Sets the Allocation data model attributes.
+        Method to set the Allocation data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -149,17 +132,18 @@ class Model(object):
             self.hazard_rate = float(values[21])
             self.mission_time = float(values[22])
         except IndexError as _err:
-            _code = _error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Allocation data model attributes.
+        Method to retrieve the current values of the Allocation data model
+        attributes.
 
         :return: (hardware_id, reliability_goal, hazard_rate_goal, mtbf_goal,
                   included, n_sub_systems, n_sub_elements, weight_factor,
@@ -182,7 +166,7 @@ class Model(object):
 
     def equal_apportionment(self, n_children, parent_goal):
         """
-        Performs an equal apportionment of the reliability goal.
+        Method to perform an equal apportionment of the reliability goal.
 
         :param int n_children: the number of immediate children comprising the
                                parent hardware item.
@@ -212,7 +196,7 @@ class Model(object):
 
     def agree_apportionment(self, n_children, parent_goal):
         """
-        Performs an AGREE apportionment of a reliability requirement.
+        Method to perform an AGREE apportionment of a reliability requirement.
 
         :param int n_children: the number of immediate children comprising the
                                parent hardware item.
@@ -244,7 +228,8 @@ class Model(object):
 
     def arinc_apportionment(self, system_hr, parent_goal):
         """
-        Performs an ARINC apportionment of the reliability requirement.
+        Method to perform an ARINC apportionment of the reliability
+        requirement.
 
         :param float system_hr: the current system hazard rate.
         :param float parent_goal: the goal hazard rate of the parent hardware
@@ -274,8 +259,8 @@ class Model(object):
 
     def foo_apportionment(self, cum_weight, parent_goal):
         """
-        Performs a feasibility of objectives (FOO) apportionment of the
-        reliability requirement.
+        Method to perform a feasibility of objectives (FOO) apportionment of
+        the reliability requirement.
 
         :param int cum_weight: the cumulative weight factor for all subordinate
                                assemblies.
@@ -359,7 +344,9 @@ class Allocation(object):
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
                 Project database.
-    :ivar dicAllocation: Dictionary of the Allocation data models managed.  Key is the Hardware ID; value is a pointer to the Allocation data model instance.
+    :ivar dict dicAllocation: Dictionary of the Allocation data models managed.
+                              Key is the Hardware ID; value is a pointer to the
+                              Allocation data model instance.
     """
 
     def __init__(self):
@@ -457,8 +444,9 @@ class Allocation(object):
 
     def allocate(self, hardware_id):
         """
-        Performs the allocation.
+        Method to request the allocation be performed.
 
+        :param int hardware_id: the ID of the hardware item to allocate.
         :return: False if successful or True if an error is encountered
         :rtype: bool
         """
@@ -526,7 +514,7 @@ class Allocation(object):
                       _allocation.parent_id, _allocation.method,
                       _allocation.goal_measure, hardware_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-        # TODO: Handle errors.
+
         return (_results, _error_code)
 
     def save_all_allocation(self):
@@ -537,11 +525,14 @@ class Allocation(object):
         :rtype: bool
         """
 
+        _error_codes = []
+
         for _allocation in self.dicAllocation.values():
             (_results,
              _error_code) = self.save_allocation(_allocation.hardware_id)
+            _error_codes.append((_allocation.hardware_id, _error_code))
 
-        return False
+        return _error_codes
 
     def trickle_down(self, hardware_id):
         """
@@ -557,5 +548,7 @@ class Allocation(object):
                      if _a.parent_id == hardware_id]
         for _child in _children:
             _child.reliability_goal = _child.reliability_alloc
+            if _child.method == 0:
+                _child.method = self.dicAllocation[hardware_id].method
 
         return False

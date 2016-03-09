@@ -8,7 +8,6 @@ This is the test class for testing Allocation module algorithms and models.
 #       rtk.tests.integration.TestAllocation.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")

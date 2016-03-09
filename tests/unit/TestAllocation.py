@@ -16,7 +16,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from analyses.allocation.Allocation import Model, Allocation
 
 __author__ = 'Andrew Rowland'
@@ -386,7 +385,7 @@ class TestAllocationModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.mtbf_goal, 6666.66666666)
 
     @attr(all=True, unit=True)
-    def test_set_goals_ht_input(self):
+    def test_set_goals_ht_input_zero(self):
         """
         (TestAllocation) _calculate_goals should return True when passing hazard rate goal of zero
         """
