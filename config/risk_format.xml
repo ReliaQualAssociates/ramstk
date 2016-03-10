@@ -88,7 +88,7 @@ All rights reserved. -->
             <datatype>gint</datatype>
             <position>8</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -124,7 +124,7 @@ All rights reserved. -->
             <datatype>gint</datatype>
             <position>12</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -160,7 +160,7 @@ All rights reserved. -->
             <datatype>gint</datatype>
             <position>16</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -196,7 +196,7 @@ All rights reserved. -->
             <datatype>gint</datatype>
             <position>20</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -259,7 +259,7 @@ All rights reserved. -->
             <datatype>gfloat</datatype>
             <position>27</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -268,7 +268,7 @@ All rights reserved. -->
             <datatype>gfloat</datatype>
             <position>28</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -277,7 +277,7 @@ All rights reserved. -->
             <datatype>gfloat</datatype>
             <position>29</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -286,7 +286,7 @@ All rights reserved. -->
             <datatype>gfloat</datatype>
             <position>30</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>
@@ -295,7 +295,7 @@ All rights reserved. -->
             <datatype>gfloat</datatype>
             <position>31</position>
             <widget>text</widget>
-            <editable>1</editable>
+            <editable>0</editable>
             <visible>1</visible>
         </column>
         <column>

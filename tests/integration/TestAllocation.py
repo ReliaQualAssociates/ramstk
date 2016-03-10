@@ -118,7 +118,9 @@ class TestAllocationController(unittest.TestCase):
         """
 
         self.DUT.request_allocation(self._dao)
-        self.assertFalse(self.DUT.save_all_allocation())
+        self.assertEqual(self.DUT.save_all_allocation(),
+                         [(0, 0), (2, 0), (3, 0), (5, 0), (6, 0), (7, 0),
+                          (8, 0), (105, 0), (115, 0), (88, 0), (102, 0)])
 
     @attr(all=True, integration=True)
     def test_trickle_down(self):

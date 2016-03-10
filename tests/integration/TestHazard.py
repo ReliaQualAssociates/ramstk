@@ -63,7 +63,7 @@ class TestHazardController(unittest.TestCase):
         """
         (TestHazard) delete_hazard should return 0 on success
         """
-# TODO: Get last id to delete.
+
         self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
         (_results,
          _error_code) = self.DUT.delete_hazard(0, 1)
@@ -96,4 +96,5 @@ class TestHazardController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
-        self.assertFalse(self.DUT.save_all_hazards())
+        self.assertEqual(self.DUT.save_all_hazards(),
+                         [(0, 3, 0), (0, 0, 0), (0, 2, 0)])

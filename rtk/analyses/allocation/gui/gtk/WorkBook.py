@@ -527,7 +527,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             self.dtcAllocation.trickle_down(self._hardware_model.hardware_id)
         elif index == 8:                    # Save all allocations
             _error_codes = self.dtcAllocation.save_all_allocation()
-            _error_codes = [_code for _code in _error_codes if _code[1] == 0]
+            _error_codes = [_code for _code in _error_codes if _code[1] != 0]
 
             if len(_error_codes) != 0:
                 for __, _code in enumerate(_error_codes):
