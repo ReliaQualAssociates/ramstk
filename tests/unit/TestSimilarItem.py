@@ -15,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from analyses.similar_item.SimilarItem import Model, SimilarItem
 
 __author__ = 'Andrew Rowland'
@@ -33,9 +32,6 @@ class TestSimilarItemModel(unittest.TestCase):
         """
         Setup the test fixture for the SimilarItem class.
         """
-
-        _database = '/tmp/tempdb.rtk'
-        self._dao = _dao(_database)
 
         self.DUT = Model()
 
@@ -101,6 +97,7 @@ class TestSimilarItemModel(unittest.TestCase):
         self.assertEqual(self.DUT.user_int_4, 0)
         self.assertEqual(self.DUT.user_int_5, 0)
         self.assertEqual(self.DUT.parent_id, 0)
+        self.assertEqual(self.DUT.method, 0)
 
     @attr(all=True, unit=True)
     def test_set_attributes(self):
@@ -114,7 +111,7 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1)
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1, 1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -132,7 +129,7 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, None, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1)
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1, 1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -150,7 +147,7 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0)
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -167,7 +164,8 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0,
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, None, None,
-                   None, None, None, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0)
+                   None, None, None, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0,
+                   0, 0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 
@@ -183,7 +181,7 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0)
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 1)
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()

@@ -41,15 +41,114 @@ class Model(object):                        # pylint: disable=R0902
     The Similar Item data model contains the attributes and methods of an
     similar item analysis.  The attributes of a Similar Item are:
 
-    :ivar hardware_id: default value: None
+    :ivar dict _quality_convert: the dictionary of quality adjustment factors
+                                 for the Topic 6.3.3 method.  Key is a tuple of
+                                 indices of form (old, new).  Value is the
+                                 adjustment factor.
+    :ivar dict _environment_convert: the dictionary of operating environment
+                                     adjustment factors for the Topic 6.3.3
+                                     method.  Key is a tuple of indices of form
+                                     (old, new).  Value is the adjustment
+                                     factor.
+    :ivar dict _temperature_convert: the dictionary of operating ambient
+                                     temperature adjustment factors for the
+                                     Topic 6.3.3 method.  Key is a tuple of
+                                     indices of form (old, new).  Value is the
+                                     adjustment factor.
+    :ivar int hardware_id: the Hardware ID the Similar Item is associated with.
+    :ivar int sia_id: the ID of the Similar Item.
+    :ivar int from_quality: the first index (old system) in the quality key.
+    :ivar int to_quality: the second index (new system) in the quality key.
+    :ivar int from_environment: the first index (old system) in the operating
+                                environment key.
+    :ivar int to_environment: the second index (new system) in the operating
+                              environment key.
+    :ivar float from_temperature: the first index (old system) in the operating
+                                  temperature key.
+    :ivar float to_temperature: the second index (new system) in the operating
+                                temperature key.
+    :ivar str change_desc_1: the description of change for the first
+                             user-defined change category.
+    :ivar float change_factor_1: the adjustment factor for the first
+                                 user-defined change category.
+    :ivar str change_desc_2: the description of change for the second
+                             user-defined change category.
+    :ivar float change_factor_2: the adjustment factor for the second
+                                 user-defined change category.
+    :ivar str change_desc_3: the description of change for the third
+                             user-defined change category.
+    :ivar float change_factor_3: the adjustment factor for the third
+                                 user-defined change category.
+    :ivar str change_desc_4: the description of change for the fourth
+                             user-defined change category.
+    :ivar float change_factor_4: the adjustment factor for the fourth
+                                 user-defined change category.
+    :ivar str change_desc_5: the description of change for the fifth
+                             user-defined change category.
+    :ivar float change_factor_5: the adjustment factor for the fifth
+                                 user-defined change category.
+    :ivar str change_desc_6: the description of change for the sixth
+                             user-defined change category.
+    :ivar float change_factor_6: the adjustment factor for the sixth
+                                 user-defined change category.
+    :ivar str change_desc_7: the description of change for the seventh
+                             user-defined change category.
+    :ivar float change_factor_7: the adjustment factor for the seventh
+                                 user-defined change category.
+    :ivar str change_desc_8: the description of change for the eighth
+                             user-defined change category.
+    :ivar float change_factor_8: the adjustment factor for the eighth
+                                 user-defined change category.
+    :ivar str change_desc_9: the description of change for the ninth
+                             user-defined change category.
+    :ivar float change_factor_9: the adjustment factor for the ninth
+                                 user-defined change category.
+    :ivar str change_desc_10: the description of change for the tenth
+                              user-defined change category.
+    :ivar float change_factor_10: the adjustment factor for the tenth
+                                 user-defined change category.
+    :ivar str function_1: the first user-defined Similar Item Analysis
+                          function.
+    :ivar str function_2: the second user-defined Similar Item Analysis
+                          function.
+    :ivar str function_3: the third user-defined Similar Item Analysis
+                          function.
+    :ivar str function_4: the fourth user-defined Similar Item Analysis
+                          function.
+    :ivar str function_5: the fifth user-defined Similar Item Analysis
+                          function.
+    :ivar float result_1: the result of the first Similar Item Analysis.
+    :ivar float result_2: the result of the second Similar Item Analysis.
+    :ivar float result_3: the result of the third Similar Item Analysis.
+    :ivar float result_4: the result of the fourth Similar Item Analysis.
+    :ivar float result_5: the result of the fifth Similar Item Analysis.
+    :ivar str user_blob_1: user-defined blob field 1.
+    :ivar str user_blob_2: user-defined blob field 2.
+    :ivar str user_blob_3: user-defined blob field 3.
+    :ivar str user_blob_4: user-defined blob field 4.
+    :ivar str user_blob_5: user-defined blob field 5.
+    :ivar float user_float_1: user-defined float field 1.
+    :ivar float user_float_2: user-defined float field 2.
+    :ivar float user_float_3: user-defined float field 3.
+    :ivar float user_float_4: user-defined float field 4.
+    :ivar float user_float_5: user-defined float field 5.
+    :ivar int user_int_1: user-defined integer field 1.
+    :ivar int user_int_2: user-defined integer field 2.
+    :ivar int user_int_3: user-defined integer field 3.
+    :ivar int user_int_4: user-defined integer field 4.
+    :ivar int user_int_5: user-defined integer field 5.
+    :ivar int parent_id: the Hardware ID of the parent Hardware item.
+    :ivar int method: the Similar Item method to use.
+                        * 1 = Topic 6.3.3
+                        * 2 = User-defined
     """
 
     def __init__(self):
         """
-        Initializes an Similar Item data model instance.
+        Method to initialize a Similar Item data model instance.
         """
 
-        # Initialize private dict attributes.
+        # Define private dict attributes.
         self._quality_convert = {(1, 1): 1.0, (1, 2): 0.8, (1, 3): 0.5,
                                  (1, 4): 0.2, (2, 1): 1.3, (2, 2): 1.0,
                                  (2, 3): 0.6, (2, 4): 0.3, (3, 1): 2.0,
@@ -94,7 +193,15 @@ class Model(object):                        # pylint: disable=R0902
                                      (70.0, 50.0): 1.5, (70.0, 60.0): 1.2,
                                      (70.0, 70.0): 1.0}
 
-        # Initialize public scalar attributes.
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.hardware_id = None
         self.sia_id = None
         self.from_quality = 0
@@ -149,10 +256,11 @@ class Model(object):                        # pylint: disable=R0902
         self.user_int_4 = 0
         self.user_int_5 = 0
         self.parent_id = 0
+        self.method = 0
 
     def set_attributes(self, values):
         """
-        Sets the Similar Item data model attributes.
+        Method to set the Similar Item data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -218,6 +326,7 @@ class Model(object):                        # pylint: disable=R0902
             self.user_int_4 = int(values[51])
             self.user_int_5 = int(values[52])
             self.parent_id = int(values[53])
+            self.method = int(values[54])
         except IndexError as _err:
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -229,7 +338,8 @@ class Model(object):                        # pylint: disable=R0902
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Similar Item data model attributes.
+        Method to retrieve the current values of the Similar Item data model
+        attributes.
 
         :return: (hardware_id, sia_id, from_quality, to_quality,
                   from_environment, to_environment, from_temperature,
@@ -245,7 +355,7 @@ class Model(object):                        # pylint: disable=R0902
                   user_blob_1, user_blob_2, user_blob_3, user_blob_4,
                   user_blob_5, user_float_1, user_float_2, user_float_3,
                   user_float_4, user_float_5, user_int_1, user_int_2,
-                  user_int_3, user_int_4, user_int_5, parent_id)
+                  user_int_3, user_int_4, user_int_5, parent_id, method)
         :rtype: tuple
         """
 
@@ -270,14 +380,14 @@ class Model(object):                        # pylint: disable=R0902
                    self.user_float_2, self.user_float_3, self.user_float_4,
                    self.user_float_5, self.user_int_1, self.user_int_2,
                    self.user_int_3, self.user_int_4, self.user_int_5,
-                   self.parent_id)
+                   self.parent_id, self.method)
 
         return _values
 
     def topic_633(self, hazard_rate):
         """
-        Calculates the similar item analysis using the approach found in The
-        Reliability Toolkit: Commercial Practices Edition, Topic 6.3.3.
+        Method to calculate the Similar Item analysis using the approach found
+        in The Reliability Toolkit: Commercial Practices Edition, Topic 6.3.3.
 
         :param float hazard_rate: the current hazard rate of the hardware item
                                   being calculated.
@@ -295,13 +405,13 @@ class Model(object):                        # pylint: disable=R0902
             self.change_factor_1 = 1.0
 
         try:
-            self.change_factor_2 = self._environment_convert[(self.from_environment,
-                                                              self.to_environment)]
+            self.change_factor_2 = self._environment_convert[
+                (self.from_environment, self.to_environment)]
         except KeyError:
             self.change_factor_2 = 1.0
         try:
-            self.change_factor_3 = self._temperature_convert[(self.from_temperature,
-                                                              self.to_temperature)]
+            self.change_factor_3 = self._temperature_convert[
+                (self.from_temperature, self.to_temperature)]
         except KeyError:
             self.change_factor_3 = 1.0
 
@@ -313,7 +423,7 @@ class Model(object):                        # pylint: disable=R0902
 
     def user_defined(self, hazard_rate):
         """
-        Calculates the user-defined similar item analysis.
+        Method to calculate the user-defined similar item analysis.
 
         :param float hazard_rate: the current hazard rate of the hardware item
                                   being calculated.
@@ -409,25 +519,35 @@ class SimilarItem(object):
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
                 Project database.
-    :ivar dicSimilarItem: Dictionary of the SimilarItem data models managed.  Key is the Hardware ID; value is a pointer to the SimilarItem data model instance.
+    :ivar dicSimilarItem: Dictionary of the SimilarItem data models managed.
+                          Key is the Hardware ID; value is a pointer to the
+                          SimilarItem data model instance.
     """
 
     def __init__(self):
         """
-        Initializes an SimilarItem data controller instance.
+        Method to initialize a SimilarItem data controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._dao = None
         self._last_id = 0
 
-        # Initialize public dictionary attributes.
+        # Define public dictionary attributes.
         self.dicSimilarItem = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
 
     def request_similar_item(self, dao):
         """
-        Reads the RTK Project database and loads all the SimilarItems.  For
-        each SimilarItem returned:
+        Method to read the RTK Project database and loads all the SimilarItems.
+        For each SimilarItem returned:
 
         #. Retrieve the SimilarItem from the RTK Project database.
         #. Create a SimilarItem data model instance.
@@ -466,7 +586,7 @@ class SimilarItem(object):
                          fld_user_float_2, fld_user_float_3, \
                          fld_user_float_4, fld_user_float_5, fld_user_int_1, \
                          fld_user_int_2, fld_user_int_3, fld_user_int_4, \
-                         fld_user_int_5, fld_parent_id \
+                         fld_user_int_5, fld_parent_id, fld_method \
                   FROM rtk_similar_item"
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
@@ -482,18 +602,21 @@ class SimilarItem(object):
 
         return(_results, _error_code)
 
-    def add_similar_item(self, hardware_id):
+    def add_similar_item(self, hardware_id, parent_id):
         """
-        Adds a record to rtk_similar_item in the open RTK Project database.
+        Method to add a record to rtk_similar_item in the open RTK Project
+        database.
 
         :param int hardware_id: the Hardware ID to add to the similar item
                                 analysis table.
+        :param int parent_id: the Hardware ID of the parent Hardware item.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
-        _query = "INSERT INTO rtk_similar_item (fld_hardware_id) \
-                  VALUES ({0:d})".format(hardware_id)
+        _query = "INSERT INTO rtk_similar_item \
+                  (fld_hardware_id, fld_parent_id) \
+                  VALUES ({0:d}, {1:d})".format(hardware_id, parent_id)
         (_results, _error_code, _sia_id) = self._dao.execute(_query,
                                                              commit=True)
 
@@ -504,7 +627,7 @@ class SimilarItem(object):
         #   2. Add the new Similar Item data model to the controller
         #      dictionary.
         if _results:
-            self._last_id = self._dao.get_last_id('rtk_similar_item')[0]
+            self._last_id = _sia_id
             _similar_item = Model()
             _similar_item.set_attributes((hardware_id, self._last_id, 0, 0, 0,
                                           0, 30, 30.0, 'No changes', 1.0,
@@ -515,14 +638,15 @@ class SimilarItem(object):
                                           'No changes', 1.0, '', '', '', '',
                                           '', 0.0, 0.0, 0.0, 0.0, 0.0, '', '',
                                           '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
-                                          0, 0, 0, 0, 0, 0))
+                                          0, 0, 0, 0, 0, parent_id))
             self.dicSimilarItem[_similar_item.hardware_id] = _similar_item
-# TODO: Handle errors.
+
         return (_results, _error_code)
 
     def calculate(self, hardware_id, hazard_rate, method=1):
         """
-        Calculates the similar item analysis for the selected hardware item.
+        Method to calculate the similar item analysis for the selected Hardware
+        item.
 
         :param int hardware_id: the Hardware ID to calculate the similar item
                                 analysis for.
@@ -542,11 +666,14 @@ class SimilarItem(object):
         elif method == 2:
             _similar_item.user_defined(hazard_rate)
 
+        if _similar_item.method == 0:
+            _similar_item.method = method
+
         return False
 
     def save_similar_item(self, hardware_id):
         """
-        Saves the Similar Item analysis for the selected Hardware.
+        Method to save the Similar Item analysis for the selected Hardware.
 
         :param int hardware_id: the Hardware ID to save the Similar Item
                                 analysis for.
@@ -583,8 +710,8 @@ class SimilarItem(object):
                       fld_user_float_5={45:f}, fld_user_int_1={46:d}, \
                       fld_user_int_2={47:d}, fld_user_int_3={48:d}, \
                       fld_user_int_4={49:d}, fld_user_int_5={50:d}, \
-                      fld_parent_id={51:d} \
-                  WHERE fld_hardware_id={52:d}".format(
+                      fld_parent_id={51:d}, fld_method={52:d} \
+                  WHERE fld_hardware_id={53:d}".format(
                       _similar_item.from_quality, _similar_item.to_quality,
                       _similar_item.from_environment,
                       _similar_item.to_environment,
@@ -622,21 +749,25 @@ class SimilarItem(object):
                       _similar_item.user_float_5, _similar_item.user_int_1,
                       _similar_item.user_int_2, _similar_item.user_int_3,
                       _similar_item.user_int_4, _similar_item.user_int_5,
-                      _similar_item.parent_id, hardware_id)
+                      _similar_item.parent_id, _similar_item.method,
+                      hardware_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-        # TODO: Handle errors.
+
         return (_results, _error_code)
 
     def save_all_similar_item(self):
         """
-        Saves all SimilarItem data models managed by the controller.
+        Method to save all SimilarItem data models managed by the controller.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+        _error_codes = []
+
         for _similar_item in self.dicSimilarItem.values():
             (_results,
              _error_code) = self.save_similar_item(_similar_item.hardware_id)
+            _error_codes.append((_similar_item.hardware_id, _error_code))
 
-        return False
+        return _error_codes

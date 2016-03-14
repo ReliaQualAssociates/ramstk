@@ -530,12 +530,13 @@ DROP TABLE IF EXISTS "rtk_similar_item";
 CREATE TABLE "rtk_similar_item" (
     "fld_hardware_id" INTEGER NOT NULL DEFAULT(0),                  -- Hardware ID.
     "fld_sia_id" INTEGER NOT NULL DEFAULT(0),                       -- Similar item analysis ID.
+    "fld_method" INTEGER NOT NULL DEFAULT(0),                       -- Similar item analysis method.
     "fld_from_quality" INTEGER DEFAULT(0),                          -- Quality level of the surrogate Hardware item.
-    "fld_to_quality" INTEGER DEFAULT(0),
+    "fld_to_quality" INTEGER DEFAULT(0),                            -- Quality level of the new Hardware item.
     "fld_from_environment" INTEGER DEFAULT(0),                      -- Operating environment of the surrogate Hardware item.
-    "fld_to_environment" INTEGER DEFAULT(0),
+    "fld_to_environment" INTEGER DEFAULT(0),                        -- Operating environment of the new Hardware item.
     "fld_from_temperature" FLOAT DEFAULT(30),                       -- Operating ambient temperature of the surrogate Hardware item.
-    "fld_to_temperature" FLOAT DEFAULT(30),
+    "fld_to_temperature" FLOAT DEFAULT(30),                         -- Operating ambient temperature of the new Hardware item.
     "fld_change_desc_1" BLOB DEFAULT('No changes'),
     "fld_change_factor_1" REAL DEFAULT(1),
     "fld_change_desc_2" BLOB DEFAULT('No changes'),
@@ -585,7 +586,6 @@ CREATE TABLE "rtk_similar_item" (
     PRIMARY KEY("fld_hardware_id", "fld_sia_id"),
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
--- INSERT INTO "rtk_similar_item" VALUES(0, 0, 0, 0, 0, 0, 30.0, 30.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, NULL, NULL, NULL, NULL, NULL, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0);
 
 DROP TABLE IF EXISTS "rtk_maintainability";
 CREATE TABLE "rtk_maintainability" (

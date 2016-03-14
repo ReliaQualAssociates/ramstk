@@ -17,7 +17,7 @@ import unittest
 from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
-from analyses.similar_item.SimilarItem import SimilarItem
+from analyses.similar_item.SimilarItem import Model, SimilarItem
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -42,7 +42,7 @@ class TestSimilarItemController(unittest.TestCase):
         self.DUT = SimilarItem()
 
     @attr(all=True, integration=True)
-    def test_request_similar_item(self):
+    def test0_request_similar_item(self):
         """
         (TestSimilarItem) request_similar_item should return 0 on success
         """
@@ -50,22 +50,21 @@ class TestSimilarItemController(unittest.TestCase):
         self.assertEqual(self.DUT.request_similar_item(self._dao)[1], 0)
 
     @attr(all=True, integration=True)
-    def test_add_similar_item(self):
+    def test1_add_similar_item(self):
         """
         (TestSimilarItem) add_similar_item should return (True, 0) on success
         """
 
         self.assertEqual(self.DUT.request_similar_item(self._dao)[1], 0)
         (_results,
-         _error_code) = self.DUT.add_similar_item(4)
+         _error_code) = self.DUT.add_similar_item(8, 0)
 
-        self.assertTrue(isinstance(self.DUT.dicSimilarItem[self.DUT._last_id],
-                                   Model))
+        self.assertTrue(isinstance(self.DUT.dicSimilarItem[8], Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test_calculate_topic_633(self):
+    def test2_calculate_topic_633(self):
         """
         (TestSimilarItem) calculate should return 0 on success when performing a Topic 6.3.3 analysis
         """
@@ -87,7 +86,7 @@ class TestSimilarItemController(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.dicSimilarItem[2].result_1, 0.00606060)
 
     @attr(all=True, integration=True)
-    def test_calculate_user_defined(self):
+    def test3_calculate_user_defined(self):
         """
         (TestSimilarItem) calculate should return 0 on success when performing a user-defined analysis
         """
@@ -112,7 +111,7 @@ class TestSimilarItemController(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.dicSimilarItem[2].result_2, 0.01521449)
 
     @attr(all=True, integration=True)
-    def test_save_similar_item(self):
+    def test4_save_similar_item(self):
         """
         (TestSimilarItem) save_similar_item returns (True, 0) on success
         """
@@ -121,10 +120,12 @@ class TestSimilarItemController(unittest.TestCase):
         self.assertEqual(self.DUT.save_similar_item(2), (True, 0))
 
     @attr(all=True, integration=True)
-    def test_save_all_similar_item(self):
+    def test5_save_all_similar_item(self):
         """
         (TestSimilarItem) save_all_similar_item returns False on success
         """
 
         self.DUT.request_similar_item(self._dao)
-        self.assertFalse(self.DUT.save_all_similar_item())
+        self.assertEqual(self.DUT.save_all_similar_item(),
+                         [(2, 0), (102, 0), (8, 0), (105, 0), (115, 0),
+                          (88, 0)])

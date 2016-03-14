@@ -351,7 +351,7 @@ class Allocation(object):
 
     def __init__(self):
         """
-        Initializes an Allocation data controller instance.
+        Method to initialize an Allocation data controller instance.
         """
 
         # Initialize private scalar attributes.
@@ -362,8 +362,8 @@ class Allocation(object):
 
     def request_allocation(self, dao):
         """
-        Reads the RTK Project database and loads all the Allocation.  For each
-        Allocation returned:
+        Method to read the RTK Project database and loads all the Allocation.
+        For each Allocation returned:
 
         #. Retrieve the Allocation from the RTK Project database.
         #. Create an Allocation data model instance.
@@ -416,10 +416,9 @@ class Allocation(object):
 
     def add_allocation(self):
         """
-        Adds a new Allocation data model to the dictionary of models controlled
-        by an instance of the Allocation data controller.
+        Method to add a new Allocation data model to the dictionary of models
+        controlled by an instance of the Allocation data controller.
 
-        :param int hardware_id: the hardware ID of the new Allocation.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -430,8 +429,8 @@ class Allocation(object):
 
     def delete_allocation(self, hardware_id):
         """
-        Deletes an Allocation data model instance from the dictionary of models
-        controlled by an instance of the Allocation data controller.
+        Method to delete an Allocation data model instance from the dictionary
+        of models controlled by an instance of the Allocation data controller.
 
         :param int hardware_id: the hardware ID of the Allocation to delete.
         :return: False if successful or True if an error is encountered.
@@ -479,7 +478,7 @@ class Allocation(object):
 
     def save_allocation(self, hardware_id):
         """
-        Saves the Allocation for the selected Hardware.
+        Method to save the Allocation for the selected Hardware.
 
         :param int hardware_id: the ID of the hardware whose Allocation is to
                                 be saved.
@@ -519,7 +518,7 @@ class Allocation(object):
 
     def save_all_allocation(self):
         """
-        Saves all Allocation data models managed by the controller.
+        Method to save all Allocation data models managed by the controller.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -536,8 +535,8 @@ class Allocation(object):
 
     def trickle_down(self, hardware_id):
         """
-        Sets the next indenture level hardware items' goal to the allocated
-        values calculated at the parent level.
+        Method to set the next indenture level hardware items' goal to the
+        allocated values calculated at the parent level.
 
         :param int hardware_id: the Hardware ID to trickle down.
         :return: False if successful or True if an error is encountered
