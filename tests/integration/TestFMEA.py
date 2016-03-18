@@ -8,14 +8,12 @@ This is the test class for testing the FMEA class.
 #       rtk.tests.integration.TestFMEA.py is part of The RTK Project
 #
 # All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
-# We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+import unittest
+from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 
@@ -139,11 +137,7 @@ class TestFMEAController(unittest.TestCase):
                          (True, 60))
 
         self.DUT.request_fmea(self._dao, 0)
-        _n = len(self.DUT.dicDFMEA[0].dicModes)
-        _n = self.DUT.dicDFMEA[0].dicModes.keys()[_n - 1]
-        _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
-
-        self.assertEqual(self.DUT.delete_mode(_mode_id + 1, 0),
+        self.assertEqual(self.DUT.delete_mode(100, 0),
                          (True, 60))
 
     @attr(all=True, integration=True)

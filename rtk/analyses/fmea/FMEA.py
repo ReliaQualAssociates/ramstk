@@ -63,12 +63,11 @@ class Model(object):
     Action data models to produce an overall FMEA/FMECA.  A Function or
     Hardware item will consist of one FMEA.  The attributes of a FMEA are:
 
-    :ivar dicModes: Dictionary of the Modes associated with the FMEA.  Key is
-                    the Mode ID; value is a pointer to the instance of the Mode
-                    data model.
-
-    :ivar assembly_id: default value: None
-    :ivar function_id: default value: None
+    :ivar dict dicModes: Dictionary of the Modes associated with the FMEA.  Key
+                         is the Mode ID; value is a pointer to the instance of
+                         the Mode data model.
+    :ivar int assembly_id: the ID of the Hardware associated with the FMEA.
+    :ivar int function_id: the ID of the Function associated with the FMEA.
     """
 
     def __init__(self, assembly_id, function_id):
@@ -89,10 +88,18 @@ class Model(object):
         if isinstance(assembly_id, int) and isinstance(function_id, int):
             raise ParentError
 
-        # Set public dict attribute default values.
+        # Define private dict attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dict attributes.
         self.dicModes = {}
 
-        # Set public scalar attribute default values.
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.function_id = function_id
         self.assembly_id = assembly_id
 
@@ -104,27 +111,35 @@ class FMEA(object):
     more FMEA data models.
 
     :ivar _dao: default value: None
-    :ivar dicDFMEA: Dictionary of the Hardware FMEA data models controlled.
-                    Key is the Hardware ID; value is a pointer to the instance
-                    of the FMEA data model.
-    :ivar dicFFMEA: Dictionary of the Function FMEA data models controlled.
-                    Key is the Function ID; value is a pointer to the instance
-                    of the FMEA data model.
+    :ivar dict dicDFMEA: Dictionary of the Hardware FMEA data models
+                         controlled.  Key is the Hardware ID; value is a
+                         pointer to the instance of the FMEA data model.
+    :ivar dict dicFFMEA: Dictionary of the Function FMEA data models
+                         controlled.  Key is the Function ID; value is a
+                         pointer to the instance of the FMEA data model.
     """
 
     def __init__(self):
         """
-        Initializes a FMEA controller instance.
+        Method to initialize a FMEA controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._dao = None
 
-        # Initialize public dictionary attributes.
+        # Define public dictionary attributes.
         self.dicDFMEA = {}
         self.dicFFMEA = {}
         self.dicMissions = {}
         self.dicPhases = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
 
     def request_fmea(self, dao, assembly_id=None,
                      function_id=None, revision_id=None):
@@ -144,16 +159,18 @@ class FMEA(object):
         #. Add instance pointer to the Mode (Mechanism, Cause, Control, Action)
            dictionary.
 
-        :param `rtk.DAO` dao: the Data Access object to use for communicating
-                              with the RTK Project database.
+        :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
+                    with the RTK Project database.
         :keyword int assembly_id: the Hardware item ID that the FMEA will be
                                   associated with.
         :keyword int assembly_id: the Function ID that the FMEA will be
                                   associated with.
+        :keyword int revision_id: the Revision ID that the FMEA will be
+                                  associated with.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # TODO: Refactor request_fmea; current McCabe Complexity Metrix = 13
+# TODO: Refactor request_fmea; current McCabe Complexity metric = 13.
         # Controller must be associated with either a Function or Hardware
         # item.
         if assembly_id is None and function_id is None:
@@ -280,7 +297,7 @@ class FMEA(object):
 
     def add_fmea(self, assembly_id=None, function_id=None):
         """
-        Adds a new FMEA to the dictionary of profiles managed by this
+        Method to add a new FMEA to the dictionary of profiles managed by this
         controller.
 
         :keyword int assembly_id: the Hardware item ID to add the FMEA.
@@ -295,7 +312,7 @@ class FMEA(object):
 
     def add_mode(self, assembly_id=None, function_id=None):
         """
-        Adds a new Mode to the FMEA.
+        Method to add a new Mode to the FMEA.
 
         :keyword int assembly_id: the Hardware item ID to add the FMEA.
         :keyword int function_id: the Function ID to add the FMEA.
@@ -333,7 +350,7 @@ class FMEA(object):
 
     def delete_mode(self, mode_id, assembly_id=None, function_id=None):
         """
-        Deletes a Mode from the FMEA.
+        Method to delete a Mode from the FMEA.
 
         :param int mode_id: the Mode ID to delete
         :keyword int assembly_id: the Hardware item ID to delete from.
@@ -364,10 +381,10 @@ class FMEA(object):
 
     def add_mechanism(self, hardware_id, mode_id):
         """
-        Adds a new Mechanism to the selected Mode.
+        Method to add a new Mechanism to the selected Mode.
 
-        :keyword int hardware_id: the Hardware ID to add the Mechanism.
-        :keyword int mode_id: the Mode ID to add the Mechanism.
+        :param int hardware_id: the Hardware ID to add the Mechanism.
+        :param int mode_id: the Mode ID to add the Mechanism.
         :return: (_results, _error_code, _last_id)
         :rtype: tuple
         """
@@ -390,7 +407,7 @@ class FMEA(object):
 
     def delete_mechanism(self, hardware_id, mode_id, mechanism_id):
         """
-        Deletes the selected Mechanism.
+        Method to delete the selected Mechanism.
 
         :param int hardware_id: the Hardware ID of the Mechanism to delete.
         :param int mode_id: the Mode ID of the Mechanism to delete.
@@ -416,7 +433,7 @@ class FMEA(object):
 
     def add_cause(self, hardware_id, mode_id, mechanism_id):
         """
-        Adds a new Cause to the selected Mechanism.
+        Method to add a new Cause to the selected Mechanism.
 
         :param int hardware_id: the Hardware ID to add the Cause.
         :param int mode_id: the Mode ID to add the Cause.
@@ -444,7 +461,7 @@ class FMEA(object):
 
     def delete_cause(self, hardware_id, mode_id, mechanism_id, cause_id):
         """
-        Deletes the selected Cause.
+        Method to delete the selected Cause.
 
         :param int hardware_id: the Hardware ID of the Cause to delete.
         :param int mode_id: the Mode ID of the Cause to delete.
@@ -471,7 +488,7 @@ class FMEA(object):
 
     def add_control(self, hardware_id, mode_id, mechanism_id, cause_id):
         """
-        Adds a new Control to the selected Mechanism or Cause.
+        Method to add a new Control to the selected Mechanism or Cause.
 
         :param int hardware_id: the Hardware ID to add the Control.
         :param int mode_id: the Mode ID to add the Control.
@@ -504,7 +521,7 @@ class FMEA(object):
     def delete_control(self, hardware_id, mode_id, mechanism_id, cause_id,
                        control_id):
         """
-        Deletes the selected Control.
+        Method to delete the selected Control.
 
         :param int hardware_id: the Hardware ID of the Cause to delete.
         :param int mode_id: the Mode ID of the Cause to delete.
@@ -534,7 +551,7 @@ class FMEA(object):
 
     def add_action(self, hardware_id, mode_id, mechanism_id, cause_id):
         """
-        Adds a new Action to the selected Mechanism or Cause.
+        Method to add a new Action to the selected Mechanism or Cause.
 
         :param int hardware_id: the Hardware ID to add the Control.
         :param int mode_id: the Mode ID to add the Control.
@@ -567,7 +584,7 @@ class FMEA(object):
     def delete_action(self, hardware_id, mode_id, mechanism_id, cause_id,
                       action_id):
         """
-        Deletes the selected Action.
+        Method to delete the selected Action.
 
         :param int hardware_id: the Hardware ID of the Cause to delete.
         :param int mode_id: the Mode ID of the Cause to delete.
@@ -597,7 +614,7 @@ class FMEA(object):
 
     def save_fmea(self, assembly_id=None, function_id=None):
         """
-        Saves the FMEA.  Wrapper for the _save_mode, _save_mechanism,
+        Method to save the FMEA.  Wrapper for the _save_mode, _save_mechanism,
         _save_cause, _save_control, and _save_action methods.
 
         :keyword int assembly_id: the Hardware item ID of the FMEA to save.
@@ -605,7 +622,7 @@ class FMEA(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # TODO: Consider refactoring save_fmea; current McCabe Complexity Metrix = 10
+# TODO: Consider refactoring save_fmea; current McCabe Complexity metric = 10.
         # Controller must be associated with either a Function or Hardware
         # item.
         if assembly_id is None and function_id is None:
@@ -636,10 +653,9 @@ class FMEA(object):
 
     def _save_mode(self, mode):
         """
-        Saves the Mode attributes to the RTK Project database.
+        Method to save the Mode attributes to the RTK Project database.
 
-        :param `rtk.analyses.fmea.Mode.Model` mode: the Mode data model to
-                                                    save.
+        :param mode: the :py:class:`rtk.analyses.fmea.Mode.Model` to save.
         :return: _error_code
         :rtype: int
         """
@@ -657,8 +673,8 @@ class FMEA(object):
                       fld_hazard_rate_source='{12:s}', \
                       fld_mode_probability='{13:s}', \
                       fld_effect_probability={14:f}, fld_mode_ratio={15:f}, \
-                      fld_mode_hazard_rate={16:f}, fld_mode_op_time={17:f}, \
-                      fld_mode_criticality={18:f}, fld_rpn_severity={19:d}, \
+                      fld_mode_hazard_rate={16:g}, fld_mode_op_time={17:f}, \
+                      fld_mode_criticality={18:g}, fld_rpn_severity={19:d}, \
                       fld_rpn_severity_new={20:d}, fld_critical_item={21:d}, \
                       fld_single_point={22:d}, fld_remarks='{23:s}' \
                   WHERE fld_mode_id={26:d} \
@@ -682,11 +698,10 @@ class FMEA(object):
 
     def _save_mechanism(self, mechanism):
         """
-        Saves the Mechanism attributes to the RTK Project database.
+        Method to save the Mechanism attributes to the RTK Project database.
 
-        :param `rtk.analyses.fmea.Mechanism.Model` mechanism: the Mechanism
-                                                              data model to
-                                                              save.
+        :param mechanism: the :py:class:`rtk.analyses.fmea.Mechanism.Model` to
+                          save.
         :return: _error_code
         :rtype: int
         """
@@ -709,10 +724,9 @@ class FMEA(object):
 
     def _save_cause(self, cause):
         """
-        Saves the Cause attributes to the RTK Project database.
+        Method to save the Cause attributes to the RTK Project database.
 
-        :param `rtk.analyses.fmea.Cause.Model` cause: the Cause data model to
-                                                      save.
+        :param cause: the :py:class:`rtk.analyses.fmea.Cause.Model` to save.
         :return: _error_code
         :rtype: int
         """
@@ -732,10 +746,10 @@ class FMEA(object):
 
     def _save_control(self, control):
         """
-        Saves the Control attributes to the RTK Project database.
+        Method to save the Control attributes to the RTK Project database.
 
-        :param `rtk.analyses.fmea.Control.Model` control: the Control data
-                                                          model to save.
+        :param control: the :py:class:`rtk.analyses.fmea.Control.Model` to
+                        save.
         :return: _error_code
         :rtype: int
         """
@@ -751,10 +765,9 @@ class FMEA(object):
 
     def _save_action(self, action):
         """
-        Saves the Action attributes to the RTK Project database.
+        Method to save the Action attributes to the RTK Project database.
 
-        :param `rtk.analyses.fmea.Action.Model` action: the Action data model
-                                                        to save.
+        :param action: the :py:class:`rtk.analyses.fmea.Action.Model` to save.
         :return: _error_code
         :rtype: int
         """

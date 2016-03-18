@@ -30,12 +30,15 @@ class Model(object):
     The attributes of a Control are:
 
 
-    :ivar mode_id: default value: 0
-    :ivar mechanism_id: default value: 0
-    :ivar cause_id: default value: 0
-    :ivar control_id: default value: 0
-    :ivar description: default value: ''
-    :ivar control_type: default value: 0
+    :ivar int mode_id: the ID of the failure Mode this Control is associated
+                       with.
+    :ivar int mechanism_id: the ID of the failure Mechanism this Control is
+                            associated with.
+    :ivar int cause_id: the ID of the failure Cause this Control is associated
+                        with.
+    :ivar int control_id: the ID of this Control.
+    :ivar str description: the description of this Control.
+    :ivar int control_type: the type of Control
     """
 
     def __init__(self):

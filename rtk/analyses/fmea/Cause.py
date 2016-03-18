@@ -29,17 +29,18 @@ class Model(object):
     A Mechanism will consist of one or more Causes.  The attributes of a Cause
     are:
 
-    :ivar dicControls: Dictionary of the Controls associated with the Cause.
-                       Key is the Control ID, value is a pointer to the
-                       instance of the Controldata model.
-    :ivar dicActions: Dictionary of the Actions associated with the Cause.
-                      Key is the Action ID, value is a pointer to the instance
-                      of the Action data model.
-
-    :ivar mode_id: default value: 0
-    :ivar mechanism_id: default value: 0
-    :ivar cause_id: default value: 0
-    :ivar description: default value: ''
+    :ivar dict dicControls: Dictionary of the Controls associated with the
+                            Cause. Key is the Control ID, value is a pointer to
+                            the instance of the Control data model.
+    :ivar dict dicActions: Dictionary of the Actions associated with the Cause.
+                           Key is the Action ID, value is a pointer to the
+                           instance of the Action data model.
+    :ivar int mode_id: the ID of the failure Mode this Cause is associated
+                       with.
+    :ivar int mechanism_id: the ID of the failure Mechanism this Cause is
+                            associated with.
+    :ivar int cause_id: the ID of the failure Cause.
+    :ivar str description: the description of the failure Cause.
     """
 
     def __init__(self):
@@ -47,11 +48,19 @@ class Model(object):
         Method to initialize a Cause data model instance.
         """
 
-        # Set public dict attribute default values.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
         self.dicControls = {}
         self.dicActions = {}
 
-        # Set public scalar attribute default values.
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.mode_id = 0
         self.mechanism_id = 0
         self.cause_id = 0

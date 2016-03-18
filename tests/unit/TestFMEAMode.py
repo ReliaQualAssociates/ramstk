@@ -176,7 +176,10 @@ class TestFMEAModeModel(unittest.TestCase):
         (TestFMEAMode) calculate raises OutOfRangeError for item_hr < 0.0
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 0.0, 1, 1)
+        self.DUT.mode_ratio = 1.0
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 0.0)
 
     @attr(all=False, unit=True)
     def test_criticality_out_of_range_ratio_input(self):
@@ -184,7 +187,10 @@ class TestFMEAModeModel(unittest.TestCase):
         (TestFMEAMode) calculate raises OutOfRangeError for 0.0 > ratio > 1.0
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1.1, -0.1, 1)
+        self.DUT.mode_ratio = -0.1
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1.1)
 
     @attr(all=False, unit=True)
     def test_criticality_out_of_range_op_time_input(self):
@@ -192,7 +198,10 @@ class TestFMEAModeModel(unittest.TestCase):
         (TestFMEAMode) calculate raises OutOfRangeError for 0.0 > operating time
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 0.5, -1.2)
+        self.DUT.mode_ratio = 0.5
+        self.DUT.mode_op_time = -1.2
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
 
     @attr(all=False, unit=True)
     def test_criticality_out_of_range_eff_prob_input(self):
@@ -200,7 +209,10 @@ class TestFMEAModeModel(unittest.TestCase):
         (TestFMEAMode) calculate raises OutOfRangeError for 0.0 <= effect probability =< 1.0
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 11, 1, 2.3)
+        self.DUT.mode_ratio = 11.0
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 2.3
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
 
     @attr(all=False, unit=True)
     def test_criticality_out_of_range_mode_hazard_rate(self):
@@ -208,7 +220,10 @@ class TestFMEAModeModel(unittest.TestCase):
         (TestFMEAMode) calculate raises OutOfRangeError for 0 > mode hazard rate
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, -0.5, 1)
+        self.DUT.mode_ratio = -0.5
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
 
     @attr(all=False, unit=True)
     def test_criticality_out_of_range_mode_criticaility(self):
@@ -216,7 +231,10 @@ class TestFMEAModeModel(unittest.TestCase):
         (TestFMEAMode) calculate raises OutOfRangeError for 0 > mode criticality
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, -0.5, 1)
+        self.DUT.mode_ratio = -0.5
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
 
 
 class TestModeController(unittest.TestCase):

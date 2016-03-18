@@ -30,20 +30,23 @@ class Model(object):
     The attributes of an Action are:
 
 
-    :ivar mode_id: default value: 0
-    :ivar mechanism_id: default value: 0
-    :ivar cause_id: default value: 0
-    :ivar action_id: default value: 0
-    :ivar action_recommended: default value: ''
-    :ivar action_category: default value: 0
-    :ivar action_owner: default value: 0
-    :ivar action_due_date: default value: 0
-    :ivar action_status: default value: 0
-    :ivar action_taken: default value: ''
-    :ivar action_approved: default value: 0
-    :ivar action_approved_date: default value: 0
-    :ivar action_closed: default value: 0
-    :ivar action_closed_date: default value: 0
+    :ivar int mode_id: the ID of the failure Mode this Action is associated
+                       with.
+    :ivar int mechanism_id: the ID of the failure Mechanism this Action is
+                            associated with.
+    :ivar int cause_id: the ID of the failure Cause this Action is associated
+                        with.
+    :ivar int action_id: the ID of this Action.
+    :ivar str action_recommended: the description of the recommended Action.
+    :ivar int action_category: the index of the category of this Action.
+    :ivar int action_owner: the index of the owner of this Action.
+    :ivar int action_due_date: the ordinal due date of this Action.
+    :ivar int action_status: the index of the status of this Action.
+    :ivar str action_taken: the description of the Action actually taken.
+    :ivar int action_approved: indicates whether or not the Action is approved.
+    :ivar int action_approved_date: the ordinal date the Action was approved.
+    :ivar int action_closed: indicates whether or not the Action is closed.
+    :ivar int action_closed_date: the ordinal date the Action was closed.
     """
 
     def __init__(self):
