@@ -17,9 +17,9 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
+    import Configuration
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
 from Mechanism import Model as Mechanism
 from Load import Model as Load
 from Stress import Model as Stress
@@ -31,7 +31,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -54,11 +54,11 @@ class Model(object):
     Hardware item will consist of one PoF analysis.  The attributes of a PoF
     are:
 
-    :ivar dicMechanisms: Dictionary of the Mechanisms associated with the PoF.
-                         Key is the Mechanism ID; value is a pointer to the
-                         instance of the Mechanism data model.
-
-    :ivar assembly_id: default value: None
+    :ivar dict dicMechanisms: Dictionary of the Mechanisms associated with the
+                              PoF.  Key is the Mechanism ID; value is a pointer
+                              to the instance of the Mechanism data model.
+    :ivar int assembly_id: the Hardware item ID the PoF analysis is associated
+                           with.
     """
 
     def __init__(self, assembly_id):
@@ -73,10 +73,18 @@ class Model(object):
         if assembly_id is None:
             raise ParentError
 
-        # Set public dict attribute default values.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
         self.dicMechanisms = {}
 
-        # Set public scalar attribute default values.
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.assembly_id = assembly_id
 
 
@@ -86,22 +94,31 @@ class PoF(object):
     and an RTK view model.  A single PoF data controller can manage one or
     more PoF data models.
 
-    :ivar _dao: default value: None
-    :ivar dicPoF: Dictionary of the PoF data models controlled.  Key is the
-                  Hardware ID; value is a pointer to the instance of the PoF
-                  data model.
+    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` used to communicate with the
+                RTK Project database.
+    :ivar dict dicPoF: Dictionary of the PoF data models controlled.  Key is
+                       the Hardware ID; value is a pointer to the instance of
+                       the PoF data model.
     """
 
     def __init__(self):
         """
-        Initializes a PoF controller instance.
+        Method to initialize a PoF controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._dao = None
 
-        # Initialize public dictionary attributes.
+        # Define public dictionary attributes.
         self.dicPoF = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
 
     def request_pof(self, dao, assembly_id=None):    # pylint: disable=R0914
         """
@@ -120,8 +137,8 @@ class PoF(object):
         #. Add instance pointer to the Mechanism (Load, Stress, Method)
            dictionary.
 
-        :param `rtk.DAO` dao: the Data Access object to use for communicating
-                              with the RTK Project database.
+        :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
+                    with the RTK Project database.
         :keyword int assembly_id: the Hardware item ID that the PoF will be
                                   associated with.
         :return: False if successful or True if an error is encountered.
@@ -199,7 +216,7 @@ class PoF(object):
 
     def add_pof(self, hardware_id=None):
         """
-        Adds a new PoF to the dictionary of profiles managed by this
+        Method to add a new PoF to the dictionary of profiles managed by this
         controller.
 
         :keyword int hardware_id: the Hardware item ID to add the PoF.
@@ -213,7 +230,7 @@ class PoF(object):
 
     def add_mechanism(self, hardware_id):
         """
-        Adds a new Mechanism to the selected Hardware item.
+        Method to add a new Mechanism to the selected Hardware item.
 
         :param int hardware_id: the Hardware ID to add the Mechanism.
         :return: (_results, _error_code, _last_id)
@@ -236,7 +253,7 @@ class PoF(object):
 
     def delete_mechanism(self, hardware_id, mechanism_id):
         """
-        Deletes the selected Mechanism.
+        Method to delete the selected Mechanism.
 
         :param int hardware_id: the Hardware ID of the Mechanism to delete.
         :param int mechanism_id: the Mechanism ID to delete.
@@ -260,7 +277,7 @@ class PoF(object):
 
     def add_load(self, hardware_id, mechanism_id):
         """
-        Adds a new Operating Load to the selected Mechanism.
+        Method to add a new Operating Load to the selected Mechanism.
 
         :param int hardware_id: the Hardware ID to add the Load.
         :param int mechanism_id: the Mechanism ID to add the Load.
@@ -285,7 +302,7 @@ class PoF(object):
 
     def delete_load(self, hardware_id, mechanism_id, load_id):
         """
-        Deletes the selected operating Load.
+        Method to delete the selected operating Load.
 
         :param int hardware_id: the Hardware ID of the operating Load to
                                 delete.
@@ -312,7 +329,7 @@ class PoF(object):
 
     def add_stress(self, hardware_id, mechanism_id, load_id):
         """
-        Adds a new operating Stress to the selected operating Load.
+        Method to add a new operating Stress to the selected operating Load.
 
         :param int hardware_id: the Hardware ID to add the operating Stress.
         :param int mechanism_id: the Mechanism ID to add the operating Stress.
@@ -339,7 +356,7 @@ class PoF(object):
 
     def delete_stress(self, hardware_id, mechanism_id, load_id, stress_id):
         """
-        Deletes the selected operating Stress.
+        Method to delete the selected operating Stress.
 
         :param int hardware_id: the Hardware ID of the operating Stress to
                                 delete.
@@ -368,7 +385,7 @@ class PoF(object):
 
     def add_method(self, hardware_id, mechanism_id, load_id, stress_id):
         """
-        Adds a new test Method to the selected operating Stress.
+        Method to add a new test Method to the selected operating Stress.
 
         :param int hardware_id: the Hardware ID to add the test Method.
         :param int mechanism_id: the Mechanism ID to add the test Method.
@@ -398,7 +415,7 @@ class PoF(object):
     def delete_method(self, hardware_id, mechanism_id, load_id, stress_id,
                       method_id):
         """
-        Deletes the selected test Method.
+        Method to delete the selected test Method.
 
         :param int hardware_id: the Hardware ID of the test Method to delete.
         :param int mechanism_id: the Mechanism ID of the test Method to delete.
@@ -429,7 +446,7 @@ class PoF(object):
 
     def save_pof(self, hardware_id=None):
         """
-        Saves the PoF.  Wrapper for the _save_mechanism, _save_load,
+        Method to save the PoF.  Wrapper for the _save_mechanism, _save_load,
         _save_stress, and _save_method methods.
 
         :keyword int hardware_id: the Hardware item ID of the PoF to save.
@@ -455,11 +472,10 @@ class PoF(object):
 
     def _save_mechanism(self, mechanism):
         """
-        Saves the Mechanism attributes to the RTK Project database.
+        Method to save the Mechanism attributes to the RTK Project database.
 
-        :param `rtk.analyses.pof.Mechanism.Model` mechanism: the Mechanism
-                                                             data model to
-                                                             save.
+        :param mechanism: the :py:class:`rtk.analyses.pof.Mechanism.Model` data
+                          model to save.
         :return: _error_code
         :rtype: int
         """
@@ -474,9 +490,11 @@ class PoF(object):
 
     def _save_load(self, load):
         """
-        Saves the operating Load attributes to the RTK Project database.
+        Method to save the operating Load attributes to the RTK Project
+        database.
 
-        :param `rtk.analyses.pof.Load.Model` load: the Load data model to save.
+        :param load: the :py:class:`rtk.analyses.pof.Load.Model` data model to
+                     save.
         :return: _error_code
         :rtype: int
         """
@@ -493,10 +511,11 @@ class PoF(object):
 
     def _save_stress(self, stress):
         """
-        Saves the operating Stess attributes to the RTK Project database.
+        Method to save the operating Stess attributes to the RTK Project
+        database.
 
-        :param `rtk.analyses.pof.Stress.Model` stress: the Stress data model to
-                                                       save.
+        :param stress: the :py:class:`rtk.analyses.pof.Stress.Model` data model
+                       to save.
         :return: _error_code
         :rtype: int
         """
@@ -514,10 +533,10 @@ class PoF(object):
 
     def _save_method(self, method):
         """
-        Saves the test Method attributes to the RTK Project database.
+        Method to save the test Method attributes to the RTK Project database.
 
-        :param `rtk.analyses.pof.Method.Model` method: the Method data model
-                                                       to save.
+        :param method: the :py:class:`rtk.analyses.pof.Method.Model` data model
+                       to save.
         :return: _error_code
         :rtype: int
         """

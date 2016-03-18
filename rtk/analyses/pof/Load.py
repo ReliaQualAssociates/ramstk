@@ -17,11 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +29,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,16 +42,15 @@ class Model(object):
     Failure operating load.  A PoF will consist of one or more Loads per
     failure mechanism.  The attributes of a Load are:
 
-    :ivar dicStresses: Dictionary of the operating stresses associated with the
-                       operating load.  Key is the Stress ID; value is a
-                       pointer to the instance of the operating Stress data
-                       model.
-
-    :ivar mechanism_id: default value: None
-    :ivar load_id: default value: 0
-    :ivar description: default value: ''
-    :ivar damage_model: default value: 0
-    :ivar priority: default value: 0
+    :ivar dict dicStresses: Dictionary of the operating stresses associated
+                            with the operating load.  Key is the Stress ID;
+                            value is a pointer to the instance of the operating
+                            Stress data model.
+    :ivar int mechanism_id: the PoF Mechanism ID the Load is associated with.
+    :ivar int load_id: the PoF Load ID.
+    :ivar str description: the description of the PoF Load.
+    :ivar int damage_model: the index of the damage (methematical) model.
+    :ivar int priority: the priority of the PoF Load.
     """
 
     def __init__(self, mechanism_id=None):
@@ -59,10 +58,18 @@ class Model(object):
         Method to initialize a Load data model instance.
         """
 
-        # Set public dict attribute default values.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
         self.dicStresses = {}
 
-        # Set public scalar attribute default values.
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.mechanism_id = mechanism_id
         self.load_id = None
         self.description = ''
@@ -88,13 +95,13 @@ class Model(object):
             self.damage_model = int(values[3])
             self.priority = int(values[4])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)

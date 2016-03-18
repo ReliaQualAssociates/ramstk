@@ -15,7 +15,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from analyses.pof.PhysicsOfFailure import Model, PoF, ParentError
 
 __author__ = 'Andrew Rowland'
@@ -37,7 +36,7 @@ class TestPoFModel(unittest.TestCase):
         self.DUT = Model(0)
 
     @attr(all=True, unit=True)
-    def test_PoF_create(self):
+    def test_pof_create(self):
         """
         (TestPoF) __init__ should return instance of PoF data model
         """
@@ -47,7 +46,7 @@ class TestPoFModel(unittest.TestCase):
         self.assertEqual(self.DUT.assembly_id, 0)
 
     @attr(all=True, unit=True)
-    def test_PoF_create_parent_problem(self):
+    def test_pof_create_parent_problem(self):
         """
         (TestPoF) __init__ raises ParentError for None input
         """

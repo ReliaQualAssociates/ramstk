@@ -96,24 +96,32 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                                       ambient temperature.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, modulebook):
         """
         Method to initialize the Work Book view for the Similar Item Analysis
         module.
 
-        :param rtk.analyses.similar_item.SimilarItem controller: the Similar
-                                                                 Item data
-                                                                 controller.
+        :param controller: the :py:class`rtk.analyses.similar_item.SimilarItem.SimilarItem`
+                           data controller.
+        :param modulebook: the :py:class:`rtk.hardware.ModuleBook` associated
+                           with the Hazard.
         """
 
         gtk.HBox.__init__(self)
 
-        # Initialize private list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lst_handler_id = []
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
+        self._modulebook = modulebook
 
-        # Initialize public scalar attributes.
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.dtcSimilarItem = controller
 
         self.btnEditFunction = Widgets.make_button(width=35, image='edit')

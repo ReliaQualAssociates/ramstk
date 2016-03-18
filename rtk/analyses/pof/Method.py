@@ -17,11 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +29,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,11 +42,12 @@ class Model(object):
     Failure test method.  A PoF will consist of one or more Methods per
     operating stress.  The attributes of a Method are:
 
-    :ivar stress_id: default value: None
-    :ivar method_id: default value: None
-    :ivar description: default value: ''
-    :ivar boundary_conditions: default value: ''
-    :ivar remarks: default value: ''
+    :ivar int stress_id: the PoF Stress ID associated with the PoF test Method.
+    :ivar int method_id: the ID of the PoF test Method.
+    :ivar str description: the description of the PoF test Method.
+    :ivar str boundary_conditions: the boundary conditions for the PoF test
+                                   Method.
+    :ivar str remarks: any remarks associated with the PoF test Method.
     """
 
     def __init__(self, stress_id=None):
@@ -54,7 +55,17 @@ class Model(object):
         Method to initialize a Method data model instance.
         """
 
-        # Set public scalar attribute default values.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.stress_id = stress_id
         self.method_id = None
         self.description = ''
@@ -80,13 +91,13 @@ class Model(object):
             self.boundary_conditions = str(values[3])
             self.remarks = str(values[4])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)
@@ -107,9 +118,10 @@ class Model(object):
 
 class Method(object):
     """
-    The Method data controller provides an interface between the Method data model
-    and an RTK view model.  A single Method data controller can control one or
-    more Method data models.  Currently the Method data controller is unused.
+    The Method data controller provides an interface between the Method data
+    model and an RTK view model.  A single Method data controller can control
+    one or more Method data models.  Currently the Method data controller is
+    unused.
     """
 
     def __init__(self):
