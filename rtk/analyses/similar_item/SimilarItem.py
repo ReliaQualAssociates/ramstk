@@ -626,7 +626,7 @@ class SimilarItem(object):
         #   3. Set the attributes of the new Similar Item data model instance.
         #   2. Add the new Similar Item data model to the controller
         #      dictionary.
-        if _results:
+        if _error_code == 0:
             self._last_id = _sia_id
             _similar_item = Model()
             _similar_item.set_attributes((hardware_id, self._last_id, 0, 0, 0,
@@ -642,6 +642,21 @@ class SimilarItem(object):
             self.dicSimilarItem[_similar_item.hardware_id] = _similar_item
 
         return (_results, _error_code)
+
+    def delete_similar_item(self, hardware_id):
+        """
+        Method to delete a Similar Item data model instance from the dictionary
+        of models controlled by an instance of the Similar Item data
+        controller.
+
+        :param int hardware_id: the hardware ID of the Similar Item to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self.dicSimilarItem.pop(hardware_id)
+
+        return False
 
     def calculate(self, hardware_id, hazard_rate, method=1):
         """
