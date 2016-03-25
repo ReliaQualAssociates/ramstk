@@ -349,6 +349,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
         self._hardware_model = controller.dicHardware[hardware_id]
         _model = self.tvwAllocation.get_model()
+        _model.clear()
 
         # Find the immediate child assemblies.
         _children = [_a for _a in self.dtcAllocation.dicAllocation.values()

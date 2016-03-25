@@ -414,18 +414,31 @@ class Allocation(object):
 
         return(_results, _error_code)
 
-    def add_allocation(self):
+    def add_allocation(self, hardware_id, parent_id):
         """
         Method to add a new Allocation data model to the dictionary of models
         controlled by an instance of the Allocation data controller.
 
+        :param int hardware_id: the Hardware ID of the Allocation to add.
+        :param int parent_id: the ID of the parent Hardware item.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self.request_allocation(self._dao)
+        # Add a new Allocation model to the open RTK Project database.
+        _query = "INSERT INTO rtk_allocation (fld_hardware_id, fld_parent_id) \
+                  VALUES ({0:d}, {1:d})".format(hardware_id, parent_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return False
+        # If the new Allocation was successfully added to the database, create
+        # and a new Allocation model to the dictionary.
+        if _error_code == 0:
+            _allocation = Model()
+            _allocation.hardware_id = hardware_id
+            _allocation.parent_id = parent_id
+            self.dicAllocation[_allocation.hardware_id] = _allocation
+
+        return(_results, _error_code)
 
     def delete_allocation(self, hardware_id):
         """
