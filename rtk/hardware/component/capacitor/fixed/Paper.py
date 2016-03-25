@@ -86,6 +86,25 @@ class Bypass(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
+    def set_attributes(self, values):
+        """
+        Method to set the Capacitor data model attributes.
+
+        :param tuple values: tuple of values to assign to the instance
+                             attributes.
+        :return: (_code, _msg); the error code and error message.
+        :rtype: tuple
+        """
+
+        _code = 0
+        _msg = ''
+
+        (_code, _msg) = Capacitor.set_attributes(self, values[:119])
+
+        self._lambdab_count = self._lambdab_count[self.specification - 1]
+
+        return(_code, _msg)
+
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Fixed Paper Bypass
@@ -101,7 +120,6 @@ class Bypass(Capacitor):
 
         if self.hazard_rate_type == 1:
             self.hazard_rate_model['equation'] = 'lambdab * piQ'
-            self._lambdab_count = self._lambdab_count[self.specification - 1]
         elif self.hazard_rate_type == 2:
             self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV'
 
