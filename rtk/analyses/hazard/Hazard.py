@@ -351,9 +351,9 @@ class Hazard(object):
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
                 Project database.
-    :ivar dicHazard: Dictionary of the Hazard data models managed.  Key is the
-                     Hardware ID; value is a pointer to the Hazard data model
-                     instance.
+    :ivar dicHazard: Dictionary of the Hazard data models managed.  Key is a
+                     tuple of the Hardware ID and Hazard ID; value is a pointer
+                     to the Hazard data model instance.
     """
 
     def __init__(self):
@@ -458,6 +458,7 @@ class Hazard(object):
         """
         Method to delete a potential Hazard from the RTK Project database.
 
+        :param int hardware_id: the Hardware ID to delete the hazards from.
         :param int hazard_id: the Hazard ID to delete.
         :return: (_results, _error_code)
         :rtype: tuple
