@@ -165,7 +165,8 @@ class Inputs(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
 
         _fixed.show_all()
@@ -204,7 +205,8 @@ class Inputs(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtCommercialPiQ, _x_pos, _y_pos[1])
         _fixed.put(self.txtFrequency, _x_pos, _y_pos[2])

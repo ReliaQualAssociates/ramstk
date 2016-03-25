@@ -230,9 +230,12 @@ class Inputs(gtk.Frame):
             self.cmbQuality.insert_text(_index, _quality)
 
         # Place all the input widgets.
-        self.cmbApplication.reparent(_fixed)
-        self.cmbQuality.reparent(_fixed)
-        self.txtQOverride.reparent(_fixed)
+        if self.cmbApplication.get_parent() is not None:
+            self.cmbApplication.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
+        if self.txtQOverride.get_parent() is not None:
+            self.txtQOverride.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtQOverride, _x_pos, _y_pos[1])
         _fixed.put(self.cmbApplication, _x_pos, _y_pos[2])
@@ -274,22 +277,12 @@ class Inputs(gtk.Frame):
         self.add(_scrollwindow)
 
         # Place all the input widgets.
-        self.cmbApplication.reparent(_fixed)
-        self.cmbConstruction.reparent(_fixed)
-        self.cmbMatching.reparent(_fixed)
-        self.cmbQuality.reparent(_fixed)
-        self.cmbType.reparent(_fixed)
-        self.txtDutyCycle.reparent(_fixed)
-        self.txtFrequency.reparent(_fixed)
-        self.txtFwdCurrent.reparent(_fixed)
-        self.txtIRated.reparent(_fixed)
-        self.txtNCharacters.reparent(_fixed)
-        self.txtPOperating.reparent(_fixed)
-        self.txtPRated.reparent(_fixed)
-        self.txtPRequired.reparent(_fixed)
-        self.txtQOverride.reparent(_fixed)
-        self.txtVApplied.reparent(_fixed)
-        self.txtVRated.reparent(_fixed)
+        if self.cmbApplication.get_parent() is not None:
+            self.cmbApplication.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
+        if self.txtQOverride.get_parent() is not None:
+            self.txtQOverride.reparent(_fixed)
 
         if self._subcategory == 1:          # Low frequency diode
             self._lst_stress_labels.append(_(u"Application:"))
@@ -1162,8 +1155,10 @@ class Results(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
-        self.txtPiQ.reparent(_fixed)
+        if self.txtLambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[0])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[1])
 
@@ -1237,8 +1232,10 @@ class Results(gtk.Frame):
             _fixed.put(self.txtPiP, _x_pos, _y_pos[7])
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
-        self.txtPiQ.reparent(_fixed)
+        if self.txtLambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiT, _x_pos, _y_pos[2])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[3])

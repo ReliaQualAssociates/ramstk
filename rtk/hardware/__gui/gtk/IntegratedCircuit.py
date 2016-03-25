@@ -238,8 +238,10 @@ class Inputs(gtk.Frame):
                                            u"connection."))
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
-        self.txtYears.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
+        if self.txtYears.get_parent() is not None:
+            self.txtYears.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtYears, _x_pos, _y_pos[1])
 
@@ -301,8 +303,10 @@ class Inputs(gtk.Frame):
                                                  u"above."))
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
-        self.txtYears.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
+        if self.txtYears.get_parent() is not None:
+            self.txtYears.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtCommercialPiQ, _x_pos, _y_pos[1])
 
@@ -879,8 +883,10 @@ class Results(gtk.Frame):
                                        u"selected integrated circuit."))
 
         # Place the reliability result display widgets.
-        self.txtPiQ.reparent(_fixed)
-        self.txtPiL.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
+        if self.txtPiL.get_parent() is not None:
+            self.txtPiL.reparent(_fixed)
         _fixed.put(self.txtLambdaG, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[2])
         _fixed.put(self.txtPiL, _x_pos, _y_pos[3])
@@ -930,8 +936,10 @@ class Results(gtk.Frame):
                                        u"the selected integrated circuit."))
 
         # Place the reliability result display widgets.
-        self.txtPiQ.reparent(_fixed)
-        self.txtPiL.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
+        if self.txtPiL.get_parent() is not None:
+            self.txtPiL.reparent(_fixed)
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiE, _x_pos, _y_pos[2])
         _fixed.put(self.txtPiT, _x_pos, _y_pos[3])

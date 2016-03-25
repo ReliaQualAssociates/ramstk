@@ -263,6 +263,38 @@ class Inputs(gtk.Frame):
                                                u"voltage for the selected "
                                                u"capacitor."))
 
+        # Connect signals to callback functions.
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
+        self._lst_handler_id.append(
+            self.txtCommercialPiQ.connect('focus-out-event',
+                                          self._on_focus_out, 1))
+        self._lst_handler_id.append(
+            self.txtVoltRated.connect('focus-out-event',
+                                      self._on_focus_out, 2))
+        self._lst_handler_id.append(
+            self.txtVoltApplied.connect('focus-out-event',
+                                        self._on_focus_out, 3))
+        self._lst_handler_id.append(
+            self.txtACVoltApplied.connect('focus-out-event',
+                                          self._on_focus_out, 4))
+        self._lst_handler_id.append(
+            self.txtCapacitance.connect('focus-out-event',
+                                        self._on_focus_out, 5))
+        self._lst_handler_id.append(
+            self.cmbSpecification.connect('changed',
+                                          self._on_combo_changed, 6))
+        self._lst_handler_id.append(
+            self.cmbSpecSheet.connect('changed', self._on_combo_changed, 7))
+        self._lst_handler_id.append(
+            self.txtEffResistance.connect('focus-out-event',
+                                          self._on_focus_out, 8))
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed', self._on_combo_changed, 9))
+        self._lst_handler_id.append(
+            self.cmbConfiguration.connect('changed',
+                                          self._on_combo_changed, 10))
+
     def create_217_count_inputs(self, x_pos=5):
         """
         Method to create the MIL-HDBK-217FN2 parts count input widgets for
@@ -302,16 +334,12 @@ class Inputs(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
-        self.cmbSpecification.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
+        if self.cmbSpecification.get_parent() is not None:
+            self.cmbSpecification.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.cmbSpecification, _x_pos, _y_pos[1])
-
-        # Connect signals to callback functions.
-        _index = 0
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, _index))
-        _index += 1
 
         _fixed.show_all()
 
@@ -356,8 +384,10 @@ class Inputs(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
-        self.cmbSpecification.reparent(_fixed)
+        if self.cmbQuality.get_parent is not None:
+            self.cmbQuality.reparent(_fixed)
+        if self.cmbSpecification.get_parent is not None:
+            self.cmbSpecification.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtCommercialPiQ, _x_pos, _y_pos[1])
         _fixed.put(self.txtVoltRated, _x_pos, _y_pos[2])
@@ -366,38 +396,6 @@ class Inputs(gtk.Frame):
         _fixed.put(self.txtCapacitance, _x_pos, _y_pos[5])
         _fixed.put(self.cmbSpecification, _x_pos, _y_pos[6])
         _fixed.put(self.cmbSpecSheet, _x_pos, _y_pos[7])
-
-        # Connect signals to callback functions.
-        self._lst_handler_id.append(
-            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
-        self._lst_handler_id.append(
-            self.txtCommercialPiQ.connect('focus-out-event',
-                                          self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtVoltRated.connect('focus-out-event',
-                                      self._on_focus_out, 2))
-        self._lst_handler_id.append(
-            self.txtVoltApplied.connect('focus-out-event',
-                                        self._on_focus_out, 3))
-        self._lst_handler_id.append(
-            self.txtACVoltApplied.connect('focus-out-event',
-                                          self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtCapacitance.connect('focus-out-event',
-                                        self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed',
-                                          self._on_combo_changed, 6))
-        self._lst_handler_id.append(
-            self.cmbSpecSheet.connect('changed', self._on_combo_changed, 7))
-        self._lst_handler_id.append(
-            self.txtEffResistance.connect('focus-out-event',
-                                          self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 9))
-        self._lst_handler_id.append(
-            self.cmbConfiguration.connect('changed',
-                                          self._on_combo_changed, 10))
 
         if self._subcategory == 51:         # Solid tantalum
             _fixed.put(self.txtEffResistance, _x_pos, _y_pos[8])
@@ -497,7 +495,7 @@ class Inputs(gtk.Frame):
             try:
                 self._hardware_model.reference_temperature = \
                     self._hardware_model.lst_ref_temp[combo.get_active() - 1]
-            except:
+            except IndexError:
                 print self._hardware_model.name, self._hardware_model.lst_ref_temp
         elif index == 9:
             self._hardware_model.construction = combo.get_active()
@@ -691,8 +689,10 @@ class Results(gtk.Frame):
                                            u"for the selected capacitor."))
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
-        self.txtPiQ.reparent(_fixed)
+        if self.txtLambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[2])
 
@@ -737,8 +737,10 @@ class Results(gtk.Frame):
                                            u"for the selected capacitor."))
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
-        self.txtPiQ.reparent(_fixed)
+        if self.txtLambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[2])
         _fixed.put(self.txtPiE, _x_pos, _y_pos[3])

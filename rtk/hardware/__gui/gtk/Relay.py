@@ -261,7 +261,8 @@ class Inputs(gtk.Frame):
          _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
-        self.cmbQuality.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
 
         _scrollwindow = gtk.ScrolledWindow()
@@ -310,7 +311,8 @@ class Inputs(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtQOverride, _x_pos, _y_pos[1])
 

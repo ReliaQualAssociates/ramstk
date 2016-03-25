@@ -333,7 +333,8 @@ class Inputs(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
 
         _fixed.show_all()
@@ -376,7 +377,8 @@ class Inputs(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
-        self.cmbQuality.reparent(_fixed)
+        if self.cmbQuality.get_parent() is not None:
+            self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtCommercialPiQ, _x_pos, _y_pos[1])
 
@@ -757,8 +759,10 @@ class Results(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
-        self.txtPiQ.reparent(_fixed)
+        if self.txtLambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiQ, _x_pos, _y_pos[2])
 
@@ -799,7 +803,10 @@ class Results(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
+        if self.txtLambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
+        if self.txtPiQ.get_parent() is not None:
+            self.txtPiQ.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiE, _x_pos, _y_pos[2])
 
@@ -813,7 +820,8 @@ class Results(gtk.Frame):
             _fixed.put(self.txtPiP, _x_pos, _y_pos[3])
 
         elif self._subcategory == 75:       # PTH
-            self.txtPiQ.reparent(_fixed)
+            if self.txtPiQ.get_parent() is not None:
+                self.txtPiQ.reparent(_fixed)
             _fixed.put(self.txtPiC, _x_pos, _y_pos[3])
             _fixed.put(self.txtPiQ, _x_pos, _y_pos[4])
 
@@ -822,7 +830,8 @@ class Results(gtk.Frame):
                                            u"resistance factor for the "
                                            u"selected connection."))
 
-            self.txtPiQ.reparent(_fixed)
+            if self.txtPiQ.get_parent() is not None:
+                self.txtPiQ.reparent(_fixed)
             _fixed.put(self.txtPiQ, _x_pos, _y_pos[3])
 
         _fixed.show_all()

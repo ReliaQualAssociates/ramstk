@@ -263,7 +263,8 @@ class Results(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
+        if self.txt.LambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
 
         _fixed.show_all()
@@ -303,7 +304,8 @@ class Results(gtk.Frame):
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
-        self.txtLambdaB.reparent(_fixed)
+        if self.txt.LambdaB.get_parent() is not None:
+            self.txtLambdaB.reparent(_fixed)
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiE, _x_pos, _y_pos[2])
 
