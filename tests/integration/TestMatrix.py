@@ -53,9 +53,17 @@ class TestMatrixController(unittest.TestCase):
         # Check that the Hardware and Software matrices were created and the
         # Testing matrix was not.  Then check the correct column headers are
         # created for the Hardware and Software matrices.
-        self.assertEqual(self.DUT.dicMatrices.keys(), [0, 1])
+        self.assertEqual(self.DUT.dicMatrices.keys(), [0, 1, 2])
         _matrix = self.DUT.dicMatrices[0]
-        self.assertEqual(_matrix.lstColumnHeaders, [''])
+        self.assertEqual(_matrix.lstColumnHeaders, [u'System', u'Sub-System 1',
+                                                    u'Sub-System 2',
+                                                    u'Sub-System 3',
+                                                    u'Assembly 11',
+                                                    u'Assembly 12',
+                                                    u'Sub-System 4',
+                                                    u'Sub-Assembly 121',
+                                                    u'Sub-Assembly 111',
+                                                    u'Sub-Assembly 122'])
         _matrix = self.DUT.dicMatrices[1]
         self.assertEqual(_matrix.lstColumnHeaders, ['System Software'])
 
@@ -97,15 +105,15 @@ class TestMatrixController(unittest.TestCase):
     @attr(all=True, integration=True)
     def test4_add_column(self):
         """
-        (TestMatrix) add_column should return (True, 0) on success
+        (TestMatrix) add_column should return a list of tuples on success
         """
 
         self.DUT.request_matrix(self._dao, 0, [0])
 
-        (_results,
-         _error_code) = self.DUT.add_column(0)
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
+        _error_codes = self.DUT.add_column(0)
+        self.assertEqual(_error_codes,
+                         [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0),
+                          (6, 0), (7, 0), (8, 0), (9, 0)])
 
     @attr(all=True, integration=True)
     def test5_delete_column(self):

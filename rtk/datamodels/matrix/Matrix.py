@@ -57,7 +57,7 @@ class Model(object):
 
     :ivar dict dicRows: Dictionary of the Rows associated with the Matrix.  Key
                         is the Row ID; value is a list as follows:
-                        [parent_id, function id, function code, function name,
+                        [parent_id, row item id, row item code, row item name,
                          value1, value2, ... valueN]
     :ivar int revision_id: the Revision ID the Matrix belongs to.
     :ivar int matrix_id: the Matrix ID this model represents.
@@ -419,9 +419,9 @@ class Matrix(object):
                            fld_row_id, fld_col_id, fld_parent_id, fld_value, \
                            fld_row_item_id, fld_col_item_id) \
                           VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
-                                  '', {6:d}, {7:d})".format(
+                                  '0', {6:d}, {7:d})".format(
                                       _matrix.revision_id, matrix_id,
-                                      _matrix.matrix_type, _matrix.n_row,
+                                      _matrix.matrix_type, _matrix.n_row + 1,
                                       _columns[i][0], parent_id, row_item_id,
                                       _columns[i][1])
                 (_results, _error_code, __) = self._dao.execute(_query,
@@ -482,28 +482,19 @@ class Matrix(object):
         :param int matrix_id: the Matrix ID to add the column to.
         :keyword int col_item_id: the ID for the item associated with the new
                                   column.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :return: _error_codes
+        :rtype: list of tuples
         """
+
+        _error_codes = []
 
         # Retrieve the matrix to add the column to.
         if matrix_id in self.dicMatrices.keys():
             _matrix = self.dicMatrices[matrix_id]
 
-            # Retrieve the existing column IDs and column item IDs.
-            _query = "SELECT DISTINCT fld_row_id, fld_row_item_id \
-                      FROM rtk_matrix \
-                      WHERE fld_matrix_id={0:d}".format(matrix_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=False)
-
-            try:
-                _n_row = len(_results)
-            except TypeError:
-                _n_row = 0
 
             # Add one cell for each row in the matrix.
-            for i in range(_n_row):
+            for _key in _matrix.dicRows.keys():
                 _query = "INSERT INTO rtk_matrix \
                           (fld_revision_id, fld_matrix_id, fld_matrix_type, \
                            fld_row_id, fld_col_id, fld_parent_id, fld_value, \
@@ -511,21 +502,23 @@ class Matrix(object):
                           VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
                                   '0', {6:d}, {7:d})".format(
                                       _matrix.revision_id, matrix_id,
-                                      _matrix.matrix_type, _results[i][0],
-                                      _matrix.n_col, _matrix.dicRows[i][0],
-                                      _results[i][1], col_item_id)
+                                      _matrix.matrix_type, _key,
+                                      _matrix.n_col, _matrix.dicRows[_key][0],
+                                      _matrix.dicRows[_key][1], col_item_id)
                 (__, _error_code, __) = self._dao.execute(_query, commit=True)
+
+                _error_codes.append((_key, _error_code))
 
             # If the column was successfully added to the open RTK Project
             # database add a new column to each of the Matrix's rows and update
             # the count of columns in the Matrix.
-            if _results:
+            if _error_code == 0:
                 for _row in _matrix.dicRows.values():
                     _row.append('0')
 
                 _matrix.n_col += 1
 
-        return(_results, _error_code)
+        return _error_codes
 
     def delete_column(self, matrix_id, col_id):
         """
