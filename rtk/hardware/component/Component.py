@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 """
-###########################################
-Hardware.Component Package Component Module
-###########################################
+#################################
+Hardware Package Component Module
+#################################
 """
 
 # -*- coding: utf-8 -*-
@@ -17,12 +17,12 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
     from hardware.Hardware import Model as Hardware
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     from rtk.hardware.Hardware import Model as Hardware
 
 __author__ = 'Andrew Rowland'
@@ -31,7 +31,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -43,22 +43,36 @@ class Model(Hardware):                        # pylint: disable=R0902
     The Component data model contains the attributes and methods of a hardware
     Component item.  The attributes of an Component are:
 
-    :ivar category_id: default value: 0
-    :ivar subcategory_id: default value: 1
-    :ivar junction_temperature: default value: 0.0
-    :ivar knee_temperature: default value: 0.0
-    :ivar thermal_resistance: default value: 0.0
-    :ivar reference_temperature: default value: 30.0
+    :ivar int category_id: the ID of the component category.
+    :ivar int subcategory_id: the ID of the component sub-category.
+    :ivar float junction_temperature: the operating temperature of the
+                                      component's junction.
+    :ivar float knee_temperature: the temperature at which the component must
+                                  begin being derated.
+    :ivar float thermal_resistance: the junction-case or junction-ambient
+                                    resistance to thermal transfer.
+    :ivar float reference_temperature: the reference temperature for the
+                                       component.
     """
 
     def __init__(self):
         """
-        Initialize a Component data model instance.
+        Method to initialize a Component data model instance.
         """
 
         super(Model, self).__init__()
 
-        # Initialize public scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.category_id = 0
         self.subcategory_id = 0
         self.junction_temperature = 0.0
@@ -68,7 +82,7 @@ class Model(Hardware):                        # pylint: disable=R0902
 
     def set_attributes(self, values):
         """
-        Sets the Component data model attributes.
+        Method to set the Component data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -90,17 +104,19 @@ class Model(Hardware):                        # pylint: disable=R0902
                 self.thermal_resistance = float(values[94])
                 self.reference_temperature = float(values[95])
             except IndexError as _err:
-                _code = _util.error_handler(_err.args)
-                _msg = "ERROR: Insufficient input values."
+                _code = Utilities.error_handler(_err.args)
+                _msg = _(u"ERROR: Insufficient input values.")
             except TypeError as _err:
-                _code = _util.error_handler(_err.args)
-                _msg = "ERROR: Converting one or more inputs to correct data type."
+                _code = Utilities.error_handler(_err.args)
+                _msg = _(u"ERROR: Converting one or more inputs to correct "
+                         u"data type.")
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Component data model attributes.
+        Method to retrieve the current values of the Component data model
+        attributes.
 
         :return: (category_id, subcategory_id, junction_temperature,
                   knee_temperature, thermal_resistance, reference_temperature)
@@ -121,13 +137,13 @@ class Component(object):
     """
     The Component data controller provides an interface between the Component
     data model and an RTK view model.  A single Component controller can manage
-    one or more Component data models.  The attributes of an Component data
-    controller are:
+    one or more Component data models.  The Component data controller is
+    currently unused.
     """
 
     def __init__(self):
         """
-        Initializes an Component data controller instance.
+        Method to initialize a Component data controller instance.
         """
 
         pass

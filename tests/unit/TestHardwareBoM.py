@@ -5,7 +5,7 @@ This is the test class for testing Hardware BoM module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.hardware.TestBoM.py is part of The RTK Project
+#       tests.unit.TestBoM.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -16,8 +16,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
-from hardware.BoM import *
+from hardware.BoM import BoM
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

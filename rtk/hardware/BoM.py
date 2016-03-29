@@ -17,7 +17,7 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
+    import Configuration
     from hardware.assembly.Assembly import Model as Assembly
     from hardware.component.Component import Model as Component
     import hardware.component.capacitor.electrolytic.Aluminum as Aluminum
@@ -74,7 +74,7 @@ try:
     import hardware.component.switch.Thumbwheel as Thumbwheel
     import hardware.component.switch.Toggle as Toggle
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.hardware.assembly.Assembly import Model as Assembly
     from rtk.hardware.component.Component import Model as Component
     import rtk.hardware.component.capacitor.electrolytic.Aluminum as Aluminum
@@ -140,11 +140,196 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
+
+
+def load_capacitor(subcategory):
+    """
+    Function to load the capacitor data model.
+
+    :param int subcategory: the subcategory of the capacitor data model to
+                            load.
+    :return: _component
+    :rtype: an instance of the appropriate capacitor data model.
+    """
+
+    _dicCapacitors = {1: Paper.Bypass(), 2: Paper.Feedthrough(),
+                      3: Plastic.Film(), 4: Paper.Metallized(),
+                      5: Plastic.Plastic(), 6: Plastic.SuperMetallized(),
+                      7: Mica.Mica(), 8: Mica.Button(), 9: Glass.Glass(),
+                      10: Ceramic.General(), 11: Ceramic.Chip(),
+                      12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
+                      14: Aluminum.Wet(), 15: Aluminum.Dry(),
+                      16: Variable.Ceramic(), 17: Variable.Piston(),
+                      18: Variable.AirTrimmer(), 19: Variable.Vacuum()}
+    _component = _dicCapacitors[subcategory]
+
+    return _component
+
+
+def load_connection(subcategory):
+    """
+    Function to load the connection data model.
+
+    :param int subcategory: the subcategory of the connection data model to
+                            load.
+    :return: _component
+    :rtype: an instance of the appropriate connection data model.
+    """
+
+    _dicConnection = {1: Multipin.Multipin(), 2: PCB.PCB(), 3: Socket.Socket(),
+                      4: Solder.PTH(), 5: Solder.NonPTH()}
+    _component = _dicConnection[subcategory]
+
+    return _component
+
+
+def load_inductor(subcategory):
+    """
+    Function to load the inductor data model.
+
+    :param int subcategory: the subcategory of the inductor data model to load.
+    :return: _component
+    :rtype: an instance of the appropriate inductor data model.
+    """
+
+    _dicInductor = {1: Transformer.Transformer(), 2: Coil.Coil()}
+    _component = _dicInductor[subcategory]
+
+    return _component
+
+
+def load_integrated_circuit(subcategory):
+    """
+    Function to load the integrated circuit data model.
+
+    :param int subcategory: the subcategory of the integrated circuit data
+                            model to load.
+    :return: _component
+    :rtype: an instance of the appropriate integrated circuit data model.
+    """
+
+    _dicIC = {1: Linear.Linear(), 2: Logic.Logic(), 3: PALPLA.PALPLA(),
+              4: Microprocessor.Microprocessor(), 5: Memory.ROM(),
+              6: Memory.EEPROM(), 7: Memory.DRAM(), 8: Memory.SRAM(),
+              9: GaAs.GaAs(), 10: VLSI.VLSI()}
+    _component = _dicIC[subcategory]
+
+    return _component
+
+
+def load_meter(subcategory):
+    """
+    Function to load the meter data model.
+
+    :param int subcategory: the subcategory of the meter data model to load.
+    :return: _component
+    :rtype: an instance of the appropriate meter data model.
+    """
+
+    _dicMeter = {1: Meter.ElapsedTime(), 2: Meter.Panel()}
+    _component = _dicMeter[subcategory]
+
+    return _component
+
+
+def load_miscellaneous(subcategory):
+    """
+    Function to load the miscellaneous data model.
+
+    :param int subcategory: the subcategory of the miscellaneous data model to
+                            load.
+    :return: _component
+    :rtype: an instance of the appropriate miscellaneous data model.
+    """
+
+    _dicMisc = {1: Crystal.Crystal(), 2: Filter.Filter(), 3: Fuse.Fuse(),
+                4: Lamp.Lamp()}
+    _component = _dicMisc[subcategory]
+
+    return _component
+
+
+def load_relay(subcategory):
+    """
+    Function to load the relay data model.
+
+    :param int subcategory: the subcategory of the relay data model to load.
+    :return: _component
+    :rtype: an instance of the appropriate relay data model.
+    """
+
+    _dicRelay = {1: Mechanical.Mechanical(), 2: SolidState.SolidState()}
+    _component = _dicRelay[subcategory]
+
+    return _component
+
+
+def load_resistor(subcategory):
+    """
+    Function to load the resistor data model.
+
+    :param int subcategory: the subcategory of the resistor data model to load.
+    :return: _component
+    :rtype: an instance of the appropriate resistor data model.
+    """
+
+    _dicResistor = {1: Composition.Composition(), 2: Film.Film(),
+                    3: Film.FilmPower(), 4: Film.FilmNetwork(),
+                    5: Wirewound.Wirewound(), 6: Wirewound.WirewoundPower(),
+                    7: Wirewound.WirewoundChassisMount(),
+                    8: Thermistor.Thermistor(), 9: VarWirewound.VarWirewound(),
+                    10: VarWirewound.PrecisionWirewound(),
+                    11: VarWirewound.SemiPrecisionWirewound(),
+                    12: VarWirewound.PowerWirewound(),
+                    13: NonWirewound.NonWirewound(),
+                    14: VarComposition.VarComposition(), 15: VarFilm.VarFilm()}
+    _component = _dicResistor[subcategory]
+
+    return _component
+
+
+def load_semiconductor(subcategory):
+    """
+    Function to load the semiconductor data model.
+
+    :param int subcategory: the subcategory of the semiconductor data model to
+                            load.
+    :return: _component
+    :rtype: an instance of the appropriate semiconductor data model.
+    """
+
+    _dicSemiconductors = {1: Diode.LowFrequency(), 2: Diode.HighFrequency(),
+                          3: Bipolar.LFBipolar(), 4: FET.LFSiFET(),
+                          5: Unijunction.Unijunction(),
+                          6: Bipolar.HFLNBipolar(), 7: Bipolar.HFHPBipolar(),
+                          8: FET.HFGaAsFET(), 9: FET.HFSiFET(),
+                          10: Thyristor.Thyristor(), 11: Detector.Detector(),
+                          12: Display.Display(), 13: LaserDiode.LaserDiode()}
+    _component = _dicSemiconductors[subcategory]
+
+    return _component
+
+
+def load_switch(subcategory):
+    """
+    Function to load the switch data model.
+
+    :param int subcategory: the subcategory of the switch data model to load.
+    :return: _component
+    :rtype: an instance of the appropriate switch data model.
+    """
+
+    _dicSwitch = {1: Toggle.Toggle(), 2: Sensitive.Sensitive(),
+                  3: Rotary.Rotary(), 4: Thumbwheel.Thumbwheel(),
+                  5: Breaker.Breaker()}
+    _component = _dicSwitch[subcategory]
+
+    return _component
 
 
 class ParentError(Exception):
@@ -170,57 +355,9 @@ class BoM(object):
                        model instance.
     """
 
-    _dicComponents = {1: {1: Paper.Bypass(), 2: Paper.Feedthrough(),
-                          3: Plastic.Film(), 4: Paper.Metallized(),
-                          5: Plastic.Plastic(), 6: Plastic.SuperMetallized(),
-                          7: Mica.Mica(), 8: Mica.Button(), 9: Glass.Glass(),
-                          10: Ceramic.General(), 11: Ceramic.Chip(),
-                          12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
-                          14: Aluminum.Wet(), 15: Aluminum.Dry(),
-                          16: Variable.Ceramic(), 17: Variable.Piston(),
-                          18: Variable.AirTrimmer(), 19: Variable.Vacuum()},
-                      2: {1: Multipin.Multipin(), 2: PCB.PCB(),
-                          3: Socket.Socket(), 4: Solder.PTH(),
-                          5: Solder.NonPTH()},
-                      3: {1: Transformer.Transformer(), 2: Coil.Coil()},
-                      4: {1: Linear.Linear(), 2: Logic.Logic(),
-                          3: PALPLA.PALPLA(),
-                          4: Microprocessor.Microprocessor(),
-                          5: Memory.ROM(), 6: Memory.EEPROM(),
-                          7: Memory.DRAM(), 8: Memory.SRAM(), 9: GaAs.GaAs(),
-                          10: VLSI.VLSI()},
-                      5: {1: Meter.ElapsedTime(), 2: Meter.Panel()},
-                      6: {1: Crystal.Crystal(), 2: Filter.Filter(),
-                          3: Fuse.Fuse(), 4: Lamp.Lamp()},
-                      7: {1: Mechanical.Mechanical(),
-                          2: SolidState.SolidState()},
-                      8: {1: Composition.Composition(), 2: Film.Film(),
-                          3: Film.FilmPower(), 4: Film.FilmNetwork(),
-                          5: Wirewound.Wirewound(),
-                          6: Wirewound.WirewoundPower(),
-                          7: Wirewound.WirewoundChassisMount(),
-                          8: Thermistor.Thermistor(),
-                          9: VarWirewound.VarWirewound(),
-                          10: VarWirewound.PrecisionWirewound(),
-                          11: VarWirewound.SemiPrecisionWirewound(),
-                          12: VarWirewound.PowerWirewound(),
-                          13: NonWirewound.NonWirewound(),
-                          14: VarComposition.VarComposition(),
-                          15: VarFilm.VarFilm()},
-                      9: {1: Diode.LowFrequency(), 2: Diode.HighFrequency(),
-                          3: Bipolar.LFBipolar(), 4: FET.LFSiFET(),
-                          5: Unijunction.Unijunction(),
-                          6: Bipolar.HFLNBipolar(), 7: Bipolar.HFHPBipolar(),
-                          8: FET.HFGaAsFET(), 9: FET.HFSiFET(),
-                          10: Thyristor.Thyristor(), 11: Detector.Detector(),
-                          12: Display.Display(), 13: LaserDiode.LaserDiode()},
-                      10: {1: Toggle.Toggle(), 2: Sensitive.Sensitive(),
-                           3: Rotary.Rotary(), 4: Thumbwheel.Thumbwheel(),
-                           5: Breaker.Breaker()}}
-
     def __init__(self):
         """
-        Initializes a BoM data controller instance.
+        Method to initialize a BoM data controller instance.
         """
 
         # Define private scalar attributes.
@@ -232,8 +369,9 @@ class BoM(object):
 
     def request_bom(self, dao, revision_id):
         """
-        Reads the RTK Project database and loads all the Hardware associated
-        with the selected Revision.  For each hardware item returned:
+        Method to read the RTK Project database and load all the Hardware
+        associated with the selected Revision.  For each hardware item
+        returned:
 
         #. Retrieve the hardware assemblies and components from the RTK Project
            database.
@@ -243,8 +381,8 @@ class BoM(object):
         #. Add the instance to the dictionary of hardware being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
+        :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
+                    with the RTK Project database.
         :param int revision_id: the Revision ID to select the requirements for.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -344,11 +482,10 @@ class BoM(object):
         for i in range(_n_assemblies):
             if _results[i][24] == 0:
                 _hardware = Assembly()
+                _hardware.set_attributes(_results[i])
+                self.dicHardware[_hardware.hardware_id] = _hardware
             elif _results[i][24] == 1:
-                _hardware = self.load_component(_results[i][90],
-                                                _results[i][91])
-            _hardware.set_attributes(_results[i])
-            self.dicHardware[_hardware.hardware_id] = _hardware
+                self.load_component(_results[i])
 
         for _key in self.dicHardware.keys():
             _hardware = self.dicHardware[_key]
@@ -369,32 +506,55 @@ class BoM(object):
 
         return(_results, _error_code)
 
-    def load_component(self, category, subcategory):
+    def load_component(self, attributes):
         """
-        Loads the correct Component based on the category and subcategory ID's.
+        Method to load the correct Component based on the category and
+        subcategory ID's.
 
-        :param int category: the category ID of the component to load.
-        :param int subcategory: the sub-category ID of the component to load.
+        :param tuple attributes: the attributes of the component to load.
         :return: an instance of the appropriate Component class.
         :rtype: object
         """
+# TODO: Re-write load_component; current McCabe Complexity metric = 12.
+        # Select the correct component type and create an instance of it's
+        # data model.
+        if attributes[90] < 1 or attributes[91] < 1:
+            _component = Component()
+        elif attributes[90] == 1:
+            _component = load_capacitor(attributes[91])
+        elif attributes[90] == 2:
+            _component = load_connection(attributes[91])
+        elif attributes[90] == 3:
+            _component = load_inductor(attributes[91])
+        elif attributes[90] == 4:
+            _component = load_integrated_circuit(attributes[91])
+        elif attributes[90] == 5:
+            _component = load_meter(attributes[91])
+        elif attributes[90] == 6:
+            _component = load_miscellaneous(attributes[91])
+        elif attributes[90] == 7:
+            _component = load_relay(attributes[91])
+        elif attributes[90] == 8:
+            _component = load_resistor(attributes[91])
+        elif attributes[90] == 9:
+            _component = load_semiconductor(attributes[91])
+        elif attributes[90] == 10:
+            _component = load_switch(attributes[91])
 
-        if subcategory < 1:
-            return Component()
+        # Set the attributes of the component and add it to the dictionary of
+        # hardware items managed by this controller.
+        _component.set_attributes(attributes)
+        self.dicHardware[_component.hardware_id] = _component
 
-        # Grab the correct component data model from the dictionary of models.
-        _hardware = self._dicComponents[category][subcategory]
+        # Set the hardware as a part/component.
+        _component.part = 1
 
-        # Assign the new model the appropriate category and subcategory IDs.
-        _hardware.category_id = category
-        _hardware.subcategory_id = subcategory
-        _hardware.part = 1
-
-        return _hardware
+        return _component
 
     def add_hardware(self, revision_id, hardware_type, parent_id=None):
         """
-        Adds a new Hardware item to the RTK Project for the selected Revision.
+        Method to add a new Hardware item to the RTK Project for the selected
+        Revision.
 
         :param int revision_id: the Revision ID to add the new Hardware
                                 item(s).
@@ -409,7 +569,7 @@ class BoM(object):
         # By default we add the new Hardware item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
-            # TODO: Replace this with an RTK error or warning dialog and then return.
+# TODO: Replace this with an RTK error or warning dialog and then return.
             parent_id = 0
 
         _query = "INSERT INTO rtk_hardware \
@@ -436,20 +596,6 @@ class BoM(object):
                       VALUES({0:d})".format(_hardware_id)
         (_results, _error_code, _) = self._dao.execute(_query, commit=True)
 
-        # If the record was successfully added to the reliability table, add a
-        # record to the allocation and similar item table.
-        if _results and hardware_type == 0:
-            _query = "INSERT INTO rtk_allocation \
-                      (fld_hardware_id, fld_parent_id) \
-                      VALUES({0:d}, {1:d})".format(_hardware_id, parent_id)
-            (_results, _error_code, _) = self._dao.execute(_query, commit=True)
-            if _results:
-                _query = "INSERT INTO rtk_similar_item \
-                          (fld_hardware_id) \
-                          VALUES({0:d})".format(_hardware_id)
-                (_results, _error_code, _) = self._dao.execute(_query,
-                                                               commit=True)
-
         # If the new hardware item was added successfully to all the tables in
         # the RTK Project database:
         #   1. Retrieve the ID of the newly inserted hardware item.
@@ -462,6 +608,8 @@ class BoM(object):
             self._last_id = self._dao.get_last_id('rtk_hardware')[0]
             if hardware_type == 0:
                 _hardware = Assembly()
+            elif hardware_type == 1:
+                _hardware = Component()
             _hardware.set_attributes((revision_id, self._last_id, '', '', '',
                                       '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
                                       50.0, '', 1, 0, 10.0, '', '', 0, '',
@@ -480,7 +628,7 @@ class BoM(object):
 
     def delete_hardware(self, hardware_id):
         """
-        Deletes a Hardware item from the RTK Project.
+        Method to delete a Hardware item from the RTK Project database.
 
         :param int hardware_id: the Hardware ID to delete.
         :return: (_results, _error_code)
@@ -516,7 +664,8 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Re-write copy_hardware; current McCabe Complexity index = 14.
+        # TODO: Write one or more integration tests for copy_hardware.
         # Find the existing maximum Hardware ID already in the RTK Program
         # database and increment it by one.  If there are no existing
         # Hardware items set the first Hardware ID to zero.
@@ -677,13 +826,14 @@ class BoM(object):
 
     def save_hardware_item(self, hardware_id):
         """
-        Saves the Assembly or Component attributes to the RTK Project database.
+        Method to save the Assembly or Component attributes to the RTK Project
+        Sdatabase.
 
         :param int hardware_id: the ID of the hardware to save.
         :return: (_results, _error_code)
         :rtype: tuple
         """
-
+# TODO: Re-write save_hardware_item; current McCabe Complexity index = 11.
         _hardware = self.dicHardware[hardware_id]
 
         # Save the base attributes.
@@ -893,7 +1043,8 @@ class BoM(object):
 
     def save_bom(self):
         """
-        Saves all Assembly and Component data models managed by the controller.
+        Method to save all Assembly and Component data models managed by the
+        controller.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -905,15 +1056,14 @@ class BoM(object):
 
         return False
 
-    def request_calculate(self):
+    def request_calculate(self, hardware_id=0):
         """
-        Requests the Hardware BoM calculations be performed.
+        Method to request the Hardware BoM calculations be performed.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self.dicHardware[0].calculate(self.dicHardware[0])
-        self.save_bom()
+        self.dicHardware[hardware_id].calculate(self.dicHardware[hardware_id])
 
         return False

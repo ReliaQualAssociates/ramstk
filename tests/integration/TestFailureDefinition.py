@@ -40,7 +40,7 @@ class TestUsageProfileController(unittest.TestCase):
         self.DUT = FailureDefinition()
 
     @attr(all=True, integration=True)
-    def test_request_definitions(self):
+    def test0_request_definitions(self):
         """
         (TestFailureDefinition) request_definitions should return a list of definitions and an error code of 0 on success
         """
@@ -49,17 +49,19 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test_add_definition(self):
+    def test1_add_definition(self):
         """
         (TestFailureDefinition) add_definition should return
         """
+
+        self.DUT.request_definitions(0, self._dao)
 
         (_results, _error_code, _last_id) = self.DUT.add_definition(0)
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test_save_definition(self):
+    def test2_save_definition(self):
         """
         (TestFailureDefinition) save_definition should return True on success
         """
@@ -70,14 +72,12 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertTrue(_results)
 
     @attr(all=True, integration=True)
-    def test_delete_definition(self):
+    def test3_delete_definition(self):
         """
         (TestFailureDefinition) delete_definition should return a 0 error code on success
         """
 
         self.DUT.request_definitions(0, self._dao)
 
-        _n = max(self.DUT.dicDefinitions.keys())
-
-        (_results, _error_code) = self.DUT.delete_definition(0, _n)
+        (_results, _error_code) = self.DUT.delete_definition(0, 1)
         self.assertEqual(_error_code, 0)
