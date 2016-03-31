@@ -17,12 +17,12 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
+    import Configuration
     from software.Software import Model as Software
     from software.CSCI import Model as CSCI
     from software.Unit import Model as Unit
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.software.Software import Model as Software
     from rtk.software.CSCI import Model as CSCI
     from rtk.software.Unit import Model as Unit
@@ -33,7 +33,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -275,7 +275,7 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write _load_cdr_questions; current McCabe Complexity metric = 16.
         _query = "SELECT fld_y, fld_value FROM rtk_cdr \
                   WHERE fld_software_id={0:d}".format(software.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
@@ -416,7 +416,7 @@ class BoM(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
-
+# TODO: Re-write add_software; current McCabe Complexity metric = 19.
         # By default we add the new Software item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
@@ -558,7 +558,7 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write copy_software; current McCabe Complexity metric = 11.
         _query = "SELECT MAX(fld_software_id) FROM rtk_software"
         (_software_id, _error_code, __) = self._dao.execute(_query,
                                                             commit=False)
@@ -729,7 +729,6 @@ class BoM(object):
                                 _software.revision_id, software_id)
 
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
 # TODO: Handle errors.
         return (_results, _error_code)
 
@@ -812,7 +811,6 @@ class BoM(object):
                       _sftwr.lst_development[40], _sftwr.lst_development[41],
                       _sftwr.lst_development[42], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
 # TODO: Handle errors.
         return (_results, _error_code)
 
@@ -938,7 +936,6 @@ class BoM(object):
                       _sftwr.lst_sftw_quality[0][10],
                       _sftwr.lst_sftw_quality[0][11], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
 # TODO: Handle errors.
         return (_results, _error_code)
 
@@ -1029,7 +1026,6 @@ class BoM(object):
                       _sftwr.lst_sftw_quality[1][14],
                       _sftwr.lst_sftw_quality[1][15], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
 # TODO: Handle errors.
         return (_results, _error_code)
 
@@ -1190,7 +1186,6 @@ class BoM(object):
         # Execute each query.
         (_results, _error_code, __) = self._dao.execute(_query0, commit=True)
         (_results, _error_code, __) = self._dao.execute(_query1, commit=True)
-
 # TODO: Handle errors.
         return (_results, _error_code)
 
@@ -1263,7 +1258,6 @@ class BoM(object):
              _error_code, __) = self._dao.execute(_query0, commit=True)
 
         (_results, _error_code, __) = self._dao.execute(_query1, commit=True)
-
 # TODO: Handle errors.
         return (_results, _error_code)
 
@@ -1362,20 +1356,17 @@ class BoM(object):
                       _sftwr.lst_test_selection[20][1],
                       _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
 # TODO: Handle errors.
         return (_results, _error_code)
 
     def request_calculate(self):
         """
-        Requests the Software BoM calculations be performed.
+        Method to request the Software BoM calculations be performed.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         self.dicSoftware[0].calculate(self.dicSoftware[0])
-
-        self.save_bom()
 
         return False

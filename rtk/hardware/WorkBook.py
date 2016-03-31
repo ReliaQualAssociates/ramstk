@@ -1396,7 +1396,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.txtCost.connect('focus-out-event',
                                  self._on_focus_out, 49))
-# TODO: Move these up and reassign indices.
         self._lst_handler_id.append(
             self.txtMinTemp.connect('focus-out-event', self._on_focus_out, 50))
         self._lst_handler_id.append(

@@ -211,7 +211,7 @@ class Matrix(gobject.GObject):
             # In this case, there are three non-x-reference columns.
             _position = 2 * position - self.n_fixed_columns
             _cell = gtk.CellRendererPixbuf()
-            _column.pack_start(_cell, True)
+            _column.pack_start(_cell, False)
             _column.set_attributes(_cell, pixbuf=_position)
 
             _cell = gtk.CellRendererCombo()

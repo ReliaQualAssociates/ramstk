@@ -7,7 +7,8 @@ Software Package Risk Analysis Development Environment Specific Work Book View
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.software.gui.gtk.DevelopmentEnvironment.py is part of The RTK Project
+#       rtk.software.__gui.gtk.DevelopmentEnvironment.py is part of The RTK
+#       Project
 #
 # All rights reserved.
 
@@ -34,11 +35,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -46,7 +47,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -59,131 +60,77 @@ class RiskAnalysis(gtk.VPaned):
     the development environment.  The attributes of a development environment
     Work Book view are:
 
-    :ivar _lst_handler_id: default value: []
+    :ivar list _lst_handler_id: the list of gtk.Widget() signal handler IDs.
+    :ivar _software_model: the :py:class:`rtk.software.Software.Model` to
+                           display.
     """
 
     def __init__(self):
         """
-        Creates an input vertical paned for the development environment risk
-        analysis questions.
+        Method to initialize the development environment risk analysis
+        questions Work Book page.
         """
 
         gtk.VPaned.__init__(self)
 
-        # Initialize private list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lst_handler_id = []
+
+        # Define private scalar attributes.
         self._software_model = None
 
-        # Create checkbutton widgets.
-        self.chkDevEnvQ1 = _widg.make_check_button()
-        self.chkDevEnvQ2 = _widg.make_check_button()
-        self.chkDevEnvQ3 = _widg.make_check_button()
-        self.chkDevEnvQ4 = _widg.make_check_button()
-        self.chkDevEnvQ5 = _widg.make_check_button()
-        self.chkDevEnvQ6 = _widg.make_check_button()
-        self.chkDevEnvQ7 = _widg.make_check_button()
-        self.chkDevEnvQ8 = _widg.make_check_button()
-        self.chkDevEnvQ9 = _widg.make_check_button()
-        self.chkDevEnvQ10 = _widg.make_check_button()
-        self.chkDevEnvQ11 = _widg.make_check_button()
-        self.chkDevEnvQ12 = _widg.make_check_button()
-        self.chkDevEnvQ13 = _widg.make_check_button()
-        self.chkDevEnvQ14 = _widg.make_check_button()
-        self.chkDevEnvQ15 = _widg.make_check_button()
-        self.chkDevEnvQ16 = _widg.make_check_button()
-        self.chkDevEnvQ17 = _widg.make_check_button()
-        self.chkDevEnvQ18 = _widg.make_check_button()
-        self.chkDevEnvQ19 = _widg.make_check_button()
-        self.chkDevEnvQ20 = _widg.make_check_button()
-        self.chkDevEnvQ21 = _widg.make_check_button()
-        self.chkDevEnvQ22 = _widg.make_check_button()
-        self.chkDevEnvQ23 = _widg.make_check_button()
-        self.chkDevEnvQ24 = _widg.make_check_button()
-        self.chkDevEnvQ25 = _widg.make_check_button()
-        self.chkDevEnvQ26 = _widg.make_check_button()
-        self.chkDevEnvQ27 = _widg.make_check_button()
-        self.chkDevEnvQ28 = _widg.make_check_button()
-        self.chkDevEnvQ29 = _widg.make_check_button()
-        self.chkDevEnvQ30 = _widg.make_check_button()
-        self.chkDevEnvQ31 = _widg.make_check_button()
-        self.chkDevEnvQ32 = _widg.make_check_button()
-        self.chkDevEnvQ33 = _widg.make_check_button()
-        self.chkDevEnvQ34 = _widg.make_check_button()
-        self.chkDevEnvQ35 = _widg.make_check_button()
-        self.chkDevEnvQ36 = _widg.make_check_button()
-        self.chkDevEnvQ37 = _widg.make_check_button()
-        self.chkDevEnvQ38 = _widg.make_check_button()
-        self.chkDevEnvQ39 = _widg.make_check_button()
-        self.chkDevEnvQ40 = _widg.make_check_button()
-        self.chkDevEnvQ41 = _widg.make_check_button()
-        self.chkDevEnvQ42 = _widg.make_check_button()
-        self.chkDevEnvQ43 = _widg.make_check_button()
+        # Define public dictionary attributes.
 
-    def create_risk_analysis_page(self, notebook):
-        """
-        Method to create the development environment risk analysis page and add
-        it to the risk analysis gtk.Notebook().
+        # Define public list attributes.
 
-        :param gtk.Notebook notebook: the gtk.Notebook() instance that will
-                                      hold the development environment analysis
-                                      questions.
-        """
+        # Define public scalar attributes.
+        self.chkDevEnvQ1 = Widgets.make_check_button()
+        self.chkDevEnvQ2 = Widgets.make_check_button()
+        self.chkDevEnvQ3 = Widgets.make_check_button()
+        self.chkDevEnvQ4 = Widgets.make_check_button()
+        self.chkDevEnvQ5 = Widgets.make_check_button()
+        self.chkDevEnvQ6 = Widgets.make_check_button()
+        self.chkDevEnvQ7 = Widgets.make_check_button()
+        self.chkDevEnvQ8 = Widgets.make_check_button()
+        self.chkDevEnvQ9 = Widgets.make_check_button()
+        self.chkDevEnvQ10 = Widgets.make_check_button()
+        self.chkDevEnvQ11 = Widgets.make_check_button()
+        self.chkDevEnvQ12 = Widgets.make_check_button()
+        self.chkDevEnvQ13 = Widgets.make_check_button()
+        self.chkDevEnvQ14 = Widgets.make_check_button()
+        self.chkDevEnvQ15 = Widgets.make_check_button()
+        self.chkDevEnvQ16 = Widgets.make_check_button()
+        self.chkDevEnvQ17 = Widgets.make_check_button()
+        self.chkDevEnvQ18 = Widgets.make_check_button()
+        self.chkDevEnvQ19 = Widgets.make_check_button()
+        self.chkDevEnvQ20 = Widgets.make_check_button()
+        self.chkDevEnvQ21 = Widgets.make_check_button()
+        self.chkDevEnvQ22 = Widgets.make_check_button()
+        self.chkDevEnvQ23 = Widgets.make_check_button()
+        self.chkDevEnvQ24 = Widgets.make_check_button()
+        self.chkDevEnvQ25 = Widgets.make_check_button()
+        self.chkDevEnvQ26 = Widgets.make_check_button()
+        self.chkDevEnvQ27 = Widgets.make_check_button()
+        self.chkDevEnvQ28 = Widgets.make_check_button()
+        self.chkDevEnvQ29 = Widgets.make_check_button()
+        self.chkDevEnvQ30 = Widgets.make_check_button()
+        self.chkDevEnvQ31 = Widgets.make_check_button()
+        self.chkDevEnvQ32 = Widgets.make_check_button()
+        self.chkDevEnvQ33 = Widgets.make_check_button()
+        self.chkDevEnvQ34 = Widgets.make_check_button()
+        self.chkDevEnvQ35 = Widgets.make_check_button()
+        self.chkDevEnvQ36 = Widgets.make_check_button()
+        self.chkDevEnvQ37 = Widgets.make_check_button()
+        self.chkDevEnvQ38 = Widgets.make_check_button()
+        self.chkDevEnvQ39 = Widgets.make_check_button()
+        self.chkDevEnvQ40 = Widgets.make_check_button()
+        self.chkDevEnvQ41 = Widgets.make_check_button()
+        self.chkDevEnvQ42 = Widgets.make_check_button()
+        self.chkDevEnvQ43 = Widgets.make_check_button()
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox_left = gtk.VBox()
-        self.pack1(_hbox_left, resize=True, shrink=True)
-
-        _hbox_right = gtk.VBox()
-        self.pack2(_hbox_right, resize=True, shrink=True)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display risk analysis information.  #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Create the organizational risk pane.
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                 gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
-        _frame = _widg.make_frame(label=_(u"Organization"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox_left.pack_start(_frame)
-
-        _labels = [_(u"1. There are separate design and coding "
-                     u"organizations."),
-                   _(u"2. There is an independent software test "
-                     u"organization."),
-                   _(u"3. There is an independent software quality "
-                     u"assurance organization."),
-                   _(u"4. There is an independent software configuration "
-                     u"management organization."),
-                   _(u"5. There is an independent software verification "
-                     u"and validation organization."),
-                   _(u"6. A structured programming team will develop the "
-                     u"software."),
-                   _(u"7. The educational level of the software team members "
-                     u"is above average."),
-                   _(u"8. The experience level of the software team members "
-                     u"is above average.")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed,
-                                             5, 5, wrap=False)
-        _x_pos += 125
-
-        _fixed.put(self.chkDevEnvQ1, _x_pos, _y_pos[0])
-        _fixed.put(self.chkDevEnvQ2, _x_pos, _y_pos[1])
-        _fixed.put(self.chkDevEnvQ3, _x_pos, _y_pos[2])
-        _fixed.put(self.chkDevEnvQ4, _x_pos, _y_pos[3])
-        _fixed.put(self.chkDevEnvQ5, _x_pos, _y_pos[4])
-        _fixed.put(self.chkDevEnvQ6, _x_pos, _y_pos[5])
-        _fixed.put(self.chkDevEnvQ7, _x_pos, _y_pos[6])
-        _fixed.put(self.chkDevEnvQ8, _x_pos, _y_pos[7])
-
+        # Connect gtk.Widget() signals to callback methods.
         self._lst_handler_id.append(
             self.chkDevEnvQ1.connect('toggled', self._on_toggled, 0))
         self._lst_handler_id.append(
@@ -200,47 +147,6 @@ class RiskAnalysis(gtk.VPaned):
             self.chkDevEnvQ7.connect('toggled', self._on_toggled, 6))
         self._lst_handler_id.append(
             self.chkDevEnvQ8.connect('toggled', self._on_toggled, 7))
-
-        # Create the methods risk pane.
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
-        _frame = _widg.make_frame(label=_(u"Methods"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox_left.pack_end(_frame)
-
-        _labels = [_(u"1. Standards are defined and will be enforced."),
-                   _(u"2. Software will be developed using a higher order "
-                     u"language."),
-                   _(u"3. The development process will include formal "
-                     u"reviews (PDR, CDR, etc.)."),
-                   _(u"4. The development process will include frequent "
-                     u"walkthroughs."),
-                   _(u"5. Development will take a top-down and "
-                     u"structured approach."),
-                   _(u"6. Unit development folders will be used."),
-                   _(u"7. A software development library will be used."),
-                   _(u"8. A formal change and error reporting process "
-                     u"will be used."),
-                   _(u"9. Progress and status will routinely be "
-                     u"reported.")]
-        (__, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, wrap=False)
-
-        _fixed.put(self.chkDevEnvQ9, _x_pos, _y_pos[0])
-        _fixed.put(self.chkDevEnvQ10, _x_pos, _y_pos[1])
-        _fixed.put(self.chkDevEnvQ11, _x_pos, _y_pos[2])
-        _fixed.put(self.chkDevEnvQ12, _x_pos, _y_pos[3])
-        _fixed.put(self.chkDevEnvQ13, _x_pos, _y_pos[4])
-        _fixed.put(self.chkDevEnvQ14, _x_pos, _y_pos[5])
-        _fixed.put(self.chkDevEnvQ15, _x_pos, _y_pos[6])
-        _fixed.put(self.chkDevEnvQ16, _x_pos, _y_pos[7])
-        _fixed.put(self.chkDevEnvQ17, _x_pos, _y_pos[8])
-
         self._lst_handler_id.append(
             self.chkDevEnvQ9.connect('toggled', self._on_toggled, 8))
         self._lst_handler_id.append(
@@ -259,56 +165,6 @@ class RiskAnalysis(gtk.VPaned):
             self.chkDevEnvQ16.connect('toggled', self._on_toggled, 15))
         self._lst_handler_id.append(
             self.chkDevEnvQ17.connect('toggled', self._on_toggled, 16))
-
-        # Create the documentation risk pane.
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
-        _frame = _widg.make_frame(label=_(u"Documentation"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox_right.pack_start(_frame)
-
-        _labels = [_(u" 1. System requirements specifications will be "
-                     u"documented."),
-                   _(u" 2. Software requirements specifications will be "
-                     u"documented."),
-                   _(u" 3. Interface design specifications will be "
-                     u"documented."),
-                   _(u" 4. Software design specification will be "
-                     u"documented."),
-                   _(u" 5. Test plans, procedures, and reports will be "
-                     u"documented."),
-                   _(u" 6. The software development plan will be "
-                     u"documented."),
-                   _(u" 7. The software quality assurance plan will be "
-                     u"documented."),
-                   _(u" 8. The software configuration management plan will "
-                     u"be documented."),
-                   _(u" 9. A requirements traceability matrix will be "
-                     u"used."),
-                   _(u"10. The software version description will be "
-                     u"documented."),
-                   _(u"11. All software discrepancies will be "
-                     u"documented.")]
-        (__, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, wrap=False)
-
-        _fixed.put(self.chkDevEnvQ18, _x_pos, _y_pos[0])
-        _fixed.put(self.chkDevEnvQ19, _x_pos, _y_pos[1])
-        _fixed.put(self.chkDevEnvQ20, _x_pos, _y_pos[2])
-        _fixed.put(self.chkDevEnvQ21, _x_pos, _y_pos[3])
-        _fixed.put(self.chkDevEnvQ22, _x_pos, _y_pos[4])
-        _fixed.put(self.chkDevEnvQ23, _x_pos, _y_pos[5])
-        _fixed.put(self.chkDevEnvQ24, _x_pos, _y_pos[6])
-        _fixed.put(self.chkDevEnvQ25, _x_pos, _y_pos[7])
-        _fixed.put(self.chkDevEnvQ26, _x_pos, _y_pos[8])
-        _fixed.put(self.chkDevEnvQ27, _x_pos, _y_pos[9])
-        _fixed.put(self.chkDevEnvQ28, _x_pos, _y_pos[10])
-
         self._lst_handler_id.append(
             self.chkDevEnvQ18.connect('toggled', self._on_toggled, 17))
         self._lst_handler_id.append(
@@ -331,56 +187,6 @@ class RiskAnalysis(gtk.VPaned):
             self.chkDevEnvQ27.connect('toggled', self._on_toggled, 26))
         self._lst_handler_id.append(
             self.chkDevEnvQ28.connect('toggled', self._on_toggled, 27))
-
-        # Create the tools and test techniques risk pane.
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
-        _frame = _widg.make_frame(label=_(u"Tools &amp; Test Techniques"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox_right.pack_end(_frame)
-
-        _labels = [_(u" 1. The software language requirements will be "
-                     u"specified."),
-                   _(u" 2. Formal program design language will be used."),
-                   _(u" 3. Program design graphical techniques "
-                     u"(flowcharts, HIPO, etc.) will be used."),
-                   _(u" 4. Simulation/emulation tools will be used."),
-                   _(u" 5. Configuration management tools will be used."),
-                   _(u" 6. A code auditing tool will be used."),
-                   _(u" 7. A data flow analyzer will be used."),
-                   _(u" 8. A programmer's workbench will be used."),
-                   _(u" 9. Measurement tools will be used."),
-                   _(u"10. Software code reviews will be used."),
-                   _(u"11. Software branch testing will be used."),
-                   _(u"12. Random testing will be used."),
-                   _(u"13. Functional testing will be used."),
-                   _(u"14. Error and anomaly detection testing will be "
-                     u"used."),
-                   _(u"15. Structure analysis will be used.")]
-        (__, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, wrap=False)
-
-        _fixed.put(self.chkDevEnvQ29, _x_pos, _y_pos[0])
-        _fixed.put(self.chkDevEnvQ30, _x_pos, _y_pos[1])
-        _fixed.put(self.chkDevEnvQ31, _x_pos, _y_pos[2])
-        _fixed.put(self.chkDevEnvQ32, _x_pos, _y_pos[3])
-        _fixed.put(self.chkDevEnvQ33, _x_pos, _y_pos[4])
-        _fixed.put(self.chkDevEnvQ34, _x_pos, _y_pos[5])
-        _fixed.put(self.chkDevEnvQ35, _x_pos, _y_pos[6])
-        _fixed.put(self.chkDevEnvQ36, _x_pos, _y_pos[7])
-        _fixed.put(self.chkDevEnvQ37, _x_pos, _y_pos[8])
-        _fixed.put(self.chkDevEnvQ38, _x_pos, _y_pos[9])
-        _fixed.put(self.chkDevEnvQ39, _x_pos, _y_pos[10])
-        _fixed.put(self.chkDevEnvQ40, _x_pos, _y_pos[11])
-        _fixed.put(self.chkDevEnvQ41, _x_pos, _y_pos[12])
-        _fixed.put(self.chkDevEnvQ42, _x_pos, _y_pos[13])
-        _fixed.put(self.chkDevEnvQ43, _x_pos, _y_pos[14])
-
         self._lst_handler_id.append(
             self.chkDevEnvQ29.connect('toggled', self._on_toggled, 28))
         self._lst_handler_id.append(
@@ -411,6 +217,207 @@ class RiskAnalysis(gtk.VPaned):
             self.chkDevEnvQ42.connect('toggled', self._on_toggled, 41))
         self._lst_handler_id.append(
             self.chkDevEnvQ43.connect('toggled', self._on_toggled, 42))
+
+    def create_risk_analysis_page(self, notebook):
+        """
+        Method to create the development environment risk analysis page and add
+        it to the risk analysis gtk.Notebook().
+
+        :param gtk.Notebook notebook: the gtk.Notebook() instance that will
+                                      hold the development environment risk
+                                      analysis questions.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build-up the containers for the tab.                          #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        _hpaned = gtk.HPaned()
+        self.pack1(_hpaned, resize=True, shrink=True)
+
+        # Create the organizational risk pane.
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+
+        _frame = Widgets.make_frame(label=_(u"Organization"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _hpaned.pack1(_frame, True, True)
+
+        _labels = [_(u"1. There are separate design and coding "
+                     u"organizations."),
+                   _(u"2. There is an independent software test "
+                     u"organization."),
+                   _(u"3. There is an independent software quality "
+                     u"assurance organization."),
+                   _(u"4. There is an independent software configuration "
+                     u"management organization."),
+                   _(u"5. There is an independent software verification "
+                     u"and validation organization."),
+                   _(u"6. A structured programming team will develop the "
+                     u"software."),
+                   _(u"7. The educational level of the software team members "
+                     u"is above average."),
+                   _(u"8. The experience level of the software team members "
+                     u"is above average.")]
+        (_x_pos,
+         _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
+        _x_pos += 125
+
+        _fixed.put(self.chkDevEnvQ1, _x_pos, _y_pos[0])
+        _fixed.put(self.chkDevEnvQ2, _x_pos, _y_pos[1])
+        _fixed.put(self.chkDevEnvQ3, _x_pos, _y_pos[2])
+        _fixed.put(self.chkDevEnvQ4, _x_pos, _y_pos[3])
+        _fixed.put(self.chkDevEnvQ5, _x_pos, _y_pos[4])
+        _fixed.put(self.chkDevEnvQ6, _x_pos, _y_pos[5])
+        _fixed.put(self.chkDevEnvQ7, _x_pos, _y_pos[6])
+        _fixed.put(self.chkDevEnvQ8, _x_pos, _y_pos[7])
+
+        # Create the methods risk pane.
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+
+        _frame = Widgets.make_frame(label=_(u"Methods"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _hpaned.pack2(_frame, True, True)
+
+        _labels = [_(u"1. Standards are defined and will be enforced."),
+                   _(u"2. Software will be developed using a higher order "
+                     u"language."),
+                   _(u"3. The development process will include formal "
+                     u"reviews (PDR, CDR, etc.)."),
+                   _(u"4. The development process will include frequent "
+                     u"walkthroughs."),
+                   _(u"5. Development will take a top-down and "
+                     u"structured approach."),
+                   _(u"6. Unit development folders will be used."),
+                   _(u"7. A software development library will be used."),
+                   _(u"8. A formal change and error reporting process "
+                     u"will be used."),
+                   _(u"9. Progress and status will routinely be "
+                     u"reported.")]
+        (__, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
+
+        _fixed.put(self.chkDevEnvQ9, _x_pos, _y_pos[0])
+        _fixed.put(self.chkDevEnvQ10, _x_pos, _y_pos[1])
+        _fixed.put(self.chkDevEnvQ11, _x_pos, _y_pos[2])
+        _fixed.put(self.chkDevEnvQ12, _x_pos, _y_pos[3])
+        _fixed.put(self.chkDevEnvQ13, _x_pos, _y_pos[4])
+        _fixed.put(self.chkDevEnvQ14, _x_pos, _y_pos[5])
+        _fixed.put(self.chkDevEnvQ15, _x_pos, _y_pos[6])
+        _fixed.put(self.chkDevEnvQ16, _x_pos, _y_pos[7])
+        _fixed.put(self.chkDevEnvQ17, _x_pos, _y_pos[8])
+
+        # Create the documentation risk pane.
+        _hpaned = gtk.HPaned()
+        self.pack2(_hpaned, resize=True, shrink=True)
+
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+
+        _frame = Widgets.make_frame(label=_(u"Documentation"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _hpaned.pack1(_frame, True, True)
+
+        _labels = [_(u" 1. System requirements specifications will be "
+                     u"documented."),
+                   _(u" 2. Software requirements specifications will be "
+                     u"documented."),
+                   _(u" 3. Interface design specifications will be "
+                     u"documented."),
+                   _(u" 4. Software design specification will be "
+                     u"documented."),
+                   _(u" 5. Test plans, procedures, and reports will be "
+                     u"documented."),
+                   _(u" 6. The software development plan will be "
+                     u"documented."),
+                   _(u" 7. The software quality assurance plan will be "
+                     u"documented."),
+                   _(u" 8. The software configuration management plan will "
+                     u"be documented."),
+                   _(u" 9. A requirements traceability matrix will be "
+                     u"used."),
+                   _(u"10. The software version description will be "
+                     u"documented."),
+                   _(u"11. All software discrepancies will be "
+                     u"documented.")]
+        (__, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
+
+        _fixed.put(self.chkDevEnvQ18, _x_pos, _y_pos[0])
+        _fixed.put(self.chkDevEnvQ19, _x_pos, _y_pos[1])
+        _fixed.put(self.chkDevEnvQ20, _x_pos, _y_pos[2])
+        _fixed.put(self.chkDevEnvQ21, _x_pos, _y_pos[3])
+        _fixed.put(self.chkDevEnvQ22, _x_pos, _y_pos[4])
+        _fixed.put(self.chkDevEnvQ23, _x_pos, _y_pos[5])
+        _fixed.put(self.chkDevEnvQ24, _x_pos, _y_pos[6])
+        _fixed.put(self.chkDevEnvQ25, _x_pos, _y_pos[7])
+        _fixed.put(self.chkDevEnvQ26, _x_pos, _y_pos[8])
+        _fixed.put(self.chkDevEnvQ27, _x_pos, _y_pos[9])
+        _fixed.put(self.chkDevEnvQ28, _x_pos, _y_pos[10])
+
+        # Create the tools and test techniques risk pane.
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+
+        _frame = Widgets.make_frame(label=_(u"Tools &amp; Test Techniques"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _hpaned.pack2(_frame, True, True)
+
+        _labels = [_(u" 1. The software language requirements will be "
+                     u"specified."),
+                   _(u" 2. Formal program design language will be used."),
+                   _(u" 3. Program design graphical techniques "
+                     u"(flowcharts, HIPO, etc.) will be used."),
+                   _(u" 4. Simulation/emulation tools will be used."),
+                   _(u" 5. Configuration management tools will be used."),
+                   _(u" 6. A code auditing tool will be used."),
+                   _(u" 7. A data flow analyzer will be used."),
+                   _(u" 8. A programmer's workbench will be used."),
+                   _(u" 9. Measurement tools will be used."),
+                   _(u"10. Software code reviews will be used."),
+                   _(u"11. Software branch testing will be used."),
+                   _(u"12. Random testing will be used."),
+                   _(u"13. Functional testing will be used."),
+                   _(u"14. Error and anomaly detection testing will be "
+                     u"used."),
+                   _(u"15. Structure analysis will be used.")]
+        (__, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
+
+        _fixed.put(self.chkDevEnvQ29, _x_pos, _y_pos[0])
+        _fixed.put(self.chkDevEnvQ30, _x_pos, _y_pos[1])
+        _fixed.put(self.chkDevEnvQ31, _x_pos, _y_pos[2])
+        _fixed.put(self.chkDevEnvQ32, _x_pos, _y_pos[3])
+        _fixed.put(self.chkDevEnvQ33, _x_pos, _y_pos[4])
+        _fixed.put(self.chkDevEnvQ34, _x_pos, _y_pos[5])
+        _fixed.put(self.chkDevEnvQ35, _x_pos, _y_pos[6])
+        _fixed.put(self.chkDevEnvQ36, _x_pos, _y_pos[7])
+        _fixed.put(self.chkDevEnvQ37, _x_pos, _y_pos[8])
+        _fixed.put(self.chkDevEnvQ38, _x_pos, _y_pos[9])
+        _fixed.put(self.chkDevEnvQ39, _x_pos, _y_pos[10])
+        _fixed.put(self.chkDevEnvQ40, _x_pos, _y_pos[11])
+        _fixed.put(self.chkDevEnvQ41, _x_pos, _y_pos[12])
+        _fixed.put(self.chkDevEnvQ42, _x_pos, _y_pos[13])
+        _fixed.put(self.chkDevEnvQ43, _x_pos, _y_pos[14])
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
@@ -486,7 +493,7 @@ class RiskAnalysis(gtk.VPaned):
 
     def _on_toggled(self, check, index):
         """
-        Callback function for gtk.CheckButton() 'toggled' event.
+        Callback method for gtk.CheckButton() 'toggled' event.
 
         :param gtk.CheckButton check: the gtk.CheckButton() that called this
                                       method.

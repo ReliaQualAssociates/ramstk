@@ -38,7 +38,7 @@ class TestUnitModel(unittest.TestCase):
         self.DUT = Model()
 
     @attr(all=True, unit=True)
-    def test_create(self):
+    def test00_create(self):
         """
         (TestSoftware) __init__ should return a Unit model
         """
@@ -119,7 +119,7 @@ class TestUnitModel(unittest.TestCase):
         self.assertEqual(self.DUT.units_test, 0)
 
     @attr(all=True, unit=True)
-    def test_calculate_anomaly_risk(self):
+    def test01_calculate_anomaly_risk(self):
         """
         (TestSoftware) _calculate_anomaly_risk should return False on success
         """
@@ -129,21 +129,23 @@ class TestUnitModel(unittest.TestCase):
                                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
                                       1, 1, 0, 1, 0]]
 
-        self.assertFalse(_calculate_anomaly_risk(self.DUT))
+        _error_code = _calculate_anomaly_risk(self.DUT)
+        self.assertEqual(_error_code, 0)
         self.assertAlmostEqual(self.DUT.am, 0.1428571)
         self.assertEqual(self.DUT.sa, 0.9)
 
     @attr(all=True, unit=True)
-    def test_calculate_quality_risk(self):
+    def test02_calculate_quality_risk(self):
         """
-        (TestSoftware) _calculate_quality_risk should return False on success
+        (TestSoftware) _calculate_quality_risk should return a 0 error code on success
         """
 
-        self.DUT.phase_id = 3               # CDR
+        self.DUT.phase_id = 3               # PDR
         self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1,
+                                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
                                       1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
 
-        self.assertFalse(_calculate_quality_risk(self.DUT))
-        self.assertAlmostEqual(self.DUT.dr, 0.5263158)
-        self.assertAlmostEqual(self.DUT.sq, 1.0)
+        _error_code = _calculate_quality_risk(self.DUT)
+        self.assertEqual(_error_code, 0)
+        self.assertAlmostEqual(self.DUT.dr, 0.4736842)
+        self.assertAlmostEqual(self.DUT.sq, 1.1)

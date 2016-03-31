@@ -17,10 +17,10 @@ import locale
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
+    import Configuration
     from software.Software import Model as Software
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
     from rtk.software.Software import Model as Software
 
 __author__ = 'Andrew Rowland'
@@ -29,14 +29,14 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
-class Model(Software):                        # pylint: disable=R0902
+class Model(Software):                      # pylint: disable=R0902
     """
     The Unit data model contains the attributes and methods of a software Unit
     item.
@@ -44,7 +44,7 @@ class Model(Software):                        # pylint: disable=R0902
 
     def __init__(self):
         """
-        Initialize an Unit data model instance.
+        Method to initialize a Unit data model instance.
         """
 
         super(Model, self).__init__()
@@ -68,6 +68,7 @@ class Model(Software):                        # pylint: disable=R0902
         :rtype: bool
         """
 
+        # Software complexity defaults to 1 since cb and ncb default to 0.
         self.sx = self.cb + self.ncb + 1
 
         return False
@@ -101,7 +102,7 @@ class Unit(object):
 
     def __init__(self):
         """
-        Initializes an Unit data controller instance.
+        Method to initialize a Unit data controller instance.
         """
 
         pass

@@ -34,12 +34,12 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
-#from ListBook import ListView
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
+from ListBook import ListView
 from WorkBook import WorkView
 
 __author__ = 'Andrew Rowland'
@@ -48,7 +48,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -63,23 +63,22 @@ class ModuleView(object):
 
     :ivar _model: the :py:class:`rtk.software.Software.Model` data model that
                   is currently selected.
-
     :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :py:class:`gtk.TreeView`.
+                          Module View gtk.TreeView().
     :ivar _workbook: the :py:class:`rtk.software.WorkBook.WorkView` associated
                      with this instance of the Module View.
-    :ivar dtcBoM: the :py:class:`rtk.software.BoM` data controller to use for
-                  accessing the Software data models.
-    :ivar treeview: the :py:class:`gtk.TreeView` displaying the hierarchical
-                    list of Software.
+    :ivar dtcBoM: the :py:class:`rtk.software.BoM.BoM` data controller to use
+                  for accessing the Software data models.
+    :ivar gtk.TreeView treeview: the gtk.TreeView() displaying the hierarchical
+                                 list of Software.
     """
 
     def __init__(self, controller, rtk_view, position, *args):
         """
-        Initializes the Module Book view for the Software package.
+        Method to initialize the Module Book view for the Software package.
 
-        :param controller: the instance of the :py:class:`rtk.bom.BoM` data
-                           controller to use with this view.
+        :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
+                           data controller to use with this view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Software
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
@@ -87,20 +86,27 @@ class ModuleView(object):
         :param *args: other user arguments to pass to the Module View.
         """
 
-        # Initialize private list attribute
+        # Define private dictionary attribute
+
+        # Define private list attribute
         self._lst_handler_id = []
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
+        self._dao = None
         self._model = None
 
-        # Initialize public scalar attributes.
-        self.dtcBoM = controller
+        # Define public dictionary attribute
+
+        # Define public list attribute
+
+        # Define public scalar attributes.
+        self.mdcRTK = controller
 
         # Create the main Software class treeview.
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Software', 15,
-                                                    _conf.RTK_COLORS[21],
-                                                    _conf.RTK_COLORS[22])
+         self._lst_col_order) = Widgets.make_treeview('Software', 15,
+                                                      Configuration.RTK_COLORS[21],
+                                                      Configuration.RTK_COLORS[22])
         _selection = self.treeview.get_selection()
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
@@ -108,10 +114,6 @@ class ModuleView(object):
 
         self._lst_handler_id.append(_selection.connect('changed',
                                                        self._on_row_changed))
-        #self.treeview.connect('cursor_changed', self._on_row_changed,
-        #                      None, None))
-        #self._lst_handler_id.append(
-        #    self.treeview.connect('row_activated', self._on_row_changed))
         self._lst_handler_id.append(
             self.treeview.connect('button_release_event',
                                   self._on_button_press))
@@ -131,7 +133,7 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
-        _icon = _conf.ICON_DIR + '32x32/software.png'
+        _icon = Configuration.ICON_DIR + '32x32/software.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -154,18 +156,17 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        self.listbook = None
-        #self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        self.listbook = ListView(self)
 
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(rtk_view.workview, self)
 
     def request_load_data(self, dao, revision_id):
         """
-        Loads the Software Module Book view gtk.TreeModel() with software
-        information.
+        Method to load the Software Module Book view gtk.TreeModel() with
+        Software information.
 
-        :param dao: the :py:class: `rtk.dao.DAO` object used to communicate
+        :param dao: the :py:class:`rtk.dao.DAO` object used to communicate
                     with the RTK Project database.
         :param int revision_id: the ID of the revision to load software data
                                 for.
@@ -173,7 +174,8 @@ class ModuleView(object):
         :rtype: boolean
         """
 
-        (_software, __) = self.dtcBoM.request_bom(dao, revision_id)
+        (_software,
+         __) = self.mdcRTK.dtcSoftwareBoM.request_bom(dao, revision_id)
 
         # Only load the software associated with the selected Revision.
         _software = [_s for _s in _software if _s[0] == revision_id]
@@ -195,8 +197,6 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        #self.listbook.load(revision_id)
-
         return False
 
     def _load_treeview(self, dao, parents, software, model, row=None):
@@ -204,8 +204,8 @@ class ModuleView(object):
         Method to recursively load the gtk.TreeModel().  Recursive loading is
         needed to accomodate the hierarchical structure of Software.
 
-        :param rtk.DAO dao: the Data Access Object to pass to the Software data
-                            controller.
+        :param dao: the :py:class:`rtk.dao.DAO` to pass to the Software data
+                    controller.
         :param list parents: the list of top-level software modules to load.
         :param list software: the complete list of software to use for finding
                               the child software for each parent.
@@ -215,9 +215,9 @@ class ModuleView(object):
         :rtype: bool
         """
 # TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
-        _icon = _conf.ICON_DIR + '32x32/csci.png'
+        _icon = Configuration.ICON_DIR + '32x32/csci.png'
         _csci_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        _icon = _conf.ICON_DIR + '32x32/unit.png'
+        _icon = Configuration.ICON_DIR + '32x32/unit.png'
         _unit_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
 
         for _software in parents:
@@ -241,9 +241,10 @@ class ModuleView(object):
 
     def update(self, position, new_text):
         """
-        Updates the selected row in the Module Book gtk.TreeView() with changes
-        to the Software data model attributes.  Called by other views when the
-        Software data model attributes are edited via their gtk.Widgets().
+        Method to update the selected row in the Module Book gtk.TreeView()
+        with changes to the Software data model attributes.  Called by other
+        views when the Software data model attributes are edited via their
+        gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -259,8 +260,8 @@ class ModuleView(object):
 
     def _on_button_press(self, treeview, event):
         """
-        Callback method for handling mouse clicks on the Software package
-        Module Book gtk.TreeView().
+        Method to handle mouse clicks on the Software package Module Book
+        gtk.TreeView().
 
         :param gtk.TreeView treeview: the Software class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
@@ -273,7 +274,6 @@ class ModuleView(object):
                                     * 5 = backward
                                     * 8 =
                                     * 9 =
-
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -288,7 +288,7 @@ class ModuleView(object):
 
     def _on_row_changed(self, selection):
         """
-        Callback method to handle events for the Software package Module Book
+        Method to handle events for the Software package Module Book
         gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
         row is activated.
 
@@ -301,11 +301,16 @@ class ModuleView(object):
         selection.handler_block(self._lst_handler_id[0])
 
         (_model, _row) = selection.get_selected()
-        _software_id = _model.get_value(_row, 1)
+        try:
+            _software_id = _model.get_value(_row, 1)
+        except TypeError:
+            _software_id = None
 
-        self._model = self.dtcBoM.dicSoftware[_software_id]
+        if _software_id is not None:
+            self._model = self.mdcRTK.dtcSoftwareBoM.dicSoftware[_software_id]
 
-        self.workbook.load(self._model)
+            self.workbook.load(self._model)
+            self.listbook.load(self._model)
 
         selection.handler_unblock(self._lst_handler_id[0])
 
@@ -313,7 +318,7 @@ class ModuleView(object):
 
     def _on_cell_edited(self, __cell, __path, new_text, index):
         """
-        Callback method to handle events for the Software package Module Book
+        Method to handle events for the Software package Module Book
         gtk.CellRenderer().  It is called whenever a Module Book
         gtk.CellRenderer() is edited.
 

@@ -323,8 +323,7 @@ class RTK(object):
         Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwHardware, self, -1)   # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwSoftware,
-                                                       self.dtcSoftwareBoM, -1)     # pylint: disable=R0204
+        _modview = self.module_book.create_module_page(mvwSoftware, self, -1)   # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwTesting,
                                                        self.dtcTesting, -1,

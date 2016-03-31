@@ -31,26 +31,21 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
 import __gui.gtk.DevelopmentEnvironment as DevEnv
 import __gui.gtk.SRR as SRR
 import __gui.gtk.PDR as PDR
 import __gui.gtk.CDR as CDR
 import __gui.gtk.TRR as TRR
-import __gui.gtk.TestSelection as TestSelection
 # from Assistants import AddSoftware
 
 __author__ = 'Andrew Rowland'
@@ -59,116 +54,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
-
-def _set_risk_color(risk, module):          # pylint: disable=R0912
-    """
-    Function to find the hexadecimal code for the risk level colors.
-
-    :param dict risk: dictionary containing the Software class risk factors.
-    :param int module: the software id used as a key for accessing the correct
-                       risk factors from the risk dictionary.
-    :return: a dictionary containing the hexadecimal color values for each
-             risk factor.
-    :rtype: dictionary
-    """
-
-    _color = {}
-
-    # Find the Application risk level.
-    if risk[module][0] == 1.0:
-        _color['A'] = '#90EE90'             # Green
-    elif risk[module][0] == 2.0:
-        _color['A'] = '#FFFF79'             # Yellow
-    elif risk[module][0] == 3.0:
-        _color['A'] = '#FFC0CB'             # Red
-    else:
-        _color['A'] = '#D3D3D3'             # Light grey
-
-    # Find the Development risk level.
-    if risk[module][1] == 0.5:
-        _color['D'] = '#90EE90'             # Green
-    elif risk[module][1] == 1.0:
-        _color['D'] = '#FFFF79'             # Yellow
-    elif risk[module][1] == 2.0:
-        _color['D'] = '#FFC0CB'             # Red
-    else:
-        _color['D'] = '#D3D3D3'             # Light grey
-
-    # Find the Anomaly Management risk level.
-    if risk[module][2] == 0.9:
-        _color['SA'] = '#90EE90'            # Green
-    elif risk[module][2] == 1.1:
-        _color['SA'] = '#FFC0CB'            # Red
-    elif risk[module][2] == 1.0:
-        _color['SA'] = '#FFFF79'            # Yellow
-    elif risk[module][2] == 0.0:
-        _color['SA'] = '#D3D3D3'            # Light grey
-
-    # Find the Requirement Traceability risk level.
-    if risk[module][3] == 0.9:
-        _color['ST'] = '#90EE90'            # Green
-    elif risk[module][3] == 1.0:
-        _color['ST'] = '#FFFF79'            # Yellow
-    elif risk[module][3] == 1.1:
-        _color['ST'] = '#FFC0CB'            # Red
-    else:
-        _color['ST'] = '#D3D3D3'            # Light grey
-
-    # Find the Software Quality risk level.
-    if risk[module][4] == 1.0:
-        _color['SQ'] = '#90EE90'            # Green
-    elif risk[module][4] == 1.1:
-        _color['SQ'] = '#FFC0CB'            # Red
-    else:
-        _color['SQ'] = '#D3D3D3'            # Light grey
-
-    # Find the Language Type risk level.
-    if risk[module][5] == 1.0:
-        _color['SL'] = '#90EE90'            # Green
-    elif risk[module][5] > 1.0 and risk[module][5] <= 1.2:
-        _color['SL'] = '#FFFF79'            # Yellow
-    elif risk[module][5] > 1.2:
-        _color['SL'] = '#FFC0CB'            # Red
-    else:
-        _color['SL'] = '#D3D3D3'            # Light grey
-
-    # Find the Complexity risk level.
-    if risk[module][6] >= 0.8 and risk[module][6] < 1.0:
-        _color['SX'] = '#90EE90'            # Green
-    elif risk[module][6] >= 1.0 and risk[module][6] <= 1.2:
-        _color['SX'] = '#FFFF79'            # Yellow
-    elif risk[module][6] > 1.2:
-        _color['SX'] = '#FFC0CB'            # Red
-    else:
-        _color['SX'] = '#D3D3D3'            # Light grey
-
-    # Find the Modularity risk level.
-    if risk[module][7] >= 0.9 and risk[module][7] < 1.2:
-        _color['SM'] = '#90EE90'            # Green
-    elif risk[module][7] >= 1.2 and risk[module][7] <= 1.5:
-        _color['SM'] = '#FFFF79'            # Yellow
-    elif risk[module][7] > 1.5:
-        _color['SM'] = '#FFC0CB'            # Red
-    else:
-        _color['SM'] = '#D3D3D3'            # Light grey
-
-    # Find the overall risk level.
-    if risk[module][8] > 0.0 and risk[module][8] <= 1.5:
-        _color['Risk'] = '#90EE90'          # Green
-    elif risk[module][8] > 1.5 and risk[module][8] < 3.5:
-        _color['Risk'] = '#FFFF79'          # Yellow
-    elif risk[module][8] >= 3.5:
-        _color['Risk'] = '#FFC0CB'          # Red
-    else:
-        _color['Risk'] = '#D3D3D3'          # Light grey
-
-    return _color
 
 
 class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
@@ -176,105 +66,189 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     The Work Book view displays all the attributes for the selected
     Software item.  The attributes of a Work Book view are:
 
-    :ivar _workview: the RTK top level Work View window to embed the
-                     Software Work Book into.
-    :ivar _software_model: the Software data model whose attributes are being
-                           displayed.
+    :ivar list _lst_obj_risk_analyses: list containing a pointer to each of the
+                                       risk analysis page gtk.Widget().
+    :ivar list _lst_handler_id: list containing the ID's of the callback
+                                signals for each gtk.Widget() associated with
+                                an editable Software attribute.
 
-    :ivar _dic_definitions: dictionary containing pointers to the failure
-                            definitions for the Revision being displayed.  Key
-                            is the Failure Definition ID; value is the pointer
-                            to the Failure Definition data model.
+    +----------+--------------------------------------------+
+    | Position | Widget - Signal                            |
+    +==========+============================================+
+    |     0    | txtDescription - 'focus-out-event'         |
+    +----------+--------------------------------------------+
+    |     1    | cmbLevel - 'changed'                       |
+    +----------+--------------------------------------------+
+    |     2    | cmbApplication - 'changed'                 |
+    +----------+--------------------------------------------+
+    |     3    | cmbPhase - 'changed'                       |
+    +----------+--------------------------------------------+
+    |     4    | cmbTCL - 'changed'                         |
+    +----------+--------------------------------------------+
+    |     5    | cmbTestPath - 'changed'                    |
+    +----------+--------------------------------------------+
+    |     6    | cmbTestEffort - 'changed'                  |
+    +----------+--------------------------------------------+
+    |     7    | cmbTestApproach - 'changed'                |
+    +----------+--------------------------------------------+
+    |     8    | txtLaborTest - 'focus-out-event'           |
+    +----------+--------------------------------------------+
+    |     9    | txtLaborDev - 'focus-out-event'            |
+    +----------+--------------------------------------------+
+    |    10    | txtBudgetTest - 'focus-out-event'          |
+    +----------+--------------------------------------------+
+    |    11    | txtBudgetDev - 'focus-out-event'           |
+    +----------+--------------------------------------------+
+    |    12    | txtScheduleTest - 'focus-out-event'        |
+    +----------+--------------------------------------------+
+    |    13    | txtScheduleDev - 'focus-out-event'         |
+    +----------+--------------------------------------------+
+    |    14    | txtBranches - 'focus-out-event'            |
+    +----------+--------------------------------------------+
+    |    15    | txtBranchesTest - 'focus-out-event'        |
+    +----------+--------------------------------------------+
+    |    16    | txtInputs - 'focus-out-event'              |
+    +----------+--------------------------------------------+
+    |    17    | txtInputsTest - 'focus-out-event'          |
+    +----------+--------------------------------------------+
+    |    18    | txtUnits - 'focus-out-event'               |
+    +----------+--------------------------------------------+
+    |    19    | txtUnitsTest - 'focus-out-event'           |
+    +----------+--------------------------------------------+
+    |    20    | txtInterfaces - 'focus-out-event'          |
+    +----------+--------------------------------------------+
+    |    21    | txtInterfacesTest - 'focus-out-event'      |
+    +----------+--------------------------------------------+
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
-                           Software attribute.
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtName `focus_out_event`                 |
-    +----------+-------------------------------------------+
-    |     1    | txtPartNum `focus_out_event`              |
-    +----------+-------------------------------------------+
-    |     2    | txtAltPartNum `focus_out_event`           |
-    +----------+-------------------------------------------+
-    |     3    | cmbCategory `changed`                     |
-    +----------+-------------------------------------------+
-    |     4    | cmbSubcategory `changed`                  |
-    +----------+-------------------------------------------+
-    |     5    | txtRefDes `focus_out_event`               |
-    +----------+-------------------------------------------+
-    |     6    | txtCompRefDes `focus_out_event`           |
-    +----------+-------------------------------------------+
-    |     7    | txtQuantity `focus_out_event`             |
-    +----------+-------------------------------------------+
-    |     8    | txtDescription `focus_out_event`          |
-    +----------+-------------------------------------------+
-    |     9    | cmbManufacturer `changed`                 |
-    +----------+-------------------------------------------+
-    |    10    | txtCAGECode `focus_out_event`             |
-    +----------+-------------------------------------------+
-    |    11    | txtLCN `focus_out_event`                  |
-    +----------+-------------------------------------------+
-    |    12    | txtNSN `focus_out_event`                  |
-    +----------+-------------------------------------------+
-    |    13    | txtYearMade `focus_out_event`             |
-    +----------+-------------------------------------------+
-    |    14    | txtSpecification `focus_out_event`        |
-    +----------+-------------------------------------------+
-    |    15    | txtPageNum `focus_out_event`              |
-    +----------+-------------------------------------------+
-    |    16    | txtFigNum `focus_out_event`               |
-    +----------+-------------------------------------------+
-    |    17    | txtAttachments `focus_out_event`          |
-    +----------+-------------------------------------------+
-    |    18    | txtMissionTime `focus_out_event`          |
-    +----------+-------------------------------------------+
-    |    19    | chkRepairable `toggled`                   |
-    +----------+-------------------------------------------+
-    |    20    | chkTagged `toggled`                       |
-    +----------+-------------------------------------------+
-    |    21    | txtRemarks `focus_out_event`              |
-    +----------+-------------------------------------------+
-
-    :ivar dtcSoftware: the :class:`rtk.software.Software.Software` data
-                       controller to use with this Work Book.
-
-    :ivar chkSafetyCritical: the :class:`gtk.CheckButton` to display/edit the
-                             Software's safety criticality.
-
-    :ivar txtName: the :class:`gtk.Entry` to display/edit the Software name.
-    :ivar txtTotalCost: the :class:`gtk.Entry` to display the Software cost.
-    :ivar txtPartCount: the :class:`gtk.Entry` to display the number of
-                        Components comprising the Assembly.
-    :ivar txtRemarks: the :class:`gtk.Entry` to display/edit the Software
-                      remarks.
-    :ivar txtPredictedHt: the :class:`gtk.Entry` to display the Software
-                          logistics hazard rate.
-    :ivar txtMissionHt: the :class:`gtk.Entry` to display the Software mission
-                        hazard rate.
-    :ivar txtMTBF: the :class:`gtk.Entry` to display the Software logistics
-                   MTBF.
-    :ivar txtMissionMTBF: the :class:`gtk.Entry` to display the Software
-                          mission MTBF.
-    :ivar txtMPMT: the :class:`gtk.Entry` to display the Software mean
-                   preventive maintenance time.
-    :ivar txtMCMT: the :class:`gtk.Entry` to display the Software mean
-                   corrective maintenance time.
-    :ivar txtMTTR: the :class:`gtk.Entry` to display the Software mean time to
-                   repair.
-    :ivar txtMMT: the :class:`gtk.Entry` to display the Software mean
-                  maintenance time.
-    :ivar txtAvailability: the :class:`gtk.Entry` to display the Software
-                           logistics availability.
-    :ivar txtMissionAt: the :class:`gtk.Entry` to display the Software mission
-                        availability.
+    :ivar _workview: the :py:class:`rtk.gui.gtk.mwi.WorkView` container
+                     associated with this Work Book.
+    :ivar _modulebook: the :py:class:`rtk.software.ModuleBook` to associate
+                       with this Work Book.
+    :ivar _software_model: the :py:class:`rtk.software.Software.Model` data
+                           model to display.
+    :ivar dtcBoM: the :py:class:`rtk.software.Software.Software` data
+                  controller used to interface with the RTK Project database.
+    :ivar gtk.Button btnEstimate: the gtk.Button() used to request the Software
+                                  reliability estimation.
+    :ivar gtk.Button btnSave: the gtk.Button() used to request the Software be
+                              saved.
+    :ivar gtk.Button btnTestCalculate: the gtk.Button() used to request the
+                                       Software test plan risk reduction be
+                                       calculated.
+    :ivar gtk.Button btnTestSave: the gtk.Button() used to request the Software
+                                  test plan be saved.
+    :ivar gtk.ComboBox cmbApplication: the gtk.ComboBox() to select and display
+                                       the Software module application type.
+    :ivar gtk.ComboBox cmbLevel: the gtk.ComboBox() to select and display the
+                                 Software module level.
+                                 * 0 - System
+                                 * 1 - CSCI
+                                 * 2 - Unit
+    :ivar gtk.ComboBox cmbPhase: the gtk.ComboBox() to select and display the
+                                 Software module development phase.
+    :ivar gtk.ComboBox cmbTCL: the gtk.ComboBox() to select and display the
+                               test confidence level for the selected Software
+                               module.
+    :ivar gtk.ComboBox cmbTestPath: the gtk.ComboBox() to select and display
+                                    the test path for the selected Software
+                                    module.
+    :ivar gtk.ComboBox cmbTestEffort: the gtk.ComboBox() to select and display
+                                      the test effort type for the selected
+                                      Software module.
+    :ivar gtk.ComboBox cmbTestApproach: the gtk.ComboBox() to select and
+                                        display the test approach for the
+                                        selected Software module.
+    :ivar gtk.Notebook nbkRiskAnalysis: the gtk.Notebook() to contain each of
+                                        the development phase risk analysis
+                                        questions for the selected Software
+                                        module.
+    :ivar gtk.Entry txtDescription: the gtk.Entry() to enter and display the
+                                    description of the Software module.
+    :ivar gtk.Entry txtLaborTest: the gtk.Entry() to enter and display the
+                                  number of labor hours dedicated to testing
+                                  the selected Software module.
+    :ivar gtk.Entry txtLaborDev: the gtk.Entry() to enter and display the total
+                                 number of labor hours dedicated to developing
+                                 the selected Software module.
+    :ivar gtk.Entry txtBudgetTest: the gtk.Entry() to enter and display the
+                                   money budgeted for testing the selected
+                                   Software module.
+    :ivar gtk.Entry txtBudgetDev: the gtk.Entry() to enter and display the
+                                  total money budgeted for developing the
+                                  selected Software module.
+    :ivar gtk.Entry txtScheduleTest: the gtk.Entry() to enter and display the
+                                     calendar time dedicated to testing the
+                                     selected Software module.
+    :ivar gtk.Entry txtScheduleDev: the gtk.Entry() to enter and display the
+                                    total calendar time dedicated to developing
+                                    the selected Software module.
+    :ivar gtk.Entry txtBranches: the gtk.Entry() to enter and display the total
+                                 number of branches in the selected Software
+                                 module.
+    :ivar gtk.Entry txtBranchesTest: the gtk.Entry() to enter and display the
+                                     number of branches that will be tested in
+                                     the selected Software module.
+    :ivar gtk.Entry txtInputs: the gtk.Entry() to enter and display the total
+                               number of input variables in the selected
+                               Software module.
+    :ivar gtk.Entry txtInputsTest: the gtk.Entry() to enter and display the
+                                   number of input variables that will be
+                                   tested in the selected Software module.
+    :ivar gtk.Entry txtUnits: the gtk.Entry() to enter and display the total
+                              number of Software units comprising the selected
+                              Software CSCI.
+    :ivar gtk.Entry txtUnitsTest: the gtk.Entry() to enter and display the
+                                  number of Software units that will be tested
+                                  in the selected Software CSCI.
+    :ivar gtk.Entry txtInterfaces: the gtk.Entry() to enter and display the
+                                   total number of interfaces to other Software
+                                   modules.
+    :ivar gtk.Entry txtInterfacesTest: the gtk.Entry() to enter and display the
+                                       number of interfaces to other Software
+                                       modules that will be tested.
+    :ivar gtk.Entry txtEC: the gtk.Entry() to enter and display the number of
+                           exception conditions (EC) in the selected Software
+                           module.
+    :ivar gtk.Entry txtET: the gtk.Entry() to display the execution time (ET)
+                           of the selected Software module.
+    :ivar gtk.Entry txtOS: the gtk.Entry() to display the operating system (OS)
+                           overhead time.
+    :ivar gtk.Entry txtDRTest: the gtk.Entry() to enter and display the number
+                               of discrepency reports (DR) generated to date
+                               during the test.
+    :ivar gtk.Entry txtTestTime: the gtk.Entry() to enter and display the total
+                                 test time to date.
+    :ivar gtk.Entry txtDREOT: the gtk.Entry() to display the number of
+                              discrepency reports generated during the entire
+                              test.
+    :ivar gtk.Entry txtTestTimeEOT: the gtk.Entry() to enter and display the
+                                    total test time at the end of test.
+    :ivar gtk.Entry txtTE: the gtk.Entry() to display the test effort (TE)
+                           factor.
+    :ivar gtk.Entry txtTM: the gtk.Entry() to display the test methodology (TM)
+                           factor.
+    :ivar gtk.Entry txtTC: the gtk.Entry() to display the test coverage (TC)
+                           factor.
+    :ivar gtk.Entry txtFT1: the gtk.Entry() to display the average failure rate
+                            during test.
+    :ivar gtk.Entry txtFT2: the gtk.Entry() to display the failure rate at the
+                            end of test.
+    :ivar gtk.Entry txtRENAVG: the gtk.Entry() to display the average
+                               reliability estimation number (REN) during test.
+    :ivar gtk.Entry txtRENEOT: the gtk.Entry() to display the REN at the end of
+                               testing.
+    :ivar gtk.Entry txtEV: the gtk.Entry() to display the input variability
+                           factor.
+    :ivar gtk.Entry txtEW: the gtk.Entry() to display the workload factor.
+    :ivar gtk.Entry txtE: the gtk.Entry() to display the operating environment
+                          factor.
+    :ivar gtk.Entry txtF: the gtk.Entry() to display the estimated failure rate
+                          of the selected Software module.
     """
 
     def __init__(self, workview, modulebook):
         """
-        Initializes the Work Book view for the Software package.
+        Method to initialize the Work Book view for the Software package.
 
         :param workview: the :py:class:`rtk.gui.gtk.mwi.WorkView` container to
                          insert this Work Book into.
@@ -284,88 +258,276 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         gtk.VBox.__init__(self)
 
-        # Initialize private dict attributes.
+        # Define private dictionary attributes.
 
-        # Initialize private list attributes.
+        # Define private list attributes.
         self._lst_handler_id = []
         self._lst_obj_risk_analyses = [None, None, None, None, None, None,
                                        None]
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
         self._workview = workview
         self._modulebook = modulebook
         self._software_model = None
 
-        # Initialize public scalar attributes.
-        self.dtcBoM = modulebook.dtcBoM
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.dtcBoM = modulebook.mdcRTK.dtcSoftwareBoM
 
         # General Data page widgets.
-        self.cmbApplication = _widg.make_combo(simple=False)
-        self.cmbDevelopment = _widg.make_combo(simple=False)
-        self.cmbLevel = _widg.make_combo(simple=False)
-        self.cmbPhase = _widg.make_combo(simple=False)
-        self.txtDescription = _widg.make_text_view(width=400)
+        self.cmbApplication = Widgets.make_combo(simple=False)
+        self.cmbLevel = Widgets.make_combo(simple=False)
+        self.cmbPhase = Widgets.make_combo(simple=False)
+        self.txtDescription = Widgets.make_text_view(width=400)
 
         # Risk Analysis page widgets.
-        self.btnCalculate = _widg.make_button(width=35, image='calculate')
-        self.btnSave = _widg.make_button(width=35, image='save')
+        self.btnSave = Widgets.make_button(width=35, image='save')
 
         self.nbkRiskAnalysis = gtk.Notebook()
-        self.tvwRiskMap = gtk.TreeView()
 
         # Test Planning page widgets.
-        self.btnTestCalculate = _widg.make_button(width=35, image='calculate')
-        self.btnTestSave = _widg.make_button(width=35, image='save')
+        self.btnTestCalculate = Widgets.make_button(width=35,
+                                                    image='calculate')
+        self.btnTestSave = Widgets.make_button(width=35, image='save')
 
-        self.cmbTCL = _widg.make_combo(simple=True)
-        self.cmbTestPath = _widg.make_combo(simple=True)
-        self.cmbTestEffort = _widg.make_combo(simple=True)
-        self.cmbTestApproach = _widg.make_combo(simple=True)
+        self.cmbTCL = Widgets.make_combo(simple=True)
+        self.cmbTestPath = Widgets.make_combo(simple=True)
+        self.cmbTestEffort = Widgets.make_combo(simple=True)
+        self.cmbTestApproach = Widgets.make_combo(simple=True)
 
-        self.fraTestSelection = _widg.make_frame(
-            label=_(u"Test Technique Selection"))
-
-        self.hpnTestPlanning = gtk.HPaned()
-
-        self.scwCSCITestSelection = None
-        self.scwUnitTestSelection = None
-
-        self.txtLaborTest = _widg.make_entry(width=75)
-        self.txtLaborDev = _widg.make_entry(width=75)
-        self.txtBudgetTest = _widg.make_entry(width=75)
-        self.txtBudgetDev = _widg.make_entry(width=75)
-        self.txtScheduleTest = _widg.make_entry(width=75)
-        self.txtScheduleDev = _widg.make_entry(width=75)
-        self.txtBranches = _widg.make_entry(width=75)
-        self.txtBranchesTest = _widg.make_entry(width=75)
-        self.txtInputs = _widg.make_entry(width=75)
-        self.txtInputsTest = _widg.make_entry(width=75)
-        self.txtUnits = _widg.make_entry(width=75)
-        self.txtUnitsTest = _widg.make_entry(width=75)
-        self.txtInterfaces = _widg.make_entry(width=75)
-        self.txtInterfacesTest = _widg.make_entry(width=75)
+        self.txtLaborTest = Widgets.make_entry(width=75)
+        self.txtLaborDev = Widgets.make_entry(width=75)
+        self.txtBudgetTest = Widgets.make_entry(width=75)
+        self.txtBudgetDev = Widgets.make_entry(width=75)
+        self.txtScheduleTest = Widgets.make_entry(width=75)
+        self.txtScheduleDev = Widgets.make_entry(width=75)
+        self.txtBranches = Widgets.make_entry(width=75)
+        self.txtBranchesTest = Widgets.make_entry(width=75)
+        self.txtInputs = Widgets.make_entry(width=75)
+        self.txtInputsTest = Widgets.make_entry(width=75)
+        self.txtUnits = Widgets.make_entry(width=75)
+        self.txtUnitsTest = Widgets.make_entry(width=75)
+        self.txtInterfaces = Widgets.make_entry(width=75)
+        self.txtInterfacesTest = Widgets.make_entry(width=75)
 
         # Reliability Estimation page widgets.
-        self.btnEstimate = _widg.make_button(width=35, image='calculate')
+        self.btnEstimate = Widgets.make_button(width=35, image='calculate')
 
-        self.txtEC = _widg.make_entry(width=75)
-        self.txtET = _widg.make_entry(width=75)
-        self.txtOS = _widg.make_entry(width=75)
-        self.txtDRTest = _widg.make_entry(width=75)
-        self.txtTestTime = _widg.make_entry(width=75)
-        self.txtDREOT = _widg.make_entry(width=75)
-        self.txtTestTimeEOT = _widg.make_entry(width=75)
-        self.txtTE = _widg.make_entry(width=75, editable=False)
-        self.txtTM = _widg.make_entry(width=75, editable=False)
-        self.txtTC = _widg.make_entry(width=75, editable=False)
-        self.txtFT1 = _widg.make_entry(width=75, editable=False)
-        self.txtFT2 = _widg.make_entry(width=75, editable=False)
-        self.txtRENAVG = _widg.make_entry(width=75, editable=False)
-        self.txtRENEOT = _widg.make_entry(width=75, editable=False)
-        self.txtEV = _widg.make_entry(width=75, editable=False)
-        self.txtEW = _widg.make_entry(width=75, editable=False)
-        self.txtE = _widg.make_entry(width=75, editable=False)
-        self.txtF = _widg.make_entry(width=75, editable=False)
+        self.txtEC = Widgets.make_entry(width=75)
+        self.txtET = Widgets.make_entry(width=75)
+        self.txtOS = Widgets.make_entry(width=75)
+        self.txtDRTest = Widgets.make_entry(width=75)
+        self.txtTestTime = Widgets.make_entry(width=75)
+        self.txtDREOT = Widgets.make_entry(width=75)
+        self.txtTestTimeEOT = Widgets.make_entry(width=75)
+        self.txtTE = Widgets.make_entry(width=75, editable=False)
+        self.txtTM = Widgets.make_entry(width=75, editable=False)
+        self.txtTC = Widgets.make_entry(width=75, editable=False)
+        self.txtFT1 = Widgets.make_entry(width=75, editable=False)
+        self.txtFT2 = Widgets.make_entry(width=75, editable=False)
+        self.txtRENAVG = Widgets.make_entry(width=75, editable=False)
+        self.txtRENEOT = Widgets.make_entry(width=75, editable=False)
+        self.txtEV = Widgets.make_entry(width=75, editable=False)
+        self.txtEW = Widgets.make_entry(width=75, editable=False)
+        self.txtE = Widgets.make_entry(width=75, editable=False)
+        self.txtF = Widgets.make_entry(width=75, editable=False)
+
+        # Set tooltips for gtk.Widgets().
+        self.btnSave.set_tooltip_text(_(u"Saves the reliability risk "
+                                        u"assessment."))
+        self.btnTestCalculate.set_tooltip_text(_(u"Calculate the test plan "
+                                                 u"risk reduction."))
+        self.btnTestSave.set_tooltip_text(_(u"Saves the test plan risk "
+                                            u"reduction assessment."))
+        self.btnEstimate.set_tooltip_text(_(u"Estimate the software failure "
+                                            u"rates."))
+        self.cmbLevel.set_tooltip_text(_(u"Select the application level "
+                                         u"of the selected software "
+                                         u"module."))
+        self.cmbApplication.set_tooltip_text(_(u"Select the application "
+                                               u"type of the selected "
+                                               u"software module."))
+        self.cmbPhase.set_tooltip_text(_(u"Select the development phase "
+                                         u"for the selected software "
+                                         u"module."))
+        self.cmbTCL.set_tooltip_text(_(u"Select the desired software test "
+                                       u"confidence level."))
+        self.cmbTestPath.set_tooltip_text(_(u"Select the path for determining "
+                                            u"software testing techniques."))
+        self.cmbTestEffort.set_tooltip_text(_(u"Select the software test "
+                                              u"effort alternative."))
+        self.cmbTestApproach.set_tooltip_text(_(u"Select the software test "
+                                                u"approach."))
+        self.txtLaborTest.set_tooltip_text(_(u"Total number of labor "
+                                             u"hours for software "
+                                             u"testing."))
+        self.txtLaborDev.set_tooltip_text(_(u"Total number of labor hours "
+                                            u"for entire software development "
+                                            u"effort."))
+        self.txtBudgetTest.set_tooltip_text(_(u"Total budget for software "
+                                              u"testing."))
+        self.txtBudgetDev.set_tooltip_text(_(u"Total budget for entire "
+                                             u"for software development "
+                                             u"effort."))
+        self.txtScheduleTest.set_tooltip_text(_(u"Working days scheduled "
+                                                u"for software testing."))
+        self.txtScheduleDev.set_tooltip_text(_(u"Working days scheduled "
+                                               u"for entire development "
+                                               u"effort."))
+        self.txtBranches.set_tooltip_text(_(u"The total number of "
+                                            u"execution branches in the "
+                                            u"selected unit."))
+        self.txtBranchesTest.set_tooltip_text(_(u"The total number of "
+                                                u"execution branches "
+                                                u"actually tested in the "
+                                                u"selected unit."))
+        self.txtInputs.set_tooltip_text(_(u"The total number of inputs to "
+                                          u"the selected unit."))
+        self.txtInputsTest.set_tooltip_text(_(u"The total number of "
+                                              u"inputs to the selected "
+                                              u"unit actually tested."))
+        self.txtUnits.set_tooltip_text(_(u"The total number of units in "
+                                         u"the selected CSCI."))
+        self.txtUnitsTest.set_tooltip_text(_(u"The total number of units "
+                                             u"in the selected CSCI "
+                                             u"actually tested."))
+        self.txtInterfaces.set_tooltip_text(_(u"The total number of "
+                                              u"interfaces to the "
+                                              u"selected CSCI."))
+        self.txtInterfacesTest.set_tooltip_text(_(u"The total number of "
+                                                  u"interfaces in the "
+                                                  u"selected CSCI "
+                                                  u"actually tested."))
+        self.txtDescription.set_tooltip_text(_(u"Enter a description of "
+                                               u"the selected software "
+                                               u"module."))
+        self.txtEC.set_tooltip_text(_(u"Displays the number of exception "
+                                      u"conditions for the selected "
+                                      u"software module."))
+        self.txtET.set_tooltip_text(_(u"Displays the total execution time "
+                                      u"for the selected software "
+                                      u"module."))
+        self.txtOS.set_tooltip_text(_(u"Displays the operating system "
+                                      u"overhead time for the selected "
+                                      u"software module."))
+        self.txtDRTest.set_tooltip_text(_(u"Displays the total number of "
+                                          u"discrepancy reports recorded "
+                                          u"during testing for the selected "
+                                          u"software module."))
+        self.txtTestTime.set_tooltip_text(_(u"Displays the total test time "
+                                            u"for the selected software "
+                                            u"module."))
+        self.txtDREOT.set_tooltip_text(_(u"Displays the total number of "
+                                         u"discrepancy reports recorded "
+                                         u"during the last three test periods "
+                                         u"for the selected software module."))
+        self.txtTestTimeEOT.set_tooltip_text(_(u"Displays the total test time "
+                                               u"during the last three test "
+                                               u"periods for the selected "
+                                               u"software module."))
+        self.txtTE.set_tooltip_text(_(u"Displays the reduction in risk due to "
+                                      u"the percent of the development "
+                                      u"program assigned to testing for the "
+                                      u"selected software module."))
+        self.txtTM.set_tooltip_text(_(u"Displays the reduction in risk due to "
+                                      u"the number of recommended tests that "
+                                      u"are actually performed for the "
+                                      u"selected software module."))
+        self.txtTC.set_tooltip_text(_(u"Displays the reduction in risk due to "
+                                      u"percent test coverage of the tests "
+                                      u"performed for the selected software "
+                                      u"module."))
+        self.txtFT1.set_tooltip_text(_(u"Displays the average failure "
+                                       u"rate during test for the "
+                                       u"selected software module."))
+        self.txtFT2.set_tooltip_text(_(u"Displays the failure rate at the "
+                                       u"end of test for the selected "
+                                       u"software module."))
+        self.txtRENAVG.set_tooltip_text(_(u"Displays the average "
+                                          u"Reliability Estimation Number "
+                                          u"(REN) for the selected "
+                                          u"software module."))
+        self.txtRENEOT.set_tooltip_text(_(u"Displays the end of test "
+                                          u"Reliability Estimation Number "
+                                          u"(REN) for the selected "
+                                          u"software module."))
+        self.txtEV.set_tooltip_text(_(u"Displays the variability of input "
+                                      u"for the selected software "
+                                      u"module."))
+        self.txtEW.set_tooltip_text(_(u"Displays the workload for the "
+                                      u"selected software module."))
+        self.txtE.set_tooltip_text(_(u"Displays the operating environment "
+                                     u"factor for the selected software "
+                                     u"module."))
+        self.txtF.set_tooltip_text(_(u"Displays the estimated failure "
+                                     u"rate for the selected software "
+                                     u"module."))
+
+        # Connect gtk.Widget() signals to callback methods.
+        _textview = self.txtDescription.get_child().get_child()
+        self._lst_handler_id.append(
+            _textview.connect('focus-out-event', self._on_focus_out, 0))
+        self._lst_handler_id.append(
+            self.cmbLevel.connect('changed', self._on_combo_changed, 1))
+        self._lst_handler_id.append(
+            self.cmbApplication.connect('changed', self._on_combo_changed, 2))
+        self._lst_handler_id.append(
+            self.cmbPhase.connect('changed', self._on_combo_changed, 3))
+        self._lst_handler_id.append(
+            self.cmbTCL.connect('changed', self._on_combo_changed, 4))
+        self._lst_handler_id.append(
+            self.cmbTestPath.connect('changed', self._on_combo_changed, 5))
+        self._lst_handler_id.append(
+            self.cmbTestEffort.connect('changed', self._on_combo_changed, 6))
+        self._lst_handler_id.append(
+            self.cmbTestApproach.connect('changed', self._on_combo_changed, 7))
+        self._lst_handler_id.append(
+            self.txtLaborTest.connect('focus-out-event',
+                                      self._on_focus_out, 8))
+        self._lst_handler_id.append(
+            self.txtLaborDev.connect('focus-out-event', self._on_focus_out, 9))
+        self._lst_handler_id.append(
+            self.txtBudgetTest.connect('focus-out-event',
+                                       self._on_focus_out, 10))
+        self._lst_handler_id.append(
+            self.txtBudgetDev.connect('focus-out-event',
+                                      self._on_focus_out, 11))
+        self._lst_handler_id.append(
+            self.txtScheduleTest.connect('focus-out-event',
+                                         self._on_focus_out, 12))
+        self._lst_handler_id.append(
+            self.txtScheduleDev.connect('focus-out-event',
+                                        self._on_focus_out, 13))
+        self._lst_handler_id.append(
+            self.txtBranches.connect('focus-out-event',
+                                     self._on_focus_out, 14))
+        self._lst_handler_id.append(
+            self.txtBranchesTest.connect('focus-out-event',
+                                         self._on_focus_out, 15))
+        self._lst_handler_id.append(
+            self.txtInputs.connect('focus-out-event', self._on_focus_out, 16))
+        self._lst_handler_id.append(
+            self.txtInputsTest.connect('focus-out-event',
+                                       self._on_focus_out, 17))
+        self._lst_handler_id.append(
+            self.txtUnits.connect('focus-out-event', self._on_focus_out, 18))
+        self._lst_handler_id.append(
+            self.txtUnitsTest.connect('focus-out-event',
+                                      self._on_focus_out, 19))
+        self._lst_handler_id.append(
+            self.txtInterfaces.connect('focus-out-event',
+                                       self._on_focus_out, 20))
+        self._lst_handler_id.append(
+            self.txtInterfacesTest.connect('focus-out-event',
+                                           self._on_focus_out, 21))
+
+        self.btnSave.connect('clicked', self._on_button_clicked, 51)
+        self.btnTestCalculate.connect('clicked', self._on_button_clicked, 52)
+        self.btnTestSave.connect('clicked', self._on_button_clicked, 53)
+        self.btnEstimate.connect('clicked', self._on_button_clicked, 54)
 
         # Put it all together.
         _toolbar = self._create_toolbar()
@@ -394,7 +556,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                    u"indenture level as the selected software "
                                    u"module."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
+        _image.set_from_file(Configuration.ICON_DIR +
+                             '32x32/insert_sibling.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 0)
         _toolbar.insert(_button, 0)
@@ -406,7 +569,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                    u"the RTK Project that is one level "
                                    u"subordinate to the selected assembly."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/insert_child.png')
         _button.set_icon_widget(_image)
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_(u"CSCI"))
@@ -431,7 +594,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _button.set_tooltip_text(_(u"Removes the currently selected software "
                                    u"item from the RTK Program Database."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 3)
         _toolbar.insert(_button, _position)
@@ -444,7 +607,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # determine which results are saved.
         _button = gtk.ToolButton()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 4)
         _toolbar.insert(_button, _position)
@@ -467,11 +630,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook() tab position.
-        if _conf.TABPOS[2] == 'left':
+        if Configuration.TABPOS[2] == 'left':
             _notebook.set_tab_pos(gtk.POS_LEFT)
-        elif _conf.TABPOS[2] == 'right':
+        elif Configuration.TABPOS[2] == 'right':
             _notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif _conf.TABPOS[2] == 'top':
+        elif Configuration.TABPOS[2] == 'top':
             _notebook.set_tab_pos(gtk.POS_TOP)
         else:
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
@@ -503,7 +666,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                  gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
-        _frame = _widg.make_frame(label=_(u"General Information"))
+        _frame = Widgets.make_frame(label=_(u"General Information"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -514,58 +677,34 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbLevel.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
-        for _level in _conf.RTK_SW_LEVELS:
+        for _level in Configuration.RTK_SW_LEVELS:
             _model.append(None, [_level, 0, ''])
 
         _model = self.cmbApplication.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
-        for _app in _conf.RTK_SW_APPLICATION:
+        for _app in Configuration.RTK_SW_APPLICATION:
             _model.append(None, [_app, 0, ''])
 
         _model = self.cmbPhase.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
-        for _phase in _conf.RTK_SW_DEV_PHASES:
+        for _phase in Configuration.RTK_SW_DEV_PHASES:
             _model.append(None, [_phase, 0, ''])
 
         # Create the labels.
         _labels = [_(u"Module Description:"), _(u"Application Level:"),
                    _(u"Application Type:"), _(u"Development Phase:")]
 
-        (_x_pos, _y_pos) = _widg.make_labels(_labels[1:], _fixed, 5, 110)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels[1:], _fixed, 5, 110)
         _x_pos += 25
 
-        # Place the widgets.
-        self.txtDescription.set_tooltip_text(_(u"Enter a description of "
-                                               u"the selected software "
-                                               u"module."))
-        self.cmbLevel.set_tooltip_text(_(u"Select the application level "
-                                         u"of the selected software "
-                                         u"module."))
-        self.cmbApplication.set_tooltip_text(_(u"Select the application "
-                                               u"type of the selected "
-                                               u"software module."))
-        self.cmbPhase.set_tooltip_text(_(u"Select the development phase "
-                                         u"for the selected software "
-                                         u"module."))
-
-        _label = _widg.make_label(_labels[0])
+        _label = Widgets.make_label(_labels[0])
         _fixed.put(_label, 5, 5)
         _fixed.put(self.txtDescription, _x_pos, 5)
         _fixed.put(self.cmbLevel, _x_pos, _y_pos[0])
         _fixed.put(self.cmbApplication, _x_pos, _y_pos[1])
         _fixed.put(self.cmbPhase, _x_pos, _y_pos[2])
-
-        _textview = self.txtDescription.get_child().get_child()
-        self._lst_handler_id.append(
-            _textview.connect('focus-out-event', self._on_focus_out, 0))
-        self._lst_handler_id.append(
-            self.cmbLevel.connect('changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.cmbApplication.connect('changed', self._on_combo_changed, 2))
-        self._lst_handler_id.append(
-            self.cmbPhase.connect('changed', self._on_combo_changed, 3))
 
         _fixed.show_all()
 
@@ -602,26 +741,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _hbox = gtk.HBox()
         _hbox.pack_start(_bbox, False, True)
 
-        _hpaned = gtk.HPaned()
+        _hbox.pack_end(self.nbkRiskAnalysis, True, True)
 
-        _hbox.pack_end(_hpaned, True, True)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.add(self.tvwRiskMap)
-
-        _hpaned.pack1(self.nbkRiskAnalysis, resize=True, shrink=True)
-        _hpaned.pack2(_scrollwindow, resize=True, shrink=True)
-
-        _bbox.pack_start(self.btnCalculate, False, False)
         _bbox.pack_start(self.btnSave, False, False)
-
-        self.btnCalculate.set_tooltip_text(_(u"Calculate the reliability "
-                                             u"risk assessment."))
-        self.btnSave.set_tooltip_text(_(u"Saves the reliability risk "
-                                        u"assessment."))
-
-        self.btnCalculate.connect('clicked', self._on_button_clicked, 50)
-        self.btnSave.connect('clicked', self._on_button_clicked, 51)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display risk analysis information.  #
@@ -641,55 +763,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_obj_risk_analyses[5].create_risk_analysis_page(self.nbkRiskAnalysis)
         self._lst_obj_risk_analyses[6] = TRR.UnitRiskAnalysis()
         self._lst_obj_risk_analyses[6].create_risk_analysis_page(self.nbkRiskAnalysis)
-
-        # Add the risk map.
-        _headings = [_(u"Software\nModule"), _(u"Application\nRisk"),
-                     _(u"Organization\nRisk"), _(u"Anomaly\nManagement\nRisk"),
-                     _(u"Traceability\nRisk"), _(u"Quality\nAssurance\nRisk"),
-                     _(u"Language\nRisk"), _(u"Code\nComplexity\nRisk"),
-                     _(u"Modularity\nRisk"), _(u"Overall\nRisk")]
-
-        _model = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING)
-        self.tvwRiskMap.set_model(_model)
-        self.tvwRiskMap.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
-
-        _cell = gtk.CellRendererText()       # Cell background color.
-        _cell.set_property('visible', False)
-        _column = gtk.TreeViewColumn()
-        _column.set_visible(False)
-        _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-        _column.pack_start(_cell, True)
-        _column.set_attributes(_cell, text=0)
-
-        self.tvwRiskMap.append_column(_column)
-
-        for i in range(1, 11):
-            _label = gtk.Label()
-            _label.set_alignment(xalign=0.5, yalign=0.5)
-            _label.set_justify(gtk.JUSTIFY_CENTER)
-            _label.set_property('angle', 90)
-            _label.set_markup("<span weight='bold'>" +
-                              _headings[i - 1] +
-                              "</span>")
-            _label.set_use_markup(True)
-            _label.show_all()
-            _column = gtk.TreeViewColumn()
-            _column.set_widget(_label)
-            _column.set_visible(True)
-            _column.set_sizing(gtk.TREE_VIEW_COLUMN_AUTOSIZE)
-            _cell = gtk.CellRendererText()       # Cell background color.
-            _cell.set_property('visible', True)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, background=i)
-            if i == 1:
-                _column.set_attributes(_cell, text=i)
-
-            self.tvwRiskMap.append_column(_column)
 
         # Insert the tab.
         _label = gtk.Label()
@@ -733,14 +806,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _bbox.pack_start(self.btnTestCalculate, False, False)
         _bbox.pack_start(self.btnTestSave, False, False)
 
-        self.btnTestCalculate.set_tooltip_text(_(u"Calculate the test plan "
-                                                 u"risk reduction."))
-        self.btnTestSave.set_tooltip_text(_(u"Saves the test plan risk "
-                                            u"reduction assessment."))
-
-        self.btnTestCalculate.connect('clicked', self._on_button_clicked, 52)
-        self.btnTestSave.connect('clicked', self._on_button_clicked, 53)
-
         _vpaned = gtk.VPaned()
 
         # Add the test planning widgets to the upper left half.
@@ -750,7 +815,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdtopleft)
 
-        _frame = _widg.make_frame(label=_(u"Test Planning"))
+        _frame = Widgets.make_frame(label=_(u"Test Planning"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
         _frame.show_all()
@@ -764,7 +829,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdbottomleft)
 
-        _frame = _widg.make_frame(label=_(u"Test Effort &amp; Coverage"))
+        _frame = Widgets.make_frame(label=_(u"Test Effort &amp; Coverage"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -772,43 +837,32 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _hpaned.pack1(_vpaned, resize=True, shrink=True)
 
-        # Add the test technique selection widgets to the upper right half.
-        self.scwCSCITestSelection = TestSelection.CSCITestSelection()
-        self.scwCSCITestSelection.create_test_planning_matrix()
-
-        self.scwUnitTestSelection = TestSelection.UnitTestSelection()
-        self.scwUnitTestSelection.create_test_planning_matrix()
-
-        self.fraTestSelection.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        _hpaned.pack2(self.fraTestSelection, resize=True, shrink=True)
-
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display risk analysis information.  #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.Combo()
         _list = [["Low"], ["Medium"], ["High"], ["Very High"]]
-        _widg.load_combo(self.cmbTCL, _list, True)
+        Widgets.load_combo(self.cmbTCL, _list, True)
 
         _list = [[_(u"Choose techniques based on software category")],
                  [_(u"Choose techniques based on types of software errors")]]
-        _widg.load_combo(self.cmbTestPath, _list, True)
+        Widgets.load_combo(self.cmbTestPath, _list, True)
 
         _list = [[_(u"Alternative 1, Labor Hours")],
                  [_(u"Alternative 2, Budget")],
                  [_(u"Alternative 3, Schedule")]]
-        _widg.load_combo(self.cmbTestEffort, _list, True)
+        Widgets.load_combo(self.cmbTestEffort, _list, True)
 
         _list = [[_(u"Test Until Method is Exhausted")],
                  [_(u"Stopping Rules")]]
-        _widg.load_combo(self.cmbTestApproach, _list, True)
+        Widgets.load_combo(self.cmbTestApproach, _list, True)
 
         # Place the labels in the upper left pane.
         _labels = [_(u"Test Confidence Level:"), _(u"Test Path:"),
                    _(u"Test Effort:"), _(u"Test Approach:")]
         _max1 = 0
-        (_max1, _y_pos1) = _widg.make_labels(_labels, _fxdtopleft,
-                                             5, 5, y_inc=30)
+        (_max1, _y_pos1) = Widgets.make_labels(_labels, _fxdtopleft,
+                                               5, 5, y_inc=30)
 
         # Place the labels in the lower left pane.  There are two columns
         # of information in the lower left pane.  First we place the left
@@ -820,8 +874,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Budget for Development:"),
                    _(u"Working Days for Testing:"),
                    _(u"Working Days for Development:")]
-        (_x_pos_left, _y_pos2) = _widg.make_labels(_labels, _fxdbottomleft,
-                                                   5, 5, y_inc=25)
+        (_x_pos_left, _y_pos2) = Widgets.make_labels(_labels, _fxdbottomleft,
+                                                     5, 5, y_inc=25)
         _x_pos_left = max(_max1, _x_pos_left)
         _x_pos_left += 45
 
@@ -833,79 +887,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 #                   _(u"Number of Requirements:"),
 #                   _(u"Number of Requirements Tested:")]
         (_x_pos_right,
-         _y_pos) = _widg.make_labels(_labels, _fxdbottomleft,
-                                     _x_pos_left + 105, 5)
+         _y_pos) = Widgets.make_labels(_labels, _fxdbottomleft,
+                                       _x_pos_left + 105, 5)
         _x_pos_right += _x_pos_left + 150
 
         # Place the widgets in the upper left pane.
-        self.cmbTCL.set_tooltip_text(_(u"Select the desired software test "
-                                       u"confidence level."))
-        self.cmbTestPath.set_tooltip_text(_(u"Select the path for determining "
-                                            u"software testing techniques."))
-        self.cmbTestEffort.set_tooltip_text(_(u"Select the software test "
-                                              u"effort alternative."))
-        self.cmbTestApproach.set_tooltip_text(_(u"Select the software test "
-                                                u"approach."))
-
         _fxdtopleft.put(self.cmbTCL, _x_pos_left, _y_pos1[0])
         _fxdtopleft.put(self.cmbTestPath, _x_pos_left, _y_pos1[1])
         _fxdtopleft.put(self.cmbTestEffort, _x_pos_left, _y_pos1[2])
         _fxdtopleft.put(self.cmbTestApproach, _x_pos_left, _y_pos1[3])
 
-        self._lst_handler_id.append(
-            self.cmbTCL.connect('changed', self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.cmbTestPath.connect('changed', self._on_combo_changed, 5))
-        self._lst_handler_id.append(
-            self.cmbTestEffort.connect('changed', self._on_combo_changed, 6))
-        self._lst_handler_id.append(
-            self.cmbTestApproach.connect('changed', self._on_combo_changed, 7))
-
         _fxdtopleft.show_all()
 
         # Place the widgets in the lower left pane.
-        self.txtLaborTest.set_tooltip_text(_(u"Total number of labor "
-                                             u"hours for software "
-                                             u"testing."))
-        self.txtLaborDev.set_tooltip_text(_(u"Total number of labor hours "
-                                            u"for entire software development "
-                                            u"effort."))
-        self.txtBudgetTest.set_tooltip_text(_(u"Total budget for software "
-                                              u"testing."))
-        self.txtBudgetDev.set_tooltip_text(_(u"Total budget for entire "
-                                             u"for software development "
-                                             u"effort."))
-        self.txtScheduleTest.set_tooltip_text(_(u"Working days scheduled "
-                                                u"for software testing."))
-        self.txtScheduleDev.set_tooltip_text(_(u"Working days scheduled "
-                                               u"for entire development "
-                                               u"effort."))
-
-        self.txtBranches.set_tooltip_text(_(u"The total number of "
-                                            u"execution branches in the "
-                                            u"selected unit."))
-        self.txtBranchesTest.set_tooltip_text(_(u"The total number of "
-                                                u"execution branches "
-                                                u"actually tested in the "
-                                                u"selected unit."))
-        self.txtInputs.set_tooltip_text(_(u"The total number of inputs to "
-                                          u"the selected unit."))
-        self.txtInputsTest.set_tooltip_text(_(u"The total number of "
-                                              u"inputs to the selected "
-                                              u"unit actually tested."))
-        self.txtUnits.set_tooltip_text(_(u"The total number of units in "
-                                         u"the selected CSCI."))
-        self.txtUnitsTest.set_tooltip_text(_(u"The total number of units "
-                                             u"in the selected CSCI "
-                                             u"actually tested."))
-        self.txtInterfaces.set_tooltip_text(_(u"The total number of "
-                                              u"interfaces to the "
-                                              u"selected CSCI."))
-        self.txtInterfacesTest.set_tooltip_text(_(u"The total number of "
-                                                  u"interfaces in the "
-                                                  u"selected CSCI "
-                                                  u"actually tested."))
-
         _fxdbottomleft.put(self.txtLaborTest, _x_pos_left, _y_pos2[0])
         _fxdbottomleft.put(self.txtLaborDev, _x_pos_left, _y_pos2[1])
         _fxdbottomleft.put(self.txtBudgetTest, _x_pos_left, _y_pos2[2])
@@ -921,47 +915,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fxdbottomleft.put(self.txtUnitsTest, _x_pos_right, _y_pos[5])
         _fxdbottomleft.put(self.txtInterfaces, _x_pos_right, _y_pos[6])
         _fxdbottomleft.put(self.txtInterfacesTest, _x_pos_right, _y_pos[7])
-
-        self._lst_handler_id.append(
-            self.txtLaborTest.connect('focus-out-event',
-                                      self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.txtLaborDev.connect('focus-out-event', self._on_focus_out, 9))
-        self._lst_handler_id.append(
-            self.txtBudgetTest.connect('focus-out-event',
-                                       self._on_focus_out, 10))
-        self._lst_handler_id.append(
-            self.txtBudgetDev.connect('focus-out-event',
-                                      self._on_focus_out, 11))
-        self._lst_handler_id.append(
-            self.txtScheduleTest.connect('focus-out-event',
-                                         self._on_focus_out, 12))
-        self._lst_handler_id.append(
-            self.txtScheduleDev.connect('focus-out-event',
-                                        self._on_focus_out, 13))
-
-        self._lst_handler_id.append(
-            self.txtBranches.connect('focus-out-event',
-                                     self._on_focus_out, 14))
-        self._lst_handler_id.append(
-            self.txtBranchesTest.connect('focus-out-event',
-                                         self._on_focus_out, 15))
-        self._lst_handler_id.append(
-            self.txtInputs.connect('focus-out-event', self._on_focus_out, 16))
-        self._lst_handler_id.append(
-            self.txtInputsTest.connect('focus-out-event',
-                                       self._on_focus_out, 17))
-        self._lst_handler_id.append(
-            self.txtUnits.connect('focus-out-event', self._on_focus_out, 18))
-        self._lst_handler_id.append(
-            self.txtUnitsTest.connect('focus-out-event',
-                                      self._on_focus_out, 19))
-        self._lst_handler_id.append(
-            self.txtInterfaces.connect('focus-out-event',
-                                       self._on_focus_out, 20))
-        self._lst_handler_id.append(
-            self.txtInterfacesTest.connect('focus-out-event',
-                                           self._on_focus_out, 21))
 
         _fxdbottomleft.show_all()
 
@@ -1004,18 +957,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _bbox.pack_start(self.btnEstimate, False, False)
 
-        self.btnEstimate.set_tooltip_text(_(u"Estimate the software failure "
-                                            u"rates."))
-
-        self.btnEstimate.connect('clicked', self._on_button_clicked, 54)
-
         _fixed = gtk.Fixed()
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
-        _frame = _widg.make_frame(label=_(u"Reliability Estimation Results"))
+        _frame = Widgets.make_frame(label=_(u"Reliability Estimation Results"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1038,71 +986,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Input Variability:"), _(u"Workload:"),
                    _(u"Operating Environment Factor:"),
                    _(u"Estimated Failure Rate:")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos += 45
-
-        self.txtEC.set_tooltip_text(_(u"Displays the number of exception "
-                                      u"conditions for the selected "
-                                      u"software module."))
-        self.txtET.set_tooltip_text(_(u"Displays the total execution time "
-                                      u"for the selected software "
-                                      u"module."))
-        self.txtOS.set_tooltip_text(_(u"Displays the operating system "
-                                      u"overhead time for the selected "
-                                      u"software module."))
-        self.txtDRTest.set_tooltip_text(_(u"Displays the total number of "
-                                          u"discrepancy reports recorded "
-                                          u"during testing for the selected "
-                                          u"software module."))
-        self.txtTestTime.set_tooltip_text(_(u"Displays the total test time "
-                                            u"for the selected software "
-                                            u"module."))
-        self.txtDREOT.set_tooltip_text(_(u"Displays the total number of "
-                                         u"discrepancy reports recorded "
-                                         u"during the last three test periods "
-                                         u"for the selected software module."))
-        self.txtTestTimeEOT.set_tooltip_text(_(u"Displays the total test time "
-                                               u"during the last three test "
-                                               u"periods for the selected "
-                                               u"software module."))
-
-        self.txtTE.set_tooltip_text(_(u"Displays the reduction in risk due to "
-                                      u"the percent of the development "
-                                      u"program assigned to testing for the "
-                                      u"selected software module."))
-        self.txtTM.set_tooltip_text(_(u"Displays the reduction in risk due to "
-                                      u"the number of recommended tests that "
-                                      u"are actually performed for the "
-                                      u"selected software module."))
-        self.txtTC.set_tooltip_text(_(u"Displays the reduction in risk due to "
-                                      u"percent test coverage of the tests "
-                                      u"performed for the selected software "
-                                      u"module."))
-        self.txtFT1.set_tooltip_text(_(u"Displays the average failure "
-                                       u"rate during test for the "
-                                       u"selected software module."))
-        self.txtFT2.set_tooltip_text(_(u"Displays the failure rate at the "
-                                       u"end of test for the selected "
-                                       u"software module."))
-        self.txtRENAVG.set_tooltip_text(_(u"Displays the average "
-                                          u"Reliability Estimation Number "
-                                          u"(REN) for the selected "
-                                          u"software module."))
-        self.txtRENEOT.set_tooltip_text(_(u"Displays the end of test "
-                                          u"Reliability Estimation Number "
-                                          u"(REN) for the selected "
-                                          u"software module."))
-        self.txtEV.set_tooltip_text(_(u"Displays the variability of input "
-                                      u"for the selected software "
-                                      u"module."))
-        self.txtEW.set_tooltip_text(_(u"Displays the workload for the "
-                                      u"selected software module."))
-        self.txtE.set_tooltip_text(_(u"Displays the operating environment "
-                                     u"factor for the selected software "
-                                     u"module."))
-        self.txtF.set_tooltip_text(_(u"Displays the estimated failure "
-                                     u"rate for the selected software "
-                                     u"module."))
 
         _fixed.put(self.txtEC, _x_pos, _y_pos[0])
         _fixed.put(self.txtET, _x_pos, _y_pos[1])
@@ -1156,7 +1041,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def load(self, model):
         """
-        Loads the Software class gtk.Notebook().
+        Method to load the Software class gtk.Notebook().
 
         :param model: the :py:class:`rtk.software.Software.Model` to load.
         :return: False if successful or True if an error is encountered.
@@ -1182,12 +1067,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # --------------------------------------------------------------#
         # Load the Test Selection Matrix.                               #
         # --------------------------------------------------------------#
-        for _child in self.fraTestSelection.get_children():
-            self.fraTestSelection.remove(_child)
-
         if model.level_id == 2:             # CSCI
-            self.scwCSCITestSelection.load_test_selections(model)
-            self.fraTestSelection.add(self.scwCSCITestSelection)
             self.txtBranches.props.editable = False
             self.txtBranches.set_sensitive(False)
             self.txtBranchesTest.props.editable = False
@@ -1205,8 +1085,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.txtInterfacesTest.props.editable = True
             self.txtInterfacesTest.set_sensitive(True)
         elif model.level_id == 3:           # Unit
-            self.scwUnitTestSelection.load_test_selections(model)
-            self.fraTestSelection.add(self.scwUnitTestSelection)
             self.txtBranches.props.editable = True
             self.txtBranches.set_sensitive(True)
             self.txtBranchesTest.props.editable = True
@@ -1240,7 +1118,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.txtInterfaces.set_sensitive(False)
             self.txtInterfacesTest.props.editable = False
             self.txtInterfacesTest.set_sensitive(False)
-        self.fraTestSelection.resize_children()
 
         self.cmbTCL.set_active(int(model.tcl))
         self.cmbTestPath.set_active(int(model.test_path))
@@ -1272,9 +1149,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _load_risk_analysis_page(self):
         """
-        Loads the Software class gtk.Notebook() risk analysis page.
+        Method to load the Software class gtk.Notebook() risk analysis page.
 
-        Show the pages according to the following
+        Show the pages according to the following:
 
         +------------------------------+--------+----+-----+-----+-----+-----+
         |             Phase            | Level  | DE | SRR | PDR | CDR | TRR |
@@ -1305,7 +1182,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
+# TODO: Re-write _load_risk_analysis_page; current McCabe Complexity metric = 21.
         if self._software_model.level_id == 1:             # System
             _lst_show = [0]
             _lst_hide = [1, 2, 3, 4, 5, 6]
@@ -1313,28 +1190,28 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         if self._software_model.phase_id == 1:             # Concept/planning
             _lst_show = [0]
             _lst_hide = [1, 2, 3, 4, 5, 6]
-        elif self._software_model.phase_id == 2:           # Requirements review
+        elif self._software_model.phase_id == 2:           # SRR
             if self._software_model.level_id == 2:         # CSCI
                 _lst_show = [0, 1]
                 _lst_hide = [2, 3, 4, 5, 6]
             elif self._software_model.level_id == 3:       # Unit
                 _lst_show = [0]
                 _lst_hide = [1, 2, 3, 4, 5, 6]
-        elif self._software_model.phase_id == 3:           # Preliminary design review
+        elif self._software_model.phase_id == 3:           # PDR
             if self._software_model.level_id == 2:         # CSCI
                 _lst_show = [0, 1, 2]
                 _lst_hide = [3, 4, 5, 6]
             elif self._software_model.level_id == 3:       # Unit
                 _lst_show = [0]
                 _lst_hide = [1, 2, 3, 4, 5, 6]
-        elif self._software_model.phase_id == 4:           # Critical design review
+        elif self._software_model.phase_id == 4:           # CDR
             if self._software_model.level_id == 2:         # CSCI
                 _lst_show = [0, 1, 2, 3]
                 _lst_hide = [4, 5, 6]
             elif self._software_model.level_id == 3:       # Unit
                 _lst_show = [0, 4]
                 _lst_hide = [1, 2, 3, 5, 6]
-        elif self._software_model.phase_id == 5:           # Test readiness review
+        elif self._software_model.phase_id == 5:           # TRR
             if self._software_model.level_id == 2:         # CSCI
                 _lst_show = [0, 1, 2, 3, 5]
                 _lst_hide = [4, 6]
@@ -1359,77 +1236,27 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._lst_obj_risk_analyses[4].load(self._software_model)
             self._lst_obj_risk_analyses[6].load(self._software_model)
 
-        # Load the risk map.
-        _software = self.dtcBoM.dicSoftware.values()
-        _top_module = [_s for _s in _software if _s.software_id == 0]
-
-        _model = self.tvwRiskMap.get_model()
-        _model.clear()
-
-        self._load_risk_map(_top_module, _software, _model)
-
-        return False
-
-    def _load_risk_map(self, parents, software, model, row=None):
-        """
-        Method to load the Software class Risk Map.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        _dicRisk = {}
-
-        for _software in parents:
-            _data = [_software.software_id, _software.description]
-            _dicRisk[_software.software_id] = [_software.a_risk,
-                                               _software.d_risk, _software.sa,
-                                               _software.st, _software.sq,
-                                               _software.sl, _software.sx,
-                                               _software.sm, _software.rpfom]
-
-            # Get the hexidecimal color code for each risk factor.
-            _color = _set_risk_color(_dicRisk, _software.software_id)
-
-            if _software.parent_id == -1:   # It's the top level element.
-                row = None
-
-            _data.append(_color['A'])
-            _data.append(_color['D'])
-            _data.append(_color['SA'])
-            _data.append(_color['ST'])
-            _data.append(_color['SQ'])
-            _data.append(_color['SL'])
-            _data.append(_color['SX'])
-            _data.append(_color['SM'])
-            _data.append(_color['Risk'])
-
-            _piter = model.append(row, _data)
-
-            _parents = [_s for _s in software if _s.parent_id == _software.software_id]
-            self._load_risk_map(_parents, software, model, _piter)
-
-        self.tvwRiskMap.expand_all()
-
         return False
 
     def _load_assessment_results_page(self):
         """
-        Loads the Software class gtk.Notebook() risk assessment page.
+        Method to load the Software class gtk.Notebook() risk assessment page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         self.txtEC.set_text(str(fmt.format(self._software_model.ec)))
         self.txtET.set_text(str(fmt.format(self._software_model.et)))
         self.txtOS.set_text(str(fmt.format(self._software_model.os)))
         self.txtDRTest.set_text(str(fmt.format(self._software_model.dr_test)))
-        self.txtTestTime.set_text(str(fmt.format(self._software_model.test_time)))
+        self.txtTestTime.set_text(
+            str(fmt.format(self._software_model.test_time)))
         self.txtDREOT.set_text(str(fmt.format(self._software_model.dr_eot)))
-        self.txtTestTimeEOT.set_text(str(fmt.format(self._software_model.test_time_eot)))
+        self.txtTestTimeEOT.set_text(
+            str(fmt.format(self._software_model.test_time_eot)))
 
         self.txtFT1.set_text(str(fmt.format(self._software_model.ft1)))
         self.txtFT2.set_text(str(fmt.format(self._software_model.ft2)))
@@ -1468,9 +1295,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._software_model.revision_id, software_type, software_id)
 
         if software_type == 1:
-            _icon = _conf.ICON_DIR + '32x32/csci.png'
+            _icon = Configuration.ICON_DIR + '32x32/csci.png'
         elif software_type == 2:
-            _icon = _conf.ICON_DIR + '32x32/unit.png'
+            _icon = Configuration.ICON_DIR + '32x32/unit.png'
 
         # Update the module book view to show the new assembly.
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
@@ -1519,6 +1346,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+# TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 17.
+
+        _return = False
 
         if index == 0:
             # Find the selected software item indenture level.
@@ -1531,8 +1361,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _row = _model.iter_parent(_row)
             _software_id = _model.get_value(_row, 1)
             if _level_id == 1:
-                _util.rtk_information(_(u"Can not add a sibling to the "
-                                        u"System Software."))
+                Utilities.rtk_information(_(u"Can not add a sibling to the "
+                                            u"System Software."))
             elif _level_id == 2:
                 self._request_add_software(1, _model, _row, _software_id)
             elif _level_id == 3:
@@ -1560,20 +1390,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif index == 4:
             self.dtcBoM.save_software_item(self._software_model.software_id)
 
-        elif index == 50:
-            self.dtcBoM.request_calculate()
-
-            # Load the risk map.
-            _software = self.dtcBoM.dicSoftware.values()
-            _top_module = [_s for _s in _software if _s.software_id == 0]
-
-            _model = self.tvwRiskMap.get_model()
-            _model.clear()
-
-            self._load_risk_map(_top_module, _software, _model)
-
-            self._load_assessment_results_page()
-
         elif index == 51:
             self.dtcBoM.save_development_risk(self._software_model.software_id)
 
@@ -1589,13 +1405,109 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif index == 52:
             self.dtcBoM.request_calculate()
 
+            for __, _key in enumerate(self.dtcBoM.dicSoftware[0].dicErrors):
+                if sum(self.dtcBoM.dicSoftware[0].dicErrors[_key]) != 0:
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][0]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate anomaly management factor " \
+                                   "for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][1]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate software quality factor " \
+                                   "for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][2]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate language type factor " \
+                                   "for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][3]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate the risk reduction for " \
+                                   "{1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][4]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate the reliability estimation " \
+                                   "number for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+            _prompt = _(u"One or more errors occurred while attempting to "
+                        u"calculate software reliability.")
+            Utilities.rtk_error(_prompt)
+
+            _return = True
+
         elif index == 53:
             self.dtcBoM.save_test_selections(self._software_model.software_id)
 
         elif index == 54:
             self.dtcBoM.request_calculate()
 
-        return False
+            for __, _key in enumerate(self.dtcBoM.dicSoftware[0].dicErrors):
+                if sum(self.dtcBoM.dicSoftware[0].dicErrors[_key]) != 0:
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][0]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate anomaly management factor " \
+                                   "for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][1]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate software quality factor " \
+                                   "for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][2]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate language type factor " \
+                                   "for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][3]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate the risk reduction for " \
+                                   "{1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+                    _error = self.dtcBoM.dicSoftware[0].dicErrors[_key][4]
+                    if _error != 0:
+                        _content = "rtk.software.WorkBook._on_button_clicked: " \
+                                   "Received error {0:d} while attempting " \
+                                   "to calculate the reliability estimation " \
+                                   "number for {1:d}.".format(_error, _key)
+                        self._modulebook.mdcRTK.debug_log.error(_content)
+
+            _prompt = _(u"One or more errors occurred while attempting to "
+                        u"calculate software reliability.")
+            Utilities.rtk_error(_prompt)
+
+            _return = True
+
+        return _return
 
     def _on_combo_changed(self, combo, index):
         """
@@ -1653,7 +1565,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write _on_focus_out; current McCabe Complexity metric = 22.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:

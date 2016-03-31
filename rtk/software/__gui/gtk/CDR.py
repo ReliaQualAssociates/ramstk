@@ -7,7 +7,7 @@ Software Package Risk Analysis Critical Design Review Specific Work Book View
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.software.gui.gtk.CDR.py is part of The RTK Project
+#       rtk.software.__gui.gtk.CDR.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -34,11 +34,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -46,7 +46,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -58,246 +58,71 @@ class CSCIRiskAnalysis(gtk.VPaned):
     The Work Book view for analyzing and displaying the risk at the Critical
     Design Review phase.  The attributes of a CDR Work Book view are:
 
-    :ivar _lst_handler_id: default value: []
+    :ivar list _lst_handler_id: the list of gtk.Widget() signal handler IDs.
+    :ivar _software_model: the :py:class:`rtk.software.Software.Model` to
+                           display.
     """
 
     def __init__(self):
         """
-        Creates an input vertical paned for the CDR risk analysis questions.
+        Method to create the CDR risk analysis questions.
         """
 
         gtk.VPaned.__init__(self)
 
-        # Initialize private list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lst_handler_id = []
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
         self._software_model = None
 
-        self.chkCDRAMQ3 = _widg.make_check_button()
-        self.chkCDRAMQ4 = _widg.make_check_button()
-        self.chkCDRAMQ5 = _widg.make_check_button()
-        self.chkCDRAMQ6 = _widg.make_check_button()
-        self.chkCDRAMQ7 = _widg.make_check_button()
-        self.chkCDRAMQ9 = _widg.make_check_button()
-        self.chkCDRAMQ10 = _widg.make_check_button()
-        self.chkCDRAMQ11 = _widg.make_check_button()
-        self.chkCDRSTQ1 = _widg.make_check_button()
-        self.chkCDRSTQ2 = _widg.make_check_button()
+        # Define public dictionary attributes.
 
-        self.txtCDRAMQ1 = _widg.make_entry(width=50)
-        self.txtCDRAMQ2 = _widg.make_entry(width=50)
-        self.txtCDRAMQ8 = _widg.make_entry(width=50)
-        self.txtCDRQCQ1 = _widg.make_entry(width=50)
-        self.txtCDRQCQ2 = _widg.make_entry(width=50)
-        self.txtCDRQCQ3 = _widg.make_entry(width=50)
-        self.txtCDRQCQ4 = _widg.make_entry(width=50)
-        self.txtCDRQCQ5 = _widg.make_entry(width=50)
-        self.txtCDRQCQ6 = _widg.make_entry(width=50)
-        self.txtCDRQCQ7 = _widg.make_entry(width=50)
-        self.txtCDRQCQ8 = _widg.make_entry(width=50)
-        self.txtCDRQCQ9 = _widg.make_entry(width=50)
-        self.txtCDRQCQ10 = _widg.make_entry(width=50)
-        self.txtCDRQCQ11 = _widg.make_entry(width=50)
-        self.txtCDRQCQ12 = _widg.make_entry(width=50)
-        self.txtCDRQCQ13 = _widg.make_entry(width=50)
-        self.txtCDRQCQ14 = _widg.make_entry(width=50)
-        self.txtCDRQCQ15 = _widg.make_entry(width=50)
-        self.txtCDRQCQ16 = _widg.make_entry(width=50)
-        self.txtCDRQCQ17 = _widg.make_entry(width=50)
-        self.txtCDRQCQ18 = _widg.make_entry(width=50)
-        self.txtCDRQCQ19 = _widg.make_entry(width=50)
-        self.txtCDRQCQ20 = _widg.make_entry(width=50)
-        self.txtCDRQCQ21 = _widg.make_entry(width=50)
-        self.txtCDRQCQ22 = _widg.make_entry(width=50)
-        self.txtCDRQCQ23 = _widg.make_entry(width=50)
-        self.txtCDRQCQ24 = _widg.make_entry(width=50)
+        # Define public list attributes.
 
-    def create_risk_analysis_page(self, notebook):
-        """
-        Method to create the CDR risk analysis page and add it to the risk
-        analysis gtk.Notebook().
+        # Define public scalar attributes.
+        self.chkCDRAMQ3 = Widgets.make_check_button()
+        self.chkCDRAMQ4 = Widgets.make_check_button()
+        self.chkCDRAMQ5 = Widgets.make_check_button()
+        self.chkCDRAMQ6 = Widgets.make_check_button()
+        self.chkCDRAMQ7 = Widgets.make_check_button()
+        self.chkCDRAMQ9 = Widgets.make_check_button()
+        self.chkCDRAMQ10 = Widgets.make_check_button()
+        self.chkCDRAMQ11 = Widgets.make_check_button()
+        self.chkCDRSTQ1 = Widgets.make_check_button()
+        self.chkCDRSTQ2 = Widgets.make_check_button()
 
-        :param gtk.Notebook notebook: the gtk.Notebook() instance that will
-                                      hold the development environment analysis
-                                      questions.
-        """
+        self.txtCDRAMQ1 = Widgets.make_entry(width=50)
+        self.txtCDRAMQ2 = Widgets.make_entry(width=50)
+        self.txtCDRAMQ8 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ1 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ2 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ3 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ4 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ5 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ6 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ7 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ8 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ9 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ10 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ11 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ12 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ13 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ14 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ15 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ16 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ17 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ18 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ19 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ20 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ21 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ22 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ23 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ24 = Widgets.make_entry(width=50)
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build the module-level containers and include them in the page
-        # by default.
-        _fxdcsciam = gtk.Fixed()
-        _fxdcsciqc = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdcsciam)
-
-        _frame = _widg.make_frame(_(u"Software Module Anomaly Management"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.pack1(_frame, resize=True, shrink=True)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdcsciqc)
-
-        _frame = _widg.make_frame(_(u"Software Module Quality Control"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        self.pack2(_frame, resize=True, shrink=True)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display risk analysis information.  #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Create the anomaly management labels for CSCI.
-        _labels = [_(u" 1. Number of units in this module:"),
-                   _(u" 2. Number of units in this module, when an error "
-                     u"condition is detected, in which resolution "
-                     u"the error is not\ndetermined by the calling unit:"),
-                   _(u" 3. The value of all external inputs with range "
-                     u"specifications are checked with respect to the "
-                     u"specified\nrange prior to use."),
-                   _(u" 4. All external inputs are checked with respect "
-                     u"to specified conflicting requests prior to use."),
-                   _(u" 5. All external inputs are checked with respect "
-                     u"to specified illegal combinations prior to use."),
-                   _(u" 6. All external inputs are checked for "
-                     u"reasonableness before processing begins."),
-                   _(u" 7. All detected errors, with respect to "
-                     u"applicable external inputs, are reported before "
-                     u"processing begins."),
-                   _(u" 8. Number of units in this module that do not "
-                     u"perform a check to determine that all data is "
-                     u"available before\nprocessing begins:"),
-                   _(u" 9. Critical loop and multiple transfer index "
-                     u"parameters (e.g., supporting a mission-critical "
-                     u"system function)\nare checked for out-of-range "
-                     u"values before use."),
-                   _(u"10. All critical subscripts (e.g., supporting a "
-                     u"mission-critical system function) are checked for "
-                     u"out-of-range\nvalues before use."),
-                   _(u"11. All critical output data (e.g., supporting a "
-                     u"mission-critical system function) are checked for\n"
-                     u"reasonable values prior to final outputting.")]
-        (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fxdcsciam,
-                                              5, 5, wrap=False)
-
-        # Create the software quality control labels for CSCI.
-        _labels = [_(u" 1. The description of each software unit "
-                     u"identifies all the requirements that the unit "
-                     u"helps satisfy."),
-                   _(u" 2. The decomposition of top-level modules into "
-                     u"lower-level modules and software units is "
-                     u"graphically depicted."),
-                   _(u" 3. Estimated executable lines of source code in "
-                     u"this module:"),
-                   _(u" 4. Estimated executable lines of source code "
-                     u"necessary to handle hardware and device interface "
-                     u"protocol\nin this module:"),
-                   _(u" 5. Number of units in this module that perform "
-                     u"processing of hardware and/or device interface "
-                     u"protocol:"),
-                   _(u" 6. Estimated processing time typically spent "
-                     u"executing this module:"),
-                   _(u" 7. Estimated processing time typically spent in "
-                     u"execution of hardware and device interface "
-                     u"protocol in\nthis module:"),
-                   _(u" 8. Number of units that clearly and precisely "
-                     u"define all inputs, processing, and outputs:"),
-                   _(u" 9. Data references identified in this module:"),
-                   _(u"10. Identified data references that are documented "
-                     u"with regard to source, meaning, and format in this "
-                     u"module:"),
-                   _(u"11. Data items that are defined (i.e., documented "
-                     u"with regard to source, meaning, and format) in "
-                     u"this module:"),
-                   _(u"12. Data items are referenced in this module:"),
-                   _(u"13. Data references identified in this module:"),
-                   _(u"14. Identified data references that are computed "
-                     u"or obtained from an external source\n(e.g., "
-                     u"referencing global data with preassigned values, "
-                     u"input parameters with preassigned values)\nin this "
-                     u"module:"),
-                   _(u"15. Number of units that define all conditions and "
-                     u"alternative processing options for each decision "
-                     u"point:"),
-                   _(u"16. Number of units in which all parameters in the "
-                     u"argument list are used:"),
-                   _(u"17. Number of software discrepancy reports "
-                     u"recorded, to date, for this module:"),
-                   _(u"18. Number of software discrepancy reports "
-                     u"recorded that have been closed, to date, for this "
-                     u"module:"),
-                   _(u"19. Number of units in which all design "
-                     u"representations are in the formats of the "
-                     u"established standard:"),
-                   _(u"20. Number of units in which the inter-unit "
-                     u"calling sequence protocol complies with the "
-                     u"standard:"),
-                   _(u"21. Number of units in which the I/O protocol and "
-                     u"format complies with the established standard:"),
-                   _(u"22. Number of units in which the handling of "
-                     u"errors complies with the established standard:"),
-                   _(u"23. Number of units in which all references to the "
-                     u"unit use the same, unique name:"),
-                   _(u"24. Number of units in which the naming of all "
-                     u"data complies with the established standard:"),
-                   _(u"25. Number of units in which is the definition and "
-                     u"use of all global variables is in accordance with "
-                     u"the\nestablished standard:"),
-                   _(u"26. Number of units in which references to the "
-                     u"same data use a single, unique name:")]
-        (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fxdcsciqc,
-                                               5, 5, wrap=False)
-        _x_pos = max(_x_pos, _x_pos2) + 125
-
-        # Place the anomaly management widgets for CSCI.
-        _fxdcsciam.put(self.txtCDRAMQ1, _x_pos, _y_pos1[0])
-        _fxdcsciam.put(self.txtCDRAMQ2, _x_pos, _y_pos1[1])
-        _fxdcsciam.put(self.chkCDRAMQ3, _x_pos, _y_pos1[2])
-        _fxdcsciam.put(self.chkCDRAMQ4, _x_pos, _y_pos1[3])
-        _fxdcsciam.put(self.chkCDRAMQ5, _x_pos, _y_pos1[4])
-        _fxdcsciam.put(self.chkCDRAMQ6, _x_pos, _y_pos1[5])
-        _fxdcsciam.put(self.chkCDRAMQ7, _x_pos, _y_pos1[6])
-        _fxdcsciam.put(self.txtCDRAMQ8, _x_pos, _y_pos1[7])
-        _fxdcsciam.put(self.chkCDRAMQ9, _x_pos, _y_pos1[8])
-        _fxdcsciam.put(self.chkCDRAMQ10, _x_pos, _y_pos1[9])
-        _fxdcsciam.put(self.chkCDRAMQ11, _x_pos, _y_pos1[10])
-
-        # Place the quality control widgets for CSCI.
-        _fxdcsciqc.put(self.chkCDRSTQ1, _x_pos, _y_pos2[0])
-        _fxdcsciqc.put(self.chkCDRSTQ2, _x_pos, _y_pos2[1])
-        _fxdcsciqc.put(self.txtCDRQCQ1, _x_pos, _y_pos2[2])
-        _fxdcsciqc.put(self.txtCDRQCQ2, _x_pos, _y_pos2[3])
-        _fxdcsciqc.put(self.txtCDRQCQ3, _x_pos, _y_pos2[4])
-        _fxdcsciqc.put(self.txtCDRQCQ4, _x_pos, _y_pos2[5])
-        _fxdcsciqc.put(self.txtCDRQCQ5, _x_pos, _y_pos2[6])
-        _fxdcsciqc.put(self.txtCDRQCQ6, _x_pos, _y_pos2[7])
-        _fxdcsciqc.put(self.txtCDRQCQ7, _x_pos, _y_pos2[8])
-        _fxdcsciqc.put(self.txtCDRQCQ8, _x_pos, _y_pos2[9])
-        _fxdcsciqc.put(self.txtCDRQCQ9, _x_pos, _y_pos2[10])
-        _fxdcsciqc.put(self.txtCDRQCQ10, _x_pos, _y_pos2[11])
-        _fxdcsciqc.put(self.txtCDRQCQ11, _x_pos, _y_pos2[12])
-        _fxdcsciqc.put(self.txtCDRQCQ12, _x_pos, _y_pos2[13])
-        _fxdcsciqc.put(self.txtCDRQCQ13, _x_pos, _y_pos2[14])
-        _fxdcsciqc.put(self.txtCDRQCQ14, _x_pos, _y_pos2[15])
-        _fxdcsciqc.put(self.txtCDRQCQ15, _x_pos, _y_pos2[16])
-        _fxdcsciqc.put(self.txtCDRQCQ16, _x_pos, _y_pos2[17])
-        _fxdcsciqc.put(self.txtCDRQCQ17, _x_pos, _y_pos2[18])
-        _fxdcsciqc.put(self.txtCDRQCQ18, _x_pos, _y_pos2[19])
-        _fxdcsciqc.put(self.txtCDRQCQ19, _x_pos, _y_pos2[20])
-        _fxdcsciqc.put(self.txtCDRQCQ20, _x_pos, _y_pos2[21])
-        _fxdcsciqc.put(self.txtCDRQCQ21, _x_pos, _y_pos2[22])
-        _fxdcsciqc.put(self.txtCDRQCQ22, _x_pos, _y_pos2[23])
-        _fxdcsciqc.put(self.txtCDRQCQ23, _x_pos, _y_pos2[24])
-        _fxdcsciqc.put(self.txtCDRQCQ24, _x_pos, _y_pos2[25])
-
-        # Connect the anomaly management widgets to callback methods.
+        # Connect gtk.Widgets() signals to callback methods.
         self._lst_handler_id.append(
             self.txtCDRAMQ1.connect('focus-out-event', self._on_focus_out, 0))
         self._lst_handler_id.append(
@@ -320,8 +145,6 @@ class CSCIRiskAnalysis(gtk.VPaned):
             self.chkCDRAMQ10.connect('toggled', self._on_toggled, 9))
         self._lst_handler_id.append(
             self.chkCDRAMQ11.connect('toggled', self._on_toggled, 10))
-
-        # Connect the quality control widgets to callback methods.
         self._lst_handler_id.append(
             self.chkCDRSTQ1.connect('toggled', self._on_toggled, 11))
         self._lst_handler_id.append(
@@ -390,6 +213,191 @@ class CSCIRiskAnalysis(gtk.VPaned):
             self.txtCDRQCQ24.connect('focus-out-event',
                                      self._on_focus_out, 36))
 
+    def create_risk_analysis_page(self, notebook):
+        """
+        Method to create the CDR risk analysis page and add it to the risk
+        analysis gtk.Notebook().
+
+        :param gtk.Notebook notebook: the gtk.Notebook() instance that will
+                                      hold the CDR risk analysis questions.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build-up the containers for the tab.                          #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build the module-level containers and include them in the page
+        # by default.
+        _fxdcsciam = gtk.Fixed()
+        _fxdcsciqc = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fxdcsciam)
+
+        _frame = Widgets.make_frame(_(u"Software Module Anomaly Management"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.pack1(_frame, resize=True, shrink=True)
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fxdcsciqc)
+
+        _frame = Widgets.make_frame(_(u"Software Module Quality Control"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        self.pack2(_frame, resize=True, shrink=True)
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Place the widgets used to display risk analysis information.  #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Create the anomaly management labels for CSCI.
+        _labels = [_(u" 1. Number of units in this module:"),
+                   _(u" 2. Number of units in this module, when an error "
+                     u"condition is detected, in which resolution "
+                     u"the error is not\ndetermined by the calling unit:"),
+                   _(u" 3. The value of all external inputs with range "
+                     u"specifications are checked with respect to the "
+                     u"specified\nrange prior to use."),
+                   _(u" 4. All external inputs are checked with respect "
+                     u"to specified conflicting requests prior to use."),
+                   _(u" 5. All external inputs are checked with respect "
+                     u"to specified illegal combinations prior to use."),
+                   _(u" 6. All external inputs are checked for "
+                     u"reasonableness before processing begins."),
+                   _(u" 7. All detected errors, with respect to "
+                     u"applicable external inputs, are reported before "
+                     u"processing begins."),
+                   _(u" 8. Number of units in this module that do not "
+                     u"perform a check to determine that all data is "
+                     u"available before\nprocessing begins:"),
+                   _(u" 9. Critical loop and multiple transfer index "
+                     u"parameters (e.g., supporting a mission-critical "
+                     u"system function)\nare checked for out-of-range "
+                     u"values before use."),
+                   _(u"10. All critical subscripts (e.g., supporting a "
+                     u"mission-critical system function) are checked for "
+                     u"out-of-range\nvalues before use."),
+                   _(u"11. All critical output data (e.g., supporting a "
+                     u"mission-critical system function) are checked for\n"
+                     u"reasonable values prior to final outputting.")]
+        (_x_pos,
+         _y_pos1) = Widgets.make_labels(_labels, _fxdcsciam, 5, 5, wrap=False)
+
+        # Create the software quality control labels for CSCI.
+        _labels = [_(u" 1. The description of each software unit "
+                     u"identifies all the requirements that the unit "
+                     u"helps satisfy."),
+                   _(u" 2. The decomposition of top-level modules into "
+                     u"lower-level modules and software units is "
+                     u"graphically depicted."),
+                   _(u" 3. Estimated executable lines of source code in "
+                     u"this module:"),
+                   _(u" 4. Estimated executable lines of source code "
+                     u"necessary to handle hardware and device interface "
+                     u"protocol\nin this module:"),
+                   _(u" 5. Number of units in this module that perform "
+                     u"processing of hardware and/or device interface "
+                     u"protocol:"),
+                   _(u" 6. Estimated processing time typically spent "
+                     u"executing this module:"),
+                   _(u" 7. Estimated processing time typically spent in "
+                     u"execution of hardware and device interface "
+                     u"protocol in\nthis module:"),
+                   _(u" 8. Number of units that clearly and precisely "
+                     u"define all inputs, processing, and outputs:"),
+                   _(u" 9. Data references identified in this module:"),
+                   _(u"10. Identified data references that are documented "
+                     u"with regard to source, meaning, and format in this "
+                     u"module:"),
+                   _(u"11. Data items that are defined (i.e., documented "
+                     u"with regard to source, meaning, and format) in "
+                     u"this module:"),
+                   _(u"12. Data items are referenced in this module:"),
+                   _(u"13. Data references identified in this module:"),
+                   _(u"14. Identified data references that are computed "
+                     u"or obtained from an external source\n(e.g., "
+                     u"referencing global data with preassigned values, "
+                     u"input parameters with preassigned values)\nin this "
+                     u"module:"),
+                   _(u"15. Number of units that define all conditions and "
+                     u"alternative processing options for each decision "
+                     u"point:"),
+                   _(u"16. Number of units in which all parameters in the "
+                     u"argument list are used:"),
+                   _(u"17. Number of software discrepancy reports "
+                     u"recorded, to date, for this module:"),
+                   _(u"18. Number of software discrepancy reports "
+                     u"recorded that have been closed, to date, for this "
+                     u"module:"),
+                   _(u"19. Number of units in which all design "
+                     u"representations are in the formats of the "
+                     u"established standard:"),
+                   _(u"20. Number of units in which the inter-unit "
+                     u"calling sequence protocol complies with the "
+                     u"standard:"),
+                   _(u"21. Number of units in which the I/O protocol and "
+                     u"format complies with the established standard:"),
+                   _(u"22. Number of units in which the handling of "
+                     u"errors complies with the established standard:"),
+                   _(u"23. Number of units in which all references to the "
+                     u"unit use the same, unique name:"),
+                   _(u"24. Number of units in which the naming of all "
+                     u"data complies with the established standard:"),
+                   _(u"25. Number of units in which is the definition and "
+                     u"use of all global variables is in accordance with "
+                     u"the\nestablished standard:"),
+                   _(u"26. Number of units in which references to the "
+                     u"same data use a single, unique name:")]
+        (_x_pos2,
+         _y_pos2) = Widgets.make_labels(_labels, _fxdcsciqc, 5, 5, wrap=False)
+        _x_pos = max(_x_pos, _x_pos2) + 125
+
+        # Place the anomaly management widgets for CSCI.
+        _fxdcsciam.put(self.txtCDRAMQ1, _x_pos, _y_pos1[0])
+        _fxdcsciam.put(self.txtCDRAMQ2, _x_pos, _y_pos1[1])
+        _fxdcsciam.put(self.chkCDRAMQ3, _x_pos, _y_pos1[2])
+        _fxdcsciam.put(self.chkCDRAMQ4, _x_pos, _y_pos1[3])
+        _fxdcsciam.put(self.chkCDRAMQ5, _x_pos, _y_pos1[4])
+        _fxdcsciam.put(self.chkCDRAMQ6, _x_pos, _y_pos1[5])
+        _fxdcsciam.put(self.chkCDRAMQ7, _x_pos, _y_pos1[6])
+        _fxdcsciam.put(self.txtCDRAMQ8, _x_pos, _y_pos1[7])
+        _fxdcsciam.put(self.chkCDRAMQ9, _x_pos, _y_pos1[8])
+        _fxdcsciam.put(self.chkCDRAMQ10, _x_pos, _y_pos1[9])
+        _fxdcsciam.put(self.chkCDRAMQ11, _x_pos, _y_pos1[10])
+
+        # Place the quality control widgets for CSCI.
+        _fxdcsciqc.put(self.chkCDRSTQ1, _x_pos, _y_pos2[0])
+        _fxdcsciqc.put(self.chkCDRSTQ2, _x_pos, _y_pos2[1])
+        _fxdcsciqc.put(self.txtCDRQCQ1, _x_pos, _y_pos2[2])
+        _fxdcsciqc.put(self.txtCDRQCQ2, _x_pos, _y_pos2[3])
+        _fxdcsciqc.put(self.txtCDRQCQ3, _x_pos, _y_pos2[4])
+        _fxdcsciqc.put(self.txtCDRQCQ4, _x_pos, _y_pos2[5])
+        _fxdcsciqc.put(self.txtCDRQCQ5, _x_pos, _y_pos2[6])
+        _fxdcsciqc.put(self.txtCDRQCQ6, _x_pos, _y_pos2[7])
+        _fxdcsciqc.put(self.txtCDRQCQ7, _x_pos, _y_pos2[8])
+        _fxdcsciqc.put(self.txtCDRQCQ8, _x_pos, _y_pos2[9])
+        _fxdcsciqc.put(self.txtCDRQCQ9, _x_pos, _y_pos2[10])
+        _fxdcsciqc.put(self.txtCDRQCQ10, _x_pos, _y_pos2[11])
+        _fxdcsciqc.put(self.txtCDRQCQ11, _x_pos, _y_pos2[12])
+        _fxdcsciqc.put(self.txtCDRQCQ12, _x_pos, _y_pos2[13])
+        _fxdcsciqc.put(self.txtCDRQCQ13, _x_pos, _y_pos2[14])
+        _fxdcsciqc.put(self.txtCDRQCQ14, _x_pos, _y_pos2[15])
+        _fxdcsciqc.put(self.txtCDRQCQ15, _x_pos, _y_pos2[16])
+        _fxdcsciqc.put(self.txtCDRQCQ16, _x_pos, _y_pos2[17])
+        _fxdcsciqc.put(self.txtCDRQCQ17, _x_pos, _y_pos2[18])
+        _fxdcsciqc.put(self.txtCDRQCQ18, _x_pos, _y_pos2[19])
+        _fxdcsciqc.put(self.txtCDRQCQ19, _x_pos, _y_pos2[20])
+        _fxdcsciqc.put(self.txtCDRQCQ20, _x_pos, _y_pos2[21])
+        _fxdcsciqc.put(self.txtCDRQCQ21, _x_pos, _y_pos2[22])
+        _fxdcsciqc.put(self.txtCDRQCQ22, _x_pos, _y_pos2[23])
+        _fxdcsciqc.put(self.txtCDRQCQ23, _x_pos, _y_pos2[24])
+        _fxdcsciqc.put(self.txtCDRQCQ24, _x_pos, _y_pos2[25])
+
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _(u"Critical\nDesign\nReview") +
@@ -409,8 +417,8 @@ class CSCIRiskAnalysis(gtk.VPaned):
         """
         Method to load the Critical Design Review Risk Analysis answers.
 
-        :param `rtk.software.Software` model: the Software data model to load
-                                              the gtk.ToggleButton() from.
+        :param model: the :py:class:`rtk.software.Software.Modle` data model to
+                      load the gtk.ToggleButton() from.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -488,7 +496,7 @@ class CSCIRiskAnalysis(gtk.VPaned):
 
     def _on_toggled(self, check, index):
         """
-        Callback function for gtk.CheckButton() 'toggled' signals.
+        Callback method for gtk.CheckButton() 'toggled' signals.
 
         :param gtk.CheckButton check: the gtk.CheckButton() that called this
                                       method.
@@ -516,7 +524,9 @@ class UnitRiskAnalysis(gtk.VPaned):
     The Work Book view for analyzing and displaying the risk at the Critical
     Design Review phase for Units.  The attributes of a CDR Work Book view are:
 
-    :ivar _lst_handler_id: default value: []
+    :ivar list _lst_handler_id: the list of gtk.Widget() signal handler IDs.
+    :ivar _software_model: the :py:class:`rtk.software.Software.Model` to
+                           display.
     """
 
     def __init__(self):
@@ -526,48 +536,132 @@ class UnitRiskAnalysis(gtk.VPaned):
 
         gtk.VPaned.__init__(self)
 
-        # Initialize private list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lst_handler_id = []
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
         self._software_model = None
 
-        self.chkCDRAMQ1 = _widg.make_check_button()
-        self.chkCDRAMQ2 = _widg.make_check_button()
-        self.chkCDRAMQ3 = _widg.make_check_button()
-        self.chkCDRAMQ4 = _widg.make_check_button()
-        self.chkCDRAMQ5 = _widg.make_check_button()
-        self.chkCDRAMQ6 = _widg.make_check_button()
-        self.chkCDRAMQ7 = _widg.make_check_button()
-        self.chkCDRAMQ8 = _widg.make_check_button()
-        self.chkCDRAMQ9 = _widg.make_check_button()
-        self.chkCDRAMQ10 = _widg.make_check_button()
-        self.chkCDRSTQ1 = _widg.make_check_button()
-        self.chkCDRQCQ3 = _widg.make_check_button()
-        self.chkCDRQCQ6 = _widg.make_check_button()
-        self.chkCDRQCQ13 = _widg.make_check_button()
-        self.chkCDRQCQ14 = _widg.make_check_button()
-        self.chkCDRQCQ17 = _widg.make_check_button()
-        self.chkCDRQCQ18 = _widg.make_check_button()
-        self.chkCDRQCQ19 = _widg.make_check_button()
-        self.chkCDRQCQ20 = _widg.make_check_button()
-        self.chkCDRQCQ21 = _widg.make_check_button()
-        self.chkCDRQCQ22 = _widg.make_check_button()
-        self.chkCDRQCQ23 = _widg.make_check_button()
-        self.chkCDRQCQ24 = _widg.make_check_button()
+        # Define public dictionary attributes.
 
-        self.txtCDRQCQ1 = _widg.make_entry(width=50)
-        self.txtCDRQCQ2 = _widg.make_entry(width=50)
-        self.txtCDRQCQ4 = _widg.make_entry(width=50)
-        self.txtCDRQCQ5 = _widg.make_entry(width=50)
-        self.txtCDRQCQ7 = _widg.make_entry(width=50)
-        self.txtCDRQCQ8 = _widg.make_entry(width=50)
-        self.txtCDRQCQ9 = _widg.make_entry(width=50)
-        self.txtCDRQCQ10 = _widg.make_entry(width=50)
-        self.txtCDRQCQ11 = _widg.make_entry(width=50)
-        self.txtCDRQCQ12 = _widg.make_entry(width=50)
-        self.txtCDRQCQ15 = _widg.make_entry(width=50)
-        self.txtCDRQCQ16 = _widg.make_entry(width=50)
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.chkCDRAMQ1 = Widgets.make_check_button()
+        self.chkCDRAMQ2 = Widgets.make_check_button()
+        self.chkCDRAMQ3 = Widgets.make_check_button()
+        self.chkCDRAMQ4 = Widgets.make_check_button()
+        self.chkCDRAMQ5 = Widgets.make_check_button()
+        self.chkCDRAMQ6 = Widgets.make_check_button()
+        self.chkCDRAMQ7 = Widgets.make_check_button()
+        self.chkCDRAMQ8 = Widgets.make_check_button()
+        self.chkCDRAMQ9 = Widgets.make_check_button()
+        self.chkCDRAMQ10 = Widgets.make_check_button()
+        self.chkCDRSTQ1 = Widgets.make_check_button()
+        self.chkCDRQCQ3 = Widgets.make_check_button()
+        self.chkCDRQCQ6 = Widgets.make_check_button()
+        self.chkCDRQCQ13 = Widgets.make_check_button()
+        self.chkCDRQCQ14 = Widgets.make_check_button()
+        self.chkCDRQCQ17 = Widgets.make_check_button()
+        self.chkCDRQCQ18 = Widgets.make_check_button()
+        self.chkCDRQCQ19 = Widgets.make_check_button()
+        self.chkCDRQCQ20 = Widgets.make_check_button()
+        self.chkCDRQCQ21 = Widgets.make_check_button()
+        self.chkCDRQCQ22 = Widgets.make_check_button()
+        self.chkCDRQCQ23 = Widgets.make_check_button()
+        self.chkCDRQCQ24 = Widgets.make_check_button()
+
+        self.txtCDRQCQ1 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ2 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ4 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ5 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ7 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ8 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ9 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ10 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ11 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ12 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ15 = Widgets.make_entry(width=50)
+        self.txtCDRQCQ16 = Widgets.make_entry(width=50)
+
+        # Connect the gtk.Widget() signals to callback methods.
+        self._lst_handler_id.append(
+            self.chkCDRAMQ1.connect('toggled', self._on_toggled, 0))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ2.connect('toggled', self._on_toggled, 1))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ3.connect('toggled', self._on_toggled, 2))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ4.connect('toggled', self._on_toggled, 3))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ5.connect('toggled', self._on_toggled, 4))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ6.connect('toggled', self._on_toggled, 5))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ7.connect('toggled', self._on_toggled, 6))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ8.connect('toggled', self._on_toggled, 7))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ9.connect('toggled', self._on_toggled, 8))
+        self._lst_handler_id.append(
+            self.chkCDRAMQ10.connect('toggled', self._on_toggled, 9))
+        self._lst_handler_id.append(
+            self.chkCDRSTQ1.connect('toggled', self._on_toggled, 10))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ1.connect('focus-out-event', self._on_focus_out, 11))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ2.connect('focus-out-event', self._on_focus_out, 12))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ3.connect('toggled', self._on_toggled, 13))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ4.connect('focus-out-event', self._on_focus_out, 14))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ5.connect('focus-out-event', self._on_focus_out, 15))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ6.connect('toggled', self._on_toggled, 16))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ7.connect('focus-out-event', self._on_focus_out, 17))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ8.connect('focus-out-event', self._on_focus_out, 18))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ9.connect('focus-out-event', self._on_focus_out, 19))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ10.connect('focus-out-event',
+                                     self._on_focus_out, 20))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ11.connect('focus-out-event',
+                                     self._on_focus_out, 21))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ12.connect('focus-out-event',
+                                     self._on_focus_out, 22))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ13.connect('toggled', self._on_toggled, 23))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ14.connect('toggled', self._on_toggled, 24))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ15.connect('focus-out-event',
+                                     self._on_focus_out, 25))
+        self._lst_handler_id.append(
+            self.txtCDRQCQ16.connect('focus-out-event',
+                                     self._on_focus_out, 26))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ17.connect('toggled', self._on_toggled, 27))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ18.connect('toggled', self._on_toggled, 28))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ19.connect('toggled', self._on_toggled, 29))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ20.connect('toggled', self._on_toggled, 30))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ21.connect('toggled', self._on_toggled, 31))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ22.connect('toggled', self._on_toggled, 32))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ23.connect('toggled', self._on_toggled, 33))
+        self._lst_handler_id.append(
+            self.chkCDRQCQ24.connect('toggled', self._on_toggled, 34))
 
     def create_risk_analysis_page(self, notebook):
         """
@@ -590,7 +684,7 @@ class UnitRiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdunitam)
 
-        _frame = _widg.make_frame(_(u"Software Unit Anomaly Management"))
+        _frame = Widgets.make_frame(_(u"Software Unit Anomaly Management"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -600,7 +694,7 @@ class UnitRiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdunitqc)
 
-        _frame = _widg.make_frame(_(u"Software Unit Quality Control"))
+        _frame = Widgets.make_frame(_(u"Software Unit Quality Control"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -642,8 +736,8 @@ class UnitRiskAnalysis(gtk.VPaned):
                      u"mission-critical system function) are checked for "
                      u"reasonable values prior to final outputting by "
                      u"this unit.")]
-        (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fxdunitam,
-                                              5, 5, wrap=False)
+        (_x_pos,
+         _y_pos1) = Widgets.make_labels(_labels, _fxdunitam, 5, 5, wrap=False)
 
         # Create the quality control labels for units.
         _labels = [_(u" 1. The description of this software unit "
@@ -701,8 +795,8 @@ class UnitRiskAnalysis(gtk.VPaned):
                      u"is in accordance with the established standard."),
                    _(u"25. References to the same data use a single, "
                      u"unique name.")]
-        (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fxdunitqc,
-                                               5, 5, wrap=False)
+        (_x_pos2,
+         _y_pos2) = Widgets.make_labels(_labels, _fxdunitqc, 5, 5, wrap=False)
         _x_pos = max(_x_pos, _x_pos2) + 125
 
         # Place the anomaly management widgets for units.
@@ -744,85 +838,6 @@ class UnitRiskAnalysis(gtk.VPaned):
         _fxdunitqc.put(self.chkCDRQCQ23, _x_pos, _y_pos2[23])
         _fxdunitqc.put(self.chkCDRQCQ24, _x_pos, _y_pos2[24])
 
-        # Connect the anomaly management widgets to callback methods.
-        self._lst_handler_id.append(
-            self.chkCDRAMQ1.connect('toggled', self._on_toggled, 0))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ2.connect('toggled', self._on_toggled, 1))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ3.connect('toggled', self._on_toggled, 2))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ4.connect('toggled', self._on_toggled, 3))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ5.connect('toggled', self._on_toggled, 4))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ6.connect('toggled', self._on_toggled, 5))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ7.connect('toggled', self._on_toggled, 6))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ8.connect('toggled', self._on_toggled, 7))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ9.connect('toggled', self._on_toggled, 8))
-        self._lst_handler_id.append(
-            self.chkCDRAMQ10.connect('toggled', self._on_toggled, 9))
-
-        # Connect the quality control widgets to callback methods.
-        self._lst_handler_id.append(
-            self.chkCDRSTQ1.connect('toggled', self._on_toggled, 10))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ1.connect('focus-out-event', self._on_focus_out, 11))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ2.connect('focus-out-event', self._on_focus_out, 12))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ3.connect('toggled', self._on_toggled, 13))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ4.connect('focus-out-event', self._on_focus_out, 14))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ5.connect('focus-out-event', self._on_focus_out, 15))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ6.connect('toggled', self._on_toggled, 16))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ7.connect('focus-out-event', self._on_focus_out, 17))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ8.connect('focus-out-event', self._on_focus_out, 18))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ9.connect('focus-out-event', self._on_focus_out, 19))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ10.connect('focus-out-event',
-                                     self._on_focus_out, 20))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ11.connect('focus-out-event',
-                                     self._on_focus_out, 21))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ12.connect('focus-out-event',
-                                     self._on_focus_out, 22))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ13.connect('toggled', self._on_toggled, 23))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ14.connect('toggled', self._on_toggled, 24))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ15.connect('focus-out-event',
-                                     self._on_focus_out, 25))
-        self._lst_handler_id.append(
-            self.txtCDRQCQ16.connect('focus-out-event',
-                                     self._on_focus_out, 26))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ17.connect('toggled', self._on_toggled, 27))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ18.connect('toggled', self._on_toggled, 28))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ19.connect('toggled', self._on_toggled, 29))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ20.connect('toggled', self._on_toggled, 30))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ21.connect('toggled', self._on_toggled, 31))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ22.connect('toggled', self._on_toggled, 32))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ23.connect('toggled', self._on_toggled, 33))
-        self._lst_handler_id.append(
-            self.chkCDRQCQ24.connect('toggled', self._on_toggled, 34))
-
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _(u"Critical\nDesign\nReview") +
@@ -842,8 +857,8 @@ class UnitRiskAnalysis(gtk.VPaned):
         """
         Method to load the Critical Design Review Risk Analysis answers.
 
-        :param `rtk.software.Software` model: the Software data model to load
-                                              the gtk.ToggleButton() from.
+        :param model: the :py:class:`rtk.software.Software.Model` data model to
+                      load the gtk.ToggleButton() from.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

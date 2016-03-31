@@ -68,7 +68,7 @@ class ModuleView(object):
                           Module View :py:class:`gtk.TreeView`.
     :ivar _workbook: the :class:`rtk.hardware.WorkBook.WorkView` associated
                      with this instance of the Module View.
-    :ivar dtcBoM: the :py:class:`rtk.bom.BoM` data controller to use for
+    :ivar dtcBoM: the :py:class:`rtk.RTK.RTK` master data controller to use for
                   accessing the Hardware data models.
     :ivar dtcAllocation: the :py:class:`rtk.analyses.allocation.Allocation`
                           data controller to use for accessing the Allocation
@@ -81,8 +81,8 @@ class ModuleView(object):
         """
         Initializes the Module Book view for the Hardware package.
 
-        :param controller: the instance of the :py:class:`rtk.bom.BoM` data
-                           controller to use with this view.
+        :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
+                           data controller to use with this view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Hardware
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
@@ -399,12 +399,16 @@ class ModuleView(object):
         selection.handler_block(self._lst_handler_id[0])
 
         (_model, _row) = selection.get_selected()
-        _hardware_id = _model.get_value(_row, 1)
+        try:
+            _hardware_id = _model.get_value(_row, 1)
+        except TypeError:
+            _hardware_id = None
 
-        self._model = self.mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
+        if _hardware_id is not None:
+            self._model = self.mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
 
-        self.workbook.load(self._model)
-        self.listbook.load(_hardware_id)
+            self.workbook.load(self._model)
+            self.listbook.load(_hardware_id)
 
         selection.handler_unblock(self._lst_handler_id[0])
 

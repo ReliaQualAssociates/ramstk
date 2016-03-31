@@ -34,11 +34,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -46,7 +46,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -57,6 +57,10 @@ class RiskAnalysis(gtk.VPaned):
     """
     The Work Book view for analyzing and displaying the risk at the System
     Requirement Review phase.  The attributes of a SRR Work Book view are:
+
+    :ivar list _lst_handler_id: the list of gtk.Widget() signal handler IDs.
+    :ivar _software_model: the :py:class:`rtk.software.Software.Model` to
+                           display.
     """
 
     def __init__(self):
@@ -66,80 +70,194 @@ class RiskAnalysis(gtk.VPaned):
 
         gtk.VPaned.__init__(self)
 
-        # Initialize private list attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lst_handler_id = []
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
         self._software_model = None
 
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         # CSCI-level Yes/No from WS2A (16 questions)
         # CSCI-level quantity from WS2A (6 questions)
-        self.chkSRRAMQ5 = _widg.make_check_button()
-        self.chkSRRAMQ8 = _widg.make_check_button()
-        self.chkSRRAMQ9 = _widg.make_check_button()
-        self.chkSRRAMQ10 = _widg.make_check_button()
-        self.chkSRRAMQ11 = _widg.make_check_button()
-        self.chkSRRAMQ12 = _widg.make_check_button()
-        self.chkSRRAMQ13 = _widg.make_check_button()
-        self.chkSRRAMQ14 = _widg.make_check_button()
-        self.chkSRRAMQ15 = _widg.make_check_button()
-        self.chkSRRAMQ16 = _widg.make_check_button()
-        self.chkSRRAMQ17 = _widg.make_check_button()
-        self.chkSRRAMQ18 = _widg.make_check_button()
-        self.chkSRRAMQ19 = _widg.make_check_button()
-        self.chkSRRAMQ20 = _widg.make_check_button()
-        self.chkSRRAMQ21 = _widg.make_check_button()
-        self.chkSRRAMQ22 = _widg.make_check_button()
+        self.chkSRRAMQ5 = Widgets.make_check_button()
+        self.chkSRRAMQ8 = Widgets.make_check_button()
+        self.chkSRRAMQ9 = Widgets.make_check_button()
+        self.chkSRRAMQ10 = Widgets.make_check_button()
+        self.chkSRRAMQ11 = Widgets.make_check_button()
+        self.chkSRRAMQ12 = Widgets.make_check_button()
+        self.chkSRRAMQ13 = Widgets.make_check_button()
+        self.chkSRRAMQ14 = Widgets.make_check_button()
+        self.chkSRRAMQ15 = Widgets.make_check_button()
+        self.chkSRRAMQ16 = Widgets.make_check_button()
+        self.chkSRRAMQ17 = Widgets.make_check_button()
+        self.chkSRRAMQ18 = Widgets.make_check_button()
+        self.chkSRRAMQ19 = Widgets.make_check_button()
+        self.chkSRRAMQ20 = Widgets.make_check_button()
+        self.chkSRRAMQ21 = Widgets.make_check_button()
+        self.chkSRRAMQ22 = Widgets.make_check_button()
 
-        self.txtSRRAMQ1 = _widg.make_entry(width=50)
-        self.txtSRRAMQ2 = _widg.make_entry(width=50)
-        self.txtSRRAMQ3 = _widg.make_entry(width=50)
-        self.txtSRRAMQ4 = _widg.make_entry(width=50)
-        self.txtSRRAMQ6 = _widg.make_entry(width=50)
-        self.txtSRRAMQ7 = _widg.make_entry(width=50)
+        self.txtSRRAMQ1 = Widgets.make_entry(width=50)
+        self.txtSRRAMQ2 = Widgets.make_entry(width=50)
+        self.txtSRRAMQ3 = Widgets.make_entry(width=50)
+        self.txtSRRAMQ4 = Widgets.make_entry(width=50)
+        self.txtSRRAMQ6 = Widgets.make_entry(width=50)
+        self.txtSRRAMQ7 = Widgets.make_entry(width=50)
 
         # CSCI-level Yes/No from WS3A (1 question)
-        self.chkSRRSTQ1 = _widg.make_check_button()
+        self.chkSRRSTQ1 = Widgets.make_check_button()
 
         # CSCI-level Yes/No from WS4A (23 questions)
         # CSCI-level quantity from WS4A (4 questions)
-        self.chkSRRQCQ1 = _widg.make_check_button()
-        self.chkSRRQCQ2 = _widg.make_check_button()
-        self.chkSRRQCQ3 = _widg.make_check_button()
-        self.chkSRRQCQ4 = _widg.make_check_button()
-        self.chkSRRQCQ5 = _widg.make_check_button()
-        self.chkSRRQCQ6 = _widg.make_check_button()
-        self.chkSRRQCQ7 = _widg.make_check_button()
-        self.chkSRRQCQ8 = _widg.make_check_button()
-        self.chkSRRQCQ13 = _widg.make_check_button()
-        self.chkSRRQCQ14 = _widg.make_check_button()
-        self.chkSRRQCQ15 = _widg.make_check_button()
-        self.chkSRRQCQ16 = _widg.make_check_button()
-        self.chkSRRQCQ17 = _widg.make_check_button()
-        self.chkSRRQCQ18 = _widg.make_check_button()
-        self.chkSRRQCQ19 = _widg.make_check_button()
-        self.chkSRRQCQ20 = _widg.make_check_button()
-        self.chkSRRQCQ21 = _widg.make_check_button()
-        self.chkSRRQCQ22 = _widg.make_check_button()
-        self.chkSRRQCQ23 = _widg.make_check_button()
-        self.chkSRRQCQ24 = _widg.make_check_button()
-        self.chkSRRQCQ25 = _widg.make_check_button()
-        self.chkSRRQCQ26 = _widg.make_check_button()
-        self.chkSRRQCQ27 = _widg.make_check_button()
+        self.chkSRRQCQ1 = Widgets.make_check_button()
+        self.chkSRRQCQ2 = Widgets.make_check_button()
+        self.chkSRRQCQ3 = Widgets.make_check_button()
+        self.chkSRRQCQ4 = Widgets.make_check_button()
+        self.chkSRRQCQ5 = Widgets.make_check_button()
+        self.chkSRRQCQ6 = Widgets.make_check_button()
+        self.chkSRRQCQ7 = Widgets.make_check_button()
+        self.chkSRRQCQ8 = Widgets.make_check_button()
+        self.chkSRRQCQ13 = Widgets.make_check_button()
+        self.chkSRRQCQ14 = Widgets.make_check_button()
+        self.chkSRRQCQ15 = Widgets.make_check_button()
+        self.chkSRRQCQ16 = Widgets.make_check_button()
+        self.chkSRRQCQ17 = Widgets.make_check_button()
+        self.chkSRRQCQ18 = Widgets.make_check_button()
+        self.chkSRRQCQ19 = Widgets.make_check_button()
+        self.chkSRRQCQ20 = Widgets.make_check_button()
+        self.chkSRRQCQ21 = Widgets.make_check_button()
+        self.chkSRRQCQ22 = Widgets.make_check_button()
+        self.chkSRRQCQ23 = Widgets.make_check_button()
+        self.chkSRRQCQ24 = Widgets.make_check_button()
+        self.chkSRRQCQ25 = Widgets.make_check_button()
+        self.chkSRRQCQ26 = Widgets.make_check_button()
+        self.chkSRRQCQ27 = Widgets.make_check_button()
 
-        self.txtSRRQCQ9 = _widg.make_entry(width=50)
-        self.txtSRRQCQ10 = _widg.make_entry(width=50)
-        self.txtSRRQCQ11 = _widg.make_entry(width=50)
-        self.txtSRRQCQ12 = _widg.make_entry(width=50)
+        self.txtSRRQCQ9 = Widgets.make_entry(width=50)
+        self.txtSRRQCQ10 = Widgets.make_entry(width=50)
+        self.txtSRRQCQ11 = Widgets.make_entry(width=50)
+        self.txtSRRQCQ12 = Widgets.make_entry(width=50)
+
+        # Connect the gtk.Widget() signals to callback methods.
+        self._lst_handler_id.append(
+            self.txtSRRAMQ1.connect('focus-out-event', self._on_focus_out, 0))
+        self._lst_handler_id.append(
+            self.txtSRRAMQ2.connect('focus-out-event', self._on_focus_out, 1))
+        self._lst_handler_id.append(
+            self.txtSRRAMQ3.connect('focus-out-event', self._on_focus_out, 2))
+        self._lst_handler_id.append(
+            self.txtSRRAMQ4.connect('focus-out-event', self._on_focus_out, 3))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ5.connect('toggled', self._on_toggled, 4))
+        self._lst_handler_id.append(
+            self.txtSRRAMQ6.connect('focus-out-event', self._on_focus_out, 5))
+        self._lst_handler_id.append(
+            self.txtSRRAMQ7.connect('focus-out-event', self._on_focus_out, 6))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ8.connect('toggled', self._on_toggled, 7))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ9.connect('toggled', self._on_toggled, 8))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ10.connect('toggled', self._on_toggled, 9))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ11.connect('toggled', self._on_toggled, 10))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ12.connect('toggled', self._on_toggled, 11))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ13.connect('toggled', self._on_toggled, 12))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ14.connect('toggled', self._on_toggled, 13))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ15.connect('toggled', self._on_toggled, 14))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ16.connect('toggled', self._on_toggled, 15))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ17.connect('toggled', self._on_toggled, 16))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ18.connect('toggled', self._on_toggled, 17))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ19.connect('toggled', self._on_toggled, 18))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ20.connect('toggled', self._on_toggled, 19))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ21.connect('toggled', self._on_toggled, 20))
+        self._lst_handler_id.append(
+            self.chkSRRAMQ22.connect('toggled', self._on_toggled, 21))
+        self._lst_handler_id.append(
+            self.chkSRRSTQ1.connect('toggled', self._on_toggled, 22))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ1.connect('toggled', self._on_toggled, 23))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ2.connect('toggled', self._on_toggled, 24))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ3.connect('toggled', self._on_toggled, 25))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ4.connect('toggled', self._on_toggled, 26))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ5.connect('toggled', self._on_toggled, 27))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ6.connect('toggled', self._on_toggled, 28))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ7.connect('toggled', self._on_toggled, 29))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ8.connect('toggled', self._on_toggled, 30))
+        self._lst_handler_id.append(
+            self.txtSRRQCQ9.connect('focus-out-event',
+                                    self._on_focus_out, 31))
+        self._lst_handler_id.append(
+            self.txtSRRQCQ10.connect('focus-out-event',
+                                     self._on_focus_out, 32))
+        self._lst_handler_id.append(
+            self.txtSRRQCQ11.connect('focus-out-event',
+                                     self._on_focus_out, 33))
+        self._lst_handler_id.append(
+            self.txtSRRQCQ12.connect('focus-out-event',
+                                     self._on_focus_out, 34))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ13.connect('toggled', self._on_toggled, 35))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ14.connect('toggled', self._on_toggled, 36))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ15.connect('toggled', self._on_toggled, 37))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ16.connect('toggled', self._on_toggled, 38))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ17.connect('toggled', self._on_toggled, 39))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ18.connect('toggled', self._on_toggled, 40))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ19.connect('toggled', self._on_toggled, 41))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ20.connect('toggled', self._on_toggled, 42))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ21.connect('toggled', self._on_toggled, 43))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ22.connect('toggled', self._on_toggled, 44))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ23.connect('toggled', self._on_toggled, 45))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ24.connect('toggled', self._on_toggled, 46))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ25.connect('toggled', self._on_toggled, 47))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ26.connect('toggled', self._on_toggled, 48))
+        self._lst_handler_id.append(
+            self.chkSRRQCQ27.connect('toggled', self._on_toggled, 49))
 
     def create_risk_analysis_page(self, notebook):
         """
-        Method to create the SRR risk analysis page and add it to the risk
-        analysis gtk.Notebook().
+        Method to create the Software Requirement Review risk analysis page and
+        add it to the risk analysis gtk.Notebook().
 
         :param gtk.Notebook notebook: the gtk.Notebook() instance that will
-                                      hold the development environment analysis
-                                      questions.
+                                      hold the SRR risk analysis questions.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -152,7 +270,7 @@ class RiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed1)
 
-        _frame = _widg.make_frame(label=_(u"Anomaly Management"))
+        _frame = Widgets.make_frame(label=_(u"Anomaly Management"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -221,8 +339,8 @@ class RiskAnalysis(gtk.VPaned):
                      u"the system are not interrupted."),
                    _(u"22. There are requirements to replicate all "
                      u"critical data at two or more distinct nodes.")]
-        (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fixed1,
-                                              5, 5, wrap=False)
+        (_x_pos,
+         _y_pos1) = Widgets.make_labels(_labels, _fixed1, 5, 5, wrap=False)
 
         # Create the quality control risk pane.
         _fixed2 = gtk.Fixed()
@@ -231,7 +349,7 @@ class RiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed2)
 
-        _frame = _widg.make_frame(label=_(u"Software Quality Control"))
+        _frame = Widgets.make_frame(label=_(u"Software Quality Control"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -306,8 +424,8 @@ class RiskAnalysis(gtk.VPaned):
                      u"database version."),
                    _(u"28. All references to the same data use a single, "
                      u"unique name.")]
-        (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fixed2,
-                                               5, 5, wrap=False)
+        (_x_pos2,
+         _y_pos2) = Widgets.make_labels(_labels, _fixed2, 5, 5, wrap=False)
         _x_pos = max(_x_pos, _x_pos2) + 125
 
         # Place the anomaly management widgets.
@@ -364,114 +482,6 @@ class RiskAnalysis(gtk.VPaned):
         _fixed2.put(self.chkSRRQCQ26, _x_pos, _y_pos2[26])
         _fixed2.put(self.chkSRRQCQ27, _x_pos, _y_pos2[27])
 
-        # Connect the anomaly management widgets to callback methods.
-        self._lst_handler_id.append(
-            self.txtSRRAMQ1.connect('focus-out-event', self._on_focus_out, 0))
-        self._lst_handler_id.append(
-            self.txtSRRAMQ2.connect('focus-out-event', self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtSRRAMQ3.connect('focus-out-event', self._on_focus_out, 2))
-        self._lst_handler_id.append(
-            self.txtSRRAMQ4.connect('focus-out-event', self._on_focus_out, 3))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ5.connect('toggled', self._on_toggled, 4))
-        self._lst_handler_id.append(
-            self.txtSRRAMQ6.connect('focus-out-event', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtSRRAMQ7.connect('focus-out-event', self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ8.connect('toggled', self._on_toggled, 7))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ9.connect('toggled', self._on_toggled, 8))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ10.connect('toggled', self._on_toggled, 9))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ11.connect('toggled', self._on_toggled, 10))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ12.connect('toggled', self._on_toggled, 11))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ13.connect('toggled', self._on_toggled, 12))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ14.connect('toggled', self._on_toggled, 13))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ15.connect('toggled', self._on_toggled, 14))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ16.connect('toggled', self._on_toggled, 15))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ17.connect('toggled', self._on_toggled, 16))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ18.connect('toggled', self._on_toggled, 17))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ19.connect('toggled', self._on_toggled, 18))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ20.connect('toggled', self._on_toggled, 19))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ21.connect('toggled', self._on_toggled, 20))
-        self._lst_handler_id.append(
-            self.chkSRRAMQ22.connect('toggled', self._on_toggled, 21))
-
-        # Connect the quality control widgets to callback methods.
-        self._lst_handler_id.append(
-            self.chkSRRSTQ1.connect('toggled', self._on_toggled, 22))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ1.connect('toggled', self._on_toggled, 23))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ2.connect('toggled', self._on_toggled, 24))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ3.connect('toggled', self._on_toggled, 25))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ4.connect('toggled', self._on_toggled, 26))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ5.connect('toggled', self._on_toggled, 27))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ6.connect('toggled', self._on_toggled, 28))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ7.connect('toggled', self._on_toggled, 29))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ8.connect('toggled', self._on_toggled, 30))
-        self._lst_handler_id.append(
-            self.txtSRRQCQ9.connect('focus-out-event',
-                                    self._on_focus_out, 31))
-        self._lst_handler_id.append(
-            self.txtSRRQCQ10.connect('focus-out-event',
-                                     self._on_focus_out, 32))
-        self._lst_handler_id.append(
-            self.txtSRRQCQ11.connect('focus-out-event',
-                                     self._on_focus_out, 33))
-        self._lst_handler_id.append(
-            self.txtSRRQCQ12.connect('focus-out-event',
-                                     self._on_focus_out, 34))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ13.connect('toggled', self._on_toggled, 35))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ14.connect('toggled', self._on_toggled, 36))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ15.connect('toggled', self._on_toggled, 37))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ16.connect('toggled', self._on_toggled, 38))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ17.connect('toggled', self._on_toggled, 39))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ18.connect('toggled', self._on_toggled, 40))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ19.connect('toggled', self._on_toggled, 41))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ20.connect('toggled', self._on_toggled, 42))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ21.connect('toggled', self._on_toggled, 43))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ22.connect('toggled', self._on_toggled, 44))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ23.connect('toggled', self._on_toggled, 45))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ24.connect('toggled', self._on_toggled, 46))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ25.connect('toggled', self._on_toggled, 47))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ26.connect('toggled', self._on_toggled, 48))
-        self._lst_handler_id.append(
-            self.chkSRRQCQ27.connect('toggled', self._on_toggled, 49))
-
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _("Requirements\nReview") +
@@ -491,8 +501,8 @@ class RiskAnalysis(gtk.VPaned):
         """
         Method to load the Requirements Review Risk Analysis answers.
 
-        :param `rtk.software.Software` model: the Software data model to load
-                                              the gtk.ToggleButton() from.
+        :param model: the :py:class:`rtk.software.Software.Model` data model to
+                      load the gtk.ToggleButton() from.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
