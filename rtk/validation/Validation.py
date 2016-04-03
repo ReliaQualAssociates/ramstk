@@ -32,30 +32,47 @@ class Model(object):                       # pylint: disable=R0902, R0904
     verification and validation task. The attributes of a Validation model
     are:
 
-    :ivar revision_id: default value: 0
-    :ivar validation_id: default value: 0
-    :ivar task_description: default value: ''
-    :ivar task_type: default value: ''
-    :ivar task_specification: default value: ''
-    :ivar measurement_unit: default value: 0
-    :ivar min_acceptable: default value: 0.0
-    :ivar mean_acceptable: default value: 0.0
-    :ivar max_acceptable: default value: 0.0
-    :ivar variance_acceptable: default value: 0.0
-    :ivar start_date: default value: 719163
-    :ivar end_date: default value: 719163
-    :ivar status: default value: 0.0
-    :ivar minimum_time: default value: 0.0
-    :ivar average_time: default value: 0.0
-    :ivar maximum_time: default value: 0.0
-    :ivar mean_time: default value: 0.0
-    :ivar time_variance: default value: 0.0
-    :ivar minimum_cost: default value: 0.0
-    :ivar average_cost: default value: 0.0
-    :ivar maximum_cost: default value: 0.0
-    :ivar mean_cost: default value: 0.0
-    :ivar cost_variance: default value: 0.0
-    :ivar confidence: default value: 95.0
+    :ivar int revision_id: the ID of the Revision the Validation task is
+                           associated with.
+    :ivar int validation_id: the ID of the Validation task.
+    :ivar str task_description: the description of the Validation task.
+    :ivar str task_type: the type of the Validation task.
+    :ivar str task_specification: the specification associated with the
+                                  Validation task, if any.
+    :ivar int measurement_unit: the index in the list of measurement units.
+    :ivar float min_acceptable: the minimum acceptable value for the Validation
+                                task.
+    :ivar float mean_acceptable: the mean acceptable value for the Validation
+                                task.
+    :ivar float max_acceptable: the maximum acceptable value for the Validation
+                                task.
+    :ivar float variance_acceptable: the acceptable variance for the Validation
+                                     task.
+    :ivar int start_date: the ordinal start date for the Validation task.
+    :ivar int end_date: the ordinal end date for the Validation task.
+    :ivar float status: the percent complete of the Validation task.
+    :ivar float minimum_time: the minimum expected time to complete the
+                              Validation task.
+    :ivar float average_time: the average expected time to complete the
+                              Validation task.
+    :ivar float maximum_time: the maximum expected time to complete the
+                              Validation task.
+    :ivar float mean_time: the calculated mean time to complete the Validation
+                           task.
+    :ivar float time_variance: the calculated variance on the time to complete
+                               the Validation task.
+    :ivar float minimum_cost: the minimum expected cost of completing the
+                              Validation task.
+    :ivar float average_cost: the average expected cost of completing the
+                              Validation task.
+    :ivar float maximum_cost: the maximum expected cost of completing the
+                              Validation task.
+    :ivar float mean_cost: the calculated mean cost of completing the
+                           Validation task.
+    :ivar float cost_variance: the calculated variance on the cost of
+                               completing the Validation task.
+    :ivar float confidence: the confidence level for calculating the mean time
+                            and mean cost of the Validation task.
     """
 
     def __init__(self):
@@ -63,17 +80,17 @@ class Model(object):                       # pylint: disable=R0902, R0904
         Method to initialize a Validation data model instance.
         """
 
-        # Initialize private dict attributes.
+        # Define private dict attributes.
 
-        # Initialize private list attributes.
+        # Define private list attributes.
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
 
-        # Initialize public dict attributes.
+        # Define public dict attributes.
 
-        # Initialize public list attributes.
+        # Define public list attributes.
 
-        # Initialize public scalar attributes.
+        # Define public scalar attributes.
         self.revision_id = 0
         self.validation_id = 0
         self.task_description = ''
@@ -148,7 +165,8 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Verificaiton data model attributes.
+        Method to retrieve the current values of the Validation data model
+        attributes.
 
         :return: (revision_id, validation_id, task_description, task_type,
                   task_specification, measurement_unit, min_acceptable,
@@ -211,8 +229,8 @@ class Validation(object):
     manage one or more Validation data models.  The attributes of a
     Validation data controller are:
 
-    :ivar _dao: the :class:`rtk.dao.DAO` to use when communicating with the RTK
-                Project database.
+    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
+                the RTK Project database.
     :ivar int _last_id: the last Validation ID used.
     :ivar dict dicTasks: Dictionary of the Validation data models managed.  Key
                          is the Validation ID; value is a pointer to the
@@ -224,16 +242,24 @@ class Validation(object):
 
     def __init__(self):
         """
-        Initializes a Validation data controller instance.
+        Method to initialize a Validation data controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._dao = None
         self._last_id = None
 
-        # Initialize public dictionary attributes.
+        # Define public dictionary attributes.
         self.dicTasks = {}
         self.dicStatus = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
 
     def request_tasks(self, dao, revision_id):
         """
@@ -311,7 +337,7 @@ class Validation(object):
 
     def add_task(self, revision_id):
         """
-        Adds a new Validation activity to the RTK Program's database.
+        Method to add a new Validation activity to the RTK Program's database.
 
         :param int revision_id: the Revision ID to select the tasks for.
         :return: (_results, _error_code)
@@ -347,8 +373,8 @@ class Validation(object):
 
     def delete_task(self, validation_id):
         """
-        Deletes the currently selected Validation task from the RTK Program's
-        database.
+        Method to delete the currently selected Validation task from the RTK
+        Program's database.
 
         :param int validation_id: the ID of the Validation task to delete.
         :return: (_results, _error_code)
@@ -406,7 +432,7 @@ class Validation(object):
 
     def save_all_tasks(self):
         """
-        Saves all Validation data models managed by the controller.
+        Method to save all Validation data models managed by the controller.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

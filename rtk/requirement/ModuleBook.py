@@ -72,20 +72,13 @@ class ModuleView(object):
                           Module View gtk.TreeView().
     :ivar _workbook: the :py:class:`rtk.requirement.WorkBook.WorkView`
                      associated with this instance of the Module View.
-    :ivar dtcRequirement: the
-                          :py:class:`rtk.requirement.Requirement.Requirement`
-                          data controller to use for accessing the Requirement
-                          data models.
-    :ivar dtcStakeholder: the
-                          :py:class:`rtk.stakeholder.Stakeholder.Stakeholder`
-                          data controller to use for accessing the Stakeholder
-                          data models.
+    :ivar mdcRTK: the :py:class:`rtk.RTK.RTK` master data controller to use.
     :ivar treeview: the gtk.TreeView() displaying the list of Requirements.
     """
 
     def __init__(self, controller, rtk_view, position, *args):      # pylint: disable=W0613
         """
-        Initializes the Module Book view for the Function package.
+        Initializes the Module Book view for the Requirement package.
 
         :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
                            data controller to use with this view.

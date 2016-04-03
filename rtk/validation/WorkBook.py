@@ -41,16 +41,15 @@ from matplotlib.patches import Ellipse
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
     from analyses.statistics.Bounds import calculate_beta_bounds
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
     from rtk.analyses.statistics.Bounds import calculate_beta_bounds
-# from Assistants import AddTask
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -58,7 +57,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -155,271 +154,72 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     +----------+-------------------------------------------+
     """
 
-    def __init__(self, workview, modulebook):
+    def __init__(self, modulebook):
         """
-        Initializes the Work Book view for the Validation package.
+        Method to initialize the Work Book view for the Validation package.
 
-        :param workview: the :py:class:`rtk.gui.gtk.mwi.WorkView` container to
-                         insert this Work Book into.
         :param modulebook: the :py:class:`rtk.validation.ModuleBook` to
                            associate with this Work Book.
         """
 
         gtk.VBox.__init__(self)
 
-        # Initialize private dict attributes.
+        # Define private dictionary attributes.
 
-        # Initialize private list attributes.
+        # Define private list attributes.
         self._lst_handler_id = []
 
-        # Initialize private scalar attributes.
-        self._workview = workview
+        # Define private scalar attributes.
         self._modulebook = modulebook
         self._model = None
 
-        # Initialize public scalar attributes.
-        self.dtcValidation = modulebook.dtcValidation
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.mdcRTK = modulebook.mdcRTK
 
         # General Data tab widgets.
-        self.btnEndDate = _widg.make_button(height=25, width=25,
-                                            label="...", image=None)
-        self.btnStartDate = _widg.make_button(height=25, width=25,
+        self.btnEndDate = Widgets.make_button(height=25, width=25,
                                               label="...", image=None)
+        self.btnStartDate = Widgets.make_button(height=25, width=25,
+                                                label="...", image=None)
 
-        self.cmbTaskType = _widg.make_combo()
-        self.cmbMeasurementUnit = _widg.make_combo()
+        self.cmbTaskType = Widgets.make_combo()
+        self.cmbMeasurementUnit = Widgets.make_combo()
         self.spnStatus = gtk.SpinButton()
-        self.txtID = _widg.make_entry(width=50, editable=False)
-        self.txtMaxAcceptable = _widg.make_entry(width=100)
-        self.txtMeanAcceptable = _widg.make_entry(width=100)
-        self.txtMinAcceptable = _widg.make_entry(width=100)
-        self.txtVarAcceptable = _widg.make_entry(width=100)
-        self.txtSpecification = _widg.make_entry()
-        self.txtTask = _widg.make_text_view(width=400)
-        self.txtEndDate = _widg.make_entry(width=100)
-        self.txtStartDate = _widg.make_entry(width=100)
-        self.txtMinTime = _widg.make_entry(width=100)
-        self.txtExpTime = _widg.make_entry(width=100)
-        self.txtMaxTime = _widg.make_entry(width=100)
-        self.txtMinCost = _widg.make_entry(width=100)
-        self.txtExpCost = _widg.make_entry(width=100)
-        self.txtMaxCost = _widg.make_entry(width=100)
-        self.txtMeanTimeLL = _widg.make_entry(width=100, editable=False)
-        self.txtMeanTime = _widg.make_entry(width=100, editable=False)
-        self.txtMeanTimeUL = _widg.make_entry(width=100, editable=False)
-        self.txtMeanCostLL = _widg.make_entry(width=100, editable=False)
-        self.txtMeanCost = _widg.make_entry(width=100, editable=False)
-        self.txtMeanCostUL = _widg.make_entry(width=100, editable=False)
+        self.txtID = Widgets.make_entry(width=50, editable=False)
+        self.txtMaxAcceptable = Widgets.make_entry(width=100)
+        self.txtMeanAcceptable = Widgets.make_entry(width=100)
+        self.txtMinAcceptable = Widgets.make_entry(width=100)
+        self.txtVarAcceptable = Widgets.make_entry(width=100)
+        self.txtSpecification = Widgets.make_entry()
+        self.txtTask = Widgets.make_text_view(width=400)
+        self.txtEndDate = Widgets.make_entry(width=100)
+        self.txtStartDate = Widgets.make_entry(width=100)
+        self.txtMinTime = Widgets.make_entry(width=100)
+        self.txtExpTime = Widgets.make_entry(width=100)
+        self.txtMaxTime = Widgets.make_entry(width=100)
+        self.txtMinCost = Widgets.make_entry(width=100)
+        self.txtExpCost = Widgets.make_entry(width=100)
+        self.txtMaxCost = Widgets.make_entry(width=100)
+        self.txtMeanTimeLL = Widgets.make_entry(width=100, editable=False)
+        self.txtMeanTime = Widgets.make_entry(width=100, editable=False)
+        self.txtMeanTimeUL = Widgets.make_entry(width=100, editable=False)
+        self.txtMeanCostLL = Widgets.make_entry(width=100, editable=False)
+        self.txtMeanCost = Widgets.make_entry(width=100, editable=False)
+        self.txtMeanCostUL = Widgets.make_entry(width=100, editable=False)
 
         # These widgets are for the Project Effort.
-        self.txtProjectTimeLL = _widg.make_entry(width=100, editable=False)
-        self.txtProjectTime = _widg.make_entry(width=100, editable=False)
-        self.txtProjectTimeUL = _widg.make_entry(width=100, editable=False)
-        self.txtProjectCostLL = _widg.make_entry(width=100, editable=False)
-        self.txtProjectCost = _widg.make_entry(width=100, editable=False)
-        self.txtProjectCostUL = _widg.make_entry(width=100, editable=False)
+        self.txtProjectTimeLL = Widgets.make_entry(width=100, editable=False)
+        self.txtProjectTime = Widgets.make_entry(width=100, editable=False)
+        self.txtProjectTimeUL = Widgets.make_entry(width=100, editable=False)
+        self.txtProjectCostLL = Widgets.make_entry(width=100, editable=False)
+        self.txtProjectCost = Widgets.make_entry(width=100, editable=False)
+        self.txtProjectCostUL = Widgets.make_entry(width=100, editable=False)
 
-        # Create the Plot tab widgets.
-        _figure = Figure()
-        self.pltPlot1 = FigureCanvas(_figure)
-        self.axAxis1 = _figure.add_subplot(111)
-
-        # Put it all together.
-        _toolbar = self._create_toolbar()
-        self.pack_start(_toolbar, expand=False)
-
-        _notebook = self._create_notebook()
-        self.pack_end(_notebook)
-
-        self.show_all()
-
-    def _create_toolbar(self):
-        """
-        Method to create the toolbar for the VALIDATAION class Work Book.
-        """
-
-        _toolbar = gtk.Toolbar()
-
-        _position = 0
-
-        # Add item button.  Depending on the notebook page selected will
-        # determine what type of item is added.
-        _button = gtk.ToolButton()
-        _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
-        _button.set_icon_widget(_image)
-        _button.set_name('Add')
-        _button.connect('clicked', self._on_button_clicked, 0)
-        _button.set_tooltip_text(_(u"Adds a new V&V activity."))
-        _toolbar.insert(_button, _position)
-        _position += 1
-
-        # Remove item button.  Depending on the notebook page selected will
-        # determine what type of item is removed.
-        _button = gtk.ToolButton()
-        _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
-        _button.set_icon_widget(_image)
-        _button.set_name('Remove')
-        _button.connect('clicked', self._on_button_clicked, 1)
-        _button.set_tooltip_text(_(u"Deletes the selected V&V activity."))
-        _toolbar.insert(_button, _position)
-        _position += 1
-
-        _toolbar.insert(gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Calculate button.
-        _button = gtk.ToolButton()
-        _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/calculate.png')
-        _button.set_icon_widget(_image)
-        _button.set_name('Analyze')
-        _button.connect('clicked', self._on_button_clicked, 2)
-        _button.set_tooltip_text(_(u"Calculates program Verification & "
-                                   u"Validation effort and plots the "
-                                   u"results."))
-        _toolbar.insert(_button, _position)
-        _position += 1
-
-        _toolbar.insert(gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Save results button.  Depending on the notebook page selected will
-        # determine which results are saved.
-        _button = gtk.ToolButton()
-        _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
-        _button.set_icon_widget(_image)
-        _button.set_name('Save')
-        _button.connect('clicked', self._on_button_clicked, 3)
-        _button.set_tooltip_text(_(u"Saves all Verification & Validation "
-                                   u"tasks."))
-        _toolbar.insert(_button, _position)
-
-        _toolbar.show()
-
-        return _toolbar
-
-    def _create_notebook(self):
-        """
-        Method to create the Validation class gtk.Notebook().
-        """
-
-        _notebook = gtk.Notebook()
-
-        # Set the user's preferred gtk.Notebook tab position.
-        if _conf.TABPOS[2] == 'left':
-            _notebook.set_tab_pos(gtk.POS_LEFT)
-        elif _conf.TABPOS[2] == 'right':
-            _notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif _conf.TABPOS[2] == 'top':
-            _notebook.set_tab_pos(gtk.POS_TOP)
-        else:
-            _notebook.set_tab_pos(gtk.POS_BOTTOM)
-
-        self._create_general_data_tab(_notebook)
-        self._create_plot_tab(_notebook)
-
-        return _notebook
-
-    def _create_general_data_tab(self, notebook):
-        """
-        Method to create the Validation class gtk.Notebook() page for
-        displaying general data about the selected Validation.
-
-        :param gtk.Notebook notebook: the Validation class gtk.Notebook()
-                                      widget.
-        """
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox = gtk.HBox()
-
-        # Build the quadrant 1 (upper left) containers.
-        _fxdGenDataQuad1 = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdGenDataQuad1)
-
-        _frame = _widg.make_frame(label=_(u"Task Description"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox.pack_start(_frame, True, True)
-
-        # Build the quadrant 2 (upper right) containers.
-        _vpaned = gtk.VPaned()
-
-        _fxdGenDataQuad2 = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdGenDataQuad2)
-
-        _frame = _widg.make_frame(label=_(u"Task Effort"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _vpaned.pack1(_frame, True, True)
-
-        # Build the quadrant 4 (lower right) containers.
-        _fxdGenDataQuad4 = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdGenDataQuad4)
-
-        _frame = _widg.make_frame(label=_(u"Project Effort"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _vpaned.pack2(_frame, True, True)
-
-        _hbox.pack_end(_vpaned)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display general information.        #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Load the gtk.ComboBox() widgets.
-        _model = self.cmbTaskType.get_model()
-        _model.clear()
-
-        self.cmbTaskType.append_text("")
-        for i in range(len(_conf.RTK_TASK_TYPE)):
-            self.cmbTaskType.append_text(_conf.RTK_TASK_TYPE[i])
-
-        _model = self.cmbMeasurementUnit.get_model()
-        _model.clear()
-
-        self.cmbMeasurementUnit.append_text("")
-        for i in range(len(_conf.RTK_MEASUREMENT_UNITS)):
-            self.cmbMeasurementUnit.append_text(_conf.RTK_MEASUREMENT_UNITS[i])
-
-        # Create the labels for quadrant #1.
-        _labels = [_(u"Task ID:"), _(u"Task Description:"), _(u"Task Type:"),
-                   _(u"Specification:"), _(u"Measurement Unit:"),
-                   _(u"Minimum Acceptable:"), _(u"Maximum Acceptable:"),
-                   _(u"Mean Acceptable:"), _(u"Variance:")]
-
-        _max1 = 0
-        _max2 = 0
-        (_max1, _y_pos) = _widg.make_labels(_labels[2:],
-                                            _fxdGenDataQuad1, 5, 140)
-
-        _label = _widg.make_label(_labels[0], -1, 25)
-        _fxdGenDataQuad1.put(_label, 5, 5)
-        _max2 = _label.size_request()[0]
-        _x_pos = max(_max1, _max2) + 20
-
-        _label = _widg.make_label(_labels[1], 150, 25)
-        _fxdGenDataQuad1.put(_label, 5, 35)
-        _max2 = _label.size_request()[0]
-        _x_pos = max(_x_pos, _max2) + 20
-
-        # Place the quadrant #1 widgets.
+        # Set gtk.Widget() tooltips.
         self.txtID.set_tooltip_text(_(u"Displays the unique code for the "
                                       u"selected V&V activity."))
         self.txtTask.set_tooltip_text(_(u"Displays the description of the "
@@ -479,6 +279,264 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         #                                    u"needed to complete the "
         #                                    u"project."))
 
+        # Connect gtk.Widget() signals to callback methods.
+        _buffer = self.txtTask.get_child().get_child()
+        self._lst_handler_id.append(_buffer.connect('focus-out-event',
+                                                    self._on_focus_out, 0))
+        self._lst_handler_id.append(self.cmbTaskType.connect(
+            'changed', self._on_combo_changed, 1))
+        self._lst_handler_id.append(
+            self.txtSpecification.connect('focus-out-event',
+                                          self._on_focus_out, 2))
+        self._lst_handler_id.append(
+            self.cmbMeasurementUnit.connect('changed',
+                                            self._on_combo_changed, 3))
+        self._lst_handler_id.append(
+            self.txtMinAcceptable.connect('focus-out-event',
+                                          self._on_focus_out, 4))
+        self._lst_handler_id.append(
+            self.txtMeanAcceptable.connect('focus-out-event',
+                                           self._on_focus_out, 5))
+        self._lst_handler_id.append(
+            self.txtMaxAcceptable.connect('focus-out-event',
+                                          self._on_focus_out, 6))
+        self._lst_handler_id.append(
+            self.txtVarAcceptable.connect('focus-out-event',
+                                          self._on_focus_out, 7))
+        self.btnEndDate.connect('button-release-event', Utilities.date_select,
+                                self.txtEndDate)
+        self.btnStartDate.connect('button-release-event',
+                                  Utilities.date_select, self.txtStartDate)
+        self.txtStartDate.connect('changed', self._on_focus_out, None, 8)
+        self._lst_handler_id.append(
+            self.txtStartDate.connect('focus-out-event',
+                                      self._on_focus_out, 8))
+        self.txtEndDate.connect('changed', self._on_focus_out, None, 9)
+        self._lst_handler_id.append(self.txtEndDate.connect('focus-out-event',
+                                                            self._on_focus_out,
+                                                            9))
+        self._lst_handler_id.append(self.spnStatus.connect(
+            'value-changed', self._on_value_changed, 10))
+        self._lst_handler_id.append(self.txtMinTime.connect('focus-out-event',
+                                                            self._on_focus_out,
+                                                            11))
+        self._lst_handler_id.append(self.txtExpTime.connect('focus-out-event',
+                                                            self._on_focus_out,
+                                                            12))
+        self._lst_handler_id.append(self.txtMaxTime.connect('focus-out-event',
+                                                            self._on_focus_out,
+                                                            13))
+        self._lst_handler_id.append(self.txtMinCost.connect('focus-out-event',
+                                                            self._on_focus_out,
+                                                            14))
+        self._lst_handler_id.append(self.txtExpCost.connect('focus-out-event',
+                                                            self._on_focus_out,
+                                                            15))
+        self._lst_handler_id.append(self.txtMaxCost.connect('focus-out-event',
+                                                            self._on_focus_out,
+                                                            16))
+
+        # Create the Plot tab widgets.
+        _figure = Figure()
+        self.pltPlot1 = FigureCanvas(_figure)
+        self.axAxis1 = _figure.add_subplot(111)
+
+        # Put it all together.
+        _toolbar = self._create_toolbar()
+        self.pack_start(_toolbar, expand=False)
+
+        _notebook = self._create_notebook()
+        self.pack_end(_notebook)
+
+        self.show_all()
+
+    def _create_toolbar(self):
+        """
+        Method to create the toolbar for the Validation class Work Book.
+        """
+
+        _toolbar = gtk.Toolbar()
+
+        _position = 0
+
+        # Add item button.  Depending on the notebook page selected will
+        # determine what type of item is added.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/add.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Add')
+        _button.connect('clicked', self._on_button_clicked, 0)
+        _button.set_tooltip_text(_(u"Adds a new V&V activity."))
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        # Remove item button.  Depending on the notebook page selected will
+        # determine what type of item is removed.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Remove')
+        _button.connect('clicked', self._on_button_clicked, 1)
+        _button.set_tooltip_text(_(u"Deletes the selected V&V activity."))
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
+
+        # Calculate button.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/calculate.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Analyze')
+        _button.connect('clicked', self._on_button_clicked, 2)
+        _button.set_tooltip_text(_(u"Calculates program Verification & "
+                                   u"Validation effort and plots the "
+                                   u"results."))
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
+
+        # Save results button.  Depending on the notebook page selected will
+        # determine which results are saved.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Save')
+        _button.connect('clicked', self._on_button_clicked, 3)
+        _button.set_tooltip_text(_(u"Saves all Verification & Validation "
+                                   u"tasks."))
+        _toolbar.insert(_button, _position)
+
+        _toolbar.show()
+
+        return _toolbar
+
+    def _create_notebook(self):
+        """
+        Method to create the Validation class gtk.Notebook().
+        """
+
+        _notebook = gtk.Notebook()
+
+        # Set the user's preferred gtk.Notebook tab position.
+        if Configuration.TABPOS[2] == 'left':
+            _notebook.set_tab_pos(gtk.POS_LEFT)
+        elif Configuration.TABPOS[2] == 'right':
+            _notebook.set_tab_pos(gtk.POS_RIGHT)
+        elif Configuration.TABPOS[2] == 'top':
+            _notebook.set_tab_pos(gtk.POS_TOP)
+        else:
+            _notebook.set_tab_pos(gtk.POS_BOTTOM)
+
+        self._create_general_data_tab(_notebook)
+        self._create_plot_tab(_notebook)
+
+        return _notebook
+
+    def _create_general_data_tab(self, notebook):
+        """
+        Method to create the Validation class gtk.Notebook() page for
+        displaying general data about the selected Validation.
+
+        :param gtk.Notebook notebook: the Validation class gtk.Notebook()
+                                      widget.
+        """
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build-up the containers for the tab.                          #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        _hbox = gtk.HBox()
+
+        # Build the quadrant 1 (upper left) containers.
+        _fxdGenDataQuad1 = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fxdGenDataQuad1)
+
+        _frame = Widgets.make_frame(label=_(u"Task Description"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _hbox.pack_start(_frame, True, True)
+
+        # Build the quadrant 2 (upper right) containers.
+        _vpaned = gtk.VPaned()
+
+        _fxdGenDataQuad2 = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fxdGenDataQuad2)
+
+        _frame = Widgets.make_frame(label=_(u"Task Effort"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _vpaned.pack1(_frame, True, True)
+
+        # Build the quadrant 4 (lower right) containers.
+        _fxdGenDataQuad4 = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fxdGenDataQuad4)
+
+        _frame = Widgets.make_frame(label=_(u"Project Effort"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _vpaned.pack2(_frame, True, True)
+
+        _hbox.pack_end(_vpaned)
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Place the widgets used to display general information.        #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Load the gtk.ComboBox() widgets.
+        _model = self.cmbTaskType.get_model()
+        _model.clear()
+
+        self.cmbTaskType.append_text("")
+        for i in range(len(Configuration.RTK_TASK_TYPE)):
+            self.cmbTaskType.append_text(Configuration.RTK_TASK_TYPE[i])
+
+        _model = self.cmbMeasurementUnit.get_model()
+        _model.clear()
+
+        self.cmbMeasurementUnit.append_text("")
+        for i in range(len(Configuration.RTK_MEASUREMENT_UNITS)):
+            self.cmbMeasurementUnit.append_text(Configuration.RTK_MEASUREMENT_UNITS[i])
+
+        # Create the labels for quadrant #1.
+        _labels = [_(u"Task ID:"), _(u"Task Description:"), _(u"Task Type:"),
+                   _(u"Specification:"), _(u"Measurement Unit:"),
+                   _(u"Minimum Acceptable:"), _(u"Maximum Acceptable:"),
+                   _(u"Mean Acceptable:"), _(u"Variance:")]
+
+        _max1 = 0
+        _max2 = 0
+        (_max1, _y_pos) = Widgets.make_labels(_labels[2:],
+                                              _fxdGenDataQuad1, 5, 140)
+
+        _label = Widgets.make_label(_labels[0], -1, 25)
+        _fxdGenDataQuad1.put(_label, 5, 5)
+        _max2 = _label.size_request()[0]
+        _x_pos = max(_max1, _max2) + 20
+
+        _label = Widgets.make_label(_labels[1], 150, 25)
+        _fxdGenDataQuad1.put(_label, 5, 35)
+        _max2 = _label.size_request()[0]
+        _x_pos = max(_x_pos, _max2) + 20
+
+        # Place the quadrant #1 widgets.
         _fxdGenDataQuad1.put(self.txtID, _x_pos, 5)
         _fxdGenDataQuad1.put(self.txtTask, _x_pos, 35)
         _fxdGenDataQuad1.put(self.cmbTaskType, _x_pos, _y_pos[0])
@@ -497,12 +555,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Maximum Task Time:"), _(u"Task Time (95% Confidence):"),
                    _(u"Minimum Task Cost:"), _(u"Most Likely Task Cost:"),
                    _(u"Maximum Task Cost:"), _(u"Task Cost (95% Confidence):")]
-        (_max1, _y_pos1) = _widg.make_labels(_labels, _fxdGenDataQuad2, 5, 5)
+        (_max1, _y_pos1) = Widgets.make_labels(_labels, _fxdGenDataQuad2, 5, 5)
 
         # Create the labels for quadrant #4.
         _labels = [_(u"Project Time (95% Confidence):"),
                    _(u"Project Cost (95% Confidence):")]
-        (_max2, _y_pos2) = _widg.make_labels(_labels, _fxdGenDataQuad4, 5, 5)
+        (_max2, _y_pos2) = Widgets.make_labels(_labels, _fxdGenDataQuad4, 5, 5)
         _x_pos = max(_max1, _max2) + 40
 
         # Place the quadrant #2 widgets.
@@ -536,63 +594,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _fxdGenDataQuad4.show_all()
 
-        # Connect widgets to callback functions.
-        _buffer = self.txtTask.get_child().get_child()
-        self._lst_handler_id.append(_buffer.connect('focus-out-event',
-                                                    self._on_focus_out, 0))
-        self._lst_handler_id.append(self.cmbTaskType.connect(
-            'changed', self._on_combo_changed, 1))
-        self._lst_handler_id.append(
-            self.txtSpecification.connect('focus-out-event',
-                                          self._on_focus_out, 2))
-        self._lst_handler_id.append(
-            self.cmbMeasurementUnit.connect('changed',
-                                            self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.txtMinAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtMeanAcceptable.connect('focus-out-event',
-                                           self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtMaxAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.txtVarAcceptable.connect('focus-out-event',
-                                          self._on_focus_out, 7))
-        self.btnEndDate.connect('button-release-event', _util.date_select,
-                                self.txtEndDate)
-        self.btnStartDate.connect('button-release-event', _util.date_select,
-                                  self.txtStartDate)
-        self.txtStartDate.connect('changed', self._on_focus_out, None, 8)
-        self._lst_handler_id.append(
-            self.txtStartDate.connect('focus-out-event',
-                                      self._on_focus_out, 8))
-        self.txtEndDate.connect('changed', self._on_focus_out, None, 9)
-        self._lst_handler_id.append(self.txtEndDate.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            9))
-        self._lst_handler_id.append(self.spnStatus.connect(
-            'value-changed', self._on_value_changed, 10))
-        self._lst_handler_id.append(self.txtMinTime.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            11))
-        self._lst_handler_id.append(self.txtExpTime.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            12))
-        self._lst_handler_id.append(self.txtMaxTime.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            13))
-        self._lst_handler_id.append(self.txtMinCost.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            14))
-        self._lst_handler_id.append(self.txtExpCost.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            15))
-        self._lst_handler_id.append(self.txtMaxCost.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            16))
-
         # Set the spin button to be a 0-100 in steps of 0.1 spinner.  Only
         # update if value is numeric and within range.
         self.spnStatus.set_adjustment(gtk.Adjustment(0, 0, 100, 1, 0.1))
@@ -622,7 +623,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _hbox = gtk.HBox()
 
-        _frame = _widg.make_frame(label=_(u""))
+        _frame = Widgets.make_frame(label=_(u""))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_hbox)
         _frame.show_all()
@@ -659,13 +660,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self._model = model
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the General Data information.                            #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _start_date = _util.ordinal_to_date(model.start_date)
-        _end_date = _util.ordinal_to_date(model.end_date)
+        _start_date = Utilities.ordinal_to_date(model.start_date)
+        _end_date = Utilities.ordinal_to_date(model.end_date)
 
         self.txtID.set_text(str(model.validation_id))
         _textbuffer = self.txtTask.get_child().get_child().get_buffer()
@@ -713,11 +714,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Calculate expected project time confidence limits assuming a beta
         # distribution.
         _min = sum([x.minimum_time
-                    for x in self.dtcValidation.dicTasks.values()])
+                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
         _avg = sum([x.average_time
-                    for x in self.dtcValidation.dicTasks.values()])
+                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
         _max = sum([x.maximum_time
-                    for x in self.dtcValidation.dicTasks.values()])
+                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
 
         (_meanll,
          _mean,
@@ -731,11 +732,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Calculate expected project cost confidence limits assuming a beta
         # distribution.
         _min = sum([x.minimum_cost
-                    for x in self.dtcValidation.dicTasks.values()])
+                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
         _avg = sum([x.average_cost
-                    for x in self.dtcValidation.dicTasks.values()])
+                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
         _max = sum([x.maximum_cost
-                    for x in self.dtcValidation.dicTasks.values()])
+                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
 
         (_meanll,
          _mean,
@@ -757,30 +758,35 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+# TODO: Re-write _load_progress_plot; McCabe Complexity metric = 15.
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         _assess_dates = []
         _targets = []
 
-        for _task in self.dtcValidation.dicTasks.values():
-            if _conf.RTK_TASK_TYPE[_task.task_type] == 'Reliability, Assessment':
-                _assess_dates.append(_util.date_to_ordinal(_task.end_date))
+        for _task in self.mdcRTK.dtcValidation.dicTasks.values():
+            if Configuration.RTK_TASK_TYPE[_task.task_type] == 'Reliability, Assessment':
+                _assess_dates.append(Utilities.date_to_ordinal(_task.end_date))
             _targets.append([_task.min_acceptable, _task.max_acceptable])
 
         # Find the earliest start date, the total number of hours for minimum,
         # most likely, and maximum task time.
         try:
             _x = [min([_task.start_date
-                       for _task in self.dtcValidation.dicTasks.values()])]
+                       for _task
+                       in self.mdcRTK.dtcValidation.dicTasks.values()])]
             _y1 = [sum([_task.minimum_time
-                        for _task in self.dtcValidation.dicTasks.values()])]
+                        for _task
+                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
             _y2 = [sum([_task.average_time
-                        for _task in self.dtcValidation.dicTasks.values()])]
+                        for _task
+                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
             _y3 = [sum([_task.maximum_time
-                        for _task in self.dtcValidation.dicTasks.values()])]
+                        for _task
+                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
             _y4 = [sum([_task.average_time
-                        for _task in self.dtcValidation.dicTasks.values()])]
+                        for _task
+                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
         except ValueError:
             _x = [719163]
             _y1 = [0]
@@ -790,16 +796,16 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Add the first status update to be on the first start date with the
         # total project average time.
-        self.dtcValidation.dicStatus[min(_x)] = _y2[0]
+        self.mdcRTK.dtcValidation.dicStatus[min(_x)] = _y2[0]
 
         # Get a sorted list of unique end dates and then find the total number
         # of hours that should be completed on each unique end date.
         _uniq_end = sorted(list(set([_task.end_date for _task in
-                                     self.dtcValidation.dicTasks.values()])))
+                                     self.mdcRTK.dtcValidation.dicTasks.values()])))
 
         for _index, _end in enumerate(_uniq_end):
             _sum_time = [0.0, 0.0, 0.0, 0.0]
-            for _task in self.dtcValidation.dicTasks.values():
+            for _task in self.mdcRTK.dtcValidation.dicTasks.values():
                 if _task.end_date == _end:
                     _sum_time[0] += _task.minimum_time
                     _sum_time[1] += _task.average_time
@@ -812,18 +818,18 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _y4.append(_y4[_index] - _sum_time[3])
 
         # Plot the expected time and expected time limits.
-        _widg.load_plot(self.axAxis1, self.pltPlot1, _x, _y3, _y2, _y1,
-                        None, title=_(u"Total Validation Effort"),
-                        xlab=_(u"Date"),
-                        ylab=_(u"Total Time for All Tasks "),
-                        marker=['r--', 'b-', 'g--'],
-                        type=[4, 4, 4, 4])
+        Widgets.load_plot(self.axAxis1, self.pltPlot1, _x, _y3, _y2, _y1,
+                          None, title=_(u"Total Validation Effort"),
+                          xlab=_(u"Date"),
+                          ylab=_(u"Total Time for All Tasks "),
+                          marker=['r--', 'b-', 'g--'],
+                          ltype=[4, 4, 4, 4])
 
         # Plot the actual burn-down of total hours.
-        self.dtcValidation.dicStatus[date.today().toordinal()] = _y4[len(_y4) - 1]
+        self.mdcRTK.dtcValidation.dicStatus[date.today().toordinal()] = _y4[len(_y4) - 1]
 
-        _x = self.dtcValidation.dicStatus.keys()
-        _y4 = self.dtcValidation.dicStatus.values()
+        _x = self.mdcRTK.dtcValidation.dicStatus.keys()
+        _y4 = self.mdcRTK.dtcValidation.dicStatus.values()
 
         _line = matplotlib.lines.Line2D(_x, _y4, lw=0.0, color='k',
                                         marker='^', markersize=10)
@@ -840,7 +846,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             for _index, _target in enumerate(_targets):
                 self.axAxis1.annotate(str(fmt.format(_target[0])) + "\n" +
                                       str(fmt.format(_target[1])),
-                                      xy=(_assess_dates[_index], 0.95 * max(_y3)),
+                                      xy=(_assess_dates[_index],
+                                          0.95 * max(_y3)),
                                       xycoords='data',
                                       xytext=(-55, 0),
                                       textcoords='offset points',
@@ -860,9 +867,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create the plot legend.
         _text = (_(u"Maximum Expected Time"), _(u"Expected Time"),
                  _(u"Minimum Expected Time"), _(u"Actual Remaining Time"))
-        _widg.create_legend(self.axAxis1, _text, fontsize='medium',
-                            legframeon=True, location='lower left',
-                            legshadow=True)
+        Widgets.create_legend(self.axAxis1, _text, fontsize='medium',
+                              legframeon=True, location='lower left',
+                              legshadow=True)
 
         self.axAxis1.set_ylim(bottom=0.0, top=1.05 * _y3[0])
 
@@ -870,8 +877,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _on_button_clicked(self, __button, index):
         """
-        Method to respond to gtk.Button() clicked signals and call the correct
-        function or method, passing any parameters as needed.
+        Method to respond to gtk.Button() 'clicked' signals and call the
+        correct function or method, passing any parameters as needed.
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -882,26 +889,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
 
         if index == 0:
-            self.dtcValidation.add_task(self._model.revision_id)
+            self.mdcRTK.dtcValidation.add_task(self._model.revision_id)
 
         elif index == 1:
-            self.dtcValidation.delete_task(self._model.validation_id)
+            self.mdcRTK.dtcValidation.delete_task(self._model.validation_id)
 
         elif index == 2:
-            for _task in self.dtcValidation.dicTasks.values():
+            for _task in self.mdcRTK.dtcValidation.dicTasks.values():
                 _task.calculate()
             self.load(self._model)
             self._load_progress_plot()
 
         elif index == 3:
-            self.dtcValidation.save_all_tasks()
-            self.dtcValidation.save_status(self._model.revision_id)
+            self.mdcRTK.dtcValidation.save_all_tasks()
+            self.mdcRTK.dtcValidation.save_status(self._model.revision_id)
 
         return False
 
     def _on_combo_changed(self, combo, index):
         """
-        Method to respond to gtk.ComboBox() changed signals.
+        Method to respond to gtk.ComboBox() 'changed' signals.
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -915,11 +922,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         if index == 1:
             self._model.task_type = combo.get_active()
-            _new_text = _conf.RTK_TASK_TYPE[combo.get_active() - 1]
+            _new_text = Configuration.RTK_TASK_TYPE[combo.get_active() - 1]
             self._modulebook.update(index + 2, _new_text)
         elif index == 3:
             self._model.measurement_unit = combo.get_active()
-            _new_text = _conf.RTK_MEASUREMENT_UNITS[combo.get_active() - 1]
+            _new_text = Configuration.RTK_MEASUREMENT_UNITS[combo.get_active() - 1]
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -927,7 +934,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
         """
-        Method to respond to gtk.Entry() focus_out signals.
+        Method to respond to gtk.Entry() 'focus_out' signals.
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -938,7 +945,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write _on_focus_out; McCabe Complexity metric = 15.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:
@@ -962,10 +969,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._model.variance_acceptable = _new_text
         elif index == 8:
             _new_text = entry.get_text()
-            self._model.start_date = _util.date_to_ordinal(_new_text)
+            self._model.start_date = Utilities.date_to_ordinal(_new_text)
         elif index == 9:
             _new_text = entry.get_text()
-            self._model.end_date = _util.date_to_ordinal(_new_text)
+            self._model.end_date = Utilities.date_to_ordinal(_new_text)
         elif index == 11:
             _new_text = float(entry.get_text())
             self._model.minimum_time = _new_text
@@ -993,7 +1000,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _on_value_changed(self, spinbutton, index):
         """
-        Method to respond to gtk.SpinButton() changed signals.
+        Method to respond to gtk.SpinButton() 'changed' signals.
 
         :param gtk.SpinButton spinbutton: the gtk.SpinButton() that called this
                                           method.
