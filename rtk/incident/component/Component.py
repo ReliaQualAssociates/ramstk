@@ -28,48 +28,37 @@ class Model(object):                       # pylint: disable=R0902, R0904
     The Incident Component data model contains the attributes and methods for
     an Incident Component. The attributes of an Incident Component model are:
 
-    :ivar lstRelevant :default value: [False, False, False, False, False,
-                                       False, False, False, False, False,
-                                       False, False, False, False, False,
-                                       False, False, False, False, False]
-    :ivar lstChargeable :default value: [False, False, False, False, False,
-                                         False, False, False, False, False]
-    :ivar incident_id :default value: None
-    :ivar component_id :default value: None
-    :ivar age_at_incident :default value: 0.0
-    :ivar failure :default value: False
-    :ivar suspension :default value: False
-    :ivar cnd_nff :default value: False
-    :ivar occ_fault :default value: False
-    :ivar initial_installation :default value: False
-    :ivar interval_censored :default value: False
-    :ivar use_op_time :default value: False
-    :ivar use_cal_time :default value: False
-    :ivar ttf :default value: 0.0
-    :ivar mode_type :default value: 0
-    :ivar relevant :default value: False
-    :ivar chargeable :default value: False
+    :ivar int incident_id :default value: None
+    :ivar int component_id :default value: None
+    :ivar float age_at_incident :default value: 0.0
+    :ivar int failure :default value: False
+    :ivar int suspension :default value: False
+    :ivar int cnd_nff :default value: False
+    :ivar int occ_fault :default value: False
+    :ivar int initial_installation :default value: False
+    :ivar int interval_censored :default value: False
+    :ivar int use_op_time :default value: False
+    :ivar int use_cal_time :default value: False
+    :ivar float ttf :default value: 0.0
+    :ivar int mode_type :default value: 0
     """
 
     def __init__(self):
         """
-        Method to initialize a Incident data model instance.
+        Method to initialize a Incident Component data model instance.
         """
 
-        # Initialize private dict attributes.
+        # Define private dictionary attributes.
 
-        # Initialize private list attributes.
+        # Define private list attributes.
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
 
-        # Initialize public dict attributes.
+        # Define public dictionary attributes.
 
-        # Initialize public list attributes.
-        self.lstRelevant = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                            -1, -1, -1, -1, -1, -1, -1]
-        self.lstChargeable = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
+        # Define public list attributes.
 
-        # Initialize public scalar attributes.
+        # Define public scalar attributes.
         self.incident_id = None
         self.component_id = None
         self.age_at_incident = 0.0
@@ -83,12 +72,10 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.use_cal_time = 0
         self.ttf = 0.0
         self.mode_type = 0
-        self.relevant = -1
-        self.chargeable = -1
 
     def set_attributes(self, values):
         """
-        Method to set the Incident data model attributes.
+        Method to set the Incident Component data model attributes.
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -113,38 +100,6 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.use_cal_time = values[10]
             self.ttf = float(values[11])
             self.mode_type = int(values[12])
-            self.lstRelevant[0] = int(values[13])
-            self.lstRelevant[1] = int(values[14])
-            self.lstRelevant[2] = int(values[15])
-            self.lstRelevant[3] = int(values[16])
-            self.lstRelevant[4] = int(values[17])
-            self.lstRelevant[5] = int(values[18])
-            self.lstRelevant[6] = int(values[19])
-            self.lstRelevant[7] = int(values[20])
-            self.lstRelevant[8] = int(values[21])
-            self.lstRelevant[9] = int(values[22])
-            self.lstRelevant[10] = int(values[23])
-            self.lstRelevant[11] = int(values[24])
-            self.lstRelevant[12] = int(values[25])
-            self.lstRelevant[13] = int(values[26])
-            self.lstRelevant[14] = int(values[27])
-            self.lstRelevant[15] = int(values[28])
-            self.lstRelevant[16] = int(values[29])
-            self.lstRelevant[17] = int(values[30])
-            self.lstRelevant[18] = int(values[31])
-            self.lstRelevant[19] = int(values[32])
-            self.relevant = int(values[33])
-            self.lstChargeable[0] = int(values[34])
-            self.lstChargeable[1] = int(values[35])
-            self.lstChargeable[2] = int(values[36])
-            self.lstChargeable[3] = int(values[37])
-            self.lstChargeable[4] = int(values[38])
-            self.lstChargeable[5] = int(values[39])
-            self.lstChargeable[6] = int(values[40])
-            self.lstChargeable[7] = int(values[41])
-            self.lstChargeable[8] = int(values[42])
-            self.lstChargeable[9] = int(values[43])
-            self.chargeable = int(values[44])
         except IndexError as _err:
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -156,12 +111,12 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Verificaiton data model attributes.
+        Method to retrieve the current values of the Incident Component data
+        model attributes.
 
         :return: (incident_id, component_id, age_at_incident, failure,
                   suspension, cnd_nff, occ_fault, initial_installation,
-                  interval_censored, use_op_time, use_cal_time, ttf, mode_type,
-                  relevant, chargeable, lstRelevant, lstChargeable)
+                  interval_censored, use_op_time, use_cal_time, ttf, mode_type)
         :rtype: tuple
         """
 
@@ -169,8 +124,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
                    self.failure, self.suspension, self.cnd_nff, self.occ_fault,
                    self.initial_installation, self.interval_censored,
                    self.use_op_time, self.use_cal_time, self.ttf,
-                   self.mode_type, self.relevant, self.chargeable,
-                   self.lstRelevant, self.lstChargeable)
+                   self.mode_type)
 
         return _values
 
@@ -178,21 +132,22 @@ class Model(object):                       # pylint: disable=R0902, R0904
 class Component(object):
     """
     The Incident Component data controller provides an interface between the
-    Incident Component data model and an RTK view model.  A single Incident Component
-    controller can manage one or more Incident Component data models.  The
-    attributes of an Incident Component data controller are:
+    Incident Component data model and an RTK view model.  A single Incident
+    Component controller can manage one or more Incident Component data models.
+    The attributes of an Incident Component data controller are:
 
-    :ivar _dao: the :class:`rtk.dao.DAO` to use when communicating with the RTK
-                Project database.
+    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
+                the RTK Project database.
     :ivar int _last_id: the last Incident Component ID used.
     :ivar dict dicComponents: Dictionary of the Incident Component data models
-                           managed.  Key is the Component ID; value is a pointer
-                           to the Incident Component data model instance.
+                              managed.  Key is the Component ID; value is a
+                              pointer to the Incident Component data model
+                              instance.
     """
 
     def __init__(self):
         """
-        Initializes a Incident Component data controller instance.
+        Method to initialize an Incident Component data controller instance.
         """
 
         # Initialize private scalar attributes.
@@ -232,22 +187,6 @@ class Component(object):
                          t1.fld_initial_installation, \
                          t1.fld_interval_censored, t1.fld_use_op_time, \
                          t1.fld_use_cal_time, t1.fld_ttf, t1.fld_mode_type, \
-                         t1.fld_relevant_1, t1.fld_relevant_2, \
-                         t1.fld_relevant_3, t1.fld_relevant_4, \
-                         t1.fld_relevant_5, t1.fld_relevant_6, \
-                         t1.fld_relevant_7, t1.fld_relevant_8, \
-                         t1.fld_relevant_9, t1.fld_relevant_10, \
-                         t1.fld_relevant_11, t1.fld_relevant_12, \
-                         t1.fld_relevant_13, t1.fld_relevant_14, \
-                         t1.fld_relevant_15, t1.fld_relevant_16, \
-                         t1.fld_relevant_17, t1.fld_relevant_18, \
-                         t1.fld_relevant_19, t1.fld_relevant_20, \
-                         t1.fld_relevant, t1.fld_chargeable_1, \
-                         t1.fld_chargeable_2, t1.fld_chargeable_3, \
-                         t1.fld_chargeable_4, t1.fld_chargeable_5, \
-                         t1.fld_chargeable_6, t1.fld_chargeable_7, \
-                         t1.fld_chargeable_8, t1.fld_chargeable_9, \
-                         t1.fld_chargeable_10, t1.fld_chargeable, \
                          t2.fld_part_number \
                   FROM rtk_incident_detail AS t1 \
                   INNER JOIN rtk_hardware AS t2 ON fld_hardware_id \
@@ -325,7 +264,8 @@ class Component(object):
         """
 
         for _component in self.dicComponents.values():
-            (_results, _error_code) = self.save_component(_component.component_id)
+            (_results,
+             _error_code) = self.save_component(_component.component_id)
 
         return False
 
@@ -346,23 +286,7 @@ class Component(object):
                       fld_suspension={4:d}, fld_occ_fault={5:d}, \
                       fld_cnd_nff={6:d}, fld_interval_censored={7:d}, \
                       fld_use_op_time={8:d}, fld_use_cal_time={9:d}, \
-                      fld_ttf={10:f}, fld_mode_type={11:d}, \
-                      fld_relevant_1={12:d}, fld_relevant_2={13:d}, \
-                      fld_relevant_3={14:d}, fld_relevant_4={15:d}, \
-                      fld_relevant_5={16:d}, fld_relevant_6={17:d}, \
-                      fld_relevant_7={18:d}, fld_relevant_8={19:d}, \
-                      fld_relevant_9={20:d}, fld_relevant_10={21:d}, \
-                      fld_relevant_11={22:d}, fld_relevant_12={23:d}, \
-                      fld_relevant_13={24:d}, fld_relevant_14={25:d}, \
-                      fld_relevant_15={26:d}, fld_relevant_16={27:d}, \
-                      fld_relevant_17={28:d}, fld_relevant_18={29:d}, \
-                      fld_relevant_19={30:d}, fld_relevant_20={31:d}, \
-                      fld_relevant={32:d}, fld_chargeable_1={33:d}, \
-                      fld_chargeable_2={34:d}, fld_chargeable_3={35:d}, \
-                      fld_chargeable_4={36:d}, fld_chargeable_5={37:d}, \
-                      fld_chargeable_6={38:d}, fld_chargeable_7={39:d}, \
-                      fld_chargeable_8={40:d}, fld_chargeable_9={41:d}, \
-                      fld_chargeable_10={42:d}, fld_chargeable={43:d} \
+                      fld_ttf={10:f}, fld_mode_type={11:d} \
                   WHERE fld_incident_id={0:d} \
                   AND fld_component_id={1:d}".format(
                       _component.incident_id, _component.component_id,
@@ -370,23 +294,7 @@ class Component(object):
                       _component.suspension, _component.occ_fault,
                       _component.cnd_nff, _component.interval_censored,
                       _component.use_op_time, _component.use_cal_time,
-                      _component.ttf, _component.mode_type,
-                      _component.lstRelevant[0], _component.lstRelevant[1],
-                      _component.lstRelevant[2], _component.lstRelevant[3],
-                      _component.lstRelevant[4], _component.lstRelevant[5],
-                      _component.lstRelevant[6], _component.lstRelevant[7],
-                      _component.lstRelevant[8], _component.lstRelevant[9],
-                      _component.lstRelevant[10], _component.lstRelevant[11],
-                      _component.lstRelevant[12], _component.lstRelevant[13],
-                      _component.lstRelevant[14], _component.lstRelevant[15],
-                      _component.lstRelevant[16], _component.lstRelevant[17],
-                      _component.lstRelevant[18], _component.lstRelevant[19],
-                      _component.relevant, _component.lstChargeable[0],
-                      _component.lstChargeable[1], _component.lstChargeable[2],
-                      _component.lstChargeable[3], _component.lstChargeable[4],
-                      _component.lstChargeable[5], _component.lstChargeable[6],
-                      _component.lstChargeable[7], _component.lstChargeable[8],
-                      _component.lstChargeable[9], _component.chargeable)
+                      _component.ttf, _component.mode_type)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)

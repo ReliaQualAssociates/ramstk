@@ -14,7 +14,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
-import numpy as np
 
 from incident.Incident import Model, Incident
 
@@ -37,13 +36,18 @@ class TestIncidentModel(unittest.TestCase):
         self.DUT = Model()
 
     @attr(all=True, unit=True)
-    def test_create(self):
+    def test00_create(self):
         """
         (TestIncident) __init__ should return an Incident model
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
 
+        self.assertEqual(self.DUT.lstRelevant,
+                         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                          -1, -1, -1, -1, -1, -1, -1])
+        self.assertEqual(self.DUT.lstChargeable,
+                         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1])
         self.assertEqual(self.DUT.revision_id, None)
         self.assertEqual(self.DUT.incident_id, None)
         self.assertEqual(self.DUT.incident_category, 0)
@@ -76,9 +80,11 @@ class TestIncidentModel(unittest.TestCase):
         self.assertEqual(self.DUT.life_cycle, 0)
         self.assertEqual(self.DUT.analysis, '')
         self.assertEqual(self.DUT.accepted, False)
+        self.assertEqual(self.DUT.relevant, -1)
+        self.assertEqual(self.DUT.chargeable, -1)
 
     @attr(all=True, unit=True)
-    def test_set_attributes(self):
+    def test01_set_attributes(self):
         """
         (TestIncident) set_attributes should return a 0 error code on success
         """
@@ -86,14 +92,16 @@ class TestIncidentModel(unittest.TestCase):
         _values = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
                    5, 'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
                    12, 0, 719163, True, 0, 719163, False, 0, 719164, False, 0,
-                   719163, 3, 'Analysis', True)
+                   719163, 3, 'Analysis', True, -1, -1, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_type(self):
+    def test02_set_attributes_wrong_type(self):
         """
         (TestIncident) set_attributes should return a 10 error code when passed a wrong data type
         """
@@ -101,14 +109,16 @@ class TestIncidentModel(unittest.TestCase):
         _values = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
                    'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
                    12, 0, 719163, True, 0, 719163, False, 0, 719164, False, 0,
-                   719163, 'Design', 'Analysis', True)
+                   719163, 'Design', 'Analysis', True, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
-    def test_set_attributes_missing_index(self):
+    def test03_set_attributes_missing_index(self):
         """
         (TestIncident) set_attributes should return a 40 error code when too few items are passed
         """
@@ -116,14 +126,16 @@ class TestIncidentModel(unittest.TestCase):
         _values = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
                    5, 'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
                    12, 0, 719163, True, 0, 719163, False, 0, 719164, False, 0,
-                   719163, 3, 'Analysis')
+                   719163, 3, 'Analysis', -1, -1, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
-    def test_get_attributes(self):
+    def test04_get_attributes(self):
         """
         (TestIncident) get_attributes should return a tuple of attribute values
         """
@@ -131,10 +143,13 @@ class TestIncidentModel(unittest.TestCase):
         self.assertEqual(self.DUT.get_attributes(),
                          (None, None, 0, 0, '', '', 0, 0, '', 0, '', '', 0.0,
                           0, 0.0, 0.0, 0, 0, 0, 0, False, 0, 0, False, 0, 0,
-                          False, 0, 0, 0, '', False))
+                          False, 0, 0, 0, '', False, -1, -1,
+                          [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                           -1, -1, -1, -1, -1, -1, -1],
+                          [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]))
 
     @attr(all=True, unit=True)
-    def test_sanity(self):
+    def test05_sanity(self):
         """
         (TestIncident) get_attributes(set_attributes(values)) == values
         """
@@ -142,11 +157,20 @@ class TestIncidentModel(unittest.TestCase):
         _values = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
                    5, 'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
                    12, 0, 719163, True, 0, 719163, False, 0, 719164, False, 0,
-                   719163, 3, 'Analysis', True)
+                   719163, 3, 'Analysis', True, -1, -1, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1)
+        _output = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
+                   5, 'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
+                   12, 0, 719163, True, 0, 719163, False, 0, 719164, False, 0,
+                   719163, 3, 'Analysis', True, -1, -1,
+                   [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                    -1, -1, -1, -1, -1],
+                   [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1])
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
-        self.assertEqual(_result, _values)
+        self.assertEqual(_result, _output)
 
 
 class TestIncidentController(unittest.TestCase):
@@ -162,7 +186,7 @@ class TestIncidentController(unittest.TestCase):
         self.DUT = Incident()
 
     @attr(all=True, unit=True)
-    def test_controller_create(self):
+    def test00_controller_create(self):
         """
         (TestIncident) __init__ should create a Incident data controller
         """

@@ -10,7 +10,7 @@ __copyright__ = 'Copyright 2007 - 2013 Andrew "weibullguy" Rowland'
 #       login.py is part of The RTK Project
 #
 # All rights reserved.
-
+# TODO: Move to DAO class for MySQL and other enterprise databases.
 import sys
 
 # Modules required for the GUI.

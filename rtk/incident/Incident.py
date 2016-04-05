@@ -13,9 +13,9 @@ Incident Package Data Module
 
 # Import other RTK modules.
 try:
-    import Utilities as _util
+    import Utilities
 except ImportError:
-    import rtk.Utilities as _util
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -60,24 +60,29 @@ class Model(object):                       # pylint: disable=R0902, R0904
     :ivar life_cycle: default value: ''
     :ivar analysis: default value: ''
     :ivar accepted: default value: False
+    :ivar int relevant :default value: False
+    :ivar int chargeable :default value: False
     """
 
     def __init__(self):
         """
-        Method to initialize a Incident data model instance.
+        Method to initialize an Incident data model instance.
         """
 
-        # Initialize private dict attributes.
+        # Define private dictionary attributes.
 
-        # Initialize private list attributes.
+        # Define private list attributes.
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
 
-        # Initialize public dict attributes.
+        # Define public dictionary attributes.
 
-        # Initialize public list attributes.
+        # Define public list attributes.
+        self.lstRelevant = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                            -1, -1, -1, -1, -1, -1, -1]
+        self.lstChargeable = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 
-        # Initialize public scalar attributes.
+        # Define public scalar attributes.
         self.revision_id = None
         self.incident_id = None
         self.incident_category = 0
@@ -91,7 +96,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.test = ''
         self.test_case = ''
         self.execution_time = 0.0
-        self.unit_id = 0
+        self.unit_id = ''
         self.cost = 0.0
         self.incident_age = 0
         self.hardware_id = 0
@@ -110,6 +115,8 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.life_cycle = 0
         self.analysis = ''
         self.accepted = False
+        self.relevant = -1
+        self.chargeable = -1
 
     def set_attributes(self, values):
         """
@@ -138,7 +145,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.test = str(values[10])
             self.test_case = str(values[11])
             self.execution_time = float(values[12])
-            self.unit_id = int(values[13])
+            self.unit_id = str(values[13])
             self.cost = float(values[14])
             self.incident_age = int(values[15])
             self.hardware_id = int(values[16])
@@ -157,18 +164,51 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.life_cycle = int(values[29])
             self.analysis = str(values[30])
             self.accepted = values[31]
+            self.lstRelevant[0] = int(values[32])
+            self.lstRelevant[1] = int(values[33])
+            self.lstRelevant[2] = int(values[34])
+            self.lstRelevant[3] = int(values[35])
+            self.lstRelevant[4] = int(values[36])
+            self.lstRelevant[5] = int(values[37])
+            self.lstRelevant[6] = int(values[38])
+            self.lstRelevant[7] = int(values[39])
+            self.lstRelevant[8] = int(values[40])
+            self.lstRelevant[9] = int(values[41])
+            self.lstRelevant[10] = int(values[42])
+            self.lstRelevant[11] = int(values[43])
+            self.lstRelevant[12] = int(values[44])
+            self.lstRelevant[13] = int(values[45])
+            self.lstRelevant[14] = int(values[46])
+            self.lstRelevant[15] = int(values[47])
+            self.lstRelevant[16] = int(values[48])
+            self.lstRelevant[17] = int(values[49])
+            self.lstRelevant[18] = int(values[50])
+            self.lstRelevant[19] = int(values[51])
+            self.relevant = int(values[52])
+            self.lstChargeable[0] = int(values[53])
+            self.lstChargeable[1] = int(values[54])
+            self.lstChargeable[2] = int(values[55])
+            self.lstChargeable[3] = int(values[56])
+            self.lstChargeable[4] = int(values[57])
+            self.lstChargeable[5] = int(values[58])
+            self.lstChargeable[6] = int(values[59])
+            self.lstChargeable[7] = int(values[60])
+            self.lstChargeable[8] = int(values[61])
+            self.lstChargeable[9] = int(values[62])
+            self.chargeable = int(values[63])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Verificaiton data model attributes.
+        Method to retrieve the current values of the Incident data model
+        attributes.
 
         :return: (revision_id, incident_id, incident_category, incident_type,
                   short_description, detail_description, criticality,
@@ -176,7 +216,8 @@ class Model(object):                       # pylint: disable=R0902, R0904
                   execution_time, unit_id, cost, incident_age, hardware_id,
                   software_id, request_by, request_date, reviewed, review_by,
                   review_date, approved, approve_by, approve_date, closed,
-                  close_by, close_date, life_cycle, analysis, accepted)
+                  close_by, close_date, life_cycle, analysis, accepted,
+                  relevant, chargeable, lstRelevant, lstChargeable)
         :rtype: tuple
         """
 
@@ -190,7 +231,9 @@ class Model(object):                       # pylint: disable=R0902, R0904
                    self.reviewed, self.review_by, self.review_date,
                    self.approved, self.approve_by, self.approve_date,
                    self.closed, self.close_by, self.close_date,
-                   self.life_cycle, self.analysis, self.accepted)
+                   self.life_cycle, self.analysis, self.accepted,
+                   self.relevant, self.chargeable, self.lstRelevant,
+                   self.lstChargeable)
 
         return _values
 
@@ -212,15 +255,23 @@ class Incident(object):
 
     def __init__(self):
         """
-        Initializes a Incident data controller instance.
+        Method to initialize an Incident data controller instance.
         """
 
-        # Initialize private scalar attributes.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
         self._dao = None
         self._last_id = None
 
-        # Initialize public dictionary attributes.
+        # Define public dictionary attributes.
         self.dicIncidents = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
 
     def request_incidents(self, dao, revision_id, load_all=False, query=None):
         """
@@ -273,7 +324,7 @@ class Incident(object):
 
     def add_incident(self, revision_id):
         """
-        Adds a new Incident to the RTK Program's database.
+        Method to add a new Incident to the RTK Program's database.
 
         :param int revision_id: the Revision ID to add the new Incident to.
         :return: (_results, _error_code)
@@ -327,7 +378,7 @@ class Incident(object):
                       fld_detection_method={7:d}, fld_remarks='{8:s}', \
                       fld_status={9:d}, fld_test_found='{10:s}', \
                       fld_test_case='{11:s}', fld_execution_time={12:f}, \
-                      fld_unit={13:d}, fld_cost={14:f}, \
+                      fld_unit='{13:s}', fld_cost={14:f}, \
                       fld_incident_age={15:d}, fld_hardware_id={16:d}, \
                       fld_sftwr_id={17:d}, fld_request_by={18:d}, \
                       fld_request_date={19:d}, fld_reviewed={20:d}, \
@@ -336,7 +387,23 @@ class Incident(object):
                       fld_approved_date={25:d}, fld_complete={26:d}, \
                       fld_complete_by={27:d}, fld_complete_date={28:d}, \
                       fld_life_cycle={29:d}, fld_analysis='{30:s}', \
-                      fld_accepted={31:d} \
+                      fld_accepted={31:d}, fld_relevant_1={32:d}, \
+                      fld_relevant_2={33:d}, fld_relevant_3={34:d}, \
+                      fld_relevant_4={35:d}, fld_relevant_5={36:d}, \
+                      fld_relevant_6={37:d}, fld_relevant_7={38:d}, \
+                      fld_relevant_8={39:d}, fld_relevant_9={40:d}, \
+                      fld_relevant_10={41:d}, fld_relevant_11={42:d}, \
+                      fld_relevant_12={43:d}, fld_relevant_13={44:d}, \
+                      fld_relevant_14={45:d}, fld_relevant_15={46:d}, \
+                      fld_relevant_16={47:d}, fld_relevant_17={48:d}, \
+                      fld_relevant_18={49:d}, fld_relevant_19={50:d}, \
+                      fld_relevant_20={51:d}, fld_relevant={52:d}, \
+                      fld_chargeable_1={53:d}, fld_chargeable_2={54:d}, \
+                      fld_chargeable_3={55:d}, fld_chargeable_4={56:d}, \
+                      fld_chargeable_5={57:d}, fld_chargeable_6={58:d}, \
+                      fld_chargeable_7={59:d}, fld_chargeable_8={60:d}, \
+                      fld_chargeable_9={61:d}, fld_chargeable_10={62:d}, \
+                      fld_chargeable={63:d} \
                   WHERE fld_revision_id={0:d} \
                   AND fld_incident_id={1:d}".format(
                       _incident.revision_id, _incident.incident_id,
@@ -354,7 +421,23 @@ class Incident(object):
                       _incident.approve_by, _incident.approve_date,
                       _incident.closed, _incident.close_by,
                       _incident.close_date, _incident.life_cycle,
-                      _incident.analysis, _incident.accepted)
+                      _incident.analysis, _incident.accepted,
+                      _incident.lstRelevant[0], _incident.lstRelevant[1],
+                      _incident.lstRelevant[2], _incident.lstRelevant[3],
+                      _incident.lstRelevant[4], _incident.lstRelevant[5],
+                      _incident.lstRelevant[6], _incident.lstRelevant[7],
+                      _incident.lstRelevant[8], _incident.lstRelevant[9],
+                      _incident.lstRelevant[10], _incident.lstRelevant[11],
+                      _incident.lstRelevant[12], _incident.lstRelevant[13],
+                      _incident.lstRelevant[14], _incident.lstRelevant[15],
+                      _incident.lstRelevant[16], _incident.lstRelevant[17],
+                      _incident.lstRelevant[18], _incident.lstRelevant[19],
+                      _incident.relevant, _incident.lstChargeable[0],
+                      _incident.lstChargeable[1], _incident.lstChargeable[2],
+                      _incident.lstChargeable[3], _incident.lstChargeable[4],
+                      _incident.lstChargeable[5], _incident.lstChargeable[6],
+                      _incident.lstChargeable[7], _incident.lstChargeable[8],
+                      _incident.lstChargeable[9], _incident.chargeable)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)
