@@ -34,12 +34,12 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
-#from ListBook import ListView
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
+from ListBook import ListView
 from WorkBook import WorkView
 
 __author__ = 'Andrew Rowland'
@@ -48,7 +48,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -63,22 +63,20 @@ class ModuleView(object):
 
     :ivar _model: the :py:class:`rtk.testing.Testing.Model` data model that
                   is currently selected.
-
-    :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :py:class:`gtk.TreeView`.
+    :ivar list _lst_col_order: list containing the order of the columns in the
+                               Module View gtk.TreeView.
     :ivar _workbook: the :py:class:`rtk.testing.WorkBook.WorkView` associated
                      with this instance of the Module View.
-    :ivar dtcTesting: the :py:class:`rtk.testing.BoM` data controller to use for
-                  accessing the Testing data models.
-    :ivar treeview: the :py:class:`gtk.TreeView` displaying the hierarchical
-                    list of Testing.
+    :ivar dtcTesting: the :py:class:`rtk.testing.Testing.Testing` data
+                      controller to use for accessing the Testing data models.
+    :ivar treeview: the gtk.TreeView displaying the list of Tests.
     """
 
     def __init__(self, controller, rtk_view, position, *args):
         """
-        Initializes the Module Book view for the Testing package.
+        Method to initialize the Module Book view for the Testing package.
 
-        :param controller: the instance of the :py:class:`rtk.testing.Testing`
+        :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
                            data controller to use with this view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Testing
                                       view into.
@@ -87,29 +85,27 @@ class ModuleView(object):
         :param *args: other user arguments to pass to the Module View.
         """
 
-        # Initialize private list attribute
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
         self._lst_handler_id = []
 
-        # Initialize private scalar attributes.
+        # Define private scalar attributes.
         self._model = None
 
-        # Initialize public scalar attributes.
-        self.dtcTesting = controller
-        self.dtcGrowth = args[0][0]
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.mdcRTK = controller
 
         # Create the main Testing class treeview.
+        _bg_color = Configuration.RTK_COLORS[10]
+        _fg_color = Configuration.RTK_COLORS[11]
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Testing', 11,
-                                                    _conf.RTK_COLORS[10],
-                                                    _conf.RTK_COLORS[11])
-
-        self.treeview.set_tooltip_text(_(u"Displays the list of development "
-                                         u"program tests."))
-        self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_changed,
-                                  None, None))
-        #self.treeview.connect('row_activated', self._on_row_changed)
-        #self.treeview.connect('button_press_event', self._on_button_press)
+         self._lst_col_order) = Widgets.make_treeview('Testing', 11,
+                                                      _bg_color, _fg_color)
 
         i = 0
         for _column in self.treeview.get_columns():
@@ -126,7 +122,7 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
-        _icon = _conf.ICON_DIR + '32x32/testing.png'
+        _icon = Configuration.ICON_DIR + '32x32/testing.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -148,48 +144,56 @@ class ModuleView(object):
         rtk_view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
                                       position=position)
 
+        self.treeview.set_tooltip_text(_(u"Displays the list of development "
+                                         u"program tests."))
+
+        self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._on_row_changed,
+                                  None, None))
+        self.treeview.connect('row_activated', self._on_row_changed)
+        # self.treeview.connect('button_press_event', self._on_button_press)
+
         # Create a List View to associate with this Module View.
-        self.listbook = None
-        #self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        self.listbook = ListView(self)
 
         # Create a Work View to associate with this Module View.
-        self.workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(self)
 
     def request_load_data(self, dao, revision_id):
         """
-        Loads the Testing Module Book view gtk.TreeModel() with testing
-        information.
+        Method to load the Testing Module Book view gtk.TreeModel() with
+        testing information.
 
-        :param dao: the :py:class: `rtk.dao.DAO` object used to communicate
+        :param dao: the :py:class:`rtk.dao.DAO.DAO` object used to communicate
                     with the RTK Project database.
         :param int revision_id: the ID of the revision to load testing data
                                 for.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
+# TODO: Consider re-writing request_load_data; current McCabe Complexity metric = 10.
         # Retrieve all the development program tests.
-        (_tests, __) = self.dtcTesting.request_tests(dao, revision_id)
+        (_tests, __) = self.mdcRTK.dtcTesting.request_tests(dao, revision_id)
 
         # Clear the Testing Module View gtk.TreeModel().
         _model = self.treeview.get_model()
         _model.clear()
         for _test in _tests:
             if _test[5] == 0:
-                _icon = _conf.ICON_DIR + '32x32/testing.png'
+                _icon = Configuration.ICON_DIR + '32x32/testing.png'
             elif _test[5] == 1:
-                _icon = _conf.ICON_DIR + '32x32/halthass.png'
+                _icon = Configuration.ICON_DIR + '32x32/halthass.png'
             elif _test[5] == 2:
-                _icon = _conf.ICON_DIR + '32x32/accelerated.png'
+                _icon = Configuration.ICON_DIR + '32x32/accelerated.png'
             elif _test[5] == 3:
-                _icon = _conf.ICON_DIR + '32x32/ess.png'
+                _icon = Configuration.ICON_DIR + '32x32/ess.png'
             elif _test[5] == 4:
-                _icon = _conf.ICON_DIR + '32x32/growth.png'
-                self.dtcGrowth.request_tests(dao, _test)
+                _icon = Configuration.ICON_DIR + '32x32/growth.png'
+                self.mdcRTK.dtcGrowth.request_tests(dao, _test)
             elif _test[5] == 5:
-                _icon = _conf.ICON_DIR + '32x32/demonstration.png'
+                _icon = Configuration.ICON_DIR + '32x32/demonstration.png'
             elif _test[5] == 6:
-                _icon = _conf.ICON_DIR + '32x32/prat.png'
+                _icon = Configuration.ICON_DIR + '32x32/prat.png'
 
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = list(_test) + [_icon]
@@ -204,15 +208,14 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        #self.listbook.load(revision_id)
-
         return False
 
     def update(self, position, new_text):
         """
-        Updates the selected row in the Module Book gtk.TreeView() with changes
-        to the Testing data model attributes.  Called by other views when the
-        Testing data model attributes are edited via their gtk.Widgets().
+        Method to update the selected row in the Module Book gtk.TreeView()
+        with changes to the Testing data model attributes.  Called by other
+        views when the Testing data model attributes are edited via their
+        gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -228,8 +231,8 @@ class ModuleView(object):
 
     def _on_button_press(self, treeview, event):
         """
-        Callback method for handling mouse clicks on the Testing package
-        Module Book gtk.TreeView().
+        Method to handle mouse clicks on the Testing package Module Book
+        gtk.TreeView().
 
         :param gtk.TreeView treeview: the Testing class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
@@ -256,7 +259,7 @@ class ModuleView(object):
 
     def _on_row_changed(self, treeview, __path, __column):
         """
-        Callback function to handle events for the Testing package Module Book
+        Method to handle events for the Testing package Module Book
         gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
         row is activated.
 
@@ -275,11 +278,12 @@ class ModuleView(object):
         _test_type = _model.get_value(_row, 5)
 
         if _test_type == 4:                 # Reliability growth
-            self._model = self.dtcGrowth.dicTests[_test_id]
+            self._model = self.mdcRTK.dtcGrowth.dicTests[_test_id]
         else:
-            self._model = self.dtcTesting.dicTests[_test_id]
+            self._model = self.mdcRTK.dtcTesting.dicTests[_test_id]
 
         self.workbook.load(self._model)
+        self.listbook.load(self._model)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -287,7 +291,7 @@ class ModuleView(object):
 
     def _on_cell_edited(self, __cell, __path, __new_text, __index):
         """
-        Callback method to handle events for the Testing package Module Book
+        Method to handle events for the Testing package Module Book
         gtk.CellRenderer().  It is called whenever a Module Book
         gtk.CellRenderer() is edited.
 
@@ -300,7 +304,7 @@ class ModuleView(object):
         :return: False if successful and True if an error is encountered.
         :rtype: bool
         """
-        # TODO: Use this function or delete it.
+# TODO: Use this function or delete it.
         self.workbook.load(self._model)
 
         return False

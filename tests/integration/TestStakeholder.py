@@ -42,7 +42,7 @@ class TestStakeholderController(unittest.TestCase):
         self.DUT = Stakeholder()
 
     @attr(all=True, integration=True)
-    def test1_request_inputs(self):
+    def test00_request_inputs(self):
         """
         (TestStakeholder) request_inputs should return 0 on success
         """
@@ -50,7 +50,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
 # TODO: Test that method fails when no Stakeholder inputs exist in database.
     @attr(all=True, integration=True)
-    def test2_add_input(self):
+    def test01_add_input(self):
         """
         (TestStakeholder) add_input returns 0 on success and new Stakeholder data model added to dictionary
         """
@@ -65,7 +65,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test3_delete_input(self):
+    def test02_delete_input(self):
         """
         (TestStakeholder) delete_input returns 0 on success
         """
@@ -78,7 +78,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test4_save_input(self):
+    def test03_save_input(self):
         """
         (TestStakeholder) save_input returns (True, 0) on success
         """
@@ -87,7 +87,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(self.DUT.save_input(1), (True, 0))
 
     @attr(all=True, integration=True)
-    def test5_save_all_inputs(self):
+    def test04_save_all_inputs(self):
         """
         (TestStakeholder) save_all_inputs returns False on success
         """
@@ -96,10 +96,10 @@ class TestStakeholderController(unittest.TestCase):
         self.assertFalse(self.DUT.save_all_inputs())
 
     @attr(all=True, integration=True)
-    def test6_calculate_stakeholder(self):
+    def test05_calculate_stakeholder(self):
         """
         (TestStakeholder) calculate_stakeholder returns 0 on success
         """
 
         self.DUT.request_inputs(self._dao, 0)
-        self.assertEqual(self.DUT.calculate_stakeholder(1), (1.2, 1.2))
+        self.assertEqual(self.DUT.calculate_stakeholder(1), (0.8, 0.8))

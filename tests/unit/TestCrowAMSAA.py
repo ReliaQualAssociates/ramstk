@@ -15,10 +15,19 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
-import numpy as np
 
-import dao.DAO as _dao
-from analyses.statistics.CrowAMSAA import *
+from analyses.statistics.growth.CrowAMSAA import calculate_average_mtbf, \
+                                                 calculate_cramer_vonmises, \
+                                                 calculate_crow_amsaa_chi_square, \
+                                                 calculate_crow_amsaa_mean, \
+                                                 calculate_crow_amsaa_parameters, \
+                                                 calculate_final_mtbf, \
+                                                 calculate_growth_rate, \
+                                                 calculate_initial_mtbf, \
+                                                 calculate_n_failures, \
+                                                 calculate_t1, \
+                                                 calculate_total_time, \
+                                                 cramer_vonmises_critical_value
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -26,13 +35,327 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
-class TestDuane(unittest.TestCase):
+class TestCrowAMSAA(unittest.TestCase):
     """
     Class for testing the Crow-AMSAA model functions.
     """
 
     @attr(all=True, unit=True)
-    def test_calculate_crow_amsaa_parameters_exact(self):
+    def test00_calculate_initial_mtbf_program(self):
+        """
+        (TestCrowAMSAA) calculate_initial_mtbf should return a float value on success
+        """
+
+        _mtbfi = calculate_initial_mtbf(0.23, 110.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_mtbfi, 49.8750576)
+
+    @attr(all=True, unit=True)
+    def test00a_calculate_initial_mtbf_program_zero_mtbfg(self):
+        """
+        (TestCrowAMSAA) calculate_initial_mtbf should return 0.0 when no goal MTBF is specified
+        """
+
+        _mtbfi = calculate_initial_mtbf(0.23, 0.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_mtbfi, 0.0)
+
+    @attr(all=True, unit=True)
+    def test00b_calculate_initial_mtbf_program_zero_ttt(self):
+        """
+        (TestCrowAMSAA) calculate_initial_mtbf should return 0.0 when no total time on test is specified
+        """
+
+        _mtbfi = calculate_initial_mtbf(0.23, 110.0, 0.0, 1000.0)
+        self.assertAlmostEqual(_mtbfi, 0.0)
+
+    @attr(all=True, unit=True)
+    def test00c_calculate_initial_mtbf_program_zero_t1(self):
+        """
+        (TestCrowAMSAA) calculate_initial_mtbf should return 0.0 when no first phase test time is specified
+        """
+
+        _mtbfi = calculate_initial_mtbf(0.23, 110.0, 10000.0, 0.0)
+        self.assertAlmostEqual(_mtbfi, 0.0)
+
+    @attr(all=True, unit=True)
+    def test01_calculate_final_mtbf_program(self):
+        """
+        (TestCrowAMSAA) calculate_final_mtbf should return a float value on success
+        """
+
+        _mtbff = calculate_final_mtbf(0.23, 50.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_mtbff, 110.2755618)
+
+    @attr(all=True, unit=True)
+    def test01a_calculate_final_mtbf_program_zero_growth_rate(self):
+        """
+        (TestCrowAMSAA) calculate_final_mtbf should return the average MTBF when a zero growth rate is passed
+        """
+
+        _mtbff = calculate_final_mtbf(0.0, 50.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_mtbff, 50.0)
+
+    @attr(all=True, unit=True)
+    def test01b_calculate_final_mtbf_program_unity_growth_rate(self):
+        """
+        (TestCrowAMSAA) calculate_final_mtbf should return the average MTBF when a growth rate equal to one is passed
+        """
+
+        _mtbff = calculate_final_mtbf(1.0, 50.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_mtbff, 0.0)
+
+    @attr(all=True, unit=True)
+    def test01c_calculate_final_mtbf_program_zero_mtbfa(self):
+        """
+        (TestCrowAMSAA) calculate_final_mtbf should return 0.0 when a zero MTBFA is passed
+        """
+
+        _mtbff = calculate_final_mtbf(0.23, 0.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_mtbff, 0.0)
+
+    @attr(all=True, unit=True)
+    def test01d_calculate_final_mtbf_program_zero_ttt(self):
+        """
+        (TestCrowAMSAA) calculate_final_mtbf should return 0.0 when a zero ttt is passed
+        """
+
+        _mtbff = calculate_final_mtbf(0.23, 50.0, 0.0, 1000.0)
+        self.assertAlmostEqual(_mtbff, 0.0)
+
+    @attr(all=True, unit=True)
+    def test01e_calculate_final_mtbf_program_zero_t1(self):
+        """
+        (TestCrowAMSAA) calculate_final_mtbf should return 0.0 when a zero first phase test time is passed
+        """
+
+        _mtbff = calculate_final_mtbf(0.23, 50.0, 10000.0, 0.0)
+        self.assertAlmostEqual(_mtbff, 0.0)
+
+    @attr(all=True, unit=True)
+    def test01f_calculate_final_mtbf_phases(self):
+        """
+        (TestCrowAMSAA) calculate_final_mtbf should return a float value when calculating the final MTBF for a test phase
+        """
+
+        _mtbff2 = calculate_final_mtbf(0.23, 50.0, 2500.0, 1000.0)
+        _mtbff3 = calculate_final_mtbf(0.23, 50.0, 5000.0, 1000.0)
+        _mtbff4 = calculate_final_mtbf(0.23, 50.0, 7000.0, 1000.0)
+        _mtbff5 = calculate_final_mtbf(0.23, 50.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_mtbff2, 80.1688181)
+        self.assertAlmostEqual(_mtbff3, 94.0247917)
+        self.assertAlmostEqual(_mtbff4, 101.5902031)
+        self.assertAlmostEqual(_mtbff5, 110.2755618)
+
+    @attr(all=True, unit=True)
+    def test02_calculate_failures(self):
+        """
+        (TestCrowAMSAA) calculate_n_failures should return a float value when calculating the expected number of failures for a test phase
+        """
+
+        _cum_failures = 0.0
+        _n_failures1 = calculate_n_failures(0.23, 50.0, 1000.0, 1000.0, 0)
+        _cum_failures += _n_failures1
+        _n_failures2 = calculate_n_failures(0.23, 50.0, 2500.0, 1000.0,
+                                            _cum_failures)
+        _cum_failures += _n_failures2
+        _n_failures3 = calculate_n_failures(0.23, 50.0, 5000.0, 1000.0,
+                                            _cum_failures)
+        _cum_failures += _n_failures3
+        _n_failures4 = calculate_n_failures(0.23, 50.0, 7000.0, 1000.0,
+                                            _cum_failures)
+        _cum_failures += _n_failures4
+        _n_failures5 = calculate_n_failures(0.23, 50.0, 10000.0, 1000.0,
+                                            _cum_failures)
+        self.assertEqual(_n_failures1, 20.0)
+        self.assertAlmostEqual(_n_failures2, 20.4989536)
+        self.assertAlmostEqual(_n_failures3, 28.5626882)
+        self.assertAlmostEqual(_n_failures4, 20.4244387)
+        self.assertAlmostEqual(_n_failures5, 28.2826505)
+
+    @attr(all=True, unit=True)
+    def test02a_calculate_failures_zero_mtbfa(self):
+        """
+        (TestCrowAMSAA) calculate_n_failures should return 0.0 when calculating the expected number of failures and the average MTBF equals zero
+        """
+
+        _n_failures = calculate_n_failures(0.23, 0.0, 1000.0, 1000.0, 0)
+        self.assertEqual(_n_failures, 0.0)
+
+    @attr(all=True, unit=True)
+    def test02b_calculate_failures_zero_t1(self):
+        """
+        (TestCrowAMSAA) calculate_n_failures should return 0.0 when calculating the expected number of failures and the first phase test time equals zero
+        """
+
+        _n_failures = calculate_n_failures(0.23, 50.0, 1000.0, 0.0, 0)
+        self.assertEqual(_n_failures, 0.0)
+
+    @attr(all=True, unit=True)
+    def test03_calculate_average_mtbf_with_mtbf(self):
+        """
+        (TestCrowAMSAA) calculate_average_mtbf should return a float value when calculating the phase average MTBF using initial and final MTBF
+        """
+
+        _mtbfa = calculate_average_mtbf(0.0, 0.0, 45.0, 55.0)
+        self.assertEqual(_mtbfa, 50.0)
+
+    @attr(all=True, unit=True)
+    def test03a_calculate_average_mtbf_with_time(self):
+        """
+        (TestCrowAMSAA) calculate_average_mtbf should return a float value when calculating the phase average MTBF using test time and expected number of failures
+        """
+
+        _mtbfa = calculate_average_mtbf(1000.0, 20.0, 0.0, 0.0)
+        self.assertEqual(_mtbfa, 50.0)
+
+    @attr(all=True, unit=True)
+    def test03b_calculate_average_mtbf_zero_mtbfi(self):
+        """
+        (TestCrowAMSAA) calculate_average_mtbf should return 0.0 when calculating the phase average MTBF and initial MTBF equals zero
+        """
+
+        _mtbfa = calculate_average_mtbf(0.0, 0.0, 0.0, 55.0)
+        self.assertEqual(_mtbfa, 0.0)
+
+    @attr(all=True, unit=True)
+    def test03c_calculate_average_mtbf_zero_mtbff(self):
+        """
+        (TestCrowAMSAA) calculate_average_mtbf should return 0.0 when calculating the phase average MTBF and final MTBF equals zero
+        """
+
+        _mtbfa = calculate_average_mtbf(0.0, 0.0, 45.0, 0.0)
+        self.assertEqual(_mtbfa, 0.0)
+
+    @attr(all=True, unit=True)
+    def test03d_calculate_average_mtbf_zero_test_time(self):
+        """
+        (TestCrowAMSAA) calculate_average_mtbf should return 0.0 when calculating the phase average MTBF and the test time equals zero
+        """
+
+        _mtbfa = calculate_average_mtbf(0.0, 20, 0.0, 0.0)
+        self.assertEqual(_mtbfa, 0.0)
+
+    @attr(all=True, unit=True)
+    def test03e_calculate_average_mtbf_zero_failures(self):
+        """
+        (TestCrowAMSAA) calculate_average_mtbf should return 0.0 when calculating the phase average MTBF and the number of failures equals zero
+        """
+
+        _mtbfa = calculate_average_mtbf(1000.0, 0.0, 0.0, 0)
+        self.assertEqual(_mtbfa, 0.0)
+
+    @attr(all=True, unit=True)
+    def test04_calculate_total_time_program(self):
+        """
+        (TestCrowAMSAA) calculate_total_time should return an integer value when calculating the total test time for the overall test program
+        """
+
+        _ttt = calculate_total_time(0.23, 50.0, 110.0, 1000.0)
+        self.assertEqual(_ttt, 9892)
+
+    @attr(all=True, unit=True)
+    def test04a_calculate_total_time_program_zero_alpha(self):
+        """
+        (TestCrowAMSAA) calculate_total_time should return 0.0 when calculating the total test time for the overall test program and the growth rate equals zero
+        """
+
+        _ttt = calculate_total_time(0.0, 50.0, 110.0, 1000.0)
+        self.assertEqual(_ttt, 0.0)
+
+    @attr(all=True, unit=True)
+    def test04b_calculate_total_time_program_zero_mtbfa(self):
+        """
+        (TestCrowAMSAA) calculate_total_time should return 0.0 when calculating the total test time for the overall test program and average MTBF equals zero
+        """
+
+        _ttt = calculate_total_time(0.23, 0.0, 110.0, 1000.0)
+        self.assertEqual(_ttt, 0.0)
+
+    @attr(all=True, unit=True)
+    def test04c_calculate_total_time_phases(self):
+        """
+        (TestCrowAMSAA) calculate_total_time should return a float value when calculating total test time for a single phase
+        """
+
+        _ttt2 = calculate_total_time(0.23, 50.0, 80.1688181, 1000.0)
+        _ttt3 = calculate_total_time(0.23, 50.0, 94.0247917, 1000.0)
+        _ttt4 = calculate_total_time(0.23, 50.0, 101.5902031, 1000.0)
+        _ttt5 = calculate_total_time(0.23, 50.0, 110.0, 1000.0)
+        self.assertEqual(_ttt2, 2500.0)
+        self.assertEqual(_ttt3, 5000.0)
+        self.assertEqual(_ttt4, 7001.0)
+        self.assertEqual(_ttt5, 9892.0)
+
+    @attr(all=True, unit=True)
+    def test05_calculate_t1(self):
+        """
+        (TestCrowAMSAA) calculate_t1 should return a float value when calculating the minimum required test time for the first phase
+        """
+
+        _t1 = calculate_t1(0.23, 50.0, 110.0, 10000.0)
+        self.assertEqual(_t1, 1011)
+
+    @attr(all=True, unit=True)
+    def test05a_calculate_t1_zero_alpha(self):
+        """
+        (TestCrowAMSAA) calculate_t1 should return 0.0 when calculating the minimum required test time for the first phase and the growth rate equals zero
+        """
+
+        _t1 = calculate_t1(0.0, 50.0, 110.0, 10000.0)
+        self.assertEqual(_t1, 0)
+
+    @attr(all=True, unit=True)
+    def test05b_calculate_t1_zero_mtbfa(self):
+        """
+        (TestCrowAMSAA) calculate_t1 should return 0.0 when calculating the minimum required test time for the first phase and the average MTBF equals zero
+        """
+
+        _t1 = calculate_t1(0.23, 0.0, 110.0, 10000.0)
+        self.assertEqual(_t1, 0)
+
+    @attr(all=True, unit=True)
+    def test06_calculate_growth_rate_program(self):
+        """
+        (TestCrowAMSAA) calculate_growth_rate should return a float value when calculating the average growth rate for the overall program
+        """
+
+        _alpha = calculate_growth_rate(50.0, 110.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_alpha, 0.2306829)
+
+    @attr(all=True, unit=True)
+    def test06a_calculate_growth_rate_program_zero_mtbfa(self):
+        """
+        (TestCrowAMSAA) calculate_growth_rate should return 0.0 when calculating the average growth rate for the overall program and the average MTBF equals zero
+        """
+
+        _alpha = calculate_growth_rate(0.0, 110.0, 10000.0, 1000.0)
+        self.assertEqual(_alpha, 0.0)
+
+    @attr(all=True, unit=True)
+    def test06b_calculate_growth_rate_program_zero_t1(self):
+        """
+        (TestCrowAMSAA) calculate_growth_rate should return 0.0 when calculating the average growth rate for the overall program and the first phase test time equals zero
+        """
+
+        _alpha = calculate_growth_rate(50.0, 110.0, 10000.0, 0.0)
+        self.assertEqual(_alpha, 0.0)
+
+    @attr(all=True, unit=True)
+    def test06c_calculate_growth_rate_phases(self):
+        """
+        (TestCrowAMSAA) calculate_growth_rate should return a float value when calculating the average growth rate for a test phase
+        """
+
+        _alpha2 = calculate_growth_rate(50.0, 80.1688181, 2500.0, 1000.0)
+        _alpha3 = calculate_growth_rate(50.0, 94.0247917, 5000.0, 1000.0)
+        _alpha4 = calculate_growth_rate(50.0, 101.5902031, 7000.0, 1000.0)
+        _alpha5 = calculate_growth_rate(50.0, 110.0, 10000.0, 1000.0)
+        self.assertAlmostEqual(_alpha2, 0.2322887)
+        self.assertAlmostEqual(_alpha3, 0.2317304)
+        self.assertAlmostEqual(_alpha4, 0.2315471)
+        self.assertAlmostEqual(_alpha5, 0.2306829)
+
+    @attr(all=True, unit=True)
+    def test07_calculate_crow_amsaa_parameters_exact(self):
         """
         (TestCrowAMSAA) calculate_crow_amsaa_parameters should return 0 when encountering no errors using exact failure times
         """
@@ -51,7 +374,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_beta_hat, 0.6142104)
 
     @attr(all=True, unit=True)
-    def test_calculate_crow_amsaa_parameters_grouped(self):
+    def test07_calculate_crow_amsaa_parameters_grouped(self):
         """
         (TestCrowAMSAA) calculate_crow_amsaa_parameters should return 0 when encountering no errors using grouped data
         """
@@ -68,7 +391,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_beta_hat, 0.8136085)
 
     @attr(all=True, unit=True)
-    def test_calculate_crow_amsaa_parameters_no_failures(self):
+    def test08_calculate_crow_amsaa_parameters_no_failures(self):
         """
         (TestCrowAMSAA) calculate_crow_amsaa_parameters should return 1 when passed an empty list of failure counts
         """
@@ -83,7 +406,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_beta_hat, 0.0)
 
     @attr(all=True, unit=True)
-    def test_calculate_crow_amsaa_mean(self):
+    def test09_calculate_crow_amsaa_mean(self):
         """
         (TestCrowAMSAA) calculate_crow_amsaa_mean should return False
         """
@@ -101,7 +424,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_instantaneous_mean, 8.7792208)
 
     @attr(all=True, unit=True)
-    def test_calculate_cramer_vonmises(self):
+    def test10_calculate_cramer_vonmises(self):
         """
         (TestCrowAMSAA) calculate_cramer_vonmises should return False
         """
@@ -116,7 +439,6 @@ class TestDuane(unittest.TestCase):
                       1116.3, 1161.1, 1257.1, 1276.3, 1308.9, 1340.3, 1437.3,
                       1482.0, 1489.9, 1715.1, 1828.9, 1971.5, 2303.4, 2429.7,
                       2457.4, 2535.2, 2609.9, 2674.2, 2704.8, 2849.6, 2923.5]
-        alpha = 0.332
         beta = 0.616
 
         _Cvm = calculate_cramer_vonmises(n_failures, fail_times, beta, 3000.0,
@@ -124,7 +446,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.04909242)
 
     @attr(all=True, unit=True)
-    def test_cramer_vonmises_critical_value_exact(self):
+    def test11_cramer_vonmises_critical_value_exact(self):
         """
         (TestCrowAMSAA) cramer_vonmises_critical_value should return the critical value when the degrees of freedom is a key
         """
@@ -133,7 +455,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.171)
 
     @attr(all=True, unit=True)
-    def test_cramer_vonmises_critical_value_interpolate_df(self):
+    def test12_cramer_vonmises_critical_value_interpolate_df(self):
         """
         (TestCrowAMSAA) cramer_vonmises_critical_value should return the critical value when the degrees of freedom is not a key
         """
@@ -142,7 +464,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.1725)
 
     @attr(all=True, unit=True)
-    def test_cramer_vonmises_critical_value_interpolate_confidence(self):
+    def test13_cramer_vonmises_critical_value_interpolate_confidence(self):
         """
         (TestCrowAMSAA) cramer_vonmises_critical_value should return the critical value when the confidence level is not a key
         """
@@ -151,7 +473,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.127)
 
     @attr(all=True, unit=True)
-    def test_calculate_crow_amsaa_chi_square_exact(self):
+    def test14_calculate_crow_amsaa_chi_square_exact(self):
         """
         (TestCrowAMSAA) calculate_crow_amsaa_chi_square should return the chi-square test statistic when using exact data
         """
@@ -174,7 +496,7 @@ class TestDuane(unittest.TestCase):
         self.assertAlmostEqual(_chi_square, 149.3506494)
 
     @attr(all=True, unit=True)
-    def test_calculate_crow_amsaa_chi_square_grouped(self):
+    def test14a_calculate_crow_amsaa_chi_square_grouped(self):
         """
         (TestCrowAMSAA) calculate_crow_amsaa_chi_square should return the chi-square test statistic when using grouped data
         """

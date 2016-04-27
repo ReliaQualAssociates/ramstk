@@ -42,7 +42,7 @@ class TestTestingController(unittest.TestCase):
         self.DUT = Testing()
 
     @attr(all=True, integration=True)
-    def test_request_tests(self):
+    def test00_request_tests(self):
         """
         (TestTesting) request_inputs should return 0 on success
         """

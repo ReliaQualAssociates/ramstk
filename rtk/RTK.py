@@ -325,11 +325,9 @@ class RTK(object):
         Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwSoftware, self, -1)   # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwTesting,
-                                                       self.dtcTesting, -1,
-                                                       self.dtcGrowth)          # pylint: disable=R0204
+        _modview = self.module_book.create_module_page(mvwTesting, self, -1)    # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwValidation, self, -1)  # pylint: disable=R0204
+        _modview = self.module_book.create_module_page(mvwValidation, self, -1) # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwIncident, self, -1)   # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)

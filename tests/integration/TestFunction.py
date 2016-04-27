@@ -42,7 +42,7 @@ class TestFunctionController(unittest.TestCase):
         self.DUT = Function()
 
     @attr(all=True, integration=True)
-    def test0_request_functions(self):
+    def test00_request_functions(self):
         """
         (TestFunction) request_functions should return 0 on success
         """
@@ -50,12 +50,13 @@ class TestFunctionController(unittest.TestCase):
         self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
 # TODO: Test that method fails when no Functions exist in database.
     @attr(all=True, integration=True)
-    def test1_add_function(self):
+    def test01_add_function(self):
         """
         (TestFunction) add_function returns 0 on success and new Function data model added to dictionary
         """
 
         self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
+
         (_results,
          _error_code,
          _function_id) = self.DUT.add_function(0, 0, 'F-T', 'Test Function',
@@ -65,10 +66,10 @@ class TestFunctionController(unittest.TestCase):
                                    Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_function_id, 1)
+        self.assertEqual(_function_id, 11)
 
     @attr(all=True, integration=True)
-    def test2_add_function_no_parent(self):
+    def test02_add_function_no_parent(self):
         """
         (TestFunction) add_function uses default parent ID when none is passed
         """
@@ -83,8 +84,8 @@ class TestFunctionController(unittest.TestCase):
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
-    @attr(all=True, integration=True)
-    def test3_add_function_no_code(self):
+    @attr(all=True, integration=False)
+    def test03_add_function_no_code(self):
         """
         (TestFunction) add_function uses default code when none is passed
         """
@@ -98,10 +99,8 @@ class TestFunctionController(unittest.TestCase):
         #self.assertTrue(_results)
         #self.assertEqual(_error_code, 0)
 
-        pass
-
     @attr(all=True, integration=True)
-    def test4_add_function_no_name(self):
+    def test04_add_function_no_name(self):
         """
         (TestFunction) add_function uses default name when none is passed
         """
@@ -117,7 +116,7 @@ class TestFunctionController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test5_add_function_no_remarks(self):
+    def test05_add_function_no_remarks(self):
         """
         (TestFunction) add_function uses default remarks when none is passed
         """
@@ -133,9 +132,9 @@ class TestFunctionController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test6_delete_function(self):
+    def test06_delete_function(self):
         """
-        (TestFunction) delete_function should return (True, [0, 0, 0]) on success
+        (TestFunction) delete_function should return (True, [0, 0]) on success
         """
 
         self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
@@ -143,10 +142,10 @@ class TestFunctionController(unittest.TestCase):
          _error_codes) = self.DUT.delete_function(self.DUT._last_id)
 
         self.assertTrue(_results)
-        self.assertEqual(_error_codes, [0, 0, 0])
+        self.assertEqual(_error_codes, [0, 0])
 
     @attr(all=True, integration=True)
-    def test7_save_function(self):
+    def test07_save_function(self):
         """
         (TestFunction) save_function should return (True, 0) on success
         """
@@ -159,11 +158,13 @@ class TestFunctionController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test8_save_all_functions(self):
+    def test08_save_all_functions(self):
         """
         (TestFunction) save_all_functions should return a list of tuples
         """
 
         self.DUT.request_functions(self._dao, 0)
         self.assertEqual(self.DUT.save_all_functions(),
-                         [(0, 0), (1, 0), (2, 0), (3, 0)])
+                         [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0),
+                          (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0),
+                          (12, 0), (13, 0)])

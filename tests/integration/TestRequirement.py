@@ -43,7 +43,7 @@ class TestRequirementController(unittest.TestCase):
         self.DUT = Requirement()
 
     @attr(all=True, integration=True)
-    def test1_request_requirements(self):
+    def test00_request_requirements(self):
         """
         (TestRequirement) request_requirements should return 0 on success
         """
@@ -51,7 +51,7 @@ class TestRequirementController(unittest.TestCase):
         self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
 # TODO: Test that method fails when no Requirements exist in database.
     @attr(all=True, integration=True)
-    def test2_add_requirement(self):
+    def test01_add_requirement(self):
         """
         (TestRequirement) add_requirement returns 0 on success and new Requirement data model added to dictionary
         """
@@ -67,7 +67,7 @@ class TestRequirementController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test3_add_requirement_no_parent(self):
+    def test02_add_requirement_no_parent(self):
         """
         (TestRequirement) add_requirement uses default parent ID when none is passed
         """
@@ -82,7 +82,7 @@ class TestRequirementController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test4_delete_requirement(self):
+    def test03_delete_requirement(self):
         """
         (TestRequirement) delete_requirement returns 0 on success
         """
@@ -95,7 +95,7 @@ class TestRequirementController(unittest.TestCase):
         self.assertEqual(_error_code, [0, 0])
 
     @attr(all=True, integration=True)
-    def test5_save_requirement(self):
+    def test04_save_requirement(self):
         """
         (TestRequirement) save_requirement returns (True, 0) on success
         """
@@ -104,10 +104,11 @@ class TestRequirementController(unittest.TestCase):
         self.assertEqual(self.DUT.save_requirement(1), (True, 0))
 
     @attr(all=True, integration=True)
-    def test6_save_all_requirements(self):
+    def test05_save_all_requirements(self):
         """
         (TestRequirement) save_all_requirements returns False on success
         """
 
         self.DUT.request_requirements(self._dao, 0)
-        self.assertEqual(self.DUT.save_all_requirements(), [(1, 0)])
+        self.assertEqual(self.DUT.save_all_requirements(),
+                         [(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0)])

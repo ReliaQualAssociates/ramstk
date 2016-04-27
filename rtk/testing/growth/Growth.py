@@ -16,34 +16,34 @@ import gettext
 import locale
 
 # Import modules for mathematics.
-from math import exp, log, sqrt
 import numpy as np
-from scipy.optimize import fsolve
 from scipy.stats import chi2                # pylint: disable=E0611
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
-    import analyses.statistics.CrowAMSAA as CrowAMSAA
+    import Configuration
+    import Utilities
     import analyses.statistics.Bounds as Bounds
+    import analyses.statistics.growth.CrowAMSAA as CrowAMSAA
+    import analyses.statistics.growth.SPLAN as SPLAN
     from testing.Testing import Model as Testing
     from testing.Testing import Testing as dtcTesting
 except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-    import rtk.analyses.statistics.CrowAMSAA as CrowAMSAA
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
     import rtk.analyses.statistics.Bounds as Bounds
+    import rtk.analyses.statistics.growth.CrowAMSAA as CrowAMSAA
+    import rtk.analyses.statistics.growth.SPLAN as SPLAN
     from rtk.testing.Testing import Model as Testing
     from rtk.testing.Testing import Testing as dtcTesting
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -57,7 +57,7 @@ def _gr(gr, mi, mf, ttt, t1):
     for a test phase.
     """
 
-    return (ttt / t1)**gr + (mf / mi) * (gr - 1)
+    return (ttt / t1)**gr + (mf / mi) * (gr - 1.0)
 
 
 def running_sum(values):
@@ -79,49 +79,66 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
     planning and assessing a reliability growth test. The attributes of a
     Reliability Growth model are:
 
-    :ivar dict dic_test_data: default value: {}
-
-    :ivar list lst_p_growth_rate: default value: []
-    :ivar list lst_p_ms: default value: []
-    :ivar list lst_p_fef: default value: []
-    :ivar list lst_p_prob: default value: []
-    :ivar list lst_p_mtbfi: default value: []
-    :ivar list lst_p_mtbff: default value: []
-    :ivar list lst_p_mtbfa: default value: []
-    :ivar list lst_p_test_time: default value: []
-    :ivar list lst_p_n_failures: default value: []
-    :ivar list lst_p_start_date: default value: []
-    :ivar list lst_p_end_date: default value: []
-    :ivar list lst_p_weeks: default value: []
-    :ivar list lst_p_n_test_units: default value: []
-    :ivar list lst_p_tpu: default value: []
-    :ivar list lst_p_tpupw: default value: []
-
-    :ivar list lst_o_growth_rate: default value: []
-    :ivar list lst_o_ms: default value: []
-    :ivar list lst_o_fef: default value: []
-    :ivar list lst_o_mtbfi: default value: []
-    :ivar list lst_o_mtbff: default value: []
-    :ivar list lst_o_mtbfa: default value: []
-    :ivar list lst_o_test_time: default value: []
-
-    :ivar list alpha_hat: default value: [0.0, 0.0, 0.0]
-    :ivar list beta_hat: default value: [0.0, 0.0, 0.0]
-    :ivar list cum_mean: default value: [0.0, 0.0, 0.0]
-    :ivar list instantaneous_mean: default value: [0.0, 0.0, 0.0]
-
-    :ivar int rg_plan_model: default value: 0
-    :ivar int rg_assess_model: default value: 0
-    :ivar float alpha_hat: default value: 0.0
-    :ivar float beta_hat: default value: 0.0
-    :ivar float cum_mean: default value: 0.0
-    :ivar float instantaneous_mean: default value: 0.0
-    :ivar float se_scale: default value: 0.0
-    :ivar float se_shape: default value: 0.0
-    :ivar float se_cum_mean: default value: 0.0
-    :ivar float se_inst_mean: default value: 0.0
-    :ivar float cramer_vonmises: default value: 0.0
-    :ivar float chi_square: default value: 0.0
+    :ivar dict dic_test_data: dictionary containing the test data for the
+                              Growth data model.  Key is an integer from 0 to
+                              n records.  Values are a list: [record_id,
+                              failure date, left interval, right interval,
+                              quantity]
+    :ivar list lst_p_growth_rate: list of planned growth rates per test phase.
+    :ivar list lst_p_ms: list of planned management strategies per test phase.
+    :ivar list lst_p_fef: list of planned fix effectiveness factors per test
+                          phase.
+    :ivar list lst_p_prob: list of planned probabilities of observing a failure
+                           per test phase.
+    :ivar list lst_p_mtbfi: list of planned initial MTBF per test phase.
+    :ivar list lst_p_mtbff: list of planned final MTBF per test phase.
+    :ivar list lst_p_mtbfa: list of planned average MTBF per test phase.
+    :ivar list lst_p_test_time: list of planned test times per test phase.
+    :ivar list lst_p_n_failures: list of planned number of failures per test
+                                 phase.
+    :ivar list lst_p_start_date: list of planned start dates per test phase.
+    :ivar list lst_p_end_date: list of planned end dates per test phase.
+    :ivar list lst_p_weeks: list of planned number of weeks per test phase.
+    :ivar list lst_p_n_test_units: list of planned number of test units per
+                                   test phase.
+    :ivar list lst_p_tpu: list of planned average test time per unit per test
+                          phase.
+    :ivar list lst_p_tpupw: list of planned average test time per unit per week
+                            per test phase.
+    :ivar list lst_o_growth_rate: list of observed growth rates per test phase.
+    :ivar list lst_o_ms: list of observed management strategies per test phase.
+    :ivar list lst_o_fef: list of observed fix effectiveness factors per test
+                          phase.
+    :ivar list lst_o_mtbfi: list of observed initial MTBF per test phase.
+    :ivar list lst_o_mtbff: list of observed final MTBF per test phase.
+    :ivar list lst_o_mtbfa: list of observed average MTBF per test phase.
+    :ivar list lst_o_test_time: list of observed test times per test phase.
+    :ivar list alpha_hat: list of scale parameters estimated from the test data
+                          [lower bound, point, upper bound].
+    :ivar list beta_hat: list of shape parameters estimated from the test data
+                         [lower bound, point, upper bound].
+    :ivar list cum_mean: list of cumulative MTBF estimated from the test data
+                         [lower bound, point, upper bound].
+    :ivar list instantaneous_mean: list of instantaneous MTBF estimated from
+                                   the test data
+                                   [lower bound, point, upper bound].
+    :ivar int rg_plan_model: the index in the list of reliability growth
+                             planning models.
+    :ivar int rg_assess_model: the index in the list of reliability assessment
+                               and projection models.
+    :ivar float alpha_hat: the point estimate of the scale parameter.
+    :ivar float beta_hat: the point estimate of the shape parameter.
+    :ivar float cum_mean: the point estimate of the cumulative MTBF.
+    :ivar float instantaneous_mean: the point estimate of the instantaneous
+                                    MTBF.
+    :ivar float se_scale: the estimated standard error of the scale parameter.
+    :ivar float se_shape: the estimated standard error of the shape parameter.
+    :ivar float se_cum_mean: the estimated standard error of the cumulative
+                             MTBF.
+    :ivar float se_inst_mean: the estimated standard error of the instantaneous
+                              MTBF.
+    :ivar float cramer_vonmises: the Cramer-von Mises test statistic.
+    :ivar float chi_square: the chi-square test statistic.
     """
 
     def __init__(self, n_phases=1):
@@ -144,13 +161,20 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         self.dic_test_data = {}
 
         # Initialize public list attributes.
+        # The following lists are used for holding ideal growth data for each
+        # test phase.
+        self.lst_i_mtbfi = [0.0] * n_phases         # Initial phase MTBF.
+        self.lst_i_mtbff = [0.0] * n_phases         # Final phase MTBF.
+        self.lst_i_mtbfa = [0.0] * n_phases         # Average phase MTBF.
+        self.lst_i_n_failures = [0] * n_phases      # Expected number of failures.
+
         # The following lists are used for holding planned growth data for each
         # test phase.
         self.lst_p_growth_rate = [0.0] * n_phases
         self.lst_p_ms = [0.0] * n_phases            # Planned management strategy.
         self.lst_p_fef = [0.0] * n_phases           # Planned fix effectiveness factor.
         self.lst_p_prob = [0.0] * n_phases
-        self.lst_p_mtbfi = [0.0] * n_phases
+        self.lst_p_mtbfi = [0.0] * n_phases         # Initial phase MTBF.
         self.lst_p_mtbff = [0.0] * n_phases
         self.lst_p_mtbfa = [0.0] * n_phases
         self.lst_p_test_time = [0.0] * n_phases     # Planned test time.
@@ -160,7 +184,7 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         self.lst_p_weeks = [0.0] * n_phases
         self.lst_p_n_test_units = [0] * n_phases
         self.lst_p_tpu = [0.0] * n_phases   # Test time per unit.
-        self.lst_p_tpupw = [0.0] * n_phases # Test time per unit per week.
+        self.lst_p_tpupw = [0.0] * n_phases     # Test time per unit per week.
 
         # The following lists are used for holding observed growth data for
         # each test phase.
@@ -170,10 +194,11 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         self.lst_o_mtbfi = [0.0] * n_phases
         self.lst_o_mtbff = [0.0] * n_phases
         self.lst_o_mtbfa = [0.0] * n_phases
-        self.lst_o_test_time = [0.0] * n_phases # Actual test time.
+        self.lst_o_test_time = [0.0] * n_phases     # Actual test time.
+        self.lst_o_n_failures = [0] * n_phases      # Observed number of failures.
 
-        self.lst_fixed_values = [False, False, False, False,
-                                 False, False, False, False]
+        self.lst_fixed_values = [True, True, True, True, True, True, True,
+                                 True]
 
         # The following lists are used for holding model parameter estimates.
         # The format is [lower bound, point estimate, upper bound].
@@ -256,10 +281,10 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
             self.instantaneous_mean[-1][1] = float(values[42])
             self.instantaneous_mean[-1][2] = float(values[43])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -280,41 +305,45 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         _msg = ''
 
         try:
-            self.lst_p_growth_rate[phase] = float(values[2])
-            self.lst_p_ms[phase] = float(values[3])
-            self.lst_p_fef[phase] = float(values[4])
-            self.lst_p_prob[phase] = float(values[5])
-            self.lst_p_mtbfi[phase] = float(values[6])
-            self.lst_p_mtbff[phase] = float(values[7])
-            self.lst_p_mtbfa[phase] = float(values[8])
-            self.lst_p_test_time[phase] = float(values[9])
-            self.lst_p_n_failures[phase] = int(values[10])
-            self.lst_p_start_date[phase] = int(values[11])
-            self.lst_p_end_date[phase] = int(values[12])
-            self.lst_p_weeks[phase] = int(values[13])
-            self.lst_p_n_test_units[phase] = int(values[14])
-            self.lst_p_tpu[phase] = float(values[15])
-            self.lst_p_tpupw[phase] = float(values[16])
-            self.lst_o_growth_rate[phase] = float(values[17])
-            self.lst_o_ms[phase] = float(values[18])
-            self.lst_o_fef[phase] = float(values[19])
-            self.lst_o_mtbfi[phase] = float(values[20])
-            self.lst_o_mtbff[phase] = float(values[21])
-            self.lst_o_mtbfa[phase] = float(values[22])
-            self.lst_o_test_time[phase] = float(values[23])
+            self.lst_i_mtbfi[phase] = float(values[2])
+            self.lst_i_mtbff[phase] = float(values[3])
+            self.lst_i_mtbfa[phase] = float(values[4])
+            self.lst_i_n_failures[phase] = float(values[5])
+            self.lst_p_growth_rate[phase] = float(values[6])
+            self.lst_p_ms[phase] = float(values[7])
+            self.lst_p_fef[phase] = float(values[8])
+            self.lst_p_prob[phase] = float(values[9])
+            self.lst_p_mtbfi[phase] = float(values[10])
+            self.lst_p_mtbff[phase] = float(values[11])
+            self.lst_p_mtbfa[phase] = float(values[12])
+            self.lst_p_test_time[phase] = float(values[13])
+            self.lst_p_n_failures[phase] = int(values[14])
+            self.lst_p_start_date[phase] = int(values[15])
+            self.lst_p_end_date[phase] = int(values[16])
+            self.lst_p_weeks[phase] = int(values[17])
+            self.lst_p_n_test_units[phase] = int(values[18])
+            self.lst_p_tpu[phase] = float(values[19])
+            self.lst_p_tpupw[phase] = float(values[20])
+            self.lst_o_growth_rate[phase] = float(values[21])
+            self.lst_o_ms[phase] = float(values[22])
+            self.lst_o_fef[phase] = float(values[23])
+            self.lst_o_mtbfi[phase] = float(values[24])
+            self.lst_o_mtbff[phase] = float(values[25])
+            self.lst_o_mtbfa[phase] = float(values[26])
+            self.lst_o_test_time[phase] = float(values[27])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Reliability Growth Test data
-        model attributes.
+        Method to retrieve the current values of the Reliability Growth Test
+        data model attributes.
 
         :return: (rg_plan_model, rg_assess_model, tr, mtbfg, mtbfgp, n_phases,
                   ttt, avg_growth, avg_ms, avg_fef, probability, ttff, grouped,
@@ -342,10 +371,11 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
 
     def get_phase_attributes(self):
         """
-        Retrieves the current values of the Reliability Growth Test phase data
-        model attributes.
+        Method to retrieve the current values of the Reliability Growth Test
+        phase data model attributes.
 
-        :return: (lst_p_growth_rate, lst_p_ms, lst_p_fef, lst_p_prob,
+        :return: (lst_i_mtbfi, lst_i_mtbff, lst_i_mtbfa, lst_i_n_failures,
+                  lst_p_growth_rate, lst_p_ms, lst_p_fef, lst_p_prob,
                   lst_p_mtbfi, lst_p_mtbff, lst_p_mtbfa, lst_p_test_time,
                   lst_p_n_failures, lst_p_start_date, lst_p_end_date,
                   lst_p_weeks, lst_p_n_test_units, lst_p_tpu, lst_p_tpupw,
@@ -355,324 +385,72 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :rtype: tuple
         """
 
-        _values = (self.lst_p_growth_rate, self.lst_p_ms, self.lst_p_fef,
-                   self.lst_p_prob, self.lst_p_mtbfi, self.lst_p_mtbff,
-                   self.lst_p_mtbfa, self.lst_p_test_time,
-                   self.lst_p_n_failures, self.lst_p_start_date,
-                   self.lst_p_end_date, self.lst_p_weeks,
-                   self.lst_p_n_test_units, self.lst_p_tpu, self.lst_p_tpupw,
-                   self.lst_o_growth_rate, self.lst_o_ms, self.lst_o_fef,
-                   self.lst_o_mtbfi, self.lst_o_mtbff, self.lst_o_mtbfa,
-                   self.lst_o_test_time, self.cum_mean,
+        _values = (self.lst_i_mtbfi, self.lst_i_mtbff, self.lst_i_mtbfa,
+                   self.lst_i_n_failures, self.lst_p_growth_rate,
+                   self.lst_p_ms, self.lst_p_fef, self.lst_p_prob,
+                   self.lst_p_mtbfi, self.lst_p_mtbff, self.lst_p_mtbfa,
+                   self.lst_p_test_time, self.lst_p_n_failures,
+                   self.lst_p_start_date, self.lst_p_end_date,
+                   self.lst_p_weeks, self.lst_p_n_test_units, self.lst_p_tpu,
+                   self.lst_p_tpupw, self.lst_o_growth_rate, self.lst_o_ms,
+                   self.lst_o_fef, self.lst_o_mtbfi, self.lst_o_mtbff,
+                   self.lst_o_mtbfa, self.lst_o_test_time, self.cum_mean,
                    self.instantaneous_mean)
 
         return _values
-#TODO: Return error codes from each calculate method rather than False/True.
-    def calculate_initial_mtbf(self, phase=None):
-        """
-        Method to calculate the initial MTBF for the entire test program or for
-        a single test phase.
-
-        :param int phase: the test phase to calculate the initial MTBF for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if phase is None or phase == 0:
-            if self.avg_growth <= 0.0:
-                self.avg_growth = sum(self.lst_p_growth_rate) / \
-                                  len(self.lst_p_growth_rate)
-            if self.ttt <= 0.0:
-                self.ttt = sum(self.lst_p_test_time)
-
-            try:
-                self.lst_p_mtbfi[0] = (self.lst_p_mtbff[self.n_phases - 1] *
-                                       (1.0 - self.avg_growth)) / \
-                                      (self.ttt /
-                                       self.lst_p_test_time[0])**self.avg_growth
-            except(ValueError, ZeroDivisionError, IndexError):
-                self.lst_p_mtbfi[0] = 0.0
-                return True
-        else:
-            try:
-                self.lst_p_mtbfi[phase] = self.lst_p_mtbff[phase - 1] #* \
-                                          #(1.0 - self.lst_p_growth_rate[phase]) / \
-                                          #(self.lst_p_test_time[phase] /
-                                          # self.lst_p_test_time[0])**self.lst_p_growth_rate[phase]
-            except(ValueError, ZeroDivisionError, IndexError):
-                self.lst_p_mtbfi[phase] = 0.0
-                return True
-
-        return False
-
-    def calculate_final_mtbf(self, phase=None):
-        """
-        Method to calculate the final MTBF for the entire test program or for
-        a single test phase.
-
-        :param int phase: the test phase to calculate the final MTBF for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if phase is None:
-            if self.avg_growth <= 0.0:
-                self.avg_growth = sum(self.lst_p_growth_rate) / \
-                                  len(self.lst_p_growth_rate)
-            if self.ttt <= 0.0:
-                self.ttt = sum(self.lst_p_test_time)
-
-            try:
-                self.lst_p_mtbff[self.n_phases - 1] = (self.lst_p_mtbfi[0] *
-                                                       (self.ttt /
-                                                        self.lst_p_test_time[0])**self.avg_growth) / \
-                                                       (1.0 - self.avg_growth)
-            except(ValueError, ZeroDivisionError, IndexError):
-                self.lst_p_mtbff[self.n_phases - 1] = 0.0
-                return True
-        else:
-            try:
-                self.lst_p_mtbff[phase] = (self.lst_p_mtbfi[0] *
-                                           (sum(self.lst_p_test_time[:phase + 1]) /
-                                            self.lst_p_test_time[0])**self.lst_p_growth_rate[phase]) / \
-                                          (1.0 - self.lst_p_growth_rate[phase])
-            except(ValueError, ZeroDivisionError, IndexError):
-                self.lst_p_mtbff[phase] = 0.0
-                return True
-
-            # Set the next phase initial MTBF equal to the current phase's
-            # calculated final MTBF if the initial MTBF is not already
-            # specified.
-            try:
-                if(phase <= self.n_phases - 1 and
-                   self.lst_p_mtbfi[phase + 1] <= 0.0):
-                    self.lst_p_mtbfi[phase + 1] = self.lst_p_mtbff[phase]
-            except IndexError:
-                pass
-
-        return False
-
-    def calculate_average_mtbf(self, phase=0):
-        """
-        Method to calculate the average MTBF over a test phase.
-
-        :param int phase: the test phase to calculate the average MTBF for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if self.avg_growth <= 0.0:
-            self.avg_growth = sum(self.lst_p_growth_rate) / \
-                              len(self.lst_p_growth_rate)
-
-        # First calculate the expected number of failures in the test phase.
-        self.lst_p_n_failures[phase] = ((1.0 / self.lst_p_mtbfi[0]) *
-                                        self.lst_p_test_time[0] *
-                                        (sum(self.lst_p_test_time[:phase + 1]) /
-                                         self.lst_p_test_time[0])**(1.0 - self.avg_growth)) - \
-                                       sum(self.lst_p_n_failures[:phase])
-
-        # Then calculate the average MTBF over the test phase.
-        if phase == 0:
-            self.lst_p_mtbfa[phase] = (self.lst_p_mtbfi[phase] +
-                                       self.lst_p_mtbff[phase]) / 2.0
-        else:
-            try:
-                self.lst_p_mtbfa[phase] = self.lst_p_test_time[phase] / \
-                                          self.lst_p_n_failures[phase]
-            except ZeroDivisionError:
-                self.lst_p_mtbfa[phase] = self.lst_p_mtbfi[phase]
-
-        return False
-
-    def calculate_total_time(self, phase=None):
-        """
-        Method to calculate the total test time required.  This method can be
-        used to calculate the total time required for the entire test program
-        or the total time required for a single test phase.
-
-        :param int phase: the test phase to calculate the total test time for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if phase is None:
-            if self.lst_p_mtbff[-1] / self.lst_p_mtbfi[0] == 1.0:
-                self.ttt = 0.0
-            else:
-                if self.avg_growth <= 0.0:
-                    self.avg_growth = sum(self.lst_p_growth_rate) / \
-                                      len(self.lst_p_growth_rate)
-
-                self.ttt = self.lst_p_test_time[0] * \
-                           (self.lst_p_mtbff[-1] * (1.0 - self.avg_growth) /
-                            self.lst_p_mtbfi[0])**(1.0 / self.avg_growth)
-        else:
-            try:
-                _time = ((self.lst_p_mtbff[phase] / self.lst_p_mtbfi[0]) * \
-                         (1.0 - self.lst_p_growth_rate[phase]))**(1.0 / self.lst_p_growth_rate[phase]) * \
-                        self.lst_p_test_time[0]
-                self.lst_p_test_time[phase] = _time - \
-                                              sum(self.lst_p_test_time[:phase])
-            except IndexError:
-                return True
-
-        return False
-
-    def calculate_growth_rate(self, phase=None):
-        """
-        Method to calculate the minimum required growth rate for a test phase
-        or over the entire test program.
-
-        :param int phase: the test phase to calculate the growth rate for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if phase is None:
-            if self.ttt <= 0.0:
-                self.ttt = sum(self.lst_p_test_time)
-
-            try:
-                self.avg_growth = -log(self.ttt / self.lst_p_test_time[0]) - \
-                                       1.0 + sqrt((1.0 +
-                                                   log(self.ttt /
-                                                       self.lst_p_test_time[0]))**2.0 +
-                                                  2.0 * log(self.lst_p_mtbff[-1] /
-                                                            self.lst_p_mtbfi[0]))
-            except(ValueError, ZeroDivisionError):
-                self.avg_growth = 0.0
-        else:
-            try:
-                _ttt = sum(self.lst_p_test_time[:phase + 1])
-                self.lst_p_growth_rate[phase] = -log(_ttt /
-                                                     self.lst_p_test_time[0]) - \
-                                                1.0 + sqrt((1.0 +
-                                                            log(_ttt /
-                                                                self.lst_p_test_time[phase]))**2.0 +
-                                                           2.0 * log(self.lst_p_mtbff[phase] /
-                                                                     self.lst_p_mtbfi[0]))
-            except(ValueError, ZeroDivisionError):
-                self.lst_p_growth_rate[phase] = 0.0
-                return True
-
-        return False
-
-    def calculate_minimum_first_phase_time(self):
-        """
-        Method to calculate the minimum length of the first reliability growth
-        phase.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        try:
-            if self.avg_growth <= 0.0:
-                self.avg_growth = sum(self.lst_p_growth_rate) / \
-                                      len(self.lst_p_growth_rate)
-            if self.ttt <= 0.0:
-                self.ttt = sum(self.lst_p_test_time)
-
-            self.lst_p_test_time[0] = exp(log(self.ttt) -
-                                          (log((1.0 - self.avg_growth) *
-                                               (self.lst_p_mtbff[-1] /
-                                                self.lst_p_mtbfi[0])) /
-                                           self.avg_growth))
-        except(ValueError, ZeroDivisionError):
-            self.lst_p_test_time[0] = 0.0
-            return True
-
-        return False
-
-    def calculate_management_strategy(self, phase=None):
-        """
-        Method to calculate the minimum required management strategy.
-
-        :param int phase: the test phase to calculate the management strategy
-                          for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        if phase is None:
-            try:
-                self.avg_ms = (1.0 - (self.lst_p_mtbfi[0] / self.mtbfgp)) / \
-                              self.avg_fef
-            except ZeroDivisionError:
-                self.avg_ms = 100.0
-                return True
-        else:
-            if self.lst_p_fef[phase] == 0.0:
-                self.lst_p_fef[phase] = self.avg_fef
-
-            try:
-                self.lst_p_ms[phase] = (1.0 - (self.lst_p_mtbfi[phase] /
-                                               self.mtbfgp)) / \
-                                       self.lst_p_fef[phase]
-            except(ValueError, ZeroDivisionError):
-                self.lst_p_ms[phase] = 100.0
-                return True
-
-        return False
-
-    def calculate_probability(self, phase=0):
-        """
-        Method to calculate the probability of observing at least one failure.
-
-        :param int phase: the test phase to calculate the probability for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        try:
-            self.lst_p_prob[phase] = 1.0 - exp(-self.lst_p_test_time[phase] *
-                                               self.lst_p_ms[phase] /
-                                               self.lst_p_mtbfi[phase])
-        except(ValueError, ZeroDivisionError):
-            self.lst_p_prob[phase] = 0.0
-            return True
-
-        return False
-
-    def calculate_growth_potential(self):
-        """
-        Method to calculate the growth potential MTBF.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        # If the management strategy and/or fix effectiveness factor are zero,
-        # tell the user
-        if self.avg_ms * self.avg_fef == 0.0:
-            self.mtbfgp = self.lst_p_mtbfi[0]
-            return True
-
-        try:
-            self.mtbfgp = self.lst_p_mtbfi[0] / \
-                          (1.0 - self.avg_ms * self.avg_fef)
-        except ZeroDivisionError:
-            self.mtbfgp = self.lst_p_mtbfi[0]
-            return True
-
-        return False
 
     def calculate_idealized_growth_curve(self, mtbf=True):
         """
         Method to calculate the values for the idealized growth curve.
 
-        :param bool mtbf: indicates whether to calculate MTBF (default) or
-                          failure intensity values.
+        :keyword bool mtbf: indicates whether to calculate MTBF (default) or
+                            failure intensity values.
         :return: _ideal
         :rtype: list of floats
         """
-
-        _ideal_gr = fsolve(_gr, 0.01, (self.lst_p_mtbfi[0],
-                                       self.lst_p_mtbff[-1], self.ttt,
-                                       self.lst_p_test_time[0]))[0]
-
+# TODO: Re-write calculate_idealized_growth_curve; current McCabe Complexity metric=17.
         _ideal = []
+
+        # Verify the first phase average MTBF is greater than zero.  If not,
+        # attempt to calculate the average MTBF.
+        if self.lst_i_mtbfa[0] <= 0.0:
+            _mtbfa = CrowAMSAA.calculate_initial_mtbf(self.avg_growth,
+                                                      self.mtbfg, self.ttt,
+                                                      self.lst_p_test_time[0])
+            self.lst_i_mtbfa[0] = _mtbfa
+
+        # Verify the program final (goal) MTBF is greater than zero.  If not,
+        # attempt to calculate the final MTBF.
+        if self.mtbfg <= 0.0:
+            _mtbfg = CrowAMSAA.calculate_final_mtbf(self.avg_growth,
+                                                    self.lst_i_mtbfa[0],
+                                                    self.ttt,
+                                                    self.lst_p_test_time[0])
+            self.mtbfg = _mtbfg
+
+        # Verify the program total time on test is greater than zero.  If not,
+        # attempt to calculate the total time on test.
+        if self.ttt <= 0.0:
+            self.ttt = CrowAMSAA.calculate_total_time(self.avg_growth,
+                                                      self.lst_i_mtbfa[0],
+                                                      self.mtbfg,
+                                                      self.lst_p_test_time[0])
+
+        # Verify the first phase test time is greater than zero.  If not,
+        # attempt to calculate the first phase test time.
+        if self.lst_p_test_time[0] <= 0.0:
+            _time = CrowAMSAA.calculate_t1(self.avg_growth,
+                                           self.lst_i_mtbfa[0],
+                                           self.mtbfg, self.ttt)
+            self.lst_p_test_time[0] = _time
+
+        # Verify the program average growth rate is greater than zero.  If not,
+        # attempt to calculate the program average growth rate.
+        if self.avg_growth <= 0.0:
+            _alpha = CrowAMSAA.calculate_growth_rate(self.lst_i_mtbfa[0],
+                                                     self.mtbfg, self.ttt,
+                                                     self.lst_p_test_time[0])
+            self.avg_growth = _alpha
 
         # Build the idealized curve.  If the time is less than the time to
         # first fix, the idealized value is the initial MTBF.  If the time
@@ -680,28 +458,52 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         # numpy's not a number to force a jump in the plot.  If the time is
         # greater than the time to first failure, the idealized value is
         # calculated from the inputs read above.
-        if mtbf:
+        if(self.lst_i_mtbfa[0] > 0.0 and self.lst_p_test_time[0] > 0.0 and
+           self.mtbfg > 0.0 and self.ttt > 0.0 and self.avg_growth > 0.0):
             for _time in range(int(self.ttt)):
                 if _time < int(self.lst_p_test_time[0]):
-                    _ideal.append(self.lst_p_mtbfi[0])
+                    _ideal.append(self.lst_i_mtbfa[0])
                 elif _time == int(self.lst_p_test_time[0]):
                     _ideal.append(np.nan)
                 else:
-                    _ideal.append((self.lst_p_mtbfi[0] *
+                    _ideal.append((self.lst_i_mtbfa[0] *
                                    (float(_time) /
-                                    self.lst_p_test_time[0])**_ideal_gr) /
-                                  (1.0 - _ideal_gr))
-        else:
-            for _time in range(int(self.ttt)):
-                if _time < int(self.lst_p_test_time[0]):
-                    _ideal.append(1.0 / self.lst_p_mtbfi[0])
-                elif _time == int(self.lst_p_test_time[0]):
-                    _ideal.append(np.nan)
-                else:
-                    _ideal.append((1.0 - _ideal_gr) /
-                                  (self.lst_p_mtbfi[0] *
-                                   (float(_time) /
-                                    self.lst_p_test_time[0])**_ideal_gr))
+                                    self.lst_p_test_time[0])**self.avg_growth) /
+                                  (1.0 - self.avg_growth))
+
+            # Convert to failure intensity if that has been called for.
+            if not mtbf:
+                _ideal = [1.0 / _mtbf for _mtbf in _ideal]
+
+            # Calculate the initial MTBF, final MTBF, average MTBF, and
+            # expected number of failures for each phase.
+            _t1 = self.lst_p_test_time[0]
+            _mtbfa = self.lst_i_mtbfa[0]
+            self.lst_i_n_failures = [0.0] * self.n_phases
+            for _index in range(self.n_phases):
+                _time = sum(self.lst_p_test_time[:_index + 1])
+                _mtbf = CrowAMSAA.calculate_final_mtbf(self.avg_growth,
+                                                       _mtbfa, _time, _t1)
+                if _index < self.n_phases - 1:
+                    self.lst_i_mtbfi[_index + 1] = _mtbf
+
+                if _index > 0:
+                    self.lst_i_mtbff[_index] = _mtbf
+
+                _cum_fails = sum(self.lst_i_n_failures[:_index + 1])
+                _n_failures = CrowAMSAA.calculate_n_failures(self.avg_growth,
+                                                             _mtbfa, _time,
+                                                             _t1, _cum_fails)
+                self.lst_i_n_failures[_index] = _n_failures
+
+            for _index in range(self.n_phases):
+                _time = self.lst_p_test_time[_index]
+                _n_failures = self.lst_i_n_failures[_index]
+                _mtbfi = self.lst_i_mtbfi[_index]
+                _mtbff = self.lst_i_mtbff[_index]
+                _mtbfa = CrowAMSAA.calculate_average_mtbf(_time, _n_failures,
+                                                          _mtbfi, _mtbff)
+                self.lst_i_mtbfa[_index] = _mtbfa
 
         return _ideal
 
@@ -712,86 +514,69 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         curve.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
-        # Set the length of first test phase.  If it is supplied use that,
-        # otherwise use the growth start time.  If the length of the first test
-        # phase is less than the growth start time, issue an information dialog
-        # and return.
-#        if self.lst_p_test_time[0] <= 0.0:
-#            self.lst_p_test_time[0] = self.t1
-#        elif self.lst_p_test_time[0] < self.t1:
-# TODO: Move the information dialog to the view module
-            #_util.rtk_information(_(u"The length of the first test phase must be "
-            #                        u"equal to or longer than the growth start "
-            #                        u"time.  You have entered the following:\n\n"
-            #                        u"1. Growth start time: %f\n"
-            #                        u"2. Length of first test phase: %f\n\n"
-            #                        u"Please correct your inputs and try again.") %
-            #                      (self.t1, self.lst_p_test_time[0]))
-#            return True
+        _mtbf1 = self.lst_p_mtbfa[0]
+        _t1 = self.lst_p_test_time[0]
 
-        # Initialize some variables used to track cumulative values.
         for i in range(self.n_phases):
-            if self.lst_p_mtbfi[i] <= 0.0:
-                self.calculate_initial_mtbf(i)
+            _alpha = self.lst_p_growth_rate[i]
+            _mtbfa = self.lst_p_mtbfa[i]
+            _mtbfi = self.lst_p_mtbfi[i]
+            _mtbff = self.lst_p_mtbff[i]
+            _time = self.lst_p_test_time[i]
+            _cum_time = sum(self.lst_p_test_time[:i + 1])
 
-            if self.lst_p_mtbff[i] <= 0.0:
-                self.calculate_final_mtbf(i)
+            if _mtbff <= 0.0:
+                _mtbff = CrowAMSAA.calculate_final_mtbf(_alpha, _mtbf1,
+                                                        _cum_time, _t1)
+                self.lst_p_mtbff[i] = _mtbff
 
-            if self.lst_p_test_time[i] <= 0.0:
-                self.calculate_total_time(i)
+            if _mtbfa <= 0.0:
+                _mtbfa = CrowAMSAA.calculate_average_mtbf(0.0, 0, _mtbfi,
+                                                          _mtbff)
+                self.lst_p_mtbfa[i] = _mtbfa
 
-            if self.lst_p_growth_rate[i] <= 0.0:
-                self.lst_p_growth_rate[i] = fsolve(_gr, 0.01,
-                                                   (self.lst_p_mtbfi[i],
-                                                    self.lst_p_mtbff[i],
-                                                    self.ttt,
-                                                    self.lst_p_test_time[0])
-                                                  )[0]
+            if _mtbfi <= 0.0:
+                _mtbfi = 2.0 * _mtbfa - _mtbff
+                self.lst_p_mtbfi[i] = _mtbfi
 
-            # Set the next phase initial MTBF to equal the current phase's
-            # final MTBF.  Just continue if it's the last phase.
-            try:
-                if self.lst_p_mtbfi[i + 1] <= 0.0:
-                    self.lst_p_mtbfi[i + 1] = self.lst_p_mtbff[i]
-            except IndexError:
-                self.calculate_average_mtbf(i)
-                continue
-
-            # Calculate the expected number of failures for the phase and the
-            # average MTBF for the phase.  Even if mtbfa > 0.0, we need to
-            # calculate the number of failures for possible use with subsequent
-            # test phases.
-            self.calculate_average_mtbf(i)
+            if _alpha <= 0.0:
+                _alpha = CrowAMSAA.calculate_growth_rate(_mtbfi, _mtbff,
+                                                         _time, _t1)
+                self.lst_p_growth_rate[i] = _alpha
 
         return False
 
-    def create_planned_values(self, phase, mtbf=True):
+    def create_planned_values(self, mtbf=True):
         """
         Method to create the planned growth curve values.  These are used for
-        plotting the planned growth curve.
+        plotting the planned growth curve.  The first curve created represents
+        the average MTBF values over each phase.  These will be plotted as
+        horizontal lines.  The second curve created represents the
+        straight-line linear change in MTBF over the phase.
 
-        :param int phase: the test phase to create the planned values for.
-        :param boolean mtbf: indicates whether to calculate MTBF or failure
-                             rates.
+        :keyword boolean mtbf: indicates whether to calculate MTBF or failure
+                               rates.
         :return: _plan
-        :rtype: list of floats
+        :rtype: list
         """
 
-        _time = 0.0
         _plan = []
 
-        while _time < (self.lst_p_test_time[phase] - 1.0):
-            if mtbf:
-                _plan.append(self.lst_p_mtbfa[phase])
-            else:
-                _plan.append(1.0 / self.lst_p_mtbfa[phase])
+        for _phase in range(self.n_phases):
+            _time = 0.0
 
-            _time += 1.0
+            while _time < (self.lst_p_test_time[_phase] - 1.0):
+                if mtbf:
+                    _plan.append(self.lst_p_mtbfa[_phase])
+                else:
+                    _plan.append(1.0 / self.lst_p_mtbfa[_phase])
 
-        _plan.append(np.nan)                # pylint: disable=E1101
+                _time += 1.0
+
+            _plan.append(np.nan)            # pylint: disable=E1101
 
         return _plan
 
@@ -811,24 +596,66 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :rtype: list
         """
 
-        _results = [False, False, 0, 0]
-        for i in range(self.n_phases):
-            _weeks = (self.lst_p_end_date[i] - self.lst_p_start_date[i]) / 7.0
+        _results = [0.0, 0.0, -1, -1]
+
+        # Initial MTBF to goal MTBF ratio is high enough.  Too low means growth
+        # testing is probably being started too early.
+        try:
+            _results[0] = self.lst_p_mtbfi[0] / self.mtbfg
+        except ZeroDivisionError:
+            _results[0] = 0.0
+
+        # Goal MTBF to growth potential MTBF ratio is high enough.  Too
+        # high means there is a low probability of achieving the goal MTBF.
+        # Too low means the system may be over designed.
+        try:
+            _results[1] = self.mtbfg / self.mtbfgp
+        except ZeroDivisionError:
+            _results[1] = 0.0
+
+        # Calculate the test time per test unit and test time per test unit
+        # per week.
+        for _phase in range(self.n_phases):
+            # Assess logistics of test plan.
+            _weeks = (self.lst_p_end_date[_phase] -
+                      self.lst_p_start_date[_phase]) / 7.0
 
             try:
-                self.lst_p_tpu[i] = self.lst_p_test_time[i] / \
-                                    self.lst_p_n_test_units[i]
+                self.lst_p_tpu[_phase] = self.lst_p_test_time[_phase] / \
+                                         self.lst_p_n_test_units[_phase]
             except ZeroDivisionError:
-                _results[0] = True
-                _results[2] = i + 1
-                self.lst_p_tpu[i] = 0.0
+                _results[2] = _phase
+                self.lst_p_tpu[_phase] = 0.0
 
             try:
-                self.lst_p_tpupw[i] = self.lst_p_tpu[i] / _weeks
+                self.lst_p_tpupw[_phase] = self.lst_p_tpu[_phase] / _weeks
             except ZeroDivisionError:
-                _results[1] = True
-                _results[3] = i + 1
-                self.lst_p_tpupw[i] = 0.0
+                _results[3] = _phase
+                self.lst_p_tpupw[_phase] = 0.0
+
+            # Assess engineering effort and quality of test plan.
+            if self.lst_p_ms[_phase] <= 0.0 or self.lst_p_ms[_phase] > 1.0:
+                _fef = self.lst_p_fef[_phase]
+                _mtbfa = self.lst_p_mtbfa[_phase]
+
+                _ms = SPLAN.calculate_management_strategy(_fef, _mtbfa,
+                                                          self.mtbfgp)
+                self.lst_p_ms[_phase] = _ms
+
+            if self.lst_p_fef[_phase] <= 0.0 or self.lst_p_fef[_phase] > 0.0:
+                _ms = self.lst_p_ms[_phase]
+                _mtbfa = self.lst_p_mtbfa[_phase]
+
+                _fef = SPLAN.calculate_fef(_ms, _mtbfa, self.mtbfgp)
+                self.lst_p_fef[_phase] = _fef
+
+            if self.lst_p_prob[_phase] <= 0.0 or self.lst_p_prob[_phase] > 1.0:
+                _time = self.lst_p_test_time[_phase]
+                _ms = self.lst_p_ms[_phase]
+                _mtbfi = self.lst_p_mtbfi[_phase]
+
+                _prob = SPLAN.calculate_probability(_time, _ms, _mtbfi)
+                self.lst_p_prob[_phase] = _prob
 
         return _results
 
@@ -841,8 +668,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
-        _times = [x[2] for x in self.dic_test_data.values()]
-        _failures = [x[3] for x in self.dic_test_data.values()]
+        _times = [x[3] for x in self.dic_test_data.values()]
+        _failures = [x[4] for x in self.dic_test_data.values()]
 
         self.cum_time = _times[-1]
         self.cum_failures = sum(_failures)
@@ -853,8 +680,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
 
         (self.beta_hat[0],
          self.beta_hat[2]) = Bounds.calculate_crow_bounds(
-             sum(_failures), _times[-1], self.alpha_hat[1], self.beta_hat[1],
-             self.confidence, 1)
+             sum(_failures), _times[-1], self.alpha_hat[1],
+             self.beta_hat[1], self.confidence, 1)
 
         (self.alpha_hat[0],
          self.alpha_hat[2]) = Bounds.calculate_crow_bounds(
@@ -872,8 +699,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
-        _times = [x[2] for x in self.dic_test_data.values()]
-        _failures = [x[3] for x in self.dic_test_data.values()]
+        _times = [x[3] for x in self.dic_test_data.values()]
+        _failures = [x[4] for x in self.dic_test_data.values()]
 
         _n_fail_times = len(_times)
 
@@ -922,8 +749,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
-        _times = [x[2] for x in self.dic_test_data.values()]
-        _failures = [x[3] for x in self.dic_test_data.values()]
+        _times = [x[3] for x in self.dic_test_data.values()]
+        _failures = [x[4] for x in self.dic_test_data.values()]
 
         self.cramer_vonmises = CrowAMSAA.calculate_cramer_vonmises(
             _failures, _times, self.beta_hat[1], t_star, type2)
@@ -949,19 +776,33 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
-        _times = [x[2] for x in self.dic_test_data.values()]
-        _failures = [x[3] for x in self.dic_test_data.values()]
+        # Ensure the confidence level is a fraction.
+        if self.confidence > 1.0:
+            self.confidence = self.confidence / 100.0
+
+        _times = [x[3] for x in self.dic_test_data.values()]
+        _failures = [x[4] for x in self.dic_test_data.values()]
 
         self.cum_failures = sum(_failures)
         self.chi_square = CrowAMSAA.calculate_crow_amsaa_chi_square(
-            _failures, _times, self.beta_hat[1], self.ttt, self.grouped)
+            _failures, _times, self.beta_hat[1], _times[-1], self.grouped)
 
         _alpha_half = (1.0 - self.confidence) / 2.0
 
-        self.chi2_critical_value[0] = chi2.ppf(_alpha_half,
-                                               2 * self.cum_failures)
-        self.chi2_critical_value[1] = chi2.ppf(self.confidence + _alpha_half,
-                                               2 * self.cum_failures)
+        if self.grouped == 0:               # Individual failure times.
+            if self.test_termination_time > 0.0:    # Time truncated test.
+                _df = 2.0 * self.cum_failures
+            else:                                   # Failure truncated test.
+                _df = 2.0 * (self.cum_failures - 1)
+            _upper = _alpha_half
+            _lower = self.confidence + _alpha_half
+        else:                               # Grouped failure times.
+            _df = len(_failures) - 1
+            _upper = self.confidence
+            _lower = 1.0 - self.confidence
+
+        self.chi2_critical_value[0] = chi2.ppf(_lower, _df)
+        self.chi2_critical_value[1] = chi2.ppf(_upper, _df)
 
         return False
 
@@ -996,7 +837,7 @@ class Growth(dtcTesting):
 
     def __init__(self):                     # pylint: disable=E1002
         """
-        Initializes a Growth data controller instance.
+        Method to initialize a Growth data controller instance.
         """
 
         super(Growth, self).__init__()
@@ -1056,8 +897,8 @@ class Growth(dtcTesting):
 
     def _request_test_data(self, test_id):
         """
-        Reads the RTK Project database and retrieves all the test records
-        associated with the selected Test.
+        Method to read the RTK Project database and retrieves all the test
+        records associated with the selected Test.
 
         :param int test_id: the Growth Test ID to select data for.
         :return: (_results, _error_code)
@@ -1070,9 +911,9 @@ class Growth(dtcTesting):
                          fld_left_interval, fld_right_interval, \
                          fld_quantity \
                   FROM rtk_survival_data \
-                  WHERE fld_dataset_id=%d \
+                  WHERE fld_dataset_id={0:d} \
                   AND fld_source=1 \
-                  ORDER BY fld_failure_date" % test_id
+                  ORDER BY fld_right_interval".format(test_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         _test.dic_test_data = {}
@@ -1082,8 +923,9 @@ class Growth(dtcTesting):
             _n_records = 0
 
         for i in range(_n_records):
-            _test.dic_test_data[_results[i][0]] = [
-                _results[i][1], _results[i][2], _results[i][3], _results[i][4]]
+            _test.dic_test_data[i] = [_results[i][0], _results[i][1],
+                                      _results[i][2], _results[i][3],
+                                      _results[i][4]]
 
         return(_results, _error_code)
 
@@ -1139,6 +981,59 @@ class Growth(dtcTesting):
 
         return(_results, _error_code)
 
+    def add_test_record(self, test_id, date, time, n_failures,
+                        additional=False):
+        """
+        Method to add a new record to the selected Reliability Growth test.
+
+        :param int test_id: the ID of the test to add the record to.
+        :param int date: the ordinal date of the failure(s).
+        :param float time: the operating time at failure.
+        :param int n_failures: the number of failures occurring at time.
+        :keyword bool additional: indicates whether or not the time is
+                                  cumulative.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        _test = self.dicTests[test_id]
+
+        _query = "SELECT MAX(fld_record_id), MAX(fld_right_interval) \
+                  FROM rtk_survival_data \
+                  WHERE fld_dataset_id={0:d} \
+                  AND fld_source=1".format(test_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+
+        if _results[0][0] is None or _results[0][0] == '':
+            _last_id = 0
+        else:
+            _last_id = _results[0][0] + 1
+
+        if _results[0][1] is None or _results[0][1] == '':
+            _last_time = 0.0
+        else:
+            _last_time = float(_results[0][1])
+
+        if additional:
+            time = time + _last_time
+
+        _query = "INSERT INTO rtk_survival_data \
+                  (fld_record_id, fld_dataset_id, fld_left_interval, \
+                   fld_right_interval, fld_quantity, fld_mode_type, \
+                   fld_failure_date, fld_source) \
+                  VALUES ({0:d}, {1:d}, {2:f}, {3:f}, {4:d}, {5:d}, \
+                          {6:d}, 1)".format(_last_id, test_id, 0.0,
+                                            time, n_failures, 0, date)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        try:
+            _id = max(_test.dic_test_data.keys()) + 1
+        except ValueError:
+            _id = 0
+        _test.dic_test_data[_id] = [_last_id, date, 0.0, time, n_failures]
+
+        return(_results, _error_code)
+
     def delete_test(self, test_id):
         """
         Deletes a Testing input from the RTK Project.
@@ -1190,69 +1085,71 @@ class Growth(dtcTesting):
         """
 
         _query = "DELETE FROM rtk_survival_data \
-                  WHERE fld_record_id=%d \
-                  AND fld_dataset_id=%d \
-                  AND fld_source=1" % (record_id, dataset_id)
+                  WHERE fld_record_id={0:d} \
+                  AND fld_dataset_id={1:d} \
+                  AND fld_source=1".format(record_id, dataset_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
-    def request_calculate(self, test_id):
+    def request_calculate(self, test_id, mtbf=True):
         """
         Method to request the various calculate methods of the Reliability
         Growth test data model.
 
-        :param int test_id: the ID of the stakeholder input to save.
-        :return: _results
-        :rtype: list
+        :param int test_id: the ID of the test to calculate.
+        :keyword bool mtbf: indicates whether to calculate MTBF or failure
+                            intensity values.
+        :return: (_ideal, _plan)
+        :rtype: tuple
         """
 
         _test = self.dicTests[test_id]
-        _results = [False, False, False, False, False, False, False, False,
-                    False]
 
-        if not _test.lst_fixed_values[0]:   # MTBFI is not fixed.
-            _results[0] = _test.calculate_initial_mtbf()
-        if not _test.lst_fixed_values[1]:   # MTBFG is not fixed.
-            _results[1] = _test.calculate_final_mtbf()
-        if not _test.lst_fixed_values[2]:   # TTFF is not fixed.
-            _results[2] = _test.calculate_minimum_first_phase_time()
-        if not _test.lst_fixed_values[3]:   # TTT is not fixed.
-            _results[3] = _test.calculate_total_time()
-        if not _test.lst_fixed_values[4]:   # Average GR is not fixed.
-            _results[4] = _test.calculate_growth_rate()
-        #if not _test.lst_fixed_values[5]:   # Average FEF is not fixed.
-        #    _results[5] = _test.calculate_fef()
-        if not _test.lst_fixed_values[6]:   # Average MS is not fixed.
-            _results[6] = _test.calculate_management_strategy()
-        if not _test.lst_fixed_values[7]:   # Probability is not fixed.
-            _results[7] = _test.calculate_probability()
+        _ideal = _test.calculate_idealized_growth_curve()
+        if not _test.calculate_planned_growth_curve():
+            _plan = _test.create_planned_values(mtbf)
 
-        # Calculate phase values.
-        _test.calculate_final_mtbf(0)
-        _test.calculate_average_mtbf(0)
-        _test.calculate_management_strategy(0)
-        for i in range(1, _test.n_phases):
-            _test.calculate_initial_mtbf(i)
-            _test.calculate_final_mtbf(i)
-            _test.calculate_average_mtbf(i)
-            _test.calculate_management_strategy(i)
+        return(_ideal, _plan)
 
-        _results[8] = _test.calculate_growth_potential()
+    def request_assessment(self, test_id):
+        """
+        Method to request the various methods to assess actual test data for
+        the Reliability Growth test data model.
 
-        return _results
+        :param int test_id: the ID of the test to assess.
+        :keyword bool mtbf: indicates whether to calculate MTBF or failure
+                            intensity values.
+        :return: False if successful or True if an error is encountered
+        :rtype: bool
+        """
+
+        _test = self.dicTests[test_id]
+
+        if len(_test.dic_test_data.values()) > 0:
+            _test.estimate_crow_amsaa()
+            _test.calculate_crow_amsaa_mean()
+            _test.assess_growth_rate()
+            _test.calculate_chi_square()
+            _test.calculate_cramer_vonmises()
+
+        return False
 
     def save_test(self, test_id):
         """
-        Saves the Reliability Growth Testing attributes to the RTK Project
-        database.
+        Method to save the Reliability Growth Test attributes to the RTK
+        Project database.
 
-        :param int test_id: the ID of the stakeholder input to save.
+        :param int test_id: the ID of the Test to save.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
         _test = self.dicTests[test_id]
+
+        # Ensure confidence is stored as a fractional value.
+        if _test.confidence > 1.0:
+            _test.confidence = _test.confidence / 100.0
 
         _query = "UPDATE rtk_tests \
                   SET fld_name='{1:s}', fld_description='{2:s}', \
@@ -1307,7 +1204,9 @@ class Growth(dtcTesting):
                           fld_p_tpu={15:f}, fld_p_tpupw={16:f}, \
                           fld_o_ms={17:f}, fld_o_fef_avg={18:f}, \
                           fld_o_mi={19:f}, fld_o_mf={20:f}, fld_o_ma={21:f}, \
-                          fld_o_ttff={22:f} \
+                          fld_o_ttff={22:f}, fld_i_mi={23:f}, \
+                          fld_i_mf={24:f}, fld_i_ma={25:f}, \
+                          fld_i_num_fails={26:d} \
                       WHERE fld_test_id={0:d} \
                       AND fld_phase_id={1:d}".format(
                           _test.test_id, i, _test.lst_p_growth_rate[i],
@@ -1321,22 +1220,41 @@ class Growth(dtcTesting):
                           _test.lst_p_tpu[i], _test.lst_p_tpupw[i],
                           _test.lst_o_ms[i], _test.lst_o_fef[i],
                           _test.lst_o_mtbfi[i], _test.lst_o_mtbff[i],
-                          _test.lst_o_mtbfa[i], _test.ttff)
+                          _test.lst_o_mtbfa[i], _test.ttff,
+                          _test.lst_i_mtbfi[i], _test.lst_i_mtbff[i],
+                          _test.lst_i_mtbfa[i], int(_test.lst_i_n_failures[i]))
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=True)
 
+        return(_results, _error_code)
+
+    def save_test_data(self, test_id):
+        """
+        Method to save the test data.
+
+        :param int test_id: the ID of the Test to save.
+        :return: (_results, _error_code)
+        :rtype: tuple
+        """
+
+        _results = False
+        _error_code = 0
+
+        _test = self.dicTests[test_id]
+
         # Save the actual test data.
-        _n_records = len(_test.dic_test_data.keys())
-        for i in range(_n_records):
+        for _key in _test.dic_test_data.keys():
             _query = "UPDATE rtk_survival_data \
                       SET fld_failure_date={2:d}, fld_left_interval={3:f}, \
                           fld_right_interval={4:f}, fld_quantity={5:d} \
                       WHERE fld_dataset_id={0:d} \
                       AND fld_record_id={1:d} \
                       AND fld_source=1".format(
-                          _test.test_id, i, _test.dic_test_data[i][0],
-                          _test.dic_test_data[i][1], _test.dic_test_data[i][2],
-                          _test.dic_test_data[i][3])
+                          _test.test_id, _test.dic_test_data[_key][0],
+                          _test.dic_test_data[_key][1],
+                          _test.dic_test_data[_key][2],
+                          _test.dic_test_data[_key][3],
+                          _test.dic_test_data[_key][4])
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=True)
 
@@ -1344,7 +1262,7 @@ class Growth(dtcTesting):
 
     def save_all_tests(self):
         """
-        Saves all Testing data models managed by the controller.
+        Method to save all Testing data models managed by the controller.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1352,5 +1270,6 @@ class Growth(dtcTesting):
 
         for _test in self.dicTests.values():
             (_results, _error_code) = self.save_test(_test.test_id)
+            (_results, _error_code) = self.save_test_data(_test.test_id)
 
         return False

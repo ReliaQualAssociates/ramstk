@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 """
-Contains functions for performing calculations associated with the Crow-AMSAA
-model.
+Contains functions for calculating various parameters of the Crow-AMSAA model.
 """
 
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.statistics.CrowAMSAA.py is part of The RTK Project
+#       rtk.analyses.statistics.growth.CrowAMSAA.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -14,14 +13,14 @@ model.
 import gettext
 
 # Import modules for mathematics.
-from math import log
+from math import ceil, exp, log, sqrt
 import numpy as np
 from scipy.optimize import fsolve
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 _ = gettext.gettext
 
@@ -92,6 +91,193 @@ def beta_grouped(beta, fails, times, logt):
     return _beta
 
 
+def calculate_initial_mtbf(alpha, mtbfg, cum_time, t1):
+    """
+    Function to calculate the average MTBF for the first phase of the test
+    program.
+
+        _mtbfi = log(mtbfg) - alpha * (log(ttt) - log(t1)) + log(1.0 + alpha)
+
+    :param float alpha: the growth rate.
+    :param float mtbfg: the goal (final) MTBF.
+    :param float cum_time: the cumulative test time up to the current test
+                           phase.
+    :param float t1: the length of the first test period.
+    :return: _mtbfi; the calculated initial MTBF.
+    :rtype: float
+    """
+
+    _mtbfi = 0.0
+
+    # Verify the final (goal) MTBF, total time on test, and first phase test
+    # time are all greater than 0.0.
+    if mtbfg > 0.0 and cum_time > 0.0 and t1 > 0.0:
+        _log_mtbfi = log(mtbfg) - (alpha * (log(cum_time) - log(t1))) + \
+                     log(1.0 - alpha)
+        _mtbfi = exp(_log_mtbfi)
+
+    return _mtbfi
+
+
+def calculate_final_mtbf(alpha, mtbfa, cum_time, t1):
+    """
+    Function to calculate the final MTBF for the entire test program or a
+    single test phase.
+
+        _mtbff = mtbfa * (cum_time / t1)**alpha / (1.0 - alpha)
+
+    :param float alpha: the growth rate.
+    :param float mtbfa: the average MTBF over the first phase.
+    :param float cum_time: the cumulative test time up to the current test
+                           phase.
+    :param float t1: the length of the first test period.
+    :return: _mtbff; the final MTBF.
+    :rtype: float
+    """
+
+    try:
+        _mtbff = mtbfa * (cum_time / t1)**alpha / (1.0 - alpha)
+    except ZeroDivisionError:
+        _mtbff = 0.0
+
+    return _mtbff
+
+
+def calculate_n_failures(alpha, mtbfa, cum_time, t1, cum_fails):
+    """
+    Function to calculate the number of failures expected during a test phase.
+
+        _n_failures = (t1 / mtbfa) * (cum_time / t1)**(1.0 - alpha) - cum_fails
+
+    :param float alpha: the growth rate.
+    :param float mtbfa: the average MTBF over the first test phase.
+    :param float cum_time: the cumulative test time up to the current test
+                           phase.
+    :param float t1: the length of the first test period.
+    :param int cum_fails: the cumulative number of failures up to the current
+                          test phase.
+    :return: _n_failures; the expected number of failures during the test
+                          phase.
+    :rtype: float
+    """
+
+    try:
+        _n_failures = (t1 / mtbfa) * (cum_time / t1)**(1.0 - alpha) - cum_fails
+    except ZeroDivisionError:
+        _n_failures = 0.0
+
+    return _n_failures
+
+
+def calculate_average_mtbf(cum_time, n_failures, mtbfi=0.0, mtbff=0.0):
+    """
+    Function to calculate the average MTBF over a test phase.
+
+        _mtbfa = cum_time / N
+
+    or
+
+        _mtbfa = (mtbfi + mtbff) / 2.0
+
+    :param float cum_time: the cumulative test time up to the current test
+                           phase.
+    :param int n_failures: the number of failures during the test period.
+    :keyword float mtbfi: the initial MTBF of the period over which the average
+                          is to be calculated.
+    :keyword float mtbff: the final MTBF of the period over which the average
+                          is to be calculated.
+    :return: _mtbfa; the average MTBF over the test phase.
+    :rtype: float
+    """
+
+    _mtbfa = 0.0
+
+    # First try to calculate the average MTBF using the cumulative time
+    # and number of failures.  Otherwise, try to calculate the average MTBF
+    # using the initial and final MTBF.
+    if cum_time > 0.0 and n_failures > 0:
+        _mtbfa = cum_time / n_failures
+    elif mtbfi > 0.0 and mtbff > 0.0:
+        _mtbfa = (mtbfi + mtbff) / 2.0
+
+    return _mtbfa
+
+
+def calculate_total_time(alpha, mtbfa, mtbfg, t1):
+    """
+    Function to calculate the total test time required for the entire test
+    program or a single test phase.
+
+        _ttt = t1 * (mtbfg * (1.0 - alpha) / mtbfa)**(1.0 / alpha)
+
+    :param float alpha: the growth rate.
+    :param float mtbfa: the average MTBF over the first phase.
+    :param float mtbfg: the goal (final) MTBF over the period the total time is
+                        being calculated.
+    :param float t1: the length of the first test period.
+    :return: _ttt; the total time on test.
+    :rtype: int
+    """
+
+    try:
+        _ttt = int(ceil(t1 * (mtbfg * (1.0 - alpha) / mtbfa)**(1.0 / alpha)))
+    except ZeroDivisionError:
+        _ttt = 0
+
+    return _ttt
+
+
+def calculate_t1(alpha, mtbfa, mtbfg, ttt):
+    """
+    Function to calculate the minimum time required for test phase 1.
+
+        _t1 = ttt / (mtbfg * (1.0 - alpha) / mtbfa)**(1.0 / alpha)
+
+    :param float alpha: the average program growth rate.
+    :param float mtbfa: the average MTBF over the first test phase.
+    :param float mtbfg: the goal (final) MTBF.
+    :param int ttt: the total time on test.
+    :return: _t1
+    :rtype: int
+    """
+
+    try:
+        _t1 = int(ceil(ttt / (mtbfg * (1.0 - alpha) / mtbfa)**(1.0 / alpha)))
+    except ZeroDivisionError:
+        _t1 = 0
+
+    return _t1
+
+
+def calculate_growth_rate(mtbfa, mtbfg, ttt, t1):
+    """
+    Function to calculate the minimum required growth rate for the entire
+    program or a single test phase.
+
+        _alpha = -1 * log(ttt / t1) - 1.0 + \
+                 sqrt((1.0 + log(ttt / t1))**2.0 + 2.0 * log(mtbfg / mtbfa))
+
+    :param float mtbfa: the average MTBF over the first phase.
+    :param float mtbfg: the goal (final) MTBF over period the total time is
+                        being calculated.
+    :param float ttt: the total test time over which the growth rate is to be
+                      calculated.
+    :param float t1: the length of the first test period.
+    :return: _alpha; the growth rate.
+    :rtype: float
+    """
+
+    try:
+        _alpha = -1 * log(ttt / t1) - 1.0 + \
+                 sqrt((1.0 + log(ttt / t1))**2.0 + 2.0 * log(mtbfg / mtbfa))
+    except ValueError:
+        _alpha = 0.0
+    except ZeroDivisionError:
+        _alpha = 0.0
+
+    return _alpha
+
+
 def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
                                     grouped=False):
     """
@@ -122,9 +308,9 @@ def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
     # If they are, raise an error and return 0.0 for both parameters.
 # TODO: Move this to the view module.
     if n_failures == [] or fail_times == []:
-        #_util.rtk_error(_(u"The list of failure times and/or the list of "
-        #                  u"failure counts is empty.  Cannot estimate "
-        #                  u"Crow-AMSAA parameters without both."))
+        # _util.rtk_error(_(u"The list of failure times and/or the list of "
+        #                   u"failure counts is empty.  Cannot estimate "
+        #                   u"Crow-AMSAA parameters without both."))
         return 0.0, 0.0
 
     # If a termination time is not provided, assume a failure terminated
@@ -135,8 +321,11 @@ def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
     # Calculate the logarithm (base e) of the failure times.
     _logT = [log(x) for x in fail_times]
     if not grouped:
-        _beta_hat = [sum(n_failures) /
-                     (sum(n_failures) * log(t_star) - sum(_logT))]
+        try:
+            _beta_hat = [sum(n_failures) /
+                         (sum(n_failures) * log(t_star) - sum(_logT))]
+        except ZeroDivisionError:
+            _beta_hat = [1.0, 1.0, 1.0]
 
     elif grouped:
         # Convert our Python lists to numpy arrays.  We need to insert a
@@ -154,9 +343,9 @@ def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
                                             full_output=True)
 # TODO: Move this to the view module.
         if _ier != 1:
-            #_util.rtk_information(_(u"The solution for the shape parameter "
-            #                        u"did not converge in %d iterations.  Try "
-            #                        u"using regression.") % _info['nfev'])
+            # _util.rtk_information(_(u"The solution for the shape parameter "
+            #                         u"did not converge in %d iterations.  Try "
+            #                         u"using regression.") % _info['nfev'])
             return 1.0, 1.0
 
     _beta_hat = _beta_hat[0]
@@ -165,7 +354,7 @@ def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
     return _alpha_hat, _beta_hat
 
 
-def calculate_crow_amsaa_mean(est_time, alpha, beta): # pylint: disable=C0103
+def calculate_crow_amsaa_mean(est_time, alpha, beta):   # pylint: disable=C0103
     """
     Function to calculate the Crow-AMSAA model cumulative and instantaneous
     mean values (e.g., MTBF) given the Crow-AMSAA parameters and a time.  The
@@ -229,7 +418,8 @@ def calculate_cramer_vonmises(n_failures, fail_times, beta, t_star=0.0,
         _beta_bar = beta
         _M = _N
 
-    _ei = sum([(((fail_times[i] / t_star)**_beta_bar) - ((2.0 * i - 1.0) / (2.0 * _M)))**2.0 for i in range(_m)])
+    _ei = sum([(((fail_times[i] / t_star)**_beta_bar) -
+                ((2.0 * i - 1.0) / (2.0 * _M)))**2.0 for i in range(_m)])
 
     _Cvm = _ei + (1.0 / (12.0 * _M))
 
@@ -245,7 +435,6 @@ def calculate_crow_amsaa_chi_square(n_failures, fail_times, beta, ttt,
     .. hlist::
     :columns: 1
 
-        * theta_i = lambda * (T_i^beta - T_i-1^beta)
         * chi-square = sum((Ni - theta_i)^2 / theta_i)
 
     Where theta_i is the expected number of failures in the interval (i, i-1)
@@ -270,10 +459,14 @@ def calculate_crow_amsaa_chi_square(n_failures, fail_times, beta, ttt,
     elif grouped:
         fail_times = [0.0] + fail_times
 
-        _theta = [_N * (fail_times[i] - fail_times[i - 1]) / ttt
-                  for i in range(1, len(fail_times))]
-        _chi_square = sum([((n_failures[i] - _theta[i])**2.0 / _theta[i])
-                           for i in range(len(_theta))])
+        _lst_theta = [_N * (fail_times[i] - fail_times[i - 1]) / ttt
+                      for i in range(1, len(fail_times))]
+        _chi_square = 0.0
+        for _index, _theta in enumerate(_lst_theta):
+            try:
+                _chi_square += (n_failures[_index] - _theta)**2.0 / _theta
+            except ZeroDivisionError:
+                _chi_square += 0.0
 
     return _chi_square
 

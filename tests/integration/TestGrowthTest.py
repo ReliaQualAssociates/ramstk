@@ -8,17 +8,15 @@ This is the test class for testing Growth Testing module algorithms and models.
 #       tests.testing.TestGrowth.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
-import numpy as np
 
 import dao.DAO as _dao
-from testing.growth.Growth import Growth
+from testing.growth.Growth import Model, Growth
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -57,7 +55,7 @@ class TestGrowthController(unittest.TestCase):
     @attr(all=True, integration=True)
     def test_request_test_data(self):
         """
-        (TestGrowth) request_test_data should return a tuple on success
+        (TestGrowth) _request_test_data should return a tuple on success
         """
 
         _test = (0, 7, 1, u'Test Plan', u'Description', 4, u'Attachment', 0.0,
@@ -70,7 +68,8 @@ class TestGrowthController(unittest.TestCase):
         self.DUT.request_tests(self._dao, _test)
         _test_id = min(self.DUT.dicTests.keys())
 
-        self.assertEqual(self.DUT._request_test_data(_test_id), ([], 0))
+        self.assertEqual(self.DUT._request_test_data(_test_id),
+                         ([(1, 719163, 0.0, 2.7, 1), (2, 719163, 0.0, 10.3, 1), (3, 719163, 0.0, 30.6, 1), (4, 719163, 0.0, 57.0, 1), (5, 719163, 0.0, 61.3, 1), (6, 719163, 0.0, 80.0, 1), (7, 719163, 0.0, 109.5, 1), (8, 719163, 0.0, 125.0, 1), (9, 719163, 0.0, 128.6, 1), (10, 719163, 0.0, 143.8, 1), (11, 719163, 0.0, 167.9, 1), (12, 719163, 0.0, 229.2, 1), (13, 719163, 0.0, 269.7, 1), (14, 719163, 0.0, 320.6, 1), (15, 719163, 0.0, 328.2, 1), (16, 719163, 0.0, 366.2, 1), (17, 719163, 0.0, 396.7, 1), (18, 719163, 0.0, 421.1, 1), (19, 719163, 0.0, 438.2, 1), (20, 719163, 0.0, 501.2, 1), (21, 719163, 0.0, 620.0, 1)], 0))
 
 # TODO: Test that method fails when no Testing inputs exist in database.
     @attr(all=True, integration=True)

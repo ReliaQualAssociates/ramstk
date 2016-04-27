@@ -9,7 +9,6 @@ models.
 #       tests.integration.TestProfile.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -19,6 +18,9 @@ from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 from usage.UsageProfile import UsageProfile
+from usage.Mission import Model as Mission
+from usage.Phase import Model as Phase
+from usage.Environment import Model as Environment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -41,90 +43,135 @@ class TestUsageProfileController(unittest.TestCase):
         self.DUT._dao = self._dao
 
     @attr(all=True, integration=True)
-    def test_request_profile(self):
+    def test00_request_profile(self):
         """
-        Method to test that a Usage Profile can be loaded from a Project
-        database.
+        (TestProfile) request_profile should return False on success
         """
 
-        self.assertFalse(self.DUT.request_profile())
+        self.assertFalse(self.DUT.request_profile(0, self._dao))
 
     @attr(all=True, integration=True)
-    def test_add_mission(self):
+    def test01_add_mission(self):
         """
-        Method to test that a mission can be added to the Usage Profile.
+        (TestProfile) add_mission should return (True, 0, last_id) on success
         """
+
+        self.DUT.request_profile(0, self._dao)
 
         (_results, _error_code, _last_id) = self.DUT.add_mission(0)
+        self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
-        #self.assertTrue(isinstance(self.DUT.dicMissions[_last_id], Mission))
+
+        _mission = self.DUT.dicProfiles[0].dicMissions[_last_id]
+        self.assertTrue(isinstance(_mission, Mission))
 
     @attr(all=True, integration=True)
-    def test_save_mission(self):
+    def test02_save_mission(self):
         """
-        Method to test that a Mission can be saved to the database.
-        """
-
-        self.assertEqual(self.DUT._save_mission(), ([], 0))
-
-    @attr(all=True, integration=True)
-    def test_delete_mission(self):
-        """
-        Method to test that a mission can be deleted from the Usage Profile.
+        (TestProfile) _save_mission should return a 0 error code on success
         """
 
-        _n = len(self.DUT.dicMissions)
+        self.DUT.request_profile(0, self._dao)
+        _mission = self.DUT.dicProfiles[0].dicMissions[0]
 
-        self.assertEqual(self.DUT.delete_mission(_n - 1), ([], 0))
-        self.assertTrue(self.DUT.delete_mission(_n))
-
-    @attr(all=True, integration=True)
-    def test_add_phase(self):
-        """
-        Method to test that a phase can be added.
-        """
-
-        (_results, _error_code, _last_id) = self.DUT.add_phase()
+        _error_code = self.DUT._save_mission(_mission)
         self.assertEqual(_error_code, 0)
-        self.assertTrue(isinstance(self.DUT.dicPhases[_last_id], Phase))
 
     @attr(all=True, integration=True)
-    def test_save_phase(self):
+    def test03_delete_mission(self):
         """
-        Method to test that a Phase can be saved to the database.
-        """
-
-        self.assertEqual(self.DUT.save(), ([], 0))
-
-    @attr(all=True, integration=True)
-    def test_delete_phase(self):
-        """
-        Method to test that a phase can be deleted.
+        (TestProfile) delete_mission should return (True, 0) on success
         """
 
-        _n = len(self.DUT.dicPhases)
+        self.DUT.request_profile(0, self._dao)
+        _n = len(self.DUT.dicProfiles[0].dicMissions)
 
-        self.assertEqual(self.DUT.delete_phase(_n - 1), ([], 0))
-        self.assertTrue(self.DUT.delete_phase(_n))
-
-    @attr(all=True, integration=True)
-    def test_add_environment(self):
-        """
-        Method to test that an Environment can be added.
-        """
-
-        (_results, _error_code, _last_id) = self.DUT.add_environment()
+        (_results, _error_code) = self.DUT.delete_mission(0, _n - 1)
+        self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
-        self.assertTrue(isinstance(self.DUT.dicEnvironments[_last_id],
-                                   Environment))
 
     @attr(all=True, integration=True)
-    def test_delete_environment(self):
+    def test04_add_phase(self):
         """
-        Method to test that an evironment can be deleted.
+        (TestProfile) add_phase should return (True, 0, last_id) on success
         """
 
-        _n = len(self.DUT.dicEnvironments)
+        self.DUT.request_profile(0, self._dao)
 
-        self.assertEqual(self.DUT.delete_environment(_n - 1), ([], 0))
-        self.assertTrue(self.DUT.delete_environment(_n))
+        (_results, _error_code, _last_id) = self.DUT.add_phase(0, 0)
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+        _phase = self.DUT.dicProfiles[0].dicMissions[0].dicPhases[_last_id]
+        self.assertTrue(isinstance(_phase, Phase))
+
+    @attr(all=True, integration=True)
+    def test05_save_phase(self):
+        """
+        (TestProfile) _save_phase should return (True, 0) on success
+        """
+
+        self.DUT.request_profile(0, self._dao)
+        _phase = self.DUT.dicProfiles[0].dicMissions[0].dicPhases[1]
+
+        (_results, _error_code) = self.DUT._save_phase(_phase)
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test06_delete_phase(self):
+        """
+        (TestProfile) delete_phase should return (True, 0) on success
+        """
+
+        self.DUT.request_profile(0, self._dao)
+        _n = len(self.DUT.dicProfiles[0].dicMissions[0].dicPhases)
+
+        (_results, _error_code) = self.DUT.delete_phase(0, 0, _n - 1)
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test07_add_environment(self):
+        """
+        (TestProfile) add_environment should return (True, 0, last_id) on success
+        """
+
+        self.DUT.request_profile(0, self._dao)
+
+        (_results, _error_code, _last_id) = self.DUT.add_environment(0, 0, 1)
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+        _mission = self.DUT.dicProfiles[0].dicMissions[0]
+        _environment = _mission.dicPhases[1].dicEnvironments[_last_id]
+        self.assertTrue(isinstance(_environment, Environment))
+
+    @attr(all=True, integration=True)
+    def test08_save_environment(self):
+        """
+        (TestProfile) _save_environment should return (True, 0) on success
+        """
+
+        self.DUT.request_profile(0, self._dao)
+
+        _mission = self.DUT.dicProfiles[0].dicMissions[0]
+        _environment = _mission.dicPhases[1].dicEnvironments[1]
+
+        (_results, _error_code) = self.DUT._save_environment(_environment)
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test09_delete_environment(self):
+        """
+        (TestProfile) delete_environment should return (True, 0) on success
+        """
+
+        self.DUT.request_profile(0, self._dao)
+        _mission = self.DUT.dicProfiles[0].dicMissions[0]
+        _n = len(_mission.dicPhases[1].dicEnvironments)
+
+        (_results, _error_code) = self.DUT.delete_environment(0, 0, 1, _n - 1)
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
