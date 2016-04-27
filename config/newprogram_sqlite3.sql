@@ -1171,7 +1171,7 @@ CREATE TABLE "rtk_tests" (
     "fld_avg_ms" REAL DEFAULT(0.0),                                 -- Average management strategy over all phases.
     "fld_avg_fef" REAL DEFAULT(0.7),                                -- Average fix effectiveness factor over all phases..
     "fld_prob" REAL DEFAULT(0.75),                                  -- Probability of observing a failure over all phases.
-    "fld_ttff" REAL DEFAULT(0.0),                                     -- Time to first fix.
+    "fld_ttff" REAL DEFAULT(0.0),                                   -- Time to first fix.
     "fld_grouped" INTEGER DEFAULT(0),                               -- Indicates whether or not the observed failure times are exact (0) or grouped (1).
     "fld_group_interval" REAL DEFAULT(0.0),                         -- The length of the grouping interval if failure times are grouped.
     "fld_se_scale" REAL DEFAULT(0.0),                               -- The standard error of the scale paramter.
@@ -1198,6 +1198,10 @@ DROP TABLE IF EXISTS "rtk_growth_testing";
 CREATE TABLE "rtk_growth_testing" (
     "fld_test_id" INTEGER,                                          -- The ID of the test.
     "fld_phase_id" INTEGER,                                         -- The ID of the test phase.
+    "fld_i_mi" REAL DEFAULT(0),                                     -- Ideal initial MTBF for the test phase.
+    "fld_i_mf" REAL DEFAULT(0),                                     -- Ideal final MTBF for the test phase.
+    "fld_i_ma" REAL DEFAULT(0),                                     -- Ideal average MTBF for the test phase.
+    "fld_i_num_fails" INTEGER DEFAULT(0),                           -- Expected number of failures predicted by the Ideal model for the test phase.
     "fld_p_growth_rate" REAL DEFAULT(0),                            -- Planned average growth rate for the test phase.
     "fld_p_ms" REAL DEFAULT(0),                                     -- Planned management strategy (i.e., the percent of problems that will be fixed) for the test phase.
     "fld_p_fef_avg" REAL DEFAULT(0),                                -- Planned average fix effectiveness factor for the test phase.
@@ -1206,7 +1210,6 @@ CREATE TABLE "rtk_growth_testing" (
     "fld_p_mf" REAL DEFAULT(0),                                     -- Planned final MTBF for the test phase.
     "fld_p_ma" REAL DEFAULT(0),                                     -- Planned average MTBF over the test phase.
     "fld_p_test_time" REAL DEFAULT(0),                              -- Planned total test time for the test phase.
-    "fld_p_num_fails" INTEGER DEFAULT(0),                           -- Planned number of failures expected during the test phase.
     "fld_p_start_date" INTEGER DEFAULT(719163),                     -- Planned start date of test phase.
     "fld_p_end_date" INTEGER DEFAULT(719163),                       -- Planned end date of test phase.
     "fld_p_weeks" REAL DEFAULT(0),                                  -- Planned length of test phase in weeks.
@@ -1228,7 +1231,8 @@ CREATE TABLE "rtk_growth_testing" (
     "fld_o_inst_mean_ll" REAL DEFAULT(0),                           -- Observed lower limit on the instantaneous mean.
     "fld_o_inst_mean" REAL DEFAULT(0),                              -- Observed point estimate for the instantaneous mean.
     "fld_o_inst_mean_ul" REAL DEFAULT(0),                           -- Observed upper limit on the instantaneous mean.
-    PRIMARY KEY ("fld_test_id", "fld_phase_id")
+    PRIMARY KEY ("fld_test_id", "fld_phase_id"),
+    FOREIGN KEY("fld_test_id") REFERENCES "rtk_tests"("fld_test_id") ON DELETE CASCADE
 );
 
 

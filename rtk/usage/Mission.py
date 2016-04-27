@@ -23,15 +23,15 @@ class Model(object):
     A Usage Profile will consist of one or more missions.  The attributes of a
     Mission are:
 
-    :ivar dicPhases: Dictionary of the Phases associated with the Mission.
-    Key is the Phase ID; value is a pointer to the instance of the Phase data
-    model.
-
-    :ivar revision_id: default value: 0
-    :ivar mission_id: default value: 0
-    :ivar time: default value: 0.0
-    :ivar time_units: default value: ''
-    :ivar description: default value: ''
+    :ivar dict dicPhases: Dictionary of the Phases associated with the Mission.
+                          Key is the Phase ID; value is a pointer to the
+                          instance of the Phase data model.
+    :ivar int revision_id: the ID of the Revision this Mission is associated
+                           with.
+    :ivar int mission_id: the ID of the Mission.
+    :ivar float time: the total length of the Mission.
+    :ivar str time_units: the time units for the Mission time.
+    :ivar str description: the description of the Mission.
     """
 
     def __init__(self):
@@ -39,10 +39,18 @@ class Model(object):
         Method to initialize a Mission data model instance.
         """
 
-        # Set public dict attribute default values.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
         self.dicPhases = {}
 
-        # Set public scalar attribute default values.
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.revision_id = 0
         self.mission_id = 0
         self.time = 0.0

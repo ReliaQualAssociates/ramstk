@@ -23,17 +23,18 @@ class Model(object):
     phase.  A Mission will consist of one or more mission phases.  The
     attributes of a Phase are:
 
-    :ivar dicEnvironments: Dictionary of the Environments associated with the
-    Phase.  Key is the Environment ID, value is a pointer to the instance of
-    the Environment data model.
-
-    :ivar revision_id: default value: 0
-    :ivar mission_id: default value: 0
-    :ivar phase_id: default value: 0
-    :ivar start_time: default value: 0.0
-    :ivar end_time: default value: 0.0
-    :ivar code: default value: ''
-    :ivar description: default value: ''
+    :ivar dict dicEnvironments: Dictionary of the Environments associated with
+                                the Phase.  Key is the Environment ID, value is
+                                a pointer to the instance of the Environment
+                                data model.
+    :ivar int revision_id: the ID of the Revision this Phase is associated
+                           with.
+    :ivar int mission_id: the ID of the Mission this Phase belongs to.
+    :ivar int phase_id: the ID of the Phase.
+    :ivar float start_time: the Mission time the Phase begins.
+    :ivar float end_time: the Mission time the Phase ends.
+    :ivar str code: the Phase code.
+    :ivar str description: the description of the Mission Phase.
     """
 
     def __init__(self):
@@ -41,10 +42,18 @@ class Model(object):
         Method to initialize a Phase data model instance.
         """
 
-        # Set public dict attribute default values.
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
         self.dicEnvironments = {}
 
-        # Set public scalar attribute default values.
+        # Define public list attributes.
+
+        # Define public scalar attributes.
         self.revision_id = 0
         self.mission_id = 0
         self.phase_id = 0
