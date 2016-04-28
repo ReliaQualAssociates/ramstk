@@ -136,6 +136,7 @@ def _plot_ideal(axis1, plot, x_vals, y_vals, x_max, y_max, xlabel, ylabel,
     :rtype: bool
     """
 
+    _lines = []
     _cols = ['b', 'r']
 
     # Clear the plot of any existing data.
@@ -154,6 +155,7 @@ def _plot_ideal(axis1, plot, x_vals, y_vals, x_max, y_max, xlabel, ylabel,
             _line = matplotlib.lines.Line2D(x_vals, _y_val, lw=1.5,
                                             color=_cols[_index])
             axis1.add_line(_line)
+            _lines.append(_line)
 
     # Add labels to the axes and adjust them slightly for readability.
     axis1.set_xlabel(xlabel)
@@ -162,10 +164,10 @@ def _plot_ideal(axis1, plot, x_vals, y_vals, x_max, y_max, xlabel, ylabel,
     axis1.set_ylim(bottom=0.0, top=1.05 * y_max)
     plot.draw()
 
-    return False
+    return _lines
 
 
-def _plot_assessed(axis1, x_vals, y_vals):
+def _plot_assessed(axis1, x_vals, y_vals, index=0):
     """
     Function to plot the assessed values with error bars.
 
@@ -178,12 +180,19 @@ def _plot_assessed(axis1, x_vals, y_vals):
     :rtype: bool
     """
 
+    _cols = ['g', 'k']
+    _markers = ['o', 's']
+
     _l_bar = y_vals[1] - y_vals[0]
     _u_bar = y_vals[2] - y_vals[1]
-    axis1.errorbar(x_vals, y_vals[1], yerr=[_l_bar, _u_bar], fmt='o',
-                   ecolor='k', color='k')
+    # axis1.errorbar(x_vals, y_vals[1], yerr=[_l_bar, _u_bar], fmt='o',
+    #                ecolor=_cols[index], color=_cols[index])
 
-    return False
+    _line = matplotlib.lines.Line2D(x_vals, y_vals[1], ls='None',
+                                    marker=_markers[index], color=_cols[index])
+    axis1.add_line(_line)
+
+    return _line
 
 
 def _add_targets(axis1, targets, x_max):
@@ -200,8 +209,8 @@ def _add_targets(axis1, targets, x_max):
 
     # Add each target line and annotation bubble.
     for __, _target in enumerate(targets):
-        axis1.axhline(y=_target, xmin=0, color='m',
-                      linewidth=2.5, linestyle=':')
+        _line = axis1.axhline(y=_target, xmin=0, color='m',
+                              linewidth=2.5, linestyle=':')
 
         axis1.annotate(str(fmt.format(_target)), xy=(x_max, _target),
                        xycoords='data', xytext=(25, -25),
@@ -214,20 +223,21 @@ def _add_targets(axis1, targets, x_max):
                                        patchB=Ellipse((2, -1), 0.5, 0.5),
                                        relpos=(0.5, 0.5)))
 
-    return False
+    return _line
 
 
-def _add_legend(axis1, legend):
+def _add_legend(axis1, lines, legend):
     """
     Function to add a legend to a Reliability Growth plot.
 
+    :param list lines: the list of lines to add to the legend.
     :param tuple legend: tuple of legend text.
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
 
     # Create and place the legend.
-    _leg = axis1.legend(legend, loc='upper left', shadow=True)
+    _leg = axis1.legend(lines, legend, loc='best', shadow=True)
     for _text in _leg.get_texts():
         _text.set_fontsize('small')
     for _line in _leg.get_lines():
@@ -674,8 +684,8 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
         self.cmbAssessModel.set_active(model.rg_assess_model)
         self.txtMTBFI.set_text(str(fmt.format(model.lst_i_mtbfa[0])))
         self.txtMTBFG.set_text(str(fmt.format(model.mtbfg)))
-        self.txtMTBFGP.set_text(str(fmt.format(model.mtbfgp)))
         self.txtTechReq.set_text(str(fmt.format(model.tr)))
+        self.txtMTBFGP.set_text(str(fmt.format(model.mtbfgp)))
         self.spnNumPhases.set_value(model.n_phases)
         self.txtTTT.set_text(str(fmt.format(model.ttt)))
         self.txtAverageGR.set_text(str(fmt.format(model.avg_growth)))
@@ -743,16 +753,18 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
         if self.optLogarithmic.get_active():
             _log = True
 
-        _plot_ideal(self.axAxis1, self.pltPlot1, _times, [ideal, plan],
-                    self._testing_model.ttt, _y_max, _xlabel, _ylabel, _log)
+        _lines = _plot_ideal(self.axAxis1, self.pltPlot1, _times,
+                             [ideal, plan], self._testing_model.ttt, _y_max,
+                             _xlabel, _ylabel, _log)
 
         # Add the target values to the plot.
-        _add_targets(self.axAxis1, _targets, self._testing_model.ttt)
+        _l = _add_targets(self.axAxis1, _targets, self._testing_model.ttt)
+        _lines.append(_l)
 
         # Add the legend to the plot.
         _legend = (_(u"Idealized Growth Curve"),
                    _(u"Planned Average Values"), _(u"Target Values"))
-        _add_legend(self.axAxis1, _legend)
+        _add_legend(self.axAxis1, _lines, _legend)
 
         self.pltPlot1.draw()
 
@@ -981,10 +993,10 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
             _mtbfg = float(entry.get_text())
             self._testing_model.mtbfg = _mtbfg
             self._testing_model.lst_i_mtbff[_n_phases - 1] = _mtbfg
-        elif index == 16:                   # Growth potential MTBF
-            self._testing_model.mtbfgp = float(entry.get_text())
-        elif index == 17:                   # Technical requirement
+        elif index == 16:                   # Technical requirement
             self._testing_model.tr = float(entry.get_text())
+        elif index == 17:                   # Growth potential MTBF
+            self._testing_model.mtbfgp = float(entry.get_text())
         elif index == 18:                   # Length of first test phase
             _t1 = float(entry.get_text())
             self._testing_model.lst_p_test_time[0] = _t1
@@ -2016,47 +2028,66 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
         if self.optLogarithmic.get_active():
             _log = True
 
-        # Plot the observed instantaneous MTBF values and bounds if there are
-        # any observed values.
-        (_obs_times, _obsll, _obspt, _obsul) = self._get_observed_values()
+        # Retrieve the observed cumulative and instantaneous MTBF or failure
+        # intensity values and bounds if there are any observed values.
+        (_obs_times,
+         _cumll,
+         _cumpt,
+         _cumul) = self._get_observed_values(self._testing_model.cum_mean)
+        (_obs_times,
+         _insll,
+         _inspt,
+         _insul) = self._get_observed_values(self._testing_model.instantaneous_mean)
 
         # Find the minimum and maximum y-value.
         try:
-            _y_max = max(max(_targets), max(_obsll), max(_obspt),
-                         max(_obsul), max(ideal), max(plan))
+            #_y_max = max(max(_targets), max(_cumll), max(_cumpt), max(_cumul),
+            #             max(_insll), max(_inspt), max(_insul), max(ideal),
+            #             max(plan))
+            _y_max = max(max(_targets), max(_cumpt), max(_inspt), max(ideal),
+                         max(plan))
         except ValueError:
             _y_max = 0.0
 
-        _plot_ideal(self.axAxis1, self.pltPlot1, _times, [ideal, plan],
-                    self._testing_model.ttt, _y_max, _xlabel, _ylabel, _log)
+        _lines = _plot_ideal(self.axAxis1, self.pltPlot1, _times,
+                             [ideal, plan], self._testing_model.ttt, _y_max,
+                             _xlabel, _ylabel, _log)
 
         # Add the target values to the plot.
-        _add_targets(self.axAxis1, _targets, self._testing_model.ttt)
+        _l = _add_targets(self.axAxis1, _targets, self._testing_model.ttt)
+        _lines.append(_l)
 
-        _legend = (_(u"Idealized Growth Curve"), _(u"Planned Growth Curve"),
-                   _(u"Target Values"))
+        _legend = [_(u"Idealized Growth Curve"), _(u"Planned Growth Curve"),
+                   _(u"Target Values")]
 
-        # Plot the observed values with error bars indicating bounds at each
-        # observation.
-        if len(_obs_times) == len(_obspt):
-            _plot_assessed(self.axAxis1, _obs_times, [_obsll, _obspt, _obsul])
-            _legend = (_(u"Idealized Growth Curve"),
-                       _(u"Planned Growth Curve"), _(u"Target Values"),
-                       _(u"Observed w/ {0:0.1f}% Error "
-                         u"Bars".format(self._testing_model.confidence)))
+        # Plot the observed cumulative values.
+        if len(_obs_times) == len(_cumpt):
+            _l = _plot_assessed(self.axAxis1, _obs_times,
+                                [_cumll, _cumpt, _cumul])
+            _legend.append(_(u"Observed Cumulative Values"))
+            _lines.append(_l)
+
+        if len(_obs_times) == len(_inspt):
+            _l = _plot_assessed(self.axAxis1, _obs_times,
+                                [_insll, _inspt, _insul], index=1)
+            _legend.append(_(u"Observed Instantaneous Values"))
+            _lines.append(_l)
 
         # Add the legend to the plot.
-        _add_legend(self.axAxis1, _legend)
+        _legend = tuple(_legend)
+        _add_legend(self.axAxis1, _lines, _legend)
 
         self.pltPlot1.draw()
 
         return False
 
-    def _get_observed_values(self):
+    def _get_observed_values(self, means):
         """
         Method to create lists of the point estimate of observed values, the
         alpha lower limit and alpha upper limit on observed values.
 
+        :param list means: a list of the mean values to correct and split into
+                           three lists.
         :return: (_obs_times, _obsll, _obspt, _obsul)
         :rtype: tuple of lists of floats
         """
@@ -2085,16 +2116,13 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
             _row = _model.iter_next(_row)
 
         if self.optMTBF.get_active():
-            _obsll = np.array([y[0] for y in self._testing_model.cum_mean])
-            _obspt = np.array([y[1] for y in self._testing_model.cum_mean])
-            _obsul = np.array([y[2] for y in self._testing_model.cum_mean])
+            _obsll = np.array([y[0] for y in means])
+            _obspt = np.array([y[1] for y in means])
+            _obsul = np.array([y[2] for y in means])
         elif self.optFailureIntensity.get_active():
-            _obsll = np.array([1.0 / y[2]
-                               for y in self._testing_model.cum_mean])
-            _obspt = np.array([1.0 / y[1]
-                               for y in self._testing_model.cum_mean])
-            _obsul = np.array([1.0 / y[0]
-                               for y in self._testing_model.cum_mean])
+            _obsll = np.array([1.0 / y[2] for y in means])
+            _obspt = np.array([1.0 / y[1] for y in means])
+            _obsul = np.array([1.0 / y[0] for y in means])
 
         _obsll[np.isnan(_obsll)] = 0.0
         _obsll[np.isinf(_obsll)] = 0.0

@@ -157,7 +157,7 @@ class MTBFICalculator(gtk.Dialog):
         _mtbfi = float(self.txtMTBFI.get_text())
         _mtbff = float(self.txtMTBFF.get_text())
         _test_time = float(self.txtTestTime.get_text())
-        _n_failures = int(self.txtNFailures.get_text())
+        _n_failures = float(self.txtNFailures.get_text())
 
         _mtbfa = CrowAMSAA.calculate_average_mtbf(_test_time, _n_failures,
                                                   _mtbfi, _mtbff)
