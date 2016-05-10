@@ -5,10 +5,16 @@ This is the test class for testing Tantalum capacitor module algorithms and mode
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.hardware.TestTantalum.py is part of The RTK Project
 #
 # All rights reserved.
 
+=======
+#       tests.unit.TestTantalum.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +22,10 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import dao.DAO as _dao
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.capacitor.electrolytic.Tantalum import Solid, NonSolid
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +44,12 @@ class TestSolidTantalumModel(unittest.TestCase):
         Setup the test fixture for the Capacitor class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Solid()
 
     @attr(all=True, unit=True)
@@ -177,6 +189,7 @@ class TestSolidTantalumModel(unittest.TestCase):
         """
 
         _in_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+<<<<<<< HEAD
                    'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
                    0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
                    'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
@@ -193,6 +206,24 @@ class TestSolidTantalumModel(unittest.TestCase):
                    0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    2, 3, 1, 0)
+=======
+                      'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                      0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                      'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                      'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
+                      1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
+                      0.0, 1.0,
+                      0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
+                      0, 0, 1, 0.0,
+                      0, 0, 0.0, 30.0, 0.0, 358.0,
+                      0.0, 0.05, 0.00000033, 0.025,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0,
+                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      2, 3, 1, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _out_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
@@ -216,7 +247,11 @@ class TestSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
         (TestSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestSolidTantalum) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
@@ -224,7 +259,11 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 1.0)
@@ -234,7 +273,11 @@ class TestSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
         (TestSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results
+=======
+        (TestSolidTantalum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -247,7 +290,11 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.effective_resistance = 0.5
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV * piSR')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -261,7 +308,11 @@ class TestSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
         (TestSolidTantalum) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestSolidTantalum) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -272,12 +323,20 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.000000000000001
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
+<<<<<<< HEAD
         (TestSolidTantalum) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestSolidTantalum) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -288,7 +347,11 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestNonSolidTantalumModel(unittest.TestCase):
@@ -301,9 +364,12 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         Setup the test fixture for the Non-Solid Tantalum capacitor class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = NonSolid()
 
     @attr(all=True, unit=True)
@@ -481,7 +547,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
         (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestNonSolidTantalum) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
@@ -489,7 +559,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT.acvapplied = 0.025
         self.DUT.rated_voltage = 3.3
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 4.0)
@@ -499,7 +573,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
+<<<<<<< HEAD
         (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+=======
+        (TestNonSolidTantalum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -512,7 +590,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.construction = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV * piC')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -526,7 +608,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_temp(self):
         """
+<<<<<<< HEAD
         (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+=======
+        (TestNonSolidTantalum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -539,7 +625,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.construction = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV * piC')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -553,7 +643,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
+<<<<<<< HEAD
         (TestNonSolidTantalum) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+=======
+        (TestNonSolidTantalum) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -566,7 +660,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT.capacitance = 0.0000027
         self.DUT.construction = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV * piC')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -580,7 +678,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
         (TestNonSolidTantalum) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestNonSolidTantalum) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -591,12 +693,20 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.00000000000001
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
+<<<<<<< HEAD
         (TestNonSolidTantalum) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestNonSolidTantalum) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -607,4 +717,8 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

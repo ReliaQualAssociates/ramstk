@@ -18,12 +18,21 @@ import locale
 # Import other RTK modules.
 try:
     import calculations as _calc
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
 except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+except ImportError:                         # pragma: no cover
+    import rtk.calculations as _calc
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -31,7 +40,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,6 +55,7 @@ class Model(object):                        # pylint: disable=R0902
     """
     The Hardware data model contains the attributes and methods of a Hardware
     item.  The Hardware class is a meta-class for the Assembly and Component
+<<<<<<< HEAD
     classes.  A :class:`rtk.hardware.BoM` will consist of one or more Hardware
     items.  The attributes of a Hardware item are:
 
@@ -59,10 +73,139 @@ class Model(object):                        # pylint: disable=R0902
     :ivar validated: default value: 0
     :ivar validated_date: default value: 719163
     :ivar parent_id: default value: -1
+=======
+    classes.  A :py:class:`rtk.hardware.BoM.BoM` will consist of one or more
+    Hardware items.  The attributes of a Hardware item are:
+
+    :ivar int revision_id: the Revision ID the Hardware item is associated
+                           with.
+    :ivar int hardware_id: the ID in the RTK Project database of the Hardware
+                           item.
+    :ivar str alt_part_number: the alternative part number.
+    :ivar str attachments: the URL of any attachments.
+    :ivar str cage_code: the CAGE Code of the Hardware item.
+    :ivar str comp_ref_des: the composite reference designator.
+    :ivar float cost: the cost of the Hardware item.
+    :ivar float cost_failure: the operating cost per failure.
+    :ivar float cost_hour: the operating cost per mission hour.
+    :ivar str description: the noun description of the Hardware item.
+    :ivar float duty_cycle: the duty cycle.
+    :ivar int environment_active: the index of the active ambient environment.
+    :ivar int environment_dormant: the index of the dormant ambient evironment.
+    :ivar str figure_number: the figure number in the applicable specification.
+    :ivar float humidity: the operating ambient humidity.
+    :ivar str lcn: the Logistics Control Number of the Hardware item.
+    :ivar int level: the indenture level of the Hardware item.
+    :ivar int manufacturer: the index of the manufacturer.
+    :ivar float mission_time: the mission time of the Hardware item.
+    :ivar str name: the noun name of the Hardware item.
+    :ivar str nsn: the National Stock Number of the Hardware item.
+    :ivar int overstress: indicates whether the Hardware item is overstressed.
+    :ivar str page_number: the page number in the applicable specification.
+    :ivar int parent_id: the Hardware ID of the parent Hardware item.
+    :ivar int part: indicates whether the Hardware item is an Assembly (0) or
+                    a Component (1).
+    :ivar str part_number: the part number of the Hardware item.
+    :ivar int quantity: the quantity of the Hardware item in the design.
+    :ivar str ref_des: the reference designator of the Hardware item.
+    :ivar float reliability_goal: the reliability goal for the Hardware item.
+    :ivar int reliability_goal_measure: the measurement method of the
+                                        reliability goal.
+    :ivar str remarks: any associated user remarks.
+    :ivar float rpm: the operating revolutions per minute.
+    :ivar str specification_number: the applicable specification.
+    :ivar int tagged_part: indicator for user-defined use.
+    :ivar float temperature_active: the active operating ambient temperature.
+    :ivar float temperature_dormant: the dormant ambient temperature.
+    :ivar float vibration: the operating vibration level.
+    :ivar int year_of_manufacture: the year the Hardware item was manufactured.
+    :ivar float current_ratio: the ratio of operating current to rated current.
+    :ivar float max_rated_temperature: the maximum rated temperature.
+    :ivar float min_rated_temperature: the minimum rated temperature.
+    :ivar float operating_current: the operating current.
+    :ivar float operating_power: the operating power.
+    :ivar float operating_voltage: the operating voltage.
+    :ivar float power_ratio: the ratio of opertaing power to rated power.
+    :ivar float rated_current: the rated current.
+    :ivar float rated_power: the rated power.
+    :ivar float rated_voltage: the rated voltage.
+    :ivar float temperature_rise: the temperature rise of the Hardware item.
+    :ivar float voltage_ratio: the ratio of operating voltage to rated voltage.
+    :ivar float add_adj_factor: the hazard rate additive adjustment factor.
+    :ivar float availability_logistics: the logistics availability.
+    :ivar float availability_mission: the mission availability.
+    :ivar float avail_log_variance: the variance of the logistics availability.
+    :ivar float avail_mis_variance: the variance of the mission availability.
+    :ivar int failure_dist: the index of the statistical distribution for the
+                            hazard rate.
+    :ivar float failure_parameter_1: the hazard rate distribution scale
+                                     parameter.
+    :ivar float failure_parameter_2: the hazard rate distribution shape
+                                     parameter.
+    :ivar float failure_parameter_3: the hazard rate distribution location
+                                     parameter.
+    :ivar float hazard_rate_active: the active hazard rate.
+    :ivar float hazard_rate_dormant: the dormant hazard rate.
+    :ivar float hazard_rate_logistics: the logistics hazard rate.
+    :ivar int hazard_rate_method: the method of assessing the hazard rate.
+    :ivar float hazard_rate_mission: the mission hazard rate.
+    :ivar int hazard_rate_model: the statistical hazard rate model.
+    :ivar float hazard_rate_percent: the percent of the system hazard rate
+                                     coming from the Hardware item.
+    :ivar float hazard_rate_software: the hazard rate of any software
+                                      associated with the Hardware.
+    :ivar float hazard_rate_specified: the specified hazard rate.
+    :ivar int hazard_rate_type: the type of hazard rate assessment.
+    :ivar float hr_active_variance: the variance of the active hazard rate.
+    :ivar float hr_dormant_variance: the variance of the dormant hazard rate.
+    :ivar float hr_logistics_variance: the variance of the logistics hazard
+                                       rate.
+    :ivar float hr_mission_variance: the variance of the mission hazard rate.
+    :ivar float hr_specified_variance: the variance of the specified hazard
+                                       rate.
+    :ivar float mtbf_logistics: the logistice mean time between failure (MTBF).
+    :ivar float mtbf_mission: the mission MTBF.
+    :ivar float mtbf_specified: the specified MTBF.
+    :ivar float mtbf_log_variance: the variance of the logistics MTBF.
+    :ivar float mtbf_miss_variance: the variance of the mission MTBF.
+    :ivar float mtbf_spec_variance: the variance of the specified MTBF.
+    :ivar float mult_adj_factor: the hazard rate multiplicative adjustment
+                                 factor.
+    :ivar float reliability_logistics: the calculated logistics reliability.
+    :ivar float reliability_mission: the calculated mission reliability.
+    :ivar float rel_log_variance: the variance of the logistics reliability.
+    :ivar float rel_miss_variance: the variance of the mission reliability.
+    :ivar int survival_analysis: the index of the survival analysis applicable
+                                 to the Hardware.
+    :ivar float detection_fr:
+    :ivar float detection_percent:
+    :ivar float isolation_fr:
+    :ivar float isolation_percent:
+    :ivar float mcmt: the calculated mean corrective maintenance time (MCMT).
+    :ivar float mcmt_variance: the variance of the MCMT.
+    :ivar float mmt: the calculated mean maintenance time (MMT).
+    :ivar float mmt_variance: the variance of the MMT.
+    :ivar float mpmt: the calculated mean preventive maintenance time (MPMT).
+    :ivar float mpmt_variance: the variance of the MPMT.
+    :ivar float mttr: the calculated mean time to repair (MTTR).
+    :ivar float mttr_variance: the variance of the calculate MTTR.
+    :ivar float mttr_add_adj_factor: the MTTR additive adjustment factor.
+    :ivar float mttr_mult_adj_factor: the MTTR multiplicative adjustment
+                                      factor.
+    :ivar float mttr_specified: the specified MTTR.
+    :ivar float mttr_spec_variance: the variance of the specified MTTR.
+    :ivar int mttr_type: the MTTR assessment type (specified or calculated).
+    :ivar float percent_isolation_group_ri:
+    :ivar float percent_isolation_single_ri:
+    :ivar int repair_dist: the statistical repair distribution.
+    :ivar float repair_parameter_1: the repair distribution scale parameter.
+    :ivar float repair_parameter_2: the repair distribution shape parameter.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a Hardware data model instance.
         """
 
@@ -71,6 +214,22 @@ class Model(object):                        # pylint: disable=R0902
         self.mt_inputs = []
 
         # Initialize public scalar attributes.
+=======
+        Method to initialize a Hardware data model instance.
+        """
+
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.revision_id = None
         self.hardware_id = None
         self.alt_part_number = ''
@@ -98,6 +257,10 @@ class Model(object):                        # pylint: disable=R0902
         self.part = 0
         self.part_number = ''
         self.quantity = 1
+<<<<<<< HEAD
+=======
+        self.reason = ''
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.ref_des = ''
         self.reliability_goal = 1.0
         self.reliability_goal_measure = 0
@@ -188,7 +351,11 @@ class Model(object):                        # pylint: disable=R0902
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Hardware data model attributes.
+=======
+        Method to set the Hardware data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -204,7 +371,11 @@ class Model(object):                        # pylint: disable=R0902
 
     def _set_base_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the base Hardware attributes.
+=======
+        Method to set the base Hardware attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -255,17 +426,28 @@ class Model(object):                        # pylint: disable=R0902
             self.vibration = float(values[36])
             self.year_of_manufacture = int(values[37])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def _set_stress_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the stres-specific Hardware attributes.
+=======
+        Method to set the stress-specific Hardware attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -290,17 +472,28 @@ class Model(object):                        # pylint: disable=R0902
             self.temperature_rise = float(values[10])
             self.voltage_ratio = float(values[11])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def _set_reliability_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the reliability-specific Hardware attributes.
+=======
+        Method to set the reliability-specific Hardware attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -349,17 +542,29 @@ class Model(object):                        # pylint: disable=R0902
             self.rel_miss_variance = float(values[34])
             self.survival_analysis = int(values[35])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Hardware data model attributes.
+=======
+        Method to retrieve the current values of the Hardware data model
+        attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (revision_id, hardware_id, alt_part_number, attachments,
                   cage_code, comp_ref_des, cost, cost_failure, cost_hour,
@@ -369,7 +574,29 @@ class Model(object):                        # pylint: disable=R0902
                   parent_id, part, part_number, quantity, ref_des,
                   reliability_goal, reliability_goal_measure, remarks,
                   repairable, rpm, specification_number, temperature_active,
+<<<<<<< HEAD
                   temperature_dormant, vibration, year_of_manufacture)
+=======
+                  temperature_dormant, vibration, year_of_manufacture,
+                  current_ratio, max_rated_temperature, min_rated_temperature,
+                  operating_current, operating_power, operating_voltage,
+                  power_ratio, rated_current, rated_power, rated_voltage,
+                  temperature_rise, voltage_ratio, add_adj_factor,
+                  availability_logistics, availability_mission,
+                  avail_log_variance, avail_mis_variance, failure_dist,
+                  failure_parameter_1, failure_parameter_2,
+                  failure_parameter_3, hazard_rate_active, hazard_rate_dormant,
+                  hazard_rate_logistics, hazard_rate_method,
+                  hazard_rate_mission, hazard_rate_model, hazard_rate_percent,
+                  hazard_rate_software, hazard_rate_specified,
+                  hazard_rate_type, hr_active_variance, hr_dormant_variance,
+                  hr_logistics_variance, hr_mission_variance,
+                  hr_specified_variance, mtbf_logistics, mtbf_mission,
+                  mtbf_specified, mtbf_log_variance, mtbf_miss_variance,
+                  mtbf_spec_variance, mult_adj_factor, reliability_logistics,
+                  reliability_mission, rel_log_variance, rel_miss_variance,
+                  survival_analysis)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :rtype: tuple
         """
 
@@ -383,7 +610,11 @@ class Model(object):                        # pylint: disable=R0902
 
     def _get_base_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Hardware data model base
+=======
+        Method to retrieve the current values of the Hardware data model base
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (revision_id, hardware_id, alt_part_number, attachments,
@@ -416,7 +647,11 @@ class Model(object):                        # pylint: disable=R0902
 
     def _get_stress_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Hardware data model stress
+=======
+        Method to retrieve the current values of the Hardware data model stress
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (current_ratio, max_rated_temperature, min_rated_temperature,
@@ -437,8 +672,13 @@ class Model(object):                        # pylint: disable=R0902
 
     def _get_reliability_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Hardware data model reliability
         attributes.
+=======
+        Method to retrieves the current values of the Hardware data model
+        reliability attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (add_adj_factor, availability_logistics, availability_mission,
                   avail_log_variance, avail_mis_variance, failure_dist,
@@ -487,7 +727,11 @@ class Model(object):                        # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Consider re-writing calculate; current McCabe Complexity metric = 9.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         assembly.hazard_rate_active = 0.0
         assembly.hazard_rate_dormant = 0.0
         assembly.hazard_rate_software = 0.0
@@ -497,6 +741,7 @@ class Model(object):                        # pylint: disable=R0902
 
         # First we calculate all the components that are direct children of the
         # current assembly.
+<<<<<<< HEAD
         try:
             _components = assembly.dicComponents[assembly.hardware_id]
         except KeyError:
@@ -505,6 +750,23 @@ class Model(object):                        # pylint: disable=R0902
         for _component in _components:
             if _component.hazard_rate_method == 1:      # Assessed
                 _component.calculate()
+=======
+        if assembly.part == 0:
+            try:
+                _components = assembly.dicComponents[assembly.hardware_id]
+            except KeyError:
+                _components = []
+        elif assembly.part == 1:
+            _components = [assembly]
+
+        for _component in _components:
+            if _component.hazard_rate_method == 1:      # Assessed
+                try:
+                    _component.calculate_part()
+                except AttributeError:
+# TODO: Handle AttributeError in calculate.
+                    print "Could not calculate {0:s}".format(_component.name)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             elif _component.hazard_rate_method == 2:    # Specified, h(t)
                 _component.hazard_rate_active = assembly.hazard_rate_specified
             elif _component.hazard_rate_method == 3:    # Specified, MTBF
@@ -521,7 +783,11 @@ class Model(object):                        # pylint: disable=R0902
             assembly.hazard_rate_active += _component.hazard_rate_active
             assembly.hazard_rate_dormant += _component.hazard_rate_dormant
             assembly.hazard_rate_software += _component.hazard_rate_software
+<<<<<<< HEAD
             assembly.cost += _component.cost
+=======
+            assembly.cost += _component.cost * _component.quantity
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             assembly.total_part_quantity += _component.quantity
             assembly.total_power_dissipation += (_component.operating_power *
                                                  _component.quantity)
@@ -530,7 +796,11 @@ class Model(object):                        # pylint: disable=R0902
         # current assembly.
         try:
             _assemblies = assembly.dicAssemblies[assembly.hardware_id]
+<<<<<<< HEAD
         except KeyError:
+=======
+        except(KeyError, AttributeError):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _assemblies = []
 
         for _assembly in _assemblies:
@@ -568,7 +838,11 @@ class Model(object):                        # pylint: disable=R0902
 
     def _calculate_reliability(self, hardware):     # pylint: disable=R0201
         """
+<<<<<<< HEAD
         Calculates reliability metrics for a hardware item.
+=======
+        Method to calculate reliability metrics for a hardware item.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param :class: `rtk.hardware.Hardware` hardware: the rtk.Hardware()
                                                          data model to
@@ -605,7 +879,11 @@ class Model(object):                        # pylint: disable=R0902
 
     def _calculate_costs(self, hardware):   # pylint: disable=R0201
         """
+<<<<<<< HEAD
         Calculates cost metrics for a hardware item.
+=======
+        Method to calculate cost metrics for a hardware item.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param `rtk.hardware.Hardware` hardware: the rtk.Hardware() data model
                                                  to calculate costs metrics
@@ -635,6 +913,7 @@ class Hardware(object):
     """
     The Hardware data controller provides an interface between the Hardware
     data model and an RTK view model.  A single Hardware controller can manage
+<<<<<<< HEAD
     one or more Hardware data models.  The attributes of a Hardware data
     controller are:
 
@@ -644,11 +923,19 @@ class Hardware(object):
     :ivar dicHardware: Dictionary of the Hardware data models managed.
                        Key is the Hardware ID; value is a pointer to the
                        Hardware data model instance.
+=======
+    one or more Hardware data models.  The Hardware data controller is
+    currently unused.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initializes an Hardware data controller instance.
+=======
+        Method to initialize a Hardware data controller instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         pass

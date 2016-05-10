@@ -13,9 +13,15 @@ FMEA Cause Module
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Utilities as _util
 except ImportError:
     import rtk.Utilities as _util
+=======
+    import Utilities
+except ImportError:                         # pragma: no cover
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,6 +35,7 @@ class Model(object):
     A Mechanism will consist of one or more Causes.  The attributes of a Cause
     are:
 
+<<<<<<< HEAD
     :ivar dicControls: Dictionary of the Controls associated with the Cause.
                        Key is the Control ID, value is a pointer to the
                        instance of the Controldata model.
@@ -40,6 +47,20 @@ class Model(object):
     :ivar mechanism_id: default value: 0
     :ivar cause_id: default value: 0
     :ivar description: default value: ''
+=======
+    :ivar dict dicControls: Dictionary of the Controls associated with the
+                            Cause. Key is the Control ID, value is a pointer to
+                            the instance of the Control data model.
+    :ivar dict dicActions: Dictionary of the Actions associated with the Cause.
+                           Key is the Action ID, value is a pointer to the
+                           instance of the Action data model.
+    :ivar int mode_id: the ID of the failure Mode this Cause is associated
+                       with.
+    :ivar int mechanism_id: the ID of the failure Mechanism this Cause is
+                            associated with.
+    :ivar int cause_id: the ID of the failure Cause.
+    :ivar str description: the description of the failure Cause.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -47,11 +68,27 @@ class Model(object):
         Method to initialize a Cause data model instance.
         """
 
+<<<<<<< HEAD
         # Set public dict attribute default values.
         self.dicControls = {}
         self.dicActions = {}
 
         # Set public scalar attribute default values.
+=======
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+        self.dicControls = {}
+        self.dicActions = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.mode_id = 0
         self.mechanism_id = 0
         self.cause_id = 0
@@ -87,6 +124,7 @@ class Model(object):
             self.rpn_detection_new = int(values[8])
             self.rpn_new = int(values[9])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
@@ -94,6 +132,15 @@ class Model(object):
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+        except ValueError as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)

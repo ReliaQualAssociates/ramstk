@@ -16,12 +16,21 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
     from hardware.component.resistor.Resistor import Model as Resistor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+    from hardware.component.resistor.Resistor import Model as Resistor
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
 
 __author__ = 'Andrew Rowland'
@@ -31,7 +40,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -44,6 +57,7 @@ class VarWirewound(Resistor):
     methods of a Wirewound Variable resistor.  The attributes of a Wirewound
     Variable resistor are:
 
+<<<<<<< HEAD
     :cvar _lst_piE: list of environment factor values.
     :cvar _lst_piQ_count: list of quality factor values for the parts count
                           method.
@@ -55,6 +69,21 @@ class VarWirewound(Resistor):
     :ivar n_taps: default value: 3
     :ivar piTAPS: default value: 0.0
     :ivar piV: default value: 0.0
+=======
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 33
+
+    :ivar int n_taps: the number of taps on the potentiometer.
+    :ivar float piTAPS: the MIL-HDBK-217FN2 taps factor.
+    :ivar float piV: the MIL-HDBK-217FN2 voltage stress factor.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-R-27208 and MIL-R-39015.
 
@@ -76,7 +105,11 @@ class VarWirewound(Resistor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a Wirewound Variable resistor data model instance.
+=======
+        Method to initialize a Wirewound Variable resistor data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(VarWirewound, self).__init__()
@@ -87,7 +120,11 @@ class VarWirewound(Resistor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Wirewound Variable resistor data model attributes.
+=======
+        Method to set the Wirewound Variable resistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -105,18 +142,30 @@ class VarWirewound(Resistor):
             self.piTAPS = float(values[104])
             self.piV = float(values[105])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Wirewound Variable resistor data
         model attributes.
+=======
+        Method to retrieve the current values of the Wirewound Variable
+        resistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (n_taps, piTAPS, piV)
         :rtype: tuple
@@ -128,15 +177,26 @@ class VarWirewound(Resistor):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Wirewound Variable resistor data
         model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Wirewound Variable resistor
+        data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 12.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
@@ -148,8 +208,15 @@ class VarWirewound(Resistor):
             _stress = self.operating_power / self.rated_power
             try:
                 self.base_hr = 0.0062 * \
+<<<<<<< HEAD
                                exp(((self.temperature_active + 273.0) / 358.0)**5.0) * \
                                exp(_stress * ((self.temperature_active + 273.0) / 273.0))
+=======
+                               exp(((self.temperature_active + 273.0) /
+                                    358.0)**5.0) * \
+                               exp(_stress * ((self.temperature_active +
+                                               273.0) / 273.0))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -170,12 +237,17 @@ class VarWirewound(Resistor):
 
             # Voltage factor.
             _v_applied = sqrt(self.resistance * self.operating_power)
+<<<<<<< HEAD
             if _v_applied / self.rated_voltage <= 0.1:      # pragma: no cover
+=======
+            if _v_applied / self.rated_voltage <= 0.1:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.10
             elif(_v_applied / self.rated_voltage > 0.1 and
                  _v_applied / self.rated_voltage <= 0.2):
                 self.piV = 1.05
             elif(_v_applied / self.rated_voltage > 0.2 and
+<<<<<<< HEAD
                  _v_applied / self.rated_voltage <= 0.6):   # pragma: no cover
                 self.piV = 1.00
             elif(_v_applied / self.rated_voltage > 0.6 and
@@ -186,12 +258,28 @@ class VarWirewound(Resistor):
                 self.piV = 1.22
             elif(_v_applied / self.rated_voltage > 0.8 and
                  _v_applied / self.rated_voltage <= 0.9):   # pragma: no cover
+=======
+                 _v_applied / self.rated_voltage <= 0.6):
+                self.piV = 1.00
+            elif(_v_applied / self.rated_voltage > 0.6 and
+                 _v_applied / self.rated_voltage <= 0.7):
+                self.piV = 1.10
+            elif(_v_applied / self.rated_voltage > 0.7 and
+                 _v_applied / self.rated_voltage <= 0.8):
+                self.piV = 1.22
+            elif(_v_applied / self.rated_voltage > 0.8 and
+                 _v_applied / self.rated_voltage <= 0.9):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00
             self.hazard_rate_model['piV'] = self.piV
 
+<<<<<<< HEAD
         return Resistor.calculate(self)
+=======
+        return Resistor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class PrecisionWirewound(Resistor):
@@ -200,6 +288,7 @@ class PrecisionWirewound(Resistor):
     attributes and methods of a Precision Wirewound Variable resistor.  The
     attributes of a Precision Wirewound Variable resistor are:
 
+<<<<<<< HEAD
     :cvar _lst_piC: list of construction factor values.
     :cvar _lst_piE: list of environment factor values.
     :cvar _lst_piQ_count: list of quality factor values for the parts count
@@ -214,6 +303,25 @@ class PrecisionWirewound(Resistor):
     :ivar piTAPS: default value: 0.0
     :ivar piV: default value: 0.0
     :ivar piC: default value: 0.0
+=======
+    :cvar list _lst_piC: list of MIL-HDBK-217FN2 construction factor values.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count.
+    :cvar int subcategory: default value: 34
+
+    :ivar int n_taps: the number of taps on the potentiometer.
+    :ivar int construction: the index in the construction list of the
+                            potentiometer.
+    :ivar float piTAPS: the MIL-HDBK-217FN2 taps factor.
+    :ivar float piV: the MIL-HDBK-217FN2 voltage stress factor.
+    :ivar float piC: the MIL-HDBK-217FN2 construction factor.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-R-12934.
 
@@ -236,7 +344,12 @@ class PrecisionWirewound(Resistor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a Precision Wirewound Variable resistor data model instance.
+=======
+        Method to initialize a Precision Wirewound Variable resistor data model
+        instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(PrecisionWirewound, self).__init__()
@@ -249,7 +362,12 @@ class PrecisionWirewound(Resistor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Precision Wirewound Variable resistor data model attributes.
+=======
+        Method to set the Precision Wirewound Variable resistor data model
+        attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -269,18 +387,30 @@ class PrecisionWirewound(Resistor):
             self.piV = float(values[105])
             self.piC = float(values[106])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Precision Wirewound Variable
         resistor data model attributes.
+=======
+        Method to retrieve the current values of the Precision Wirewound
+        Variable resistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (n_taps, construction, piTAPS, piV, piC)
         :rtype: tuple
@@ -293,15 +423,26 @@ class PrecisionWirewound(Resistor):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Precision Wirewound Variable
         resistor data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Precision Wirewound
+        Variable resistor data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 15.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
@@ -313,8 +454,16 @@ class PrecisionWirewound(Resistor):
             _stress = self.operating_power / self.rated_power
             try:
                 self.base_hr = 0.0735 * \
+<<<<<<< HEAD
                                exp(1.03 * ((self.temperature_active + 273.0) / 358.0)**4.45) * \
                                exp((_stress / 2.74) * ((self.temperature_active + 273.0) / 273.0)**3.51)
+=======
+                               exp(1.03 * ((self.temperature_active + 273.0) /
+                                           358.0)**4.45) * \
+                               exp((_stress / 2.74) *
+                                   ((self.temperature_active + 273.0) /
+                                    273.0)**3.51)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -327,6 +476,7 @@ class PrecisionWirewound(Resistor):
             # Resistance factor.
             if self.resistance >= 100.0 and self.resistance <= 10000.0:
                 self.piR = 1.0
+<<<<<<< HEAD
             elif self.resistance > 10000.0 and self.resistance <= 20000.0:      # pragma: no cover
                 self.piR = 1.1
             elif self.resistance > 20000.0 and self.resistance <= 50000.0:
@@ -334,6 +484,15 @@ class PrecisionWirewound(Resistor):
             elif self.resistance > 50000.0 and self.resistance <= 100000.0:     # pragma: no cover
                 self.piR = 2.0
             elif self.resistance > 100000.0 and self.resistance <= 200000.0:    # pragma: no cover
+=======
+            elif self.resistance > 10000.0 and self.resistance <= 20000.0:
+                self.piR = 1.1
+            elif self.resistance > 20000.0 and self.resistance <= 50000.0:
+                self.piR = 1.4
+            elif self.resistance > 50000.0 and self.resistance <= 100000.0:
+                self.piR = 2.0
+            elif self.resistance > 100000.0 and self.resistance <= 200000.0:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piR = 2.5
             elif self.resistance > 200000.0 and self.resistance <= 500000.0:
                 self.piR = 3.5
@@ -341,15 +500,23 @@ class PrecisionWirewound(Resistor):
 
             # Voltage factor.
             _v_applied = sqrt(self.resistance * self.operating_power)
+<<<<<<< HEAD
             if _v_applied / self.rated_voltage <= 0.1:      # pragma: no cover
                 self.piV = 1.10
             elif(_v_applied / self.rated_voltage > 0.1 and
                  _v_applied / self.rated_voltage <= 0.2):   # pragma: no cover
+=======
+            if _v_applied / self.rated_voltage <= 0.1:
+                self.piV = 1.10
+            elif(_v_applied / self.rated_voltage > 0.1 and
+                 _v_applied / self.rated_voltage <= 0.2):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.05
             elif(_v_applied / self.rated_voltage > 0.2 and
                  _v_applied / self.rated_voltage <= 0.6):
                 self.piV = 1.00
             elif(_v_applied / self.rated_voltage > 0.6 and
+<<<<<<< HEAD
                  _v_applied / self.rated_voltage <= 0.7):   # pragma: no cover
                 self.piV = 1.10
             elif(_v_applied / self.rated_voltage > 0.7 and
@@ -357,6 +524,15 @@ class PrecisionWirewound(Resistor):
                 self.piV = 1.22
             elif(_v_applied / self.rated_voltage > 0.8 and
                  _v_applied / self.rated_voltage <= 0.9):   # pragma: no cover
+=======
+                 _v_applied / self.rated_voltage <= 0.7):
+                self.piV = 1.10
+            elif(_v_applied / self.rated_voltage > 0.7 and
+                 _v_applied / self.rated_voltage <= 0.8):
+                self.piV = 1.22
+            elif(_v_applied / self.rated_voltage > 0.8 and
+                 _v_applied / self.rated_voltage <= 0.9):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00
@@ -366,7 +542,11 @@ class PrecisionWirewound(Resistor):
             self.piC = self._lst_piC[self.construction - 1]
             self.hazard_rate_model['piC'] = self.piC
 
+<<<<<<< HEAD
         return Resistor.calculate(self)
+=======
+        return Resistor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class SemiPrecisionWirewound(Resistor):
@@ -375,6 +555,7 @@ class SemiPrecisionWirewound(Resistor):
     attributes and methods of a Semi-Precision Wirewound Variable resistor.
     The attributes of a Semi-Precision Wirewound Variable resistor are:
 
+<<<<<<< HEAD
     :cvar _lst_piE: list of environment factor values.
     :cvar _lst_piQ_count: list of quality factor values for the parts count
                           method.
@@ -386,6 +567,21 @@ class SemiPrecisionWirewound(Resistor):
     :ivar n_taps: default value: 3
     :ivar piTAPS: default value: 0.0
     :ivar piV: default value: 0.0
+=======
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 35
+
+    :ivar int n_taps: the number of taps on the potentiometer.
+    :ivar float piTAPS: the MIL-HDBK-217FN2 taps factor.
+    :ivar float piV: the MIL-HDBK-217FN2 voltage stress factor.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-R-19 and MIL-R-39002.
 
@@ -407,8 +603,13 @@ class SemiPrecisionWirewound(Resistor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a Semi-Precision Wirewound Variable resistor data model
         instance.
+=======
+        Method to initialize a Semi-Precision Wirewound Variable resistor data
+        model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(SemiPrecisionWirewound, self).__init__()
@@ -419,7 +620,11 @@ class SemiPrecisionWirewound(Resistor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Semi-Precision Wirewound Variable resistor data model
+=======
+        Method to set the Semi-Precision Wirewound Variable resistor data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :param tuple values: tuple of values to assign to the instance
@@ -438,18 +643,30 @@ class SemiPrecisionWirewound(Resistor):
             self.piTAPS = float(values[104])
             self.piV = float(values[105])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Semi-Precision Wirewound Variable
         resistor data model attributes.
+=======
+        Method to retrieve the current values of the Semi-Precision Wirewound
+        Variable resistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (n_taps, piTAPS, piV)
         :rtype: tuple
@@ -461,15 +678,26 @@ class SemiPrecisionWirewound(Resistor):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Semi-Precision Wirewound Variable
         resistor data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Semi-Precision Wirewound
+        Variable resistor data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 12.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
@@ -481,11 +709,23 @@ class SemiPrecisionWirewound(Resistor):
             _stress = self.operating_power / self.rated_power
             try:
                 self.base_hr = 0.0398 * \
+<<<<<<< HEAD
                                exp(0.514 * ((self.temperature_active + 273.0) / 313.0)**5.28) * \
                                exp((_stress / 1.44) * ((self.temperature_active + 273.0) / 273.0)**4.46)
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
+=======
+                               exp(0.514 * ((self.temperature_active + 273.0) /
+                                            313.0)**5.28) * \
+                               exp((_stress / 1.44) *
+                                   ((self.temperature_active + 273.0) /
+                                    273.0)**4.46)
+                self.hazard_rate_model['lambdab'] = self.base_hr
+            except OverflowError:
+                # TODO: Handle overflow error.
+                print "OverflowError in Semiprecision Wirewound."
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 return True
 
             # Potentiometer taps factor.
@@ -503,15 +743,23 @@ class SemiPrecisionWirewound(Resistor):
 
             # Voltage factor.
             _v_applied = sqrt(self.resistance * self.operating_power)
+<<<<<<< HEAD
             if _v_applied / self.rated_voltage <= 0.1:      # pragma: no cover
                 self.piV = 1.10
             elif(_v_applied / self.rated_voltage > 0.1 and
                  _v_applied / self.rated_voltage <= 0.2):   # pragma: no cover
+=======
+            if _v_applied / self.rated_voltage <= 0.1:
+                self.piV = 1.10
+            elif(_v_applied / self.rated_voltage > 0.1 and
+                 _v_applied / self.rated_voltage <= 0.2):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.05
             elif(_v_applied / self.rated_voltage > 0.2 and
                  _v_applied / self.rated_voltage <= 0.6):
                 self.piV = 1.00
             elif(_v_applied / self.rated_voltage > 0.6 and
+<<<<<<< HEAD
                  _v_applied / self.rated_voltage <= 0.7):   # pragma: no cover
                 self.piV = 1.10
             elif(_v_applied / self.rated_voltage > 0.7 and
@@ -519,12 +767,25 @@ class SemiPrecisionWirewound(Resistor):
                 self.piV = 1.22
             elif(_v_applied / self.rated_voltage > 0.8 and
                  _v_applied / self.rated_voltage <= 0.9):   # pragma: no cover
+=======
+                 _v_applied / self.rated_voltage <= 0.7):
+                self.piV = 1.10
+            elif(_v_applied / self.rated_voltage > 0.7 and
+                 _v_applied / self.rated_voltage <= 0.8):
+                self.piV = 1.22
+            elif(_v_applied / self.rated_voltage > 0.8 and
+                 _v_applied / self.rated_voltage <= 0.9):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00
             self.hazard_rate_model['piV'] = self.piV
 
+<<<<<<< HEAD
         return Resistor.calculate(self)
+=======
+        return Resistor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class PowerWirewound(Resistor):
@@ -533,6 +794,7 @@ class PowerWirewound(Resistor):
     and methods of a Power Wirewound Variable resistor.  The attributes of a
     Power Wirewound Variable resistor are:
 
+<<<<<<< HEAD
     :cvar _lst_piC: list of construction factor values.
     :cvar _lst_piE: list of environment factor values.
     :cvar _lst_piQ_count: list of quality factor values for the parts count
@@ -547,6 +809,25 @@ class PowerWirewound(Resistor):
     :ivar piTAPS: default value: 0.0
     :ivar piV: default value: 0.0
     :ivar piC: default value: 0.0
+=======
+    :cvar list _lst_piC: list of MIL-HDBK-217FN2 construction factor values.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 part stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 36
+
+    :ivar int n_taps: the number of taps on the potentiometer.
+    :ivar int construction: the index in the construction list of the
+                            potentiometer.
+    :ivar float piTAPS: the MIL-HDBK-217FN2 taps factor.
+    :ivar float piV: the MIL-HDBK-217FN2 voltage stress factor.
+    :ivar float piC: the MIL-HDBK-217FN2 construction factor.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-R-22.
 
@@ -569,7 +850,11 @@ class PowerWirewound(Resistor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a Power Wirewound Variable resistor data model
+=======
+        Method to initialize a Power Wirewound Variable resistor data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         instance.
         """
 
@@ -583,7 +868,11 @@ class PowerWirewound(Resistor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Power Wirewound Variable resistor data model
+=======
+        Method to set the Power Wirewound Variable resistor data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :param tuple values: tuple of values to assign to the instance
@@ -604,17 +893,28 @@ class PowerWirewound(Resistor):
             self.piV = float(values[105])
             self.piC = float(values[106])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Power Wirewound Variable
+=======
+        Method to retrieve the current values of the Power Wirewound Variable
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         resistor data model attributes.
 
         :return: (n_taps, construction, piTAPS, piV, piC)
@@ -628,15 +928,25 @@ class PowerWirewound(Resistor):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Power Wirewound Variable
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Power Wirewound Variable
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         resistor data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 12.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
@@ -648,8 +958,16 @@ class PowerWirewound(Resistor):
             _stress = self.operating_power / self.rated_power
             try:
                 self.base_hr = 0.0481 * \
+<<<<<<< HEAD
                                exp(0.334 * ((self.temperature_active + 273.0) / 298.0)**4.66) * \
                                exp((_stress / 1.47) * ((self.temperature_active + 273.0) / 273.0)**2.83)
+=======
+                               exp(0.334 * ((self.temperature_active + 273.0) /
+                                            298.0)**4.66) * \
+                               exp((_stress / 1.47) *
+                                   ((self.temperature_active + 273.0) /
+                                    273.0)**2.83)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -673,12 +991,17 @@ class PowerWirewound(Resistor):
             if _v_applied / self.rated_voltage <= 0.1:
                 self.piV = 1.10
             elif(_v_applied / self.rated_voltage > 0.1 and
+<<<<<<< HEAD
                  _v_applied / self.rated_voltage <= 0.2):       # pragma: no cover
+=======
+                 _v_applied / self.rated_voltage <= 0.2):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.05
             elif(_v_applied / self.rated_voltage > 0.2 and
                  _v_applied / self.rated_voltage <= 0.6):
                 self.piV = 1.00
             elif(_v_applied / self.rated_voltage > 0.6 and
+<<<<<<< HEAD
                  _v_applied / self.rated_voltage <= 0.7):       # pragma: no cover
                 self.piV = 1.10
             elif(_v_applied / self.rated_voltage > 0.7 and
@@ -686,6 +1009,15 @@ class PowerWirewound(Resistor):
                 self.piV = 1.22
             elif(_v_applied / self.rated_voltage > 0.8 and
                  _v_applied / self.rated_voltage <= 0.9):       # pragma: no cover
+=======
+                 _v_applied / self.rated_voltage <= 0.7):
+                self.piV = 1.10
+            elif(_v_applied / self.rated_voltage > 0.7 and
+                 _v_applied / self.rated_voltage <= 0.8):
+                self.piV = 1.22
+            elif(_v_applied / self.rated_voltage > 0.8 and
+                 _v_applied / self.rated_voltage <= 0.9):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00
@@ -695,4 +1027,8 @@ class PowerWirewound(Resistor):
             self.piC = self._lst_piC[self.construction - 1]
             self.hazard_rate_model['piC'] = self.piC
 
+<<<<<<< HEAD
         return Resistor.calculate(self)
+=======
+        return Resistor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

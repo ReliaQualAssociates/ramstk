@@ -6,6 +6,7 @@ models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       TestProfile.py is part of The RTK Project
 #
 # All rights reserved.
@@ -14,12 +15,24 @@ import unittest
 from nose.plugins.attrib import attr
 
 # We add this to ensure the imports within the rtk packages will work.
+=======
+#       tests.unit.TestProfile.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
 import dao.DAO as _dao
 
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+import dao.DAO as _dao
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from usage.UsageProfile import Model, UsageProfile
 
 __author__ = 'Andrew Rowland'
@@ -56,11 +69,15 @@ class TestUsageProfileController(unittest.TestCase):
 
     def setUp(self):
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = UsageProfile()
         self.DUT._dao = self._dao
+=======
+        self.DUT = UsageProfile()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_create_controller(self):
@@ -69,6 +86,7 @@ class TestUsageProfileController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.dicProfiles, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_profile(self):
@@ -158,3 +176,5 @@ class TestUsageProfileController(unittest.TestCase):
 
         self.assertEqual(self.DUT.delete_environment(_n - 1), ([], 0))
         self.assertTrue(self.DUT.delete_environment(_n))
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

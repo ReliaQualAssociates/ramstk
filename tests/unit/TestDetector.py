@@ -5,6 +5,7 @@ This is the test class for testing Detector module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.hardware.TestDetector.py is part of The RTK Project
 #
 # All rights reserved.
@@ -12,11 +13,22 @@ This is the test class for testing Detector module algorithms and models.
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestDetector.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
 import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.semiconductor.optoelectronic.Detector import *
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +47,12 @@ class TestDetectorModel(unittest.TestCase):
         Setup the test fixture for the Optoelectronic Detector class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Detector()
 
     @attr(all=True, unit=True)
@@ -246,7 +261,11 @@ class TestDetectorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_photodetector(self):
         """
+<<<<<<< HEAD
         (TestDetector) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestDetector) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
@@ -254,7 +273,11 @@ class TestDetectorModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.18)
@@ -264,7 +287,11 @@ class TestDetectorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_optoisolator(self):
         """
+<<<<<<< HEAD
         (TestDetector) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestDetector) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
@@ -272,7 +299,11 @@ class TestDetectorModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 3
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.43)
@@ -282,7 +313,11 @@ class TestDetectorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_emitter(self):
         """
+<<<<<<< HEAD
         (TestDetector) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestDetector) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
@@ -290,7 +325,11 @@ class TestDetectorModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 11
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.0077)
@@ -300,7 +339,11 @@ class TestDetectorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
         (TestDetector) calculate should return False on success when calculating MIL-HDBK-217F stress results
+=======
+        (TestDetector) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -312,7 +355,11 @@ class TestDetectorModel(unittest.TestCase):
         self.DUT.application = 7
         self.DUT.type = 3
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'],

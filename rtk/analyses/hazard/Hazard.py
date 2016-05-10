@@ -17,11 +17,19 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +37,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -38,19 +50,110 @@ _ = gettext.gettext
 
 class Model(object):
     """
+<<<<<<< HEAD
     The Hazard data model contains the attributes and methods of an
     allocation.  The attributes of an Hazard are:
 
     :ivar hardware_id: default value: None
     :ivar parent_id: default value: -1
+=======
+    The Hazard data model contains the attributes and methods of a Hazard.  The
+    attributes of a Hazard are:
+
+    :ivar hardware_id: the Hardware ID the Hazard is associated with.
+    :ivar hazard_id: the ID of the Hazard.
+    :ivar potential_hazard: the description of the potential hazard.
+    :ivar potential_cause: the description of the potential cause of the
+                           potential hazard.
+    :ivar assembly_effect: the effect of the potential hazard on the assembly
+                           being analyzed with no design mitigation.
+    :ivar assembly_severity: the severity of the effect of the potential hazard
+                             on the assembly being analyzed with no design
+                             mitigation.
+    :ivar assembly_probability: the probability of the effect of the potential
+                                hazard on the assembly being analyzed with no
+                                design mitigation.
+    :ivar assembly_hri: the assembly hazard risk index with no design
+                        mitigation.
+    :ivar assembly_mitigation: the proposed design mitigation strategy at the
+                               assembly level.
+    :ivar assembly_severity_f: the effect of the potential hazard on the
+                               assembly being analyzed with design mitigation.
+    :ivar assembly_probability_f: the probability of the effect of the
+                                  potential hazard on the assembly being
+                                  analyzed with design mitigation.
+    :ivar assembly_hri_f: the assembly hazard risk index with design
+                          mitigation.
+    :ivar system_effect: the effect of the potential hazard on the system being
+                         analyzed.
+    :ivar system_severity: the severity of the effect of the potential hazard
+                           on the system being analyzed with no design
+                           mitigation.
+    :ivar system_probability: the probability of the effect of the potential
+                              hazard on the system being analyzed with no
+                              design mitigation.
+    :ivar system_hri: the system hazard risk index with no design mitigation.
+    :ivar system_mitigation: the proposed design mitigation strategy at the
+                             system level.
+    :ivar system_severity_f: the severity of the effect of the potential hazard
+                             on the system being analyzed with design
+                             mitigation.
+    :ivar system_probability_f: the probability of the effect of the potential
+                                hazard on the system being analyzed with
+                                design mitigation.
+    :ivar system_hri_f: the system hazard risk index with design mitigation.
+    :ivar remarks: remarks associated with the potential hazard.
+    :ivar function_1: user-defined mathematical function 1.
+    :ivar function_2: user-defined mathematical function 2.
+    :ivar function_3: user-defined mathematical function 3.
+    :ivar function_4: user-defined mathematical function 4.
+    :ivar function_5: user-defined mathematical function 5.
+    :ivar result_1: results of user-defined mathematical function 1.
+    :ivar result_2: results of user-defined mathematical function 2.
+    :ivar result_3: results of user-defined mathematical function 3.
+    :ivar result_4: results of user-defined mathematical function 4.
+    :ivar result_5: results of user-defined mathematical function 5.
+    :ivar user_blob_1: user-defined blob field 1.
+    :ivar user_blob_2: user-defined blob field 2.
+    :ivar user_blob_3: user-defined blob field 3.
+    :ivar user_float_1: user-defined float field 1.  Can be used in the user-
+                        defined functions.
+    :ivar user_float_2: user-defined float field 2.  Can be used in the user-
+                        defined functions.
+    :ivar user_float_3: user-defined float field 3.  Can be used in the user-
+                        defined functions.
+    :ivar user_int_1: user-defined integer field 1.  Can be used in the user-
+                      defined functions.
+    :ivar user_int_2: user-defined integer field 2.  Can be used in the user-
+                      defined functions.
+    :ivar user_int_3: user-defined integer field 3.  Can be used in the user-
+                      defined functions.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initializes an Hazard data model instance.
         """
 
         # Initialize public scalar attributes.
+=======
+        Method to initialize a Hazard data model instance.
+        """
+
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.hardware_id = None
         self.hazard_id = None
         self.potential_hazard = ''
@@ -94,7 +197,11 @@ class Model(object):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Hazard data model attributes.
+=======
+        Method to set the Hazard data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -147,17 +254,29 @@ class Model(object):
             self.user_int_2 = int(values[38])
             self.user_int_3 = int(values[39])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Hazard data model attributes.
+=======
+        Method to retrieve the current values of the Hazard data model
+        attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (hardware_id, hazard_id, potential_hazard, potential_cause,
                   assembly_effect, assembly_severity, assembly_probability,
@@ -194,8 +313,13 @@ class Model(object):
 
     def calculate(self):
         """
+<<<<<<< HEAD
         Calculate the initial assembly hazard risk index (HRI), the final
         assembly HRI, the initial system HRI, and the final system HRI.
+=======
+        Method to calculate the initial assembly hazard risk index (HRI), the
+        final assembly HRI, the initial system HRI, and the final system HRI.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -274,12 +398,22 @@ class Hazard(object):
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
                 Project database.
+<<<<<<< HEAD
     :ivar dicHazard: Dictionary of the Hazard data models managed.  Key is the Hardware ID; value is a pointer to the Hazard data model instance.
+=======
+    :ivar dicHazard: Dictionary of the Hazard data models managed.  Key is a
+                     tuple of the Hardware ID and Hazard ID; value is a pointer
+                     to the Hazard data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initializes an Hazard data controller instance.
+=======
+        Method to initialize a Hazard data controller instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         # Initialize private scalar attributes.
@@ -290,8 +424,13 @@ class Hazard(object):
 
     def request_hazard(self, dao):
         """
+<<<<<<< HEAD
         Reads the RTK Project database and loads all the Hazard.  For each
         Hazard returned:
+=======
+        Method to read the RTK Project database and load all the Hazards.  For
+        each Hazard returned:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         #. Retrieve the Hazard from the RTK Project database.
         #. Create an Hazard data model instance.
@@ -353,7 +492,11 @@ class Hazard(object):
 
     def add_hazard(self, hardware_id):
         """
+<<<<<<< HEAD
         Adds a potential hazard to a hardware item.
+=======
+        Method to add a potential hazard to a Hardware item.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the Hardware ID to add the hazard to.
         :return: (_results, _error_code)
@@ -377,8 +520,14 @@ class Hazard(object):
 
     def delete_hazard(self, hardware_id, hazard_id):
         """
+<<<<<<< HEAD
         Deletes a potential hazard from the RTK Project database.
 
+=======
+        Method to delete a potential Hazard from the RTK Project database.
+
+        :param int hardware_id: the Hardware ID to delete the hazards from.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param int hazard_id: the Hazard ID to delete.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -396,8 +545,13 @@ class Hazard(object):
 
     def calculate_hazard(self, hardware_id, hazard_id):
         """
+<<<<<<< HEAD
         Calculates hazard risk index (HRI) and user-defined calculations for a
         Hazard.
+=======
+        Method to calculate the hazard risk index (HRI) and user-defined
+        calculations for a Hazard.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the Hardware ID to calculate.
         :param int hazard_id: the Hazard ID to calculate.
@@ -413,7 +567,11 @@ class Hazard(object):
 
     def save_hazard(self, hardware_id, hazard_id):
         """
+<<<<<<< HEAD
         Saves the Hazard attributes to the RTK Project database.
+=======
+        Method to save the Hazard attributes to the RTK Project database.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the ID of the hardware to save.
         :param int hazard_id: the ID of the hazard to save.
@@ -426,12 +584,18 @@ class Hazard(object):
         _query = "UPDATE rtk_hazard \
                   SET fld_potential_hazard='{0:s}', \
                       fld_potential_cause='{1:s}', \
+<<<<<<< HEAD
                       fld_assembly_effect='{2:s}', fld_assembly_severity={3:d}, \
+=======
+                      fld_assembly_effect='{2:s}', \
+                      fld_assembly_severity={3:d}, \
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                       fld_assembly_probability={4:d}, fld_assembly_hri={5:d}, \
                       fld_assembly_mitigation='{6:s}', \
                       fld_assembly_severity_f={7:d}, \
                       fld_assembly_probability_f={8:d}, \
                       fld_assembly_hri_f={9:d}, fld_system_effect='{10:s}', \
+<<<<<<< HEAD
                       fld_system_severity={11:d}, fld_system_probability={12:d}, \
                       fld_system_hri={13:d}, fld_system_mitigation='{14:s}', \
                       fld_system_severity_f={15:d}, \
@@ -465,12 +629,58 @@ class Hazard(object):
                       _hazard.user_float_2, _hazard.user_float_3,
                       _hazard.user_int_1, _hazard.user_int_2,
                       _hazard.user_int_3, _hazard.hazard_id)
+=======
+                      fld_system_severity={11:d}, \
+                      fld_system_probability={12:d}, \
+                      fld_system_hri={13:d}, fld_system_mitigation='{14:s}', \
+                      fld_system_severity_f={15:d}, \
+                      fld_system_probability_f={16:d}, \
+                      fld_system_hri_f={17:d}, \
+                      fld_remarks='{18:s}', fld_function_1='{19:s}', \
+                      fld_function_2='{20:s}', fld_function_3='{21:s}', \
+                      fld_function_4='{22:s}', fld_function_5='{23:s}', \
+                      fld_result_1={24:f}, fld_result_2={25:f}, \
+                      fld_result_3={26:f}, fld_result_4={27:f}, \
+                      fld_result_5={28:f}, fld_user_blob_1='{29:s}', \
+                      fld_user_blob_2='{30:s}', fld_user_blob_3='{31:s}', \
+                      fld_user_float_1={32:f}, fld_user_float_2={33:f}, \
+                      fld_user_float_3={34:f}, fld_user_int_1={35:d}, \
+                      fld_user_int_2={36:d}, fld_user_int_3={37:d} \
+                  WHERE fld_hazard_id={38:d}".format(
+                      _hazard.potential_hazard,
+                      _hazard.potential_cause.replace("'", r"''"),
+                      _hazard.assembly_effect.replace("'", r"''"),
+                      _hazard.assembly_severity, _hazard.assembly_probability,
+                      _hazard.assembly_hri,
+                      _hazard.assembly_mitigation.replace("'", r"''"),
+                      _hazard.assembly_severity_f,
+                      _hazard.assembly_probability_f, _hazard.assembly_hri_f,
+                      _hazard.system_effect.replace("'", r"''"),
+                      _hazard.system_severity, _hazard.system_probability,
+                      _hazard.system_hri,
+                      _hazard.system_mitigation.replace("'", r"''"),
+                      _hazard.system_severity_f, _hazard.system_probability_f,
+                      _hazard.system_hri_f,
+                      _hazard.remarks.replace("'", r"''"), _hazard.function_1,
+                      _hazard.function_2, _hazard.function_3,
+                      _hazard.function_4, _hazard.function_5, _hazard.result_1,
+                      _hazard.result_2, _hazard.result_3, _hazard.result_4,
+                      _hazard.result_5,
+                      _hazard.user_blob_1.replace("'", r"''"),
+                      _hazard.user_blob_2.replace("'", r"''"),
+                      _hazard.user_blob_3.replace("'", r"''"),
+                      _hazard.user_float_1, _hazard.user_float_2,
+                      _hazard.user_float_3, _hazard.user_int_1,
+                      _hazard.user_int_2, _hazard.user_int_3,
+                      _hazard.hazard_id)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
     def save_all_hazards(self):
         """
+<<<<<<< HEAD
         Saves all Hazard data models managed by the controller.
 
         :return: False if successful or True if an error is encountered.
@@ -482,3 +692,21 @@ class Hazard(object):
                                                        _hazard.hazard_id)
 
         return False
+=======
+        Method to save all Hazard data models managed by the controller.
+
+        :return: _error_codes; list of tuples containing hardware ID, hazard
+                 ID, and error code.
+        :rtype: list
+        """
+
+        _error_codes = []
+
+        for _hazard in self.dicHazard.values():
+            (_results, _error_code) = self.save_hazard(_hazard.hardware_id,
+                                                       _hazard.hazard_id)
+            _error_codes.append((_hazard.hardware_id, _hazard.hazard_id,
+                                 _error_code))
+
+        return _error_codes
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

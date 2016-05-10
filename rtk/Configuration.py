@@ -270,6 +270,12 @@ Global list for risk level cutoffs.
 |   1   | Medium to high            |
 +-------+---------------------------+
 
+<<<<<<< HEAD
+=======
+:const RTK_REQUIREMENT_TYPES: default value: []
+Global list of requirement types.
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 :const RTK_FMECA_METHOD: default value: 1
 Global indicator variable for the criticality method used.  1=Task 102, 2=RPN.
 
@@ -379,6 +385,10 @@ RTK_MANUFACTURERS = []
 # ------------------------------------------------------------------------- #
 # Requirement analysis configuration options.                               #
 # ------------------------------------------------------------------------- #
+<<<<<<< HEAD
+=======
+RTK_REQUIREMENT_TYPES = []
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 RTK_STAKEHOLDERS = []
 RTK_AFFINITY_GROUPS = []
 
@@ -467,7 +477,11 @@ class RTKConf(object):
         :param str level: indicates which configuration file is to be read.
                           One of 'site' or 'user'.
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write __init__; current McCabe Complexity metric = 22.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         if name == 'posix':
             self.OS = 'Linux'
             _SITEDIR = '/etc/RTK/'
@@ -544,7 +558,11 @@ class RTKConf(object):
         Creates a default configuration file in the user's configuration
         directory.
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write create_default_configuration; current McCabe Complexity metric = 11
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         import glob
         import shutil
         from os.path import basename

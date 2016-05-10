@@ -34,11 +34,19 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import gui.gtk.Widgets as _widg
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+=======
+    import Configuration
+    import gui.gtk.Widgets as Widgets
+except ImportError:
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 # from Assistants import AddTesting
 import __gui.gtk.Growth as gGrowth
 
@@ -48,7 +56,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -64,6 +76,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                      Testing Work Book into.
     :ivar _testing_model: the Testing data model whose attributes are being
                            displayed.
+<<<<<<< HEAD
 
     :ivar _dic_definitions: dictionary containing pointers to the failure
                             definitions for the Revision being displayed.  Key
@@ -73,6 +86,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     :ivar _lst_handler_id: list containing the ID's of the callback signals for
                            each gtk.Widget() associated with an editable
                            Testing attribute.
+=======
+    :ivar dict _dic_definitions: dictionary containing pointers to the failure
+                                 definitions for the Revision being displayed.
+                                 Key is the Failure Definition ID; value is the
+                                 pointer to the Failure Definition data model.
+    :ivar list _lst_handler_id: list containing the ID's of the callback
+                                signals for each gtk.Widget() associated with
+                                an editable Testing attribute.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
@@ -156,18 +178,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                         availability.
     """
 
+<<<<<<< HEAD
     def __init__(self, workview, modulebook):
         """
         Initializes the Work Book view for the Testing package.
 
         :param workview: the :py:class:`rtk.gui.gtk.mwi.WorkView` container to
                          insert this Work Book into.
+=======
+    def __init__(self, modulebook):
+        """
+        Method to initialize the Work Book view for the Testing package.
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param modulebook: the :py:class:`rtk.testing.ModuleBook` to associate
                            with this Work Book.
         """
 
         gtk.VBox.__init__(self)
 
+<<<<<<< HEAD
         # Initialize private dict attributes.
 
         # Initialize private list attributes.
@@ -176,11 +206,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Initialize private scalar attributes.
         self._workview = workview
         self._modulebook = modulebook
+=======
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+        self._lst_handler_id = []
+
+        # Define private scalar attributes.
+        self._modulebook = modulebook
+        self._mdcRTK = modulebook.mdcRTK
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._testing_model = None
         self._obj_planning = None
         self._obj_feasibility = None
         self._obj_assessment = None
 
+<<<<<<< HEAD
         # Initialize public scalar attributes.
         self.dtcTesting = modulebook.dtcTesting
         self.dtcGrowth = modulebook.dtcGrowth
@@ -217,13 +258,105 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.btnAssessSave = _widg.make_button(width=35, image='save')
 
         self.hbxAssessment = gtk.HBox()
+=======
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+
+        # General Data page widgets.
+        self.cmbTestType = Widgets.make_combo(simple=True)
+
+        self.spnConfidence = gtk.SpinButton()
+        self.spnConsumerRisk = gtk.SpinButton()
+        self.spnProducerRisk = gtk.SpinButton()
+
+        self.txtName = Widgets.make_entry(width=400)
+        self.txtAttachment = Widgets.make_text_view(width=400)
+        self.txtDescription = Widgets.make_text_view(width=400)
+        self.txtCumTime = Widgets.make_entry(width=100, editable=False,
+                                             bold=True)
+        self.txtCumFails = Widgets.make_entry(width=100, editable=False,
+                                              bold=True)
+
+        # Configure the gtk.SpinButtons.
+        _adjustment = gtk.Adjustment(75.0, 50.0, 100.0, 0.5, 0, 0)
+        self.spnConfidence.set_adjustment(_adjustment)
+        self.spnConfidence.set_digits(int(Configuration.PLACES))
+
+        self.spnConsumerRisk.set_digits(int(Configuration.PLACES))
+        self.spnConsumerRisk.set_increments(0.1, 1.0)
+        self.spnConsumerRisk.set_range(0.0, 100.0)
+
+        self.spnProducerRisk.set_digits(int(Configuration.PLACES))
+        self.spnProducerRisk.set_increments(0.1, 1.0)
+        self.spnProducerRisk.set_range(0.0, 100.0)
+
+        # Set gtk.Widget() tooltip text.
+        self.cmbTestType.set_tooltip_text(_(u"Select the type of the "
+                                            u"of the selected test."))
+        self.spnConfidence.set_tooltip_text(_(u"Sets the statistical "
+                                              u"confidence for results "
+                                              u"obtained from the selected "
+                                              u"test."))
+        self.spnConsumerRisk.set_tooltip_text(_(u"The consumer (Type I) "
+                                                u"risk.  This is the risk of "
+                                                u"accepting a system when the "
+                                                u"true reliability is below "
+                                                u"the technical requirement."))
+        self.spnProducerRisk.set_tooltip_text(_(u"The producer (Type II) "
+                                                u"risk.  This is the risk of "
+                                                u"rejecting a system when the "
+                                                u"true reliability is at "
+                                                u"least the goal "
+                                                u"reliability."))
+        self.txtAttachment.set_tooltip_text(_(u"Enter the URL to any "
+                                              u"attachment associated with "
+                                              u"the selected test."))
+        self.txtCumFails.set_tooltip_text(_(u"Displays the cumulative number "
+                                            u"of failures for the selected "
+                                            u"test."))
+        self.txtCumTime.set_tooltip_text(_(u"Displays the cumulative test "
+                                           u"time for the selected test."))
+        self.txtDescription.set_tooltip_text(_(u"Enter a description of "
+                                               u"the selected test."))
+        self.txtName.set_tooltip_text(_(u"Enter the name of the selected "
+                                        u"test."))
+
+        # Connect gtk.Widget() signals to callback methods.
+        _textview = self.txtDescription.get_child().get_child()
+        self._lst_handler_id.append(
+            _textview.connect('focus-out-event', self._on_focus_out, 0))
+        self._lst_handler_id.append(
+            self.txtName.connect('focus-out-event', self._on_focus_out, 1))
+        self._lst_handler_id.append(
+            self.txtAttachment.connect('focus-out-event',
+                                       self._on_focus_out, 2))
+
+        self._lst_handler_id.append(
+            self.cmbTestType.connect('changed', self._on_combo_changed, 3))
+        self._lst_handler_id.append(
+            self.spnConfidence.connect('value-changed',
+                                       self._on_value_changed, 4))
+        self._lst_handler_id.append(
+            self.spnConsumerRisk.connect('value-changed',
+                                         self._on_value_changed, 5))
+        self._lst_handler_id.append(
+            self.spnProducerRisk.connect('value-changed',
+                                         self._on_value_changed, 6))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Put it all together.
         _toolbar = self._create_toolbar()
         self.pack_start(_toolbar, expand=False)
 
         _notebook = self._create_notebook()
+<<<<<<< HEAD
         self.pack_start(_notebook)
+=======
+        self.pack_end(_notebook)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.show_all()
 
@@ -243,7 +376,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Adds a new test."))
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/add.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 0)
         _toolbar.insert(_button, 0)
@@ -254,7 +391,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _button.set_tooltip_text(_(u"Removes the currently selected test from "
                                    u"from the RTK Program Database."))
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 1)
         _toolbar.insert(_button, _position)
@@ -266,7 +407,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Save all tests button
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 2)
         _toolbar.insert(_button, _position)
@@ -289,19 +434,30 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook() tab position.
+<<<<<<< HEAD
         if _conf.TABPOS[2] == 'left':
             _notebook.set_tab_pos(gtk.POS_LEFT)
         elif _conf.TABPOS[2] == 'right':
             _notebook.set_tab_pos(gtk.POS_RIGHT)
         elif _conf.TABPOS[2] == 'top':
+=======
+        if Configuration.TABPOS[2] == 'left':
+            _notebook.set_tab_pos(gtk.POS_LEFT)
+        elif Configuration.TABPOS[2] == 'right':
+            _notebook.set_tab_pos(gtk.POS_RIGHT)
+        elif Configuration.TABPOS[2] == 'top':
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _notebook.set_tab_pos(gtk.POS_TOP)
         else:
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
 
         self._create_general_data_page(_notebook)
+<<<<<<< HEAD
         self._create_planning_inputs_page(_notebook)
         self._create_feasibility_page(_notebook)
         self._create_test_result_page(_notebook)
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return _notebook
 
@@ -325,7 +481,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                  gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"General Information"))
+=======
+        _frame = Widgets.make_frame(label=_(u"General Information"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -348,6 +508,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Producer's Risk:"), _(u"Cumulative Time:"),
                    _(u"Cumulative Failures:"), _(u"Attachments:")]
 
+<<<<<<< HEAD
         (_x_pos, _y_pos) = _widg.make_labels(_labels[:2], _fixed, 5, 5)
         (_x_pos1, _y_pos1) = _widg.make_labels(_labels[2:], _fixed, 5,
                                                _y_pos[1] + 105)
@@ -384,6 +545,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                             u"of failures for the selected "
                                             u"test."))
 
+=======
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels[:2], _fixed, 5, 5)
+        (_x_pos1, _y_pos1) = Widgets.make_labels(_labels[2:], _fixed, 5,
+                                                 _y_pos[1] + 105)
+        _x_pos = max(_x_pos, _x_pos1) + 25
+
+        # Place the widgets.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(self.txtName, _x_pos, _y_pos[0])
         _fixed.put(self.txtDescription, _x_pos, _y_pos[1])
         _fixed.put(self.cmbTestType, _x_pos, _y_pos1[0])
@@ -394,6 +563,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed.put(self.txtCumFails, _x_pos, _y_pos1[5])
         _fixed.put(self.txtAttachment, _x_pos, _y_pos1[6])
 
+<<<<<<< HEAD
         # Configure the gtk.SpinButtons.
         self.spnConfidence.set_digits(int(_conf.PLACES))
         self.spnConfidence.set_increments(0.1, 1.0)
@@ -423,6 +593,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.spnProducerRisk.connect('value-changed',
                                          self._on_value_changed, 4))
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.show_all()
 
         # Insert the tab.
@@ -439,16 +611,24 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
+<<<<<<< HEAD
     def _create_planning_inputs_page(self, notebook):   # pylint: disable=R0914, R0915
         """
         Creates the Testing class gtk.Notebook() page for displaying the test
         planning inputs for the selected Test.
+=======
+    def _load_planning_inputs_page(self):   # pylint: disable=R0914, R0915
+        """
+        Method to create and load the Testing class gtk.Notebook() page for
+        displaying the test planning inputs for the selected Test.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Notebook notebook: the Testing class gtk.Notebook() widget.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
+<<<<<<< HEAD
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -467,6 +647,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self.btnSave.connect('clicked', self._on_button_clicked, 51)
 
+=======
+        _notebook = self.get_children()[1]
+
+        self._obj_planning = gGrowth.Planning(self._mdcRTK.dtcGrowth,
+                                              self._modulebook.listbook)
+        self._obj_planning.create_page()
+        self._obj_planning.load_page(self._testing_model)
+        self._obj_planning.show_all()
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build-up the containers for the tab.                          #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _(u"Test\nPlanning\nInputs") + "</span>")
@@ -476,6 +669,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _label.set_tooltip_text(_(u"Allows entering test planning inputs for "
                                   u"the selected test."))
 
+<<<<<<< HEAD
         notebook.insert_page(self.hbxPlanning, tab_label=_label, position=-1)
 
         return False
@@ -484,12 +678,24 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Creates the Testing class gtk.Notebook() page for displaying the test
         feasibility assessment for the selected Test.
+=======
+        _notebook.insert_page(self._obj_planning, tab_label=_label,
+                              position=-1)
+
+        return False
+
+    def _load_feasibility_page(self):       # pylint: disable=R0914, R0915
+        """
+        Method to create and load the Testing class gtk.Notebook() page for
+        displaying the test feasibility assessment for the selected Test.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Notebook notebook: the Testing class gtk.Notebook() widget.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
+<<<<<<< HEAD
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -507,6 +713,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                    u"test planning inputs."))
 
         self.btnFeasibilitySave.connect('clicked', self._on_button_clicked, 51)
+=======
+        _notebook = self.get_children()[1]
+
+        self._obj_feasibility = gGrowth.Feasibility(self._mdcRTK.dtcGrowth,
+                                                    self._modulebook.listbook)
+        self._obj_feasibility.create_page()
+        self._obj_feasibility.load_page(self._testing_model)
+        self._obj_feasibility.show_all()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
@@ -517,6 +732,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _label.set_tooltip_text(_(u"Displays the feasibility criteria for the "
                                   u"selected test."))
 
+<<<<<<< HEAD
         notebook.insert_page(self.hbxFeasibility, tab_label=_label,
                              position=-1)
 
@@ -528,10 +744,23 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         results for the selected Test.
 
         :param gtk.Notebook notebook: the Testing class gtk.Notebook() widget.
+=======
+        _notebook.insert_page(self._obj_feasibility, tab_label=_label,
+                              position=-1)
+
+        return False
+
+    def _load_assessment_page(self):        # pylint: disable=R0914, R0915
+        """
+        Method to create and load the Test Assessment gtk.Notebook() page for
+        displaying the test results for the selected Test.
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
+<<<<<<< HEAD
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -550,6 +779,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self.btnAssessSave.connect('clicked', self._on_button_clicked, 51)
 
+=======
+        _notebook = self.get_children()[1]
+
+        self._obj_assessment = gGrowth.Assessment(self._mdcRTK.dtcGrowth,
+                                                  self._modulebook.listbook)
+        self._obj_assessment.create_page()
+        self._obj_assessment.load_page(self._testing_model)
+        self._obj_assessment.show_all()
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build-up the containers for the tab.                          #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _(u"Test\nResults") + "</span>")
@@ -559,7 +801,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _label.set_tooltip_text(_(u"Displays the test results for the "
                                   u"selected test."))
 
+<<<<<<< HEAD
         notebook.insert_page(self.hbxAssessment, tab_label=_label, position=-1)
+=======
+        _notebook.insert_page(self._obj_assessment, tab_label=_label,
+                              position=-1)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
@@ -574,13 +821,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self._testing_model = model
 
+<<<<<<< HEAD
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+=======
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the General Data information.                            #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         self.cmbTestType.set_active(model.test_type)
+<<<<<<< HEAD
         self.spnConfidence.set_value(float(model.confidence))
+=======
+        self.spnConfidence.set_value(float(model.confidence * 100.0))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.spnConsumerRisk.set_value(float(model.consumer_risk))
         self.spnProducerRisk.set_value(float(model.producer_risk))
         self.txtName.set_text(str(model.name))
@@ -591,6 +846,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtCumTime.set_text(str(fmt.format(model.cum_time)))
         self.txtCumFails.set_text(str(fmt.format(model.cum_failures)))
 
+<<<<<<< HEAD
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the Planning Data information.                           #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -609,10 +865,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                   self._obj_planning.on_button_clicked, 50)
 
         self.hbxPlanning.show_all()
+=======
+        _notebook = self.get_children()[1]
+        for _page in range(_notebook.get_n_pages() - 1):
+            _notebook.remove_page(-1)
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Load the Planning Data information.                           #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        self._load_planning_inputs_page()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the Feasibility Data information.                        #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+<<<<<<< HEAD
         try:
             self.hbxFeasibility.remove(
                 self.hbxFeasibility.get_children()[1])
@@ -629,10 +896,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                     50)
 
         self.hbxFeasibility.show_all()
+=======
+        self._load_feasibility_page()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the Assessment Data information.                         #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+<<<<<<< HEAD
         try:
             self.hbxAssessment.remove(
                 self.hbxAssessment.get_children()[1])
@@ -656,6 +927,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.hbxAssessment.show_all()
 
         self.get_children()[1].set_current_page(0)
+=======
+        self._load_assessment_page()
+
+        _notebook.set_current_page(0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
@@ -682,6 +958,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
 
         # Add the new testing item to the database and dtcTesting dictionary.
+<<<<<<< HEAD
         (_testing, _error_code) = self.dtcTesting.add_testing(
             self._testing_model.revision_id, test_type, testing_id)
 
@@ -691,6 +968,25 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _icon = _conf.ICON_DIR + '32x32/unit.png'
 
         # Update the module book view to show the new assembly.
+=======
+        (_testing, _error_code) = self._mdcRTK.dtcTesting.add_testing(
+            self._testing_model.revision_id, test_type, testing_id)
+
+        if test_type == 1:
+            _icon = Configuration.ICON_DIR + '32x32/halthass.png'
+        elif test_type == 2:
+            _icon = Configuration.ICON_DIR + '32x32/accelerated.png'
+        elif test_type == 3:
+            _icon = Configuration.ICON_DIR + '32x32/ess.png'
+        elif test_type == 4:
+            _icon = Configuration.ICON_DIR + '32x32/growth.png'
+        elif test_type == 5:
+            _icon = Configuration.ICON_DIR + '32x32/demonstration.png'
+        elif test_type == 6:
+            _icon = Configuration.ICON_DIR + '32x32/prat.png'
+
+        # Update the module book view to show the new test.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _data = list(_testing.get_attributes()) + [_icon]
 
@@ -715,7 +1011,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Delete the selected testing item from the database and the
         # Testing data controller dictionary.
+<<<<<<< HEAD
         self.dtcTesting.delete_testing(self._testing_model.testing_id)
+=======
+        self._mdcRTK.dtcTesting.delete_testing(self._testing_model.testing_id)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Refresh the Testing gtkTreeView().
         if _row is not None:
@@ -727,8 +1027,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _on_button_clicked(self, __button, index):
         """
+<<<<<<< HEAD
         Responds to gtk.Button() clicked signals and calls the correct function
         or method, passing any parameters as needed.
+=======
+        Method to respond to gtk.Button() 'clicked' signals and call the
+        correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -737,6 +1042,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
         if index == 0:
             if self._testing_model.test_type == 4:
@@ -759,13 +1065,30 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif index == 51:
             if self._testing_model.test_type == 4:
                 self.dtcGrowth.save_test(self._testing_model.test_id)
+=======
+# TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 11.
+        if index == 0:
+            if self._testing_model.test_type == 4:
+                self._mdcRTK.dtcGrowth.add_test(self._testing_model.test_id)
+        elif index == 1:
+            if self._testing_model.test_type == 4:
+                self._mdcRTK.dtcGrowth.delete_test(self._testing_model.test_id)
+        elif index == 2:
+            if self._testing_model.test_type == 4:
+                self._mdcRTK.dtcGrowth.save_all_tests()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
     def _on_combo_changed(self, combo, index):
         """
+<<<<<<< HEAD
         Responds to gtk.ComboBox() changed signals and calls the correct
         function or method, passing any parameters as needed.
+=======
+        Method to respond to gtk.ComboBox() 'changed' signals and call the
+        correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list oc the callback
@@ -777,6 +1100,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         combo.handler_block(self._lst_handler_id[index])
 
+<<<<<<< HEAD
         if index == 1:                      # Testing level
             self._testing_model.level_id = combo.get_active()
             #self._modulebook.update(2, self._testing_model.level_id)
@@ -799,15 +1123,27 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif index == 7:
             self._testing_model.test_approach = combo.get_active()
             #self._modulebook.update(41, self._testing_model.test_approach)
+=======
+        if index == 3:                      # Test type
+            self._testing_model.test_type = combo.get_active()
+            self._modulebook.update(5, self._testing_model.test_type)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         combo.handler_unblock(self._lst_handler_id[index])
 
         return False
 
+<<<<<<< HEAD
     def _on_focus_out(self, entry, __event, index): # pylint: disable=R0912
         """
         Responds to gtk.Entry() focus_out signals and calls the correct
         function or method, passing any parameters as needed.
+=======
+    def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
+        """
+        Method to respond to gtk.Entry() 'focus_out' signals and call the
+        correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -823,8 +1159,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         if index == 0:
             _textbuffer = entry.get_buffer()
+<<<<<<< HEAD
             self._testing_model.description = _textbuffer.get_text(*_textbuffer.get_bounds())
             self._modulebook.update(3, self._testing_model.description)
+=======
+            _description = _textbuffer.get_text(*_textbuffer.get_bounds())
+            self._testing_model.description = _description
+            self._modulebook.update(4, self._testing_model.description)
+        elif index == 1:
+            self._testing_model.name = entry.get_text()
+            self._modulebook.update(3, self._testing_model.name)
+        elif index == 2:
+            self._testing_model.attachment = entry.get_text()
+            self._modulebook.update(6, self._testing_model.attachment)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -832,8 +1180,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _on_value_changed(self, button, index):     # pylint: disable=R0912
         """
+<<<<<<< HEAD
         Responds to gtk.SpinButton() value_changed signals and calls the
         correct function or method, passing any parameters as needed.
+=======
+        Method to respond to gtk.SpinButton() 'value_changed' signals and call
+        the correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.SpinButton button: the gtk.SpinButton() that called this
                                       method.
@@ -846,12 +1199,24 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         button.handler_block(self._lst_handler_id[index])
 
+<<<<<<< HEAD
         if index == 2:
             self._testing_model.confidence = button.get_value()
         elif index == 3:
             self._testing_model.consumer_risk = button.get_value()
         elif index == 4:
             self._testing_model.producer_risk = button.get_value()
+=======
+        if index == 4:
+            self._testing_model.confidence = button.get_value() / 100.0
+            self._modulebook.update(9, self._testing_model.confidence)
+        elif index == 5:
+            self._testing_model.consumer_risk = button.get_value()
+            self._modulebook.update(10, self._testing_model.consumer_risk)
+        elif index == 6:
+            self._testing_model.producer_risk = button.get_value()
+            self._modulebook.update(11, self._testing_model.producer_risk)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         button.handler_unblock(self._lst_handler_id[index])
 

@@ -5,6 +5,7 @@ This is the test class for testing Software BoM module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.software.TestBoM.py is part of The RTK Project
 #
 # All rights reserved.
@@ -12,12 +13,25 @@ This is the test class for testing Software BoM module algorithms and models.
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestSoftwareBoM.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
 import dao.DAO as _dao
 from software.BoM import *
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+import dao.DAO as _dao
+from software.BoM import BoM
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,10 +49,13 @@ class TestBoMController(unittest.TestCase):
         Sets up the test fixture for the BoM class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = BoM()
 
     @attr(all=True, unit=True)
@@ -51,6 +68,7 @@ class TestBoMController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicSoftware, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_bom(self):
@@ -218,3 +236,5 @@ class TestBoMController(unittest.TestCase):
 
         self.DUT.request_bom(self._dao, 0)
         self.assertFalse(self.DUT.save_bom())
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

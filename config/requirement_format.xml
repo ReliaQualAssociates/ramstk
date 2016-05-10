@@ -3,7 +3,11 @@
 
       requirement_format.xml is part of The RTK Project
 
+<<<<<<< HEAD
       Copyright (C) 2007-2015 Andrew "Weibullguy" Rowland
+=======
+      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
       <andrew.rowland@reliaqual.com>
 -->
 
@@ -29,6 +33,7 @@ experience. -->
             <widget>text</widget>
             <position>1</position>
             <editable>0</editable>
+<<<<<<< HEAD
             <visible>0</visible>
         </column>
         <column>
@@ -43,11 +48,31 @@ experience. -->
         <column>
             <defaulttitle>Requirement</defaulttitle>
             <usertitle>Requirement</usertitle>
+=======
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Requirement</defaulttitle>
+            <usertitle>Requirement</usertitle>
+            <datatype>gchararray</datatype>
+            <position>2</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Requirement Code</defaulttitle>
+            <usertitle>Requirement Code</usertitle>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <datatype>gchararray</datatype>
             <position>3</position>
             <widget>text</widget>
             <editable>0</editable>
+<<<<<<< HEAD
             <visible>1</visible>
+=======
+            <visible>0</visible>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         </column>
         <column>
             <defaulttitle>Requirement Type</defaulttitle>
@@ -55,6 +80,7 @@ experience. -->
             <datatype>gchararray</datatype>
             <position>4</position>
             <widget>combo</widget>
+<<<<<<< HEAD
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -97,6 +123,50 @@ experience. -->
         <column>
             <defaulttitle>Validated Date</defaulttitle>
             <usertitle>Validated Date</usertitle>
+=======
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Priority</defaulttitle>
+            <usertitle>Priority</usertitle>
+            <datatype>gint</datatype>
+            <position>5</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Specification</defaulttitle>
+            <usertitle>Specification</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Page Number</defaulttitle>
+            <usertitle>Page Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Figure Number</defaulttitle>
+            <usertitle>Figure Number</usertitle>
+            <datatype>gchararray</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Derived?</defaulttitle>
+            <usertitle>Derived?</usertitle>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <datatype>gint</datatype>
             <position>9</position>
             <widget>text</widget>
@@ -109,6 +179,7 @@ experience. -->
             <datatype>gchararray</datatype>
             <position>10</position>
             <widget>combo</widget>
+<<<<<<< HEAD
             <editable>0</editable>
             <visible>1</visible>
         </column>
@@ -116,57 +187,99 @@ experience. -->
             <defaulttitle>Specification</defaulttitle>
             <usertitle>Specification</usertitle>
             <datatype>gchararray</datatype>
+=======
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Validated?</defaulttitle>
+            <usertitle>Validated?</usertitle>
+            <datatype>gint</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>11</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
+<<<<<<< HEAD
             <defaulttitle>Page Number</defaulttitle>
             <usertitle>Page Number</usertitle>
             <datatype>gchararray</datatype>
+=======
+            <defaulttitle>Validated Date</defaulttitle>
+            <usertitle>Validated Date</usertitle>
+            <datatype>gint</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>12</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
+<<<<<<< HEAD
             <defaulttitle>Figure Number</defaulttitle>
             <usertitle>Figure Number</usertitle>
             <datatype>gchararray</datatype>
+=======
+            <defaulttitle>Parent ID</defaulttitle>
+            <usertitle>Parent ID</usertitle>
+            <datatype>gint</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>13</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
+<<<<<<< HEAD
             <defaulttitle>Parent ID</defaulttitle>
             <usertitle>Parent ID</usertitle>
             <datatype>gint</datatype>
+=======
+            <defaulttitle>Clear</defaulttitle>
+            <usertitle>Clear</usertitle>
+            <datatype>gchararray</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>14</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
+<<<<<<< HEAD
             <defaulttitle>Software ID</defaulttitle>
             <usertitle>Software ID</usertitle>
             <datatype>gint</datatype>
+=======
+            <defaulttitle>Complete</defaulttitle>
+            <usertitle>Complete</usertitle>
+            <datatype>gchararray</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>15</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
+<<<<<<< HEAD
             <defaulttitle>Analysis Q1</defaulttitle>
             <usertitle>Analysis Q1</usertitle>
             <datatype>gint</datatype>
             <position>16</position>
             <widget>toggle</widget>
+=======
+            <defaulttitle>Consistent</defaulttitle>
+            <usertitle>Consistent</usertitle>
+            <datatype>gchararray</datatype>
+            <position>16</position>
+            <widget>text</widget>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
+<<<<<<< HEAD
             <defaulttitle>Analysis Q2</defaulttitle>
             <usertitle>Analysis Q2</usertitle>
             <datatype>gint</datatype>
@@ -486,6 +599,12 @@ experience. -->
             <usertitle>Priority</usertitle>
             <datatype>gint</datatype>
             <position>52</position>
+=======
+            <defaulttitle>Verifiable</defaulttitle>
+            <usertitle>Verifiable</usertitle>
+            <datatype>gchararray</datatype>
+            <position>17</position>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>

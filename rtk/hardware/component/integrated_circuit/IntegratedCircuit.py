@@ -17,6 +17,7 @@ import locale
 
 try:
     import calculations as _calc
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
     from hardware.component.Component import Model as Component
@@ -24,6 +25,15 @@ except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+    from hardware.component.Component import Model as Component
+except ImportError:                         # pragma: no cover
+    import rtk.calculations as _calc
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.Component import Model as Component
 
 __author__ = 'Andrew Rowland'
@@ -33,7 +43,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -59,15 +73,34 @@ class Model(Component):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize an Integrated Circuit data model instance.
+=======
+        Method to initialize an Integrated Circuit data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Model, self).__init__()
 
+<<<<<<< HEAD
         # Initialize public list attributes.
         self.lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
 
         # Initialize public scalar attributes.
+=======
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+        self.lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
+
+        # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.quality = 0                    # Quality level.
         self.q_override = 0.0               # User-defined quality factor.
         self.base_hr = 0.0                  # Base hazard rate.
@@ -78,7 +111,11 @@ class Model(Component):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Integrated Circuit data model attributes.
+=======
+        Method to set the Integrated Circuit data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -101,18 +138,30 @@ class Model(Component):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Integrated Circuit data model
         attributes.
+=======
+        Method to retrieve the current values of the Integrated Circuit data
+        model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (q_override, base_hr, piQ, piE, quality, reason,
                   specification, insulation_class, hot_spot_temperature)
@@ -126,9 +175,16 @@ class Model(Component):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Integrated Circuit data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Integrated Circuit data
+        model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -163,7 +219,12 @@ class Model(Component):
                                    self.add_adj_factor) * \
                                   (self.duty_cycle / 100.0) * \
                                   self.mult_adj_factor * self.quantity
+<<<<<<< HEAD
         self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
+=======
+        self.hazard_rate_active = self.hazard_rate_active / \
+                                  Configuration.FRMULT
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Calculate overstresses.
         self._overstressed()
@@ -177,12 +238,18 @@ class Model(Component):
 
     def _overstressed(self):
         """
+<<<<<<< HEAD
         Determines whether the Integrated Circuit is overstressed based on it's
         rated values and operating environment.
+=======
+        Method to determine whether the Integrated Circuit is overstressed
+        based on it's rated values and operating environment.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
         _reason_num = 1
         _harsh = True
@@ -194,6 +261,19 @@ class Model(Component):
 
         self.overstress = False
         self.reason = ''
+=======
+# TODO: Re-write _overstressed; current McCabe Complexity metric = 11.
+        _reason_num = 1
+        _reason = ''
+        _harsh = True
+# TODO: Set max junction temperature based on device type.
+        # if self.subcategory == 9:           # GaAs
+        #     _max_junction_temp = 135.0
+        # else:
+        _max_junction_temp = 125.0
+
+        self.overstress = False
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # If the active environment is Benign Ground, Fixed Ground,
         # Sheltered Naval, or Space Flight it is NOT harsh.
@@ -203,40 +283,73 @@ class Model(Component):
         if _harsh:
             if self.operating_voltage > 1.05 * self.rated_voltage:
                 self.overstress = True
+<<<<<<< HEAD
                 self.reason = self.reason + str(_reason_num) + \
+=======
+                _reason = _reason + str(_reason_num) + \
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                               _(u". Operating voltage > 105% rated voltage.\n")
                 _reason_num += 1
             if self.operating_voltage < 0.95 * self.rated_voltage:
                 self.overstress = True
+<<<<<<< HEAD
                 self.reason = self.reason + str(_reason_num) + \
+=======
+                _reason = _reason + str(_reason_num) + \
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                               _(u". Operating voltage < 95% rated voltage.\n")
                 _reason_num += 1
             if self.operating_current > 0.80 * self.rated_current:
                 self.overstress = True
+<<<<<<< HEAD
                 self.reason = self.reason + str(_reason_num) + \
+=======
+                _reason = _reason + str(_reason_num) + \
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                               _(u". Operating current > 80% rated current.\n")
                 _reason_num += 1
             if self.junction_temperature > _max_junction_temp:
                 self.overstress = True
+<<<<<<< HEAD
                 self.reason = self.reason + str(_reason_num) + \
+=======
+                _reason = _reason + str(_reason_num) + \
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                               _(u". Junction temperature > %fC.\n").format(
                                   _max_junction_temp)
                 _reason_num += 1
         else:
             if self.operating_voltage > 1.05 * self.rated_voltage:
                 self.overstress = True
+<<<<<<< HEAD
                 self.reason = self.reason + str(_reason_num) + \
+=======
+                _reason = _reason + str(_reason_num) + \
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                               _(u". Operating voltage > 105% rated voltage.\n")
                 _reason_num += 1
             if self.operating_voltage < 0.95 * self.rated_voltage:
                 self.overstress = True
+<<<<<<< HEAD
                 self.reason = self.reason + str(_reason_num) + \
+=======
+                _reason = _reason + str(_reason_num) + \
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                               _(u". Operating voltage < 95% rated voltage.\n")
                 _reason_num += 1
             if self.operating_current > 0.90 * self.rated_current:
                 self.overstress = True
+<<<<<<< HEAD
                 self.reason = self.reason + str(_reason_num) + \
                               _(u". Operating current > 90% rated current.\n")
                 _reason_num += 1
 
+=======
+                _reason = _reason + str(_reason_num) + \
+                              _(u". Operating current > 90% rated current.\n")
+                _reason_num += 1
+
+        self.reason = _reason
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False

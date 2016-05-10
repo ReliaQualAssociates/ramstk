@@ -5,25 +5,42 @@ This is the test class for testing the Mode class.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       TestFMEAMode.py is part of The RTK Project
 #
 # All rights reserved.
 
 import sys
 from os.path import dirname
+=======
+#       tests.unit.TestFMEAMode.py is part of The RTK Project
+#
+# All rights reserved.
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import dao.DAO as _dao
 from analyses.fmea.Mode import *
 
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+=======
+from analyses.fmea.Mode import Model, Mode, OutOfRangeError
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
+<<<<<<< HEAD
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+=======
+__copyright__ = 'Copyright 2014 - 2016 Andrew "weibullguy" Rowland'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestFMEAModeModel(unittest.TestCase):
@@ -173,6 +190,7 @@ class TestFMEAModeModel(unittest.TestCase):
 
         pass
 
+<<<<<<< HEAD
     @attr(all=False, unit=False)
     def test_criticality_out_of_range_inputs(self):
         """
@@ -185,3 +203,91 @@ class TestFMEAModeModel(unittest.TestCase):
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 11, 1)
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 0)
         self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1, 11)
+=======
+    @attr(all=False, unit=True)
+    def test_criticality_out_of_range_hazard_rate_input(self):
+        """
+        (TestFMEAMode) calculate raises OutOfRangeError for item_hr < 0.0
+        """
+
+        self.DUT.mode_ratio = 1.0
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 0.0)
+
+    @attr(all=False, unit=True)
+    def test_criticality_out_of_range_ratio_input(self):
+        """
+        (TestFMEAMode) calculate raises OutOfRangeError for 0.0 > ratio > 1.0
+        """
+
+        self.DUT.mode_ratio = -0.1
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1.1)
+
+    @attr(all=False, unit=True)
+    def test_criticality_out_of_range_op_time_input(self):
+        """
+        (TestFMEAMode) calculate raises OutOfRangeError for 0.0 > operating time
+        """
+
+        self.DUT.mode_ratio = 0.5
+        self.DUT.mode_op_time = -1.2
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
+
+    @attr(all=False, unit=True)
+    def test_criticality_out_of_range_eff_prob_input(self):
+        """
+        (TestFMEAMode) calculate raises OutOfRangeError for 0.0 <= effect probability =< 1.0
+        """
+
+        self.DUT.mode_ratio = 11.0
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 2.3
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
+
+    @attr(all=False, unit=True)
+    def test_criticality_out_of_range_mode_hazard_rate(self):
+        """
+        (TestFMEAMode) calculate raises OutOfRangeError for 0 > mode hazard rate
+        """
+
+        self.DUT.mode_ratio = -0.5
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
+
+    @attr(all=False, unit=True)
+    def test_criticality_out_of_range_mode_criticaility(self):
+        """
+        (TestFMEAMode) calculate raises OutOfRangeError for 0 > mode criticality
+        """
+
+        self.DUT.mode_ratio = -0.5
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1)
+
+
+class TestModeController(unittest.TestCase):
+    """
+    Class for testing the FMEA Mode data controller class.
+    """
+
+    def setUp(self):
+        """
+        Sets up the test fixture for the FMEA Mode class.
+        """
+
+        self.DUT = Mode()
+
+    @attr(all=True, unit=True)
+    def test_controller_create(self):
+        """
+        (TestFMEAMode) __init__ should create a Mode data controller
+        """
+
+        self.assertTrue(isinstance(self.DUT, Mode))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

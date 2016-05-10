@@ -13,9 +13,15 @@ FMEA Control Module
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Utilities as _util
 except ImportError:
     import rtk.Utilities as _util
+=======
+    import Utilities
+except ImportError:                         # pragma: no cover
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -30,12 +36,24 @@ class Model(object):
     The attributes of a Control are:
 
 
+<<<<<<< HEAD
     :ivar mode_id: default value: 0
     :ivar mechanism_id: default value: 0
     :ivar cause_id: default value: 0
     :ivar control_id: default value: 0
     :ivar description: default value: ''
     :ivar control_type: default value: 0
+=======
+    :ivar int mode_id: the ID of the failure Mode this Control is associated
+                       with.
+    :ivar int mechanism_id: the ID of the failure Mechanism this Control is
+                            associated with.
+    :ivar int cause_id: the ID of the failure Cause this Control is associated
+                        with.
+    :ivar int control_id: the ID of this Control.
+    :ivar str description: the description of this Control.
+    :ivar int control_type: the type of Control
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -71,6 +89,7 @@ class Model(object):
             self.description = str(values[4])
             self.control_type = int(values[5])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
@@ -78,6 +97,15 @@ class Model(object):
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+        except ValueError as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)

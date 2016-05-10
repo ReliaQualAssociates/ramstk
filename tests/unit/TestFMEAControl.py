@@ -3,28 +3,46 @@
 This is the test class for testing the Control class.
 """
 
+<<<<<<< HEAD
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.fmea.TestControl.py is part of The RTK Project
 #
 # All rights reserved.
+<<<<<<< HEAD
 
 import unittest
 from nose.plugins.attrib import attr
 
 # We add this to ensure the imports within the rtk packages will work.
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
 import dao.DAO as _dao
 
 from analyses.fmea.Control import Model
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+from analyses.fmea.Control import Model, Control
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestControlModel(unittest.TestCase):
@@ -114,3 +132,27 @@ class TestControlModel(unittest.TestCase):
         self.DUT.set_attributes(values)
         result = self.DUT.get_attributes()
         self.assertEqual(result, values)
+<<<<<<< HEAD
+=======
+
+
+class TestControlController(unittest.TestCase):
+    """
+    Class for testing the FMEA Control data controller.
+    """
+
+    def setUp(self):
+        """
+        Method to setup the test fixture for the Control model class.
+        """
+
+        self.DUT = Control()
+
+    @attr(all=True, unit=True)
+    def test_control_create(self):
+        """
+        (TestControl) __init__ should return instance of Control data controller
+        """
+
+        self.assertTrue(isinstance(self.DUT, Control))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

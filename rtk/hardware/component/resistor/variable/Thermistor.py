@@ -16,12 +16,21 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
     from hardware.component.resistor.Resistor import Model as Resistor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+    from hardware.component.resistor.Resistor import Model as Resistor
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
 
 __author__ = 'Andrew Rowland'
@@ -31,7 +40,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -43,6 +56,7 @@ class Thermistor(Resistor):
     The Thermistor resistor data model contains the attributes and methods of
     a Thermistor resistor.  The attributes of a Thermistor resistor are:
 
+<<<<<<< HEAD
     :cvar _lst_piR: list of resistance factor values.
     :cvar _lst_piE: list of environment factor values.
     :cvar _lst_piQ_count: list of quality factor values for the parts count
@@ -53,6 +67,20 @@ class Thermistor(Resistor):
     :cvar subcategory: default value: 32
 
     :ivar type: default value: 0
+=======
+    :cvar list _lst_piR: list of MIL-HDBK-217FN2 resistance factor values.
+    :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
+                         values.
+    :cvar list _lst_piQ_count: list of quality factor values for the
+                               MIL-HDBK-217FN2 parts count method.
+    :cvar list _lst_piQ_stress: list of quality factor values for the
+                                MIL-HDBK-217FN2 parts stress method.
+    :cvar list _lst_lambdab_count: list of base hazard rate values for the
+                                   MIL-HDBK-217FN2 parts count method.
+    :cvar int subcategory: default value: 32
+
+    :ivar int type: index in the MIL-HDBK-217FN2 type list.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-T-23648.
 
@@ -74,7 +102,11 @@ class Thermistor(Resistor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a Thermistor resistor data model instance.
+=======
+        Method to initialize a Thermistor resistor data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Thermistor, self).__init__()
@@ -83,7 +115,11 @@ class Thermistor(Resistor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Thermistor data model attributes.
+=======
+        Method to set the Thermistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -99,17 +135,29 @@ class Thermistor(Resistor):
         try:
             self.type = int(values[117])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Thermistor data model attributes.
+=======
+        Method to retrieve the current values of the Thermistor data model
+        attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (type)
         :rtype: tuple
@@ -121,9 +169,16 @@ class Thermistor(Resistor):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Thermistor resistor data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Thermistor resistor data
+        model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -143,4 +198,8 @@ class Thermistor(Resistor):
                 self.base_hr = 0.105
             self.hazard_rate_model['lambdab'] = self.base_hr
 
+<<<<<<< HEAD
         return Resistor.calculate(self)
+=======
+        return Resistor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

@@ -17,10 +17,17 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     from software.Software import Model as Software
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+=======
+    import Configuration
+    from software.Software import Model as Software
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as Configuration
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.software.Software import Model as Software
 
 __author__ = 'Andrew Rowland'
@@ -29,14 +36,22 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
+<<<<<<< HEAD
 class Model(Software):                        # pylint: disable=R0902
+=======
+class Model(Software):                      # pylint: disable=R0902
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
     The Unit data model contains the attributes and methods of a software Unit
     item.
@@ -44,7 +59,11 @@ class Model(Software):                        # pylint: disable=R0902
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize an Unit data model instance.
+=======
+        Method to initialize a Unit data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Model, self).__init__()
@@ -68,6 +87,10 @@ class Model(Software):                        # pylint: disable=R0902
         :rtype: bool
         """
 
+<<<<<<< HEAD
+=======
+        # Software complexity defaults to 1 since cb and ncb default to 0.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.sx = self.cb + self.ncb + 1
 
         return False
@@ -101,7 +124,11 @@ class Unit(object):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initializes an Unit data controller instance.
+=======
+        Method to initialize a Unit data controller instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         pass

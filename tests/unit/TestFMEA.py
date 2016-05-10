@@ -19,7 +19,11 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 
+<<<<<<< HEAD
 from analyses.fmea.FMEA import *
+=======
+from analyses.fmea.FMEA import Model, FMEA, ParentError
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -110,6 +114,7 @@ class TestFMEAController(unittest.TestCase):
 
     def setUp(self):
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
@@ -119,6 +124,9 @@ class TestFMEAController(unittest.TestCase):
         self._mode_id = None
         self._mechanism_id = None
         self._cause_id = None
+=======
+        self.DUT = FMEA()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_create_controller(self):
@@ -128,6 +136,7 @@ class TestFMEAController(unittest.TestCase):
 
         self.assertEqual(self.DUT.dicDFMEA, {})
         self.assertEqual(self.DUT.dicFFMEA, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_function_fmea(self):
@@ -488,3 +497,5 @@ class TestFMEAController(unittest.TestCase):
         _action.set_attributes(_values)
 
         self.assertFalse(self.DUT._save_action(_action))
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

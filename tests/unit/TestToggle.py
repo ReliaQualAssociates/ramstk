@@ -5,6 +5,7 @@ This is the test class for testing Toggle Switch module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.hardware.TestToggle.py is part of The RTK Project
 #
 # All rights reserved.
@@ -12,11 +13,22 @@ This is the test class for testing Toggle Switch module algorithms and models.
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestToggle.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
 import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.switch.Toggle import Toggle
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +47,12 @@ class TestToggleModel(unittest.TestCase):
         Setup the test fixture for the Toggle Switch class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Toggle()
 
     @attr(all=True, unit=True)
@@ -211,14 +226,22 @@ class TestToggleModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
         (TestToggle) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestToggle) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.029)
@@ -228,7 +251,11 @@ class TestToggleModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_resistive(self):
         """
+<<<<<<< HEAD
         (TestToggle) calculate should return False on success when calculating MIL-HDBK-217F stress results with a resistive load
+=======
+        (TestToggle) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with a resistive load
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -241,7 +268,11 @@ class TestToggleModel(unittest.TestCase):
         self.DUT.load_type = 1
         self.DUT.contact_form = 3
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piCYC * piL * piC * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.00045)
@@ -254,7 +285,11 @@ class TestToggleModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_inductive(self):
         """
+<<<<<<< HEAD
         (TestToggle) calculate should return False on success when calculating MIL-HDBK-217F stress results with an inductive load
+=======
+        (TestToggle) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with an inductive load
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -267,7 +302,11 @@ class TestToggleModel(unittest.TestCase):
         self.DUT.load_type = 2
         self.DUT.contact_form = 3
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piCYC * piL * piC * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.034)
@@ -280,7 +319,11 @@ class TestToggleModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_lamp(self):
         """
+<<<<<<< HEAD
         (TestToggle) calculate should return False on success when calculating MIL-HDBK-217F stress results with a lamp load
+=======
+        (TestToggle) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with a lamp load
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -293,7 +336,11 @@ class TestToggleModel(unittest.TestCase):
         self.DUT.load_type = 3
         self.DUT.contact_form = 3
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piCYC * piL * piC * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.04)
@@ -306,7 +353,11 @@ class TestToggleModel(unittest.TestCase):
     @attr(all=True, unit=False)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
         (TestToggle) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestToggle) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -317,12 +368,20 @@ class TestToggleModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.000000000000001
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=False)
     def test_calculate_217_stress_zero_division(self):
         """
+<<<<<<< HEAD
         (TestToggle) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestToggle) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -333,4 +392,8 @@ class TestToggleModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

@@ -5,10 +5,16 @@ This is the test class for testing Similat Item module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.similar_item.TestSimilarItem.py is part of The RTK Project
 #
 # All rights reserved.
 
+=======
+#       tests.unit.TestSimilarItem.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +22,10 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import dao.DAO as _dao
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from analyses.similar_item.SimilarItem import Model, SimilarItem
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +44,12 @@ class TestSimilarItemModel(unittest.TestCase):
         Setup the test fixture for the SimilarItem class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
     @attr(all=True, unit=True)
@@ -102,6 +114,10 @@ class TestSimilarItemModel(unittest.TestCase):
         self.assertEqual(self.DUT.user_int_4, 0)
         self.assertEqual(self.DUT.user_int_5, 0)
         self.assertEqual(self.DUT.parent_id, 0)
+<<<<<<< HEAD
+=======
+        self.assertEqual(self.DUT.method, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_set_attributes(self):
@@ -115,7 +131,11 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
+<<<<<<< HEAD
                    0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1)
+=======
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1, 1)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -133,7 +153,11 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, None, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
+<<<<<<< HEAD
                    0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1)
+=======
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 1, 1)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -151,7 +175,11 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
+<<<<<<< HEAD
                    0.0, 0.0, 0.0, 0.0, 0.0, 0, 0)
+=======
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 1)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -168,7 +196,12 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0,
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, None, None,
+<<<<<<< HEAD
                    None, None, None, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0)
+=======
+                   None, None, None, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0,
+                   0, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 
@@ -184,7 +217,11 @@ class TestSimilarItemModel(unittest.TestCase):
                    'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0, '',
                    '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 'User blob 1',
                    'User blob 2', 'User blob 3', 'User blob 4', 'User blob 5',
+<<<<<<< HEAD
                    0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0)
+=======
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 1)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
@@ -245,10 +282,13 @@ class TestSimilarItemController(unittest.TestCase):
         Sets up the test fixture for the SimilarItem class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = SimilarItem()
 
     @attr(all=True, unit=True)
@@ -260,6 +300,7 @@ class TestSimilarItemController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, SimilarItem))
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT.dicSimilarItem, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_similar_item(self):
@@ -348,3 +389,5 @@ class TestSimilarItemController(unittest.TestCase):
 
         self.DUT.request_similar_item(self._dao)
         self.assertFalse(self.DUT.save_all_similar_item())
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

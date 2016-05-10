@@ -34,21 +34,37 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
     import gui.gtk.Widgets as _widg
+=======
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from analyses.allocation.gui.gtk.WorkBook import WorkView as Allocation
     from analyses.hazard.gui.gtk.WorkBook import WorkView as Hazard
     from analyses.similar_item.gui.gtk.WorkBook import WorkView as SimilarItem
     from analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA
     from analyses.pof.gui.gtk.WorkBook import WorkView as PoF
 except ImportError:
+<<<<<<< HEAD
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
     from rtk.analyses.allocation.gui.gtk.WorkBook import WorkView as Allocation
     from rtk.analyses.hazard.gui.gtk.WorkBook import WorkView as Hazard
     from rtk.analyses.similar_item.gui.gtk.WorkBook import WorkView as SimilarItem
+=======
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
+    from rtk.analyses.allocation.gui.gtk.WorkBook import WorkView as Allocation
+    from rtk.analyses.hazard.gui.gtk.WorkBook import WorkView as Hazard
+    from rtk.analyses.similar_item.gui.gtk.WorkBook import WorkView \
+        as SimilarItem
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.analyses.fmea.gui.gtk.WorkBook import WorkView as FMECA
     from rtk.analyses.pof.gui.gtk.WorkBook import WorkView as PoF
 import __gui.gtk.Capacitor as gCapacitor
@@ -67,7 +83,11 @@ import __gui.gtk.Switch as gSwitch
 # from Assistants import AddHardware
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -88,12 +108,18 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                      Hardware Work Book into.
     :ivar _hardware_model: the Hardware data model whose attributes are being
                            displayed.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     :ivar dict _dic_definitions: dictionary containing pointers to the failure
                                  definitions for the Revision being displayed.
                                  Key is the Failure Definition ID; value is the
                                  pointer to the Failure Definition data model.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     :ivar list _lst_handler_id: list containing the ID's of the callback
                                 signals for each gtk.Widget() associated with
                                 an editable Hardware attribute.
@@ -146,6 +172,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     |    21    | txtRemarks - `focus_out_event`            |
     +----------+-------------------------------------------+
 
+<<<<<<< HEAD
     :ivar dtcHardware: the :class:`rtk.hardware.Hardware.Hardware` data
                        controller to use with this Work Book.
 
@@ -188,10 +215,51 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                   insert this Work Book into.
         :param rtk.function.ModuleBook: the Function Module Book to associate
                                         with this Work Book.
+=======
+    :ivar dtcHardware: the :py:class:`rtk.hardware.Hardware.Hardware` data
+                       controller to use with this Work Book.
+    :ivar chkSafetyCritical: the :py:class:`gtk.CheckButton` to display/edit
+                             the Hardware's safety criticality.
+    :ivar txtName: the :py:class:`gtk.Entry` to display/edit the Hardware name.
+    :ivar txtTotalCost: the :py:class:`gtk.Entry` to display the Hardware cost.
+    :ivar txtPartCount: the :py:class:`gtk.Entry` to display the number of
+                        Components comprising the Assembly.
+    :ivar txtRemarks: the :py:class:`gtk.Entry` to display/edit the Hardware
+                      remarks.
+    :ivar txtPredictedHt: the :py:class:`gtk.Entry` to display the Hardware
+                          logistics hazard rate.
+    :ivar txtMissionHt: the :py:class:`gtk.Entry` to display the Hardware
+                        mission hazard rate.
+    :ivar txtMTBF: the :py:class:`gtk.Entry` to display the Hardware logistics
+                   MTBF.
+    :ivar txtMissionMTBF: the :py:class:`gtk.Entry` to display the Hardware
+                          mission MTBF.
+    :ivar txtMPMT: the :py:class:`gtk.Entry` to display the Hardware mean
+                   preventive maintenance time.
+    :ivar txtMCMT: the :py:class:`gtk.Entry` to display the Hardware mean
+                   corrective maintenance time.
+    :ivar txtMTTR: the :py:class:`gtk.Entry` to display the Hardware mean time
+                   to repair.
+    :ivar txtMMT: the :py:class:`gtk.Entry` to display the Hardware mean
+                  maintenance time.
+    :ivar txtAvailability: the :py:class:`gtk.Entry` to display the Hardware
+                           logistics availability.
+    :ivar txtMissionAt: the :py:class:`gtk.Entry` to display the Hardware
+                        mission availability.
+    """
+
+    def __init__(self, modulebook):
+        """
+        Initializes the Work Book view for the Hardware package.
+
+        :param modulebook: the :py:class:`rtk.hardware.ModuleBook` to associate
+                           with this Work Book.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.VBox.__init__(self)
 
+<<<<<<< HEAD
         # Initialize private dict attributes.
 
         # Initialize private list attributes.
@@ -199,10 +267,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Initialize private scalar attributes.
         self._workview = workview
+=======
+        # Define private dict attributes.
+
+        # Define private list attributes.
+        self._lst_handler_id = []
+
+        # Define private scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._modulebook = modulebook
         self._hardware_model = None
         self._obj_inputs = None
         self._obj_results = None
+<<<<<<< HEAD
         #self._stakeholder_model = None
 
         # Initialize public scalar attributes.
@@ -308,10 +385,117 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtTempRise = _widg.make_entry(width=100)
         self.txtThetaJC = _widg.make_entry(width=100)
         self.txtVibration = _widg.make_entry(width=100)
+=======
+
+        # Define private dict attributes.
+
+        # Define private list attributes.
+
+        # Define public scalar attributes.
+        self.dtcBoM = self._modulebook.mdcRTK.dtcHardwareBoM
+        self.dtcAllocation = self._modulebook.mdcRTK.dtcAllocation
+        self.dtcHazard = self._modulebook.mdcRTK.dtcHazard
+        self.dtcSimilarItem = self._modulebook.mdcRTK.dtcSimilarItem
+        self.dtcFMECA = self._modulebook.mdcRTK.dtcFMEA
+        self.dtcPoF = self._modulebook.mdcRTK.dtcPoF
+
+        # General Data page widgets.
+        self.chkRepairable = Widgets.make_check_button()
+        self.chkTagged = Widgets.make_check_button()
+
+        self.cmbCategory = Widgets.make_combo(simple=False)
+        self.cmbManufacturer = Widgets.make_combo(simple=False)
+        self.cmbSubcategory = Widgets.make_combo(simple=False)
+
+        self.txtName = Widgets.make_entry()
+        self.txtPartNum = Widgets.make_entry()
+        self.txtAltPartNum = Widgets.make_entry()
+        self.txtRefDes = Widgets.make_entry()
+        self.txtCompRefDes = Widgets.make_entry()
+        self.txtQuantity = Widgets.make_entry(width=50)
+        self.txtDescription = Widgets.make_entry(width=700)
+        self.txtCAGECode = Widgets.make_entry()
+        self.txtLCN = Widgets.make_entry()
+        self.txtNSN = Widgets.make_entry()
+        self.txtYearMade = Widgets.make_entry(width=100)
+        self.txtSpecification = Widgets.make_entry()
+        self.txtPageNum = Widgets.make_entry()
+        self.txtFigNum = Widgets.make_entry()
+        self.txtImageFile = Widgets.make_entry()
+        self.txtAttachments = Widgets.make_entry()
+        self.txtMissionTime = Widgets.make_entry(width=75)
+        self.txtRevisionID = Widgets.make_entry(width=50, editable=False)
+        self.txtRemarks = Widgets.make_text_view(width=400)
+
+        # Allocation work book view.
+        self.wbvwAllocation = Allocation(modulebook.mdcRTK.dtcAllocation,
+                                         modulebook)
+
+        # Hazard analysis work book view.
+        self.wbvwHazard = Hazard(modulebook.mdcRTK.dtcHazard, modulebook)
+
+        # Similar Item Analysis work book view.
+        self.wbvwSimilarItem = SimilarItem(modulebook.mdcRTK.dtcSimilarItem,
+                                           modulebook)
+
+        # Failure Mode and Effects Analysis work book view.
+        self.wbvwFMECA = FMECA(modulebook.mdcRTK.dtcFMEA, modulebook)
+
+        # Physics of Failure Analysis work book view.
+        self.wbvwPoF = PoF(modulebook.mdcRTK.dtcPoF, modulebook)
+
+        # Assessment Input page widgets.
+        self.btnCalculate = Widgets.make_button(width=35, image='calculate')
+        self.btnCalculateAll = Widgets.make_button(width=35,
+                                                   image='calculate-all')
+
+        self.cmbActEnviron = Widgets.make_combo()
+        self.cmbCostMethod = Widgets.make_combo(200, 30)
+        self.cmbDormantEnviron = Widgets.make_combo()
+        self.cmbFailDist = Widgets.make_combo()
+        self.cmbHRMethod = Widgets.make_combo()
+        self.cmbHRModel = Widgets.make_combo()
+        self.cmbMTTRMethod = Widgets.make_combo()
+        self.cmbRepairDist = Widgets.make_combo()
+
+        self.txtActTemp = Widgets.make_entry(width=100)
+        self.txtAddAdj = Widgets.make_entry(width=100)
+        self.txtCaseTemp = Widgets.make_entry(width=100)
+        self.txtCost = Widgets.make_entry(width=100)
+        self.txtDormantTemp = Widgets.make_entry(width=100)
+        self.txtDutyCycle = Widgets.make_entry(width=100)
+        self.txtFailScale = Widgets.make_entry(width=100)
+        self.txtFailShape = Widgets.make_entry(width=100)
+        self.txtFailLoc = Widgets.make_entry(width=100)
+        self.txtHumidity = Widgets.make_entry(width=100)
+        self.txtKneeTemp = Widgets.make_entry(width=100)
+        self.txtMaxTemp = Widgets.make_entry(width=100)
+        self.txtMinTemp = Widgets.make_entry(width=100)
+        self.txtMTTRAddAdj = Widgets.make_entry(width=100)
+        self.txtMTTRMultAdj = Widgets.make_entry(width=100)
+        self.txtMultAdj = Widgets.make_entry(width=100)
+        self.txtOpCurrent = Widgets.make_entry(width=100)
+        self.txtOpPower = Widgets.make_entry(width=100)
+        self.txtOpVoltage = Widgets.make_entry(width=100)
+        self.txtRatedCurrent = Widgets.make_entry(width=100)
+        self.txtRatedPower = Widgets.make_entry(width=100)
+        self.txtRatedVoltage = Widgets.make_entry(width=100)
+        self.txtRepairScale = Widgets.make_entry(width=100)
+        self.txtRepairShape = Widgets.make_entry(width=100)
+        self.txtRPM = Widgets.make_entry(width=100)
+        self.txtSoftwareHt = Widgets.make_entry(width=100)
+        self.txtSpecifiedHt = Widgets.make_entry(width=100)
+        self.txtSpecifiedMTBF = Widgets.make_entry(width=100)
+        self.txtSpecifiedMTTR = Widgets.make_entry(width=100)
+        self.txtTempRise = Widgets.make_entry(width=100)
+        self.txtThetaJC = Widgets.make_entry(width=100)
+        self.txtVibration = Widgets.make_entry(width=100)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.vpnReliabilityInputs = gtk.VPaned()
 
         # Assessment Results page widgets.
+<<<<<<< HEAD
         self.chkOverstressed = _widg.make_check_button()
 
         self.fraDerate = gtk.Frame()
@@ -365,10 +549,80 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                 bold=True)
         self.txtPwrRatio = _widg.make_entry(width=100, editable=False,
                                             bold=True)
+=======
+        self.chkOverstressed = Widgets.make_check_button()
+
+        self.fraDerate = gtk.Frame()
+
+        self.txtActiveHt = Widgets.make_entry(width=100, editable=False,
+                                              bold=True)
+        self.txtDormantHt = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtSoftwareHt2 = Widgets.make_entry(width=100, editable=False,
+                                                 bold=True)
+        self.txtPredictedHt = Widgets.make_entry(width=100, editable=False,
+                                                 bold=True)
+        self.txtMissionHt = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtHtPerCent = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtMTBF = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMissionMTBF = Widgets.make_entry(width=100, editable=False,
+                                                 bold=True)
+        self.txtReliability = Widgets.make_entry(width=100, editable=False,
+                                                 bold=True)
+        self.txtMissionRt = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtMPMT = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMCMT = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMTTR = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtMMT = Widgets.make_entry(width=100, editable=False, bold=True)
+        self.txtAvailability = Widgets.make_entry(width=100, editable=False,
+                                                  bold=True)
+        self.txtMissionAt = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtTotalCost = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtCostFailure = Widgets.make_entry(width=100, editable=False,
+                                                 bold=True)
+        self.txtCostHour = Widgets.make_entry(width=100, editable=False,
+                                              bold=True)
+        self.txtAssemblyCrit = Widgets.make_entry(width=300, editable=False,
+                                                  bold=True)
+        self.txtPartCount = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtTotalPwr = Widgets.make_entry(width=100, editable=False,
+                                              bold=True)
+        self.txtPartCount = Widgets.make_entry(width=100, editable=False,
+                                               bold=True)
+        self.txtTotalPwr = Widgets.make_entry(width=100, editable=False,
+                                              bold=True)
+        self.txtVoltageRatio = Widgets.make_entry(width=100, editable=False,
+                                                  bold=True)
+        self.txtCurrentRatio = Widgets.make_entry(width=100, editable=False,
+                                                  bold=True)
+        self.txtPwrRatio = Widgets.make_entry(width=100, editable=False,
+                                              bold=True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtOSReason = gtk.TextBuffer()
 
         self.vpnReliabilityResults = gtk.VPaned()
 
+<<<<<<< HEAD
+=======
+        # Set gtk.Widgets() tooltip text.
+        self.btnCalculate.set_tooltip_text(_(u"Calculate the reliability "
+                                             u"assessment for the selected "
+                                             u"hardware item."))
+        self.btnCalculateAll.set_tooltip_text(_(u"Calculate the reliability "
+                                                u"assessment for the entire "
+                                                u"system."))
+
+        # Connect gtk.Widget() signals to callback methods.
+        self.btnCalculate.connect('clicked', self._on_button_clicked, 50)
+        self.btnCalculateAll.connect('clicked', self._on_button_clicked, 51)
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Put it all together.
         _toolbar = self._create_toolbar()
         self.pack_start(_toolbar, expand=False)
@@ -396,7 +650,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                    u"at the same hierarchy level as the "
                                    u"selected assembly."))
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR +
+                             '32x32/insert_sibling.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 0)
         _toolbar.insert(_button, _position)
@@ -408,7 +667,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                    u"RTK Project that is one level "
                                    u"subordinate to the selected assembly."))
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/insert_child.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_(u"Assembly"))
@@ -436,7 +699,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                    u"subordinate to the currently selected "
                                    u"hardware item."))
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 3)
         _toolbar.insert(_button, _position)
@@ -445,16 +712,35 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _toolbar.insert(gtk.SeparatorToolItem(), _position)
         _position += 1
 
+<<<<<<< HEAD
         # Save results button.  Depending on the notebook page selected will
         # determine which results are saved.
         _button = gtk.ToolButton()
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+=======
+        # Save hardware item button.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 4)
         _toolbar.insert(_button, _position)
         _position += 1
 
+<<<<<<< HEAD
+=======
+        # Save BoM (save-all) button.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save-all.png')
+        _button.set_icon_widget(_image)
+        _button.connect('clicked', self._on_button_clicked, 5)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _toolbar.insert(gtk.SeparatorToolItem(), _position)
         _position += 1
 
@@ -462,7 +748,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _button = gtk.MenuToolButton(None, label="")
         _button.set_tooltip_text(_(u"Create Hardware reports."))
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/reports.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/reports.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_(u"Allocation Report"))
@@ -501,7 +791,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create an import button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/db-import.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.set_name('Import')
         #_button.connect('clicked', ImportHardware, self._app)
@@ -512,7 +806,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create an export button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/db-export.png')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_icon_widget(_image)
         _button.set_name('Export')
         #_button.connect('clicked', ExportHardware, self._app)
@@ -534,11 +832,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook() tab position.
+<<<<<<< HEAD
         if _conf.TABPOS[2] == 'left':
             _notebook.set_tab_pos(gtk.POS_LEFT)
         elif _conf.TABPOS[2] == 'right':
             _notebook.set_tab_pos(gtk.POS_RIGHT)
         elif _conf.TABPOS[2] == 'top':
+=======
+        if Configuration.TABPOS[2] == 'left':
+            _notebook.set_tab_pos(gtk.POS_LEFT)
+        elif Configuration.TABPOS[2] == 'right':
+            _notebook.set_tab_pos(gtk.POS_RIGHT)
+        elif Configuration.TABPOS[2] == 'top':
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _notebook.set_tab_pos(gtk.POS_TOP)
         else:
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
@@ -621,12 +927,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _create_general_data_page(self, notebook):
         """
+<<<<<<< HEAD
         Creates the Hardware class gtk.Notebook() page for displaying general
         data about the selected Hardware item.
 
         :param gtk.Notebook notebook: the Hardware class gtk.Notebook().
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
+=======
+        Method to create the Hardware class gtk.Notebook() page for displaying
+        general data about the selected Hardware item.
+
+        :param gtk.Notebook notebook: the Hardware class gtk.Notebook().
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -642,7 +957,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed1)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"General Information"))
+=======
+        _frame = Widgets.make_frame(label=_(u"General Information"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -655,7 +974,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed3)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Manufacturer Information"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Manufacturer Information"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -672,7 +995,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed2)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Specification Information"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Specification Information"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -685,7 +1012,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed4)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Miscellaneous Information"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Miscellaneous Information"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -700,28 +1031,50 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbCategory.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
+<<<<<<< HEAD
         for _cat in _conf.RTK_CATEGORIES:
             _model.append(None, [_conf.RTK_CATEGORIES[_cat][0],
                                  _conf.RTK_CATEGORIES[_cat][1], ''])
+=======
+        for _cat in Configuration.RTK_CATEGORIES:
+            _model.append(None, [Configuration.RTK_CATEGORIES[_cat][0],
+                                 Configuration.RTK_CATEGORIES[_cat][1], ''])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _model = self.cmbManufacturer.get_model()
         _model.clear()
         _model.append(None, ['', 0, ''])
+<<<<<<< HEAD
         for _man in _conf.RTK_MANUFACTURERS:
+=======
+        for _man in Configuration.RTK_MANUFACTURERS:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _model.append(None, _man)
 
         # Create the labels for quadrant #1.
         _labels = [_(u"Assembly Name:"), _(u"Part Number:"),
+<<<<<<< HEAD
                    _(u"Alternate Part #:"), "", "", _(u"Ref Designator:"),
                    _(u"Composite Ref Des:"), _(u"Quantity:"),
                    _(u"Description:")]
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed1, 5, 5)
+=======
+                   _(u"Alternate Part #:"), _(u"Category:"),
+                   _(u"Sub-Category:"), _(u"Ref. Designator:"),
+                   _(u"Composite Ref Des:"), _(u"Quantity:"),
+                   _(u"Description:")]
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed1, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create the labels for quadrant #3.
         _labels = [_(u"Manufacturer:"), _(u"CAGE Code:"), _(u"LCN:"),
                    _(u"NSN:"), _(u"Manufacture Year:")]
         (_x_pos2,
+<<<<<<< HEAD
          _y_pos2) = _widg.make_labels(_labels, _fixed3, 5, 5)
+=======
+         _y_pos2) = Widgets.make_labels(_labels, _fixed3, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos = max(_x_pos, _x_pos2) + 50
 
         # Place the quadrant #1 widgets.
@@ -751,9 +1104,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed1.put(self.txtName, _x_pos, _y_pos[0])
         _fixed1.put(self.txtPartNum, _x_pos, _y_pos[1])
         _fixed1.put(self.txtAltPartNum, _x_pos, _y_pos[2])
+<<<<<<< HEAD
         _fixed1.put(self.lblCategory, 5, _y_pos[3])
         _fixed1.put(self.cmbCategory, _x_pos, _y_pos[3])
         _fixed1.put(self.lblSubcategory, 5, _y_pos[4])
+=======
+        _fixed1.put(self.cmbCategory, _x_pos, _y_pos[3])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed1.put(self.cmbSubcategory, _x_pos, _y_pos[4])
         _fixed1.put(self.txtRefDes, _x_pos, _y_pos[5])
         _fixed1.put(self.txtCompRefDes, _x_pos, _y_pos[6])
@@ -830,13 +1187,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Figure Number:"), _(u"Image File:"),
                    _(u"Attachments:"), _(u"Mission Time:")]
         (_x_pos,
+<<<<<<< HEAD
          _y_pos) = _widg.make_labels(_labels, _fixed2, 5, 5)
+=======
+         _y_pos) = Widgets.make_labels(_labels, _fixed2, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create the labels for quadrant #4.
         _labels = [_(u"Revision ID:"), _(u"Repairable?"), _(u"Tagged?"),
                    _(u"Remarks:")]
         (_x_pos2,
+<<<<<<< HEAD
          _y_pos2) = _widg.make_labels(_labels, _fixed4, 5, 5)
+=======
+         _y_pos2) = Widgets.make_labels(_labels, _fixed4, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos = max(_x_pos, _x_pos2) + 50
 
         # Place the quadrant #2 widgets.
@@ -955,11 +1320,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _hpaned.pack1(_hpaned2, True, False)
 
         _bbox.pack_start(self.btnCalculate, False, False)
+<<<<<<< HEAD
 
         self.btnCalculate.set_tooltip_text(_(u"Calculate the reliability "
                                              u"assessment."))
 
         self.btnCalculate.connect('clicked', self._on_button_clicked, 50)
+=======
+        _bbox.pack_end(self.btnCalculateAll, False, False)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # --------------------------------------------------------------#
         # Build the quadrant 1 (left) container.                        #
@@ -971,7 +1340,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed1)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Stress Inputs"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Stress Inputs"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -987,7 +1360,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed2)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Reliability Inputs"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Reliability Inputs"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1009,7 +1386,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed3)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Maintainability Inputs"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Maintainability Inputs"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1026,7 +1407,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed4)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Miscellaneous Inputs"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Miscellaneous Inputs"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1039,31 +1424,51 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbHRMethod.get_model()
         _model.clear()
         self.cmbHRMethod.append_text("")
+<<<<<<< HEAD
         for __, _type in enumerate(_conf.RTK_HR_TYPE):
+=======
+        for __, _type in enumerate(Configuration.RTK_HR_TYPE):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbHRMethod.append_text(_type)
 
         _model = self.cmbHRModel.get_model()
         _model.clear()
         self.cmbHRModel.append_text("")
+<<<<<<< HEAD
         for __, _model in enumerate(_conf.RTK_HR_MODEL):
+=======
+        for __, _model in enumerate(Configuration.RTK_HR_MODEL):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbHRModel.append_text(_model)
 
         _model = self.cmbFailDist.get_model()
         _model.clear()
         self.cmbFailDist.append_text("")
+<<<<<<< HEAD
         for __, _dist in enumerate(_conf.RTK_S_DIST):
+=======
+        for __, _dist in enumerate(Configuration.RTK_S_DIST):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbFailDist.append_text(_dist)
 
         _model = self.cmbActEnviron.get_model()
         _model.clear()
         self.cmbActEnviron.append_text("")
+<<<<<<< HEAD
         for __, _environ in enumerate(_conf.RTK_ACTIVE_ENVIRON):
+=======
+        for __, _environ in enumerate(Configuration.RTK_ACTIVE_ENVIRON):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbActEnviron.append_text(_environ[0])
 
         _model = self.cmbDormantEnviron.get_model()
         _model.clear()
         self.cmbDormantEnviron.append_text("")
+<<<<<<< HEAD
         for __, _environ in enumerate(_conf.RTK_DORMANT_ENVIRON):
+=======
+        for __, _environ in enumerate(Configuration.RTK_DORMANT_ENVIRON):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbDormantEnviron.append_text(_environ)
 
         # Create the labels for quadrant 1.
@@ -1076,7 +1481,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Operating Current:"), _(u"Rated Power:"),
                    _(u"Operating Power:"), _(u"theta JC:"),
                    _(u"Temperature Rise:"), _(u"Case Temperature:")]
+<<<<<<< HEAD
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed1, 5, 5)
+=======
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed1, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 50
 
         # Place the quadrant 1 widgets.
@@ -1190,7 +1599,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Multiplicative Adj:"), _(u"Failure Distribution:"),
                    _(u"Scale:"), _(u"Shape:"), _(u"Location:")]
         (_x_pos,
+<<<<<<< HEAD
          _y_pos) = _widg.make_labels(_labels, _fixed2, 5, 5)
+=======
+         _y_pos) = Widgets.make_labels(_labels, _fixed2, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 50
 
         # Place the quadrant 2 widgets.
@@ -1287,25 +1700,41 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Repair Distribution:"), _(u"Scale:"), _(u"Shape:")]
 
         (_x_pos,
+<<<<<<< HEAD
          _y_pos) = _widg.make_labels(_labels, _fixed3, 5, 5)
+=======
+         _y_pos) = Widgets.make_labels(_labels, _fixed3, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create the labels for quadrant #4.
         _labels = [_(u"Cost Method:"), _(u"Unit Cost:")]
         (_x_pos2,
+<<<<<<< HEAD
          _y_pos2) = _widg.make_labels(_labels, _fixed4, 5, 5)
+=======
+         _y_pos2) = Widgets.make_labels(_labels, _fixed4, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos = max(_x_pos, _x_pos2) + 50
 
         # Place the quadrant #3 widgets.
         _model = self.cmbMTTRMethod.get_model()
         _model.clear()
         self.cmbMTTRMethod.append_text("")
+<<<<<<< HEAD
         for __, _type in enumerate(_conf.RTK_MTTR_TYPE):
+=======
+        for __, _type in enumerate(Configuration.RTK_MTTR_TYPE):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbMTTRMethod.append_text(_type)
 
         _model = self.cmbRepairDist.get_model()
         _model.clear()
         self.cmbRepairDist.append_text("")
+<<<<<<< HEAD
         for __, _dist in enumerate(_conf.RTK_S_DIST):
+=======
+        for __, _dist in enumerate(Configuration.RTK_S_DIST):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbRepairDist.append_text(_dist)
 
         self.cmbMTTRMethod.set_tooltip_text(_(u"Selects the method of "
@@ -1370,7 +1799,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.cmbCostMethod.get_model()
         _model.clear()
         self.cmbCostMethod.append_text("")
+<<<<<<< HEAD
         for __, _type in enumerate(_conf.RTK_COST_TYPE):
+=======
+        for __, _type in enumerate(Configuration.RTK_COST_TYPE):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbCostMethod.append_text(_type)
 
         self.cmbCostMethod.set_tooltip_text(_(u"Select the method for "
@@ -1387,7 +1820,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.txtCost.connect('focus-out-event',
                                  self._on_focus_out, 49))
+<<<<<<< HEAD
 # TODO: Move these up and reassign indices.
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._lst_handler_id.append(
             self.txtMinTemp.connect('focus-out-event', self._on_focus_out, 50))
         self._lst_handler_id.append(
@@ -1416,12 +1852,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(self.txtThetaJC.connect('focus-out-event',
                                                             self._on_focus_out,
                                                             59))
+<<<<<<< HEAD
         self._lst_handler_id.append(self.txtTempRise.connect('focus-out-event',
                                                              self._on_focus_out,
                                                              60))
         self._lst_handler_id.append(self.txtCaseTemp.connect('focus-out-event',
                                                              self._on_focus_out,
                                                              61))
+=======
+        self._lst_handler_id.append(
+            self.txtTempRise.connect('focus-out-event',
+                                     self._on_focus_out, 60))
+        self._lst_handler_id.append(
+            self.txtCaseTemp.connect('focus-out-event',
+                                     self._on_focus_out, 61))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _fixed3.show_all()
         _fixed4.show_all()
@@ -1471,7 +1916,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed1)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Operating Stress Results"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Operating Stress Results"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1487,7 +1936,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed2)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Reliability Results"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Reliability Results"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1507,7 +1960,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed3)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Maintainability Results"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Maintainability Results"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1522,7 +1979,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed4)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Miscellaneous Results"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Miscellaneous Results"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1535,7 +1996,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _labels = [_(u"Total Power Used:"), _(u"Voltage Ratio:"),
                    _(u"Current Ratio:"), _(u"Power Ratio:")]
         (_x_pos,
+<<<<<<< HEAD
          _y_pos) = _widg.make_labels(_labels, _fixed1, 5, 5)
+=======
+         _y_pos) = Widgets.make_labels(_labels, _fixed1, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 50
 
         # Place the quadrant 1 widgets.
@@ -1561,12 +2026,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed1.put(self.txtCurrentRatio, _x_pos, _y_pos[2])
         _fixed1.put(self.txtPwrRatio, _x_pos, _y_pos[3])
 
+<<<<<<< HEAD
         _label = _widg.make_label(text=_(u"Overstressed?:"))
         _fixed1.put(_label, 5, _y_pos[3] + 30)
         _fixed1.put(self.chkOverstressed, _x_pos, _y_pos[3] + 30)
 
         _textview = _widg.make_text_view(txvbuffer=self.txtOSReason,
                                          width=250)
+=======
+        _label = Widgets.make_label(text=_(u"Overstressed?:"))
+        _fixed1.put(_label, 5, _y_pos[3] + 30)
+        _fixed1.put(self.chkOverstressed, _x_pos, _y_pos[3] + 30)
+
+        _textview = Widgets.make_text_view(txvbuffer=self.txtOSReason,
+                                           width=250)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _textview.set_tooltip_text(_(u"The reason(s) the selected hardware "
                                      u"item is overstressed."))
         _fixed1.put(_textview, 4, _y_pos[3] + 60)
@@ -1579,7 +2053,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                    _(u"Mission h(t):"), _(u"h(t) Percent:"),
                    _(u"MTBF:"), _(u"Mission MTBF:"), _(u"Reliability:"),
                    _(u"Mission R(t):")]
+<<<<<<< HEAD
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed2, 5, 5)
+=======
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed2, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 50
 
         # Place the quadrant 2 widgets.
@@ -1636,12 +2114,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create the labels for quadrant 3.
         _labels = [_(u"MPMT:"), _(u"MCMT:"), _(u"MTTR:"), _(u"MMT:"),
                    _(u"Availability:"), _(u"Mission A(t):")]
+<<<<<<< HEAD
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed3, 5, 5)
+=======
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed3, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create the labels for quadrant #4.
         _labels = [_(u"Total Cost:"), _(u"Cost/Failure:"),
                    _(u"Cost/Hour:"), _(u"Total Part Count:")]
+<<<<<<< HEAD
         (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fixed4, 5, 5)
+=======
+        (_x_pos2, _y_pos2) = Widgets.make_labels(_labels, _fixed4, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos = max(_x_pos, _x_pos2) + 50
 
         # Place the quadrant #3 widgets.
@@ -1709,10 +2195,16 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Loads the Hardware class gtk.Notebook().
 
+<<<<<<< HEAD
         :param rtk.hardware.Hardware.Model model: the :class:`rtk.hardware.Hardware.Model`
                                                   to load.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
+=======
+        :param model: the :py:class:`rtk.hardware.Hardware.Model` to load.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self._hardware_model = model
@@ -1735,7 +2227,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtPartNum.set_text(model.part_number)
         self.txtQuantity.set_text(str(model.quantity))
         self.txtRefDes.set_text(model.ref_des)
+<<<<<<< HEAD
         _text = _util.none_to_string(model.remarks)
+=======
+        _text = Utilities.none_to_string(model.remarks)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _buffer = self.txtRemarks.get_child().get_child().get_buffer()
         _buffer.set_text(_text)
         self.txtSpecification.set_text(model.specification_number)
@@ -1745,6 +2241,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Show/hide the assembly-specific or component-specific widgets as
         # appropriate.
         if model.part == 1:
+<<<<<<< HEAD
 
             # Let the user know if the selected part does not have a part
             # category selected.
@@ -1785,6 +2282,31 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model = self.wbvwAllocation.tvwAllocation.get_model()
         _model.clear()
         self.wbvwAllocation.load_page(self.dtcBoM, model.hardware_id)
+=======
+            self.cmbSubcategory.handler_block(self._lst_handler_id[4])
+            self.cmbCategory.show()
+            self.cmbSubcategory.show()
+            self.cmbCategory.set_active(model.category_id)
+            self.cmbSubcategory.set_active(model.subcategory_id)
+            self.chkRepairable.hide()
+            self.cmbSubcategory.handler_unblock(self._lst_handler_id[4])
+        else:
+            self.cmbCategory.hide()
+            self.cmbSubcategory.hide()
+            self.chkRepairable.show()
+            self.chkRepairable.set_active(model.repairable)
+
+            # ----------------------------------------------------------#
+            # Load the Reliability Allocation information.              #
+            # ----------------------------------------------------------#
+            # Clear the Allocation View gtk.TreeModel().
+            self.wbvwAllocation.load_page(self.dtcBoM, model.hardware_id)
+
+            # ----------------------------------------------------------#
+            # Load the Similar Item Analysis information.               #
+            # ----------------------------------------------------------#
+            self.wbvwSimilarItem.load_page(self.dtcBoM, model.hardware_id)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # --------------------------------------------------------------#
         # Load the Hazard Analysis information.                         #
@@ -1792,11 +2314,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.wbvwHazard.load_page(self.dtcBoM, model.hardware_id)
 
         # --------------------------------------------------------------#
+<<<<<<< HEAD
         # Load the Similar Item Analysis information.                   #
         # --------------------------------------------------------------#
         self.wbvwSimilarItem.load_page(self.dtcBoM, model.hardware_id)
 
         # --------------------------------------------------------------#
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Load the Assessment Input information.                        #
         # --------------------------------------------------------------#
         self._load_assessment_inputs_page()
@@ -1829,17 +2354,29 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
+<<<<<<< HEAD
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
 
         self.cmbHRMethod.set_active(int(self._hardware_model.hazard_rate_method))
         self.txtSpecifiedHt.set_text(
             str(fmt.format(self._hardware_model.hazard_rate_specified)))
         self.txtSpecifiedMTBF.set_text(str(self._hardware_model.mtbf_specified))
+=======
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
+
+        self.cmbHRMethod.set_active(
+            int(self._hardware_model.hazard_rate_method))
+        self.txtSpecifiedHt.set_text(
+            str(fmt.format(self._hardware_model.hazard_rate_specified)))
+        self.txtSpecifiedMTBF.set_text(
+            str(self._hardware_model.mtbf_specified))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtSoftwareHt.set_text(
             str(fmt.format(self._hardware_model.hazard_rate_software)))
         self.txtAddAdj.set_text(str(self._hardware_model.add_adj_factor))
         self.txtMultAdj.set_text(str(self._hardware_model.mult_adj_factor))
         self.cmbFailDist.set_active(int(self._hardware_model.failure_dist))
+<<<<<<< HEAD
         self.txtFailScale.set_text(str(self._hardware_model.failure_parameter_1))
         self.txtFailShape.set_text(str(self._hardware_model.failure_parameter_2))
         self.txtFailLoc.set_text(str(self._hardware_model.failure_parameter_3))
@@ -1847,17 +2384,46 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtActTemp.set_text(str(self._hardware_model.temperature_active))
         self.cmbDormantEnviron.set_active(int(self._hardware_model.environment_dormant))
         self.txtDormantTemp.set_text(str(self._hardware_model.temperature_dormant))
+=======
+        self.txtFailScale.set_text(
+            str(self._hardware_model.failure_parameter_1))
+        self.txtFailShape.set_text(
+            str(self._hardware_model.failure_parameter_2))
+        self.txtFailLoc.set_text(str(self._hardware_model.failure_parameter_3))
+        self.cmbActEnviron.set_active(
+            int(self._hardware_model.environment_active))
+        self.txtActTemp.set_text(str(self._hardware_model.temperature_active))
+        self.cmbDormantEnviron.set_active(
+            int(self._hardware_model.environment_dormant))
+        self.txtDormantTemp.set_text(
+            str(self._hardware_model.temperature_dormant))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtDutyCycle.set_text(str(self._hardware_model.duty_cycle))
         self.txtHumidity.set_text(str(self._hardware_model.humidity))
         self.txtVibration.set_text(str(self._hardware_model.vibration))
         self.txtRPM.set_text(str(self._hardware_model.rpm))
         self.cmbMTTRMethod.set_active(int(self._hardware_model.mttr_type))
+<<<<<<< HEAD
         self.txtSpecifiedMTTR.set_text(str(self._hardware_model.mttr_specified))
         self.txtMTTRAddAdj.set_text(str(self._hardware_model.mttr_add_adj_factor))
         self.txtMTTRMultAdj.set_text(str(self._hardware_model.mttr_mult_adj_factor))
         self.cmbRepairDist.set_active(int(self._hardware_model.repair_dist))
         self.txtRepairScale.set_text(str(self._hardware_model.repair_parameter_1))
         self.txtRepairShape.set_text(str(self._hardware_model.repair_parameter_2))
+=======
+        self.txtSpecifiedMTTR.set_text(
+            str(self._hardware_model.mttr_specified))
+        self.txtMTTRAddAdj.set_text(
+            str(self._hardware_model.mttr_add_adj_factor))
+        self.txtMTTRMultAdj.set_text(
+            str(self._hardware_model.mttr_mult_adj_factor))
+        self.cmbRepairDist.set_active(
+            int(self._hardware_model.repair_dist))
+        self.txtRepairScale.set_text(
+            str(self._hardware_model.repair_parameter_1))
+        self.txtRepairShape.set_text(
+            str(self._hardware_model.repair_parameter_2))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtMissionTime.set_text(
             str('{0:0.2f}'.format(self._hardware_model.mission_time)))
         self.txtCost.set_text(str(locale.currency(self._hardware_model.cost)))
@@ -1865,6 +2431,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             str('{0:0.2f}'.format(self._hardware_model.min_rated_temperature)))
         self.txtMaxTemp.set_text(
             str('{0:0.2f}'.format(self._hardware_model.max_rated_temperature)))
+<<<<<<< HEAD
         self.txtRatedVoltage.set_text(str(fmt.format(self._hardware_model.rated_voltage)))
         self.txtOpVoltage.set_text(str(fmt.format(self._hardware_model.operating_voltage)))
         self.txtRatedCurrent.set_text(str(fmt.format(self._hardware_model.rated_current)))
@@ -1872,6 +2439,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtRatedPower.set_text(str(fmt.format(self._hardware_model.rated_power)))
         self.txtOpPower.set_text(str(fmt.format(self._hardware_model.operating_power)))
         self.txtTempRise.set_text(str(fmt.format(self._hardware_model.temperature_rise)))
+=======
+        self.txtRatedVoltage.set_text(
+            str(fmt.format(self._hardware_model.rated_voltage)))
+        self.txtOpVoltage.set_text(
+            str(fmt.format(self._hardware_model.operating_voltage)))
+        self.txtRatedCurrent.set_text(
+            str(fmt.format(self._hardware_model.rated_current)))
+        self.txtOpCurrent.set_text(
+            str(fmt.format(self._hardware_model.operating_current)))
+        self.txtRatedPower.set_text(
+            str(fmt.format(self._hardware_model.rated_power)))
+        self.txtOpPower.set_text(
+            str(fmt.format(self._hardware_model.operating_power)))
+        self.txtTempRise.set_text(
+            str(fmt.format(self._hardware_model.temperature_rise)))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Load the component-specific information.
         if self._hardware_model.part == 1:
@@ -1903,7 +2486,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
+<<<<<<< HEAD
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+=======
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.txtActiveHt.set_text(
             str(fmt.format(self._hardware_model.hazard_rate_active)))
@@ -1928,9 +2515,18 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtMissionRt.set_text(
             str(fmt.format(self._hardware_model.reliability_mission)))
 
+<<<<<<< HEAD
         self.txtMPMT.set_text(str('{0:0.2f}'.format(self._hardware_model.mpmt)))
         self.txtMCMT.set_text(str('{0:0.2f}'.format(self._hardware_model.mcmt)))
         self.txtMTTR.set_text(str('{0:0.2f}'.format(self._hardware_model.mttr)))
+=======
+        self.txtMPMT.set_text(
+            str('{0:0.2f}'.format(self._hardware_model.mpmt)))
+        self.txtMCMT.set_text(
+            str('{0:0.2f}'.format(self._hardware_model.mcmt)))
+        self.txtMTTR.set_text(
+            str('{0:0.2f}'.format(self._hardware_model.mttr)))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtMMT.set_text(str('{0:0.2f}'.format(self._hardware_model.mmt)))
 
         self.txtAvailability.set_text(
@@ -1980,6 +2576,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+=======
+# TODO: Re-write _create_component_inputs; current McCabe Complexity metric = 19.
+        if self.vpnReliabilityInputs.get_child2() is not None:
+            self.vpnReliabilityInputs.remove(
+                self.vpnReliabilityInputs.get_child2())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         if self._hardware_model.category_id == 1:
             self._obj_inputs = gCapacitor.Inputs(self._hardware_model)
@@ -2009,6 +2612,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif self._hardware_model.category_id == 10:
             self._obj_inputs = gSwitch.Inputs(self._hardware_model)
 
+<<<<<<< HEAD
         if self.vpnReliabilityInputs.get_child2() is not None:
             self.vpnReliabilityInputs.remove(
                 self.vpnReliabilityInputs.get_child2())
@@ -2019,6 +2623,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._obj_inputs.load_217_count_inputs(self._hardware_model)
         elif self._hardware_model.hazard_rate_type == 2:
             self._obj_inputs.create_217_stress_inputs(5)
+=======
+        if self._obj_inputs is not None:
+            self.vpnReliabilityInputs.pack2(self._obj_inputs, True, True)
+
+        if(self._hardware_model.hazard_rate_type == 1 and
+           self._hardware_model.category_id > 0 and
+           self._hardware_model.subcategory_id > 0):
+            self._obj_inputs.create_217_count_inputs(x_pos=5)
+            self._obj_inputs.load_217_count_inputs(self._hardware_model)
+        elif(self._hardware_model.hazard_rate_type == 2 and
+             self._hardware_model.category_id > 0 and
+             self._hardware_model.subcategory_id > 0):
+            self._obj_inputs.create_217_stress_inputs(x_pos=5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._obj_inputs.load_217_stress_inputs(self._hardware_model)
 
         self.vpnReliabilityInputs.show_all()
@@ -2032,7 +2650,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write _create_component_results; current McCabe Complexity metric = 19.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         if self._hardware_model.category_id == 1:
             self._obj_results = gCapacitor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 2:
@@ -2040,7 +2662,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif self._hardware_model.category_id == 3:
             self._obj_results = gInductor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 4:
+<<<<<<< HEAD
             self._obj_results = gIntegratedCircuit.Results(self._hardware_model)
+=======
+            self._obj_results = gIntegratedCircuit.Results(
+                self._hardware_model)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         elif self._hardware_model.category_id == 5:
             self._obj_results = gMeter.Results(self._hardware_model)
         elif self._hardware_model.category_id == 6:
@@ -2064,11 +2691,18 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         if self.vpnReliabilityResults.get_child2() is not None:
             self.vpnReliabilityResults.remove(
                 self.vpnReliabilityResults.get_child2())
+<<<<<<< HEAD
         self.vpnReliabilityResults.pack2(self._obj_results, True, True)
+=======
+
+        if self._obj_results is not None:
+            self.vpnReliabilityResults.pack2(self._obj_results, True, True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         if self.fraDerate.get_child() is not None:
             self.fraDerate.remove(self.fraDerate.get_child())
 
+<<<<<<< HEAD
         if self._hardware_model.hazard_rate_type == 1:
             self._obj_results.create_217_count_results(x_pos=5)
         elif self._hardware_model.hazard_rate_type == 2:
@@ -2076,6 +2710,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._obj_results.load_217_stress_results(self._hardware_model)
         self._obj_results.load_derate_plot(self._hardware_model,
                                            self.fraDerate)
+=======
+        if(self._hardware_model.hazard_rate_type == 1 and
+           self._hardware_model.category_id > 0 and
+           self._hardware_model.subcategory_id > 0):
+            self._obj_results.create_217_count_results(x_pos=5)
+            self._obj_results.load_217_count_results(self._hardware_model)
+        elif(self._hardware_model.hazard_rate_type == 2 and
+             self._hardware_model.category_id > 0 and
+             self._hardware_model.subcategory_id > 0):
+            self._obj_results.create_217_stress_results(x_pos=5)
+            self._obj_results.load_217_stress_results(self._hardware_model)
+            self._obj_results.load_derate_plot(self._hardware_model,
+                                               self.fraDerate)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.vpnReliabilityResults.show_all()
 
@@ -2083,8 +2731,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _on_button_clicked(self, __button, index):
         """
+<<<<<<< HEAD
         Responds to gtk.Button() clicked signals and calls the correct function
         or method, passing any parameters as needed.
+=======
+        Method to respond to gtk.Button() clicked signals and call the correct
+        function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -2094,7 +2747,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
+<<<<<<< HEAD
         if index == 0:
+=======
+        if index == 0:                      # Add sibling assembly.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             # Find the parent hardware item.
             (_model,
              _row) = self._modulebook.treeview.get_selection().get_selected()
@@ -2102,14 +2759,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
             self._request_add_hardware(0, _model, _row)
 
+<<<<<<< HEAD
         elif index == 1:
+=======
+        elif index == 1:                    # Add child assembly.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             # Find the parent hardware item.
             (_model,
              _row) = self._modulebook.treeview.get_selection().get_selected()
 
             self._request_add_hardware(0, _model, _row)
 
+<<<<<<< HEAD
         elif index == 2:
+=======
+        elif index == 2:                    # Add component.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             # Find the parent hardware item.
             (_model,
              _row) = self._modulebook.treeview.get_selection().get_selected()
@@ -2122,16 +2787,34 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif index == 4:
             self.dtcBoM.save_hardware_item(self._hardware_model.hardware_id)
 
+<<<<<<< HEAD
         elif index == 50:
             self.dtcBoM.request_calculate()
 
             self._load_assessment_results_page()
 
+=======
+        elif index == 5:
+            self.dtcBoM.save_bom()
+
+        elif index == 50:
+            self.dtcBoM.request_calculate(self._hardware_model.hardware_id)
+            self._load_assessment_results_page()
+            self._modulebook.update_all()
+
+        elif index == 51:
+            self.dtcBoM.request_calculate(0)
+            self._load_assessment_results_page()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._modulebook.update_all()
 
         return False
 
+<<<<<<< HEAD
     def _request_add_hardware(self, hardware_type, model, parent):
+=======
+    def _request_add_hardware(self, hardware_type, model, piter):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         Method to call the BoM data controller function 'add_hardware' and
         then update the Hardware Work Book gtk.TreeView() with the newly added
@@ -2142,12 +2825,18 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                   * 1 = Component
         :param gtk.TreeModel model: the gtk.TreeModel() displaying the Hardware
                                     hierarchy.
+<<<<<<< HEAD
         :param gtk.TreeIter parent: the gtk.TreeIter() that will be the parent
                                     of the newly added hardware item.
+=======
+        :param gtk.TreeIter piter: the gtk.TreeIter() that will be the parent
+                                   of the newly added hardware item.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
         if hardware_type == 0:
             # Add the new hardware item to the database and dtcBoM dictionary.
             (_hardware, _error_code) = self.dtcBoM.add_hardware(
@@ -2180,14 +2869,80 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         model.append(parent, _data)
         self._modulebook.treeview.expand_all()
+=======
+        _parent_id = model.get_value(piter, 1)
+
+        # Add the new hardware item to the database and dtcBoM dictionary.
+        (_hardware, _error_code) = self.dtcBoM.add_hardware(
+            self._hardware_model.revision_id, hardware_type, _parent_id)
+
+        # If the Hardware Item was successfully added, add a record to the
+        # Similar Item table, FMEA table, and PoF table.  Add a row to the
+        # matrix table for the Hardware/Testing and Hardware/Validation
+        # matrices.  If the Hardware item was an Assembly, add a column to the
+        # Function/Hardware and Requirement/Hardware matrices.
+        if _error_code == 0:
+            _hardware.ref_des = "Ref. Des."
+            self.dtcSimilarItem.add_similar_item(_hardware.hardware_id,
+                                                 _parent_id)
+            self.dtcFMECA.add_fmea(_hardware.hardware_id)
+            self.dtcPoF.add_pof(_hardware.hardware_id)
+
+            # If the Hardware Item was an Assembly, add a record to the
+            # Allocation table.
+            if hardware_type == 0:
+                _hardware.name = _(u"New Assembly")
+                self.dtcAllocation.add_allocation(_hardware.hardware_id,
+                                                  _parent_id)
+
+                # Update the module book view to show the new assembly.
+                _icon = Configuration.ICON_DIR + '32x32/assembly.png'
+                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+
+                _data = list(_hardware.get_attributes()) + \
+                        [0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                         0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '',
+                         '', '', '', ''] + [_icon]
+
+            elif hardware_type == 1:
+                _hardware.name = _(u"New Component")
+                # Update the module book view to show the new component.
+                _icon = Configuration.ICON_DIR + '32x32/component.png'
+                _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+
+                _data = list(_hardware.get_attributes()) + \
+                        [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                         0.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, '', '', '',
+                         '', ''] + [_icon]
+
+            for _matrix_id in [0, 3]:
+                self._modulebook.mdcRTK.dtcMatrices.add_column(_matrix_id,
+                                                               _hardware.hardware_id)
+
+            for _matrix_id in [6, 7]:
+                self._modulebook.mdcRTK.dtcMatrices.add_row(_matrix_id,
+                                                            _hardware.parent_id,
+                                                            _hardware.hardware_id,
+                                                            val1=_hardware.ref_des,
+                                                            val2=_hardware.name)
+
+            model.append(piter, _data)
+            self._modulebook.treeview.expand_all()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
     def _request_delete_hardware(self):
         """
         Method to call the BoM data controller function 'delete_hardware' and
+<<<<<<< HEAD
         then update the Hardware Work Book gtk.TreeView() with the newly added
         hardware item.
+=======
+        then update the Hardware Work Book gtk.TreeView().
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.TreeModel model: the gtk.TreeModel() holding the Hardware
                                     data.
@@ -2204,7 +2959,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Delete the selected hardware item from the database and the
         # Hardware data controller dictionary.
         self.dtcBoM.delete_hardware(self._hardware_model.hardware_id)
+<<<<<<< HEAD
         self.dtcAllocation.delete_allocation(self._hardware_model.hardware_id)
+=======
+
+        # Delete the Similar Item analysis associated with the Hardware item.
+        self.dtcSimilarItem.delete_similar_item(
+            self._hardware_model.hardware_id)
+
+        # Delete the Hazards associated with the Hardware item.
+        _hazards = [_key for _key in self.dtcHazard.dicHazard.keys()
+                    if _key[0] == self._hardware_model.hardware_id]
+        for __, _hazard in enumerate(_hazards):
+            self.dtcHazard.delete_hazard(_hazard[0], _hazard[1])
+
+        # If the Hardware item was an Assembly, delete the associated
+        # Allocation.
+        if self._hardware_model.part == 0:
+            self.dtcAllocation.delete_allocation(
+                self._hardware_model.hardware_id)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Refresh the Hardware gtkTreeView().
         if _row is not None:
@@ -2226,7 +3000,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write _on_combo_changed; current McCabe Complexity metric = 12.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         combo.handler_block(self._lst_handler_id[index])
 
         if index == 3:                      # Component category.
@@ -2237,7 +3015,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._hardware_model.category_id = combo.get_active()
 
             # Get the list of subcategories for the selected category.
+<<<<<<< HEAD
             _subcats = _conf.RTK_SUBCATEGORIES[_index]
+=======
+            try:
+                _subcats = Configuration.RTK_SUBCATEGORIES[_index]
+            except KeyError:
+                _subcats = []
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _n_subcats = len(_subcats)
 
             # Load the subcategory gtk.ComboBox() with the appropriate list
@@ -2247,6 +3033,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _model.append(None, ['', 0, ''])
             for i in range(_n_subcats):
                 _model.append(None, [_subcats[i][1], _subcats[i][0], ''])
+<<<<<<< HEAD
 
         elif index == 4:                    # Component subcategory.
             if self._hardware_model.subcategory_id != combo.get_active():
@@ -2277,6 +3064,35 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 if self._hardware_model.subcategory_id > 0:
                     self._load_assessment_inputs_page()
                     self._load_assessment_results_page()
+=======
+            self.cmbSubcategory.show()
+
+        elif index == 4:                    # Component subcategory.
+            self._hardware_model.subcategory_id = combo.get_active()
+
+            # Get the attributes from the current Hardware data model and
+            # pad them with the extra attributes of an Assembly.
+            _attributes = self._hardware_model.get_attributes()
+            _attributes = _attributes[:86] + (0.0, 0.0, 0.0, 0.0) + \
+                          _attributes[86:]
+
+            # Retrieve the appropriate data model for the newly selected
+            # component and set it's attributes using the attributes of the
+            # previously selected Component.  Not all attributes will map,
+            # but this will reduce the amount of rework needed for the user
+            # to update the attributes of the new Component.
+            _hardware = self.dtcBoM.load_component(_attributes)
+
+            # Update the BoM data controller dictionary and the Hardware
+            # Work View with the new Hardware model instance.
+            self.dtcBoM.dicHardware[self._hardware_model.hardware_id] = _hardware
+            self._hardware_model = _hardware
+
+            # Load the new attributes.
+            if self._hardware_model.subcategory_id > 0:
+                self._load_assessment_inputs_page()
+                self._load_assessment_results_page()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         elif index == 9:                    # Manufacturer.
             self._hardware_model.manufacturer = combo.get_active()
@@ -2313,7 +3129,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write _on_focus_out; current McCabe Complexity metric = 45.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:
@@ -2388,7 +3208,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._hardware_model.rpm = float(entry.get_text())
             self._modulebook.update(31, float(entry.get_text()))
         elif index == 32:
+<<<<<<< HEAD
             self._hardware_model.hazard_rate_specified = float(entry.get_text())
+=======
+            self._hardware_model.hazard_rate_specified = float(
+                entry.get_text())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._modulebook.update(67, float(entry.get_text()))
         elif index == 33:
             self._hardware_model.mtbf_specified = float(entry.get_text())
@@ -2415,13 +3240,23 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._hardware_model.cost = float(entry.get_text().strip('$'))
             self._modulebook.update(6, float(entry.get_text().strip('$')))
         elif index == 50:
+<<<<<<< HEAD
             self._hardware_model.min_rated_temperature = float(entry.get_text())
+=======
+            self._hardware_model.min_rated_temperature = float(
+                entry.get_text())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._modulebook.update(40, float(entry.get_text()))
         elif index == 51:
             self._hardware_model.knee_temperature = float(entry.get_text())
             self._modulebook.update(93, float(entry.get_text()))
         elif index == 52:
+<<<<<<< HEAD
             self._hardware_model.max_rated_temperature = float(entry.get_text())
+=======
+            self._hardware_model.max_rated_temperature = float(
+                entry.get_text())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._modulebook.update(39, float(entry.get_text()))
         elif index == 53:
             self._hardware_model.rated_voltage = float(entry.get_text())

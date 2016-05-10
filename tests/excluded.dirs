@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ../rtk/gui
 ../rtk/analyses/allocation/gui
 ../rtk/analyses/fmea/gui
@@ -8,3 +9,15 @@
 ../rtk/software/__gui
 ../rtk/survival/__gui
 ../rtk/testing/__gui
+=======
+../../rtk/gui
+../../rtk/analyses/allocation/gui
+../../rtk/analyses/fmea/gui
+../../rtk/analyses/hazard/gui
+../../rtk/analyses/pof/gui
+../../rtk/analyses/similar_item/gui
+../../rtk/hardware/__gui
+../../rtk/software/__gui
+../../rtk/survival/__gui
+../../rtk/testing/__gui
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

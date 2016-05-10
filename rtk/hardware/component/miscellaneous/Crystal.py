@@ -17,6 +17,7 @@ import locale
 
 try:
     import calculations as _calc
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
     from hardware.component.Component import Model as Component
@@ -24,6 +25,15 @@ except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+    from hardware.component.Component import Model as Component
+except ImportError:                         # pragma: no cover
+    import rtk.calculations as _calc
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.Component import Model as Component
 
 __author__ = 'Andrew Rowland'
@@ -33,7 +43,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -45,6 +59,7 @@ class Crystal(Component):
     The Crystal data model contains the attributes and methods of a Crystal
     component.  The attributes of an Crystal are:
 
+<<<<<<< HEAD
     :cvar category: default value: 10
 
     :ivar quality: default value: 0
@@ -60,6 +75,23 @@ class Crystal(Component):
     """
 
     # MIL-HDK-217F hazard rate calculation variables.
+=======
+    :cvar int category: the Component category.
+
+    :ivar int quality: the MIL-HDBK-217FN2 quality list index.
+    :ivar float q_override: the user-defined quality factor.
+    :ivar float frequency: the operating frequency of the Crystal.
+    :ivar float base_hr: the MIL-HDBK-217FN2 base/generic hazard rate.
+    :ivar float piQ: the MIL-HDBK-217FN2 quality factor.
+    :ivar float piE: the MIL-HDBK-217FN2 operating environment factor.
+    :ivar str reason: the reason(s) the Crystal is overstressed.
+
+    Hazard Rate Models:
+        # MIL-HDBK-217FN2, section 19.1.
+    """
+
+    # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piE = [1.0, 3.0, 10.0, 6.0, 16.0, 12.0, 17.0, 22.0, 28.0, 23.0, 0.5,
                 13.0, 32.0, 500.0]
@@ -68,17 +100,40 @@ class Crystal(Component):
                           0.90, 0.74, 0.016, 0.42, 1.0, 16.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
+<<<<<<< HEAD
     category = 10
     subcategory = 80
 
     def __init__(self):
         """
         Initialize an Crystal data model instance.
+=======
+    category = 6
+    subcategory = 1
+
+    def __init__(self):
+        """
+        Method to initialize a Crystal data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Crystal, self).__init__()
 
+<<<<<<< HEAD
         # Initialize public scalar attributes.
+=======
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.quality = 0                    # Quality index.
         self.q_override = 0.0               # User-defined quality factor.
         self.frequency = 0.0                # Operating frquency (MHz).
@@ -89,7 +144,11 @@ class Crystal(Component):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Crystal data model attributes.
+=======
+        Method to set the Crystal data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -109,6 +168,7 @@ class Crystal(Component):
             self.piQ = float(values[99])
             self.piE = float(values[100])
             self.quality = int(values[116])
+<<<<<<< HEAD
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
@@ -116,13 +176,26 @@ class Crystal(Component):
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+# TODO: Add field to rtk_stress to hold overstress reason.
+            self.reason = ''
+        except IndexError as _err:
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Crystal data model
+=======
+        Method to retrieve the current values of the Crystal data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (quality, q_override, base_hr, piQ, piE, reason)
@@ -136,9 +209,15 @@ class Crystal(Component):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Crystal data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Crystal data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -174,7 +253,12 @@ class Crystal(Component):
                                    self.add_adj_factor) * \
                                   (self.duty_cycle / 100.0) * \
                                   self.mult_adj_factor * self.quantity
+<<<<<<< HEAD
         self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
+=======
+        self.hazard_rate_active = self.hazard_rate_active / \
+                                  Configuration.FRMULT
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Calculate operating point ratios.
         self.current_ratio = self.operating_current / self.rated_current

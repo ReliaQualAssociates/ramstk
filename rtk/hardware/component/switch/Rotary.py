@@ -15,6 +15,7 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
     from hardware.component.switch.Switch import Model as \
@@ -22,6 +23,15 @@ try:
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+    from hardware.component.switch.Switch import Model as \
+        Switch
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.switch.Switch import Model as \
         Switch
 
@@ -32,7 +42,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -44,6 +58,7 @@ class Rotary(Switch):
     The Rotary Switch data model contains the attributes and methods of a
     Rotary Switch component.  The attributes of a Rotary Switch are:
 
+<<<<<<< HEAD
     :cvar subcategory: default value: 69
 
     :ivar construction: default value: 0
@@ -52,14 +67,31 @@ class Rotary(Switch):
     :ivar cycles_per_hour: default value: 0.0
     :ivar piCYC: default value: 0.0
     :ivar piL: default value: 0.0
+=======
+    :cvar int subcategory: the Switch subcategory.
+
+    :ivar int construction: the MIL-HDBK-217FN2 construction input index.
+    :ivar int load_type: the MIL-HDBK-217FN2 load type input index.
+    :ivar int n_contacts: the MIL-HDBK-217FN2 number of active contacts input.
+    :ivar float cycles_per_hour: the MIL-HDBK-217FN2 cycles per hour input.
+    :ivar float piCYC: the MIL-HDBK-217FN2 cycles per hour factor.
+    :ivar float piL:  the MIL-HDBK-217FN2 load type factor.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specification MIL-S-3786.
 
     Hazard Rate Models:
+<<<<<<< HEAD
         # MIL-HDBK-217F, section 14.3.
     """
 
     # MIL-HDK-217F hazard rate calculation variables.
+=======
+        # MIL-HDBK-217FN2, section 14.3.
+    """
+
+    # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piE = [1.0, 3.0, 18.0, 8.0, 29.0, 10.0, 18.0, 13.0, 22.0, 46.0, 0.5,
                 25.0, 67.0, 1200.0]
@@ -72,12 +104,30 @@ class Rotary(Switch):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a Rotary Switch data model instance.
+=======
+        Method to initialize a Rotary Switch data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Rotary, self).__init__()
 
+<<<<<<< HEAD
         # Initialize public scalar attributes.
+=======
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.construction = 0
         self.load_type = 0
         self.n_contacts = 0                 # Number of active contacts
@@ -87,7 +137,11 @@ class Rotary(Switch):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
         Sets the Rotary Switch data model attributes.
+=======
+        Method to set the Rotary Switch data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -108,17 +162,28 @@ class Rotary(Switch):
             self.piCYC = float(values[100])
             self.piL = float(values[101])
         except IndexError as _err:
+<<<<<<< HEAD
             _code = _util.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = _util.error_handler(_err.args)
+=======
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
         Retrieves the current values of the Rotary Switch data model
+=======
+        Method to retrieve the current values of the Rotary Switch data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (construction, load_type, n_contacts, cycles_per_hour, piCYC,
@@ -134,14 +199,24 @@ class Rotary(Switch):
 
         return _values
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Rotary Switch data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Rotary Switch data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write calculate_part; current McCabe Complexity metric = 13.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -179,4 +254,8 @@ class Rotary(Switch):
                 self.piL = exp((_stress / 0.2)**2.0)
             self.hazard_rate_model['piL'] = self.piL
 
+<<<<<<< HEAD
         return Switch.calculate(self)
+=======
+        return Switch.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

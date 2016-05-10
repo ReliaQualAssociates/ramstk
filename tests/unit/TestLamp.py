@@ -5,10 +5,16 @@ This is the test class for testing Lamp module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.hardware.TestLamp.py is part of The RTK Project
 #
 # All rights reserved.
 
+=======
+#       tests.unit.TestLamp.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,8 +22,12 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import dao.DAO as _dao
 from hardware.component.miscellaneous.Lamp import *
+=======
+from hardware.component.miscellaneous.Lamp import Lamp
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,9 +45,12 @@ class TestLampModel(unittest.TestCase):
         Setup the test fixture for the Lamp class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Lamp()
 
     @attr(all=True, unit=True)
@@ -53,8 +66,13 @@ class TestLampModel(unittest.TestCase):
         self.assertEqual(self.DUT.category_id, 0)
 
         # Verify Lamp class was properly initialized.
+<<<<<<< HEAD
         self.assertEqual(self.DUT.category, 10)
         self.assertEqual(self.DUT.subcategory, 83)
+=======
+        self.assertEqual(self.DUT.category, 6)
+        self.assertEqual(self.DUT.subcategory, 4)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.application, 0)
         self.assertEqual(self.DUT.illuminate_hours, 0.0)
         self.assertEqual(self.DUT.operate_hours, 0.0)
@@ -205,21 +223,33 @@ class TestLampModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
         (TestLamp) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestLamp) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 5
         self.DUT.application = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 16.0)
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 1.6E-5)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
         (TestLamp) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+=======
+        (TestLamp) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -229,7 +259,11 @@ class TestLampModel(unittest.TestCase):
         self.DUT.illuminate_hours = 2.5
         self.DUT.operate_hours = 6.43
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piU * piA * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

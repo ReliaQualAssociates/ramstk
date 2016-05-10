@@ -39,11 +39,21 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import gui.gtk.Widgets as _widg
 except ImportError:
     import rtk.Configuration as _conf
     import rtk.gui.gtk.Widgets as _widg
+=======
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
+except ImportError:
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -51,7 +61,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -60,6 +74,7 @@ _ = gettext.gettext
 
 def get_mechanism_id(mechanism):
     """
+<<<<<<< HEAD
     Helper function to return the mechanism id of the passed mechanism object.
     Used to sort the list of failure mechanism objects before loading into the
     gtk.TreeView().
@@ -67,6 +82,14 @@ def get_mechanism_id(mechanism):
     :param rtk.analyses.pof.Mechanism.model mode: the failure mechanism object
                                                   to return the mechanism id
                                                   for.
+=======
+    Function to return the mechanism id of the passed mechanism object.  Used
+    to sort the list of failure mechanism objects before loading into the
+    gtk.TreeView().
+
+    :param mechanism: the :py:class:`rtk.analyses.pof.Mechanism.Model` to
+                      return the mechanism id for.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     :return mechanism_id: the mechanism id of the passed mechanism object.
     :rtype: int
     """
@@ -80,6 +103,7 @@ class WorkView(gtk.HBox):
     Physics of Failure (PoF) Analysis.  The attributes of a Physics of Failure
     Analysis Work Book view are:
 
+<<<<<<< HEAD
     :ivar _lst_priority: default value: [_(u"Test Required"),
                                          _(u"Inspection Topic"),
                                          _(u"Functional Topic"),
@@ -103,13 +127,49 @@ class WorkView(gtk.HBox):
         module.
 
         :param rtk.analyses.pof.PoF controller: the PoF data controller.
+=======
+    :ivar list _lst_priority: the list of PoF Mechanism priorities.
+    :ivar list _lst_damage_models: the list of biological, chemical, and
+                                   physical (mathematical) damage models.
+    :ivar list _lst_handler_id: the list of gtk.Widget() signal handler ID.
+    :ivar int _hardware_id: the Hardware ID the PoF is associated with.
+    :ivar :py:class:`rtk.analyses.pof.PhysicsOfFailure.PoF` dtcPoF: the PoF
+                                                                    data
+                                                                    controller.
+    :ivar gtk.Button btnAddSibling: the gtk.Button() used to add a "sibling"
+                                    element.
+    :ivar gtk.Button btnAddChild: the gtk.Button() used to add a "child"
+                                  element.
+    :ivar gtk.Button btnRemove: the gtk.Button() used to remove the selected
+                                element.
+    :ivar gtk.Button btnSavePoF: the gkt.Button() used to save the selected PoF
+                                 Analysis.
+    :ivar gtk.TreeView tvwPoF: the gtk.TreeView() used to display the PoF
+                               Analysis.
+    """
+
+    def __init__(self, controller, modulebook):
+        """
+        Method to initialize the Work Book view for the Physics of Failure
+        Analysis module.
+
+        :param rtk.analyses.pof.PoF controller: the PoF data controller.
+        :param modulebook: the :py:class:`rtk.hardware.ModuleBook` associated
+                           with the PoF.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.HBox.__init__(self)
 
+<<<<<<< HEAD
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+=======
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._lst_priority = [(0, _("")), (1, _(u"Test Required")),
                               (2, _(u"Inspection Topic")),
                               (3, _(u"Functional Topic")),
@@ -163,6 +223,7 @@ class WorkView(gtk.HBox):
 
         self._lst_handler_id = []
 
+<<<<<<< HEAD
         # Initialize private scalar attributes.
         self._hardware_id = None
 
@@ -181,10 +242,69 @@ class WorkView(gtk.HBox):
         """
         Create the Physics of Failure Analysis gtk.Notebook() page for
         displaying the PoF Analysis for the selected Hardware.
+=======
+        # Define private scalar attributes.
+        self._modulebook = modulebook
+        self._hardware_id = None
+
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.dtcPoF = controller
+
+        self.btnAddSibling = Widgets.make_button(width=35,
+                                                 image='insert_sibling')
+        self.btnAddChild = Widgets.make_button(width=35, image='insert_child')
+        self.btnRemove = Widgets.make_button(width=35, image='remove')
+        self.btnSavePoF = Widgets.make_button(width=35, image='save')
+
+        self.tvwPoF = gtk.TreeView()
+
+        # Set gtk.Widget() tooltip texts.
+        self.btnAddChild.set_tooltip_text(_(u"Add an operating stress to the "
+                                            u"selected operating load."))
+        self.btnRemove.set_tooltip_text(_(u"Remove the selected failure "
+                                          u"mechanism from the selected "
+                                          u"hardware item.  This will also "
+                                          u"remove the selected failure "
+                                          u"mechanism from it's associated "
+                                          u"failure mode in the FMEA."))
+        self.btnSavePoF.set_tooltip_text(_(u"Saves the PoF to the open "
+                                           u"RTK Project database."))
+        self.tvwPoF.set_tooltip_text(_(u"Displays the physics of failure "
+                                       u"analysis for the currently selected "
+                                       u"hardware item."))
+
+        # Connect to callback functions.
+        self._lst_handler_id.append(
+            self.btnAddSibling.connect('clicked',
+                                       self._on_button_clicked, 0))
+        self._lst_handler_id.append(
+            self.btnAddChild.connect('clicked',
+                                     self._on_button_clicked, 1))
+        self._lst_handler_id.append(
+            self.btnRemove.connect('clicked',
+                                   self._on_button_clicked, 2))
+        self._lst_handler_id.append(
+            self.btnSavePoF.connect('clicked',
+                                    self._on_button_clicked, 3))
+        self._lst_handler_id.append(
+            self.tvwPoF.connect('cursor_changed', self._on_row_changed))
+
+        self.btnAddSibling.set_sensitive(True)
+
+    def create_page(self):
+        """
+        Method to create the Physics of Failure Analysis gtk.Notebook() page
+        for displaying the PoF Analysis for the selected Hardware.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
+<<<<<<< HEAD
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the PoF gtk.TreeView().                                #
@@ -193,6 +313,12 @@ class WorkView(gtk.HBox):
                                        u"analysis for the currently selected "
                                        u"hardware item."))
 
+=======
+# TODO: Re-write create_page; current McCabe Complexity metric = 17.
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Create the PoF gtk.TreeView().                                #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _model = gtk.TreeStore(gtk.gdk.Pixbuf, gobject.TYPE_INT,
                                gobject.TYPE_STRING, gobject.TYPE_STRING,
                                gobject.TYPE_STRING, gobject.TYPE_STRING,
@@ -256,10 +382,17 @@ class WorkView(gtk.HBox):
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=3, background=13,
                                        editable=9)
+<<<<<<< HEAD
                 for j in range(len(self._lst_damage_models)):
                     _cellmodel.append([self._lst_damage_models[j][1]])
                 # for j in range(len(_conf.RTK_DAMAGE_MODELS)):
                 #     _cellmodel.append([_conf.RTK_DAMAGE_MODELS[j]])
+=======
+                for __, _model in enumerate(self._lst_damage_models):
+                    _cellmodel.append([_model[1]])
+                # for j in range(len(Configuration.RTK_DAMAGE_MODELS)):
+                #     _cellmodel.append([Configuration.RTK_DAMAGE_MODELS[j]])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             elif i == 3:                    # Priority
                 _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
@@ -277,8 +410,13 @@ class WorkView(gtk.HBox):
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=4, background=13,
                                        editable=9)
+<<<<<<< HEAD
                 for j in range(len(self._lst_priority)):
                     _cellmodel.append([self._lst_priority[j][1]])
+=======
+                for __, _priority in enumerate(self._lst_priority):
+                    _cellmodel.append([_priority[1]])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             elif i == 4:                    # Measurable parameter
                 _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
@@ -295,10 +433,17 @@ class WorkView(gtk.HBox):
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=5, background=14,
                                        editable=10)
+<<<<<<< HEAD
                 for j in range(len(self._lst_operating_parameters)):
                     _cellmodel.append([self._lst_operating_parameters[j][1]])
                 # for j in range(len(_conf.RTK_OPERATING_PARAMETERS)):
                 #     _cellmodel.append([_conf.RTK_OPERATING_PARAMETERS[j]])
+=======
+                for __, _parameter in enumerate(self._lst_operating_parameters):
+                    _cellmodel.append([_parameter[1]])
+                # for j in range(len(Configuration.RTK_OPERATING_PARAMETERS)):
+                #     _cellmodel.append([Configuration.RTK_OPERATING_PARAMETERS[j]])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             elif i == 5:                    # Load history
                 _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
@@ -315,10 +460,17 @@ class WorkView(gtk.HBox):
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=6, background=14,
                                        editable=10)
+<<<<<<< HEAD
                 for j in range(len(self._lst_load_history)):
                     _cellmodel.append([self._lst_load_history[j][1]])
                 # for j in range(len(_conf.RTK_LOAD_HISTORY)):
                 #     _cellmodel.append([_conf.RTK_LOAD_HISTORY[j]])
+=======
+                for __, _history in enumerate(self._lst_load_history):
+                    _cellmodel.append([_history[1]])
+                # for j in range(len(Configuration.RTK_LOAD_HISTORY)):
+                #     _cellmodel.append([Configuration.RTK_LOAD_HISTORY[j]])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             elif i == 6:                    # Boundary conditions
                 _cell = gtk.CellRendererText()
@@ -395,7 +547,11 @@ class WorkView(gtk.HBox):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwPoF)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Physics of Failure Analysis"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Physics of Failure Analysis"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -406,6 +562,7 @@ class WorkView(gtk.HBox):
         _bbox.pack_start(self.btnRemove, False, False)
         _bbox.pack_start(self.btnSavePoF, False, False)
 
+<<<<<<< HEAD
         self.btnAddSibling.set_tooltip_text(_(u"Add a failure mechanism to "
                                               u"the selected hardware item."))
         self.btnAddChild.set_tooltip_text(_(u"Add an operating load to the "
@@ -436,11 +593,17 @@ class WorkView(gtk.HBox):
         self._lst_handler_id.append(
             self.tvwPoF.connect('cursor_changed', self._on_row_changed))
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False
 
     def load_page(self, hardware_id, path=None):
         """
+<<<<<<< HEAD
         Function to load the widgets on the PoF Analysis page.
+=======
+        Method to load the gtk.Widgets() on the PoF Analysis page.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param `rtk.hardware.Hardware.Hardware` controller: the Hardware data
                                                             controller instance
@@ -462,7 +625,11 @@ class WorkView(gtk.HBox):
         _mechanisms = sorted(_mechanisms, key=get_mechanism_id)
         _piter = [None, None, None]
         for _mechanism in _mechanisms:
+<<<<<<< HEAD
             _icon = _conf.ICON_DIR + '32x32/mechanism.png'
+=======
+            _icon = Configuration.ICON_DIR + '32x32/mechanism.png'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _attributes = _mechanism.get_attributes()
             _data = (_icon, _attributes[1], _attributes[2], '', '', '', '',
@@ -471,7 +638,11 @@ class WorkView(gtk.HBox):
             _piter[0] = _model.append(None, _data)
 
             for _load in _mechanism.dicLoads.values():
+<<<<<<< HEAD
                 _icon = _conf.ICON_DIR + '32x32/load.png'
+=======
+                _icon = Configuration.ICON_DIR + '32x32/load.png'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
                 _attributes = _load.get_attributes()
                 _damage_model = self._lst_damage_models[_attributes[3]][1]
@@ -482,7 +653,11 @@ class WorkView(gtk.HBox):
                 _piter[1] = _model.append(_piter[0], _data)
 
                 for _stress in _load.dicStresses.values():
+<<<<<<< HEAD
                     _icon = _conf.ICON_DIR + '32x32/stress.png'
+=======
+                    _icon = Configuration.ICON_DIR + '32x32/stress.png'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                     _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
                     _attributes = _stress.get_attributes()
                     _parameter = self._lst_operating_parameters[_attributes[3]][1]
@@ -494,7 +669,11 @@ class WorkView(gtk.HBox):
                     _piter[2] = _model.append(_piter[1], _data)
 
                     for _method in _stress.dicMethods.values():
+<<<<<<< HEAD
                         _icon = _conf.ICON_DIR + '32x32/method.png'
+=======
+                        _icon = Configuration.ICON_DIR + '32x32/method.png'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22,
                                                                      22)
                         _attributes = _method.get_attributes()
@@ -510,6 +689,10 @@ class WorkView(gtk.HBox):
                 path = _model.get_path(_root)
             except TypeError:
                 return False
+<<<<<<< HEAD
+=======
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _column = self.tvwPoF.get_column(0)
         self.tvwPoF.set_cursor(path, None, False)
         self.tvwPoF.row_activated(path, _column)
@@ -517,10 +700,269 @@ class WorkView(gtk.HBox):
 
         return False
 
+<<<<<<< HEAD
     def _on_button_clicked(self, __button, index):
         """
         Responds to gtk.Button() clicked signals and calls the correct function
         or method, passing any parameters as needed.
+=======
+    def _request_add_sibling_item(self, model, row, level):
+        """
+        Method to request a sibling item be added to the PoF analysis.
+
+        :param gtk.TreeModel model: the PoF analysis gtk.TreeView().
+        :param gtk.TreeIter row: the selected row in the PoF analysis.
+        :param int level: the indenture level in the PoF analysis to add the
+                          sibling.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if level == 1:                     # Failure Mechanism
+            Utilities.rtk_information(_(u"Failure mechanisms must be "
+                                        u"associated with a failure mode.  A "
+                                        u"failure mechanism must be added to "
+                                        u"the appropriate failure mode on the "
+                                        u"FMEA page."))
+
+        elif level == 2:                   # Operating load
+            _piter = model.iter_parent(row)
+            _mechanism_id = model.get_value(_piter, 1)
+
+            (_results,
+             _error_code,
+             _last_id) = self.dtcPoF.add_load(self._hardware_id, _mechanism_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_add_sibling_item: " \
+                           "Received error code {0:d} while adding an " \
+                           "operating Load to failure Mechanism " \
+                           "{1:d}.".format(_error_code, _mechanism_id)
+                _prompt = _(u"Failed to add operating load to failure "
+                            u"Mechanism {0:d}.".format(_mechanism_id))
+
+        elif level == 3:                   # Operating stress
+            _piter = model.iter_parent(row)
+            _load_id = model.get_value(_piter, 1)
+            _piter = model.iter_parent(_piter)
+            _mechanism_id = model.get_value(_piter, 1)
+
+            (_results,
+             _error_code,
+             _last_id) = self.dtcPoF.add_stress(self._hardware_id,
+                                                _mechanism_id, _load_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_add_sibling_item: " \
+                           "Received error code {0:d} while adding an " \
+                           "operating Stress to operating Load " \
+                           "{1:d}.".format(_error_code, _load_id)
+                _prompt = _(u"Failed to add operating stress to operating "
+                            u"Load {0:d}.".format(_load_id))
+
+        elif level == 4:                   # Test method
+            _piter = model.iter_parent(row)
+            _stress_id = model.get_value(_piter, 1)
+            _piter = model.iter_parent(_piter)
+            _load_id = model.get_value(_piter, 1)
+            _piter = model.iter_parent(_piter)
+            _mechanism_id = model.get_value(_piter, 1)
+
+            (_results,
+             _error_code,
+             _last_id) = self.dtcPoF.add_method(self._hardware_id,
+                                                _mechanism_id, _load_id,
+                                                _stress_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_add_sibling_item: " \
+                           "Received error code {0:d} while adding an " \
+                           "test Method to operating Stress " \
+                           "{1:d}.".format(_error_code, _stress_id)
+                _prompt = _(u"Failed to add test method to operating "
+                            u"Stress {0:d}.".format(_stress_id))
+
+        if _error_code != 0:
+            self._modulebook.mdcRTK.debug_log.error(_content)
+            Utilities.rtk_error(_prompt)
+
+            _return = True
+
+        return _return
+
+    def _request_add_child_item(self, model, row, level):
+        """
+        Method to request a child item be added to the PoF analysis.
+
+        :param gtk.TreeModel model: the PoF analysis gtk.TreeView().
+        :param gtk.TreeIter row: the selected row in the PoF analysis.
+        :param int level: the indenture level in the PoF analysis to add the
+                          child.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if level == 1:                 # Failure mechanism
+            _mechanism_id = model.get_value(row, 1)
+
+            (_results,
+             _error_code,
+             _last_id) = self.dtcPoF.add_load(self._hardware_id, _mechanism_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_add_child_item: " \
+                           "Received error code {0:d} while adding an " \
+                           "operating Load to failure Mechanism " \
+                           "{1:d}.".format(_error_code, _mechanism_id)
+                _prompt = _(u"Failed to add operating load to failure "
+                            u"Mechanism {0:d}.".format(_mechanism_id))
+
+        elif level == 2:               # Operating load
+            _load_id = model.get_value(row, 1)
+            _piter = model.iter_parent(row)
+            _mechanism_id = model.get_value(_piter, 1)
+
+            (_results,
+             _error_code,
+             _last_id) = self.dtcPoF.add_stress(self._hardware_id,
+                                                _mechanism_id, _load_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_add_child_item: " \
+                           "Received error code {0:d} while adding an " \
+                           "operating Stress to operating Load " \
+                           "{1:d}.".format(_error_code, _load_id)
+                _prompt = _(u"Failed to add operating stress to operating "
+                            u"Load {0:d}.".format(_load_id))
+
+        elif level == 3:               # Operating stress
+            _stress_id = model.get_value(row, 1)
+            _piter = model.iter_parent(row)
+            _load_id = model.get_value(_piter, 1)
+            _piter = model.iter_parent(_piter)
+            _mechanism_id = model.get_value(_piter, 1)
+
+            (_results,
+             _error_code,
+             _last_id) = self.dtcPoF.add_method(self._hardware_id,
+                                                _mechanism_id, _load_id,
+                                                _stress_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_add_child_item: " \
+                           "Received error code {0:d} while adding an " \
+                           "test Method to operating Stress " \
+                           "{1:d}.".format(_error_code, _stress_id)
+                _prompt = _(u"Failed to add test method to operating "
+                            u"Stress {0:d}.".format(_stress_id))
+
+        if _error_code != 0:
+            self._modulebook.mdcRTK.debug_log.error(_content)
+            Utilities.rtk_error(_prompt)
+
+            _return = True
+
+        return _return
+
+    def _request_delete_item(self, model, row, level, item_id):
+        """
+        Method to request the selected line be deleted from the PoF analysis.
+
+        :param gtk.TreeModel model: the PoF analysis gtk.TreeView().
+        :param gtk.TreeIter row: the selected row in the PoF analysis.
+        :param int level: the indenture level in the PoF analysis to add the
+                          child.
+        :param int item_id: the ID of the item to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if level == 1:                 # Failure mechanism
+            (_results,
+             _error_code) = self.dtcPoF.delete_mechanism(self._hardware_id,
+                                                         item_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_delete_item: " \
+                           "Received error code {0:d} while deleting " \
+                           "failure mechanism {1:d}.".format(_error_code,
+                                                             item_id)
+                _prompt = _(u"Failed to delete failure mechanism "
+                            u"{0:d}.".format(item_id))
+
+        elif level == 2:               # Operating load
+            _prow = model.iter_parent(row)
+            _mechanism_id = model.get_value(_prow, 1)
+
+            (_results,
+             _error_code) = self.dtcPoF.delete_load(self._hardware_id,
+                                                    _mechanism_id, item_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_delete_item: " \
+                           "Received error code {0:d} while deleting " \
+                           "operating load {1:d}.".format(_error_code, item_id)
+                _prompt = _(u"Failed to delete operating load "
+                            u"{0:d}.".format(item_id))
+
+        elif level == 3:               # Operating stress
+            _prow = model.iter_parent(row)
+            _load_id = model.get_value(_prow, 1)
+            _prow = model.iter_parent(_prow)
+            _mechanism_id = model.get_value(_prow, 1)
+
+            (_results,
+             _error_code) = self.dtcPoF.delete_stress(self._hardware_id,
+                                                      _mechanism_id, _load_id,
+                                                      item_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_delete_item: " \
+                           "Received error code {0:d} while deleting " \
+                           "operating stress {1:d}.".format(_error_code,
+                                                            item_id)
+                _prompt = _(u"Failed to delete operating stress "
+                            u"{0:d}.".format(item_id))
+
+        elif level == 4:               # Test method
+            _prow = model.iter_parent(row)
+            _stress_id = model.get_value(_prow, 1)
+            _prow = model.iter_parent(_prow)
+            _load_id = model.get_value(_prow, 1)
+            _prow = model.iter_parent(_prow)
+            _mechanism_id = model.get_value(_prow, 1)
+
+            (_results,
+             _error_code) = self.dtcPoF.delete_method(self._hardware_id,
+                                                      _mechanism_id, _load_id,
+                                                      _stress_id, item_id)
+
+            if _error_code != 0:
+                _content = "rtk.analyses.pof.gui.gtk.WorkBook._request_delete_item: " \
+                           "Received error code {0:d} while deleting test " \
+                           "Method {1:d}.".format(_error_code, item_id)
+                _prompt = _(u"Failed to delete test method "
+                            u"{0:d}.".format(item_id))
+
+        if _error_code != 0:
+            self._modulebook.mdcRTK.debug_log.error(_content)
+            Utilities.rtk_error(_prompt)
+
+            _return = True
+
+        return _return
+
+    def _on_button_clicked(self, __button, index):
+        """
+        Method to respond to gtk.Button() 'clicked' signals and call the
+        correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -535,6 +977,7 @@ class WorkView(gtk.HBox):
         _level = _model.get_value(_row, 17)
 
         if index == 0:                      # Add sibling
+<<<<<<< HEAD
             if _level == 1:                 # Failure Mechanism
                 (_results,
                  _error_code,
@@ -575,6 +1018,9 @@ class WorkView(gtk.HBox):
                                                     _stress_id)
 
             if _results:
+=======
+            if not self._request_add_sibling_item(_model, _row, _level):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 try:
                     _path = _model.get_path(_model.iter_next(_row))
                 except TypeError:
@@ -582,6 +1028,7 @@ class WorkView(gtk.HBox):
                 self.load_page(self._hardware_id, _path)
 
         elif index == 1:                    # Add child
+<<<<<<< HEAD
             if _level == 1:                 # Failure mechanism
                 (_results,
                  _error_code,
@@ -608,6 +1055,9 @@ class WorkView(gtk.HBox):
                                                     _id)
 
             if _results:
+=======
+            if not self._request_add_child_item(_model, _row, _level):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 try:
                     _path = _model.get_path(_model.iter_next(_row))
                 except TypeError:
@@ -615,6 +1065,7 @@ class WorkView(gtk.HBox):
                 self.load_page(self._hardware_id, _path)
 
         elif index == 2:                    # Delete selected
+<<<<<<< HEAD
             if _level == 1:                 # Failure mechanism
                 (_results,
                  _error_code) = self.dtcPoF.delete_mechanism(self._hardware_id,
@@ -654,6 +1105,9 @@ class WorkView(gtk.HBox):
                                                           _id)
 
             if _results:
+=======
+            if not self._request_delete_item(_model, _row, _level, _id):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 try:
                     _path = _model.get_path(_model.iter_next(_row))
                 except TypeError:
@@ -668,7 +1122,11 @@ class WorkView(gtk.HBox):
 
     def _on_cell_edit(self, cell, path, new_text, index):
         """
+<<<<<<< HEAD
         Responds to edited signals from the PoF gtk.TreeView().
+=======
+        Method to respond to 'edited' signals from the PoF gtk.TreeView().
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.CellRenderer cell: the gtk.CellRenderer() that called this
                                       method.
@@ -680,7 +1138,11 @@ class WorkView(gtk.HBox):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write _on_cell_edit; current McCabe Complexity metric = 28.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _pof = self.dtcPoF.dicPoF[self._hardware_id]
 
         (_model, _row) = self.tvwPoF.get_selection().get_selected()
@@ -763,9 +1225,14 @@ class WorkView(gtk.HBox):
 
     def _on_row_changed(self, treeview):
         """
+<<<<<<< HEAD
         Callback function to handle events for the PoF package Work Book
         gtk.TreeView().  It is called whenever a PoF Work Book gtk.TreeView()
         row is activated.
+=======
+        Method to handle events for the PoF package Work Book gtk.TreeView().
+        It is called whenever a PoF Work Book gtk.TreeView() row is activated.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.TreeView treeview: the PoF class gtk.TreeView().
         :return: False if successful or True if an error is encountered.
@@ -779,12 +1246,19 @@ class WorkView(gtk.HBox):
         _label = _column.get_widget()
 
         if _level == 1:                     # Failure mechanism.
+<<<<<<< HEAD
             self.btnAddSibling.set_tooltip_text(_(u"Add a failure mechanism "
                                                   u"to the selected hardware "
                                                   u"item."))
             self.btnAddChild.set_tooltip_text(_(u"Add an operating load to "
                                                 u"the selected failure "
                                                 u"mechanism."))
+=======
+            self.btnAddChild.set_tooltip_text(_(u"Add an operating load to "
+                                                u"the selected failure "
+                                                u"mechanism."))
+            self.btnAddSibling.set_sensitive(False)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.btnAddChild.set_sensitive(True)
             self.btnRemove.set_tooltip_text(_(u"Remove the selected failure "
                                               u"mechanism from the selected "
@@ -798,6 +1272,10 @@ class WorkView(gtk.HBox):
             self.btnAddChild.set_tooltip_text(_(u"Add an operating stress to "
                                                 u"the selected operating "
                                                 u"load."))
+<<<<<<< HEAD
+=======
+            self.btnAddSibling.set_sensitive(True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.btnAddChild.set_sensitive(True)
             self.btnRemove.set_tooltip_text(_(u"Remove the selected operating "
                                               u"load from the selected "
@@ -809,6 +1287,10 @@ class WorkView(gtk.HBox):
                                                   u"load."))
             self.btnAddChild.set_tooltip_text(_(u"Add a test method to the "
                                                 u"selected operating stress."))
+<<<<<<< HEAD
+=======
+            self.btnAddSibling.set_sensitive(True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.btnAddChild.set_sensitive(True)
             self.btnRemove.set_tooltip_text(_(u"Remove the selected operating "
                                               u"stress from the selected "
@@ -818,6 +1300,10 @@ class WorkView(gtk.HBox):
             self.btnAddSibling.set_tooltip_text(_(u"Add a potential test "
                                                   u"method to the selected "
                                                   u"operating stress."))
+<<<<<<< HEAD
+=======
+            self.btnAddSibling.set_sensitive(True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.btnAddChild.set_sensitive(False)
             self.btnRemove.set_tooltip_text(_(u"Remove the selected test "
                                               u"method from the selected "

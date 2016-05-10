@@ -5,6 +5,7 @@ This is the test class for testing Revision module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       TestRevision.py is part of The RTK Project
 #
 # All rights reserved.
@@ -12,12 +13,25 @@ This is the test class for testing Revision module algorithms and models.
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestRevision.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
 import dao.DAO as _dao
 from revision.Revision import Model, Revision
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+import dao.DAO as _dao
+from revision.Revision import Model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,9 +49,12 @@ class TestRevisionModel(unittest.TestCase):
         Method to setup the test fixture for the Revision class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
         self.good_values = (0, 1, 50.0, 'days', 'Test Mission')
@@ -221,6 +238,7 @@ class TestRevisionModel(unittest.TestCase):
         self.assertEqual(self.DUT.cost, 100.0)
         self.assertAlmostEqual(self.DUT.cost_per_failure, 0.5013)
         self.assertAlmostEqual(self.DUT.cost_per_hour, 10.0)
+<<<<<<< HEAD
 
 
 class TestRevisionController(unittest.TestCase):
@@ -346,3 +364,5 @@ class TestRevisionController(unittest.TestCase):
 
         self.DUT.request_revisions(self._dao)
         self.assertFalse(self.DUT.save_all_revisions())
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

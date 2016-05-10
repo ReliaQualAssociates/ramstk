@@ -43,7 +43,11 @@ def calculate_part(model):
     :return: _lambdap, the calculated h(t).
     :rtype: float
     """
+<<<<<<< HEAD
 
+=======
+# TODO: Move to Hardware class.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     _keys = model.keys()
     _values = model.values()
 
@@ -55,6 +59,7 @@ def calculate_part(model):
     return _lambdap
 
 
+<<<<<<< HEAD
 def overstressed(partmodel, partrow, systemmodel, systemrow):
     """
     Determines whether the component is overstressed based on derating
@@ -601,6 +606,8 @@ def overstressed(partmodel, partrow, systemmodel, systemrow):
     return overstress, reason
 
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     """
     Calculates the estimated hazard rate of a similar item based on
@@ -677,7 +684,11 @@ def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     :return: hr_similar; the estimated hazard rate for the new item.
     :rtype: float
     """
+<<<<<<< HEAD
 
+=======
+# TODO: Move to Similar Item class.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     qual_factor = [[1.0, 0.8, 0.5, 0.2],
                    [1.3, 1.0, 0.6, 0.3],
                    [2.0, 1.7, 1.0, 0.4],
@@ -789,7 +800,11 @@ def dormant_hazard_rate(component):
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
+<<<<<<< HEAD
 
+=======
+# TODO: Move to Hardware class.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
               [0.04, 0.05, 0.01, 0.04, 0.03, 0.20, 0.80, 0.00],
               [0.05, 0.06, 0.02, 0.05, 0.03, 0.20, 1.00, 0.00],
@@ -868,6 +883,7 @@ def dormant_hazard_rate(component):
         return True
 
 
+<<<<<<< HEAD
 def criticality_analysis(modeca, itemca, rpn):
     """
     Function to perform criticality calculations for FMECA.
@@ -960,6 +976,8 @@ def beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
     return _meanll, _mean, _meanul, _sd
 
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 def calculate_field_ttf(dates):
     """
     Function to calculate the time to failure (TTF) of field incidents.
@@ -969,7 +987,11 @@ def calculate_field_ttf(dates):
     :return: _ttf.days; the number of days between the start and end date.
     :rtype: float
     """
+<<<<<<< HEAD
 
+=======
+# TODO: Move to Incident class.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from datetime import datetime
 
     _start = datetime.strptime(dates[0], "%Y-%m-%d")
@@ -977,6 +999,7 @@ def calculate_field_ttf(dates):
     _ttf = _fail - _start
     print _ttf.days
     return _ttf.days
+<<<<<<< HEAD
 
 
 def smooth_curve(x, y, num):                # pylint: disable=C0103
@@ -1017,3 +1040,5 @@ def smooth_curve(x, y, num):                # pylint: disable=C0103
     _new_y = _new_y.tolist()
 
     return _new_x, _new_y, _error
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

@@ -5,7 +5,11 @@ This is the test class for testing Hazard module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       TestHazard.py is part of The RTK Project
+=======
+#       tests.unit.TestHazard.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -35,7 +39,11 @@ class TestHazardModel(unittest.TestCase):
         Setup the test fixture for the Hazard class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+=======
+        _database = '/tmp/tempdb.rtk'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -274,10 +282,13 @@ class TestHazardController(unittest.TestCase):
         Sets up the test fixture for the Hazard class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Hazard()
 
     @attr(all=True, unit=True)
@@ -289,6 +300,7 @@ class TestHazardController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Hazard))
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT.dicHazard, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_hazard(self):
@@ -346,3 +358,5 @@ class TestHazardController(unittest.TestCase):
 
         self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
         self.assertFalse(self.DUT.save_all_hazards())
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

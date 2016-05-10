@@ -5,10 +5,16 @@ This is the test class for testing Ceramic capacitor module algorithms and model
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.hardware.TestCeramic.py is part of The RTK Project
 #
 # All rights reserved.
 
+=======
+#       tests.unit.TestCeramic.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +22,10 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import dao.DAO as _dao
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.capacitor.fixed.Ceramic import Chip, General
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +44,12 @@ class TestCeramicChipModel(unittest.TestCase):
         Setup the test fixture for the Capacitor class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Chip()
 
     @attr(all=True, unit=True)
@@ -216,7 +228,11 @@ class TestCeramicChipModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
         (TestCeramicChip) calculate should return False on success when calculating MIL-HDBK-217F parts count results for the 85C specification
+=======
+        (TestCeramicChip) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results for the 85C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
@@ -224,7 +240,11 @@ class TestCeramicChipModel(unittest.TestCase):
         self.DUT.specification = 2
         self.DUT.hazard_rate_type = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.023)
@@ -234,7 +254,11 @@ class TestCeramicChipModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
+<<<<<<< HEAD
         (TestCeramicChip) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+=======
+        (TestCeramicChip) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -246,7 +270,11 @@ class TestCeramicChipModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -259,7 +287,11 @@ class TestCeramicChipModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
+<<<<<<< HEAD
         (TestCeramicChip) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+=======
+        (TestCeramicChip) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 125C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -271,7 +303,11 @@ class TestCeramicChipModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -284,7 +320,11 @@ class TestCeramicChipModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
         (TestCeramicChip) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestCeramicChip) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -296,12 +336,20 @@ class TestCeramicChipModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.00000001
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
+<<<<<<< HEAD
         (TestCeramicChip) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestCeramicChip) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -313,7 +361,11 @@ class TestCeramicChipModel(unittest.TestCase):
         self.DUT.capacitance = 2.7E-6
         self.DUT.reference_temperature = 0.0
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestCeramicGeneralModel(unittest.TestCase):
@@ -326,9 +378,12 @@ class TestCeramicGeneralModel(unittest.TestCase):
         Setup the test fixture for the General Ceramic capacitor class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = General()
 
     @attr(all=True, unit=True)
@@ -503,14 +558,22 @@ class TestCeramicGeneralModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
         (TestCeramicGeneral) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
+        (TestCeramicGeneral) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.056)
@@ -520,7 +583,11 @@ class TestCeramicGeneralModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
+<<<<<<< HEAD
         (TestCeramicGeneral) calculate should return False on success when calculating MIL-HDBK-217F stress results for 85C specification
+=======
+        (TestCeramicGeneral) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for 85C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -531,7 +598,11 @@ class TestCeramicGeneralModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -544,7 +615,11 @@ class TestCeramicGeneralModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_temp(self):
         """
+<<<<<<< HEAD
         (TestCeramicGeneral) calculate should return False on success when calculating MIL-HDBK-217F stress results for 125C specification
+=======
+        (TestCeramicGeneral) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for 125C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -555,7 +630,11 @@ class TestCeramicGeneralModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -568,7 +647,11 @@ class TestCeramicGeneralModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_temp(self):
         """
+<<<<<<< HEAD
         (TestCeramicGeneral) calculate should return False on success when calculating MIL-HDBK-217F stress results for 150C specification
+=======
+        (TestCeramicGeneral) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for 150C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -579,7 +662,11 @@ class TestCeramicGeneralModel(unittest.TestCase):
         self.DUT.rated_voltage = 3.3
         self.DUT.capacitance = 2.7E-6
 
+<<<<<<< HEAD
         self.assertFalse(self.DUT.calculate())
+=======
+        self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE * piCV')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -592,7 +679,11 @@ class TestCeramicGeneralModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
         (TestCeramicGeneral) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestCeramicGeneral) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -603,12 +694,20 @@ class TestCeramicGeneralModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.00000001
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress_zero_division(self):
         """
+<<<<<<< HEAD
         (TestCeramicGeneral) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+=======
+        (TestCeramicGeneral) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -619,4 +718,8 @@ class TestCeramicGeneralModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

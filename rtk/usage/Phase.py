@@ -23,6 +23,7 @@ class Model(object):
     phase.  A Mission will consist of one or more mission phases.  The
     attributes of a Phase are:
 
+<<<<<<< HEAD
     :ivar dicEnvironments: Dictionary of the Environments associated with the
     Phase.  Key is the Environment ID, value is a pointer to the instance of
     the Environment data model.
@@ -34,6 +35,20 @@ class Model(object):
     :ivar end_time: default value: 0.0
     :ivar code: default value: ''
     :ivar description: default value: ''
+=======
+    :ivar dict dicEnvironments: Dictionary of the Environments associated with
+                                the Phase.  Key is the Environment ID, value is
+                                a pointer to the instance of the Environment
+                                data model.
+    :ivar int revision_id: the ID of the Revision this Phase is associated
+                           with.
+    :ivar int mission_id: the ID of the Mission this Phase belongs to.
+    :ivar int phase_id: the ID of the Phase.
+    :ivar float start_time: the Mission time the Phase begins.
+    :ivar float end_time: the Mission time the Phase ends.
+    :ivar str code: the Phase code.
+    :ivar str description: the description of the Mission Phase.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -41,10 +56,25 @@ class Model(object):
         Method to initialize a Phase data model instance.
         """
 
+<<<<<<< HEAD
         # Set public dict attribute default values.
         self.dicEnvironments = {}
 
         # Set public scalar attribute default values.
+=======
+        # Define private dictionary attributes.
+
+        # Define private list attributes.
+
+        # Define private scalar attributes.
+
+        # Define public dictionary attributes.
+        self.dicEnvironments = {}
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.revision_id = 0
         self.mission_id = 0
         self.phase_id = 0

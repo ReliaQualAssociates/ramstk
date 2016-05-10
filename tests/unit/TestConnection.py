@@ -5,10 +5,16 @@ This is the test class for testing Connection module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.hardware.TestConnection.py is part of The RTK Project
 #
 # All rights reserved.
 
+=======
+#       tests.unit.TestConnection.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -16,7 +22,10 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import dao.DAO as _dao
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.connection.Connection import Model
 
 __author__ = 'Andrew Rowland'
@@ -35,9 +44,12 @@ class TestConnectionModel(unittest.TestCase):
         Setup the test fixture for the Connection class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
     @attr(all=True, unit=True)
@@ -290,9 +302,17 @@ class TestConnectionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_attribute_error(self):
         """
+<<<<<<< HEAD
         (TestConnection) calculate should return True when there is an AttributeError.
+=======
+        (TestConnection) calculate_part should return True when there is an AttributeError.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 1
+<<<<<<< HEAD
         self.assertTrue(self.DUT.calculate())
+=======
+        self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

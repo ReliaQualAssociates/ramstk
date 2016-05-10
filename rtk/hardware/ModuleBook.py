@@ -33,9 +33,19 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
+<<<<<<< HEAD
 import Configuration as _conf
 import gui.gtk.Widgets as _widg
 #from ListBook import ListView
+=======
+try:
+    import Configuration
+    import gui.gtk.Widgets as Widgets
+except ImportError:
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
+from ListBook import ListView
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from WorkBook import WorkView
 
 __author__ = 'Andrew Rowland'
@@ -44,7 +54,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -64,7 +78,11 @@ class ModuleView(object):
                           Module View :py:class:`gtk.TreeView`.
     :ivar _workbook: the :class:`rtk.hardware.WorkBook.WorkView` associated
                      with this instance of the Module View.
+<<<<<<< HEAD
     :ivar dtcBoM: the :py:class:`rtk.bom.BoM` data controller to use for
+=======
+    :ivar dtcBoM: the :py:class:`rtk.RTK.RTK` master data controller to use for
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                   accessing the Hardware data models.
     :ivar dtcAllocation: the :py:class:`rtk.analyses.allocation.Allocation`
                           data controller to use for accessing the Allocation
@@ -77,8 +95,13 @@ class ModuleView(object):
         """
         Initializes the Module Book view for the Hardware package.
 
+<<<<<<< HEAD
         :param controller: the instance of the :py:class:`rtk.bom.BoM` data
                            controller to use with this view.
+=======
+        :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
+                           data controller to use with this view.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Hardware
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
@@ -86,14 +109,24 @@ class ModuleView(object):
         :param *args: other user arguments to pass to the Module View.
         """
 
+<<<<<<< HEAD
         # Initialize private list attribute
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
+=======
+        # Define private dictionary attribute
+
+        # Define private list attribute
+        self._lst_handler_id = []
+
+        # Define private scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._dao = None
         self._model = None
         self._allocation_model = None
 
+<<<<<<< HEAD
         # Initialize public scalar attributes.
         self.dtcBoM = controller
         self.dtcAllocation = args[0][0]
@@ -101,13 +134,27 @@ class ModuleView(object):
         self.dtcSimilarItem = args[0][2]
         self.dtcFMECA = args[0][3]
         self.dtcPoF = args[0][4]
+=======
+        # Define public dictionary attribute
+
+        # Define public list attribute
+
+        # Define public scalar attributes.
+        self.mdcRTK = controller
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create the main Hardware class treeview.
 # TODO: Update the hardware.xml file to accomodate the prediction stuff.
         (self.treeview,
+<<<<<<< HEAD
          self._lst_col_order) = _widg.make_treeview('Hardware', 3,
                                                     _conf.RTK_COLORS[4],
                                                     _conf.RTK_COLORS[5])
+=======
+         self._lst_col_order) = Widgets.make_treeview('Hardware', 3,
+                                                      Configuration.RTK_COLORS[4],
+                                                      Configuration.RTK_COLORS[5])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _selection = self.treeview.get_selection()
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
@@ -115,10 +162,14 @@ class ModuleView(object):
 
         self._lst_handler_id.append(_selection.connect('changed',
                                                        self._on_row_changed))
+<<<<<<< HEAD
         #self.treeview.connect('cursor_changed', self._on_row_changed,
         #                      None, None))
         #self._lst_handler_id.append(
         #    self.treeview.connect('row_activated', self._on_row_changed))
+=======
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._lst_handler_id.append(
             self.treeview.connect('button_release_event',
                                   self._on_button_press))
@@ -138,7 +189,11 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
+<<<<<<< HEAD
         _icon = _conf.ICON_DIR + '32x32/hardware.png'
+=======
+        _icon = Configuration.ICON_DIR + '32x32/hardware.png'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -161,11 +216,18 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
+<<<<<<< HEAD
         self.listbook = None
         #self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
 
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(rtk_view.workview, self)
+=======
+        self.listbook = ListView(self)
+
+        # Create a Work View to associate with this Module View.
+        self.workbook = WorkView(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     def request_load_data(self, dao, revision_id):
         """
@@ -176,10 +238,18 @@ class ModuleView(object):
         :rtype: boolean
         """
 
+<<<<<<< HEAD
         (_hardware, __) = self.dtcBoM.request_bom(dao, revision_id)
         self.dtcAllocation.request_allocation(dao)
         self.dtcHazard.request_hazard(dao)
         self.dtcSimilarItem.request_similar_item(dao)
+=======
+        (_hardware,
+         __) = self.mdcRTK.dtcHardwareBoM.request_bom(dao, revision_id)
+        self.mdcRTK.dtcAllocation.request_allocation(dao)
+        self.mdcRTK.dtcHazard.request_hazard(dao)
+        self.mdcRTK.dtcSimilarItem.request_similar_item(dao)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Only load the hardware associated with the selected Revision.
         _hardware = [_h for _h in _hardware if _h[0] == revision_id]
@@ -187,8 +257,13 @@ class ModuleView(object):
 
         # Load all the FMECA and PoF analyses.
         for _h in _hardware:
+<<<<<<< HEAD
             self.dtcFMECA.request_fmea(dao, _h[1], None, revision_id)
             self.dtcPoF.request_pof(dao, _h[1])
+=======
+            self.mdcRTK.dtcFMEA.request_fmea(dao, _h[1], None, revision_id)
+            self.mdcRTK.dtcPoF.request_pof(dao, _h[1])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Clear the Hardware Module View gtk.TreeModel().
         _model = self.treeview.get_model()
@@ -206,8 +281,11 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
+<<<<<<< HEAD
         #self.listbook.load(revision_id)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False
 
     def _load_treeview(self, dao, parents, hardware, model, row=None):
@@ -226,9 +304,15 @@ class ModuleView(object):
         :rtype: bool
         """
 # TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
+<<<<<<< HEAD
         _icon = _conf.ICON_DIR + '32x32/assembly.png'
         _assembly_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _icon = _conf.ICON_DIR + '32x32/component.png'
+=======
+        _icon = Configuration.ICON_DIR + '32x32/assembly.png'
+        _assembly_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _icon = Configuration.ICON_DIR + '32x32/component.png'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _component_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         for _hardware in parents:
             if _hardware[23] == -1:
@@ -289,7 +373,11 @@ class ModuleView(object):
             """
 
             _hardware_id = model.get_value(row, 1)
+<<<<<<< HEAD
             _hardware = self.dtcBoM.dicHardware[_hardware_id]
+=======
+            _hardware = self.mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             # Update cost calculation results.
             model.set(row, self._lst_col_order[6], _hardware.cost)
@@ -399,11 +487,24 @@ class ModuleView(object):
         selection.handler_block(self._lst_handler_id[0])
 
         (_model, _row) = selection.get_selected()
+<<<<<<< HEAD
         _hardware_id = _model.get_value(_row, 1)
 
         self._model = self.dtcBoM.dicHardware[_hardware_id]
 
         self.workbook.load(self._model)
+=======
+        try:
+            _hardware_id = _model.get_value(_row, 1)
+        except TypeError:
+            _hardware_id = None
+
+        if _hardware_id is not None:
+            self._model = self.mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
+
+            self.workbook.load(self._model)
+            self.listbook.load(_hardware_id)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         selection.handler_unblock(self._lst_handler_id[0])
 
@@ -424,7 +525,11 @@ class ModuleView(object):
         :return: false if successful and True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
+=======
+# TODO: Re-write _on_cell_edited; current McCabe Complexity metric = 24.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         if index == 2:
             self._model.alt_part_number = new_text
         elif index == 3:

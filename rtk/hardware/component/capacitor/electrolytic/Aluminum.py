@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 """
+<<<<<<< HEAD
 #################################################################
 Hardware.Component.Capacitor.Electrolytic Package Aluminum Module
 #################################################################
+=======
+#############################################
+Hardware Package Electrolytic Aluminum Module
+#############################################
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 """
 
 # -*- coding: utf-8 -*-
@@ -11,15 +17,25 @@ Hardware.Component.Capacitor.Electrolytic Package Aluminum Module
 #       the RTK Project
 #
 # All rights reserved.
+<<<<<<< HEAD
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import gettext
 import locale
 
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     from hardware.component.capacitor.Capacitor import Model as Capacitor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
+=======
+    import Configuration
+    from hardware.component.capacitor.Capacitor import Model as Capacitor
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as Configuration
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
 __author__ = 'Andrew Rowland'
@@ -29,7 +45,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -64,7 +84,12 @@ class Dry(Capacitor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize a dry aluminum electrolytic capacitor data model instance.
+=======
+        Method to initialize a dry aluminum electrolytic capacitor data model
+        instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Dry, self).__init__()
@@ -73,9 +98,16 @@ class Dry(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Dry Aluminum capacitor data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Dry Aluminum capacitor data
+        model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -99,14 +131,22 @@ class Dry(Capacitor):
                     exp(4.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5.9)
             except(OverflowError, ZeroDivisionError):
+<<<<<<< HEAD
                 # TODO: Handle overflow error.
+=======
+                # TODO: Handle overflow and zer division errors.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 return True
 
             # Capacitance correction factor.
             self.piCV = 0.34 * (self.capacitance * 1000000.0)**0.18
             self.hazard_rate_model['piCV'] = self.piCV
 
+<<<<<<< HEAD
         return Capacitor.calculate(self)
+=======
+        return Capacitor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class Wet(Capacitor):
@@ -135,13 +175,23 @@ class Wet(Capacitor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initializes the Wet Aluminum Electrolytic Capacitor Component Class.
+=======
+        Method to initialize the Wet Aluminum Electrolytic Capacitor Component
+        Class.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Wet, self).__init__()
 
+<<<<<<< HEAD
         # Initialize public scalar attributes.
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
+=======
+        # Define public scalar attributes.
+        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             if self.max_rated_temperature == 105.0:
                 self.reference_temperature = 378.0
             elif self.max_rated_temperature == 125.0:
@@ -149,9 +199,16 @@ class Wet(Capacitor):
             else:
                 self.reference_temperature = 358.0
 
+<<<<<<< HEAD
     def calculate(self):
         """
         Calculates the hazard rate for the Wet Aluminum capacitor data model.
+=======
+    def calculate_part(self):
+        """
+        Method to calculate the hazard rate for the Wet Aluminum capacitor data
+        model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -175,11 +232,19 @@ class Wet(Capacitor):
                     exp(5.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5)
             except(OverflowError, ZeroDivisionError):
+<<<<<<< HEAD
                 # TODO: Handle overflow error.
+=======
+                # TODO: Handle overflow and zer division errors.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 return True
 
             # Capacitance correction factor.
             self.piCV = 0.34 * (self.capacitance * 1000000.0)**0.18
             self.hazard_rate_model['piCV'] = self.piCV
 
+<<<<<<< HEAD
         return Capacitor.calculate(self)
+=======
+        return Capacitor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

@@ -3,6 +3,7 @@
 This is the test class for testing Function module algorithms and models.
 """
 
+<<<<<<< HEAD
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
@@ -13,16 +14,35 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 #       TestFunction.py is part of The RTK Project
 #
 # All rights reserved.
+=======
+# -*- coding: utf-8 -*-
+#
+#       tests.unit.TestFunction.py is part of The RTK Project
+#
+# All rights reserved.
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import dao.DAO as _dao
 from function.Function import Model, Function
+=======
+from function.Function import Model, Function   # pylint: disable=E0401
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestFunctionModel(unittest.TestCase):
@@ -35,9 +55,12 @@ class TestFunctionModel(unittest.TestCase):
         Setup the test fixture for the Function class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/projects/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
         self._reliability_inputs = (0.005013, 0.004013)
@@ -247,9 +270,12 @@ class TestFunctionController(unittest.TestCase):
         Sets up the test fixture for the Function class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Function()
 
     @attr(all=True, unit=True)
@@ -259,6 +285,7 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Function))
+<<<<<<< HEAD
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicFunctions, {})
@@ -383,3 +410,8 @@ class TestFunctionController(unittest.TestCase):
 
         self.DUT.request_functions(self._dao)
         self.assertFalse(self.DUT.save_all_functions())
+=======
+        self.assertEqual(self.DUT._dao, None)       # pylint: disable=W0212
+        self.assertEqual(self.DUT._last_id, None)   # pylint: disable=W0212
+        self.assertEqual(self.DUT.dicFunctions, {})
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

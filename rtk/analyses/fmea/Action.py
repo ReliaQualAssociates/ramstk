@@ -14,7 +14,11 @@ FMEA Action Module
 # Import other RTK modules.
 try:
     import Utilities as _util
+<<<<<<< HEAD
 except ImportError:
+=======
+except ImportError:                         # pragma: no cover
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     import rtk.Utilities as _util
 
 __author__ = 'Andrew Rowland'
@@ -30,6 +34,7 @@ class Model(object):
     The attributes of an Action are:
 
 
+<<<<<<< HEAD
     :ivar mode_id: default value: 0
     :ivar mechanism_id: default value: 0
     :ivar cause_id: default value: 0
@@ -44,6 +49,25 @@ class Model(object):
     :ivar action_approved_date: default value: 0
     :ivar action_closed: default value: 0
     :ivar action_closed_date: default value: 0
+=======
+    :ivar int mode_id: the ID of the failure Mode this Action is associated
+                       with.
+    :ivar int mechanism_id: the ID of the failure Mechanism this Action is
+                            associated with.
+    :ivar int cause_id: the ID of the failure Cause this Action is associated
+                        with.
+    :ivar int action_id: the ID of this Action.
+    :ivar str action_recommended: the description of the recommended Action.
+    :ivar int action_category: the index of the category of this Action.
+    :ivar int action_owner: the index of the owner of this Action.
+    :ivar int action_due_date: the ordinal due date of this Action.
+    :ivar int action_status: the index of the status of this Action.
+    :ivar str action_taken: the description of the Action actually taken.
+    :ivar int action_approved: indicates whether or not the Action is approved.
+    :ivar int action_approved_date: the ordinal date the Action was approved.
+    :ivar int action_closed: indicates whether or not the Action is closed.
+    :ivar int action_closed_date: the ordinal date the Action was closed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):

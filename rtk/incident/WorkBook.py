@@ -31,6 +31,7 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
+<<<<<<< HEAD
 try:
     import gobject
 except ImportError:
@@ -46,6 +47,20 @@ except ImportError:
     import rtk.Utilities as _util
     import rtk.gui.gtk.Widgets as _widg
 from Assistants import AddIncident, AddComponents, FilterIncident, ImportIncident
+=======
+
+# Import other RTK modules.
+try:
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
+except ImportError:
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
+from Assistants import AddIncident, FilterIncident, ImportIncident, \
+                       CreateDataSet
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -53,7 +68,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -150,9 +169,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     +----------+-------------------------------------------+
     """
 
+<<<<<<< HEAD
     def __init__(self, workview, modulebook):
         """
         Initializes the Work Book view for the Incident package.
+=======
+    def __init__(self, modulebook):
+        """
+        Method to initialize the Work Book view for the Incident package.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param workview: the :py:class:`rtk.gui.gtk.mwi.WorkView` container to
                          insert this Work Book into.
@@ -162,6 +187,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         gtk.VBox.__init__(self)
 
+<<<<<<< HEAD
         # Initialize private dict attributes.
         self._dic_hardware = {}
         self._dic_software = {}
@@ -171,11 +197,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Initialize private scalar attributes.
         self._workview = workview
+=======
+        # Define private dictionary attributes.
+        self._dic_hardware = {}
+        self._dic_software = {}
+
+        # Define private list attributes.
+        self._lst_handler_id = []
+
+        # Define private scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._modulebook = modulebook
         self._model = None
         self._component = None
         self._action = None
 
+<<<<<<< HEAD
         # Initialize public scalar attributes.
         self.dtcIncident = modulebook.dtcIncident
         self.dtcComponents = modulebook.dtcComponents
@@ -388,6 +425,451 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtActionDueDate = _widg.make_entry(width=100, editable=False)
         self.txtActionApproveDate = _widg.make_entry(width=100, editable=False)
         self.txtActionCloseDate = _widg.make_entry(width=100, editable=False)
+=======
+        # Define public dictionary attributes.
+
+        # Define public list attributes.
+
+        # Define public scalar attributes.
+        self.mdcRTK = modulebook.mdcRTK
+
+        # Dataset class Work Book toolbar widgets.
+        self.chkAllRevisions = Widgets.make_check_button(_(u"Include "
+                                                           u"incidents from "
+                                                           u"all revisions"))
+
+        # Create the Program Incident page widgets.
+        self.chkAccepted = Widgets.make_check_button(label=_(u"Accepted"))
+        self.chkReviewed = Widgets.make_check_button(label=_(u"Reviewed"))
+
+        self.cmbHardware = Widgets.make_combo(simple=False)
+        self.cmbSoftware = Widgets.make_combo(simple=False)
+        self.cmbCategory = Widgets.make_combo()
+        self.cmbType = Widgets.make_combo()
+        self.cmbStatus = Widgets.make_combo()
+        self.cmbCriticality = Widgets.make_combo()
+        self.cmbLifeCycle = Widgets.make_combo()
+        self.cmbRequestBy = Widgets.make_combo()
+
+        self.txtID = Widgets.make_entry(width=100, editable=False)
+        self.txtRequestDate = Widgets.make_entry(width=100, editable=False)
+        self.txtAge = Widgets.make_entry(width=100, editable=False)
+        self.txtShortDescription = Widgets.make_entry(width=750)
+
+        self.txtLongDescription = Widgets.make_text_view(width=550, height=200)
+        self.txtRemarks = Widgets.make_text_view(width=550, height=200)
+
+        # Create the Chargeability page widgets.
+        self.cmbChargeable1 = Widgets.make_combo(width=75)
+        self.cmbChargeable2 = Widgets.make_combo(width=75)
+        self.cmbChargeable3 = Widgets.make_combo(width=75)
+        self.cmbChargeable4 = Widgets.make_combo(width=75)
+        self.cmbChargeable5 = Widgets.make_combo(width=75)
+        self.cmbRelevant1 = Widgets.make_combo(width=75)
+        self.cmbRelevant2 = Widgets.make_combo(width=75)
+        self.cmbRelevant3 = Widgets.make_combo(width=75)
+        self.cmbRelevant4 = Widgets.make_combo(width=75)
+        self.cmbRelevant5 = Widgets.make_combo(width=75)
+        self.cmbRelevant6 = Widgets.make_combo(width=75)
+        self.cmbRelevant7 = Widgets.make_combo(width=75)
+        self.cmbRelevant8 = Widgets.make_combo(width=75)
+        self.cmbRelevant9 = Widgets.make_combo(width=75)
+        self.cmbRelevant10 = Widgets.make_combo(width=75)
+        self.cmbRelevant11 = Widgets.make_combo(width=75)
+        self.cmbRelevant12 = Widgets.make_combo(width=75)
+        self.cmbRelevant13 = Widgets.make_combo(width=75)
+        self.cmbRelevant14 = Widgets.make_combo(width=75)
+        self.cmbRelevant15 = Widgets.make_combo(width=75)
+        self.cmbRelevant16 = Widgets.make_combo(width=75)
+        self.cmbRelevant17 = Widgets.make_combo(width=75)
+        self.cmbRelevant18 = Widgets.make_combo(width=75)
+
+        self.lblChargeable1 = Widgets.make_label(_(u"1. This failure occurred "
+                                                   u"on or was caused by "
+                                                   u"equipment outside the "
+                                                   u"scope of this test "
+                                                   u"plan."),
+                                                 width=-1, height=-1,
+                                                 wrap=True)
+        self.lblChargeable2 = Widgets.make_label(_(u"2. This failure occurred "
+                                                   u"on or was caused by "
+                                                   u"customer furnished "
+                                                   u"equipment."), width=-1,
+                                                 height=-1, wrap=True)
+        self.lblChargeable3 = Widgets.make_label(_(u"3. This failure occurred "
+                                                   u"on or was caused by "
+                                                   u"supplier furnished "
+                                                   u"equipment."), width=-1,
+                                                 height=-1, wrap=True)
+        self.lblChargeable4 = Widgets.make_label(_(u"4. This failure of "
+                                                   u"supplier furnished "
+                                                   u"equipment was the caused "
+                                                   u"by system-integration "
+                                                   u"errors."), width=-1,
+                                                 height=-1, wrap=True)
+        self.lblChargeable5 = Widgets.make_label(_(u"5. This supplier "
+                                                   u"provided equipment did "
+                                                   u"or would have passed "
+                                                   u"normal receipt "
+                                                   u"inspection and testing."),
+                                                 width=-1, height=-1,
+                                                 wrap=True)
+        self.lblChargeable = Widgets.make_label("", width=-1, height=-1,
+                                                wrap=True)
+
+        self.lblRelevant1 = Widgets.make_label(_(u"1. This failure is an "
+                                                 u"early life failure."),
+                                               width=-1, height=-1, wrap=True)
+        self.lblRelevant2 = Widgets.make_label(_(u"2. This failure was due to "
+                                                 u"an operator error such "
+                                                 u"that the error could be "
+                                                 u"expected during normal "
+                                                 u"operations."),
+                                               width=-1, height=-1, wrap=True)
+        self.lblRelevant3 = Widgets.make_label(_(u"3. This failure was due to "
+                                                 u"test setup errors."),
+                                               width=-1, height=-1, wrap=True)
+        self.lblRelevant4 = Widgets.make_label(_(u"4. This is a consumable "
+                                                 u"item that has exceeded its "
+                                                 u"expected life."), width=-1,
+                                               height=-1, wrap=True)
+        self.lblRelevant5 = Widgets.make_label(_(u"5. Life data indicates an "
+                                                 u"unacceptable percentage of "
+                                                 u"these items will not reach "
+                                                 u"the specified life."),
+                                               width=-1, height=-1, wrap=True)
+        self.lblRelevant6 = Widgets.make_label(_(u"6. The parts contributing "
+                                                 u"to the failure are "
+                                                 u"representative of design "
+                                                 u"intent."), width=-1,
+                                               height=-1, wrap=True)
+        self.lblRelevant7 = Widgets.make_label(_(u"7. The failure would or "
+                                                 u"could have occurred for "
+                                                 u"the new design if the "
+                                                 u"parts were "
+                                                 u"representative."),
+                                               width=-1, height=-1, wrap=True)
+        self.lblRelevant8 = Widgets.make_label(_(u"8. The parts contributing "
+                                                 u"to the failure are "
+                                                 u"conforming to design "
+                                                 u"specifications."),
+                                               width=-1, height=-1, wrap=True)
+        self.lblRelevant9 = Widgets.make_label(_(u"9. The failure would or "
+                                                 u"could have occurred if the "
+                                                 u"parts were conforming."),
+                                               width=-1, height=-1, wrap=True)
+        self.lblRelevant10 = Widgets.make_label(_(u"10. The parts were made "
+                                                  u"using production tooling "
+                                                  u"and a production "
+                                                  u"process."),
+                                                width=-1, height=-1, wrap=True)
+        self.lblRelevant11 = Widgets.make_label(_(u"11. A production process "
+                                                  u"could have generated the "
+                                                  u"nonconformance."),
+                                                width=-1, height=-1, wrap=True)
+        self.lblRelevant12 = Widgets.make_label(_(u"12. The parts would or "
+                                                  u"could have passed normal "
+                                                  u"production inspection and "
+                                                  u"testing."), width=-1,
+                                                height=-1, wrap=True)
+        self.lblRelevant13 = Widgets.make_label(_(u"13. Performance was "
+                                                  u"originally acceptable and "
+                                                  u"is no longer (i.e., "
+                                                  u"degradation has "
+                                                  u"occurred)."),
+                                                width=-1, height=-1, wrap=True)
+        self.lblRelevant14 = Widgets.make_label(_(u"14. We can measure the "
+                                                  u"performance issue and "
+                                                  u"compare to requirements."),
+                                                width=-1, height=-1, wrap=True)
+        self.lblRelevant15 = Widgets.make_label(_(u"15. Performance is within "
+                                                  u"requirements."), width=-1,
+                                                height=-1, wrap=True)
+        self.lblRelevant16 = Widgets.make_label(_(u"16. There exist "
+                                                  u"acceptance standards to "
+                                                  u"which performance can be "
+                                                  u"compared."), width=-1,
+                                                height=-1, wrap=True)
+        self.lblRelevant17 = Widgets.make_label(_(u"17. By existing standards "
+                                                  u"we can accept the issue."),
+                                                width=-1, height=-1, wrap=True)
+        self.lblRelevant18 = Widgets.make_label(_(u"18. We can accept this "
+                                                  u"issue."), width=-1,
+                                                height=-1, wrap=True)
+        self.lblRelevant = Widgets.make_label("", width=-1, height=-1,
+                                              wrap=True)
+
+        # Create the Incident Analysis page widgets.
+        self.btnReviewDate = Widgets.make_button(height=25, width=25,
+                                                 label="...",
+                                                 image='calendar')
+        self.btnApproveDate = Widgets.make_button(height=25, width=25,
+                                                  label="...",
+                                                  image='calendar')
+        self.btnClosureDate = Widgets.make_button(height=25, width=25,
+                                                  label="...",
+                                                  image='calendar')
+
+        self.cmbDetectionMethod = Widgets.make_combo()
+        self.cmbReviewBy = Widgets.make_combo()
+        self.cmbApproveBy = Widgets.make_combo()
+        self.cmbCloseBy = Widgets.make_combo()
+
+        self.txtTest = Widgets.make_entry()
+        self.txtTestCase = Widgets.make_entry()
+        self.txtExecutionTime = Widgets.make_entry(width=100)
+        self.txtAnalysis = Widgets.make_text_view(width=550, height=200)
+        self.txtReviewDate = Widgets.make_entry(width=100, editable=False)
+        self.txtApproveDate = Widgets.make_entry(width=100, editable=False)
+        self.txtCloseDate = Widgets.make_entry(width=100, editable=False)
+
+        # Create the Incident Actions page widgets.
+        self.btnSaveAction = Widgets.make_button(width=35, image='save')
+        self.btnActionDueDate = Widgets.make_button(height=25, width=25,
+                                                    label="...",
+                                                    image='calendar')
+        self.btnActionApproveDate = Widgets.make_button(height=25, width=25,
+                                                        label="...",
+                                                        image='calendar')
+        self.btnActionCloseDate = Widgets.make_button(height=25, width=25,
+                                                      label="...",
+                                                      image='calendar')
+
+        self.cmbActionOwner = Widgets.make_combo()
+        self.cmbActionApproveBy = Widgets.make_combo()
+        self.cmbActionCloseBy = Widgets.make_combo()
+        self.cmbActionStatus = Widgets.make_combo()
+
+        self.tvwActionList = gtk.TreeView()
+
+        self.txtPrescribedAction = Widgets.make_text_view(width=550,
+                                                          height=200)
+        self.txtActionTaken = Widgets.make_text_view(width=550, height=200)
+        self.txtActionDueDate = Widgets.make_entry(width=100, editable=False)
+        self.txtActionApproveDate = Widgets.make_entry(width=100,
+                                                       editable=False)
+        self.txtActionCloseDate = Widgets.make_entry(width=100, editable=False)
+
+        # Set gtk.Widget() tooltips.
+        self.chkAccepted.set_tooltip_text(_(u"Displays whether the incident "
+                                            u"has been accepted by the "
+                                            u"responsible owner."))
+        self.chkReviewed.set_tooltip_text(_(u"Displays whether the incident "
+                                            u"has been reviewed by the "
+                                            u"responsible owner."))
+        self.cmbCategory.set_tooltip_text(_(u"Selects and displays the "
+                                            u"category of the selected "
+                                            u"incident."))
+        self.cmbType.set_tooltip_text(_(u"Selects and displays the type of "
+                                        u"incident for the selected "
+                                        u"incident."))
+        self.cmbStatus.set_tooltip_text(_(u"Displays the status of the "
+                                          u"selected incident."))
+        self.cmbCriticality.set_tooltip_text(_(u"Displays the criticality "
+                                               u"of the selected incident."))
+        self.cmbLifeCycle.set_tooltip_text(_(u"Displays the product life "
+                                             u"cycle during which the "
+                                             u"incident occurred."))
+        self.cmbRequestBy.set_tooltip_text(_(u"Displays the name of the "
+                                             u"individual reporting the "
+                                             u"incident."))
+        self.txtID.set_tooltip_text(_(u"Displays the unique code for the "
+                                      u"selected incident."))
+        self.txtRequestDate.set_tooltip_text(_(u"Displays the date the "
+                                               u"incident was opened."))
+        self.txtAge.set_tooltip_text(_(u"Displays the age of the incident in "
+                                       u"days."))
+        self.txtShortDescription.set_tooltip_text(_(u"Short problem "
+                                                    u"description."))
+        self.txtPrescribedAction.set_tooltip_text(_(u"Displays the prescribed "
+                                                    u"action."))
+        self.txtActionTaken.set_tooltip_text(_(u"Displays the actual action "
+                                               u"that was taken.  This may "
+                                               u"differ from the prescribed "
+                                               u"action."))
+        self.btnSaveAction.set_tooltip_text(_(u"Saves the selected action."))
+        self.cmbActionOwner.set_tooltip_text(_(u"Selects and displays the "
+                                               u"person responsible for "
+                                               u"completing the action."))
+        self.txtActionDueDate.set_tooltip_text(_(u"Displays the due date for "
+                                                 u"the action."))
+        self.btnActionDueDate.set_tooltip_text(_(u"Selects the due date for "
+                                                 u"the action."))
+        self.cmbActionStatus.set_tooltip_text(_(u"Selects and displays the "
+                                                u"status of the action."))
+        self.cmbActionApproveBy.set_tooltip_text(_(u"Selects and displays the "
+                                                   u"the person approving the "
+                                                   u"actual action taken."))
+        self.txtActionApproveDate.set_tooltip_text(_(u"Displays the date the "
+                                                     u"action was approved."))
+        self.btnActionApproveDate.set_tooltip_text(_(u"Selects the date the "
+                                                     u"action was approved."))
+        self.cmbActionCloseBy.set_tooltip_text(_(u"Selects and displays the "
+                                                 u"the person closing the "
+                                                 u"action."))
+        self.txtActionCloseDate.set_tooltip_text(_(u"Displays the date the "
+                                                   u"action was closed."))
+        self.btnActionCloseDate.set_tooltip_text(_(u"Selects the date the "
+                                                   u"action was closed."))
+        self.cmbDetectionMethod.set_tooltip_markup(_(u"Displays the "
+                                                     u"method used to "
+                                                     u"detect the "
+                                                     u"reported problem."))
+        self.txtTest.set_tooltip_markup(_(u"Displays the software test "
+                                          u"being executed when the "
+                                          u"reported problem was "
+                                          u"discovered."))
+        self.txtTestCase.set_tooltip_markup(_(u"Displays the software "
+                                              u"test case being executed "
+                                              u"when the reported problem "
+                                              u"was discovered."))
+        self.txtExecutionTime.set_tooltip_markup(_(u"Displays the time "
+                                                   u"(CPU or calendar "
+                                                   u"time) into the test "
+                                                   u"when the reported "
+                                                   u"problem was "
+                                                   u"discovered."))
+        self.btnClosureDate.set_tooltip_text(_(u"Select the date the incident "
+                                               u"analysis was reviewed."))
+        self.btnApproveDate.set_tooltip_text(_(u"Select the date the incident "
+                                               u"analysis was approved."))
+        self.btnClosureDate.set_tooltip_text(_(u"Select the date the incident "
+                                               u"was closed."))
+        self.cmbReviewBy.set_tooltip_text(_(u"Displays the name of the "
+                                            u"individual who reviewed the "
+                                            u"incident analysis."))
+        self.cmbApproveBy.set_tooltip_text(_(u"Displays the name of the "
+                                             u"individual who approved "
+                                             u"the analysis."))
+        self.cmbCloseBy.set_tooltip_text(_(u"Displays the name of the "
+                                           u"individual who closed the "
+                                           u"incident."))
+        self.txtReviewDate.set_tooltip_text(_(u"Displays the date the "
+                                              u"incident analysis was "
+                                              u"reviewed."))
+        self.txtApproveDate.set_tooltip_text(_(u"Displays the date the "
+                                               u"analysis was approved."))
+        self.txtCloseDate.set_tooltip_text(_(u"Displays the date the "
+                                             u"incident was closed."))
+
+        # Connect gtk.Widget() signals to callback methods.
+        self._lst_handler_id.append(
+            self.btnSaveAction.connect('clicked', self._on_button_clicked, 0))
+
+        self.btnActionDueDate.connect('button-release-event',
+                                      Utilities.date_select,
+                                      self.txtActionDueDate)
+        self.btnActionApproveDate.connect('button-release-event',
+                                          Utilities.date_select,
+                                          self.txtActionApproveDate)
+        self.btnActionCloseDate.connect('button-release-event',
+                                        Utilities.date_select,
+                                        self.txtActionCloseDate)
+        self.btnReviewDate.connect('button-release-event',
+                                   Utilities.date_select, self.txtReviewDate)
+        self.btnApproveDate.connect('button-release-event',
+                                    Utilities.date_select, self.txtApproveDate)
+        self.btnClosureDate.connect('button-release-event',
+                                    Utilities.date_select, self.txtCloseDate)
+
+        self._lst_handler_id.append(
+            self.chkAccepted.connect('toggled', self._on_check_toggled, 1))
+        self._lst_handler_id.append(
+            self.chkReviewed.connect('toggled', self._on_check_toggled, 2))
+        self._lst_handler_id.append(
+            self.chkAllRevisions.connect('toggled', self._on_check_toggled, 3))
+
+        self._lst_handler_id.append(
+            self.cmbCategory.connect('changed', self._on_combo_changed, 4))
+        self._lst_handler_id.append(
+            self.cmbType.connect('changed', self._on_combo_changed, 5))
+        self._lst_handler_id.append(
+            self.cmbCriticality.connect('changed', self._on_combo_changed, 6))
+        self._lst_handler_id.append(
+            self.cmbStatus.connect('changed', self._on_combo_changed, 7))
+        self._lst_handler_id.append(
+            self.cmbHardware.connect('changed', self._on_combo_changed, 8))
+        self._lst_handler_id.append(
+            self.cmbSoftware.connect('changed', self._on_combo_changed, 9))
+        self._lst_handler_id.append(
+            self.cmbRequestBy.connect('changed', self._on_combo_changed, 10))
+        self._lst_handler_id.append(
+            self.cmbLifeCycle.connect('changed', self._on_combo_changed, 11))
+        self._lst_handler_id.append(
+            self.cmbDetectionMethod.connect('changed',
+                                            self._on_combo_changed, 12))
+        self._lst_handler_id.append(
+            self.cmbReviewBy.connect('changed', self._on_combo_changed, 13))
+        self._lst_handler_id.append(
+            self.cmbApproveBy.connect('changed', self._on_combo_changed, 14))
+        self._lst_handler_id.append(
+            self.cmbCloseBy.connect('changed', self._on_combo_changed, 15))
+        self._lst_handler_id.append(
+            self.cmbActionOwner.connect('changed', self._on_combo_changed, 16))
+        self._lst_handler_id.append(
+            self.cmbActionStatus.connect('changed',
+                                         self._on_combo_changed, 17))
+        self._lst_handler_id.append(
+            self.cmbActionApproveBy.connect('changed',
+                                            self._on_combo_changed, 18))
+        self._lst_handler_id.append(
+            self.cmbActionCloseBy.connect('changed',
+                                          self._on_combo_changed, 19))
+
+        self._lst_handler_id.append(
+            self.txtRequestDate.connect('focus-out-event',
+                                        self._on_focus_out, 20))
+        self._lst_handler_id.append(
+            self.txtShortDescription.connect('focus-out-event',
+                                             self._on_focus_out, 21))
+        _buffer = self.txtLongDescription.get_child().get_child().get_buffer()
+        self._lst_handler_id.append(_buffer.connect('changed',
+                                                    self._on_focus_out,
+                                                    _buffer, 22))
+        _buffer = self.txtRemarks.get_child().get_child().get_buffer()
+        self._lst_handler_id.append(_buffer.connect('changed',
+                                                    self._on_focus_out,
+                                                    _buffer, 23))
+        self._lst_handler_id.append(
+            self.txtTest.connect('focus-out-event', self._on_focus_out, 24))
+        self._lst_handler_id.append(
+            self.txtTestCase.connect('focus-out-event',
+                                     self._on_focus_out, 25))
+        self._lst_handler_id.append(
+            self.txtExecutionTime.connect('focus-out-event',
+                                          self._on_focus_out, 26))
+        _buffer = self.txtAnalysis.get_child().get_child().get_buffer()
+        self._lst_handler_id.append(_buffer.connect('changed',
+                                                    self._on_focus_out,
+                                                    _buffer, 27))
+        _buffer = self.txtPrescribedAction.get_child().get_child().get_buffer()
+        self._lst_handler_id.append(_buffer.connect('changed',
+                                                    self._on_focus_out,
+                                                    _buffer, 28))
+        _buffer = self.txtActionTaken.get_child().get_child().get_buffer()
+        self._lst_handler_id.append(_buffer.connect('changed',
+                                                    self._on_focus_out,
+                                                    _buffer, 29))
+        self._lst_handler_id.append(
+            self.txtActionDueDate.connect('changed', self._on_focus_out,
+                                          self.txtActionDueDate, 30))
+        self._lst_handler_id.append(
+            self.txtActionApproveDate.connect('changed', self._on_focus_out,
+                                              self.txtActionApproveDate, 31))
+        self._lst_handler_id.append(
+            self.txtActionCloseDate.connect('changed', self._on_focus_out,
+                                            self.txtActionCloseDate, 32))
+
+        self._lst_handler_id.append(
+            self.txtReviewDate.connect('changed', self._on_focus_out,
+                                       self.txtActionCloseDate, 33))
+        self._lst_handler_id.append(
+            self.txtApproveDate.connect('changed', self._on_focus_out,
+                                        self.txtActionCloseDate, 34))
+        self._lst_handler_id.append(
+            self.txtCloseDate.connect('changed', self._on_focus_out,
+                                      self.txtActionCloseDate, 35))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Put it all together.
         _toolbar = self._create_toolbar()
@@ -410,9 +892,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Add item menu.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 0)
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/add.png')
+        _button.set_icon_widget(_image)
+        _button.connect('clicked', self._on_button_clicked, 1)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_tooltip_text(_(u"Add a new incident to the open RTK "
                                    u"Program database."))
         _toolbar.insert(_button, _position)
@@ -421,10 +909,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Save incident button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
         _button.set_name('Save')
         _button.connect('clicked', self._on_button_clicked, 5)
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Save')
+        _button.connect('clicked', self._on_button_clicked, 2)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_tooltip_text(_(u"Saves the currently selected incident "
                                    u"to the open RTK Program database."))
         _toolbar.insert(_button, _position)
@@ -433,10 +928,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create a filter button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/filter.png')
         _button.set_icon_widget(_image)
         _button.set_name('Filter')
         _button.connect('clicked', self._on_button_clicked, 6)
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/filter.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Filter')
+        _button.connect('clicked', self._on_button_clicked, 3)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_tooltip_text(_(u"Launches the Program Incident filter "
                                    u"assistant."))
         _toolbar.insert(_button, _position)
@@ -445,10 +947,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create an import button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/db-import.png')
         _button.set_icon_widget(_image)
         _button.set_name('Import')
         _button.connect('clicked', self._on_button_clicked, 7)
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/db-import.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Import')
+        _button.connect('clicked', self._on_button_clicked, 4)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_tooltip_text(_(u"Launches the Program Incident import "
                                    u"assistant."))
         _toolbar.insert(_button, _position)
@@ -457,10 +966,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create an export button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/db-export.png')
         _button.set_icon_widget(_image)
         _button.set_name('Export')
         _button.connect('clicked', self._on_button_clicked, 8)
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/db-export.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Export')
+        _button.connect('clicked', self._on_button_clicked, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_tooltip_text(_(u"Launches the Program Incident export "
                                    u"assistant."))
         _toolbar.insert(_button, _position)
@@ -469,10 +985,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Create a data set creation button.
         _button = gtk.ToolButton()
         _image = gtk.Image()
+<<<<<<< HEAD
         _image.set_from_file(_conf.ICON_DIR + '32x32/wizard.png')
         _button.set_icon_widget(_image)
         _button.set_name('Data Set')
         _button.connect('clicked', self._on_button_clicked, 9)
+=======
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/wizard.png')
+        _button.set_icon_widget(_image)
+        _button.set_name('Data Set')
+        _button.connect('clicked', self._on_button_clicked, 6)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _button.set_tooltip_text(_(u"Launches the Data Set creation "
                                    u"assistant."))
         _toolbar.insert(_button, _position)
@@ -491,7 +1014,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _toolitem = gtk.ToolItem()
         _toolitem.add(_alignment)
         _toolbar.insert(_toolitem, _position)
+<<<<<<< HEAD
         self.chkAllRevisions.connect('toggled', self._on_check_toggled, 22)
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _toolbar.show()
 
@@ -505,11 +1031,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
+<<<<<<< HEAD
         if _conf.TABPOS[2] == 'left':
             _notebook.set_tab_pos(gtk.POS_LEFT)
         elif _conf.TABPOS[2] == 'right':
             _notebook.set_tab_pos(gtk.POS_RIGHT)
         elif _conf.TABPOS[2] == 'top':
+=======
+        if Configuration.TABPOS[2] == 'left':
+            _notebook.set_tab_pos(gtk.POS_LEFT)
+        elif Configuration.TABPOS[2] == 'right':
+            _notebook.set_tab_pos(gtk.POS_RIGHT)
+        elif Configuration.TABPOS[2] == 'top':
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _notebook.set_tab_pos(gtk.POS_TOP)
         else:
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
@@ -535,6 +1069,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+<<<<<<< HEAD
         _hpaned = gtk.HPaned()
         _vpaned = gtk.VPaned()
 
@@ -605,10 +1140,29 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _frame.add(_scrollwindow)
 
         _hpaned.pack2(_frame, False, True)
+=======
+        _hpaned = gtk.HBox()
+        _vbox = gtk.VBox()
+
+        # Build the left side.
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+
+        _frame = Widgets.make_frame(label=_(u"Incident Details"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+        _frame.add(_scrollwindow)
+
+        _hpaned.pack_start(_frame, expand=True, fill=True)
+        _hpaned.pack_end(_vbox, expand=True, fill=True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display analysis input information. #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+<<<<<<< HEAD
         # Load the gtk.ComboBox() widgets in quadrant #1.
         self.cmbCategory.append_text("")
         for i in range(len(_conf.RTK_INCIDENT_CATEGORY)):
@@ -803,6 +1357,92 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                         _textbuffer, 13))
 
         _fixed3.show_all()
+=======
+        # Load the gtk.ComboBox() widgets.
+        self.cmbCategory.append_text("")
+        for i in range(len(Configuration.RTK_INCIDENT_CATEGORY)):
+            self.cmbCategory.append_text(
+                Configuration.RTK_INCIDENT_CATEGORY[i])
+
+        self.cmbType.append_text("")
+        for i in range(len(Configuration.RTK_INCIDENT_TYPE)):
+            self.cmbType.append_text(Configuration.RTK_INCIDENT_TYPE[i])
+
+        self.cmbStatus.append_text("")
+        for i in range(len(Configuration.RTK_INCIDENT_STATUS)):
+            self.cmbStatus.append_text(Configuration.RTK_INCIDENT_STATUS[i])
+
+        self.cmbCriticality.append_text("")
+        for i in range(len(Configuration.RTK_INCIDENT_CRITICALITY)):
+            self.cmbCriticality.append_text(
+                Configuration.RTK_INCIDENT_CRITICALITY[i])
+
+        self.cmbLifeCycle.append_text("")
+        for i in range(len(Configuration.RTK_LIFECYCLE)):
+            self.cmbLifeCycle.append_text(Configuration.RTK_LIFECYCLE[i])
+
+        self.cmbRequestBy.append_text("")
+        for i in range(len(Configuration.RTK_USERS)):
+            self.cmbRequestBy.append_text(Configuration.RTK_USERS[i])
+
+        _labels = [_(u"Incident ID:"), _(u"Incident Category:"),
+                   _(u"Incident Type:"), _(u"Life Cycle:"),
+                   _(u"Incident Criticality:"), _(u"Affected Assembly:"),
+                   _(u"Affected Software:"), _(u"Reported By:"),
+                   _(u"Date Opened:"), _(u"Incident Age:"),
+                   _(u"Incident Status:")]
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
+        _x_pos += 30
+
+        _fixed.put(self.txtID, _x_pos, _y_pos[0])
+        _fixed.put(self.chkAccepted, _x_pos + 110, _y_pos[0])
+        _fixed.put(self.chkReviewed, _x_pos + 220, _y_pos[0])
+        _fixed.put(self.cmbCategory, _x_pos, _y_pos[1])
+        _fixed.put(self.cmbType, _x_pos, _y_pos[2])
+        _fixed.put(self.cmbLifeCycle, _x_pos, _y_pos[3])
+        _fixed.put(self.cmbCriticality, _x_pos, _y_pos[4])
+        _fixed.put(self.cmbHardware, _x_pos, _y_pos[5])
+        _fixed.put(self.cmbSoftware, _x_pos, _y_pos[6])
+        _fixed.put(self.cmbRequestBy, _x_pos, _y_pos[7])
+        _fixed.put(self.txtRequestDate, _x_pos, _y_pos[8])
+        _fixed.put(self.txtAge, _x_pos, _y_pos[9])
+        _fixed.put(self.cmbStatus, _x_pos, _y_pos[10])
+
+        _fixed.show_all()
+
+        # Place the right side widgets.
+        _fixed = gtk.Fixed()
+        _vpaned = gtk.VPaned()
+
+        _vbox.pack_start(_fixed, expand=False, fill=False)
+        _vbox.pack_end(_vpaned, expand=True, fill=True)
+
+        _labels = [_(u"Brief Problem Description:")]
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
+        _x_pos += 40
+
+        _fixed.put(self.txtShortDescription, _x_pos, _y_pos[0])
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self.txtLongDescription)
+
+        _frame = Widgets.make_frame(_(u"Detailed Problem Description:"))
+        _frame.add(_scrollwindow)
+
+        _vpaned.pack1(_frame, resize=True, shrink=False)
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self.txtRemarks)
+
+        _frame = Widgets.make_frame(_(u"Remarks:"))
+        _frame.add(_scrollwindow)
+
+        _vpaned.pack2(_frame, resize=True, shrink=False)
+
+        _fixed.show_all()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Insert the tab.
         _label = gtk.Label()
@@ -842,7 +1482,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed1)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Incident Relevancy"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Incident Relevancy"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -854,7 +1498,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed2)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Incident Chargeability"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Incident Chargeability"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -865,6 +1513,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.ComboBox().
         _results = [[_(u"No")], [_(u"Yes")]]
+<<<<<<< HEAD
         _widg.load_combo(self.cmbRelevant1, _results)
         _widg.load_combo(self.cmbRelevant2, _results)
         _widg.load_combo(self.cmbRelevant3, _results)
@@ -888,6 +1537,31 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _widg.load_combo(self.cmbChargeable3, _results)
         _widg.load_combo(self.cmbChargeable4, _results)
         _widg.load_combo(self.cmbChargeable5, _results)
+=======
+        Widgets.load_combo(self.cmbRelevant1, _results)
+        Widgets.load_combo(self.cmbRelevant2, _results)
+        Widgets.load_combo(self.cmbRelevant3, _results)
+        Widgets.load_combo(self.cmbRelevant4, _results)
+        Widgets.load_combo(self.cmbRelevant5, _results)
+        Widgets.load_combo(self.cmbRelevant6, _results)
+        Widgets.load_combo(self.cmbRelevant7, _results)
+        Widgets.load_combo(self.cmbRelevant8, _results)
+        Widgets.load_combo(self.cmbRelevant9, _results)
+        Widgets.load_combo(self.cmbRelevant10, _results)
+        Widgets.load_combo(self.cmbRelevant11, _results)
+        Widgets.load_combo(self.cmbRelevant12, _results)
+        Widgets.load_combo(self.cmbRelevant13, _results)
+        Widgets.load_combo(self.cmbRelevant14, _results)
+        Widgets.load_combo(self.cmbRelevant15, _results)
+        Widgets.load_combo(self.cmbRelevant16, _results)
+        Widgets.load_combo(self.cmbRelevant17, _results)
+        Widgets.load_combo(self.cmbRelevant18, _results)
+        Widgets.load_combo(self.cmbChargeable1, _results)
+        Widgets.load_combo(self.cmbChargeable2, _results)
+        Widgets.load_combo(self.cmbChargeable3, _results)
+        Widgets.load_combo(self.cmbChargeable4, _results)
+        Widgets.load_combo(self.cmbChargeable5, _results)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Place the quadrant #1 widgets.
         _y_pos = 5
@@ -1029,7 +1703,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _hbox.pack_start(_hbox2)
 
         _fixed1 = gtk.Fixed()
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Software Incident"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Software Incident"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_fixed1)
         _hbox2.pack_start(_frame, expand=False)
@@ -1038,7 +1716,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(self.txtAnalysis)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(label=_(u"Incident Analysis"))
+=======
+        _frame = Widgets.make_frame(label=_(u"Incident Analysis"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -1052,13 +1734,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.ComboBox() widgets in quadrant #1.
         self.cmbDetectionMethod.append_text("")
+<<<<<<< HEAD
         for i in range(len(_conf.RTK_DETECTION_METHODS)):
             self.cmbDetectionMethod.append_text(_conf.RTK_DETECTION_METHODS[i])
+=======
+        for i in range(len(Configuration.RTK_DETECTION_METHODS)):
+            self.cmbDetectionMethod.append_text(
+                Configuration.RTK_DETECTION_METHODS[i])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Load the gtk.ComboBox() widgets in quadrant #3.
         self.cmbReviewBy.append_text("")
         self.cmbApproveBy.append_text("")
         self.cmbCloseBy.append_text("")
+<<<<<<< HEAD
         for i in range(len(_conf.RTK_USERS)):
             self.cmbReviewBy.append_text(_conf.RTK_USERS[i])
             self.cmbApproveBy.append_text(_conf.RTK_USERS[i])
@@ -1083,11 +1772,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                    u"when the reported "
                                                    u"problem was "
                                                    u"discovered."))
+=======
+        for i in range(len(Configuration.RTK_USERS)):
+            self.cmbReviewBy.append_text(Configuration.RTK_USERS[i])
+            self.cmbApproveBy.append_text(Configuration.RTK_USERS[i])
+            self.cmbCloseBy.append_text(Configuration.RTK_USERS[i])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Place the quadrant #1 widgets.
         _labels = [_(u"Detection Method:"), _(u"Found in Test:"),
                    _(u"Found in Test Case:"), _(u"Execution Time:")]
+<<<<<<< HEAD
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed1, 5, 5)
+=======
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed1, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 30
 
         _fixed1.put(self.cmbDetectionMethod, _x_pos, _y_pos[0])
@@ -1095,6 +1794,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed1.put(self.txtTestCase, _x_pos, _y_pos[2] + 5)
         _fixed1.put(self.txtExecutionTime, _x_pos, _y_pos[3] + 5)
 
+<<<<<<< HEAD
         self._lst_handler_id.append(
             self.cmbDetectionMethod.connect('changed',
                                             self._on_combo_changed, 14))
@@ -1132,11 +1832,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtCloseDate.set_tooltip_text(_(u"Displays the date the "
                                              u"incident was closed."))
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Place the quadrant #3 widgets.
         _labels = [_(u"Reviewed By:"), _(u"Date Reviewed:"),
                    _(u"Approved By:"), _(u"Date Approved:"), _(u"Closed By:"),
                    _(u"Date Closed:")]
+<<<<<<< HEAD
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed2, 5, 5)
+=======
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed2, 5, 5)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 30
 
         _fixed2.put(self.cmbReviewBy, _x_pos, _y_pos[0])
@@ -1149,6 +1855,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed2.put(self.txtCloseDate, _x_pos, _y_pos[5] + 5)
         _fixed2.put(self.btnClosureDate, _x_pos + 105, _y_pos[5] + 5)
 
+<<<<<<< HEAD
         # Connect the quadrant #1 widgets' signals to callback functions.
         self.btnReviewDate.connect('button-release-event', _util.date_select,
                                    self.txtReviewDate)
@@ -1167,6 +1874,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                         self._on_focus_out,
                                                         _textbuffer, 21))
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Insert the tab.
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
@@ -1196,6 +1905,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _hbox = gtk.HBox()
+<<<<<<< HEAD
+=======
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _bbox = gtk.VButtonBox()
         _bbox.set_layout(gtk.BUTTONBOX_START)
 
@@ -1204,6 +1917,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _hbox.pack_start(_bbox, False, False)
         _hbox.pack_end(_hpaned, True, True)
 
+<<<<<<< HEAD
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwActionList)
@@ -1214,13 +1928,23 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _hpaned.pack2(_hbox2, True, True)
 
         _vbox = gtk.VBox()
+=======
+        _vbox = gtk.VBox()
+
+        _hpaned.pack1(_vbox, True, False)
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed = gtk.Fixed()
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(self.txtPrescribedAction)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(_(u"Prescribed Action"))
+=======
+        _frame = Widgets.make_frame(_(u"Prescribed Action"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.add(_scrollwindow)
 
         _vbox.pack_start(_frame)
@@ -1229,20 +1953,30 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(self.txtActionTaken)
 
+<<<<<<< HEAD
         _frame = _widg.make_frame(_(u"Action Taken"))
+=======
+        _frame = Widgets.make_frame(_(u"Action Taken"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.add(_scrollwindow)
 
         _vbox.pack_end(_frame)
 
+<<<<<<< HEAD
         _hbox2.pack_start(_vbox, True, True)
         _hbox2.pack_end(_fixed, False, False)
 
         _bbox.pack_start(self.btnAddAction, False, False)
+=======
+        _hpaned.pack2(_fixed, False, False)
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _bbox.pack_start(self.btnSaveAction, False, False)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display Incident action information.#
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+<<<<<<< HEAD
         # Set the tooltips for the widgets in quadrant #1 (left-most).
         self.btnAddAction.set_tooltip_text(_(u"Adds an action to the selected "
                                              u"incident."))
@@ -1324,11 +2058,31 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.cmbActionStatus.append_text("")
         for i in [0, 2, 6, 7, 8, 9]:
             self.cmbActionStatus.append_text(_conf.RTK_INCIDENT_STATUS[i])
+=======
+        # Load the gtk.ComboBox() widgets in quadrant #4 (right-most).
+        self.cmbActionOwner.append_text("")
+        for i in range(len(Configuration.RTK_USERS)):
+            self.cmbActionOwner.append_text(Configuration.RTK_USERS[i])
+
+        self.cmbActionApproveBy.append_text("")
+        for i in range(len(Configuration.RTK_USERS)):
+            self.cmbActionApproveBy.append_text(Configuration.RTK_USERS[i])
+
+        self.cmbActionCloseBy.append_text("")
+        for i in range(len(Configuration.RTK_USERS)):
+            self.cmbActionCloseBy.append_text(Configuration.RTK_USERS[i])
+
+        self.cmbActionStatus.append_text("")
+        for i in [0, 2, 6, 7, 8, 9]:
+            self.cmbActionStatus.append_text(
+                Configuration.RTK_INCIDENT_STATUS[i])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Set the labels for quadrant #4.
         _labels = [_(u"Action Owner:"), _(u"Due Date:"), _(u"Status:"),
                    _(u"Approved By:"), _(u"Approval Date:"), _(u"Closed By:"),
                    _(u"Closure Date:")]
+<<<<<<< HEAD
         (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5, 35)
         _x_pos += 30
 
@@ -1400,6 +2154,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.txtActionCloseDate.connect('changed', self._on_focus_out,
                                             self.txtActionCloseDate, 30))
+=======
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, 35)
+        _x_pos += 30
+
+        # Place the widgets in quadrant #4.
+        _fixed.put(self.cmbActionOwner, _x_pos, _y_pos[0])
+        _fixed.put(self.txtActionDueDate, _x_pos, _y_pos[1])
+        _fixed.put(self.btnActionDueDate, _x_pos + 105, _y_pos[1])
+        _fixed.put(self.cmbActionStatus, _x_pos, _y_pos[2])
+        _fixed.put(self.cmbActionApproveBy, _x_pos, _y_pos[3])
+        _fixed.put(self.txtActionApproveDate, _x_pos, _y_pos[4])
+        _fixed.put(self.btnActionApproveDate, _x_pos + 105, _y_pos[4])
+        _fixed.put(self.cmbActionCloseBy, _x_pos, _y_pos[5])
+        _fixed.put(self.txtActionCloseDate, _x_pos, _y_pos[6])
+        _fixed.put(self.btnActionCloseDate, _x_pos + 105, _y_pos[6])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Insert the tab.
         _label = gtk.Label()
@@ -1408,8 +2178,13 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
+<<<<<<< HEAD
         _label.set_tooltip_text(_(u"Displays actions related to the selected "
                                   u"incident."))
+=======
+        _label.set_tooltip_text(_(u"Display the details of the selected "
+                                  u"action related to the selected incident."))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -1422,11 +2197,16 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :param model: the :py:class:`rtk.incident.Incident.Model` whose
                       attributes will be loaded into the display widgets.
         :return: False if successful or True if an error is encountered.
+<<<<<<< HEAD
         :rtype: boolean
+=======
+        :rtype: bool
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self._model = model
 
+<<<<<<< HEAD
         self.cmbHardware.handler_block(self._lst_handler_id[6])
         self.cmbSoftware.handler_block(self._lst_handler_id[7])
 
@@ -1442,6 +2222,23 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self.cmbHardware.handler_unblock(self._lst_handler_id[6])
         self.cmbSoftware.handler_unblock(self._lst_handler_id[7])
+=======
+        self.cmbHardware.handler_block(self._lst_handler_id[8])
+        self.cmbSoftware.handler_block(self._lst_handler_id[9])
+
+        Widgets.load_combo(self.cmbHardware, Configuration.RTK_HARDWARE_LIST,
+                           simple=False)
+        for i in range(len(Configuration.RTK_HARDWARE_LIST)):
+            self._dic_hardware[Configuration.RTK_HARDWARE_LIST[i][1]] = i + 1
+
+        Widgets.load_combo(self.cmbSoftware, Configuration.RTK_SOFTWARE_LIST,
+                           simple=False)
+        for i in range(len(Configuration.RTK_SOFTWARE_LIST)):
+            self._dic_software[Configuration.RTK_SOFTWARE_LIST[i][1]] = i + 1
+
+        self.cmbHardware.handler_unblock(self._lst_handler_id[8])
+        self.cmbSoftware.handler_unblock(self._lst_handler_id[9])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.txtID.set_text(str(model.incident_id))
         self.chkReviewed.set_active(model.reviewed)
@@ -1462,11 +2259,16 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         except KeyError:
             self.cmbSoftware.set_active(0)
 
+<<<<<<< HEAD
         _date = _util.ordinal_to_date(model.request_date)
+=======
+        _date = Utilities.ordinal_to_date(model.request_date)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtRequestDate.set_text(str(_date))
         self.cmbStatus.set_active(model.status)
         self.txtAge.set_text(str(model.incident_age))
 
+<<<<<<< HEAD
         self.txtShortDescription.set_text(_util.none_to_string(
             model.short_description))
         _buffer = self.txtLongDescription.get_child().get_child().get_buffer()
@@ -1547,11 +2349,55 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         # Parse the relevancy questions.                                    #
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+=======
+        self.txtShortDescription.set_text(Utilities.none_to_string(
+            model.short_description))
+        _buffer = self.txtLongDescription.get_child().get_child().get_buffer()
+        _buffer.set_text(Utilities.none_to_string(model.detail_description))
+        _buffer = self.txtRemarks.get_child().get_child().get_buffer()
+        _buffer.set_text(Utilities.none_to_string(model.remarks))
+
+        # Load the chargeability page.
+        self._load_chargeability_page()
+
+        # Load the incident analysis page.
+        self.cmbDetectionMethod.set_active(model.detection_method)
+        self.txtTest.set_text(Utilities.none_to_string(model.test))
+        self.txtTestCase.set_text(Utilities.none_to_string(model.test_case))
+        self.txtExecutionTime.set_text(str(model.execution_time))
+
+        _buffer = self.txtAnalysis.get_child().get_child().get_buffer()
+        _buffer.set_text(Utilities.none_to_string(model.analysis))
+
+        self.cmbReviewBy.set_active(model.review_by)
+        _date = Utilities.ordinal_to_date(model.review_date)
+        self.txtReviewDate.set_text(str(_date))
+
+        self.cmbApproveBy.set_active(model.approve_by)
+        _date = Utilities.ordinal_to_date(model.approve_date)
+        self.txtApproveDate.set_text(str(_date))
+
+        self.cmbCloseBy.set_active(model.close_by)
+        _date = Utilities.ordinal_to_date(model.close_date)
+        self.txtCloseDate.set_text(str(_date))
+
+        return False
+
+    def _determine_relevancy(self):
+        """
+        Method to determine the Incident relevancy.
+
+        :return: _visible
+        :rtype: list
+        """
+# TODO: Re-write _determine_relevancy; current McCabe Complexity metric = 53.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _visible = [True, False, False, False, False, False, False, False,
                     False, False, False, False, False, False, False, False,
                     False, False]
 
         # Question #1.
+<<<<<<< HEAD
         if self._component.lstRelevant[0] == 0:     # Goto 2.
             _visible[1] = True
         elif self._component.lstRelevant[0] == 1:   # Stop.
@@ -1560,10 +2406,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                  -1, -1, -1, -1, -1, -1, -1,
                                                  -1, -1, -1]
             self._component.relevant = 0
+=======
+        if self._model.lstRelevant[0] == 0:     # Goto 2.
+            _visible[1] = True
+        elif self._model.lstRelevant[0] == 1:   # Stop.
+            _visible[1] = False
+            self._model.lstRelevant[1:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1]
+            self._model.relevant = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[1] = False
 
         # Question #2.
+<<<<<<< HEAD
         if self._component.lstRelevant[1] == 0:     # Goto 3.
             _visible[2] = True
         elif self._component.lstRelevant[1] == 1:   # Stop.
@@ -1572,10 +2429,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                  -1, -1, -1, -1, -1, -1, -1,
                                                  -1, -1]
             self._component.relevant = 1
+=======
+        if self._model.lstRelevant[1] == 0:     # Goto 3.
+            _visible[2] = True
+        elif self._model.lstRelevant[1] == 1:   # Stop.
+            _visible[2] = False
+            self._model.lstRelevant[2:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1, -1, -1, -1, -1, -1]
+            self._model.relevant = 1
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[2] = False
 
         # Question #3.
+<<<<<<< HEAD
         if self._component.lstRelevant[2] == 0:     # Goto 4.
             _visible[3] = True
         elif self._component.lstRelevant[2] == 1:   # Stop.
@@ -1584,10 +2451,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                  -1, -1, -1, -1, -1, -1, -1,
                                                  -1]
             self._component.relevant = 0
+=======
+        if self._model.lstRelevant[2] == 0:     # Goto 4.
+            _visible[3] = True
+        elif self._model.lstRelevant[2] == 1:   # Stop.
+            _visible[3] = False
+            self._model.lstRelevant[3:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1, -1, -1, -1, -1]
+            self._model.relevant = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[3] = False
 
         # Question #4.
+<<<<<<< HEAD
         if self._component.lstRelevant[3] == 0:     # Goto 5.
             _visible[4] = True
         elif self._component.lstRelevant[3] == 1:   # Stop.
@@ -1595,25 +2472,50 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._component.lstRelevant[4:18] = [-1, -1, -1, -1, -1, -1, -1,
                                                  -1, -1, -1, -1, -1, -1, -1]
             self._component.relevant = 0
+=======
+        if self._model.lstRelevant[3] == 0:     # Goto 5.
+            _visible[4] = True
+        elif self._model.lstRelevant[3] == 1:   # Stop.
+            _visible[4] = False
+            self._model.lstRelevant[4:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1, -1, -1, -1]
+            self._model.relevant = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[4] = False
 
         # Question #5.
+<<<<<<< HEAD
         if self._component.lstRelevant[4] == 0:     # Stop.
             _visible[5] = False
             self._component.lstRelevant[5:18] = [-1, -1, -1, -1, -1, -1, -1,
                                                  -1, -1, -1, -1, -1, -1]
             self._component.relevant = 0
         elif self._component.lstRelevant[4] == 1:   # Goto 6.
+=======
+        if self._model.lstRelevant[4] == 0:     # Stop.
+            _visible[5] = False
+            self._model.lstRelevant[5:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1, -1, -1]
+            self._model.relevant = 0
+        elif self._model.lstRelevant[4] == 1:   # Goto 6.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _visible[5] = True
         else:
             _visible[5] = False
 
         # Question #6.
+<<<<<<< HEAD
         if self._component.lstRelevant[5] == 0:     # Goto 7.
             _visible[6] = True
             _visible[7] = False
         elif self._component.lstRelevant[5] == 1:   # Goto 8.
+=======
+        if self._model.lstRelevant[5] == 0:     # Goto 7.
+            _visible[6] = True
+            _visible[7] = False
+        elif self._model.lstRelevant[5] == 1:   # Goto 8.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _visible[6] = False
             _visible[7] = True
         else:
@@ -1621,6 +2523,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _visible[7] = False
 
         # Question #7.
+<<<<<<< HEAD
         if self._component.lstRelevant[6] == 0:     # Stop.
             self._component.lstRelevant[7:18] = [-1, -1, -1, -1, -1, -1, -1,
                                                  -1, -1, -1, -1, -1, -1]
@@ -1638,10 +2541,30 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._component.lstRelevant[8:18] = [-1, -1, -1, -1, -1, -1, -1,
                                                  -1, -1, -1, -1]
             self._component.relevant = 1
+=======
+        if self._model.lstRelevant[6] == 0:     # Stop.
+            self._model.lstRelevant[7:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1, -1, -1]
+            self._model.relevant = 1
+        elif self._model.lstRelevant[6] == 1:   # Stop.
+            self._model.lstRelevant[7:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1, -1, -1]
+            self._model.relevant = 1
+
+        # Question #8.
+        if self._model.lstRelevant[7] == 0:     # Goto 9.
+            _visible[8] = True
+        elif self._model.lstRelevant[7] == 1:   # Stop.
+            _visible[8] = False
+            self._model.lstRelevant[8:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1]
+            self._model.relevant = 1
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[8] = False
 
         # Question #9.
+<<<<<<< HEAD
         if self._component.lstRelevant[8] == 0:     # Goto 10.
             _visible[9] = True
         elif self._component.lstRelevant[8] == 1:   # Stop.
@@ -1649,14 +2572,30 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._component.lstRelevant[9:18] = [-1, -1, -1, -1, -1, -1, -1,
                                                  -1, -1, -1, -1]
             self._component.relevant = 1
+=======
+        if self._model.lstRelevant[8] == 0:     # Goto 10.
+            _visible[9] = True
+        elif self._model.lstRelevant[8] == 1:   # Stop.
+            _visible[9] = False
+            self._model.lstRelevant[9:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                             -1, -1, -1]
+            self._model.relevant = 1
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[9] = False
 
         # Question #10.
+<<<<<<< HEAD
         if self._component.lstRelevant[9] == 0:     # Goto 11.
             _visible[10] = True
             _visible[11] = False
         elif self._component.lstRelevant[9] == 1:   # Goto 12.
+=======
+        if self._model.lstRelevant[9] == 0:     # Goto 11.
+            _visible[10] = True
+            _visible[11] = False
+        elif self._model.lstRelevant[9] == 1:   # Goto 12.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _visible[10] = False
             _visible[11] = True
         else:
@@ -1664,6 +2603,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _visible[11] = False
 
         # Question #11.
+<<<<<<< HEAD
         if self._component.lstRelevant[10] == 0:    # Stop.
             _visible[11] = False
             self._component.lstRelevant[11:18] = [-1, -1, -1, -1, -1, -1, -1,
@@ -1688,11 +2628,37 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                                   -1]
             self._component.relevant = 0
         elif self._component.lstRelevant[12] == 1:  # Goto 14.
+=======
+        if self._model.lstRelevant[10] == 0:    # Stop.
+            _visible[11] = False
+            self._model.lstRelevant[11:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                              -1, -1]
+            self._model.relevant = 0
+        elif self._model.lstRelevant[10] == 1:  # Goto 12.
+            _visible[11] = True
+
+        # Question #12.
+        if self._model.lstRelevant[11] == 0:    # Goto 13.
+            _visible[12] = True
+        elif self._model.lstRelevant[11] == 1:  # Stop.
+            _visible[12] = False
+            self._model.lstRelevant[12:18] = [-1, -1, -1, -1, -1, -1, -1, -1,
+                                              -1]
+            self._model.relevant = 1
+
+        # Question #13.
+        if self._model.lstRelevant[12] == 0:    # Stop.
+            _visible[13] = False
+            self._model.lstRelevant[13:18] = [-1, -1, -1, -1, -1, -1, -1, -1]
+            self._model.relevant = 0
+        elif self._model.lstRelevant[12] == 1:  # Goto 14.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _visible[13] = True
         else:
             _visible[13] = False
 
         # Question #14.
+<<<<<<< HEAD
         if self._component.lstRelevant[13] == 0:    # Goto 16.
             _visible[14] = False
             _visible[15] = True
@@ -1701,30 +2667,58 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _visible[14] = True
             _visible[15] = False
             self._component.lstRelevant[15] = -1
+=======
+        if self._model.lstRelevant[13] == 0:    # Goto 16.
+            _visible[14] = False
+            _visible[15] = True
+            self._model.lstRelevant[14] = -1
+        elif self._model.lstRelevant[13] == 1:  # Goto 15.
+            _visible[14] = True
+            _visible[15] = False
+            self._model.lstRelevant[15] = -1
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[14] = False
             _visible[15] = False
 
         # Question #15.
+<<<<<<< HEAD
         if self._component.lstRelevant[14] == 0:    # Goto 18.
             _visible[17] = True
         elif self._component.lstRelevant[14] == 1:  # Stop.
             _visible[17] = False
             self._component.lstRelevant[17] = -1
             self._component.relevant = 0
+=======
+        if self._model.lstRelevant[14] == 0:    # Goto 18.
+            _visible[17] = True
+        elif self._model.lstRelevant[14] == 1:  # Stop.
+            _visible[17] = False
+            self._model.lstRelevant[17] = -1
+            self._model.relevant = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         else:
             _visible[17] = False
 
         # Question #16.
+<<<<<<< HEAD
         if self._component.lstRelevant[15] == 0:    # Goto 18.
             _visible[16] = False
             _visible[17] = True
             self._component.lstRelevant[16] = -1
         elif self._component.lstRelevant[15] == 1:  # Goto 17.
+=======
+        if self._model.lstRelevant[15] == 0:    # Goto 18.
+            _visible[16] = False
+            _visible[17] = True
+            self._model.lstRelevant[16] = -1
+        elif self._model.lstRelevant[15] == 1:  # Goto 17.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _visible[16] = True
             _visible[17] = False
 
         # Question #17.
+<<<<<<< HEAD
         if self._component.lstRelevant[16] == 0:    # Goto 18.
             _visible[17] = True
         elif self._component.lstRelevant[16] == 1:  # Stop.
@@ -1737,17 +2731,120 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._component.relevant = 1
         elif self._component.lstRelevant[17] == 1:  # Stop.
             self._component.relevant = 0
+=======
+        if self._model.lstRelevant[16] == 0:    # Goto 18.
+            _visible[17] = True
+        elif self._model.lstRelevant[16] == 1:  # Stop.
+            _visible[17] = False
+            self._model.lstRelevant[17] = -1
+            self._model.relevant = 0
+
+        # Question #18.
+        if self._model.lstRelevant[17] == 0:    # Stop.
+            self._model.relevant = 1
+        elif self._model.lstRelevant[17] == 1:  # Stop.
+            self._model.relevant = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         if self.cmbRelevant10.get_active() == 2:
             _visible[10] = False
 
+<<<<<<< HEAD
         if self._component.relevant == 0:
             self.lblRelevant.set_text(_(u"Failure is NOT relevant."))
         elif self._component.relevant == 1:
+=======
+        if self._model.relevant == 0:
+            self.lblRelevant.set_text(_(u"Failure is NOT relevant."))
+        elif self._model.relevant == 1:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.lblRelevant.set_text(_(u"Failure IS relevant."))
         else:
             self.lblRelevant.set_text("")
 
+<<<<<<< HEAD
+=======
+        return _visible
+
+    def _determine_chargeablity(self):
+        """
+        Method to determine the Incident chargeability.
+
+        :return: _visible
+        :rtype: list
+        """
+# TODO: Re-write _determine_chargeability; current McCabe Complexity metric = 19.
+        _visible = [False, False, False, False, False]
+
+        if self._model.relevant == 1:
+            _visible[0] = True
+
+        # Question #1.
+        if self._model.lstChargeable[0] == 0:      # Goto 2.
+            _visible[1] = True
+        elif self._model.lstChargeable[0] == 1:    # Stop.
+            _visible[1] = False
+            self._model.lstChargeable[1:5] = [-1, -1, -1, -1]
+            self._model.chargeable = 0
+        else:
+            _visible[1] = False
+
+        # Question #2.
+        if self._model.lstChargeable[1] == 0:      # Goto 3.
+            _visible[2] = True
+        elif self._model.lstChargeable[1] == 1:    # Stop.
+            _visible[2] = False
+            self._model.lstChargeable[2:5] = [-1, -1, -1]
+            self._model.chargeable = 0
+        else:
+            _visible[2] = False
+
+        # Question #3.
+        if self._model.lstChargeable[2] == 0:      # Stop.
+            _visible[3] = False
+            self._model.lstChargeable[3:5] = [-1, -1, -1]
+            self._model.chargeable = 1
+        elif self._model.lstChargeable[2] == 1:    # Goto 4.
+            _visible[3] = True
+        else:
+            _visible[3] = False
+
+        # Question #4.
+        if self._model.lstChargeable[3] == 0:      # Goto 5.
+            _visible[4] = True
+        elif self._model.lstChargeable[3] == 1:    # Stop.
+            self._model.chargeable = 1
+            _visible[4] = False
+            self._model.lstChargeable[4:5] = [-1, -1]
+        else:
+            _visible[4] = False
+
+        # Question #5.
+        if self._model.lstChargeable[4] == 0:      # Stop.
+            self._model.chargeable = 0
+        elif self._model.lstChargeable[4] == 1:    # Stop.
+            self._model.chargeable = 1
+
+        if self._model.chargeable == 0:
+            self.lblChargeable.set_text(_(u"Failure is NOT chargeable."))
+        elif self._model.chargeable == 1:
+            self.lblChargeable.set_text(_(u"Failure IS chargeable."))
+        else:
+            self.lblChargeable.set_text("")
+
+        return _visible
+
+    def _load_chargeability_page(self):
+        """
+        Method to load the Incident chargeability page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _visible = self._determine_relevancy()
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.cmbRelevant1.set_visible(_visible[0])
         self.lblRelevant1.set_visible(_visible[0])
         self.cmbRelevant2.set_visible(_visible[1])
@@ -1785,6 +2882,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.cmbRelevant18.set_visible(_visible[17])
         self.lblRelevant18.set_visible(_visible[17])
 
+<<<<<<< HEAD
         self.cmbRelevant1.set_active(self._component.lstRelevant[0] + 1)
         self.cmbRelevant2.set_active(self._component.lstRelevant[1] + 1)
         self.cmbRelevant3.set_active(self._component.lstRelevant[2] + 1)
@@ -1861,6 +2959,28 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.lblChargeable.set_text(_(u"Failure IS chargeable."))
         else:
             self.lblChargeable.set_text("")
+=======
+        self.cmbRelevant1.set_active(self._model.lstRelevant[0] + 1)
+        self.cmbRelevant2.set_active(self._model.lstRelevant[1] + 1)
+        self.cmbRelevant3.set_active(self._model.lstRelevant[2] + 1)
+        self.cmbRelevant4.set_active(self._model.lstRelevant[3] + 1)
+        self.cmbRelevant5.set_active(self._model.lstRelevant[4] + 1)
+        self.cmbRelevant6.set_active(self._model.lstRelevant[5] + 1)
+        self.cmbRelevant7.set_active(self._model.lstRelevant[6] + 1)
+        self.cmbRelevant8.set_active(self._model.lstRelevant[7] + 1)
+        self.cmbRelevant9.set_active(self._model.lstRelevant[8] + 1)
+        self.cmbRelevant10.set_active(self._model.lstRelevant[9] + 1)
+        self.cmbRelevant11.set_active(self._model.lstRelevant[10] + 1)
+        self.cmbRelevant12.set_active(self._model.lstRelevant[11] + 1)
+        self.cmbRelevant13.set_active(self._model.lstRelevant[12] + 1)
+        self.cmbRelevant14.set_active(self._model.lstRelevant[13] + 1)
+        self.cmbRelevant15.set_active(self._model.lstRelevant[14] + 1)
+        self.cmbRelevant16.set_active(self._model.lstRelevant[15] + 1)
+        self.cmbRelevant17.set_active(self._model.lstRelevant[16] + 1)
+        self.cmbRelevant18.set_active(self._model.lstRelevant[17] + 1)
+
+        _visible = self._determine_chargeablity()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.cmbChargeable1.set_visible(_visible[0])
         self.lblChargeable1.set_visible(_visible[0])
@@ -1873,6 +2993,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.cmbChargeable5.set_visible(_visible[4])
         self.lblChargeable5.set_visible(_visible[4])
 
+<<<<<<< HEAD
         self.cmbChargeable1.set_active(self._component.lstChargeable[0] + 1)
         self.cmbChargeable2.set_active(self._component.lstChargeable[1] + 1)
         self.cmbChargeable3.set_active(self._component.lstChargeable[2] + 1)
@@ -1932,19 +3053,46 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Method to load the Incident action page.
 
+=======
+        self.cmbChargeable1.set_active(self._model.lstChargeable[0] + 1)
+        self.cmbChargeable2.set_active(self._model.lstChargeable[1] + 1)
+        self.cmbChargeable3.set_active(self._model.lstChargeable[2] + 1)
+        self.cmbChargeable4.set_active(self._model.lstChargeable[3] + 1)
+        self.cmbChargeable5.set_active(self._model.lstChargeable[4] + 1)
+
+        return False
+
+    def load_action_page(self, action_id):
+        """
+        Method to load the Incident action page.
+
+        :param int action_id: the ID of the Incident Action to load.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
+=======
+        self._action = self.mdcRTK.dtcAction.dicActions[action_id]
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.cmbActionOwner.set_active(self._action.action_owner)
         self.cmbActionApproveBy.set_active(self._action.approved_by)
         self.cmbActionCloseBy.set_active(self._action.closed_by)
         self.cmbActionStatus.set_active(self._action.status)
 
         _buffer = self.txtPrescribedAction.get_child().get_child().get_buffer()
+<<<<<<< HEAD
         _buffer.set_text(_util.none_to_string(self._action.prescribed_action))
         _buffer = self.txtActionTaken.get_child().get_child().get_buffer()
         _buffer.set_text(_util.none_to_string(self._action.action_taken))
+=======
+        _buffer.set_text(
+            Utilities.none_to_string(self._action.prescribed_action))
+        _buffer = self.txtActionTaken.get_child().get_child().get_buffer()
+        _buffer.set_text(Utilities.none_to_string(self._action.action_taken))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Disable or enable various widgets to prevent changes being made to
         # an action after it passes through certain stages.
@@ -1974,11 +3122,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.btnActionCloseDate.set_visible(True)
 
         self.txtActionDueDate.set_text(
+<<<<<<< HEAD
             str(_util.ordinal_to_date(self._action.due_date)))
         self.txtActionApproveDate.set_text(
             str(_util.ordinal_to_date(self._action.approved_date)))
         self.txtActionCloseDate.set_text(
             str(_util.ordinal_to_date(self._action.closed_date)))
+=======
+            str(Utilities.ordinal_to_date(self._action.due_date)))
+        self.txtActionApproveDate.set_text(
+            str(Utilities.ordinal_to_date(self._action.approved_date)))
+        self.txtActionCloseDate.set_text(
+            str(Utilities.ordinal_to_date(self._action.closed_date)))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
@@ -2013,12 +3169,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.cmbDetectionMethod.set_active(self._model.detection_method)
         self.cmbDetectionMethod.handler_unblock(self._lst_handler_id[14])
 
+<<<<<<< HEAD
         self.txtTest.set_text(_util.none_to_string(self._model.test))
         self.txtTestCase.set_text(_util.none_to_string(self._model.test_case))
+=======
+        self.txtTest.set_text(Utilities.none_to_string(self._model.test))
+        self.txtTestCase.set_text(
+            Utilities.none_to_string(self._model.test_case))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtExecutionTime.set_text(str(self._model.execution_time))
 
         return False
 
+<<<<<<< HEAD
     def _on_action_select(self, treeview, __path, __column):
         """
         Callback function to handle events for the Incident action list
@@ -2046,6 +3209,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
         Method to respond to gtk.Button() clicked signals and call the correct
         function or method, passing any parameters as needed.
+=======
+    def _on_button_clicked(self, __button, index):
+        """
+        Method to respond to gtk.Button() 'clicked' signals and call the
+        correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -2056,6 +3225,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
 
         if index == 0:
+<<<<<<< HEAD
             AddIncident(self._model.revision_id, self._modulebook._dao,
                         self._modulebook)
         elif index == 1:
@@ -2211,12 +3381,36 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._component.use_op_time = 0
             self._component.use_cal_time = 1
             model[path][8] = 0
+=======
+            self._modulebook.request_save_action(self._action.action_id)
+        elif index == 1:
+            AddIncident(self._model.revision_id, self._modulebook._dao,
+                        self._modulebook)
+        elif index == 2:
+            self.mdcRTK.dtcIncident.save_incident(self._model.incident_id)
+        elif index == 3:
+            FilterIncident(self._model.revision_id, self._modulebook)
+        elif index == 4:
+            ImportIncident(self._model.revision_id, self._modulebook._dao,
+                           self._modulebook)
+        elif index == 5:
+# TODO: Create an export incident wizard.
+            #ExportIncident()
+            print "Export incident list."
+        elif index == 6:
+            CreateDataSet(self._model.revision_id, self._modulebook._dao,
+                          self._modulebook)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
     def _on_check_toggled(self, checkbutton, index):
         """
+<<<<<<< HEAD
         Method to respond to gtk.CheckButton() toggled signals.
+=======
+        Method to respond to gtk.CheckButton() 'toggled' signals.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.CheckButton checkbutton: the gtk.CheckButton() calling this
                                             method.
@@ -2231,6 +3425,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         _new_text = checkbutton.get_active()
 
+<<<<<<< HEAD
         if index == 0:
             self._model.accepted = _new_text
             self._modulebook.update(index + 31, _new_text)
@@ -2238,6 +3433,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._model.reviewed = _new_text
             self._modulebook.update(index + 19, _new_text)
         elif index == 22:
+=======
+        if index == 1:
+            self._model.accepted = _new_text
+            self._modulebook.update(index + 30, _new_text)
+        elif index == 2:
+            self._model.reviewed = _new_text
+            self._modulebook.update(index + 18, _new_text)
+        elif index == 3:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._modulebook.load_all_revisions = _new_text
 
         checkbutton.handler_unblock(self._lst_handler_id[index])
@@ -2246,7 +3450,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
     def _on_combo_changed(self, combo, index):
         """
+<<<<<<< HEAD
         Method to respond to gtk.ComboBox() changed signals.
+=======
+        Method to respond to gtk.ComboBox() 'changed' signals.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -2255,6 +3463,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
         combo.handler_block(self._lst_handler_id[index])
 
@@ -2275,17 +3484,50 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _new_text = _conf.RTK_INCIDENT_STATUS[combo.get_active() - 1]
             self._modulebook.update(index + 4, _new_text)
         elif index == 6:
+=======
+# TODO: Re-write _on_combo_changed; current McCabe Complexity metric = 17.
+        _selection = self._modulebook.listbook.tvwActionList.get_selection()
+
+        combo.handler_block(self._lst_handler_id[index])
+
+        if index == 4:
+            self._model.incident_category = combo.get_active()
+            _new_text = Configuration.RTK_INCIDENT_CATEGORY[combo.get_active() - 1]
+            self._modulebook.update(index - 2, _new_text)
+        elif index == 5:
+            self._model.incident_type = combo.get_active()
+            _new_text = Configuration.RTK_INCIDENT_TYPE[combo.get_active() - 1]
+            self._modulebook.update(index - 2, _new_text)
+        elif index == 6:
+            self._model.criticality = combo.get_active()
+            _new_text = Configuration.RTK_INCIDENT_CRITICALITY[combo.get_active() - 1]
+            self._modulebook.update(index, _new_text)
+        elif index == 7:
+            self._model.status = combo.get_active()
+            _new_text = Configuration.RTK_INCIDENT_STATUS[combo.get_active() - 1]
+            self._modulebook.update(index + 2, _new_text)
+        elif index == 8:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _model = combo.get_model()
             _row = combo.get_active_iter()
             try:
                 self._model.hardware_id = int(_model.get_value(_row, 1))
+<<<<<<< HEAD
             except ValueError:
                 self._model.hardware_id = 0
         elif index == 7:
+=======
+            except TypeError:
+                self._model.hardware_id = 0
+            except ValueError:
+                self._model.hardware_id = 0
+        elif index == 9:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _model = combo.get_model()
             _row = combo.get_active_iter()
             try:
                 self._model.software_id = int(_model.get_value(_row, 1))
+<<<<<<< HEAD
             except ValueError:
                 self._model.software_id = 0
         elif index == 8:
@@ -2332,12 +3574,67 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._action.closed_by = combo.get_active()
             _new_text = _conf.RTK_USERS[combo.get_active() - 1]
             (_model, _row) = self.tvwActionList.get_selection().get_selected()
+=======
+            except TypeError:
+                self._model.software_id = 0
+            except ValueError:
+                self._model.software_id = 0
+        elif index == 10:
+            self._model.request_by = combo.get_active()
+            _new_text = Configuration.RTK_USERS[combo.get_active() - 1]
+            self._modulebook.update(index + 8, _new_text)
+        elif index == 11:
+            self._model.life_cycle = combo.get_active()
+            _new_text = Configuration.RTK_LIFECYCLE[combo.get_active() - 1]
+            self._modulebook.update(index + 18, _new_text)
+        elif index == 12:
+            self._model.detection_method = combo.get_active()
+            _new_text = Configuration.RTK_DETECTION_METHODS[combo.get_active() - 1]
+            self._modulebook.update(index - 5, _new_text)
+        elif index == 13:
+            self._model.review_by = combo.get_active()
+            _new_text = Configuration.RTK_USERS[combo.get_active() - 1]
+            self._modulebook.update(index + 8, _new_text)
+        elif index == 14:
+            self._model.approve_by = combo.get_active()
+            _new_text = Configuration.RTK_USERS[combo.get_active() - 1]
+            self._modulebook.update(index + 10, _new_text)
+        elif index == 15:
+            self._model.close_by = combo.get_active()
+            _new_text = Configuration.RTK_USERS[combo.get_active() - 1]
+            self._modulebook.update(index + 12, _new_text)
+        elif index == 16:
+            self._action.action_owner = combo.get_active()
+            _new_text = Configuration.RTK_USERS[combo.get_active() - 1]
+            (_model,
+             _row) = _selection.get_selected()
+            _model.set_value(_row, 3, _new_text)
+        elif index == 17:
+            self._action.status = combo.get_active()
+            # We only use a sub-set of the status so we can't use indexing.
+            _new_text = combo.get_active_text()
+            (_model,
+             _row) = _selection.get_selected()
+            _model.set_value(_row, 5, _new_text)
+        elif index == 18:
+            self._action.approved_by = combo.get_active()
+            _new_text = Configuration.RTK_USERS[combo.get_active() - 1]
+            (_model,
+             _row) = _selection.get_selected()
+            _model.set_value(_row, 6, _new_text)
+        elif index == 19:
+            self._action.closed_by = combo.get_active()
+            _new_text = Configuration.RTK_USERS[combo.get_active() - 1]
+            (_model,
+             _row) = _selection.get_selected()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _model.set_value(_row, 8, _new_text)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
         return False
 
+<<<<<<< HEAD
     def _on_component_select(self, treeview, __path, __column):
         """
         Callback function to handle events for the affected component list
@@ -2364,6 +3661,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
     def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
         """
         Method to respond to gtk.Entry() focus_out signals.
+=======
+    def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
+        """
+        Method to respond to gtk.Entry() 'focus_out' signals.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -2374,6 +3676,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
 
         entry.handler_block(self._lst_handler_id[index])
 
@@ -2434,6 +3737,79 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._action.closed_date = _util.date_to_ordinal(_new_text)
             (_model, _row) = self.tvwActionList.get_selection().get_selected()
             _model.set_value(_row, 9, _new_text)
+=======
+# TODO: Re-write _on_focus_out; current McCabe Complexity metric = 17.
+        entry.handler_block(self._lst_handler_id[index])
+
+        _selection = self._modulebook.listbook.tvwActionList.get_selection()
+        (_model,
+         _row) = _selection.get_selected()
+
+        if index == 20:
+            _new_text = Utilities.date_to_ordinal(entry.get_text())
+            self._model.request_date = _new_text
+            self._modulebook.update(index - 1, _new_text)
+        elif index == 21:
+            _new_text = entry.get_text()
+            self._model.short_description = _new_text
+            self._modulebook.update(index - 17, _new_text)
+        elif index == 22:
+            _new_text = entry.get_text(*entry.get_bounds())
+            self._model.long_description = _new_text
+            self._modulebook.update(index - 17, _new_text)
+        elif index == 23:
+            _new_text = entry.get_text(*entry.get_bounds())
+            self._model.remarks = _new_text
+            self._modulebook.update(index - 15, _new_text)
+        elif index == 24:
+            _new_text = entry.get_text()
+            self._model.test = _new_text
+            self._modulebook.update(index - 14, _new_text)
+        elif index == 25:
+            _new_text = entry.get_text()
+            self._model.test_case = _new_text
+            self._modulebook.update(index - 14, _new_text)
+        elif index == 16:
+            _new_text = float(entry.get_text())
+            self._model.execution_time = _new_text
+            self._modulebook.update(index - 14, _new_text)
+        elif index == 27:
+            _new_text = entry.get_text(*entry.get_bounds())
+            self._model.analysis = _new_text
+            self._modulebook.update(index + 3, _new_text)
+        elif index == 28:
+            _new_text = entry.get_text(*entry.get_bounds())
+            self._action.prescribed_action = _new_text
+            _model.set_value(_row, 1, _new_text)
+        elif index == 29:
+            _new_text = entry.get_text(*entry.get_bounds())
+            self._action.action_taken = _new_text
+            _model.set_value(_row, 2, _new_text)
+        elif index == 30:
+            _new_text = entry.get_text()
+            self._action.due_date = Utilities.date_to_ordinal(_new_text)
+            _model.set_value(_row, 4, _new_text)
+        elif index == 31:
+            _new_text = entry.get_text()
+            self._action.approved_date = Utilities.date_to_ordinal(_new_text)
+            _model.set_value(_row, 8, _new_text)
+        elif index == 32:
+            _new_text = entry.get_text()
+            self._action.closed_date = Utilities.date_to_ordinal(_new_text)
+            _model.set_value(_row, 9, _new_text)
+        elif index == 33:
+            _new_text = entry.get_text()
+            self._model.review_date = Utilities.date_to_ordinal(_new_text)
+            self._modulebook.update(index - 11, _new_text)
+        elif index == 34:
+            _new_text = entry.get_text()
+            self._model.approve_date = Utilities.date_to_ordinal(_new_text)
+            self._modulebook.update(index - 9, _new_text)
+        elif index == 35:
+            _new_text = entry.get_text()
+            self._model.close_date = Utilities.date_to_ordinal(_new_text)
+            self._modulebook.update(index - 7, _new_text)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -2449,7 +3825,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
+<<<<<<< HEAD
         self._component.lstRelevant[index - 100] = combo.get_active() - 1
+=======
+        self._model.lstRelevant[index - 100] = combo.get_active() - 1
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self._load_chargeability_page()
 
@@ -2465,7 +3845,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
+<<<<<<< HEAD
         self._component.lstChargeable[index] = combo.get_active() - 1
+=======
+        self._model.lstChargeable[index] = combo.get_active() - 1
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self._load_chargeability_page()
 

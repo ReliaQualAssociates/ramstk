@@ -23,6 +23,7 @@ class Model(object):
     phase environment.  A Phase will consist of zero or more environments.  The
     attributes of an Environment are:
 
+<<<<<<< HEAD
     :ivar revision_id: default value: 0
     :ivar mission_id: default value: 0
     :ivar phase_id: default value: 0
@@ -34,6 +35,23 @@ class Model(object):
     :ivar maximum: default value: 0.0
     :ivar mean: default value: 0.0
     :ivar variance: default value: 0.0
+=======
+    :ivar int revision_id: the ID of the Revision the Environment is associated
+                           with.
+    :ivar int mission_id: the ID of the Mission the Environment is associated
+                          with.
+    :ivar int phase_id: the ID of the Phase the Environment is associated with.
+    :ivar int test_id:
+    :ivar int environment_id: the ID of the Environment.
+    :ivar str name: the name of the Environment parameter.
+    :ivar str units: the measurement units for the Environment parameter.
+    :ivar float minimum: the expected maximum value of the Envionment
+                         parameter.
+    :ivar float maximum: the expected minimum value of the Envionment
+                         parameter.
+    :ivar float mean: the expected average of the Environment parameter.
+    :ivar float variance: the expected variance on the Environment parameter.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -86,7 +104,12 @@ class Model(object):
         Method to retrieve the current values of the Environment data model
         attributes.
 
+<<<<<<< HEAD
         :return: value of instance attributes
+=======
+        :return: (revision_id, mission_id, phase_id, test_id, environment_id,
+                  name, units, minimum, maximum, mean, variance)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :rtype: tuple
         """
 

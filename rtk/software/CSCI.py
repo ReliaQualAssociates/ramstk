@@ -17,12 +17,21 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
     import Configuration as _conf
     import Utilities as _util
     from software.Software import Model as Software
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as _conf
     import rtk.Utilities as _util
+=======
+    import Configuration
+    import Utilities
+    from software.Software import Model as Software
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.software.Software import Model as Software
 
 __author__ = 'Andrew Rowland'
@@ -31,14 +40,22 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
+<<<<<<< HEAD
 class Model(Software):                        # pylint: disable=R0902
+=======
+class Model(Software):                      # pylint: disable=R0902
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
     The CSCI data model contains the attributes and methods of a software CSCI
     item.
@@ -46,7 +63,11 @@ class Model(Software):                        # pylint: disable=R0902
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initialize an CSCI data model instance.
+=======
+        Method to initialize a CSCI data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Model, self).__init__()
@@ -106,10 +127,18 @@ class Model(Software):                        # pylint: disable=R0902
         try:
             self.sx = (1.5 * self.ax + self.bx + 0.8 * self.cx) / self.nm
         except ZeroDivisionError:
+<<<<<<< HEAD
             _util.rtk_error(_(u"Attempted to divide by zero when calculating "
                               u"the software complexity risk for {0:s}.  "
                               u"Perhaps you forgot to answer one or more "
                               u"questions.").format(self.description))
+=======
+            Utilities.rtk_error(_(u"Attempted to divide by zero when "
+                                  u"calculating the software complexity risk "
+                                  u"for {0:s}.  Perhaps you forgot to answer "
+                                  u"one or more questions.").format(
+                                      self.description))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.sx = 1.5
 
         return False
@@ -157,10 +186,18 @@ class Model(Software):                        # pylint: disable=R0902
         try:
             self.sm = (0.9 * self.um + self.wm + 2.0 * self.xm) / self.nm
         except ZeroDivisionError:
+<<<<<<< HEAD
             _util.rtk_error(_(u"Attempted to divide by zero when calculating "
                               u"the software modularity risk for {0:s}.  "
                               u"Perhaps you forgot to answer one or more "
                               u"questions.").format(self.description))
+=======
+            Utilities.rtk_error(_(u"Attempted to divide by zero when "
+                                  u"calculating the software modularity risk "
+                                  u"for {0:s}.  Perhaps you forgot to answer "
+                                  u"one or more questions.").format(
+                                      self.description))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.sm = 2.0
 
         return False
@@ -175,7 +212,11 @@ class CSCI(object):
 
     def __init__(self):
         """
+<<<<<<< HEAD
         Initializes an CSCI data controller instance.
+=======
+        Method to initialize a CSCI data controller instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         pass

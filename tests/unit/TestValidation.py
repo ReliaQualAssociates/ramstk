@@ -5,6 +5,7 @@ This is the test class for testing Validation module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.verification.TestValidation.py is part of The RTK Project
 #
 # All rights reserved.
@@ -12,10 +13,21 @@ This is the test class for testing Validation module algorithms and models.
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestValidation.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import dao.DAO as _dao
 from validation.Validation import Model, Validation
 
@@ -159,9 +171,12 @@ class TestValidationController(unittest.TestCase):
         Sets up the test fixture for the Validation class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Validation()
 
     @attr(all=True, unit=True)
@@ -175,6 +190,7 @@ class TestValidationController(unittest.TestCase):
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicTasks, {})
         self.assertEqual(self.DUT.dicStatus, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_tasks(self):
@@ -232,3 +248,5 @@ class TestValidationController(unittest.TestCase):
 
         self.assertEqual(self.DUT.request_tasks(self._dao, 0)[1], 0)
         self.assertFalse(self.DUT.save_all_tasks())
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

@@ -5,6 +5,7 @@ This is the test class for testing Stakeholder module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       TestStakeholder.py is part of The RTK Project
 #
 # All rights reserved.
@@ -12,11 +13,22 @@ This is the test class for testing Stakeholder module algorithms and models.
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestStakeholder.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
 import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from stakeholder.Stakeholder import Model, Stakeholder
 
 __author__ = 'Andrew Rowland'
@@ -141,9 +153,12 @@ class TestStakeholderController(unittest.TestCase):
         Sets up the test fixture for the Stakeholder class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Stakeholder()
 
     @attr(all=True, unit=True)
@@ -156,6 +171,7 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicStakeholders, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_inputs(self):
@@ -219,3 +235,5 @@ class TestStakeholderController(unittest.TestCase):
 
         self.DUT.request_inputs(self._dao, 0)
         self.assertEqual(self.DUT.calculate_stakeholder(1), (1.2, 1.2))
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

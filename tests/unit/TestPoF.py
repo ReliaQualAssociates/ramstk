@@ -5,7 +5,11 @@ This is the test class for testing the Physics of Failure (PoF) class.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.pof.TestPoF.py is part of The RTK Project
+=======
+#       tests.unit.TestPoF.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 import sys
@@ -15,8 +19,12 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
 import dao.DAO as _dao
 from analyses.pof.PhysicsOfFailure import *
+=======
+from analyses.pof.PhysicsOfFailure import Model, PoF, ParentError
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -37,7 +45,11 @@ class TestPoFModel(unittest.TestCase):
         self.DUT = Model(0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
     def test_PoF_create(self):
+=======
+    def test_pof_create(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestPoF) __init__ should return instance of PoF data model
         """
@@ -47,7 +59,11 @@ class TestPoFModel(unittest.TestCase):
         self.assertEqual(self.DUT.assembly_id, 0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
     def test_PoF_create_parent_problem(self):
+=======
+    def test_pof_create_parent_problem(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestPoF) __init__ raises ParentError for None input
         """
@@ -62,11 +78,15 @@ class TestPoFController(unittest.TestCase):
 
     def setUp(self):
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
         self.DUT = PoF()
         self.DUT._dao = self._dao
+=======
+        self.DUT = PoF()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=True)
     def test_create_controller(self):
@@ -75,6 +95,7 @@ class TestPoFController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.dicPoF, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_pof(self):
@@ -359,3 +380,5 @@ class TestPoFController(unittest.TestCase):
         self.DUT.request_pof(self._dao, 0)
 
         self.assertFalse(self.DUT.save_pof(0))
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

@@ -5,10 +5,16 @@ This is the test class for testing Survival module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
 #       tests.survival.TestSurvival.py is part of The RTK Project
 #
 # All rights reserved.
 
+=======
+#       tests.unit.TestSurvival.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -175,9 +181,12 @@ class TestSurvivalController(unittest.TestCase):
         Sets up the test fixture for the Survival class.
         """
 
+<<<<<<< HEAD
         _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
         self._dao = _dao(_database)
 
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Survival()
 
     @attr(all=True, unit=True)
@@ -190,6 +199,7 @@ class TestSurvivalController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicSurvival, {})
+<<<<<<< HEAD
 
     @attr(all=True, integration=True)
     def test_request_survival(self):
@@ -278,3 +288,5 @@ class TestSurvivalController(unittest.TestCase):
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
