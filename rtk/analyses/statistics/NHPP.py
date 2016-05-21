@@ -24,14 +24,15 @@ try:
     from analyses.statistics.Bounds import calculate_crow_bounds, \
                                            calculate_fisher_bounds, \
                                            calculate_variance_covariance
-    from analyses.statistics.CrowAMSAA import calculate_crow_amsaa_parameters
+    from analyses.statistics.growth.CrowAMSAA import \
+        calculate_crow_amsaa_parameters
     from analyses.statistics.Duane import calculate_duane_parameters, \
                                           calculate_duane_standard_error
 except ImportError:
     from rtk.analyses.statistics.Bounds import calculate_crow_bounds, \
                                                calculate_fisher_bounds, \
                                                calculate_variance_covariance
-    from rtk.analyses.statistics.CrowAMSAA import \
+    from rtk.analyses.statistics.growth.CrowAMSAA import \
                 calculate_crow_amsaa_parameters
     from rtk.analyses.statistics.Duane import calculate_duane_parameters, \
                                               calculate_duane_standard_error
@@ -72,7 +73,7 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
              [_beta_lower, _beta_hat, _beta_upper]
     :rtype: tuple of lists
     """
-
+# TODO: Consider re-writing power_law; current McCabe complexity metric=10.
     # Initialize local variables.
     _typeii = False
 

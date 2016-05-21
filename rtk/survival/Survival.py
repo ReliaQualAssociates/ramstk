@@ -14,34 +14,35 @@ Survival Package Data Module
 from collections import OrderedDict
 
 import numpy as np
+from scipy.stats import chi2                # pylint: disable=E0611
 
 try:
-    import Utilities as _util
+    import Utilities
     import analyses.statistics.NHPP as _nhpp
     import analyses.survival.KaplanMeier as _km
     import analyses.survival.MCF as _mcf
     from survival.Record import Model as Record
     from analyses.statistics.Bounds import calculate_fisher_bounds
-    from analyses.statistics.CrowAMSAA import calculate_crow_amsaa_mean, \
-                                              calculate_cramer_vonmises, \
-                                              calculate_crow_amsaa_chi_square, \
-                                              cramer_vonmises_critical_value
+    from analyses.statistics.growth.CrowAMSAA import calculate_crow_amsaa_mean, \
+                                                     calculate_cramer_vonmises, \
+                                                     calculate_crow_amsaa_chi_square, \
+                                                     cramer_vonmises_critical_value
     from analyses.statistics.Distributions import Exponential, Gaussian, \
                                                   LogNormal, Weibull, \
                                                   time_between_failures
     from analyses.statistics.Duane import calculate_duane_mean
     from analyses.statistics.Regression import regression
 except ImportError:
-    import rtk.Utilities as _util
+    import rtk.Utilities as Utilities
     import rtk.analyses.statistics.NHPP as _nhpp
     import rtk.analyses.survival.KaplanMeier as _km
     import rtk.analyses.survival.MCF as _mcf
     from rtk.survival.Record import Model as Record
     from rtk.analyses.statistics.Bounds import calculate_fisher_bounds
-    from rtk.analyses.statistics.CrowAMSAA import calculate_crow_amsaa_mean, \
-                                                  calculate_cramer_vonmises, \
-                                                  calculate_crow_amsaa_chi_square, \
-                                                  cramer_vonmises_critical_value
+    from rtk.analyses.statistics.growth.CrowAMSAA import calculate_crow_amsaa_mean, \
+                                                         calculate_cramer_vonmises, \
+                                                         calculate_crow_amsaa_chi_square, \
+                                                         cramer_vonmises_critical_value
     from rtk.analyses.statistics.Distributions import Exponential, Gaussian, \
                                                       LogNormal, Weibull, \
                                                       time_between_failures
@@ -130,6 +131,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
         # Initialize public dict attributes.
         self.dicRecords = {}
         self.dicMTBF = {}
+        self.dicHazard = {}
         self.dicReliability = {}
 
         # Initialize public list attributes.
@@ -138,6 +140,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.location = [0.0, 0.0, 0.0]
         self.variance = [0.0, 0.0, 0.0]
         self.covariance = [0.0, 0.0, 0.0]
+        self.chi2_critical_value = [0.0, 0.0]
         self.hazard = np.array([])
         self.km = np.array([])
         self.mcf = np.array([])
@@ -175,9 +178,9 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.start_date = 0
         self.end_date = 0
         self.n_datasets = 0
-        self.chisq = 0.0                    # AMSAA chi-square statistic
-        self.cvm = 0.0                      # AMSAA Cramer-vonMises statistic
-        self.crit_val = 0.0                 # AMSAA Cramer-vonMises critical value
+        self.chi_square = 0.0               # AMSAA chi-square statistic
+        self.cramer_vonmises = 0.0          # AMSAA Cramer-vonMises statistic
+        self.cvm_critical_value = 0.0       # AMSAA Cramer-vonMises critical value
         self.grouped = 0
 
     def set_attributes(self, values):
@@ -232,14 +235,14 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.start_time = float(values[35])
             self.start_date = int(values[36])
             self.end_date = int(values[37])
-            self.chisq = float(values[38])
-            self.cvm = float(values[39])
+            self.chi_square = float(values[38])
+            self.cramer_vonmises = float(values[39])
             self.grouped = int(values[40])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -263,8 +266,8 @@ class Model(object):                       # pylint: disable=R0902, R0904
                    self.confidence_method, self.fit_method, self.rel_time,
                    self.n_rel_points, self.n_suspensions, self.n_failures,
                    self.mhb, self.lp, self.lr, self.aic, self.bic, self.mle,
-                   self.start_time, self.start_date, self.end_date, self.chisq,
-                   self.cvm, self.grouped, self.scale, self.shape,
+                   self.start_time, self.start_date, self.end_date, self.chi_square,
+                   self.cramer_vonmises, self.grouped, self.scale, self.shape,
                    self.location, self.variance, self.covariance)
 
         return _values
@@ -295,246 +298,48 @@ class Model(object):                       # pylint: disable=R0902, R0904
         Method to fit data a parametric distribution and estimate the
         parameters of the fitted distribution.
 
-                * 0 = Observed unit ID
-                * 1 = Interval start time
-                * 2 = Interval end time
-                * 3 = Time between failures or interarrival time
-                * 4 = Status of observation
-                * 5 = Quantity of observations
-                * 6 = Date of observation
-
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write distributions to accept dicRecords as data input.
-        _data = []
-        for _record_id in self.dicRecords.keys():
-            _data.append((_record_id,
-                          self.dicRecords[_record_id].right_interval,
-                          self.dicRecords[_record_id].left_interval,
-                          self.dicRecords[_record_id].interarrival_time,
-                          self.dicRecords[_record_id].status,
-                          self.dicRecords[_record_id].n_failures,
-                          self.dicRecords[_record_id].failure_date))
 
-        if self.distribution_id == 1:
-            _data = _mcf.format_data(self.dicRecords)
-            self.mcf = _mcf.mean_cumulative_function(_data)
+        _data = self._create_dataset()
 
-            _times = self.mcf[:, 0]
-            self.n_failures = np.float(sum(self.mcf[:, 1]))
-
-            self.mhb = _mcf.mil_handbook(_times)
-            self.lp = np.float(_mcf.laplace(_times, self.n_failures))
-            self.lr = np.float(_mcf.lewis_robinson(_times, self.n_failures))
-            self.rho = np.float(_mcf.serial_correlation(_times,
-                                                        self.n_failures))
-        elif self.distribution_id == 2:
-            _data, self.n_failures = _km.format_data(self.dicRecords)
-            self.km, _rank = _km.kaplan_meier(_data, self.start_time,
-                                              self.rel_time, self.confidence,
-                                              self.confidence_type)
-
-            (self.scale[0],
-             self.scale[1],
-             self.scale[2]) = _km.kaplan_meier_mean(self.km, _rank,
-                                                    self.confidence)
-
-            self.hazard = _km.kaplan_meier_hazard(self.km)
-        elif self.distribution_id == 3:
-            _meanc = [0.0, 0.0, 0.0]
-            _meani = [0.0, 0.0, 0.0]
-            _failures = [_record.n_failures
-                         for _record in self.dicRecords.values()]
-            _times = [_record.right_interval
-                      for _record in self.dicRecords.values()]
-            _dates = [_record.failure_date
-                      for _record in self.dicRecords.values()]
-            for _index, _time in enumerate(_times):
-                _NHPP = _nhpp.power_law(_failures[:_index + 1],
-                                        _times[:_index + 1],
-                                        self.confidence_method,
-                                        self.fit_method, self.confidence_type,
-                                        self.confidence, self.rel_time)
-
-                # Calculate the cumulative and instantaneous MTBF.
-                if self.fit_method == 1:    # MLE
-                    _means = calculate_crow_amsaa_mean(self.rel_time,
-                                                       _NHPP[0][2],
-                                                       _NHPP[1][2])
-                    _meanc[0] = _means[0]
-                    _meani[0] = _means[1]
-                    _means = calculate_crow_amsaa_mean(self.rel_time,
-                                                       _NHPP[0][1],
-                                                       _NHPP[1][1])
-                    _meanc[1] = _means[0]
-                    _meani[1] = _means[1]
-                    _means = calculate_crow_amsaa_mean(self.rel_time,
-                                                       _NHPP[0][0],
-                                                       _NHPP[1][0])
-                    _meanc[2] = _means[0]
-                    _meani[2] = _means[1]
-                elif self.fit_method == 2:  # Regression
-                    _means = calculate_duane_mean(self.rel_time,
-                                                  1.0 - _NHPP[1][2],
-                                                  1.0 / _NHPP[0][2])
-                    _meanc[0] = _means[0]
-                    _meani[0] = _means[1]
-                    _means = calculate_duane_mean(self.rel_time,
-                                                  1.0 - _NHPP[1][1],
-                                                  1.0 / _NHPP[0][1])
-                    _meanc[1] = _means[0]
-                    _meani[1] = _means[1]
-                    _means = calculate_duane_mean(self.rel_time,
-                                                  1.0 - _NHPP[1][0],
-                                                  1.0 / _NHPP[0][0])
-                    _meanc[2] = _means[0]
-                    _meani[2] = _means[1]
-
-                self.nhpp.append([_time, sum(_failures[:_index + 1]),
-                                  list(_NHPP[0]), list(_NHPP[1]),
-                                  list(_meanc), list(_meani), _dates[_index]])
-
-            self.n_failures = sum(_failures)
-
-            self.scale[0] = self.nhpp[-1][2][0]
-            self.scale[1] = self.nhpp[-1][2][1]
-            self.scale[2] = self.nhpp[-1][2][2]
-            self.shape[0] = self.nhpp[-1][3][0]
-            self.shape[1] = self.nhpp[-1][3][1]
-            self.shape[2] = self.nhpp[-1][3][2]
-
-            if self.grouped == 1:
-                self.chisq = calculate_crow_amsaa_chi_square(self.n_failures,
-                                                             _times,
-                                                             self.shape[1],
-                                                             max(_times))
-                self.crit_val = cramer_vonmises_critical_value(self.n_failures,
-                                                               self.confidence)
-            else:
-                self.cvm = calculate_cramer_vonmises(self.n_failures,
-                                                     _times, self.shape[1])
-                self.crit_val = cramer_vonmises_critical_value(self.n_failures,
-                                                               self.confidence)
-        elif self.distribution_id == 4:
+        if self.distribution_id == 1:       # MCF
+            self.estimate_mcf()
+        elif self.distribution_id == 2:     # Kaplan-Meier
+            self.estimate_kaplan_meier()
+        elif self.distribution_id == 3:     # NHPP - Power Law
+            self.estimate_nhpp_power_law()
+        elif self.distribution_id == 4:     # NHPP - Log Linear
             print "NHPP - Log Linear"
-        elif self.distribution_id == 5:
-            if self.fit_method == 1:
-                _results = Exponential().maximum_likelihood_estimate(
-                    _data, self.start_time, self.rel_time)
-
-                self.n_suspensions = _results[3]
-                self.n_failures = _results[4]
-            elif self.fit_method == 2:
-                _results = regression(_data, self.start_time, self.rel_time)
-
-                self.rho = _results[3]
-
-            self.scale[1] = _results[0][0]
-            self.location[1] = 0.0
-            self.variance[0] = _results[1][0]
-            self.variance[1] = 0.0
-            self.variance[2] = 0.0
-            self.covariance[0] = 0.0
-            self.covariance[1] = 0.0
-            self.covariance[2] = 0.0
-            self.mle = _results[2][0]
-            self.aic = _results[2][1]
-            self.bic = _results[2][2]
-
-            self.calculate_parameter_bounds()
-            self.hazard_function()
-            self.reliability_function()
-            self.mean()
-        elif self.distribution_id == 6:
-            if self.fit_method == 1:
-                _results = LogNormal().maximum_likelihood_estimate(
-                    _data, self.start_time, self.end_time)
-
-                self.n_suspensions = _results[3]
-                self.n_failures = _results[4]
-            elif self.fit_method == 2:
-                _results = regression(_data, self.start_time, self.rel_time,
-                                      dist='lognormal')
-
-                self.rho = _results[3]
-
-            self.scale[1] = _results[0][0]
-            self.shape[1] = _results[0][1]
-            self.variance[0] = _results[1][0]   # Scale
-            self.variance[1] = _results[1][2]   # Shape
-            self.covariance[0] = _results[1][1] # Scale-Shape
-            self.mle = _results[2][0]
-            self.aic = _results[2][1]
-            self.bic = _results[2][2]
-
-            self.calculate_parameter_bounds()
-            self.hazard_function()
-            self.dicReliability_function()
-            self.mean()
-        elif self.distribution_id == 7:
-            if self.fit_method == 1:
-                _results = Gaussian().maximum_likelihood_estimate(
-                    _data, self.start_time, self.end_time)
-
-                self.n_suspensions = _results[3]
-                self.n_failures = _results[4]
-            elif self.fit_method == 2:
-                _results = regression(_data, self.start_time, self.rel_time,
-                                      dist='normal')
-
-                self.rho = _results[3]
-
-            self.scale[1] = _results[0][0]
-            self.shape[1] = _results[0][1]
-            self.variance[0] = _results[1][0]   # Scale
-            self.variance[1] = _results[1][2]   # Shape
-            self.covariance[0] = _results[1][1] # Scale-Shape
-            self.mle = _results[2][0]
-            self.aic = _results[2][1]
-            self.bic = _results[2][2]
-
-            self.calculate_parameter_bounds()
-            self.hazard_function()
-            self.dicReliability_function()
-            self.mean()
-        elif self.distribution_id == 8:
-            if self.fit_method == 1:
-                _results = Weibull().maximum_likelihood_estimate(
-                    _data, self.start_time, self.end_time)
-
-                self.n_suspensions = _results[3]
-                self.n_failures = _results[4]
-            elif self.fit_method == 2:
-                _results = regression(_data, self.start_time, self.rel_time,
-                                      dist='normal')
-
-                self.rho = _results[3]
-
-            self.scale[1] = _results[0][0]
-            self.shape[1] = _results[0][1]
-            self.variance[0] = _results[1][0]   # Scale
-            self.variance[1] = _results[1][2]   # Shape
-            self.covariance[0] = _results[1][1] # Scale-Shape
-            self.mle = _results[2][0]
-            self.aic = _results[2][1]
-            self.bic = _results[2][2]
-
-            self.calculate_parameter_bounds()
-            self.hazard_function()
-            self.dicReliability_function()
-            self.mean()
+        elif self.distribution_id == 5:     # Exponential
+            self.estimate_exponential(_data)
+        elif self.distribution_id == 6:     # LogNormal
+            self.estimate_lognormal(_data)
+        elif self.distribution_id == 7:     # Gaussian
+            self.estimate_gaussian(_data)
+        elif self.distribution_id == 8:     # Weibull
+            self.estimate_weibull(_data)
 
         return False
 
-    def calculate_parameter_bounds(self):
+    def calculate_parameter_bounds(self, data):
         """
         Method to calculate confidence bounds on estimated parameters.
 
+        :param list data: list of data to use for regression method.  Each
+                          record in the list contains:
+                            * 0 = Observed unit ID
+                            * 1 = Interval start time
+                            * 2 = Interval end time
+                            * 3 = Time between failures or interarrival time
+                            * 4 = Status of observation
+                            * 5 = Quantity of observations
+                            * 6 = Date of observation
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+# TODO: Re-write calculate_parameter_bounds; current McCabe Complexity metric=15.
         if self.confidence_method == 3:     # Fisher
             (self.scale[0],
              self.scale[2]) = calculate_fisher_bounds(self.scale[1],
@@ -551,6 +356,44 @@ class Model(object):                       # pylint: disable=R0902, R0904
                                                          self.variance[2],
                                                          self.confidence)
 
+        elif self.confidence_method == 4:   # Likelihood ratio
+            if self.distribution_id == 5:     # Exponential
+                (self.scale[0],
+                 self.scale[2]) = Exponential().likelihood_bounds(
+                     self.scale[1], self.location[1], self.confidence, data)
+            elif self.distribution_id == 6:     # LogNormal
+                (_lower,
+                 _upper) = LogNormal().likelihood_bounds([self.scale[1],
+                                                          self.shape[1]],
+                                                         self.confidence,
+                                                         data)
+                self.scale[0] = min(_lower.values())
+                self.scale[2] = max(_upper.values())
+                self.shape[0] = [_key for _key in _lower.keys()
+                                 if _lower[_key] == min(_lower.values())][0]
+                self.shape[2] = [_key for _key in _upper.keys()
+                                 if _upper[_key] == max(_upper.values())][0]
+            elif self.distribution_id == 7:     # Gaussian
+                (_lower,
+                 _upper) = LogNormal().likelihood_bounds([self.scale[1],
+                                                          self.shape[1]],
+                                                         self.confidence,
+                                                         data)
+                self.scale[0] = min(_lower.values())
+                self.scale[2] = max(_upper.values())
+                self.shape[0] = [_key for _key in _lower.keys()
+                                 if _lower[_key] == min(_lower.values())][0]
+                self.shape[2] = [_key for _key in _upper.keys()
+                                 if _upper[_key] == max(_upper.values())][0]
+            elif self.distribution_id == 8:     # Weibull
+                (self.scale[0],
+                 self.scale[2],
+                 self.shape[0],
+                 self.shape[2]) = Weibull().likelihood_bounds([self.scale[1],
+                                                               self.shape[1]],
+                                                              self.confidence,
+                                                              data)
+
         return False
 
     def theoretical_distribution(self, data):
@@ -566,6 +409,8 @@ class Model(object):                       # pylint: disable=R0902, R0904
         :return: _probs; the probabilities of the theoretical distribution.
         :rtype: ndarray
         """
+
+        _probs = []
 
         if self.distribution_id == 5:
             _probs = Exponential().theoretical_distribution(data,
@@ -598,24 +443,26 @@ class Model(object):                       # pylint: disable=R0902, R0904
         _step_time = int((self.rel_time - self.start_time) / self.n_rel_points)
 
         if self.distribution_id == 5:
-            self.hazard = Exponential().hazard_function(self.scale,
+            self.dicHazard = Exponential().hazard_function(self.scale,
+                                                           self.start_time,
+                                                           self.rel_time + _step_time,
+                                                           _step_time)
+        elif self.distribution_id == 6:
+            self.dicHazard = LogNormal().hazard_function(self.scale,
+                                                         self.shape,
+                                                         self.start_time,
+                                                         self.rel_time + _step_time,
+                                                         _step_time)
+        elif self.distribution_id == 7:
+            self.dicHazard = Gaussian().hazard_function(self.scale, self.shape,
                                                         self.start_time,
                                                         self.rel_time + _step_time,
                                                         _step_time)
-        elif self.distribution_id == 6:
-            self.hazard = LogNormal().hazard_function(self.scale,
-                                                      self.start_time,
-                                                      self.rel_time + _step_time,
-                                                      _step_time)
-        elif self.distribution_id == 7:
-            self.hazard = Gaussian().hazard_function(self.scale, self.shape,
-                                                     self.start_time,
-                                                     self.rel_time + _step_time,
-                                                     _step_time)
         elif self.distribution_id == 8:
-            self.hazard = Weibull().hazard_function(self.scale, self.start_time,
-                                                    self.rel_time + _step_time,
-                                                    _step_time)
+            self.dicHazard = Weibull().hazard_function(self.scale, self.shape,
+                                                       self.start_time,
+                                                       self.rel_time + _step_time,
+                                                       _step_time)
 
         return False
 
@@ -636,16 +483,18 @@ class Model(object):                       # pylint: disable=R0902, R0904
                                               self.rel_time + _step_time,
                                               _step_time)
         elif self.distribution_id == 6:
-            self.dicMTBF = LogNormal().mean(self.scale, self.start_time,
+            self.dicMTBF = LogNormal().mean(self.scale, self.shape,
+                                            self.start_time,
                                             self.rel_time + _step_time,
                                             _step_time)
         elif self.distribution_id == 7:
-            self.dicMTBF = Gaussian().mean(self.scale, self.shape,
+            self.dicMTBF = Gaussian().mean(self.scale,
                                            self.start_time,
                                            self.rel_time + _step_time,
                                            _step_time)
         elif self.distribution_id == 8:
-            self.dicMTBF = Weibull().mean(self.scale, self.start_time,
+            self.dicMTBF = Weibull().mean(self.scale, self.shape,
+                                          self.start_time,
                                           self.rel_time + _step_time,
                                           _step_time)
 
@@ -689,6 +538,386 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
         return False
 
+    def estimate_mcf(self):
+        """
+        Method to estimate the Mean Cumulative Function.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _data = _mcf.format_data(self.dicRecords)
+        self.mcf = _mcf.mean_cumulative_function(_data)
+
+        _times = self.mcf[:, 0]
+        self.n_failures = np.float(sum(self.mcf[:, 1]))
+
+        self.mhb = _mcf.mil_handbook(_times)
+        self.lp = np.float(_mcf.laplace(_times, self.n_failures))
+        self.lr = np.float(_mcf.lewis_robinson(_times, self.n_failures))
+        self.rho = np.float(_mcf.serial_correlation(_times, self.n_failures))
+
+        return False
+
+    def estimate_kaplan_meier(self):
+        """
+        Method to estimate the Kaplan-Meier (product limit) parameters.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        (_data,
+         self.n_failures,
+         self.n_suspensions) = _km.format_data(self.dicRecords)
+
+        self.km, _rank = _km.kaplan_meier(_data, self.start_time,
+                                          self.rel_time, self.confidence,
+                                          self.confidence_type)
+
+        (self.scale[0],
+         self.scale[1],
+         self.scale[2]) = _km.kaplan_meier_mean(self.km, _rank,
+                                                self.confidence)
+
+        self.hazard = _km.kaplan_meier_hazard(self.km)
+
+        return False
+
+    def estimate_nhpp_power_law(self):
+        """
+        Method to estimate the NHPP-Power Law parameters.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+# TODO: Re-write estimate_nhpp_power_law; current McCabe Complexity metric=11.
+        self.nhpp = []
+
+        _meanc = [0.0, 0.0, 0.0]
+        _meani = [0.0, 0.0, 0.0]
+        _failures = [_record.n_failures
+                     for _record in self.dicRecords.values()]
+        _times = [_record.right_interval
+                  for _record in self.dicRecords.values()]
+        _dates = [_record.failure_date
+                  for _record in self.dicRecords.values()]
+        for _index, _time in enumerate(_times):
+            _NHPP = _nhpp.power_law(_failures[:_index + 1],
+                                    _times[:_index + 1],
+                                    self.confidence_method,
+                                    self.fit_method, self.confidence_type,
+                                    self.confidence, self.rel_time)
+
+            # Calculate the cumulative and instantaneous MTBF.
+            if self.fit_method == 1:    # MLE
+                _means = calculate_crow_amsaa_mean(self.rel_time,
+                                                   _NHPP[0][2],
+                                                   _NHPP[1][2])
+                _meanc[0] = _means[0]
+                _meani[0] = _means[1]
+                _means = calculate_crow_amsaa_mean(self.rel_time,
+                                                   _NHPP[0][1],
+                                                   _NHPP[1][1])
+                _meanc[1] = _means[0]
+                _meani[1] = _means[1]
+                _means = calculate_crow_amsaa_mean(self.rel_time,
+                                                   _NHPP[0][0],
+                                                   _NHPP[1][0])
+                _meanc[2] = _means[0]
+                _meani[2] = _means[1]
+            elif self.fit_method == 2:  # Regression
+                _means = calculate_duane_mean(self.rel_time,
+                                              1.0 - _NHPP[1][2],
+                                              1.0 / _NHPP[0][2])
+                _meanc[0] = _means[0]
+                _meani[0] = _means[1]
+                _means = calculate_duane_mean(self.rel_time,
+                                              1.0 - _NHPP[1][1],
+                                              1.0 / _NHPP[0][1])
+                _meanc[1] = _means[0]
+                _meani[1] = _means[1]
+                _means = calculate_duane_mean(self.rel_time,
+                                              1.0 - _NHPP[1][0],
+                                              1.0 / _NHPP[0][0])
+                _meanc[2] = _means[0]
+                _meani[2] = _means[1]
+
+            self.nhpp.append([_time, sum(_failures[:_index + 1]),
+                              list(_NHPP[0]), list(_NHPP[1]),
+                              list(_meanc), list(_meani), _dates[_index]])
+
+        self.n_failures = sum(_failures)
+
+        self.scale[0] = self.nhpp[-1][2][0]
+        self.scale[1] = self.nhpp[-1][2][1]
+        self.scale[2] = self.nhpp[-1][2][2]
+        self.shape[0] = self.nhpp[-1][3][0]
+        self.shape[1] = self.nhpp[-1][3][1]
+        self.shape[2] = self.nhpp[-1][3][2]
+
+        # Calculate trend statistic and critical values.
+        _alpha_half = (1.0 - self.confidence) / 2.0
+
+        if self.grouped == 0:               # Individual failure times.
+            if self.end_time > 0.0:         # Time truncated test.
+                _df = 2.0 * self.n_failures
+            else:                           # Failure truncated test.
+                _df = 2.0 * (self.n_failures - 1)
+            _upper = _alpha_half
+            _lower = self.confidence + _alpha_half
+        else:                               # Grouped failure times.
+            _df = len(_failures) - 1
+            _upper = self.confidence
+            _lower = 1.0 - self.confidence
+
+        self.chi_square = calculate_crow_amsaa_chi_square(_failures, _times,
+                                                          self.shape[1],
+                                                          max(_times))
+        self.chi2_critical_value[0] = chi2.ppf(_lower, _df)
+        self.chi2_critical_value[1] = chi2.ppf(_upper, _df)
+
+        # Calculate goodness of fit statistic and critical value.
+        self.cramer_vonmises = calculate_cramer_vonmises(self.n_failures,
+                                                         _times, self.shape[1])
+        self.cvm_critical_value = cramer_vonmises_critical_value(
+            self.n_failures, self.confidence)
+
+        return False
+
+    def estimate_exponential(self, data):
+        """
+        Method to estimate the Exponential distribution parameters, mean,
+        parameter and mean bounds, hazard function and reliability function.
+
+        :param ndarray data: numpy array of data to use for regression method.
+                             Each record in the array contains:
+                            * 0 = Interval start time
+                            * 1 = Interval end time
+                            * 2 = Quantity of observations
+                            * 3 = Status of observation
+                            * 4 = Time between failures or interarrival time
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if self.fit_method == 1:
+            _results = Exponential().maximum_likelihood_estimate(data,
+                                                                 self.start_time,
+                                                                 self.rel_time)
+
+            self.n_suspensions = _results[3]
+            self.n_failures = _results[4]
+        elif self.fit_method == 2:
+            _results = regression(data, self.start_time, self.rel_time)
+
+            self.rho = _results[3]
+            self.n_suspensions = _results[4]
+            self.n_failures = _results[5]
+
+        self.scale[1] = _results[0][0]
+        self.location[1] = 0.0
+        self.variance[0] = _results[1][0]
+        self.variance[1] = 0.0
+        self.variance[2] = 0.0
+        self.covariance[0] = 0.0
+        self.covariance[1] = 0.0
+        self.covariance[2] = 0.0
+        self.mle = _results[2][0]
+        self.aic = _results[2][1]
+        self.bic = _results[2][2]
+
+        self.calculate_parameter_bounds(data)
+        self.hazard_function()
+        self.reliability_function()
+        self.mean()
+
+        return False
+
+    def estimate_lognormal(self, data):
+        """
+        Method to estimate the LogNormal distribution parameters, mean,
+        parameter and mean bounds, hazard function and reliability function.
+
+        :param ndarray data: numpy array of data to use for regression method.
+                             Each record in the array contains:
+                                * 0 = Interval start time
+                                * 1 = Interval end time
+                                * 2 = Quantity of observations
+                                * 3 = Status of observation
+                                * 4 = Time between failures or interarrival
+                                      time
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if self.fit_method == 1:
+            _results = LogNormal().maximum_likelihood_estimate(data,
+                                                               self.start_time,
+                                                               self.rel_time)
+
+            self.n_suspensions = _results[3]
+            self.n_failures = _results[4]
+        elif self.fit_method == 2:
+            _results = regression(data, self.start_time, self.rel_time,
+                                  dist='lognormal')
+
+            self.rho = _results[3]
+            self.n_suspensions = _results[4]
+            self.n_failures = _results[5]
+
+        self.scale[1] = _results[0][0]
+        self.shape[1] = _results[0][1]
+        self.variance[0] = _results[1][0]       # Scale
+        self.variance[1] = _results[1][2]       # Shape
+        self.covariance[0] = _results[1][1]     # Scale-Shape
+        self.mle = _results[2][0]
+        self.aic = _results[2][1]
+        self.bic = _results[2][2]
+
+        self.calculate_parameter_bounds(data)
+        self.hazard_function()
+        self.reliability_function()
+        self.mean()
+
+        return False
+
+    def estimate_gaussian(self, data):
+        """
+        Method to estimate the Gaussian (Normal) distribution parameters, mean,
+        parameter and mean bounds, hazard function and reliability function.
+
+        :param ndarray data: numpy array of data to use for regression method.
+                             Each record in the array contains:
+                            * 0 = Interval start time
+                            * 1 = Interval end time
+                            * 2 = Quantity of observations
+                            * 3 = Status of observation
+                            * 4 = Time between failures or interarrival time
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if self.fit_method == 1:
+            _results = Gaussian().maximum_likelihood_estimate(data,
+                                                              self.start_time,
+                                                              self.rel_time)
+
+            self.n_suspensions = _results[3]
+            self.n_failures = _results[4]
+        elif self.fit_method == 2:
+            _results = regression(data, self.start_time, self.rel_time,
+                                  dist='normal')
+
+            self.rho = _results[3]
+            self.n_suspensions = _results[4]
+            self.n_failures = _results[5]
+
+        self.scale[1] = _results[0][0]
+        self.shape[1] = _results[0][1]
+        self.variance[0] = _results[1][0]       # Scale
+        self.variance[1] = _results[1][2]       # Shape
+        self.covariance[0] = _results[1][1]     # Scale-Shape
+        self.mle = _results[2][0]
+        self.aic = _results[2][1]
+        self.bic = _results[2][2]
+
+        self.calculate_parameter_bounds(data)
+        self.hazard_function()
+        self.reliability_function()
+        self.mean()
+
+        return False
+
+    def estimate_weibull(self, data):
+        """
+        Method to estimate the Weibull distribution parameters, mean,
+        parameter and mean bounds, hazard function and reliability function.
+
+        :param ndarray data: numpy array of data to use for regression method.
+                             Each record in the array contains:
+                            * 0 = Interval start time
+                            * 1 = Interval end time
+                            * 2 = Quantity of observations
+                            * 3 = Status of observation
+                            * 4 = Time between failures or interarrival time
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if self.fit_method == 1:
+            _results = Weibull().maximum_likelihood_estimate(data,
+                                                             self.start_time,
+                                                             self.rel_time)
+
+            self.n_suspensions = _results[3]
+            self.n_failures = _results[4]
+        elif self.fit_method == 2:
+            _results = regression(data, self.start_time, self.rel_time,
+                                  dist='normal')
+
+            self.rho = _results[3]
+            self.n_suspensions = _results[4]
+            self.n_failures = _results[5]
+
+        self.scale[1] = _results[0][0]
+        self.shape[1] = _results[0][1]
+        self.variance[0] = _results[1][0]       # Scale
+        self.variance[1] = _results[1][2]       # Shape
+        self.covariance[0] = _results[1][1]     # Scale-Shape
+        self.mle = _results[2][0]
+        self.aic = _results[2][1]
+        self.bic = _results[2][2]
+
+        self.calculate_parameter_bounds(data)
+        self.hazard_function()
+        self.reliability_function()
+        self.mean()
+
+        return False
+
+    def _create_dataset(self):
+        """
+        Method to create a dataset for analysis from the records in dicRecords.
+
+        Each record in the returned array contains:
+            * 0 = Interval start time
+            * 1 = Interval end time
+            * 2 = Quantity of observations
+            * 3 = Status of observation
+            * 4 = Time between failures or interarrival time
+
+        :return: _data
+        :rtype: numpy array
+        """
+
+        _data = []
+        for _record_id in self.dicRecords.keys():
+            # Replace any string status values with integer status values.  Set
+            # right censored end point to infinity.
+            if(self.dicRecords[_record_id].status == 'Right Censored' or
+               str(self.dicRecords[_record_id].status) == '2'):
+                self.dicRecords[_record_id].interarrival_time = np.inf
+                self.dicRecords[_record_id].status = 2
+            elif(self.dicRecords[_record_id].status == 'Left Censored' or
+                 self.dicRecords[_record_id].status == 'Interval Censored' or
+                 str(self.dicRecords[_record_id].status) == '3' or
+                 str(self.dicRecords[_record_id].status) == '4'):
+                self.dicRecords[_record_id].status = 3
+            else:
+                self.dicRecords[_record_id].status = 1
+
+            _data.append([self.dicRecords[_record_id].left_interval,
+                          self.dicRecords[_record_id].right_interval,
+                          self.dicRecords[_record_id].n_failures,
+                          self.dicRecords[_record_id].status,
+                          self.dicRecords[_record_id].interarrival_time])
+
+        # Convert the data set list of lists to a numpy array.
+        _data = np.array(_data, dtype=float)
+
+        return _data
+
 
 class Survival(object):
     """
@@ -707,7 +936,7 @@ class Survival(object):
 
     def __init__(self):
         """
-        Initializes a Survival data controller instance.
+        Method to initialize a Survival data controller instance.
         """
 
         # Initialize private scalar attributes.
@@ -1008,7 +1237,7 @@ class Survival(object):
                       fld_user_string_3='{21:s}' \
                   WHERE fld_survival_id={0:d} \
                   AND fld_record_id={1:d}".format(survival_id, record_id,
-                                                  record.assembly_id,
+                                                  record.assembly_name,
                                                   record.failure_date,
                                                   record.left_interval,
                                                   record.right_interval,
@@ -1045,17 +1274,15 @@ class Survival(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Create method to consolidate records in a dataset.
-        _query = "SELECT fld_record_id, fld_unit, fld_left_interval, \
+
+        _query = "SELECT fld_record_id, fld_name, fld_left_interval, \
                          fld_right_interval, fld_status, fld_quantity \
                   FROM rtk_survival_data \
-                  WHERE fld_dataset_id={0:d} \
-                  ORDER BY fld_unit ASC, \
-                           fld_left_interval ASC, \
+                  WHERE fld_survival_id={0:d} \
+                  ORDER BY fld_left_interval ASC, \
                            fld_right_interval ASC, \
                            fld_status ASC".format(survival_id)
-        (_results, _error_code, __) = self._dao.execute_query(_query,
-                                                              commit=False)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
         try:
             _n_records = len(_results)
@@ -1066,8 +1293,8 @@ class Survival(object):
         _keep_id = []
         _quantity = _results[0][5]
         for i in range(1, _n_records):
-            # If the units are the same, the left intervals are the same, the
-            # right intervals are the same, and the type are the same,
+            # If the assemblies are the same, the left intervals are the same,
+            # the right intervals are the same, and the status are the same,
             # increment the count of records with the same failure times and
             # add the previous record id to the list of records to delete.
             if(_results[i][1] == _results[i - 1][1] and
@@ -1090,13 +1317,51 @@ class Survival(object):
                       SET fld_quantity={0:d} \
                       WHERE fld_record_id={1:d}".format(_keep_id[i][1],
                                                         _keep_id[i][0])
-            self._dao.execute_query(_query, commit=True)
+            self._dao.execute(_query, commit=True)
 
         # Delete the records that are "duplicates."
         _n_del = len(_delete_id)
         for i in range(_n_del):
             _query = "DELETE FROM rtk_survival_data \
                       WHERE fld_record_id={0:d}".format(_delete_id[i])
-            self._dao.execute_query(_query, commit=True)
+            self._dao.execute(_query, commit=True)
+
+        return False
+
+    def request_calculate(self, survival_id):
+        """
+        Method to request the survival analysis be performed.
+
+        :param int survival_id: the Survival ID to consolidate records for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _survival = self.dicSurvival[survival_id]
+
+        return _survival.estimate_parameters()
+
+    def request_calculate_tbf(self, survival_id):
+        """
+        Method to request the interarrival times of a dataset be calculated.
+
+        :param int survival_id: the Survival ID to consolidate records for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _survival = self.dicSurvival[survival_id]
+
+        # Retrieve the first record in the record set and set it's interarrival
+        # time equal to the right of the interval.
+        _p_id = _survival.dicRecords.keys()[0]
+        _record = _survival.dicRecords[_p_id]
+        _record.interarrival_time = _record.right_interval
+
+        # Iterate through the remaining records and calculate the interarrival
+        # times.
+        for _c_id in _survival.dicRecords.keys()[1:]:
+            _survival.calculate_tbf(_p_id, _c_id)
+            _p_id = _c_id
 
         return False

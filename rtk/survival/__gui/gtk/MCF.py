@@ -19,6 +19,7 @@ import locale
 
 # Import modules for mathematics support.
 from math import fabs
+import numpy as np
 from scipy.stats import chi2, norm          # pylint: disable=E0611
 
 # Modules required for the GUI.
@@ -508,17 +509,22 @@ class Plots(gtk.HBox):
         self.axAxis1.cla()
 
         # Create a list of failure dates.
-        _dates = [x[1] for x in self._model.dicRecords.values()]
+        _dates = [x.failure_date
+                  for x in self._model.dicRecords.values()
+                  if x.interarrival_time != np.inf]
 
         # Create a list of interarrival times.
-        _tbf = [x[6] for x in self._model.dicRecords.values()]
+        _tbf = [x.interarrival_time
+                for x in self._model.dicRecords.values()
+                if x.interarrival_time != np.inf]
 
-        _plot_title = _(u"Run Sequence Plot for {0:s}").format(
-            self._model.description)
-        _widg.load_plot(self.axAxis1, self.pltPlot1, x=_dates, y1=_tbf,
-                        _title=_plot_title, _xlab=_(u"Date"),
-                        _ylab=_(u"Time Between Failure"), _type=[4],
-                        _marker=['g-'])
+        if len(_dates) > 0 and len(_tbf) > 0:
+            _plot_title = _(u"Run Sequence Plot for {0:s}").format(
+                self._model.description)
+            _widg.load_plot(self.axAxis1, self.pltPlot1, _dates, y1=_tbf,
+                            title=_plot_title, xlab=_(u"Date"),
+                            ylab=_(u"Time Between Failure"), ltype=[4],
+                            marker=['g-'])
 
         return False
 
@@ -533,17 +539,18 @@ class Plots(gtk.HBox):
         self.axAxis2.cla()
 
         # Create a list of interarrival times.
-        _tbf = [x[6] for x in self._model.dicRecords.values()]
+        _tbf = sorted([x.interarrival_time
+                       for x in self._model.dicRecords.values()
+                       if x.interarrival_time != np.inf])
 
-        _zero_line = _tbf[:-1]
-        _plot_title = _(u"Lag Plot for {0:s}").format(self._model.description)
-        _widg.load_plot(self.axAxis2, self.pltPlot2,
-                        x=_tbf[0:len(_tbf) - 1], y1=_tbf[1:len(_tbf)],
-                        y2=_zero_line,
-                        _title=_plot_title,
-                        _xlab=_(u"Lagged Time Between Failure"),
-                        _ylab=_(u"Time Between Failure"),
-                        _type=[2, 2], _marker=['go', 'k-'])
+        if len(_tbf) > 0:
+            _zero_line = _tbf[:-1]
+            _plot_title = _(u"Lag Plot for {0:s}").format(self._model.description)
+            _widg.load_plot(self.axAxis2, self.pltPlot2, _tbf[0:len(_tbf) - 1],
+                            y1=_tbf[1:len(_tbf)], y2=_zero_line, title=_plot_title,
+                            xlab=_(u"Lagged Time Between Failure"),
+                            ylab=_(u"Time Between Failure"), ltype=[2, 2],
+                            marker=['go', 'k-'])
 
         return False
 
@@ -567,12 +574,11 @@ class Plots(gtk.HBox):
             # Plot the mean cumulative function with confidence bounds.
             _plot_title = _(u"MCF Plot for {0:s}").format(
                 self._model.description)
-            _widg.load_plot(self.axAxis3, self.pltPlot3, x=_times,
+            _widg.load_plot(self.axAxis3, self.pltPlot3, _times,
                             y1=_muhatll, y2=_muhat, y3=_muhatul,
-                            _title=_plot_title,
-                            _xlab=_(u"Time"),
-                            _ylab=_(u"Mean Cumulative Function [mu(t)]"),
-                            _marker=['r:', 'g-', 'b:'])
+                            title=_plot_title, xlab=_(u"Time"),
+                            ylab=_(u"Mean Cumulative Function [mu(t)]"),
+                            marker=['r:', 'g-', 'b:'])
             _text = (u"MCF LCL", u"MCF", u"MCF UCL")
             _widg.create_legend(self.axAxis3, _text, fontsize='medium',
                                 legframeon=True, location='lower right',

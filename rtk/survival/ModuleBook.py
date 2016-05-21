@@ -5,6 +5,12 @@ Survival Package Module View
 ############################
 """
 
+# -*- coding: utf-8 -*-
+#
+#       rtk.survival.ModuleBook.py is part of The RTK Project
+#
+# All rights reserved.
+
 import sys
 
 # Import modules for localization support.
@@ -28,14 +34,14 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import Utilities
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-    import rtk.gui.gtk.Widgets as _widg
-#from ListBook import ListView
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
+    import rtk.gui.gtk.Widgets as Widgets
+from ListBook import ListView
 from WorkBook import WorkView
 
 __author__ = 'Andrew Rowland'
@@ -43,14 +49,8 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
-# -*- coding: utf-8 -*-
-#
-#       rtk.survival.ModuleBook.py is part of The RTK Project
-#
-# All rights reserved.
-
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -84,13 +84,13 @@ class ModuleView(object):
         """
         Initializes the Module Book view for the Survival package.
 
-        :param controller: the instance of the
-                           :py:class:`rtk.survival.Survival` data
-                           controller to use with this view.
-        :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Survival
+        :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
+                           data controller to use with this view.
+        :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Testing
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
-                             the Survival view.  Pass -1 to add to the end.
+                             the Testing view.  Pass -1 to add to the end.
+        :param *args: other user arguments to pass to the Module View.
         """
 
         # Initialize private dict attributes.
@@ -101,17 +101,19 @@ class ModuleView(object):
         # Initialize private scalar attributes.
         self.workbook = None
         self.listbook = None
-        self._model = None
         self._dao = None
+        self._model = None
 
         # Initialize public scalar attributes.
-        self.dtcSurvival = controller
+        self.mdcRTK = controller
+        self.mdcRTK.dtcSurvival = controller.dtcSurvival
 
         # Create the main Survival class treeview.
+        _fg_color = Configuration.RTK_COLORS[12]
+        _bg_color = Configuration.RTK_COLORS[13]
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Dataset', 16,
-                                                    _conf.RTK_COLORS[12],
-                                                    _conf.RTK_COLORS[13])
+         self._lst_col_order) = Widgets.make_treeview('Dataset', 16,
+                                                      _fg_color, _bg_color)
 
         self.treeview.set_tooltip_text(_(u"Displays the list of survival "
                                          u"analyses."))
@@ -132,13 +134,12 @@ class ModuleView(object):
             self.treeview.connect('cursor_changed', self._on_row_changed,
                                   None, None))
         self.treeview.connect('row_activated', self._on_row_changed)
-        self.treeview.connect('button_press_event', self._on_button_press)
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
-        _icon = _conf.ICON_DIR + '32x32/survival.png'
+        _icon = Configuration.ICON_DIR + '32x32/survival.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -162,29 +163,29 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-        #self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
+        self.listbook = ListView(self)
 
         # Create a Work View to associate with this Module View.
-        self.workbook = WorkView(rtk_view.workview, self)
+        self.workbook = WorkView(self)
 
     def request_load_data(self, dao, revision_id):
         """
-        Loads the Survival Module Book view gtk.TreeModel() with Survival
-        analyses information.
+        Method to load the Survival Module Book view gtk.TreeModel() with
+        Survival analyses information.
 
-        :param dao: the :py:class: `rtk.dao.DAO` object used to communicate
-                    with the RTK Project database.
+        :param dao: the :py:class:`rtk.dao.DAO.DAO` used to communicate with
+                    the RTK Project database.
         :param int revision_id: the ID of the revision to load survival data
                                 for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self._dao = dao
+        self._dao = self.mdcRTK.project_dao
 
         # Retrieve all the development program survival analyses.
         (_survivals,
-         __) = self.dtcSurvival.request_survival(dao, revision_id)
+         __) = self.mdcRTK.dtcSurvival.request_survival(self._dao, revision_id)
 
         # Clear the Survival Module View gtk.TreeModel().
         _model = self.treeview.get_model()
@@ -200,8 +201,6 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        #self.listbook.load(revision_id)
-
         return False
 
     def request_add_survival(self, revision_id):
@@ -215,7 +214,8 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_results, _error_code) = self.dtcSurvival.add_survival(revision_id)
+        (_results,
+         _error_code) = self.mdcRTK.dtcSurvival.add_survival(revision_id)
 
         # If the Survival analysis was successfully added to the database, add
         # it from the list.
@@ -233,7 +233,8 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_results, _error_code) = self.dtcSurvival.delete_survival(survival_id)
+        (_results,
+         _error_code) = self.mdcRTK.dtcSurvival.delete_survival(survival_id)
 
         # If the Survival analysis was successfully removed from the database,
         # remove it from the list.
@@ -252,7 +253,8 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_results, _error_code) = self.dtcSurvival.save_survival(survival_id)
+        (_results,
+         _error_code) = self.mdcRTK.dtcSurvival.save_survival(survival_id)
 
         return False
 
@@ -267,7 +269,7 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_records, __) = self.dtcSurvival.request_records(survival_id)
+        (_records, __) = self.mdcRTK.dtcSurvival.request_records(survival_id)
 
         return _records
 
@@ -281,7 +283,8 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_result, _error_code) = self.dtcSurvival.add_record(survival_id)
+        (_result,
+         _error_code) = self.mdcRTK.dtcSurvival.add_record(survival_id)
 
         return False
 
@@ -296,8 +299,9 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_result, _error_code) = self.dtcSurvival.delete_record(survival_id,
-                                                                record_id)
+        (_result,
+         _error_code) = self.mdcRTK.dtcSurvival.delete_record(survival_id,
+                                                              record_id)
 
         return False
 
@@ -311,10 +315,10 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        _survival = self.dtcSurvival.dicSurvival[survival_id]
+        _survival = self.mdcRTK.dtcSurvival.dicSurvival[survival_id]
 
         for _record_id in _survival.dicRecords.keys():
-            (_results, _error_code) = self.dtcSurvival.save_record(
+            (_results, _error_code) = self.mdcRTK.dtcSurvival.save_record(
                 survival_id, _record_id, _survival.dicRecords[_record_id])
 
         return False
@@ -329,7 +333,7 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        _survival = self.dtcSurvival.dicSurvival[survival_id]
+        _survival = self.mdcRTK.dtcSurvival.dicSurvival[survival_id]
         _records = _survival.dicRecords
 
         _keys = [_key for _key in _records.keys()]
@@ -343,14 +347,14 @@ class ModuleView(object):
         """
         Consolidates the data set so there are only unique failure times,
         suspension times, and intervals with a quantity value rather than a
-        single record for each failure.
+        single record for each event.
 
         :param int survival_id: the Survival ID of the dataset to consolidate.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self.dtcSurvival.consolidate_dataset()
+        self.mdcRTK.dtcSurvival.consolidate_dataset()
 
         # Reload the dataset tree.
         self.request_load_records(survival_id)
@@ -374,14 +378,14 @@ class ModuleView(object):
         try:
             _model.set(_row, self._lst_col_order[position], new_text)
         except TypeError:
-            print position, new_text
+            print position, self._lst_col_order[position], new_text
 
         return False
 
     def _on_button_press(self, treeview, event):
         """
-        Callback method for handling mouse clicks on the Survival package
-        Module Book gtk.TreeView().
+        Method to handle mouse clicks on the Survival package Module Book
+        gtk.TreeView().
 
         :param gtk.TreeView treeview: the Survival class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
@@ -424,10 +428,11 @@ class ModuleView(object):
 
         _survival_id = _model.get_value(_row, 0)
 
-        self._model = self.dtcSurvival.dicSurvival[_survival_id]
-        self.dtcSurvival.request_records(_survival_id)
+        self._model = self.mdcRTK.dtcSurvival.dicSurvival[_survival_id]
+        self.mdcRTK.dtcSurvival.request_records(_survival_id)
 
         self.workbook.load(self._model)
+        self.listbook.load(self._model)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -478,12 +483,12 @@ class ModuleView(object):
                 self._model.n_rel_points = 10
         elif self._lst_col_order[index] == 35:
             try:
-                self._model.start_date = _util.date_to_ordinal(new_text)
+                self._model.start_date = Utilities.date_to_ordinal(new_text)
             except ValueError:
                 self._model.start_date = datetime.today().toordinal()
         elif self._lst_col_order[index] == 36:
             try:
-                self._model.end_date = _util.date_to_ordinal(new_text)
+                self._model.end_date = Utilities.date_to_ordinal(new_text)
             except ValueError:
                 self._model.end_date = datetime.today().toordinal()
 

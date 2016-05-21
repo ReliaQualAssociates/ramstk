@@ -27,32 +27,31 @@ def format_data(data):
     the mean_cumulative_function.
 
     :param dict data: an ordered dictionary of dataset records.
-    :return: _data; a dictionary with Unit ID being the key and a list of
+    :return: _data; a dictionary with Assembly ID being the key and a list of
                     failure and censoring times as the value.
     :rtype: dict
     """
 
     _data = {}
-    _times = []
-    _assembly_id = data[data.keys()[0]].assembly_id
 
-    for _record in data.values():
-        if _record.assembly_id == _assembly_id:
-            for i in range(_record.n_failures):
-                if _record.status == 0:     # Event
-                    _times.append(_record.right_interval)
-                elif _record.status == 1:   # Right censored
-                    _times.append(str(_record.right_interval) + '+')
-        else:
-            _data[_assembly_id] = _times
-            _assembly_id = _record.assembly_id
-            for i in range(_record.n_failures):
-                if _record.status == 0:
-                    _times = [_record.right_interval]
-                elif _record.status == 1:
-                    _times = [str(_record.right_interval) + '+']
+    _unique_assemblies = list(set([x.assembly_id for x in data.values()]))
+    for _id in _unique_assemblies:
+        _times = []
 
-    _data[_record.assembly_id] = _times     # pylint: disable=W0631
+        # Add the failure times.
+        _records = [x for x in data.values()
+                    if x.assembly_id == _id and x.status == 1]
+        for _record in _records:
+            _times.extend([_record.right_interval] * _record.n_failures)
+
+        # Add the censoring times.
+        _records = [x for x in data.values()
+                    if x.assembly_id == _id and x.status == 2]
+        for _record in _records:
+            _times.extend([str(_record.right_interval) + '+'] *
+                          _record.n_failures)
+
+        _data[_id] = _times     # pylint: disable=W0631
 
     return _data
 

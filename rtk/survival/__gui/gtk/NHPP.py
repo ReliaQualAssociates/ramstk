@@ -49,11 +49,11 @@ pkg_resources.require('matplotlib==1.4.3')
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -61,7 +61,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -76,31 +76,31 @@ class Results(gtk.HPaned):
     :ivar _model: the Survival :py:class:`rtk.survival.Survival.Model`
                   whose attributes are being displayed.
     :ivar gtk.TreeView tvwResults:
-    :ivar gtk.Entry txtNumFailures:
-    :ivar gtk.Entry txtNumSuspensions:
-    :ivar gtk.Entry txtMTBFLL:
-    :ivar gtk.Entry txtMTBF:
-    :ivar gtk.Entry txtMTBFUL:
-    :ivar gtk.Entry txtFailureIntensityLL:
-    :ivar gtk.Entry txtFailureIntensity:
-    :ivar gtk.Entry txtFailureIntensityUL:
-    :ivar gtk.Entry txtMTBFiLL:
-    :ivar gtk.Entry txtMTBFi:
-    :ivar gtk.Entry txtMTBFiUL:
-    :ivar gtk.Entry txtFailureIntensityiLL:
-    :ivar gtk.Entry txtFailureIntensityi:
-    :ivar gtk.Entry txtFailureIntensityiUL:
-    :ivar gtk.Entry txtScaleLL:
-    :ivar gtk.Entry txtScale:
-    :ivar gtk.Entry txtScaleUL:
-    :ivar gtk.Entry txtShapeLL:
-    :ivar gtk.Entry txtShape:
-    :ivar gtk.Entry txtShapeUL:
+    :ivar gtk.Entry txtNumFailures: the gtk.Entry() to display
+    :ivar gtk.Entry txtNumSuspensions: the gtk.Entry() to display
+    :ivar gtk.Entry txtMTBFLL: the gtk.Entry() to display
+    :ivar gtk.Entry txtMTBF: the gtk.Entry() to display
+    :ivar gtk.Entry txtMTBFUL: the gtk.Entry() to display
+    :ivar gtk.Entry txtFailureIntensityLL: the gtk.Entry() to display
+    :ivar gtk.Entry txtFailureIntensity: the gtk.Entry() to display
+    :ivar gtk.Entry txtFailureIntensityUL: the gtk.Entry() to display
+    :ivar gtk.Entry txtMTBFiLL: the gtk.Entry() to display
+    :ivar gtk.Entry txtMTBFi: the gtk.Entry() to display
+    :ivar gtk.Entry txtMTBFiUL: the gtk.Entry() to display
+    :ivar gtk.Entry txtFailureIntensityiLL: the gtk.Entry() to display
+    :ivar gtk.Entry txtFailureIntensityi: the gtk.Entry() to display
+    :ivar gtk.Entry txtFailureIntensityiUL: the gtk.Entry() to display
+    :ivar gtk.Entry txtScaleLL: the gtk.Entry() to display
+    :ivar gtk.Entry txtScale: the gtk.Entry() to display
+    :ivar gtk.Entry txtScaleUL: the gtk.Entry() to display
+    :ivar gtk.Entry txtShapeLL: the gtk.Entry() to display
+    :ivar gtk.Entry txtShape: the gtk.Entry() to display
+    :ivar gtk.Entry txtShapeUL: the gtk.Entry() to display
     """
 
     def __init__(self):
         """
-        Initializes the Results page for the NHPP.
+        Method to initialize the Results page for the NHPP.
         """
 
         gtk.HPaned.__init__(self)
@@ -118,81 +118,51 @@ class Results(gtk.HPaned):
 
         # Initialize public scalar attributes.
         self.lblPage = gtk.Label()
-        self.lblModel = _widg.make_label("", width=-1)
-        self.lblModeli = _widg.make_label("", width=-1)
+        self.lblModel = Widgets.make_label("", width=-1)
+        self.lblModeli = Widgets.make_label("", width=-1)
+        self.lblTrend = Widgets.make_label("", width=-1)
+        self.lblGoF = Widgets.make_label("", width=-1)
 
-        self.txtNumFailures = _widg.make_entry(width=50, editable=False)
-        self.txtNumSuspensions = _widg.make_entry(width=50, editable=False)
+        self.txtNumFailures = Widgets.make_entry(width=50, editable=False)
+        self.txtNumSuspensions = Widgets.make_entry(width=50, editable=False)
 
-        self.txtMTBFLL = _widg.make_entry(width=150, editable=False)
-        self.txtMTBF = _widg.make_entry(width=150, editable=False)
-        self.txtMTBFUL = _widg.make_entry(width=150, editable=False)
-        self.txtFailureIntensityLL = _widg.make_entry(width=150,
+        self.txtMTBFLL = Widgets.make_entry(width=100, editable=False)
+        self.txtMTBF = Widgets.make_entry(width=100, editable=False)
+        self.txtMTBFUL = Widgets.make_entry(width=100, editable=False)
+        self.txtFailureIntensityLL = Widgets.make_entry(width=100,
+                                                        editable=False)
+        self.txtFailureIntensity = Widgets.make_entry(width=100,
                                                       editable=False)
-        self.txtFailureIntensity = _widg.make_entry(width=150, editable=False)
-        self.txtFailureIntensityUL = _widg.make_entry(width=150,
-                                                      editable=False)
+        self.txtFailureIntensityUL = Widgets.make_entry(width=100,
+                                                        editable=False)
 
-        self.txtMTBFiLL = _widg.make_entry(width=150, editable=False)
-        self.txtMTBFi = _widg.make_entry(width=150, editable=False)
-        self.txtMTBFiUL = _widg.make_entry(width=150, editable=False)
-        self.txtFailureIntensityiLL = _widg.make_entry(width=150,
+        self.txtMTBFiLL = Widgets.make_entry(width=100, editable=False)
+        self.txtMTBFi = Widgets.make_entry(width=100, editable=False)
+        self.txtMTBFiUL = Widgets.make_entry(width=100, editable=False)
+        self.txtFailureIntensityiLL = Widgets.make_entry(width=100,
+                                                         editable=False)
+        self.txtFailureIntensityi = Widgets.make_entry(width=100,
                                                        editable=False)
-        self.txtFailureIntensityi = _widg.make_entry(width=150, editable=False)
-        self.txtFailureIntensityiUL = _widg.make_entry(width=150,
-                                                       editable=False)
+        self.txtFailureIntensityiUL = Widgets.make_entry(width=100,
+                                                         editable=False)
 
-        self.txtScaleLL = _widg.make_entry(width=150, editable=False)
-        self.txtScale = _widg.make_entry(width=150, editable=False)
-        self.txtScaleUL = _widg.make_entry(width=150, editable=False)
+        self.txtScaleLL = Widgets.make_entry(width=100, editable=False)
+        self.txtScale = Widgets.make_entry(width=100, editable=False)
+        self.txtScaleUL = Widgets.make_entry(width=100, editable=False)
 
-        self.txtShapeLL = _widg.make_entry(width=150, editable=False)
-        self.txtShape = _widg.make_entry(width=150, editable=False)
-        self.txtShapeUL = _widg.make_entry(width=150, editable=False)
+        self.txtShapeLL = Widgets.make_entry(width=100, editable=False)
+        self.txtShape = Widgets.make_entry(width=100, editable=False)
+        self.txtShapeUL = Widgets.make_entry(width=100, editable=False)
 
-        self.txtTestStatistic = _widg.make_entry(width=150, editable=False)
-        self.txtCriticalValue = _widg.make_entry(width=150, editable=False)
+        self.txtTrendModel = Widgets.make_entry(width=100, editable=False)
+        self.txtTrendCV = Widgets.make_entry(width=100, editable=False)
+        self.txtGoFCV = Widgets.make_entry(width=100, editable=False)
+        self.txtGoFModel = Widgets.make_entry(width=100, editable=False)
 
         # Right quadrant widgets.
         self.tvwResults = gtk.TreeView()
 
-    def create_results_page(self):
-        """
-        Method to create the page for displaying numerical results of the
-        analysis for the Non-Homogoneous Poisson Process distribution.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _frame = _widg.make_frame(label=_(u"Summary of Results"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        _fxdSummary = gtk.Fixed()
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdSummary)
-        _frame.add(_scrollwindow)
-
-        self.pack1(_frame, True, True)
-
-        _frame = _widg.make_frame(label=_(u"Non-Homogoneous Poisson Process "
-                                          u"Table"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwResults)
-        _frame.add(_scrollwindow)
-
-        self.pack2(_frame, True, False)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display analysis results.           #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Set gtk.Widget() tooltip text.
         self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of "
                                                  u"failures in the dataset."))
         self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number of "
@@ -290,57 +260,131 @@ class Results(gtk.HPaned):
                                              u"confidence bound on the "
                                              u"shape parameter estimated from "
                                              u"the dataset."))
+        self.txtTrendCV.set_tooltip_text(_(u"Displays the critical value for "
+                                           u"testing the hypothesis of "
+                                           u"exponentially distributed "
+                                           u"failure times."))
+        self.txtTrendModel.set_tooltip_text(_(u"Displays the test statistic "
+                                              u"for assessing exponentially "
+                                              u"distributed failure times. "
+                                              u"If this value is greater than "
+                                              u"the critical value, the data "
+                                              u"suggests failure times are "
+                                              u"exponentially distributed."))
+        self.txtGoFCV.set_tooltip_text(_(u"Displays the critical value for "
+                                         u"testing the hypothesis of a good "
+                                         u"fit to the selected growth model."))
+        self.txtGoFModel.set_tooltip_text(_(u"Displays the goodness of fit "
+                                            u"test statistic for assessing "
+                                            u"fit to the selected growth "
+                                            u"model.  If this value is less "
+                                            u"than the critical value, the "
+                                            u"model is a good fit to the "
+                                            u"data."))
 
-        # Place the summary of results widgets.
+    def create_results_page(self):
+        """
+        Method to create the page for displaying numerical results of the
+        analysis for the Non-Homogoneous Poisson Process distribution.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build-up the containers for the tab.                          #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        _frame = Widgets.make_frame(label=_(u"Summary of Results"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+
+        _fixed = gtk.Fixed()
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fixed)
+        _frame.add(_scrollwindow)
+
+        self.pack1(_frame, resize=True, shrink=False)
+
+        _frame = Widgets.make_frame(label=_(u"Non-Homogoneous Poisson Process "
+                                            u"Table"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add(self.tvwResults)
+        _frame.add(_scrollwindow)
+
+        self.pack2(_frame, resize=True, shrink=True)
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Place the widgets used to display analysis results.           #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _labels = [_(u"Number of Failures:"), _(u"Number of Suspensions:")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fxdSummary, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos += 35
 
-        _fxdSummary.put(self.txtNumFailures, _x_pos, _y_pos[0])
-        _fxdSummary.put(self.txtNumSuspensions, _x_pos, _y_pos[1])
+        _fixed.put(self.txtNumFailures, _x_pos, _y_pos[0])
+        _fixed.put(self.txtNumSuspensions, _x_pos, _y_pos[1])
 
-        _label = _widg.make_label(_(u"LCL"), height=-1, width=150,
-                                  justify=gtk.JUSTIFY_CENTER)
-        _fxdSummary.put(_label, _x_pos + 50, _y_pos[1] + 35)
-        _label = _widg.make_label(_(u"Point\nEstimate"), height=-1, width=150,
-                                  justify=gtk.JUSTIFY_CENTER)
-        _fxdSummary.put(_label, _x_pos + 200, _y_pos[1] + 35)
-        _label = _widg.make_label(_(u"UCL"), height=-1, width=150,
-                                  justify=gtk.JUSTIFY_CENTER)
-        _fxdSummary.put(_label, _x_pos + 355, _y_pos[1] + 35)
+        _label = Widgets.make_label(_(u"LCL"), height=-1, width=100,
+                                    justify=gtk.JUSTIFY_CENTER)
+        _fixed.put(_label, _x_pos + 50, _y_pos[1] + 35)
+        _label = Widgets.make_label(_(u"Point\nEstimate"), height=-1,
+                                    width=100, justify=gtk.JUSTIFY_CENTER)
+        _fixed.put(_label, _x_pos + 150, _y_pos[1] + 35)
+        _label = Widgets.make_label(_(u"UCL"), height=-1, width=100,
+                                    justify=gtk.JUSTIFY_CENTER)
+        _fixed.put(_label, _x_pos + 265, _y_pos[1] + 35)
 
         _labels = [_(u"Cumulative MTBF:"), _(u"Instantaneous MTBF:"),
                    _(u"Cumulative Failure Intensity:"),
                    _(u"Instantaneous Failure Intensity:"),
                    _(u"Scale Parameter (\u03BB):"),
-                   _(u"Shape Parameter (\u03B2):"), _(u"Test Statistic"),
-                   _(u"Critical Value")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fxdSummary, 5,
-                                             _y_pos[1] + 65)
+                   _(u"Shape Parameter (\u03B2):")]
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5,
+                                               _y_pos[1] + 65)
         _x_pos += 45
 
-        _fxdSummary.put(self.txtMTBFLL, _x_pos, _y_pos[0])
-        _fxdSummary.put(self.txtMTBF, _x_pos + 155, _y_pos[0])
-        _fxdSummary.put(self.txtMTBFUL, _x_pos + 310, _y_pos[0])
-        _fxdSummary.put(self.lblModel, _x_pos + 465, _y_pos[0])
-        _fxdSummary.put(self.txtMTBFiLL, _x_pos, _y_pos[1])
-        _fxdSummary.put(self.txtMTBFi, _x_pos + 155, _y_pos[1])
-        _fxdSummary.put(self.txtMTBFiUL, _x_pos + 310, _y_pos[1])
-        _fxdSummary.put(self.lblModeli, _x_pos + 465, _y_pos[1])
-        _fxdSummary.put(self.txtFailureIntensityLL, _x_pos, _y_pos[2])
-        _fxdSummary.put(self.txtFailureIntensity, _x_pos + 155, _y_pos[2])
-        _fxdSummary.put(self.txtFailureIntensityUL, _x_pos + 310, _y_pos[2])
-        _fxdSummary.put(self.txtFailureIntensityiLL, _x_pos, _y_pos[3])
-        _fxdSummary.put(self.txtFailureIntensityi, _x_pos + 155, _y_pos[3])
-        _fxdSummary.put(self.txtFailureIntensityiUL, _x_pos + 310, _y_pos[3])
-        _fxdSummary.put(self.txtScaleLL, _x_pos, _y_pos[4])
-        _fxdSummary.put(self.txtScale, _x_pos + 155, _y_pos[4])
-        _fxdSummary.put(self.txtScaleUL, _x_pos + 310, _y_pos[4])
-        _fxdSummary.put(self.txtShapeLL, _x_pos, _y_pos[5])
-        _fxdSummary.put(self.txtShape, _x_pos + 155, _y_pos[5])
-        _fxdSummary.put(self.txtShapeUL, _x_pos + 310, _y_pos[5])
-        _fxdSummary.put(self.txtTestStatistic, _x_pos, _y_pos[6])
-        _fxdSummary.put(self.txtCriticalValue, _x_pos, _y_pos[7])
+        _fixed.put(self.txtMTBFLL, _x_pos, _y_pos[0])
+        _fixed.put(self.txtMTBF, _x_pos + 105, _y_pos[0])
+        _fixed.put(self.txtMTBFUL, _x_pos + 210, _y_pos[0])
+        _fixed.put(self.lblModel, _x_pos + 315, _y_pos[0])
+        _fixed.put(self.txtMTBFiLL, _x_pos, _y_pos[1])
+        _fixed.put(self.txtMTBFi, _x_pos + 105, _y_pos[1])
+        _fixed.put(self.txtMTBFiUL, _x_pos + 210, _y_pos[1])
+        _fixed.put(self.lblModeli, _x_pos + 315, _y_pos[1])
+        _fixed.put(self.txtFailureIntensityLL, _x_pos, _y_pos[2])
+        _fixed.put(self.txtFailureIntensity, _x_pos + 105, _y_pos[2])
+        _fixed.put(self.txtFailureIntensityUL, _x_pos + 210, _y_pos[2])
+        _fixed.put(self.txtFailureIntensityiLL, _x_pos, _y_pos[3])
+        _fixed.put(self.txtFailureIntensityi, _x_pos + 105, _y_pos[3])
+        _fixed.put(self.txtFailureIntensityiUL, _x_pos + 210, _y_pos[3])
+        _fixed.put(self.txtScaleLL, _x_pos, _y_pos[4])
+        _fixed.put(self.txtScale, _x_pos + 105, _y_pos[4])
+        _fixed.put(self.txtScaleUL, _x_pos + 210, _y_pos[4])
+        _fixed.put(self.txtShapeLL, _x_pos, _y_pos[5])
+        _fixed.put(self.txtShape, _x_pos + 105, _y_pos[5])
+        _fixed.put(self.txtShapeUL, _x_pos + 210, _y_pos[5])
+
+        _label = Widgets.make_label(_(u"<u>Statistical Test for Trend</u>"))
+        _fixed.put(_label, 5, _y_pos[5] + 40)
+        self.lblTrend.set_markup(_(u"H<sub>o</sub>: Exponential Failure "
+                                   u"Times"))
+        _fixed.put(self.lblTrend, 5, _y_pos[5] + 75)
+        _label = Widgets.make_label(_(u"Critical Value:"))
+        _fixed.put(_label, 5, _y_pos[5] + 110)
+        _fixed.put(self.txtTrendCV, _x_pos, _y_pos[5] + 110)
+        _label = Widgets.make_label(_(u"Test Statistic:"))
+        _fixed.put(_label, 5, _y_pos[5] + 140)
+        _fixed.put(self.txtTrendModel, _x_pos, _y_pos[5] + 140)
+
+        _label = Widgets.make_label(_(u"<u>Statistical Test for Goodness of "
+                                      u"Fit</u>"), width=-1)
+        _fixed.put(_label, _x_pos + 205, _y_pos[5] + 40)
+        self.lblGoF.set_markup(_(u"H<sub>o</sub>: Data Follows NHPP Model"))
+        _fixed.put(self.lblGoF, _x_pos + 205, _y_pos[5] + 75)
+        _fixed.put(self.txtGoFCV, _x_pos + 205, _y_pos[5] + 110)
+        _fixed.put(self.txtGoFModel, _x_pos + 205, _y_pos[5] + 140)
 
         # Place the reliability table.
         _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
@@ -366,7 +410,7 @@ class Results(gtk.HPaned):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
             _column = gtk.TreeViewColumn()
-            _label = _widg.make_column_heading(_heading)
+            _label = Widgets.make_column_heading(_heading)
             _column.set_widget(_label)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=_index)
@@ -399,7 +443,7 @@ class Results(gtk.HPaned):
         :rtype: bool
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         self._model = model
 
@@ -451,11 +495,32 @@ class Results(gtk.HPaned):
         self.txtShape.set_text(str(fmt.format(self._model.shape[1])))
         self.txtShapeUL.set_text(str(fmt.format(self._model.shape[2])))
 
-        if self._model.grouped == 0:
-            self.txtTestStatistic.set_text(str(fmt.format(self._model.cvm)))
+        self.txtTrendCV.set_text(
+            str(fmt.format(self._model.chi2_critical_value[1])))
+        self.txtTrendModel.set_text(str(fmt.format(self._model.chi_square)))
+        if(self._model.chi_square >
+           self._model.chi2_critical_value[1]):
+            self.lblTrend.set_markup(_(u"H<sub>o</sub>: Exponential Failure "
+                                       u"Times     "
+                                       u"<span foreground='green'>"
+                                       u"Reject</span>"))
         else:
-            self.txtTestStatistic.set_text(str(fmt.format(self._model.chisq)))
-        self.txtCriticalValue.set_text(str(fmt.format(self._model.crit_val)))
+            self.lblTrend.set_markup(_(u"H<sub>o</sub>: Exponential Failure "
+                                       u"Times     "
+                                       u"<span foreground='red'>"
+                                       u"Fail to Reject</span>"))
+
+        self.txtGoFCV.set_text(str(fmt.format(self._model.cvm_critical_value)))
+        self.txtGoFModel.set_text(str(fmt.format(self._model.cramer_vonmises)))
+        if(self._model.cramer_vonmises <
+           self._model.cvm_critical_value):
+            self.lblGoF.set_markup(_(u"H<sub>o</sub>: Data Follows NHPP Model "
+                                     u"    <span foreground='green'>Fail to "
+                                     u"Reject</span>"))
+        else:
+            self.lblGoF.set_markup(_(u"H<sub>o</sub>: Data Follows NHPP Model "
+                                     u"    <span foreground='red'>"
+                                     u"Reject</span>"))
 
         self.lblModel.set_markup(_(u"<span>MTBF<sub>C</sub> = "
                                    u"{0:0.4f} T<sup>{1:0.4f}</sup>"
@@ -529,8 +594,8 @@ class Plots(gtk.HBox):
 
     def __init__(self):
         """
-        Initializes the Plot page for the Non-Homogoneous Poisson Process
-        distribution.
+        Method to initialize the Plot page for the Non-Homogoneous Poisson
+        Process distribution.
         """
 
         gtk.HBox.__init__(self)
@@ -563,6 +628,12 @@ class Plots(gtk.HBox):
         self.pltPlot4 = FigureCanvas(_figure)
         self.axAxis4 = _figure.add_subplot(111)
 
+        # Connect gtk.Widget() signals to callback functions.
+        self.pltPlot1.mpl_connect('button_press_event', Widgets.expand_plot)
+        self.pltPlot2.mpl_connect('button_press_event', Widgets.expand_plot)
+        self.pltPlot3.mpl_connect('button_press_event', Widgets.expand_plot)
+        self.pltPlot4.mpl_connect('button_press_event', Widgets.expand_plot)
+
     def create_plot_page(self):
         """
         Method to create the page for displaying plots for the Non-Homogoneous
@@ -578,12 +649,12 @@ class Plots(gtk.HBox):
         _vbox = gtk.VBox()
         self.pack_start(_vbox, True, True)
 
-        _frame = _widg.make_frame(_(u"Cumulative MTBF Over Operating Time"))
+        _frame = Widgets.make_frame(_(u"Cumulative MTBF Over Operating Time"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot1)
         _vbox.pack_start(_frame, True, True)
 
-        _frame = _widg.make_frame(_(u"Cumulative MTBF Over Calendar Time"))
+        _frame = Widgets.make_frame(_(u"Cumulative MTBF Over Calendar Time"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot2)
         _vbox.pack_end(_frame, True, True)
@@ -591,21 +662,17 @@ class Plots(gtk.HBox):
         _vbox = gtk.VBox()
         self.pack_end(_vbox, True, True)
 
-        _frame = _widg.make_frame(_(u"Instantaneous MTBF Over Operating Time"))
+        _frame = Widgets.make_frame(_(u"Instantaneous MTBF Over Operating "
+                                      u"Time"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot3)
         _vbox.pack_start(_frame, True, True)
 
-        _frame = _widg.make_frame(_(u"Instantaneous MTBF Over Calendar Time"))
+        _frame = Widgets.make_frame(_(u"Instantaneous MTBF Over Calendar "
+                                      u"Time"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot4)
         _vbox.pack_end(_frame, True, True)
-
-        # Connect widgets to callback functions.
-        self.pltPlot1.mpl_connect('button_press_event', _widg.expand_plot)
-        self.pltPlot2.mpl_connect('button_press_event', _widg.expand_plot)
-        self.pltPlot3.mpl_connect('button_press_event', _widg.expand_plot)
-        self.pltPlot4.mpl_connect('button_press_event', _widg.expand_plot)
 
         # Insert the page.
         self.lblPage.set_markup("<span weight='bold'>Analysis\nPlots</span>")
@@ -654,13 +721,11 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Cumulative MTBF Over "
                             u"Cumulative Operating Time")
-            _widg.load_plot(self.axAxis1, self.pltPlot1,
-                            x=_times, y1=_mtbf,
-                            _title=_plot_title,
-                            _xlab=_(u"Cumulative Operating Time [t]"),
-                            _ylab=_(u"Cumulative MTBF [MTBF(t)] "),
-                            _marker=['go'],
-                            _type=[2])
+            Widgets.load_plot(self.axAxis1, self.pltPlot1,
+                              _times, y1=_mtbf, title=_plot_title,
+                              xlab=_(u"Cumulative Operating Time [t]"),
+                              ylab=_(u"Cumulative MTBF [MTBF(t)] "), ltype=[2],
+                              marker=['go'])
 
             _x_sm = np.array(_times)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_times))
@@ -679,9 +744,9 @@ class Plots(gtk.HBox):
 
             _text = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                      _(u"Cum. MTBF UCL"))
-            _widg.create_legend(self.axAxis1, _text, fontsize='medium',
-                                legframeon=True, location='upper right',
-                                legshadow=True)
+            Widgets.create_legend(self.axAxis1, _text, fontsize='medium',
+                                  legframeon=True, location='upper right',
+                                  legshadow=True)
 
             self.axAxis1.set_xscale('log')
             self.axAxis1.set_yscale('log')
@@ -706,12 +771,11 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Cumulative MTBF Over "
                             u"Calendar Time")
-            _widg.load_plot(self.axAxis2, self.pltPlot2,
-                            x=_dates, y1=_mtbf, _title=_plot_title,
-                            _xlab=_(u"Calendar Time [t]"),
-                            _ylab=_(u"Cumulative MTBF [MTBF(t)] "),
-                            _marker=['go'],
-                            _type=[4])
+            Widgets.load_plot(self.axAxis2, self.pltPlot2,
+                              _dates, y1=_mtbf, title=_plot_title,
+                              xlab=_(u"Calendar Time [t]"),
+                              ylab=_(u"Cumulative MTBF [MTBF(t)] "), ltype=[4],
+                              marker=['go'])
 
             _x_sm = np.array(_dates)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_dates))
@@ -731,9 +795,9 @@ class Plots(gtk.HBox):
 
             _text = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                      _(u"Cum. MTBF UCL"))
-            _widg.create_legend(self.axAxis2, _text, fontsize='medium',
-                                legframeon=True, location='upper right',
-                                legshadow=True)
+            Widgets.create_legend(self.axAxis2, _text, fontsize='medium',
+                                  legframeon=True, location='upper right',
+                                  legshadow=True)
 
         return False
 
@@ -755,13 +819,11 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Instantaneous MTBF Over "
                             u"Cumulative Operating Time")
-            _widg.load_plot(self.axAxis3, self.pltPlot3,
-                            x=_times, y1=_mtbf,
-                            _title=_plot_title,
-                            _xlab=_(u"Cumulative Operating Time [t]"),
-                            _ylab=_(u"Instantaneous MTBF [m(t)] "),
-                            _marker=['go'],
-                            _type=[2])
+            Widgets.load_plot(self.axAxis3, self.pltPlot3,
+                              _times, y1=_mtbf, title=_plot_title,
+                              xlab=_(u"Cumulative Operating Time [t]"),
+                              ylab=_(u"Instantaneous MTBF [m(t)] "), ltype=[2],
+                              marker=['go'])
 
             _x_sm = np.array(_times)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_times))
@@ -780,9 +842,9 @@ class Plots(gtk.HBox):
 
             _text = (_(u"Instantaneous MTBF"), _(u"Instantaneous MTBF LCL"),
                      _(u"Instantaneous MTBF UCL"))
-            _widg.create_legend(self.axAxis3, _text, fontsize='medium',
-                                legframeon=True, location='upper right',
-                                legshadow=True)
+            Widgets.create_legend(self.axAxis3, _text, fontsize='medium',
+                                  legframeon=True, location='upper right',
+                                  legshadow=True)
 
             self.axAxis3.set_xscale('log')
             self.axAxis3.set_yscale('log')
@@ -807,12 +869,11 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Instantaneous MTBF Over "
                             u"Calendar Time")
-            _widg.load_plot(self.axAxis4, self.pltPlot4,
-                            x=_dates, y1=_mtbf, _title=_plot_title,
-                            _xlab=_(u"Calendar Time [t]"),
-                            _ylab=_(u"Instantaneous MTBF [m(t)] "),
-                            _marker=['go'],
-                            _type=[4])
+            Widgets.load_plot(self.axAxis4, self.pltPlot4,
+                              _dates, y1=_mtbf, title=_plot_title,
+                              xlab=_(u"Calendar Time [t]"),
+                              ylab=_(u"Instantaneous MTBF [m(t)] "), ltype=[4],
+                              marker=['go'])
 
             _x_sm = np.array(_dates)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_dates))
@@ -832,8 +893,8 @@ class Plots(gtk.HBox):
 
             _text = (_(u"Instantaneous MTBF"), _(u"Instantaneous MTBF LCL"),
                      _(u"Instantaneous MTBF UCL"))
-            _widg.create_legend(self.axAxis4, _text, fontsize='medium',
-                                legframeon=True, location='upper right',
-                                legshadow=True)
+            Widgets.create_legend(self.axAxis4, _text, fontsize='medium',
+                                  legframeon=True, location='upper right',
+                                  legshadow=True)
 
         return False

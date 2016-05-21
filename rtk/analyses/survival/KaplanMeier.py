@@ -56,6 +56,7 @@ def format_data(data):
     """
 
     _n_failures = 0
+    _n_suspensions = 0
     _data = []
     for i in data.keys():
         _record = (i, data[i].left_interval, data[i].right_interval,
@@ -64,10 +65,12 @@ def format_data(data):
         _data.append(_record)
 
         # Keep a running count of the number of failures.
-        if data[i].status in [0, 3]:
+        if data[i].status == 1:
             _n_failures += data[i].n_failures
+        else:
+            _n_suspensions += data[i].n_failures
 
-    return _data, _n_failures
+    return _data, _n_failures, _n_suspensions
 
 
 def kaplan_meier(data, start, end, conf=0.75, conftype=3):  # pylint: disable=W0613
@@ -101,7 +104,7 @@ def kaplan_meier(data, start, end, conf=0.75, conftype=3):  # pylint: disable=W0
              _r; the array of observations during which an event occurred.
     :rtype: ndarray, ndarray
     """
-
+# TODO: Re-write kaplan_meier; current McCabe Complexity metric=12.
     _kmf = nonpar.KaplanMeierFitter(alpha=conf)
 
     # Sort data by the right of the interval.  Remove records occurring before

@@ -18,7 +18,7 @@ import gettext
 import locale
 
 # Import modules for mathematics.
-from math import ceil
+from math import ceil, sqrt
 import numpy as np
 from scipy.stats import probplot
 from statsmodels.distributions.empirical_distribution import ECDF
@@ -52,14 +52,14 @@ pkg_resources.require('matplotlib==1.4.3')
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -126,94 +126,45 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
 
         # Initialize public scalar attributes.
         self.lblPage = gtk.Label()
-        self.lblFailureIntensity = _widg.make_label("", height=-1)
-        self.lblModel = _widg.make_label("", width=350)
+        self.lblFailureIntensity = Widgets.make_label("", height=-1, width=-1)
+        self.lblModel = Widgets.make_label("", width=350)
 
-        self.txtNumSuspensions = _widg.make_entry(width=50, editable=False)
-        self.txtNumFailures = _widg.make_entry(width=50, editable=False)
-        self.txtMTBFLL = _widg.make_entry(width=100, editable=False)
-        self.txtMTBF = _widg.make_entry(width=100, editable=False)
-        self.txtMTBFUL = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRateLL = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRate = _widg.make_entry(width=100, editable=False)
-        self.txtHazardRateUL = _widg.make_entry(width=100, editable=False)
-        self.txtMuLL = _widg.make_entry(width=100, editable=False)
-        self.txtMu = _widg.make_entry(width=100, editable=False)
-        self.txtMuUL = _widg.make_entry(width=100, editable=False)
-        self.txtSigmaLL = _widg.make_entry(width=100, editable=False)
-        self.txtSigma = _widg.make_entry(width=100, editable=False)
-        self.txtSigmaUL = _widg.make_entry(width=100, editable=False)
-        self.txtMuMu = _widg.make_entry(width=100, editable=False)
-        self.txtMuSigma = _widg.make_entry(width=100, editable=False)
-        self.txtSigmaMu = _widg.make_entry(width=100, editable=False)
-        self.txtSigmaSigma = _widg.make_entry(width=100, editable=False)
-        self.txtAIC = _widg.make_entry(width=100, editable=False)
-        self.txtBIC = _widg.make_entry(width=100, editable=False)
-        self.txtMLE = _widg.make_entry(width=100, editable=False)
-        self.txtRho = _widg.make_entry(width=100, editable=False)
+        self.txtNumSuspensions = Widgets.make_entry(width=50, editable=False)
+        self.txtNumFailures = Widgets.make_entry(width=50, editable=False)
+        self.txtMTBFLL = Widgets.make_entry(width=100, editable=False)
+        self.txtMTBF = Widgets.make_entry(width=100, editable=False)
+        self.txtMTBFUL = Widgets.make_entry(width=100, editable=False)
+        self.txtHazardRateLL = Widgets.make_entry(width=100, editable=False)
+        self.txtHazardRate = Widgets.make_entry(width=100, editable=False)
+        self.txtHazardRateUL = Widgets.make_entry(width=100, editable=False)
+        self.txtMuLL = Widgets.make_entry(width=100, editable=False)
+        self.txtMu = Widgets.make_entry(width=100, editable=False)
+        self.txtMuUL = Widgets.make_entry(width=100, editable=False)
+        self.txtSigmaLL = Widgets.make_entry(width=100, editable=False)
+        self.txtSigma = Widgets.make_entry(width=100, editable=False)
+        self.txtSigmaUL = Widgets.make_entry(width=100, editable=False)
+        self.txtMuMu = Widgets.make_entry(width=100, editable=False)
+        self.txtMuSigma = Widgets.make_entry(width=100, editable=False)
+        self.txtSigmaMu = Widgets.make_entry(width=100, editable=False)
+        self.txtSigmaSigma = Widgets.make_entry(width=100, editable=False)
+        self.txtAIC = Widgets.make_entry(width=100, editable=False)
+        self.txtBIC = Widgets.make_entry(width=100, editable=False)
+        self.txtMLE = Widgets.make_entry(width=100, editable=False)
+        self.txtRho = Widgets.make_entry(width=100, editable=False)
 
         self.tvwReliability = gtk.TreeView()
 
-    def create_results_page(self):
-        """
-        Method to create the page for displaying numerical results of the
-        analysis for the Gaussian distribution.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _vpaned = gtk.VPaned()
-
-        _frame = _widg.make_frame(label=_(u"Summary of Results"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        _fxdSummary = gtk.Fixed()
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdSummary)
-        _frame.add(_scrollwindow)
-
-        _vpaned.pack1(_frame, True, True)
-
-        _frame = _widg.make_frame(label=_(u"Parameter Estimates"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        _fxdEstimates = gtk.Fixed()
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxdEstimates)
-        _frame.add(_scrollwindow)
-
-        _vpaned.pack2(_frame, True, False)
-
-        _frame = _widg.make_frame(label=_(u"Reliability Table"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwReliability)
-        _frame.add(_scrollwindow)
-
-        self.pack1(_vpaned, True, True)
-        self.pack2(_frame, True, False)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display analysis results.           #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number "
-                                                    u"of suspensions in "
-                                                    u"the dataset."))
+        # Create gtk.Widget() tooltips.
+        self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number of "
+                                                    u"suspensions in the "
+                                                    u"dataset."))
         self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of "
                                                  u"failures in the dataset."))
         self.txtMTBFLL.set_tooltip_markup(_(u"Displays the lower "
                                             u"<span>\u03B1</span>% bound "
                                             u"on the MTBF."))
-        self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate "
-                                          u"of the MTBF."))
+        self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate of "
+                                          u"the MTBF."))
         self.txtMTBFUL.set_tooltip_markup(_(u"Displays the upper "
                                             u"<span>\u03B1</span>% bound "
                                             u"on the MTBF."))
@@ -261,25 +212,75 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         self.txtRho.set_tooltip_markup(_(u"Displays the correlation "
                                          u"coefficient."))
 
+    def create_results_page(self):
+        """
+        Method to create the page for displaying numerical results of the
+        analysis for the Gaussian distribution.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Build-up the containers for the tab.                          #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        _vpaned = gtk.VPaned()
+
+        _frame = Widgets.make_frame(label=_(u"Summary of Results"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+
+        _fxdSummary = gtk.Fixed()
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fxdSummary)
+        _frame.add(_scrollwindow)
+
+        _vpaned.pack1(_frame, True, True)
+
+        _frame = Widgets.make_frame(label=_(u"Parameter Estimates"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+
+        _fxdEstimates = gtk.Fixed()
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(_fxdEstimates)
+        _frame.add(_scrollwindow)
+
+        _vpaned.pack2(_frame, True, False)
+
+        _frame = Widgets.make_frame(label=_(u"Reliability Table"))
+        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
+
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add(self.tvwReliability)
+        _frame.add(_scrollwindow)
+
+        self.pack1(_vpaned, True, True)
+        self.pack2(_frame, True, False)
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Place the widgets used to display analysis results.           #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the summary of results widgets.
         _labels = [_(u"Number of Suspensions:"), _(u"Number of Failures:")]
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fxdSummary, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fxdSummary, 5, 5)
         _x_pos += 35
 
         _fxdSummary.put(self.txtNumSuspensions, _x_pos, _y_pos[0])
         _fxdSummary.put(self.txtNumFailures, _x_pos, _y_pos[1])
 
-        _label = _widg.make_label(_(u"LCL"), width=-1,
-                                  justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(_(u"LCL"), width=-1,
+                                    justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 35, _y_pos[1] + 35)
-        _label = _widg.make_label(_(u"Point\nEstimate"), height=-1,
-                                  width=-1, justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(_(u"Point\nEstimate"), height=-1,
+                                    width=-1, justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 125, _y_pos[1] + 35)
-        _label = _widg.make_label(_(u"UCL"), width=-1,
-                                  justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(_(u"UCL"), width=-1,
+                                    justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 240, _y_pos[1] + 35)
 
-        _label = _widg.make_label(_(u"MTBF:"))
+        _label = Widgets.make_label(_(u"MTBF:"))
         _fxdSummary.put(_label, 5, _y_pos[1] + 70)
         _fxdSummary.put(self.txtMTBFLL, _x_pos, _y_pos[1] + 70)
         _fxdSummary.put(self.txtMTBF, _x_pos + 105, _y_pos[1] + 70)
@@ -294,16 +295,16 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         # Place the parameter estimates widgets.
         _labels = [_(u"Scale Parameter (<span>\u03BC</span>):"),
                    _(u"Shape Parameter (<span>\u03C3</span>):")]
-        (__, _y_pos) = _widg.make_labels(_labels, _fxdEstimates, 5, 45)
+        (__, _y_pos) = Widgets.make_labels(_labels, _fxdEstimates, 5, 45)
 
-        _label = _widg.make_label(_(u"LCL"), width=-1,
-                                  justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(_(u"LCL"), width=-1,
+                                    justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, _x_pos + 35, 5)
-        _label = _widg.make_label(_(u"Point\nEstimate"), height=-1,
-                                  width=-1, justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(_(u"Point\nEstimate"), height=-1,
+                                    width=-1, justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, _x_pos + 125, 5)
-        _label = _widg.make_label(_(u"UCL"), width=-1,
-                                  justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(_(u"UCL"), width=-1,
+                                    justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, _x_pos + 240, 5)
 
         _fxdEstimates.put(self.txtMuLL, _x_pos, _y_pos[0])
@@ -315,43 +316,47 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         _fxdEstimates.put(self.txtSigmaUL, _x_pos + 210, _y_pos[1])
 
         # Place the variance-covariance matrix.
-        _label = _widg.make_label(_(u"<u>Variance-Covariance Matrix</u>"),
-                                  width=-1)
-        _fxdEstimates.put(_label, _x_pos, _y_pos[1] + 60)
+        _label = Widgets.make_label(_(u"<u>Variance-Covariance Matrix</u>"),
+                                    width=-1)
+        _fxdEstimates.put(_label, 5, _y_pos[1] + 60)
 
-        _label = _widg.make_label(_(u"<span>\u03BC</span>"),
-                                  width=-1, justify=gtk.JUSTIFY_CENTER)
-        _fxdEstimates.put(_label, _x_pos + 45, _y_pos[1] + 90)
-        _label = _widg.make_label(_(u"<span>\u03C3</span>"),
-                                  width=-1, justify=gtk.JUSTIFY_CENTER)
-        _fxdEstimates.put(_label, _x_pos + 150, _y_pos[1] + 90)
-        _label = _widg.make_label(_(u"<span>\u03BC</span>"),
-                                  justify=gtk.JUSTIFY_RIGHT)
+        # Column labels.
+        _label = Widgets.make_label(_(u"<span>\u03BC</span>"), width=100,
+                                    justify=gtk.JUSTIFY_CENTER)
+        _fxdEstimates.put(_label, 25, _y_pos[1] + 90)
+        _label = Widgets.make_label(_(u"<span>\u03C3</span>"), width=100,
+                                    justify=gtk.JUSTIFY_CENTER)
+        _fxdEstimates.put(_label, 130, _y_pos[1] + 90)
+
+        # Row labels.
+        _label = Widgets.make_label(_(u"<span>\u03BC</span>"), width=10,
+                                    justify=gtk.JUSTIFY_RIGHT)
         _fxdEstimates.put(_label, 5, _y_pos[1] + 120)
-        _label = _widg.make_label(_(u"<span>\u03C3</span>"),
-                                  justify=gtk.JUSTIFY_RIGHT)
+        _label = Widgets.make_label(_(u"<span>\u03C3</span>"), width=10,
+                                    justify=gtk.JUSTIFY_RIGHT)
         _fxdEstimates.put(_label, 5, _y_pos[1] + 150)
-        _fxdEstimates.put(self.txtMuMu, _x_pos, _y_pos[1] + 120)
-        _fxdEstimates.put(self.txtMuSigma, _x_pos + 105, _y_pos[1] + 120)
-        _fxdEstimates.put(self.txtSigmaMu, _x_pos, _y_pos[1] + 150)
-        _fxdEstimates.put(self.txtSigmaSigma, _x_pos + 105, _y_pos[1] + 150)
+
+        _fxdEstimates.put(self.txtMuMu, 25, _y_pos[1] + 120)
+        _fxdEstimates.put(self.txtMuSigma, 130, _y_pos[1] + 120)
+        _fxdEstimates.put(self.txtSigmaMu, 25, _y_pos[1] + 150)
+        _fxdEstimates.put(self.txtSigmaSigma, 130, _y_pos[1] + 150)
 
         # Place the parametric goodness of fit statistics.
-        _label = _widg.make_label(_(u"<u>Goodness of Fit Statistics</u>"),
-                                  width=-1)
-        _fxdEstimates.put(_label, _x_pos, _y_pos[1] + 180)
-        _label = _widg.make_label(_(u"Aikake's Information:"))
-        _fxdEstimates.put(_label, 5, _y_pos[1] + 210)
-        _label = _widg.make_label(_(u"Bayes Information:"))
-        _fxdEstimates.put(_label, 5, _y_pos[1] + 240)
-        _label = _widg.make_label(_(u"Maximum Likelihood:"))
-        _fxdEstimates.put(_label, 5, _y_pos[1] + 270)
-        _label = _widg.make_label(_(u"Correlation Coefficient:"))
-        _fxdEstimates.put(_label, 5, _y_pos[1] + 300)
-        _fxdEstimates.put(self.txtMLE, _x_pos, _y_pos[1] + 210)
-        _fxdEstimates.put(self.txtAIC, _x_pos, _y_pos[1] + 240)
-        _fxdEstimates.put(self.txtBIC, _x_pos, _y_pos[1] + 270)
-        _fxdEstimates.put(self.txtRho, _x_pos, _y_pos[1] + 300)
+        _label = Widgets.make_label(_(u"<u>Goodness of Fit Statistics</u>"),
+                                    width=-1)
+        _fxdEstimates.put(_label, _x_pos + 210, _y_pos[1] + 60)
+        _label = Widgets.make_label(_(u"Maximum Likelihood:"))
+        _fxdEstimates.put(_label, _x_pos + 210, _y_pos[1] + 90)
+        _label = Widgets.make_label(_(u"Aikake's Information:"))
+        _fxdEstimates.put(_label, _x_pos + 210, _y_pos[1] + 120)
+        _label = Widgets.make_label(_(u"Bayes Information:"))
+        _fxdEstimates.put(_label, _x_pos + 210, _y_pos[1] + 150)
+        _label = Widgets.make_label(_(u"Correlation Coefficient:"))
+        _fxdEstimates.put(_label, _x_pos + 210, _y_pos[1] + 180)
+        _fxdEstimates.put(self.txtMLE, _x_pos + 410, _y_pos[1] + 90)
+        _fxdEstimates.put(self.txtAIC, _x_pos + 410, _y_pos[1] + 120)
+        _fxdEstimates.put(self.txtBIC, _x_pos + 410, _y_pos[1] + 150)
+        _fxdEstimates.put(self.txtRho, _x_pos + 410, _y_pos[1] + 180)
 
         # Place the reliability table.
         _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -363,7 +368,7 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
             _column = gtk.TreeViewColumn()
-            _label = _widg.make_column_heading(_heading)
+            _label = Widgets.make_column_heading(_heading)
             _column.set_widget(_label)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=_index)
@@ -395,7 +400,7 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         self._model = model
 
@@ -414,16 +419,20 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
             self.txtMTBF.set_text(str(fmt.format(self._model.dicMTBF[_key][1])))
             self.txtMTBFUL.set_text(str(fmt.format(self._model.dicMTBF[_key][2])))
 
-        if self._model.hazard != []:
+        try:
+            _key = max(self._model.dicHazard.iterkeys())
+        except ValueError:
+            _key = None
+        if _key is not None:
             self.txtHazardRateLL.set_text(
-                str(fmt.format(self._model.hazard[-1][0])))
+                str(fmt.format(self._model.dicHazard[_key][2])))
             self.txtHazardRate.set_text(
-                str(fmt.format(self._model.hazard[-1][1])))
+                str(fmt.format(self._model.dicHazard[_key][1])))
             self.txtHazardRateUL.set_text(
-                str(fmt.format(self._model.hazard[-1][2])))
+                str(fmt.format(self._model.dicHazard[_key][0])))
 
         # Load the parameter estimates.
-        self.lblFailureIntensity.set_text(_(u"Failure Intensity "
+        self.lblFailureIntensity.set_text(_(u"Failure Intensity\n"
                                             u"at t={0:0.2f}:").format(
                                                 self._model.rel_time))
         self.txtMuLL.set_text(str(fmt.format(self._model.scale[0])))
@@ -457,6 +466,7 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
 
         # Load the reliability table.
         _model = self.tvwReliability.get_model()
+        _model.clear()
         for _key in self._model.dicReliability.keys():
             _model.append([_key, self._model.dicReliability[_key][0],
                            self._model.dicReliability[_key][1],
@@ -538,12 +548,12 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
         _vbox = gtk.VBox()
         self.pack_start(_vbox, True, True)
 
-        _frame = _widg.make_frame(_(u"Histogram"))
+        _frame = Widgets.make_frame(_(u"Histogram"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot1)
         _vbox.pack_start(_frame, True, True)
 
-        _frame = _widg.make_frame(_(u"Empirical CDF Plot"))
+        _frame = Widgets.make_frame(_(u"Empirical CDF Plot"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot2)
         _vbox.pack_start(_frame, True, True)
@@ -551,21 +561,21 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
         _vbox = gtk.VBox()
         self.pack_end(_vbox, True, True)
 
-        _frame = _widg.make_frame(_(u"Probability Plot"))
+        _frame = Widgets.make_frame(_(u"Probability Plot"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot3)
         _vbox.pack_start(_frame, True, True)
 
-        _frame = _widg.make_frame(_(u"Reliability Plot"))
+        _frame = Widgets.make_frame(_(u"Reliability Plot"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot4)
         _vbox.pack_start(_frame, True, True)
 
         # Connect widgets to callback functions.
-        self.pltPlot1.mpl_connect('button_press_event', _widg.expand_plot)
-        self.pltPlot2.mpl_connect('button_press_event', _widg.expand_plot)
-        self.pltPlot3.mpl_connect('button_press_event', _widg.expand_plot)
-        self.pltPlot4.mpl_connect('button_press_event', _widg.expand_plot)
+        self.pltPlot1.mpl_connect('button_press_event', Widgets.expand_plot)
+        self.pltPlot2.mpl_connect('button_press_event', Widgets.expand_plot)
+        self.pltPlot3.mpl_connect('button_press_event', Widgets.expand_plot)
+        self.pltPlot4.mpl_connect('button_press_event', Widgets.expand_plot)
 
         # Insert the page.
         self.lblPage.set_markup("<span weight='bold'>Analysis\nPlots</span>")
@@ -590,17 +600,18 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
 
         _times = []
         for _record in self._model.dicRecords.values():
-            if _record.status != 1 and _record.status != 'Right Censored':
+            if _record.status != 2 and _record.status != 'Right Censored':
                 for __ in range(_record.n_failures):
                     _times.append(_record.right_interval)
         _times.sort()
 
-        _theoretical = self._model.theoretical_distribution(_times)
+        if len(_times) > 0:
+            _theoretical = self._model.theoretical_distribution(_times)
 
-        self._load_histogram(_times)
-        self._load_ecdf(_times, _theoretical)
-        self._load_probability_plot(_times)
-        self._load_reliability_plot()
+            self._load_histogram(_times)
+            self._load_ecdf(_times, _theoretical)
+            self._load_probability_plot(_times)
+            self._load_reliability_plot()
 
         return False
 
@@ -615,24 +626,23 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
 
         self.axAxis1.cla()
 
-# TODO: Move these calculations to the Gaussian distribution data model class.
         _q1 = int(ceil(0.25 * len(times)))
         _q3 = int(ceil(0.75 * len(times)))
         _iqr = times[_q3] - times[_q1]
         _h = 2.0 * _iqr / len(times)**(1.0 / 3.0)
         _k = int(ceil((max(times) - min(times)) / _h))
+        if _k < 5:
+            _k = int(ceil(sqrt(len(times))))
+
         _max = max(times) + (0.5 * (max(times) - min(times)) / (_k - 1))
         _hist, _bin_edges = np.histogram(times, _k, (0.0, _max))
 
         _title = _(u"Histogram of Failure Times "
                    u"for {0:s}").format(self._model.description)
-        _widg.load_plot(self.axAxis1, self.pltPlot1,
-                        x=times, y1=_bin_edges,
-                        _title=_title,
-                        _xlab=_(u"Failure Times"),
-                        _ylab=_(u"Count of Failures"),
-                        _type=[3],
-                        _marker=['g'])
+        Widgets.load_plot(self.axAxis1, self.pltPlot1, times, y1=_bin_edges,
+                          title=_title, xlab=_(u"Failure Times"),
+                          ylab=_(u"Count of Failures"), ltype=[3],
+                          marker=['g'])
 
         return False
 
@@ -652,13 +662,10 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
 
         _title = _(u"Gaussian Empirical CDF of Failure Times "
                    u"for {0:s}").format(self._model.description)
-        _widg.load_plot(self.axAxis2, self.pltPlot2,
-                        x=_ecdf.x[1:], y1=_ecdf.y[1:], y2=theoretical,
-                        _title=_title,
-                        _xlab=_(u"t"),
-                        _ylab=_(u"F(t) "),
-                        _type=[1, 2],
-                        _marker=['b-', 'r:'])
+        Widgets.load_plot(self.axAxis2, self.pltPlot2, _ecdf.x[1:],
+                          y1=_ecdf.y[1:], y2=theoretical, title=_title,
+                          xlab=_(u"t"), ylab=_(u"F(t) "), ltype=[1, 2],
+                          marker=['b-', 'r:'])
 
         return False
 
@@ -698,18 +705,18 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
         self.axAxis4.cla()
 
         _times = sorted(self._model.dicReliability.keys(), reverse=True)
-        _r_ll = sorted([1.0 - x[0] for x in self._model.dicReliability.values()])
-        _r = sorted([1.0 - x[1] for x in self._model.dicReliability.values()])
-        _r_ul = sorted([1.0 - x[2] for x in self._model.dicReliability.values()])
+        _r_ll = sorted([x[0] for x in self._model.dicReliability.values()])
+        _r = sorted([x[1] for x in self._model.dicReliability.values()])
+        _r_ul = sorted([x[2] for x in self._model.dicReliability.values()])
 
         _title = _(u"Estimated Reliability Function "
                    u"for {0:s} with "
                    u"{1:0.1f}% Bounds").format(self._model.description,
-                                               self._model.confidence)
+                                               self._model.confidence * 100.0)
         if _times:
-            _widg.load_plot(self.axAxis4, self.pltPlot4,
-                            x=_times, y1=_r_ll, y2=_r, y3=_r_ul,
-                            _title=_title, _xlab=_(u"t"), _ylab=_(u"R(t) "),
-                            _type=[2, 2, 2], _marker=['r:', 'g-', 'b:'])
+            Widgets.load_plot(self.axAxis4, self.pltPlot4, _times, y1=_r_ll,
+                              y2=_r, y3=_r_ul, title=_title, xlab=_(u"t"),
+                              ylab=_(u"R(t) "), ltype=[2, 2, 2],
+                              marker=['r:', 'g-', 'b:'])
 
         return False

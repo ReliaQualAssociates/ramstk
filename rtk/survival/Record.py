@@ -12,9 +12,9 @@ Survival Package Dataset Record Data Sub-Module
 # All rights reserved.
 
 try:
-    import Utilities as _util
+    import Utilities
 except ImportError:
-    import rtk.Utilities as _util
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,6 +29,7 @@ class Model(object):
 
     :ivar int survival_id: default value: 0
     :ivar int assembly_id: default value: 0
+    :ivar str assembly_name: the noun name of the affected Hardware assembly.
     :ivar int failure_date: default value: 719163
     :ivar float left_interval: default value: 0.0
     :ivar float right_interval: default value: 0.0
@@ -68,10 +69,14 @@ class Model(object):
         # Initialize public scalar attributes.
         self.survival_id = 0
         self.assembly_id = 0
+        self.assembly_name = ''
         self.failure_date = 719163
         self.left_interval = 0.0
         self.right_interval = 0.0
-        self.status = 0
+        self.status = 0                     # 1 = Event
+                                            # 2 = Right Censored
+                                            # 3 = Left Censored
+                                            # 4 = Interval Censored
         self.n_failures = 0
         self.interarrival_time = 0.0
         self.mode_type = 0
@@ -103,7 +108,7 @@ class Model(object):
 # TODO: Change the assembly_id to type int.
         try:
             self.survival_id = int(values[0])
-            self.assembly_id = str(values[1])
+            self.assembly_name = str(values[1])
             self.failure_date = int(values[2])
             self.left_interval = float(values[3])
             self.right_interval = float(values[4])
@@ -124,19 +129,20 @@ class Model(object):
             self.user_string_2 = str(values[19])
             self.user_string_3 = str(values[20])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-        Retrieves the current values of the Verificaiton data model attributes.
+        Method to retrieve the current values of the Verificaiton data model
+        attributes.
 
-        :return: (survival_id, assembly_id, failure_date, left_interval,
+        :return: (survival_id, assembly_name, failure_date, left_interval,
                   right_interval, status, n_failures, interarrival_time,
                   mode_type, nevada_chart, ship_date, return_date,
                   user_float_1, user_float_2, user_float_3, user_integer_1,
@@ -145,7 +151,7 @@ class Model(object):
         :rtype: tuple
         """
 
-        _values = (self.survival_id, self.assembly_id, self.failure_date,
+        _values = (self.survival_id, self.assembly_name, self.failure_date,
                    self.left_interval, self.right_interval, self.status,
                    self.n_failures, self.interarrival_time, self.mode_type,
                    self.nevada_chart, self.ship_date, self.return_date,
@@ -174,7 +180,7 @@ class Record(object):
 
     def __init__(self):
         """
-        Initializes a dataset Record data controller instance.
+        Method to initialize a dataset Record data controller instance.
         """
 
         pass

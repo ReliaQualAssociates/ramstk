@@ -44,7 +44,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         _data = {}
         _assembly_id = [0, 0, 0, 0, 1, 1, 1]
         _fail_times = [56.7, 116.4, 152.1, 198.4, 233.3, 286.1, 322.9]
-        _status = [0, 0, 0, 1, 0, 0, 1]
+        _status = [1, 1, 1, 2, 1, 1, 2]
         _n_failures = [1, 1, 1, 1, 1, 2, 1]
         for i in range(len(_fail_times)):
             _record = Record()
@@ -141,7 +141,8 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         _d_bar = _d_dot / _delta_dot
 
-        _variance = (mcf_variance(_delta_matrix, _d_matrix, _delta_dot, _d_bar))
+        _variance = (mcf_variance(_delta_matrix, _d_matrix, _delta_dot,
+                                  _d_bar))
         self.assertTrue(np.allclose(_variance, [[0.07407407],
                                                 [0.07407407],
                                                 [0.07407407],

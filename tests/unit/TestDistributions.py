@@ -9,7 +9,6 @@ algorithms and models.
 #       tests.statistics.TestDistributions.py is part of The RTK Project
 #
 # All rights reserved.
-
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -36,67 +35,67 @@ class TestExponentialDistribution(unittest.TestCase):
     """
 
     # Data set of 100 exponentially distributed points with a mean of 100.
-    EXP_TEST = [(u'', 48.146, 48.146, 48.146, 1, 1), (u'', 20.564, 20.564, 20.564, 1, 1),
-                (u'', 94.072, 94.072, 94.072, 1, 1), (u'', 177.992, 177.992, 177.992, 1, 1),
-                (u'', 89.103, 89.103, 89.103, 1, 1), (u'', 350.577, 350.577, 350.577, 1, 1),
-                (u'', 82.223, 82.223, 82.223, 1, 1), (u'', 40.360, 40.360, 40.360, 1, 1),
-                (u'', 39.576, 39.576, 39.576, 1, 1), (u'', 53.127, 53.127, 53.127, 1, 1),
-                (u'', 159.732, 159.732, 159.732, 1, 1), (u'', 48.398, 48.398, 48.398, 1, 1),
-                (u'', 46.984, 46.984, 46.984, 1, 1), (u'', 36.169, 36.169, 36.169, 1, 1),
-                (u'', 351.347, 351.347, 351.347, 1, 1), (u'', 18.917, 18.917, 18.917, 1, 1),
-                (u'', 101.977, 101.977, 101.977, 1, 1), (u'', 141.988, 141.988, 141.988, 1, 1),
-                (u'', 241.044, 241.044, 241.044, 1, 1), (u'', 61.993, 61.993, 61.993, 1, 1),
-                (u'', 171.813, 171.813, 171.813, 1, 1), (u'', 78.747, 78.747, 78.747, 1, 1),
-                (u'', 54.070, 54.070, 54.070, 1, 1), (u'', 87.229, 87.229, 87.229, 1, 1),
-                (u'', 158.980, 158.980, 158.980, 1, 1), (u'', 185.254, 185.254, 185.254, 1, 1),
-                (u'', 16.452, 16.452, 16.452, 1, 1), (u'', 120.144, 120.144, 120.144, 1, 1),
-                (u'', 294.418, 294.418, 294.418, 1, 1), (u'', 13.640, 13.640, 13.640, 1, 1),
-                (u'', 115.532, 115.532, 115.532, 1, 1), (u'', 58.595, 58.595, 58.595, 1, 1),
-                (u'', 7.876, 7.876, 7.876, 1, 1), (u'', 10.790, 10.790, 10.790, 1, 1),
-                (u'', 67.342, 67.342, 67.342, 1, 1), (u'', 14.848, 14.848, 14.848, 1, 1),
-                (u'', 82.160, 82.160, 82.160, 1, 1), (u'', 14.558, 14.558, 14.558, 1, 1),
-                (u'', 18.793, 18.793, 18.793, 1, 1), (u'', 69.776, 69.776, 69.776, 1, 1),
-                (u'', 65.542, 65.542, 65.542, 1, 1), (u'', 194.039, 194.039, 194.039, 1, 1),
-                (u'', 41.559, 41.559, 41.559, 1, 1), (u'', 75.549, 75.549, 75.549, 1, 1),
-                (u'', 14.808, 14.808, 14.808, 1, 1), (u'', 184.263, 184.263, 184.263, 1, 1),
-                (u'', 2.810, 2.810, 2.810, 1, 1), (u'', 13.095, 13.095, 13.095, 1, 1),
-                (u'', 52.885, 52.885, 52.885, 1, 1), (u'', 49.855, 49.855, 49.855, 1, 1),
-                (u'', 263.548, 263.548, 263.548, 1, 1), (u'', 4.248, 4.248, 4.248, 1, 1),
-                (u'', 66.864, 66.864, 66.864, 1, 1), (u'', 172.663, 172.663, 172.663, 1, 1),
-                (u'', 226.918, 226.918, 226.918, 1, 1), (u'', 169.175, 169.175, 169.175, 1, 1),
-                (u'', 148.070, 148.070, 148.070, 1, 1), (u'', 3.679, 3.679, 3.679, 1, 1),
-                (u'', 28.693, 28.693, 28.693, 1, 1), (u'', 34.931, 34.931, 34.931, 1, 1),
-                (u'', 297.467, 297.467, 297.467, 1, 1), (u'', 137.072, 137.072, 137.072, 1, 1),
-                (u'', 53.180, 53.180, 53.180, 1, 1), (u'', 49.760, 49.760, 49.760, 1, 1),
-                (u'', 19.664, 19.664, 19.664, 1, 1), (u'', 96.415, 96.415, 96.415, 1, 1),
-                (u'', 14.003, 14.003, 14.003, 1, 1), (u'', 17.743, 17.743, 17.743, 1, 1),
-                (u'', 212.279, 212.279, 212.279, 1, 1), (u'', 38.951, 38.951, 38.951, 1, 1),
-                (u'', 74.057, 74.057, 74.057, 1, 1), (u'', 86.769, 86.769, 86.769, 1, 1),
-                (u'', 37.765, 37.765, 37.367, 1, 1), (u'', 5.566, 5.566, 5.566, 1, 1),
-                (u'', 71.048, 71.048, 71.048, 1, 1), (u'', 5.137, 5.137, 5.137, 1, 1),
-                (u'', 35.461, 35.461, 35.461, 1, 1), (u'', 121.963, 121.963, 121.963, 1, 1),
-                (u'', 42.486, 42.486, 42.486, 1, 1), (u'', 52.315, 52.315, 52.315, 1, 1),
-                (u'', 77.095, 77.095, 77.095, 1, 1), (u'', 14.259, 14.259, 14.259, 1, 1),
-                (u'', 111.147, 111.147, 111.147, 1, 1), (u'', 49.364, 49.364, 49.364, 1, 1),
-                (u'', 1.978, 1.978, 1.978, 1, 1), (u'', 163.827, 163.827, 163.827, 1, 1),
-                (u'', 66.690, 66.690, 66.690, 1, 1), (u'', 80.172, 80.172, 80.172, 1, 1),
-                (u'', 323.763, 323.763, 323.763, 1, 1), (u'', 275.491, 275.491, 275.491, 1, 1),
-                (u'', 49.315, 49.315, 49.315, 1, 1), (u'', 1.585, 1.585, 1.585, 1, 1),
-                (u'', 317.922, 317.922, 317.922, 1, 1), (u'', 12.398, 12.398, 12.398, 1, 1),
-                (u'', 222.930, 222.930, 222.930, 1, 1), (u'', 6.328, 6.328, 6.328, 1, 1),
-                (u'', 143.687, 143.687, 143.687, 1, 1), (u'', 134.763, 134.763, 134.763, 1, 1),
-                (u'', 88.862, 88.862, 88.862, 1, 1), (u'', 143.918, 143.918, 143.918, 1, 1)]
+    EXP_TEST = np.array([[1.585, 1.585, 1, 1, 1.585], [1.978, 1.978, 1, 1, 1.978],
+                         [2.81, 2.81, 1, 1, 2.81], [3.679, 3.679, 1, 1, 3.679],
+                         [4.248, 4.248, 1, 1, 4.248], [5.137, 5.137, 1, 1, 5.137],
+                         [5.566, 5.566, 1, 1, 5.566], [6.328, 6.328, 1, 1, 6.328],
+                         [7.876, 7.876, 1, 1, 7.876], [10.79, 10.79, 1, 1, 10.79],
+                         [12.398, 12.398, 1, 1, 12.398], [13.095, 13.095, 1, 1, 13.095],
+                         [13.64, 13.64, 1, 1, 13.64], [14.003, 14.003, 1, 1, 14.003],
+                         [14.259, 14.259, 1, 1, 14.259], [14.558, 14.558, 1, 1, 14.558],
+                         [14.808, 14.808, 1, 1, 14.808], [14.848, 14.848, 1, 1, 14.848],
+                         [16.452, 16.452, 1, 1, 16.452], [17.743, 17.743, 1, 1, 17.743],
+                         [18.793, 18.793, 1, 1, 18.793], [18.917, 18.917, 1, 1, 18.917],
+                         [19.664, 19.664, 1, 1, 19.664], [20.564, 20.564, 1, 1, 20.564],
+                         [28.693, 28.693, 1, 1, 28.693], [34.931, 34.931, 1, 1, 34.931],
+                         [35.461, 35.461, 1, 1, 35.461], [36.169, 36.169, 1, 1, 36.169],
+                         [37.765, 37.765, 1, 1, 37.367], [38.951, 38.951, 1, 1, 38.951],
+                         [39.576, 39.576, 1, 1, 39.576], [40.36, 40.36, 1, 1, 40.36],
+                         [41.559, 41.559, 1, 1, 41.559], [42.486, 42.486, 1, 1, 42.486],
+                         [46.984, 46.984, 1, 1, 46.984], [48.146, 48.146, 1, 1, 48.146],
+                         [48.398, 48.398, 1, 1, 48.398], [49.315, 49.315, 1, 1, 49.315],
+                         [49.364, 49.364, 1, 1, 49.364], [49.76, 49.76, 1, 1, 49.76],
+                         [49.855, 49.855, 1, 1, 49.855], [52.315, 52.315, 1, 1, 52.315],
+                         [52.885, 52.885, 1, 1, 52.885], [53.127, 53.127, 1, 1, 53.127],
+                         [53.18, 53.18, 1, 1, 53.18], [54.07, 54.07, 1, 1, 54.07],
+                         [58.595, 58.595, 1, 1, 58.595], [61.993, 61.993, 1, 1, 61.993],
+                         [65.542, 65.542, 1, 1, 65.542], [66.69, 66.69, 1, 1, 66.69],
+                         [66.864, 66.864, 1, 1, 66.864], [67.342, 67.342, 1, 1, 67.342],
+                         [69.776, 69.776, 1, 1, 69.776], [71.048, 71.048, 1, 1, 71.048],
+                         [74.057, 74.057, 1, 1, 74.057], [75.549, 75.549, 1, 1, 75.549],
+                         [77.095, 77.095, 1, 1, 77.095], [78.747, 78.747, 1, 1, 78.747],
+                         [80.172, 80.172, 1, 1, 80.172], [82.16, 82.16, 1, 1, 82.16],
+                         [82.223, 82.223, 1, 1, 82.223], [86.769, 86.769, 1, 1, 86.769],
+                         [87.229, 87.229, 1, 1, 87.229], [88.862, 88.862, 1, 1, 88.862],
+                         [89.103, 89.103, 1, 1, 89.103], [94.072, 94.072, 1, 1, 94.072],
+                         [96.415, 96.415, 1, 1, 96.415], [101.977, 101.977, 1, 1, 101.977],
+                         [111.147, 111.147, 1, 1, 111.147], [115.532, 115.532, 1, 1, 115.532],
+                         [120.144, 120.144, 1, 1, 120.144], [121.963, 121.963, 1, 1, 121.963],
+                         [134.763, 134.763, 1, 1, 134.763], [137.072, 137.072, 1, 1, 137.072],
+                         [141.988, 141.988, 1, 1, 141.988], [143.687, 143.687, 1, 1, 143.687],
+                         [143.918, 143.918, 1, 1, 143.918], [148.07, 148.07, 1, 1, 148.07],
+                         [158.98, 158.98, 1, 1, 158.98], [159.732, 159.732, 1, 1, 159.732],
+                         [163.827, 163.827, 1, 1, 163.827], [169.175, 169.175, 1, 1, 169.175],
+                         [171.813, 171.813, 1, 1, 171.813], [172.663, 172.663, 1, 1, 172.663],
+                         [177.992, 177.992, 1, 1, 177.992], [184.263, 184.263, 1, 1, 184.263],
+                         [185.254, 185.254, 1, 1, 185.254], [194.039, 194.039, 1, 1, 194.039],
+                         [212.279, 212.279, 1, 1, 212.279], [222.93, 222.93, 1, 1, 222.93],
+                         [226.918, 226.918, 1, 1, 226.918], [241.044, 241.044, 1, 1, 241.044],
+                         [263.548, 263.548, 1, 1, 263.548], [275.491, 275.491, 1, 1, 275.491],
+                         [294.418, 294.418, 1, 1, 294.418], [297.467, 297.467, 1, 1, 297.467],
+                         [317.922, 317.922, 1, 1, 317.922], [323.763, 323.763, 1, 1, 323.763],
+                         [350.577, 350.577, 1, 1, 350.577], [351.347, 351.347, 1, 1, 351.347]])
 
-    # Data set of alpha particle interarrival times.
-    # Data is from Table 7.1 in Meeker and Excobar.
-    ALPHA = [(u'', 0.0, 100.0, 50.0, 3, 1609, 3),
-             (u'', 100.0, 300.0, 200.0, 3, 2424, 3),
-             (u'', 300.0, 500.0, 400.0, 3, 1770, 3),
-             (u'', 500.0, 700.0, 600.0, 3, 1306, 3),
-             (u'', 700.0, 1000.0, 850.0, 3, 1213, 3),
-             (u'', 1000.0, 2000.0, 1500.0, 3, 1528, 3),
-             (u'', 2000.0, 4000.0, 3000.0, 3, 354, 3),
-             (u'', 4000.0, 0.0, np.inf, 2, 16, 2)]
+    # Data set of alpha particle interarrival times.  Data is from Table 7.1 in
+    # Meeker and Escobar.
+    ALPHA = np.array([[0.0, 100.0, 1609, 4, 50.0],
+                      [100.0, 300.0, 2424, 4, 200.0],
+                      [300.0, 500.0, 1770, 4, 400.0],
+                      [500.0, 700.0, 1306, 4, 600.0],
+                      [700.0, 1000.0, 1213, 4, 850.0],
+                      [1000.0, 2000.0, 1528, 4, 1500.0],
+                      [2000.0, 4000.0, 354, 4, 3000.0],
+                      [4000.0, np.inf, 16, 2, np.inf]])
 
     def setUp(self):
         """
@@ -106,7 +105,7 @@ class TestExponentialDistribution(unittest.TestCase):
         self.DUT = Exponential()
 
     @attr(all=True, unit=True)
-    def test_log_pdf(self):
+    def test01_log_pdf(self):
         """
         (TestExponentialDistribution) log_pdf should return a numpy array of floats on success
         """
@@ -135,7 +134,7 @@ class TestExponentialDistribution(unittest.TestCase):
                                               -5.80666239, -6.02888459])
 
     @attr(all=True, unit=True)
-    def test_partial_derivatives_exact(self):
+    def test02_partial_derivatives_exact(self):
         """
         (TestExponentialDistribution) partial_derivatives should return a numpy array with exact data only on success.
         """
@@ -157,7 +156,7 @@ class TestExponentialDistribution(unittest.TestCase):
         self.assertAlmostEqual(_part_deriv, -177.0)
 
     @attr(all=True, unit=True)
-    def test_partial_derivatives_right(self):
+    def test02a_partial_derivatives_right(self):
         """
         (TestExponentialDistribution) partial_derivatives should return a numpy array with exact and right censored data on success.
         """
@@ -173,7 +172,7 @@ class TestExponentialDistribution(unittest.TestCase):
         self.assertAlmostEqual(_part_deriv, -81.0)
 
     @attr(all=True, unit=True)
-    def test_partial_derivs_interval(self):
+    def test02b_partial_derivs_interval(self):
         """
         (TestExponentialDistribution) partial_derivatives should return a numpy array with exact, right, and interval censored data on success.
         """
@@ -193,10 +192,10 @@ class TestExponentialDistribution(unittest.TestCase):
 
         # Parameter is 0.0034 for exponential.
         _part_deriv = self.DUT.partial_derivatives(0.0034, _data)
-        self.assertAlmostEqual(_part_deriv, -33687.1470588)
+        self.assertAlmostEqual(_part_deriv, -115.5080488)
 
     @attr(all=True, unit=True)
-    def test_maximum_likelihood_estimate_exact_times(self):
+    def test03_maximum_likelihood_estimate_exact_times(self):
         """
         (TestExponentialDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with exact failure times.
         """
@@ -205,14 +204,18 @@ class TestExponentialDistribution(unittest.TestCase):
                                                     10000000.0)
 
         # Check the mean for exact failure time data.
-        self.assertAlmostEqual(_fit[0][0], 0.01062395)
+        self.assertAlmostEqual(_fit[0][0], 0.01062350)
+
+        # Check the variance for exact failure time data.
         self.assertAlmostEqual(_fit[1][0], 1.1530528E-06)
-        self.assertAlmostEqual(_fit[2][0], -354.4601974)
-        self.assertAlmostEqual(_fit[2][1], 710.9203947)
-        self.assertAlmostEqual(_fit[2][2], 712.3808350)
+
+        # Check the goodness of fit statistics for exact failure time data.
+        self.assertAlmostEqual(_fit[2][0], -554.4686898)    # Log-likelihood
+        self.assertAlmostEqual(_fit[2][1], 1110.9373796)    #
+        self.assertAlmostEqual(_fit[2][2], 1112.3978199)    #
 
     @attr(all=True, unit=True)
-    def test_maximum_likelihood_estimate_interval_censored(self):
+    def test03a_maximum_likelihood_estimate_interval_censored(self):
         """
         (TestExponentialDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with interval censored failure times.
         """
@@ -220,11 +223,20 @@ class TestExponentialDistribution(unittest.TestCase):
         _fit = self.DUT.maximum_likelihood_estimate(self.ALPHA, 0.0,
                                                     10000000.0)
 
-        # Check the mean for exact failure time data.
-        np.testing.assert_array_equal(_fit[0], [0.0015840045243129197, 0.0])
+        # Check the mean for interval censored failure time data.
+        np.testing.assert_array_equal(_fit[0], [0.0016958399594908262, 0.0])
+
+        # Check the variance for interval censored failure time data.
+        np.testing.assert_array_equal(_fit[1],
+                                      [4.1646989502606359e-07, 0.0, 0.0])
+
+        # Check the goodness of fit for interval censored failure time data.
+        np.testing.assert_array_equal(_fit[2],
+                                      [6547.2989156021813, -13092.597831204363,
+                                       -13093.796650941156])
 
     @attr(all=True, unit=True)
-    def test_theoretical_distribution(self):
+    def test04_theoretical_distribution(self):
         """
         (TestExponentialDistribution) theoretical_distribution should return a numpy array of floats on success.
         """
@@ -270,7 +282,7 @@ class TestExponentialDistribution(unittest.TestCase):
                                         0.97606791])
 
     @attr(all=True, unit=True)
-    def test_hazard_function(self):
+    def test05_hazard_function(self):
         """
         (TestExponentialDistribution) hazard_function should return a dict on success.
         """
@@ -283,7 +295,7 @@ class TestExponentialDistribution(unittest.TestCase):
                                    8: _para, 9: _para})
 
     @attr(all=True, unit=True)
-    def test_mean(self):
+    def test06_mean(self):
         """
         (TestExponentialDistribution) mean should return a dict on success.
         """
@@ -313,7 +325,7 @@ class TestExponentialDistribution(unittest.TestCase):
                                        98.63683888658737]})
 
     @attr(all=True, unit=True)
-    def test_reliability_function(self):
+    def test07_reliability_function(self):
         """
         (TestExponentialDistribution) reliability_function should return a dict on success.
         """
@@ -356,125 +368,109 @@ class TestGaussianDistribution(unittest.TestCase):
     Class for testing the Gaussian distribution data model class.
     """
 
-    # Data is the same as that used in the ReliaSoft wiki examples.
-    # The table can be found at the following URL, for example.
-    # http://reliawiki.org/index.php/The_Lognormal_Distribution#Rank_Regression_on_Y
-    # mu = 45.0000, sigma = 33.5367 and rho = 0.9790 when fit to the GAU.
-    DATA = np.array([['', 0.0, 5.0, 0, 1, 1], ['', 0.0, 10.0, 0, 1, 1],
-                     ['', 0.0, 15.0, 0, 1, 1], ['', 0.0, 20.0, 0, 1, 1],
-                     ['', 0.0, 25.0, 0, 1, 1], ['', 0.0, 30.0, 0, 1, 1],
-                     ['', 0.0, 35.0, 0, 1, 1], ['', 0.0, 40.0, 0, 1, 1],
-                     ['', 0.0, 50.0, 0, 1, 1], ['', 0.0, 60.0, 0, 1, 1],
-                     ['', 0.0, 70.0, 0, 1, 1], ['', 0.0, 80.0, 0, 1, 1],
-                     ['', 0.0, 90.0, 0, 1, 1], ['', 0.0, 100.0, 0, 1, 1]])
-
-    DATA3 = np.array([['', 0.0, 24.0, 0.0, 3, 24], ['', 24.0, 39.0, 0.0, 3, 1],
-                      ['', 24.0, 113.0, 0.0, 3, 4], ['', 28.0, 88.0, 0.0, 3, 1],
-                      ['', 39.0, 113.0, 0.0, 3, 2], ['', 57.0, 113.0, 0.0, 3, 1],
-                      ['', 0.0, 39.0, 0.0, 3, 2], ['', 24.0, 57.0, 0.0, 3, 10],
-                      ['', 24.0, 28.0, 0.0, 3, 4], ['', 24.0, 88.0, 0.0, 3, 3],
-                      ['', 28.0, 39.0, 0.0, 3, 4], ['', 39.0, 57.0, 0.0, 3, 3],
-                      ['', 57.0, 88.0, 0.0, 3, 5], ['', 88.0, 113.0, 0.0, 3, 1],
-                      ['', 0.0, 88.0, 0.0, 2, 34], ['', 0.0, 24.0, 0.0, 2, 61],
-                      ['', 0.0, 28.0, 0.0, 2, 8], ['', 0.0, 39.0, 0.0, 2, 15],
-                      ['', 0.0, 57.0, 0.0, 2, 22], ['', 0.0, 113.0, 0.0, 2, 92]])
+    # Data set of 100 normally distributed points a mean of 100.0 and a
+    # variance of 10.0
+    NORM_TEST = np.array([[95.370, 95.370, 1, 1, 95.370], [0.0, 114.011, 1, 1, 114.011],
+                          [0.0, 113.246, 1, 1, 113.246], [0.0, 109.167, 1, 1, 109.167],
+                          [0.0, 104.227, 1, 1, 104.227], [107.109, 107.109, 1, 1, 107.109],
+                          [0.0, 117.43215, 1, 1, 117.43215], [0.0, 94.785, 1, 1, 94.785],
+                          [0.0, 83.56718, 1, 1, 83.56718], [0.0, 103.501, 1, 1, 103.501],
+                          [89.931, 89.931, 1, 1, 89.931], [0.0, 120.455, 1, 1, 120.455],
+                          [0.0, 97.081, 1, 1, 97.081], [0.0, 96.813, 1, 1, 96.813],
+                          [0.0, 97.571, 1, 1, 97.571], [106.757, 106.757, 1, 1, 106.757],
+                          [0.0, 99.335, 1, 1, 99.335], [0.0, 104.538, 1, 1, 104.538],
+                          [0.0, 102.028, 1, 1, 102.028], [0.0, 90.032, 1, 1, 90.032],
+                          [77.542, 77.542, 1, 1, 77.542], [0.0, 102.761, 1, 1, 102.761],
+                          [0.0, 82.485, 1, 1, 82.485], [0.0, 77.743, 1, 1, 77.743],
+                          [0.0, 109.974, 1, 1, 109.974], [94.851, 94.851, 1, 1, 94.851],
+                          [0.0, 89.771, 1, 1, 89.771], [0.0, 98.193, 1, 1, 98.193],
+                          [0.0, 102.165, 1, 1, 102.165], [0.0, 96.783, 1, 1, 96.783],
+                          [108.865, 108.865, 1, 1, 108.865], [0.0, 120.462, 1, 1, 120.462],
+                          [0.0, 111.592, 1, 1, 111.592], [0.0, 106.148, 1, 1, 106.148],
+                          [0.0, 102.946, 1, 1, 102.946], [111.290, 111.290, 1, 1, 111.290],
+                          [0.0, 106.002, 1, 1, 106.002], [0.0, 114.617, 1, 1, 114.617],
+                          [0.0, 88.229, 1, 1, 88.229], [0.0, 131.364, 1, 1, 131.364],
+                          [86.855, 86.855, 1, 1, 86.855], [0.0, 109.927, 1, 1, 109.927],
+                          [0.0, 75.116, 1, 1, 75.116], [0.0, 100.465, 1, 1, 100.465],
+                          [0.0, 97.783, 1, 1, 97.783], [108.169, 108.169, 1, 1, 108.169],
+                          [0.0, 98.851, 1, 1, 98.851], [0.0, 99.310, 1, 1, 99.310],
+                          [0.0, 94.588, 1, 1, 94.588], [0.0, 98.123, 1, 1, 98.123],
+                          [115.666, 115.666, 1, 1, 115.666], [0.0, 104.491, 1, 1, 104.491],
+                          [0.0, 93.490, 1, 1, 93.490], [0.0, 111.794, 1, 1, 111.794],
+                          [0.0, 114.320, 1, 1, 114.320], [106.938, 106.938, 1, 1, 106.938],
+                          [0.0, 106.450, 1, 1, 106.450], [0.0, 103.105, 1, 1, 103.105],
+                          [0.0, 107.781, 1, 1, 107.781], [0.0, 120.846, 1, 1, 120.846],
+                          [100.102, 100.102, 1, 1, 100.102], [0.0, 92.930, 1, 1, 92.930],
+                          [0.0, 101.246, 1, 1, 101.246], [0.0, 69.517, 1, 1, 69.517],
+                          [0.0, 106.276, 1, 1, 106.276], [99.046, 99.046, 1, 1, 99.046],
+                          [0.0, 101.300, 1, 1, 101.300], [0.0, 98.588, 1, 1, 98.588],
+                          [0.0, 110.022, 1, 1, 110.022], [0.0, 91.255, 1, 1, 91.255],
+                          [106.687, 106.687, 1, 1, 106.687], [0.0, 102.443, 1, 1, 102.443],
+                          [0.0, 100.342, 1, 1, 100.342], [0.0, 96.635, 1, 1, 96.635],
+                          [0.0, 80.909, 1, 1, 80.909], [111.080, 111.080, 1, 1, 111.080],
+                          [0.0, 107.005, 1, 1, 107.005], [0.0, 103.043, 1, 1, 103.043],
+                          [0.0, 92.660, 1, 1, 92.660], [0.0, 81.526, 1, 1, 81.526],
+                          [94.497, 94.497, 1, 1, 94.497], [0.0, 88.791, 1, 1, 88.791],
+                          [0.0, 97.913, 1, 1, 97.913], [0.0, 96.120, 1, 1, 96.120],
+                          [0.0, 101.234, 1, 1, 101.234], [95.132, 95.132, 1, 1, 95.132],
+                          [0.0, 93.939, 1, 1, 93.939], [0.0, 92.302, 1, 1, 92.302],
+                          [0.0, 96.536, 1, 1, 96.536], [0.0, 110.747, 1, 1, 110.747],
+                          [99.888, 99.888, 1, 1, 99.888], [0.0, 92.780, 1, 1, 92.780],
+                          [0.0, 107.678, 1, 1, 107.678], [0.0, 96.187, 1, 1, 96.187],
+                          [0.0, 87.938, 1, 1, 87.938], [91.664, 91.664, 1, 1, 91.664],
+                          [0.0, 106.149, 1, 1, 106.149], [0.0, 104.320, 1, 1, 104.320],
+                          [0.0, 115.681, 1, 1, 115.681], [0.0, 95.920, 1, 1, 95.920]])
 
     # Leukemia remission times.  Data is from Example 7.2 of Lee and Wang.
-    LEUK = np.array([[0.0, 1.0, 1, 1], [0.0, 1.0, 1, 1],
-                     [0.0, 2.0, 1, 1], [0.0, 2.0, 1, 1],
-                     [0.0, 3.0, 1, 1], [0.0, 4.0, 1, 1],
-                     [0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
-                     [0.0, 5.0, 1, 1], [0.0, 6.0, 1, 1],
-                     [0.0, 8.0, 1, 1], [0.0, 8.0, 1, 1],
-                     [0.0, 9.0, 1, 1], [0.0, 10.0, 1, 1],
-                     [0.0, 10.0, 1, 1], [0.0, 12.0, 1, 1],
-                     [0.0, 14.0, 1, 1], [0.0, 16.0, 1, 1],
-                     [0.0, 20.0, 1, 1], [0.0, 24.0, 1, 1],
-                     [0.0, 34.0, 1, 1]])
+    LEUK = np.array([[0.0, 1.0, 1, 1, 1.0], [0.0, 1.0, 1, 1, 1.0],
+                     [0.0, 2.0, 1, 1, 2.0], [0.0, 2.0, 1, 1, 2.0],
+                     [0.0, 3.0, 1, 1, 3.0], [0.0, 4.0, 1, 1, 4.0],
+                     [0.0, 4.0, 1, 1, 4.0], [0.0, 5.0, 1, 1, 5.0],
+                     [0.0, 5.0, 1, 1, 5.0], [0.0, 6.0, 1, 1, 6.0],
+                     [0.0, 8.0, 1, 1, 8.0], [0.0, 8.0, 1, 1, 8.0],
+                     [0.0, 9.0, 1, 1, 9.0], [0.0, 10.0, 1, 1, 10.0],
+                     [0.0, 10.0, 1, 1, 10.0], [0.0, 12.0, 1, 1, 12.0],
+                     [0.0, 14.0, 1, 1, 14.0], [0.0, 16.0, 1, 1, 16.0],
+                     [0.0, 20.0, 1, 1, 20.0], [0.0, 24.0, 1, 1, 24.0],
+                     [0.0, 34.0, 1, 1, 34.0]])
 
     # Cancerous mice data.  Data is from Example 7.3 in Lee and Wang.
-    MICE = np.array([[0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
-                     [0.0, 8.0, 1, 1], [0.0, 9.0, 1, 1],
-                     [0.0, 10.0, 1, 1], [0.0, 10.0, 1, 2],
-                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2],
-                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2]])
+    MICE = np.array([[0.0, 4.0, 1, 1, 4.0], [0.0, 5.0, 1, 1, 5.0],
+                     [0.0, 8.0, 1, 1, 8.0], [0.0, 9.0, 1, 1, 9.0],
+                     [0.0, 10.0, 1, 1, 10.0], [0.0, 10.0, 1, 2, 10.0],
+                     [0.0, 10.0, 1, 2, 10.0], [0.0, 10.0, 1, 2, 10.0],
+                     [0.0, 10.0, 1, 2, 10.0], [0.0, 10.0, 1, 2, 10.0]])
 
     # Danish AIDS patients.  Data retrieved from:
     # https://encrypted.google.com/books?id=Jwf3M6TtHTkC&pg=PA33&lpg=PA33&dq=exponential+data+set+example+with+interval+censoring&source=bl&ots=_VK8lx0yqP&sig=zbUtQTK8ZHR10Y5LDA_0aZz_OqI&hl=en&sa=X&ei=ekqwU8mWBtCGqgb204LwDw&ved=0CH4Q6AEwCQ#v=onepage&q=exponential%20data%20set%20example%20with%20interval%20censoring&f=false
-    AIDS = np.array([[0.0, 24.0, 24, 3], [24.0, 39.0, 1, 3],
-                     [24.0, 113.0, 4, 3], [28.0, 88.0, 1, 3],
-                     [39.0, 113.0, 2, 3], [57.0, 113.0, 1, 3],
-                     [0.0, 39.0, 2, 3], [24.0, 57.0, 10, 3],
-                     [24.0, 28.0, 4, 3], [24.0, 88.0, 3, 3],
-                     [28.0, 39.0, 4, 3], [39.0, 57.0, 3, 3],
-                     [57.0, 88.0, 5, 3], [88.0, 113.0, 1, 3],
-                     [0.0, 88.0, 34, 2], [0.0, 24.0, 61, 2],
-                     [0.0, 28.0, 8, 2], [0.0, 39.0, 15, 2],
-                     [0.0, 57.0, 22, 2], [0.0, 113.0, 92, 2]])
+    AIDS = np.array([[0.0, 24.0, 24, 4, 12.0], [24.0, 39.0, 1, 4, 7.5],
+                     [24.0, 113.0, 4, 4, 44.5], [28.0, 88.0, 1, 4, 30.0],
+                     [39.0, 113.0, 2, 4, 37.0], [57.0, 113.0, 1, 4, 28.0],
+                     [0.0, 39.0, 2, 4, 39.0], [24.0, 57.0, 10, 4, 16.5],
+                     [24.0, 28.0, 4, 4, 2.0], [24.0, 88.0, 3, 4, 32.0],
+                     [28.0, 39.0, 4, 4, 5.5], [39.0, 57.0, 3, 4, 9.0],
+                     [57.0, 88.0, 5, 4, 15.5], [88.0, 113.0, 1, 4, 12.5],
+                     [0.0, 88.0, 34, 2, 44.0], [0.0, 24.0, 61, 2, 12.0],
+                     [0.0, 28.0, 8, 2, 24.0], [0.0, 39.0, 15, 2, 19.5],
+                     [0.0, 57.0, 22, 2, 28.5], [0.0, 113.0, 92, 2, 56.5]])
 
-    # Data set of 100 normally distributed points a mean of 100.0 and a
-    # variance of 10.0
-    NORM_TEST = [(u'', 95.370, 95.370, 95.370, 1, 1), (u'', 0.0, 114.011, 114.011, 1, 1),
-                 (u'', 0.0, 113.246, 113.246, 1, 1), (u'', 0.0, 109.167, 109.167, 1, 1),
-                 (u'', 0.0, 104.227, 104.227, 1, 1), (u'', 107.109, 107.109, 107.109, 1, 1),
-                 (u'', 0.0, 117.43215, 117.43215, 1, 1), (u'', 0.0, 94.785, 94.785, 1, 1),
-                 (u'', 0.0, 83.56718, 83.56718, 1, 1), (u'', 0.0, 103.501, 103.501, 1, 1),
-                 (u'', 89.931, 89.931, 89.931, 1, 1), (u'', 0.0, 120.455, 120.455, 1, 1),
-                 (u'', 0.0, 97.081, 97.081, 1, 1), (u'', 0.0, 96.813, 96.813, 1, 1),
-                 (u'', 0.0, 97.571, 97.571, 1, 1), (u'', 106.757, 106.757, 106.757, 1, 1),
-                 (u'', 0.0, 99.335, 99.335, 1, 1), (u'', 0.0, 104.538, 104.538, 1, 1),
-                 (u'', 0.0, 102.028, 102.028, 1, 1), (u'', 0.0, 90.032, 90.032, 1, 1),
-                 (u'', 77.542, 77.542, 77.542, 1, 1), (u'', 0.0, 102.761, 102.761, 1, 1),
-                 (u'', 0.0, 82.485, 82.485, 1, 1), (u'', 0.0, 77.743, 77.743, 1, 1),
-                 (u'', 0.0, 109.974, 109.974, 1, 1), (u'', 94.851, 94.851, 94.851, 1, 1),
-                 (u'', 0.0, 89.771, 89.771, 1, 1), (u'', 0.0, 98.193, 98.193, 1, 1),
-                 (u'', 0.0, 102.165, 102.165, 1, 1), (u'', 0.0, 96.783, 96.783, 1, 1),
-                 (u'', 108.865, 108.865, 108.865, 1, 1), (u'', 0.0, 120.462, 120.462, 1, 1),
-                 (u'', 0.0, 111.592, 111.592, 1, 1), (u'', 0.0, 106.148, 106.148, 1, 1),
-                 (u'', 0.0, 102.946, 102.946, 1, 1), (u'', 111.290, 111.290, 111.290, 1, 1),
-                 (u'', 0.0, 106.002, 106.002, 1, 1), (u'', 0.0, 114.617, 114.617, 1, 1),
-                 (u'', 0.0, 88.229, 88.229, 1, 1), (u'', 0.0, 131.364, 131.364, 1, 1),
-                 (u'', 86.855, 86.855, 86.855, 1, 1), (u'', 0.0, 109.927, 109.927, 1, 1),
-                 (u'', 0.0, 75.116, 75.116, 1, 1), (u'', 0.0, 100.465, 100.465, 1, 1),
-                 (u'', 0.0, 97.783, 97.783, 1, 1), (u'', 108.169, 108.169, 108.169, 1, 1),
-                 (u'', 0.0, 98.851, 98.851, 1, 1), (u'', 0.0, 99.310, 99.310, 1, 1),
-                 (u'', 0.0, 94.588, 94.588, 1, 1), (u'', 0.0, 98.123, 98.123, 1, 1),
-                 (u'', 115.666, 115.666, 115.666, 1, 1), (u'', 0.0, 104.491, 104.491, 1, 1),
-                 (u'', 0.0, 93.490, 93.490, 1, 1), (u'', 0.0, 111.794, 111.794, 1, 1),
-                 (u'', 0.0, 114.320, 114.320, 1, 1), (u'', 106.938, 106.938, 106.938, 1, 1),
-                 (u'', 0.0, 106.450, 106.450, 1, 1), (u'', 0.0, 103.105, 103.105, 1, 1),
-                 (u'', 0.0, 107.781, 107.781, 1, 1), (u'', 0.0, 120.846, 120.846, 1, 1),
-                 (u'', 100.102, 100.102, 100.102, 1, 1), (u'', 0.0, 92.930, 92.930, 1, 1),
-                 (u'', 0.0, 101.246, 101.246, 1, 1), (u'', 0.0, 69.517, 69.517, 1, 1),
-                 (u'', 0.0, 106.276, 106.276, 1, 1), (u'', 99.046, 99.046, 99.046, 1, 1),
-                 (u'', 0.0, 101.300, 101.300, 1, 1), (u'', 0.0, 98.588, 98.588, 1, 1),
-                 (u'', 0.0, 110.022, 110.022, 1, 1), (u'', 0.0, 91.255, 91.255, 1, 1),
-                 (u'', 106.687, 106.687, 106.687, 1, 1), (u'', 0.0, 102.443, 102.443, 1, 1),
-                 (u'', 0.0, 100.342, 100.342, 1, 1), (u'', 0.0, 96.635, 96.635, 1, 1),
-                 (u'', 0.0, 80.909, 80.909, 1, 1), (u'', 111.080, 111.080, 111.080, 1, 1),
-                 (u'', 0.0, 107.005, 107.005, 1, 1), (u'', 0.0, 103.043, 103.043, 1, 1),
-                 (u'', 0.0, 92.660, 92.660, 1, 1), (u'', 0.0, 81.526, 81.526, 1, 1),
-                 (u'', 94.497, 94.497, 94.497, 1, 1), (u'', 0.0, 88.791, 88.791, 1, 1),
-                 (u'', 0.0, 97.913, 97.913, 1, 1), (u'', 0.0, 96.120, 96.120, 1, 1),
-                 (u'', 0.0, 101.234, 101.234, 1, 1), (u'', 95.132, 95.132, 95.132, 1, 1),
-                 (u'', 0.0, 93.939, 93.939, 1, 1), (u'', 0.0, 92.302, 92.302, 1, 1),
-                 (u'', 0.0, 96.536, 96.536, 1, 1), (u'', 0.0, 110.747, 110.747, 1, 1),
-                 (u'', 99.888, 99.888, 99.888, 1, 1), (u'', 0.0, 92.780, 92.780, 1, 1),
-                 (u'', 0.0, 107.678, 107.678, 1, 1), (u'', 0.0, 96.187, 96.187, 1, 1),
-                 (u'', 0.0, 87.938, 87.938, 1, 1), (u'', 91.664, 91.664, 91.664, 1, 1),
-                 (u'', 0.0, 106.149, 106.149, 1, 1), (u'', 0.0, 104.320, 104.320, 1, 1),
-                 (u'', 0.0, 115.681, 115.681, 1, 1), (u'', 0.0, 95.920, 95.920, 1, 1)]
+    # Data set of alpha particle interarrival times.  Data is from Table 7.1 in
+    # Meeker and Escobar.
+    ALPHA = np.array([[0.0, 100.0, 1609, 4, 50.0],
+                      [100.0, 300.0, 2424, 4, 200.0],
+                      [300.0, 500.0, 1770, 4, 400.0],
+                      [500.0, 700.0, 1306, 4, 600.0],
+                      [700.0, 1000.0, 1213, 4, 850.0],
+                      [1000.0, 2000.0, 1528, 4, 1500.0],
+                      [2000.0, 4000.0, 354, 4, 3000.0],
+                      [4000.0, np.inf, 16, 2, np.inf]])
 
-    # Data set of alpha particle interarrival times.
-    # Data is from Table 7.1 in Meeker and Excobar.
-    ALPHA = [(u'', 0.0, 100.0, 50.0, 3, 1609, 3),
-             (u'', 100.0, 300.0, 200.0, 3, 2424, 3),
-             (u'', 300.0, 500.0, 400.0, 3, 1770, 3),
-             (u'', 500.0, 700.0, 600.0, 3, 1306, 3),
-             (u'', 700.0, 1000.0, 850.0, 3, 1213, 3),
-             (u'', 1000.0, 2000.0, 1500.0, 3, 1528, 3),
-             (u'', 2000.0, 4000.0, 3000.0, 3, 354, 3),
-             (u'', 4000.0, 0.0, np.inf, 2, 16, 2)]
+    # Data is the same as that used in the ReliaSoft wiki example for
+    # likelihood confidence bounds.  The data can be found at
+    # http://www.reliawiki.org/index.php/The_Normal_Distribution#Likelihood_Ratio_Confidence_Bounds
+    WIKI = np.array([[0.0, 12.0, 1, 1, 12.0], [0.0, 24.0, 1, 1, 24.0],
+                     [0.0, 28.0, 1, 1, 28.0], [0.0, 34.0, 1, 1, 34.0],
+                     [0.0, 46.0, 1, 1, 46.0]])
 
     def setUp(self):
         """
@@ -484,7 +480,7 @@ class TestGaussianDistribution(unittest.TestCase):
         self.DUT = Gaussian()
 
     @attr(all=True, unit=False)
-    def test_log_pdf(self):
+    def test01_log_pdf(self):
         """
         (TestGaussianDistribution) log_pdf should return a numpy array of floats on success
         """
@@ -501,35 +497,34 @@ class TestGaussianDistribution(unittest.TestCase):
                                               -5.80666239, -6.02888459])
 
     @attr(all=True, unit=True)
-    def test_partial_derivatives_exact(self):
+    def test02_partial_derivatives_exact(self):
         """
         (TestGaussianDistribution) partial_derivatives should return a numpy array with exact data only on success.
         """
 
         _part_deriv = self.DUT.partial_derivatives([1.0, 1.0], self.LEUK)
-        np.testing.assert_array_equal(_part_deriv, [177.0, 156.0])
+        self.assertAlmostEqual(_part_deriv, 27612.0)
 
     @attr(all=True, unit=True)
-    def test_partial_derivatives_right(self):
+    def test02a_partial_derivatives_right(self):
         """
         (TestGaussianDistribution) partial_derivatives should return a numpy array with exact and right censored data on success.
         """
 
         _part_deriv = self.DUT.partial_derivatives([1.0, 1.0], self.MICE)
-        np.testing.assert_array_equal(_part_deriv,
-                                      [31.000000005139885, 26.000000046258979])
+        self.assertAlmostEqual(_part_deriv, 806.000001567665)
 
     @attr(all=True, unit=True)
-    def test_partial_derivs_interval(self):
+    def test02b_partial_derivs_interval(self):
         """
-        (TestGaussianDistribution) partial_derivatives should return a numpy array with exact, right, and interval censored data on success.
+        (TestGaussianDistribution) partial_derivatives should return a numpy array with right, and interval censored data on success.
         """
 
-        _part_deriv = self.DUT.partial_derivatives([1.0, 1.0], self.AIDS)
-        np.testing.assert_array_equal(_part_deriv, [-2280.5, -2215.5])
+        _part_deriv = self.DUT.partial_derivatives([100.0, 30.0], self.AIDS)
+        self.assertAlmostEqual(_part_deriv, -0.7378606)
 
     @attr(all=True, unit=True)
-    def test_maximum_likelihood_estimate_exact_times(self):
+    def test03_maximum_likelihood_estimate_exact_times(self):
         """
         (TestGaussianDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with exact failure times.
         """
@@ -542,12 +537,12 @@ class TestGaussianDistribution(unittest.TestCase):
         self.assertAlmostEqual(_fit[1][0], 0.01223150)
         self.assertAlmostEqual(_fit[1][1], -0.001286301)
         self.assertAlmostEqual(_fit[1][2], 0.0001352713)
-        self.assertAlmostEqual(_fit[2][0], -4925.9514002)
-        self.assertAlmostEqual(_fit[2][1], 9855.9028003)
-        self.assertAlmostEqual(_fit[2][2], 9870.3234811)
+        self.assertAlmostEqual(_fit[2][0], -377.4515808)
+        self.assertAlmostEqual(_fit[2][1], 758.9031615)
+        self.assertAlmostEqual(_fit[2][2], 773.3238423)
 
-    @attr(all=True, unit=False)
-    def test_maximum_likelihood_estimate_interval_censored(self):
+    @attr(all=True, unit=True)
+    def test03a_maximum_likelihood_estimate_interval_censored(self):
         """
         (TestGaussianDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with interval censored failure times.
         """
@@ -555,21 +550,24 @@ class TestGaussianDistribution(unittest.TestCase):
         _fit = self.DUT.maximum_likelihood_estimate(self.ALPHA, 0.0,
                                                     10000000.0)
 
-        self.assertAlmostEqual(_fit, [[100.52835329999998, 10.544214011396397],
-                                      [0.013433998289642346,
-                                       0.00016325951747108081, 0.0],
-                                      [-4925.9514001639964, 9853.9028003279927,
-                                       9855.3632406281322]])
+        self.assertAlmostEqual(_fit[0][0], 1228.5714286)
+        self.assertAlmostEqual(_fit[0][1], 1269.0989894)
+        self.assertAlmostEqual(_fit[1][0], 246072.8272910)
+        self.assertAlmostEqual(_fit[1][1], -255016.0027117)
+        self.assertAlmostEqual(_fit[1][2], 264284.2054322)
+        self.assertAlmostEqual(_fit[2][0], -28056.0142512)
+        self.assertAlmostEqual(_fit[2][1], 56116.0285024)
+        self.assertAlmostEqual(_fit[2][2], 56119.8121430)
 
     @attr(all=True, unit=True)
-    def test_theoretical_distribution(self):
+    def test04_theoretical_distribution(self):
         """
         (TestGaussianDistribution) theoretical_distribution should return a numpy array of floats on success.
         """
 
         _para = [100.0, 10.0]
 
-        _data = [x[2] for x in self.NORM_TEST]
+        _data = [x[1] for x in self.NORM_TEST]
         _probs = self.DUT.theoretical_distribution(np.array(_data), _para)
         np.testing.assert_almost_equal(_probs,
                                        [0.00115070, 0.00641597, 0.01235841,
@@ -608,7 +606,7 @@ class TestGaussianDistribution(unittest.TestCase):
                                         0.99914482])
 
     @attr(all=True, unit=True)
-    def test_hazard_function(self):
+    def test05_hazard_function(self):
         """
         (TestGaussianDistribution) hazard_function should return a dict on success.
         """
@@ -649,7 +647,7 @@ class TestGaussianDistribution(unittest.TestCase):
                                        0.0087977701867818243]})
 
     @attr(all=True, unit=True)
-    def test_mean(self):
+    def test06_mean(self):
         """
         (TestGaussianDistribution) mean should return a dict on success.
         """
@@ -662,7 +660,7 @@ class TestGaussianDistribution(unittest.TestCase):
                                    8: _scale, 9: _scale})
 
     @attr(all=True, unit=True)
-    def test_reliability_function(self):
+    def test07_reliability_function(self):
         """
         (TestGaussianDistribution) reliability_function should return a dict on success.
         """
@@ -699,6 +697,35 @@ class TestGaussianDistribution(unittest.TestCase):
                                             3.1671241833119979e-05,
                                             1.3836508938602776e-08]})
 
+    @attr(all=True, unit=True)
+    def test08_log_likelihood_ratio(self):
+        """
+        (TestGaussianDistribution) log_likelihood_ratio should return a float value on success.
+        """
+
+        _params = [28.8, 11.2143]
+        _const = 1.642374 / 2.0
+
+        _log_lik_ratio = self.DUT.log_likelihood_ratio(_params, self.WIKI,
+                                                       _const)
+        self.assertAlmostEqual(_log_lik_ratio, -20.0018180)
+
+    @attr(all=True, unit=True)
+    def test09_likelihood_bounds(self):
+        """
+        (TestGaussianDistribution) likelihood_bounds should return a tuple of OrderedDicts on success.
+        """
+
+        _params = [28.8, 11.2143]
+
+        _lik_bounds = self.DUT.likelihood_bounds(_params, 0.8, self.WIKI)
+
+        # Check the lower and upper bounds on mu and sigma.
+        self.assertAlmostEqual(_lik_bounds[0], 21.8070752)
+        self.assertAlmostEqual(_lik_bounds[1], 35.7929248)
+        self.assertAlmostEqual(_lik_bounds[2], 7.0854939)
+        self.assertAlmostEqual(_lik_bounds[3], 18.8536433)
+
 
 class TestLogNormalDistribution(unittest.TestCase):
     """
@@ -709,52 +736,32 @@ class TestLogNormalDistribution(unittest.TestCase):
     # The table can be found at the following URL, for example.
     # http://reliawiki.org/index.php/The_Lognormal_Distribution#Rank_Regression_on_Y
     # mu = 3.516, sigma = 0.9663, and rho = 0.9754 when fit to the LNORM.
-    LOGN_TEST = np.array([['', 5.0, 5.0, 5.0, 1, 1],
-                          ['', 10.0, 10.0, 5.0, 1, 1],
-                          ['', 15.0, 15.0, 5.0, 1, 1],
-                          ['', 20.0, 20.0, 5.0, 1, 1],
-                          ['', 25.0, 25.0, 5.0, 1, 1],
-                          ['', 30.0, 30.0, 5.0, 1, 1],
-                          ['', 35.0, 35.0, 5.0, 1, 1],
-                          ['', 40.0, 40.0, 5.0, 1, 1],
-                          ['', 50.0, 50.0, 10.0, 1, 1],
-                          ['', 60.0, 60.0, 10.0, 1, 1],
-                          ['', 70.0, 70.0, 10.0, 1, 1],
-                          ['', 80.0, 80.0, 10.0, 1, 1],
-                          ['', 90.0, 90.0, 10.0, 1, 1],
-                          ['', 100.0, 100.0, 10.0, 1, 1]])
+    LOGN_TEST = np.array([[5.0, 5.0, 1, 1, 5.0], [10.0, 10.0, 1, 1, 10.0],
+                          [15.0, 15.0, 1, 1, 15.0], [20.0, 20.0, 1, 1, 20.0],
+                          [25.0, 25.0, 1, 1, 25.0], [30.0, 30.0, 1, 1, 30.0],
+                          [35.0, 35.0, 1, 1, 35.0], [40.0, 40.0, 1, 1, 40.0],
+                          [50.0, 50.0, 1, 1, 50.0], [60.0, 60.0, 1, 1, 60.0],
+                          [70.0, 70.0, 1, 1, 70.0], [80.0, 80.0, 1, 1, 80.0],
+                          [90.0, 90.0, 1, 1, 90.0],
+                          [100.0, 100.0, 1, 1, 100.0]])
 
-    DATA3 = np.array([['', 0.0, 24.0, 0.0, 3, 24],
-                      ['', 24.0, 39.0, 0.0, 3, 1],
-                      ['', 24.0, 113.0, 0.0, 3, 4],
-                      ['', 28.0, 88.0, 0.0, 3, 1],
-                      ['', 39.0, 113.0, 0.0, 3, 2],
-                      ['', 57.0, 113.0, 0.0, 3, 1],
-                      ['', 0.0, 39.0, 0.0, 3, 2],
-                      ['', 24.0, 57.0, 0.0, 3, 10],
-                      ['', 24.0, 28.0, 0.0, 3, 4],
-                      ['', 24.0, 88.0, 0.0, 3, 3],
-                      ['', 28.0, 39.0, 0.0, 3, 4],
-                      ['', 39.0, 57.0, 0.0, 3, 3],
-                      ['', 57.0, 88.0, 0.0, 3, 5],
-                      ['', 88.0, 113.0, 0.0, 3, 1],
-                      ['', 0.0, 88.0, 0.0, 2, 34],
-                      ['', 0.0, 24.0, 0.0, 2, 61],
-                      ['', 0.0, 28.0, 0.0, 2, 8],
-                      ['', 0.0, 39.0, 0.0, 2, 15],
-                      ['', 0.0, 57.0, 0.0, 2, 22],
-                      ['', 0.0, 113.0, 0.0, 2, 92]])
+    # Data set of alpha particle interarrival times.  Data is from Table 7.1 in
+    # Meeker and Escobar.
+    ALPHA = np.array([[0.0, 100.0, 1609, 4, 50.0],
+                      [100.0, 300.0, 2424, 4, 200.0],
+                      [300.0, 500.0, 1770, 4, 400.0],
+                      [500.0, 700.0, 1306, 4, 600.0],
+                      [700.0, 1000.0, 1213, 4, 850.0],
+                      [1000.0, 2000.0, 1528, 4, 1500.0],
+                      [2000.0, 4000.0, 354, 4, 3000.0],
+                      [4000.0, np.inf, 16, 2, np.inf]])
 
-    # Data set of alpha particle interarrival times.
-    # Data is from Table 7.1 in Meeker and Excobar.
-    ALPHA = [(u'', 0.0, 100.0, 50.0, 3, 1609, 3),
-             (u'', 100.0, 300.0, 200.0, 3, 2424, 3),
-             (u'', 300.0, 500.0, 400.0, 3, 1770, 3),
-             (u'', 500.0, 700.0, 600.0, 3, 1306, 3),
-             (u'', 700.0, 1000.0, 850.0, 3, 1213, 3),
-             (u'', 1000.0, 2000.0, 1500.0, 3, 1528, 3),
-             (u'', 2000.0, 4000.0, 3000.0, 3, 354, 3),
-             (u'', 4000.0, 0.0, np.inf, 2, 16, 2)]
+    # Data is the same as that used in the ReliaSoft wiki example for
+    # calculating lognormal likelihood ratio bounds.  The example can be found
+    # at http://www.reliawiki.org/index.php/The_Lognormal_Distribution#Likelihood_Ratio_Confidence_Bounds
+    WIKI = np.array([[0.0, 45.0, 1, 1, 45.0], [0.0, 60.0, 1, 1, 60.0],
+                     [0.0, 75.0, 1, 1, 75.0], [0.0, 90.0, 1, 1, 90.0],
+                     [0.0, 115.0, 1, 1, 115.0]])
 
     def setUp(self):
         """
@@ -764,25 +771,13 @@ class TestLogNormalDistribution(unittest.TestCase):
         self.DUT = LogNormal()
 
     @attr(all=True, unit=False)
-    def test_log_pdf(self):
+    def test01_log_pdf(self):
         """
         (TestLogNormalDistribution) log_pdf should return a numpy array of floats on success
         """
 
-        # Data is the same as that used in the ReliaSoft wiki examples.
-        # The table can be found at the following URL, for example.
-        # http://reliawiki.org/index.php/The_Lognormal_Distribution#Rank_Regression_on_Y
-        # lambda = 0.02711 and rho = -0.9679 when fit to the EXP.
-        _data = np.array([['', 0.0, 5.0, 0, 1, 1], ['', 0.0, 10.0, 0, 1, 1],
-                          ['', 0.0, 15.0, 0, 1, 1], ['', 0.0, 20.0, 0, 1, 1],
-                          ['', 0.0, 25.0, 0, 1, 1], ['', 0.0, 30.0, 0, 1, 1],
-                          ['', 0.0, 35.0, 0, 1, 1], ['', 0.0, 40.0, 0, 1, 1],
-                          ['', 0.0, 50.0, 0, 1, 1], ['', 0.0, 60.0, 0, 1, 1],
-                          ['', 0.0, 70.0, 0, 1, 1], ['', 0.0, 80.0, 0, 1, 1],
-                          ['', 0.0, 90.0, 0, 1, 1], ['', 0.0, 100.0, 0, 1, 1]])
-
-        _log_pdf = self.DUT.log_pdf(np.array(_data[:, 2], dtype=float),
-                                    0.02222222)
+        _log_pdf = self.DUT.log_pdf(np.array(self.LOGN_TEST[:, 2],
+                                             dtype=float), 0.02222222)
 
         np.testing.assert_allclose(_log_pdf, [-3.91777369, -4.02888479,
                                               -4.13999589, -4.25110699,
@@ -792,30 +787,18 @@ class TestLogNormalDistribution(unittest.TestCase):
                                               -5.36221799, -5.58444019,
                                               -5.80666239, -6.02888459])
 
-    @attr(all=True, unit=False)
-    def test_partial_derivatives_exact(self):
+    @attr(all=True, unit=True)
+    def test02_partial_derivatives_exact(self):
         """
         (TestLogNormalDistribution) partial_derivatives should return a numpy array with exact data only on success.
         """
 
-        # Leukemia remission times.  Data is from Example 7.2 of Lee and Wang.
-        _data = np.array([[0.0, 1.0, 1, 1], [0.0, 1.0, 1, 1],
-                          [0.0, 2.0, 1, 1], [0.0, 2.0, 1, 1],
-                          [0.0, 3.0, 1, 1], [0.0, 4.0, 1, 1],
-                          [0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
-                          [0.0, 5.0, 1, 1], [0.0, 6.0, 1, 1],
-                          [0.0, 8.0, 1, 1], [0.0, 8.0, 1, 1],
-                          [0.0, 9.0, 1, 1], [0.0, 10.0, 1, 1],
-                          [0.0, 10.0, 1, 1], [0.0, 12.0, 1, 1],
-                          [0.0, 14.0, 1, 1], [0.0, 16.0, 1, 1],
-                          [0.0, 20.0, 1, 1], [0.0, 24.0, 1, 1],
-                          [0.0, 34.0, 1, 1]])
-
-        _part_deriv = self.DUT.partial_derivatives(1.0, _data)
-        self.assertAlmostEqual(_part_deriv, -177.0)
+        _part_deriv = self.DUT.partial_derivatives([3.5158554, 0.8491908],
+                                                   self.LOGN_TEST)
+        self.assertAlmostEqual(_part_deriv, 2.2196636E-06)
 
     @attr(all=True, unit=False)
-    def test_partial_derivatives_right(self):
+    def test02a_partial_derivatives_right(self):
         """
         (TestLogNormalDistribution) partial_derivatives should return a numpy array with exact and right censored data on success.
         """
@@ -831,30 +814,17 @@ class TestLogNormalDistribution(unittest.TestCase):
         self.assertAlmostEqual(_part_deriv, -81.0)
 
     @attr(all=True, unit=False)
-    def test_partial_derivs_interval(self):
+    def test02b_partial_derivs_interval(self):
         """
         (TestLogNormalDistribution) partial_derivatives should return a numpy array with exact, right, and interval censored data on success.
         """
 
-        # Danish AIDS patients.  Data retrieved from:
-        # https://encrypted.google.com/books?id=Jwf3M6TtHTkC&pg=PA33&lpg=PA33&dq=lognormal+data+set+example+with+interval+censoring&source=bl&ots=_VK8lx0yqP&sig=zbUtQTK8ZHR10Y5LDA_0aZz_OqI&hl=en&sa=X&ei=ekqwU8mWBtCGqgb204LwDw&ved=0CH4Q6AEwCQ#v=onepage&q=lognormal%20data%20set%20example%20with%20interval%20censoring&f=false
-        _data = np.array([[0.0, 24.0, 24, 3], [24.0, 39.0, 1, 3],
-                          [24.0, 113.0, 4, 3], [28.0, 88.0, 1, 3],
-                          [39.0, 113.0, 2, 3], [57.0, 113.0, 1, 3],
-                          [0.0, 39.0, 2, 3], [24.0, 57.0, 10, 3],
-                          [24.0, 28.0, 4, 3], [24.0, 88.0, 3, 3],
-                          [28.0, 39.0, 4, 3], [39.0, 57.0, 3, 3],
-                          [57.0, 88.0, 5, 3], [88.0, 113.0, 1, 3],
-                          [0.0, 88.0, 34, 2], [0.0, 24.0, 61, 2],
-                          [0.0, 28.0, 8, 2], [0.0, 39.0, 15, 2],
-                          [0.0, 57.0, 22, 2], [0.0, 113.0, 92, 2]])
-
-        # Parameter is 0.0034 for lognormal.
-        _part_deriv = self.DUT.partial_derivatives(0.0034, _data)
+        _part_deriv = self.DUT.partial_derivatives([6.2376513, 1.2489836],
+                                                   self.ALPHA)
         self.assertAlmostEqual(_part_deriv, -33687.1470588)
 
     @attr(all=True, unit=True)
-    def test_maximum_likelihood_estimate_exact_times(self):
+    def test03_maximum_likelihood_estimate_exact_times(self):
         """
         (TestLogNormalDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with exact failure times.
         """
@@ -863,7 +833,7 @@ class TestLogNormalDistribution(unittest.TestCase):
                                                     10000000.0)
 
         # Check the mean for exact failure time data.
-        self.assertAlmostEqual(_fit[0][0], 3.5158563)
+        self.assertAlmostEqual(_fit[0][0], 3.5158554)
         self.assertAlmostEqual(_fit[0][1], 0.8491908)
         self.assertAlmostEqual(_fit[1][0], 0.003004906)
         self.assertAlmostEqual(_fit[1][1], -0.0008767578)
@@ -873,7 +843,7 @@ class TestLogNormalDistribution(unittest.TestCase):
         self.assertAlmostEqual(_fit[2][2], 144.15326723)
 
     @attr(all=True, unit=True)
-    def test_maximum_likelihood_estimate_interval_censored(self):
+    def test03a_maximum_likelihood_estimate_interval_censored(self):
         """
         (TestLogNormalDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with interval censored failure times.
         """
@@ -882,16 +852,16 @@ class TestLogNormalDistribution(unittest.TestCase):
                                                     10000000.0)
 
         # Check the log mean and log standard error for interval censored data.
-        np.testing.assert_array_equal(_fit[0], [5.9082393480724802,
-                                                1.1314062486429797])
+        np.testing.assert_array_equal(_fit[0], [6.2376513358423553,
+                                                1.2489836256584086])
 
         # Check the variance-covariance matrix for interval censored data.
-        np.testing.assert_array_equal(_fit[2], [-25771.349714664608,
-                                                51546.699429329215,
-                                                51579.627836784246])
+        np.testing.assert_array_equal(_fit[1], [0.014770747504309583,
+                                                -0.0043861896898634333,
+                                                0.0013024838444940664])
 
     @attr(all=True, unit=True)
-    def test_theoretical_distribution(self):
+    def test04_theoretical_distribution(self):
         """
         (TestLogNormalDistribution) theoretical_distribution should return a numpy array of floats on success.
         """
@@ -908,7 +878,7 @@ class TestLogNormalDistribution(unittest.TestCase):
                                         0.84498695, 0.86946088])
 
     @attr(all=True, unit=True)
-    def test_hazard_function(self):
+    def test05_hazard_function(self):
         """
         (TestLogNormalDistribution) hazard_function should return a dict on success.
         """
@@ -946,7 +916,7 @@ class TestLogNormalDistribution(unittest.TestCase):
                                       0.00020013009279589065])
 
     @attr(all=True, unit=True)
-    def test_mean(self):
+    def test06_mean(self):
         """
         (TestLogNormalDistribution) mean should return a dict on success.
         """
@@ -977,9 +947,9 @@ class TestLogNormalDistribution(unittest.TestCase):
                                        738.77986921169395]})
 
     @attr(all=True, unit=True)
-    def test_reliability_function(self):
+    def test07_reliability_function(self):
         """
-        (TestGaussianDistribution) reliability_function should return a dict on success.
+        (TestLogNormalDistribution) reliability_function should return a dict on success.
         """
 
         _scale = [4.0, 5.0, 6.0]
@@ -1015,126 +985,163 @@ class TestLogNormalDistribution(unittest.TestCase):
                                             0.99746675322444922,
                                             0.9774158528999386]})
 
+    @attr(all=True, unit=True)
+    def test08_log_likelihood_ratio(self):
+        """
+        (TestLogNormalDistribution) log_likelihood_ratio should return a float value on success.
+        """
+
+        _params = [4.2926, 0.32361]
+        _const = 1.323303 / 2.0
+
+        _log_lik_ratio = self.DUT.log_likelihood_ratio(_params, self.WIKI,
+                                                       _const)
+        self.assertAlmostEqual(_log_lik_ratio, -23.5784187)
+
+    @attr(all=True, unit=True)
+    def test09_likelihood_bounds(self):
+        """
+        (TestLogNormalDistribution) likelihood_bounds should return a tuple of OrderedDicts on success.
+        """
+
+        _params = [4.2926, 0.32361]
+
+        _lik_bounds = self.DUT.likelihood_bounds(_params, 0.75, self.WIKI)
+
+        # Check the first lower and upper bounds in the OrderedDicts.
+        self.assertAlmostEqual(_lik_bounds[0][0.24270750000000002], 4.2320811)
+        self.assertAlmostEqual(_lik_bounds[1][0.24270750000000002], 4.3532137)
+
 
 class TestWeibullDistribution(unittest.TestCase):
     """
     Class for testing the Weibull distribution data model class.
     """
 
+    # Leukemia remission times.  Data is from Example 7.2 of Lee and Wang.
+    LEUK = np.array([[0.0, 1.0, 1, 1, 1.0], [0.0, 1.0, 1, 1, 1.0],
+                     [0.0, 2.0, 1, 1, 2.0], [0.0, 2.0, 1, 1, 2.0],
+                     [0.0, 3.0, 1, 1, 3.0], [0.0, 4.0, 1, 1, 4.0],
+                     [0.0, 4.0, 1, 1, 4.0], [0.0, 5.0, 1, 1, 5.0],
+                     [0.0, 5.0, 1, 1, 5.0], [0.0, 6.0, 1, 1, 6.0],
+                     [0.0, 8.0, 1, 1, 8.0], [0.0, 8.0, 1, 1, 8.0],
+                     [0.0, 9.0, 1, 1, 9.0], [0.0, 10.0, 1, 1, 10.0],
+                     [0.0, 10.0, 1, 1, 10.0], [0.0, 12.0, 1, 1, 12.0],
+                     [0.0, 14.0, 1, 1, 14.0], [0.0, 16.0, 1, 1, 16.0],
+                     [0.0, 20.0, 1, 1, 20.0], [0.0, 24.0, 1, 1, 24.0],
+                     [0.0, 34.0, 1, 1, 34.0]])
+
+    # Cancerous mice data.  Data is from Example 7.3 in Lee and Wang.
+    MICE = np.array([[0.0, 4.0, 1, 1, 4.0], [0.0, 5.0, 1, 1, 5.0],
+                     [0.0, 8.0, 1, 1, 8.0], [0.0, 9.0, 1, 1, 9.0],
+                     [0.0, 10.0, 1, 1, 10.0], [0.0, 10.0, 1, 2, 10.0],
+                     [0.0, 10.0, 1, 2, 10.0], [0.0, 10.0, 1, 2, 10.0],
+                     [0.0, 10.0, 1, 2, 10.0], [0.0, 10.0, 1, 2, 10.0]])
+
+    # Danish AIDS patients.  Data retrieved from:
+    # https://encrypted.google.com/books?id=Jwf3M6TtHTkC&pg=PA33&lpg=PA33&dq=exponential+data+set+example+with+interval+censoring&source=bl&ots=_VK8lx0yqP&sig=zbUtQTK8ZHR10Y5LDA_0aZz_OqI&hl=en&sa=X&ei=ekqwU8mWBtCGqgb204LwDw&ved=0CH4Q6AEwCQ#v=onepage&q=exponential%20data%20set%20example%20with%20interval%20censoring&f=false
+    AIDS = np.array([[0.0, 24.0, 24, 4, 12.0], [24.0, 39.0, 1, 4, 7.5],
+                     [24.0, 113.0, 4, 4, 44.5], [28.0, 88.0, 1, 4, 30.0],
+                     [39.0, 113.0, 2, 4, 37.0], [57.0, 113.0, 1, 4, 28.0],
+                     [0.0, 39.0, 2, 4, 39.0], [24.0, 57.0, 10, 4, 16.5],
+                     [24.0, 28.0, 4, 4, 2.0], [24.0, 88.0, 3, 4, 32.0],
+                     [28.0, 39.0, 4, 4, 5.5], [39.0, 57.0, 3, 4, 9.0],
+                     [57.0, 88.0, 5, 4, 15.5], [88.0, 113.0, 1, 4, 12.5],
+                     [0.0, 88.0, 34, 2, 44.0], [0.0, 24.0, 61, 2, 12.0],
+                     [0.0, 28.0, 8, 2, 24.0], [0.0, 39.0, 15, 2, 19.5],
+                     [0.0, 57.0, 22, 2, 28.5], [0.0, 113.0, 92, 2, 56.5]])
+
     # Data is the same as that used in the ReliaSoft wiki examples.
     # The table can be found at the following URL, for example.
     # http://reliawiki.org/index.php/The_Weibull_Distribution#Rank_Regression_on_Y
     # eta = 76.318, beta = 1.4301, and rho = 0.9956 when fit to the WEI.
-    DATA = np.array([['', 0.0, 16.0, 16.0, 1, 1], ['', 0.0, 34.0, 34.0, 1, 1],
-                     ['', 0.0, 53.0, 53.0, 1, 1], ['', 0.0, 75.0, 75.0, 1, 1],
-                     ['', 0.0, 93.0, 93.0, 1, 1], ['', 0.0, 120.0, 120.0, 1, 1]])
+    DATA = np.array([[0.0, 16.0, 1, 1, 16.0], [0.0, 34.0, 1, 1, 34.0],
+                     [0.0, 53.0, 1, 1, 53.0], [0.0, 75.0, 1, 1, 75.0],
+                     [0.0, 93.0, 1, 1, 93.0], [0.0, 120.0, 1, 1, 120.0]])
 
-    DATA3 = np.array([['', 0.0, 24.0, 0.0, 24, 3], ['', 24.0, 39.0, 0.0, 1, 3],
-                      ['', 24.0, 113.0, 0.0, 4, 3], ['', 28.0, 88.0, 0.0, 1, 3],
-                      ['', 39.0, 113.0, 0.0, 2, 3], ['', 57.0, 113.0, 0.0, 1, 3],
-                      ['', 0.0, 39.0, 0.0, 2, 3], ['', 24.0, 57.0, 0.0, 10, 3],
-                      ['', 24.0, 28.0, 0.0, 4, 3], ['', 24.0, 88.0, 0.0, 3, 3],
-                      ['', 28.0, 39.0, 0.0, 4, 3], ['', 39.0, 57.0, 0.0, 3, 3],
-                      ['', 57.0, 88.0, 0.0, 5, 3], ['', 88.0, 113.0, 0.0, 1, 3],
-                      ['', 0.0, 88.0, 0.0, 34, 2], ['', 0.0, 24.0, 0.0, 61, 2],
-                      ['', 0.0, 28.0, 0.0, 8, 2], ['', 0.0, 39.0, 0.0, 15, 2],
-                      ['', 0.0, 57.0, 0.0, 22, 2], ['', 0.0, 113.0, 0.0, 92, 2]])
+    # Data is the same as that used in the ReliaSoft wiki examples.
+    # The table can be found at the following URL, for example.
+    # http://www.reliawiki.org/index.php/Confidence_Bounds#Likelihood_Ratio_Confidence_Bounds
+    # eta = 33.9428, beta = 2.2938 when fit to the WEI.
+    DATA2 = np.array([[0.0, 10.0, 1, 1, 10.0], [0.0, 20.0, 1, 1, 20.0],
+                      [0.0, 30.0, 1, 1, 30.0], [0.0, 40.0, 1, 1, 40.0],
+                      [0.0, 50.0, 1, 1, 50.0]])
 
-    # Leukemia remission times.  Data is from Example 7.2 of Lee and Wang.
-    LEUK = np.array([[0.0, 1.0, 1, 1], [0.0, 1.0, 1, 1],
-                     [0.0, 2.0, 1, 1], [0.0, 2.0, 1, 1],
-                     [0.0, 3.0, 1, 1], [0.0, 4.0, 1, 1],
-                     [0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
-                     [0.0, 5.0, 1, 1], [0.0, 6.0, 1, 1],
-                     [0.0, 8.0, 1, 1], [0.0, 8.0, 1, 1],
-                     [0.0, 9.0, 1, 1], [0.0, 10.0, 1, 1],
-                     [0.0, 10.0, 1, 1], [0.0, 12.0, 1, 1],
-                     [0.0, 14.0, 1, 1], [0.0, 16.0, 1, 1],
-                     [0.0, 20.0, 1, 1], [0.0, 24.0, 1, 1],
-                     [0.0, 34.0, 1, 1]])
-
-    # Cancerous mice data.  Data is from Example 7.3 in Lee and Wang.
-    MICE = np.array([[0.0, 4.0, 1, 1], [0.0, 5.0, 1, 1],
-                     [0.0, 8.0, 1, 1], [0.0, 9.0, 1, 1],
-                     [0.0, 10.0, 1, 1], [0.0, 10.0, 1, 2],
-                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2],
-                     [0.0, 10.0, 1, 2], [0.0, 10.0, 1, 2]])
-
-    # Danish AIDS patients.  Data retrieved from:
-    # https://encrypted.google.com/books?id=Jwf3M6TtHTkC&pg=PA33&lpg=PA33&dq=exponential+data+set+example+with+interval+censoring&source=bl&ots=_VK8lx0yqP&sig=zbUtQTK8ZHR10Y5LDA_0aZz_OqI&hl=en&sa=X&ei=ekqwU8mWBtCGqgb204LwDw&ved=0CH4Q6AEwCQ#v=onepage&q=exponential%20data%20set%20example%20with%20interval%20censoring&f=false
-    AIDS = np.array([[0.0, 24.0, 24, 3], [24.0, 39.0, 1, 3],
-                     [24.0, 113.0, 4, 3], [28.0, 88.0, 1, 3],
-                     [39.0, 113.0, 2, 3], [57.0, 113.0, 1, 3],
-                     [0.0, 39.0, 2, 3], [24.0, 57.0, 10, 3],
-                     [24.0, 28.0, 4, 3], [24.0, 88.0, 3, 3],
-                     [28.0, 39.0, 4, 3], [39.0, 57.0, 3, 3],
-                     [57.0, 88.0, 5, 3], [88.0, 113.0, 1, 3],
-                     [0.0, 88.0, 34, 2], [0.0, 24.0, 61, 2],
-                     [0.0, 28.0, 8, 2], [0.0, 39.0, 15, 2],
-                     [0.0, 57.0, 22, 2], [0.0, 113.0, 92, 2]])
+    # Data is from Wayne Nelson, Applied Life Data Analysis, Page 415.
+    # 167 identical parts were inspected for cracks. The following is a table
+    # of their last inspection times and times-to-failure.
+    NELSON = np.array([[0.0, 6.12, 5, 3, 3.06],
+                       [6.12, 19.92, 16, 3, 13.02],
+                       [19.92, 29.64, 12, 3, 24.78],
+                       [29.64, 35.4, 18, 3, 32.52],
+                       [35.4, 39.72, 18, 3, 38.56],
+                       [39.72, 45.24, 2, 3, 42.48],
+                       [45.24, 52.32, 6, 3, 48.78],
+                       [52.32, 63.48, 17, 3, 57.9],
+                       [63.48, 63.48, 73, 2, np.inf]])
 
     # Data set of 100 exponentially distributed points with a mean of 100.
-    EXP_TEST = [(u'', 48.146, 48.146, 0.0, 1, 1), (u'', 20.564, 20.564, 0.0, 1, 1),
-                (u'', 94.072, 94.072, 0.0, 1, 1), (u'', 177.992, 177.992, 0.0, 1, 1),
-                (u'', 89.103, 89.103, 0.0, 1, 1), (u'', 350.577, 350.577, 0.0, 1, 1),
-                (u'', 82.223, 82.223, 0.0, 1, 1), (u'', 40.360, 40.360, 0.0, 1, 1),
-                (u'', 39.576, 39.576, 0.0, 1, 1), (u'', 53.127, 53.127, 0.0, 1, 1),
-                (u'', 159.732, 159.732, 0.0, 1, 1), (u'', 48.398, 48.398, 0.0, 1, 1),
-                (u'', 46.984, 46.984, 0.0, 1, 1), (u'', 36.169, 36.169, 0.0, 1, 1),
-                (u'', 351.347, 351.347, 0.0, 1, 1), (u'', 18.917, 18.917, 0.0, 1, 1),
-                (u'', 101.977, 101.977, 0.0, 1, 1), (u'', 141.988, 141.988, 0.0, 1, 1),
-                (u'', 241.044, 241.044, 0.0, 1, 1), (u'', 61.993, 61.993, 0.0, 1, 1),
-                (u'', 171.813, 171.813, 0.0, 1, 1), (u'', 78.747, 78.747, 0.0, 1, 1),
-                (u'', 54.070, 54.070, 0.0, 1, 1), (u'', 87.229, 87.229, 0.0, 1, 1),
-                (u'', 158.980, 158.980, 0.0, 1, 1), (u'', 185.254, 185.254, 0.0, 1, 1),
-                (u'', 16.452, 16.452, 0.0, 1, 1), (u'', 120.144, 120.144, 0.0, 1, 1),
-                (u'', 294.418, 294.418, 0.0, 1, 1), (u'', 13.640, 13.640, 0.0, 1, 1),
-                (u'', 115.532, 115.532, 0.0, 1, 1), (u'', 58.595, 58.595, 0.0, 1, 1),
-                (u'', 7.876, 7.876, 0.0, 1, 1), (u'', 10.790, 10.790, 0.0, 1, 1),
-                (u'', 67.342, 67.342, 0.0, 1, 1), (u'', 14.848, 14.848, 0.0, 1, 1),
-                (u'', 82.160, 82.160, 0.0, 1, 1), (u'', 14.558, 14.558, 0.0, 1, 1),
-                (u'', 18.793, 18.793, 0.0, 1, 1), (u'', 69.776, 69.776, 0.0, 1, 1),
-                (u'', 65.542, 65.542, 0.0, 1, 1), (u'', 194.039, 194.039, 0.0, 1, 1),
-                (u'', 41.559, 41.559, 0.0, 1, 1), (u'', 75.549, 75.549, 0.0, 1, 1),
-                (u'', 14.808, 14.808, 0.0, 1, 1), (u'', 184.263, 184.263, 0.0, 1, 1),
-                (u'', 2.810, 2.810, 0.0, 1, 1), (u'', 13.095, 13.095, 0.0, 1, 1),
-                (u'', 52.885, 52.885, 0.0, 1, 1), (u'', 49.855, 49.855, 0.0, 1, 1),
-                (u'', 263.548, 263.548, 0.0, 1, 1), (u'', 4.248, 4.248, 0.0, 1, 1),
-                (u'', 66.864, 66.864, 0.0, 1, 1), (u'', 172.663, 172.663, 0.0, 1, 1),
-                (u'', 226.918, 226.918, 0.0, 1, 1), (u'', 169.175, 169.175, 0.0, 1, 1),
-                (u'', 148.070, 148.070, 0.0, 1, 1), (u'', 3.679, 3.679, 0.0, 1, 1),
-                (u'', 28.693, 28.693, 0.0, 1, 1), (u'', 34.931, 34.931, 0.0, 1, 1),
-                (u'', 297.467, 297.467, 0.0, 1, 1), (u'', 137.072, 137.072, 0.0, 1, 1),
-                (u'', 53.180, 53.180, 0.0, 1, 1), (u'', 49.760, 49.760, 0.0, 1, 1),
-                (u'', 19.664, 19.664, 0.0, 1, 1), (u'', 96.415, 96.415, 0.0, 1, 1),
-                (u'', 14.003, 14.003, 0.0, 1, 1), (u'', 17.743, 17.743, 0.0, 1, 1),
-                (u'', 212.279, 212.279, 0.0, 1, 1), (u'', 38.951, 38.951, 0.0, 1, 1),
-                (u'', 74.057, 74.057, 0.0, 1, 1), (u'', 86.769, 86.769, 0.0, 1, 1),
-                (u'', 37.765, 37.765, 0.0, 1, 1), (u'', 5.566, 5.566, 0.0, 1, 1),
-                (u'', 71.048, 71.048, 0.0, 1, 1), (u'', 5.137, 5.137, 0.0, 1, 1),
-                (u'', 35.461, 35.461, 0.0, 1, 1), (u'', 121.963, 121.963, 0.0, 1, 1),
-                (u'', 42.486, 42.486, 0.0, 1, 1), (u'', 52.315, 52.315, 0.0, 1, 1),
-                (u'', 77.095, 77.095, 0.0, 1, 1), (u'', 14.259, 14.259, 0.0, 1, 1),
-                (u'', 111.147, 111.147, 0.0, 1, 1), (u'', 49.364, 49.364, 0.0, 1, 1),
-                (u'', 1.978, 1.978, 0.0, 1, 1), (u'', 163.827, 163.827, 0.0, 1, 1),
-                (u'', 66.690, 66.690, 0.0, 1, 1), (u'', 80.172, 80.172, 0.0, 1, 1),
-                (u'', 323.763, 323.763, 0.0, 1, 1), (u'', 275.491, 275.491, 0.0, 1, 1),
-                (u'', 49.315, 49.315, 0.0, 1, 1), (u'', 1.585, 1.585, 0.0, 1, 1),
-                (u'', 317.922, 317.922, 0.0, 1, 1), (u'', 12.398, 12.398, 0.0, 1, 1),
-                (u'', 222.930, 222.930, 0.0, 1, 1), (u'', 6.328, 6.328, 0.0, 1, 1),
-                (u'', 143.687, 143.687, 0.0, 1, 1), (u'', 134.763, 134.763, 0.0, 1, 1),
-                (u'', 88.862, 88.862, 0.0, 1, 1), (u'', 143.918, 143.918, 0.0, 1, 1)]
+    WEI_TEST = np.array([[1.585, 1.585, 1, 1, 1.585], [1.978, 1.978, 1, 1, 1.978],
+                         [2.81, 2.81, 1, 1, 2.81], [3.679, 3.679, 1, 1, 3.679],
+                         [4.248, 4.248, 1, 1, 4.248], [5.137, 5.137, 1, 1, 5.137],
+                         [5.566, 5.566, 1, 1, 5.566], [6.328, 6.328, 1, 1, 6.328],
+                         [7.876, 7.876, 1, 1, 7.876], [10.79, 10.79, 1, 1, 10.79],
+                         [12.398, 12.398, 1, 1, 12.398], [13.095, 13.095, 1, 1, 13.095],
+                         [13.64, 13.64, 1, 1, 13.64], [14.003, 14.003, 1, 1, 14.003],
+                         [14.259, 14.259, 1, 1, 14.259], [14.558, 14.558, 1, 1, 14.558],
+                         [14.808, 14.808, 1, 1, 14.808], [14.848, 14.848, 1, 1, 14.848],
+                         [16.452, 16.452, 1, 1, 16.452], [17.743, 17.743, 1, 1, 17.743],
+                         [18.793, 18.793, 1, 1, 18.793], [18.917, 18.917, 1, 1, 18.917],
+                         [19.664, 19.664, 1, 1, 19.664], [20.564, 20.564, 1, 1, 20.564],
+                         [28.693, 28.693, 1, 1, 28.693], [34.931, 34.931, 1, 1, 34.931],
+                         [35.461, 35.461, 1, 1, 35.461], [36.169, 36.169, 1, 1, 36.169],
+                         [37.765, 37.765, 1, 1, 37.367], [38.951, 38.951, 1, 1, 38.951],
+                         [39.576, 39.576, 1, 1, 39.576], [40.36, 40.36, 1, 1, 40.36],
+                         [41.559, 41.559, 1, 1, 41.559], [42.486, 42.486, 1, 1, 42.486],
+                         [46.984, 46.984, 1, 1, 46.984], [48.146, 48.146, 1, 1, 48.146],
+                         [48.398, 48.398, 1, 1, 48.398], [49.315, 49.315, 1, 1, 49.315],
+                         [49.364, 49.364, 1, 1, 49.364], [49.76, 49.76, 1, 1, 49.76],
+                         [49.855, 49.855, 1, 1, 49.855], [52.315, 52.315, 1, 1, 52.315],
+                         [52.885, 52.885, 1, 1, 52.885], [53.127, 53.127, 1, 1, 53.127],
+                         [53.18, 53.18, 1, 1, 53.18], [54.07, 54.07, 1, 1, 54.07],
+                         [58.595, 58.595, 1, 1, 58.595], [61.993, 61.993, 1, 1, 61.993],
+                         [65.542, 65.542, 1, 1, 65.542], [66.69, 66.69, 1, 1, 66.69],
+                         [66.864, 66.864, 1, 1, 66.864], [67.342, 67.342, 1, 1, 67.342],
+                         [69.776, 69.776, 1, 1, 69.776], [71.048, 71.048, 1, 1, 71.048],
+                         [74.057, 74.057, 1, 1, 74.057], [75.549, 75.549, 1, 1, 75.549],
+                         [77.095, 77.095, 1, 1, 77.095], [78.747, 78.747, 1, 1, 78.747],
+                         [80.172, 80.172, 1, 1, 80.172], [82.16, 82.16, 1, 1, 82.16],
+                         [82.223, 82.223, 1, 1, 82.223], [86.769, 86.769, 1, 1, 86.769],
+                         [87.229, 87.229, 1, 1, 87.229], [88.862, 88.862, 1, 1, 88.862],
+                         [89.103, 89.103, 1, 1, 89.103], [94.072, 94.072, 1, 1, 94.072],
+                         [96.415, 96.415, 1, 1, 96.415], [101.977, 101.977, 1, 1, 101.977],
+                         [111.147, 111.147, 1, 1, 111.147], [115.532, 115.532, 1, 1, 115.532],
+                         [120.144, 120.144, 1, 1, 120.144], [121.963, 121.963, 1, 1, 121.963],
+                         [134.763, 134.763, 1, 1, 134.763], [137.072, 137.072, 1, 1, 137.072],
+                         [141.988, 141.988, 1, 1, 141.988], [143.687, 143.687, 1, 1, 143.687],
+                         [143.918, 143.918, 1, 1, 143.918], [148.07, 148.07, 1, 1, 148.07],
+                         [158.98, 158.98, 1, 1, 158.98], [159.732, 159.732, 1, 1, 159.732],
+                         [163.827, 163.827, 1, 1, 163.827], [169.175, 169.175, 1, 1, 169.175],
+                         [171.813, 171.813, 1, 1, 171.813], [172.663, 172.663, 1, 1, 172.663],
+                         [177.992, 177.992, 1, 1, 177.992], [184.263, 184.263, 1, 1, 184.263],
+                         [185.254, 185.254, 1, 1, 185.254], [194.039, 194.039, 1, 1, 194.039],
+                         [212.279, 212.279, 1, 1, 212.279], [222.93, 222.93, 1, 1, 222.93],
+                         [226.918, 226.918, 1, 1, 226.918], [241.044, 241.044, 1, 1, 241.044],
+                         [263.548, 263.548, 1, 1, 263.548], [275.491, 275.491, 1, 1, 275.491],
+                         [294.418, 294.418, 1, 1, 294.418], [297.467, 297.467, 1, 1, 297.467],
+                         [317.922, 317.922, 1, 1, 317.922], [323.763, 323.763, 1, 1, 323.763],
+                         [350.577, 350.577, 1, 1, 350.577], [351.347, 351.347, 1, 1, 351.347]])
 
-    # Data set of alpha particle interarrival times.
-    # Data is from Table 7.1 in Meeker and Excobar.
-    ALPHA = [(u'', 0.0, 100.0, 50.0, 3, 1609, 3),
-             (u'', 100.0, 300.0, 200.0, 3, 2424, 3),
-             (u'', 300.0, 500.0, 400.0, 3, 1770, 3),
-             (u'', 500.0, 700.0, 600.0, 3, 1306, 3),
-             (u'', 700.0, 1000.0, 850.0, 3, 1213, 3),
-             (u'', 1000.0, 2000.0, 1500.0, 3, 1528, 3),
-             (u'', 2000.0, 4000.0, 3000.0, 3, 354, 3),
-             (u'', 4000.0, 0.0, np.inf, 2, 16, 2)]
+    # Data set of alpha particle interarrival times.  Data is from Table 7.1 in
+    # Meeker and Escobar.
+    ALPHA = np.array([[0.0, 100.0, 1609, 4, 50.0],
+                      [100.0, 300.0, 2424, 4, 200.0],
+                      [300.0, 500.0, 1770, 4, 400.0],
+                      [500.0, 700.0, 1306, 4, 600.0],
+                      [700.0, 1000.0, 1213, 4, 850.0],
+                      [1000.0, 2000.0, 1528, 4, 1500.0],
+                      [2000.0, 4000.0, 354, 4, 3000.0],
+                      [4000.0, np.inf, 16, 2, np.inf]])
 
     def setUp(self):
         """
@@ -1144,7 +1151,7 @@ class TestWeibullDistribution(unittest.TestCase):
         self.DUT = Weibull()
 
     @attr(all=True, unit=False)
-    def test_log_pdf(self):
+    def test01_log_pdf(self):
         """
         (TestWeibullDistribution) log_pdf should return a numpy array of floats on success
         """
@@ -1161,36 +1168,34 @@ class TestWeibullDistribution(unittest.TestCase):
                                               -5.80666239, -6.02888459])
 
     @attr(all=True, unit=True)
-    def test_partial_derivatives_exact(self):
+    def test02_partial_derivatives_exact(self):
         """
         (TestWeibullDistribution) partial_derivatives should return a numpy array with exact data only on success.
         """
 
         _part_deriv = self.DUT.partial_derivatives([1.0, 1.0], self.LEUK)
-        np.testing.assert_array_equal(_part_deriv, [177.0, -450.4866935010138])
+        self.assertAlmostEqual(_part_deriv, -79736.1447497)
 
     @attr(all=True, unit=True)
-    def test_partial_derivatives_right(self):
+    def test02a_partial_derivatives_right(self):
         """
         (TestWeibullDistribution) partial_derivatives should return a numpy array with exact and right censored data on success.
         """
 
         _part_deriv = self.DUT.partial_derivatives([1.0, 1.0], self.MICE)
-        np.testing.assert_array_equal(_part_deriv,
-                                      [-19.0, -173.5830426301934])
+        self.assertAlmostEqual(_part_deriv, -14060.2264530)
 
     @attr(all=True, unit=True)
-    def test_partial_derivs_interval(self):
+    def test02b_partial_derivs_interval(self):
         """
         (TestWeibullDistribution) partial_derivatives should return a numpy array with exact, right, and interval censored data on success.
         """
 
         _part_deriv = self.DUT.partial_derivatives([1.0, 1.0], self.AIDS)
-        np.testing.assert_array_equal(_part_deriv,
-                                      [-14634.5, -83800.438465226223])
+        self.assertAlmostEqual(_part_deriv, -1452769512.6979916)
 
     @attr(all=True, unit=True)
-    def test_maximum_likelihood_estimate_exact_times(self):
+    def test03_maximum_likelihood_estimate_exact_times(self):
         """
         (TestWeibullDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with exact failure times.
         """
@@ -1199,37 +1204,47 @@ class TestWeibullDistribution(unittest.TestCase):
                                                     10000000.0)
 
         # Check the mean for exact failure time data.
-        self.assertAlmostEqual(_fit[0][0], 73.5261323)
+        self.assertAlmostEqual(_fit[0][0], 73.5260622)
         self.assertAlmostEqual(_fit[0][1], 1.9326764)
-        self.assertAlmostEqual(_fit[1][0], 241.3395431)
+        self.assertAlmostEqual(_fit[1][0], 241.3390782)
         self.assertAlmostEqual(_fit[1][1], 1.166965e-02)
-        self.assertAlmostEqual(_fit[1][2], 1.6781977)
-        self.assertAlmostEqual(_fit[2][0], -3917.8639405)
-        self.assertAlmostEqual(_fit[2][1], 7839.7278810)
-        self.assertAlmostEqual(_fit[2][2], 7842.8949189)
+        self.assertAlmostEqual(_fit[1][2], 1.6781965)
+        self.assertAlmostEqual(_fit[2][0], -29.5849216)
+        self.assertAlmostEqual(_fit[2][1], 63.1698432)
+        self.assertAlmostEqual(_fit[2][2], 66.3368811)
+        self.assertAlmostEqual(_fit[3], 0)
+        self.assertAlmostEqual(_fit[4], 6.0)
 
     @attr(all=True, unit=True)
-    def test_maximum_likelihood_estimate_interval_censored(self):
+    def test03a_maximum_likelihood_estimate_interval_censored(self):
         """
         (TestWeibullDistribution) maximum_likelihood_estimate should return a numpy array of floats on success with interval censored failure times.
         """
 
-        _fit = self.DUT.maximum_likelihood_estimate(self.ALPHA, 0.0,
+        _fit = self.DUT.maximum_likelihood_estimate(self.NELSON, 0.0,
                                                     10000000.0)
 
         # Check the scale and shape parameters for interval censored failure time data.
-        np.testing.assert_array_equal(_fit[0], [635.02289090239196,
-                                                1.0134226728030167, 0.0])
+        self.assertAlmostEqual(_fit[0][0], 68.4519239)
+        self.assertAlmostEqual(_fit[0][1], 1.8118217)
+        self.assertAlmostEqual(_fit[1][0], 159.6371163)
+        self.assertAlmostEqual(_fit[1][1], 0.01626650)
+        self.assertAlmostEqual(_fit[1][2], 1.6133607)
+        self.assertAlmostEqual(_fit[2][0], -383.8327766)
+        self.assertAlmostEqual(_fit[2][1], 771.6655532)
+        self.assertAlmostEqual(_fit[2][2], 776.4544515)
+        self.assertAlmostEqual(_fit[3], 73.0)
+        self.assertAlmostEqual(_fit[4], 94.0)
 
     @attr(all=True, unit=True)
-    def test_theoretical_distribution(self):
+    def test04_theoretical_distribution(self):
         """
         (TestWeibullDistribution) theoretical_distribution should return a numpy array of floats on success.
         """
 
         _para = [76.3454154, 1.4269671]
 
-        _data = [x[1] for x in self.EXP_TEST]
+        _data = [x[1] for x in self.WEI_TEST]
         _probs = self.DUT.theoretical_distribution(np.array(_data), _para)
         np.testing.assert_almost_equal(_probs,
                                        [0.00396191, 0.00543068, 0.00894684,
@@ -1268,7 +1283,7 @@ class TestWeibullDistribution(unittest.TestCase):
                                         0.99985388])
 
     @attr(all=True, unit=True)
-    def test_hazard_function(self):
+    def test05_hazard_function(self):
         """
         (TestWeibullDistribution) hazard_function should return a dict on success.
         """
@@ -1307,7 +1322,7 @@ class TestWeibullDistribution(unittest.TestCase):
                                        0.005371683357738421]})
 
     @attr(all=True, unit=True)
-    def test_mean(self):
+    def test06_mean(self):
         """
         (TestWeibullDistribution) mean should return a dict on success.
         """
@@ -1338,7 +1353,7 @@ class TestWeibullDistribution(unittest.TestCase):
                                        77.785684088594323]})
 
     @attr(all=True, unit=True)
-    def test_reliability_function(self):
+    def test07_reliability_function(self):
         """
         (TestWeibullDistribution) reliability_function should return a dict on success.
         """
@@ -1376,21 +1391,50 @@ class TestWeibullDistribution(unittest.TestCase):
                                             0.9537864420601545,
                                             0.9318405249350149]})
 
+    @attr(all=True, unit=True)
+    def test08_log_likelihood_ratio(self):
+        """
+        (TestWeibullDistribution) log_likelihood_ratio should return a float value on success.
+        """
+
+        _params = [68.4519239, 1.8118217]
+        _const = 3.8414588 / 2.0
+
+        _log_lik_ratio = self.DUT.log_likelihood_ratio(_params, self.NELSON,
+                                                       _const)
+        self.assertAlmostEqual(_log_lik_ratio, -313.7674954)
+
+    @attr(all=True, unit=True)
+    def test09_likelihood_bounds(self):
+        """
+        (TestWeibullDistribution) likelihood_bounds should return a tuple of OrderedDicts on success.
+        """
+
+        _params = [33.9428, 2.2938]
+
+        _lik_bounds = self.DUT.likelihood_bounds(_params, 0.9, self.DATA2)
+
+        # Check the first lower and upper bounds on eta and beta.
+        self.assertAlmostEqual(_lik_bounds[0], 33.8007446)
+        self.assertAlmostEqual(_lik_bounds[1], 36.1394417)
+        self.assertAlmostEqual(_lik_bounds[2], 1.1469000)
+        self.assertAlmostEqual(_lik_bounds[3], 3.9240973)
+
 
 class TestTBF(unittest.TestCase):
     """
     Class to test time between failure calculations.
     """
 
-    DATA = {0: (59, '', 719163, 16.0, 16.0, 0, 1, 16.0, 1, 0, 719163, 719163,
+    DATA = {0: (59, '', 719163, 16.0, 16.0, 1, 1, 16.0, 1, 0, 719163, 719163,
                 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
-            1: (59, '', 719163, 34.0, 34.0, 0, 1, 18.0, 1, 0, 719163, 719163,
+            1: (59, '', 719163, 34.0, 34.0, 1, 1, 18.0, 1, 0, 719163, 719163,
                 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
-            2: (59, '', 719163, 53.0, 53.0, 0, 1, 19.0, 1, 0, 719163, 719163,
+            2: (59, '', 719163, 53.0, 53.0, 1, 1, 19.0, 1, 0, 719163, 719163,
                 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
-            3: (59, '', 719163, 5.0, 75.0, 0, 3, 22.0, 1, 0, 719163, 719163,
+            3: (59, '', 719163, 5.0, 75.0, 1, 3, 22.0, 1, 0, 719163, 719163,
                 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
-            4: (59, '', 719163, 93.0, 93.0, 1, 1, 18.0, 1, 0, 719163, 719163,
+            4: (59, '', 719163, 93.0, 93.0, 2, 1, 18.0, 1, 0, 719163, 719163,
                 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None')}
 
     def setUp(self):
@@ -1410,7 +1454,7 @@ class TestTBF(unittest.TestCase):
         self.record5.set_attributes(self.DATA[4])
 
     @attr(all=True, unit=True)
-    def test_exact_failure_times(self):
+    def test01_exact_failure_times(self):
         """
         (TestTBF) Test of the time between failure calculation for exact failure times.
         """
@@ -1423,7 +1467,7 @@ class TestTBF(unittest.TestCase):
                          19.0)
 
     @attr(all=True, unit=True)
-    def test_right_censored_times(self):
+    def test02_right_censored_times(self):
         """
         (TestTBF) Test of the time between failure calculation for right censored failure times.
         """
@@ -1433,7 +1477,7 @@ class TestTBF(unittest.TestCase):
                          1E+99)
 
     @attr(all=True, unit=True)
-    def test_interval_censored_times(self):
+    def test03_interval_censored_times(self):
         """
         (TestTBF) Test of the time between failure calculation for interval censored failure times.
         """

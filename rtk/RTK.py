@@ -331,8 +331,7 @@ class RTK(object):
         Configuration.RTK_MODULES.append(_modview)
         _modview = self.module_book.create_module_page(mvwIncident, self, -1)   # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwSurvival,
-                                                       self.dtcSurvival, -1)    # pylint: disable=R0204
+        _modview = self.module_book.create_module_page(mvwSurvival, self, -1)   # pylint: disable=R0204
         Configuration.RTK_MODULES.append(_modview)
 
         _icon = Configuration.ICON_DIR + '32x32/db-disconnected.png'

@@ -24,9 +24,9 @@ experience. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Assembly ID</defaulttitle>
-            <usertitle>Assembly ID</usertitle>
-            <datatype>gint</datatype>
+            <defaulttitle>Assembly</defaulttitle>
+            <usertitle>Assembly</usertitle>
+            <datatype>gchararray</datatype>
             <position>1</position>
             <widget>text</widget>
             <editable>0</editable>

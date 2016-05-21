@@ -17,7 +17,7 @@ import unittest
 from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
-from revision.Revision import Revision
+from revision.Revision import Model, Revision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -42,15 +42,7 @@ class TestRevisionController(unittest.TestCase):
         self.DUT = Revision()
 
     @attr(all=True, integration=True)
-    def test_request_revisions(self):
-        """
-        (TestRevision)
-        """
-
-        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_request_revisions(self):
+    def test01_request_revisions(self):
         """
         (TestRevision) request_revisions should return 0 on success
         """
@@ -58,7 +50,7 @@ class TestRevisionController(unittest.TestCase):
         self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
 
     @attr(all=True, integration=True)
-    def test_add_revision(self):
+    def test02_add_revision(self):
         """
         (TestRevision) add_revision returns 0 on success and new Requirement data model added to dictionary
         """
@@ -75,7 +67,7 @@ class TestRevisionController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=False, integration=False)
-    def test_add_revision_no_code(self):
+    def test02a_add_revision_no_code(self):
         """
         (TestRevision) add_revision returns 0 on success and new Requirement data model added to dictionary
         """
@@ -92,7 +84,7 @@ class TestRevisionController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test_add_revision_no_name(self):
+    def test02b_add_revision_no_name(self):
         """
         (TestRevision) add_revision returns 0 with no name passed
         """
@@ -111,7 +103,7 @@ class TestRevisionController(unittest.TestCase):
                          'New Revision')
 
     @attr(all=True, integration=True)
-    def test_delete_revision(self):
+    def test03_delete_revision(self):
         """
         (TestRevision) delete_revision returns 0 on success
         """
@@ -124,7 +116,7 @@ class TestRevisionController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test_calculate_revision(self):
+    def test04_calculate_revision(self):
         """
         (TestRevision) calculate_revision returns 0 on success
         """
@@ -133,7 +125,7 @@ class TestRevisionController(unittest.TestCase):
         self.assertEqual(self.DUT.calculate_revision(0, 10.0, 1.0), 0)
 
     @attr(all=True, integration=True)
-    def test_save_revision(self):
+    def test05_save_revision(self):
         """
         (TestRevision) save_revision returns (True, 0) on success
         """
@@ -142,7 +134,7 @@ class TestRevisionController(unittest.TestCase):
         self.assertEqual(self.DUT.save_revision(1), (True, 0))
 
     @attr(all=True, integration=True)
-    def test_save_all_revisions(self):
+    def test06_save_all_revisions(self):
         """
         (TestRevision) save_all_revisions returns False on success
         """

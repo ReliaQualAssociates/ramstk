@@ -20,6 +20,24 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
+def _error_function(param, x_vals, y_vals):
+    """
+    The error function to use with the lestsq method in scipy.optimize.
+
+    :param list of floats param: current estimates of the intercept and slope
+                                 for the least squares line.
+    :param list of floats x_vals: the x-values at which to calculate the
+                                  residuals.
+    :param list of floats y_vals: the observed y-value at x.
+    :return: _residuals
+    :rtype: list of floats
+    """
+
+    _residuals = (param[0] + param[1] * x_vals) - y_vals
+
+    return _residuals
+
+
 def adjusted_rank(data):
     """
     Function to calculate adjusted ranks for data sets containing censored
@@ -62,15 +80,18 @@ def bernard_ranks(data, grouped=False):
     """
     Function to calculate Bernard's approximation of median ranks.
 
-    :param ndarray data: the data to calculate median ranks for.
-                         * 0 - left of the observation time interval
-                         * 1 - right of the observation time interval
-                         * 2 - number of events occurring at the observation
-                               time
-                         * 3 - status, where status is:
-                            * 1 - event
-                            * 2 - right censored
-                            * 3 - interval censored
+    :param ndarray data: the data set to fit.  This is a numpy array where
+                         each record contains the following, in order:
+                            * 0 = Interval start time
+                            * 1 = Interval end time
+                            * 2 = Quantity of observations
+                            * 3 = Status of observation, where status is:
+                                    * 1 - event
+                                    * 2 - right censored
+                                    * 3 - left censored
+                                    * 4 - interval censored
+                            * 4 = Time between failures or interarrival
+                                  time
     :param bool grouped: indicates whether the data is grouped or exact.
     :return: _mr; the median ranks.
     :rtype: ndarray of floats
@@ -108,15 +129,14 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
     of the parameters using regression.  It is up to the calling function to
     calculate bounding values.
 
-    :param array-like data: the data set to fit.  This is a list of tuples
-                            where each tuple contains the following, in order:
-                            * 0 = Record ID
-                            * 1 = Interval start time
-                            * 2 = Interval end time
-                            * 3 = Time between failures or interarrival time
-                            * 4 = Status of observation
-                            * 5 = Quantity of observations
-                            * 6 = Date of observation
+    :param ndarray data: the data set to fit.  This is a numpy array where
+                             each record contains the following, in order:
+                                * 0 = Interval start time
+                                * 1 = Interval end time
+                                * 2 = Quantity of observations
+                                * 3 = Status of observation
+                                * 4 = Time between failures or interarrival
+                                      time
     :param float start: the minimum time to include in the fit.  Used to
                         exclude outliers.
     :param float end: the maximum time to include in the fit.  Used to exclude
@@ -128,9 +148,7 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
                     [MLE, AIC, BIC], correlation coeff.]
     :rtype: list
     """
-
-    _error_function = lambda s, x, y: ((s[0] + s[1] * _x) - y)
-
+# TODO: Re-write regression; current McCabe Complexity metric=15.
     # Initialize lists to hold results.
     _parameters = [0.0, 0.0, 0.0]           # Scale, shape, location.
     _variance = [0.0, 0.0, 0.0]             # Scale variance, covariance,
@@ -140,34 +158,15 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
 
     # Sort data by the right of the interval.  Remove records occurring before
     # the start time and after the end time.
-    _data = sorted(data, key=lambda x: float(x[2]))
-    _data = [_rec for _rec in _data if float(_rec[1]) >= start]
-    _data = [_rec for _rec in _data if float(_rec[2]) <= end]
+    _data = sorted(data, key=lambda x: float(x[1]))
+    _data = [_rec for _rec in _data if float(_rec[0]) >= start]
+    _data = [_rec for _rec in _data if float(_rec[1]) <= end]
+    _data = np.array(_data)
 
-    # Expand the data set so there is one record for each failure.  Loop
-    # through the failure quantity passed for each record.
-    _data2 = []
-    for __, _record in enumerate(_data):
-        for j in range(int(_record[5])):
-            _data2.append((_record[0], _record[1], _record[2],
-                           _record[3], _record[4], 1))
-    _data = np.array(_data2)
-
-    # Replace the string status with integer status.
-    for _record in _data:
-        if _record[4] == 'Right Censored' or str(_record[4]) == '2':
-            _record[2] = np.inf
-            _record[4] = 2
-        elif(_record[4] == 'Left Censored' or
-             _record[4] == 'Interval Censored' or str(_record[4]) == '3'):
-            _record[4] = 3
-        else:
-            _record[4] = 1
-
-    # Coerce the data set into the form necessary for fitting to functions.
-    _data = np.vstack((_data[:, 1], _data[:, 2], _data[:, 5],
-                       _data[:, 4], _data[:, 3]))
-    _data = np.array(np.transpose(_data), dtype=float)
+    # Count the number of suspensions, failures, and records.
+    _n_suspensions = sum(x[2] for x in _data if x[3] == 2)
+    _n_failures = sum(x[2] for x in _data
+                      if x[3] == 1 or x[3] == 3 or x[3] == 4)
     _n_records = len(_data)
 
     # Retrieve the failure times for all non-censored data.
@@ -259,7 +258,8 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
     # Calculate the correlation coefficient (i.e., R)
     _rho_hat = np.corrcoef(_x, _y_linear)[0, 1]
 
-    _fit = [_parameters, _variance, _gof, _rho_hat]
+    _fit = [_parameters, _variance, _gof, _rho_hat, _n_suspensions,
+            _n_failures]
 
     return _fit
 
