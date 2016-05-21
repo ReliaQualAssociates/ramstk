@@ -36,15 +36,6 @@ from scipy.stats import norm
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import Utilities as _util
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-    import rtk.gui.gtk.Widgets as _widg
-=======
     import Configuration
     import Utilities
     import gui.gtk.Widgets as Widgets
@@ -54,7 +45,6 @@ except ImportError:
     import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
     import rtk.analyses.statistics.growth.CrowAMSAA as CrowAMSAA
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -63,19 +53,13 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
-<<<<<<< HEAD
-=======
 class MTBFICalculator(gtk.Dialog):
     """
     This is the assistant that calculate the average first phase MTBF for a
@@ -226,19 +210,6 @@ class MTTFFCalculator(gtk.Dialog):
                             buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                                      gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
-<<<<<<< HEAD
-        self.txtMTBFI = _widg.make_entry(width=100)
-        self.txtNItems = _widg.make_entry(width=100)
-        self.txtHrsWkItem = _widg.make_entry(width=100)
-        self.txtA = _widg.make_entry(width=100)
-        self.txtM = _widg.make_entry(width=100)
-        self.txtB = _widg.make_entry(width=100)
-        self.txtConfidence = _widg.make_entry(width=100)
-
-        self.txtMTTFF = _widg.make_entry(width=100, editable=False)
-        self.txtTTFFLL = _widg.make_entry(width=100, editable=False)
-        self.txtTTFFUL = _widg.make_entry(width=100, editable=False)
-=======
         self.txtMTBFI = Widgets.make_entry(width=100)
         self.txtNItems = Widgets.make_entry(width=100)
         self.txtHrsWkItem = Widgets.make_entry(width=100)
@@ -250,7 +221,6 @@ class MTTFFCalculator(gtk.Dialog):
         self.txtMTTFF = Widgets.make_entry(width=100, editable=False)
         self.txtTTFFLL = Widgets.make_entry(width=100, editable=False)
         self.txtTTFFUL = Widgets.make_entry(width=100, editable=False)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Connect the buttons to callback methods.
         self.get_action_area().get_children()[0].connect('button-release-event',
@@ -271,11 +241,7 @@ class MTTFFCalculator(gtk.Dialog):
                    _(u"Max. Time to Implement First Fix:"),
                    _(u"Confidence:"), _(u"Expected Time to First Failure:"),
                    _(u"Cumulative Test Time to First Fix:")]
-<<<<<<< HEAD
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, 5)
-=======
         (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 55
 
         _fixed.put(self.txtMTBFI, _x_pos, _y_pos[0])
@@ -306,11 +272,7 @@ class MTTFFCalculator(gtk.Dialog):
         :rtype: bool
         """
 
-<<<<<<< HEAD
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
-=======
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _mtbfi = float(self.txtMTBFI.get_text())
         _n_items = float(self.txtNItems.get_text())
@@ -366,11 +328,7 @@ class AddRGRecord(gtk.Assistant):
 
     _labels = [_(u"Date:"), _(u"Test Time:"), _(u"Number of Failures:")]
 
-<<<<<<< HEAD
-    def __init__(self, controller, model):
-=======
     def __init__(self, controller, model, listview):
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         Method to initialize the Reliability Growth Record Add Assistant.
         """
@@ -384,28 +342,14 @@ class AddRGRecord(gtk.Assistant):
         self.connect('cancel', self._cancel)
         self.connect('close', self._cancel)
 
-<<<<<<< HEAD
-        self._dao = controller._dao
-        self._testing_model = model
-=======
         self._dtcGrowth = controller
         self._testing_model = model
         self._listview = listview
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # ----------------------------------------------------------------- #
         # Create the introduction page.                                     #
         # ----------------------------------------------------------------- #
         _fixed = gtk.Fixed()
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"This is the RTK reliability growth "
-                                    u"record assistant.  It will help you add "
-                                    u"a record for tracking against the "
-                                    u"currently selected reliability growth "
-                                    u"plan.  Press 'Forward' to continue or "
-                                    u"'Cancel' to quit the assistant."),
-                                  width=600, height=-1, wrap=True)
-=======
         _label = Widgets.make_label(_(u"This is the RTK reliability growth "
                                       u"record assistant.  It will help you "
                                       u"add a record for tracking against the "
@@ -413,7 +357,7 @@ class AddRGRecord(gtk.Assistant):
                                       u"plan.  Press 'Forward' to continue or "
                                       u"'Cancel' to quit the assistant."),
                                     width=600, height=-1, wrap=True)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         _fixed.put(_label, 5, 5)
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -425,28 +369,11 @@ class AddRGRecord(gtk.Assistant):
         # ----------------------------------------------------------------- #
         _fixed = gtk.Fixed()
 
-<<<<<<< HEAD
-        _frame = _widg.make_frame(label=_(""))
-=======
         _frame = Widgets.make_frame(label=_(""))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_NONE)
         _frame.add(_fixed)
 
         # Create the gtk.Combo that allow one of multiple selections.
-<<<<<<< HEAD
-        self.txtDate = _widg.make_entry(width=100)
-        self.txtDate.set_tooltip_text(_(u"Date test record was generated.  "
-                                        u"This is not necessarily the date "
-                                        u"the record is being added."))
-        self.btnDate = _widg.make_button(height=25, width=25, label="...",
-                                         image=None)
-        self.btnDate.connect('button-release-event', _util.date_select,
-                             self.txtDate)
-        self.txtTime = _widg.make_entry()
-        self.txtTime.set_tooltip_text(_(u"Test time."))
-        self.chkAdditional = _widg.make_check_button(_(u"Additional"))
-=======
         self.txtDate = Widgets.make_entry(width=100)
         self.txtDate.set_tooltip_text(_(u"Date test record was generated.  "
                                         u"This is not necessarily the date "
@@ -458,44 +385,28 @@ class AddRGRecord(gtk.Assistant):
         self.txtTime = Widgets.make_entry()
         self.txtTime.set_tooltip_text(_(u"Test time."))
         self.chkAdditional = Widgets.make_check_button(_(u"Additional"))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.chkAdditional.set_tooltip_text(_(u"If checked, the test time is "
                                               u"additional test time.  If "
                                               u"unchecked, the test time is "
                                               u"cumulative since the start of "
                                               u"testing."))
         self.chkAdditional.set_active(False)
-<<<<<<< HEAD
-        self.txtNumFails = _widg.make_entry()
-        self.txtNumFails.set_tooltip_text(_(u"Number of failures observed."))
-        self.txtNumFails.set_text("1")
 
-        _label = _widg.make_label(self._labels[0], 150, 25)
-=======
         self.txtNumFails = Widgets.make_entry()
         self.txtNumFails.set_tooltip_text(_(u"Number of failures observed."))
         self.txtNumFails.set_text("1")
 
         _label = Widgets.make_label(self._labels[0], 150, 25)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, 5, 5)
         _fixed.put(self.txtDate, 160, 5)
         _fixed.put(self.btnDate, 260, 5)
 
-<<<<<<< HEAD
-        _label = _widg.make_label(self._labels[1], 150, 25)
-=======
         _label = Widgets.make_label(self._labels[1], 150, 25)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, 5, 40)
         _fixed.put(self.txtTime, 160, 40)
         _fixed.put(self.chkAdditional, 365, 40)
 
-<<<<<<< HEAD
-        _label = _widg.make_label(self._labels[2], 150, 25)
-=======
         _label = Widgets.make_label(self._labels[2], 150, 25)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, 5, 75)
         _fixed.put(self.txtNumFails, 160, 75)
 
@@ -510,11 +421,7 @@ class AddRGRecord(gtk.Assistant):
         _fixed = gtk.Fixed()
         _text = _(u"Press 'Apply' to add the record or 'Cancel' to quit the "
                   u"assistant without adding the record.")
-<<<<<<< HEAD
-        _label = _widg.make_label(_text, width=500, height=-1, wrap=True)
-=======
         _label = Widgets.make_label(_text, width=500, height=-1, wrap=True)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, 5, 5)
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
@@ -533,47 +440,6 @@ class AddRGRecord(gtk.Assistant):
         :rtype: bool
         """
 
-<<<<<<< HEAD
-        _query = "SELECT MAX(fld_record_id), MAX(fld_right_interval) \
-                  FROM rtk_survival_data \
-                  WHERE fld_dataset_id=%d \
-                  AND fld_source=1" % self._testing_model.test_id
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
-
-        if _results[0][0] is None or _results[0][0] == '':
-            _last_id = 0
-        else:
-            _last_id = _results[0][0] + 1
-
-        if _results[0][1] is None or _results[0][1] == '':
-            _last_time = 0.0
-        else:
-            _last_time = float(_results[0][1])
-
-        # Read the test time entered by the user.  If this is entered as
-        # additional test time, calculate the cumulative test time.
-        _time = float(self.txtTime.get_text())
-        if self.chkAdditional.get_active():
-            _time = _time + _last_time
-        _n_fails = int(self.txtNumFails.get_text())
-
-        _date = datetime.strptime(self.txtDate.get_text(),
-                                  '%Y-%m-%d').toordinal()
-        _query = "INSERT INTO rtk_survival_data \
-                  (fld_record_id, fld_dataset_id, fld_left_interval, \
-                   fld_right_interval, fld_quantity, fld_mode_type, \
-                   fld_assembly_id, fld_failure_date, fld_source) \
-                  VALUES ({0:d}, {1:d}, {2:f}, {3:f}, {4:d}, {5:d}, {6:d}, \
-                          {7:d}, 1)".format(_last_id,
-                                            self._testing_model.test_id, 0.0,
-                                            _time, _n_fails, 0,
-                                            self._testing_model.assembly_id,
-                                            _date)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-
-        self._testing_model.dic_test_data[_last_id] = [_date, 0.0, _time,
-                                                       _n_fails]
-=======
         _test_id = self._testing_model.test_id
         _date = datetime.strptime(self.txtDate.get_text(),
                                   '%Y-%m-%d').toordinal()
@@ -588,7 +454,6 @@ class AddRGRecord(gtk.Assistant):
 
         if _results:
             self._listview.load_rg_assessment_details()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
