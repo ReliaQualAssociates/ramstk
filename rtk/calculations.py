@@ -243,7 +243,7 @@ def dormant_hazard_rate(component):
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-# TODO: Move to Hardware class.
+# TODO: Move to each component type class.
     factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
               [0.04, 0.05, 0.01, 0.04, 0.03, 0.20, 0.80, 0.00],
               [0.05, 0.06, 0.02, 0.05, 0.03, 0.20, 1.00, 0.00],

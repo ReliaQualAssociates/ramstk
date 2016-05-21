@@ -207,6 +207,7 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         self.cum_mean = [[0.0, 0.0, 0.0]]
         self.instantaneous_mean = [[0.0, 0.0, 0.0]]
         self.growth_rate = [0.0, 0.0, 0.0]
+        self.chi2_critical_value = [0.0, 0.0]
 
         # Initialize public scalar attributes.
         self.rg_plan_model = 0
@@ -230,7 +231,6 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         self.cramer_vonmises = 0.0
         self.chi_square = 0.0
         self.cvm_critical_value = 0.0
-        self.chi2_critical_value = [0.0, 0.0]
 
     def set_attributes(self, values):
         """
