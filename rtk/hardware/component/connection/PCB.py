@@ -16,6 +16,15 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+    from hardware.component.connection.Connection import Model as Connection
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    from rtk.hardware.component.connection.Connection import Model as Connection
+=======
     import Configuration
     import Utilities
     from hardware.component.connection.Connection import Model as Connection
@@ -24,6 +33,7 @@ except ImportError:                         # pragma: no cover
     import rtk.Utilities as Utilities
     from rtk.hardware.component.connection.Connection import Model as \
                                                              Connection
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -32,7 +42,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -44,6 +58,19 @@ class PCB(Connection):
     The PCB connection data model contains the attributes and methods of a PCB
     connection component.  The attributes of a PCB connection are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 73
+
+    :ivar base_hr: default value: 0.0
+    :ivar reason: default value: ""
+    :ivar piE: default value: 0.0
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 15.2.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
     :cvar int subcategory: the Connection subcategory.
 
     :ivar float base_hr: the MIL-HDBK-217FN2 base/generic hazard rate.
@@ -55,6 +82,7 @@ class PCB(Connection):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _gauge = [2.100, 0.989, 0.640]
     _piQ = [1.0, 2.0]
@@ -70,11 +98,18 @@ class PCB(Connection):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a PCB connection data model instance.
+=======
         Method to initialize a PCB connection data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(PCB, self).__init__()
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -86,6 +121,7 @@ class PCB(Connection):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.n_active_contacts = 0
         self.contact_gauge = 26
         self.amps_per_contact = 0.0
@@ -96,7 +132,11 @@ class PCB(Connection):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the PCB Connection data model attributes.
+=======
         Method to set the PCB Connection data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -117,6 +157,15 @@ class PCB(Connection):
             self.contact_temperature = float(values[104])
             self.n_active_contacts = int(values[117])
             self.contact_gauge = int(values[118])
+<<<<<<< HEAD
+            # TODO: Add field to rtk_stress to hold overstress reason.
+            self.reason = ''
+        except IndexError as _err:
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
 # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
@@ -124,13 +173,18 @@ class PCB(Connection):
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the PCB Connection data model
+=======
         Method to retrieve the current values of the PCB Connection data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (n_active_contacts, contact_gauge, mate_unmate_cycles,
@@ -146,14 +200,24 @@ class PCB(Connection):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the PCB Connection data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the PCB Connection data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
 # TODO: Re-write calculate_part; current McCabe Complexity metric = 13.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -195,7 +259,11 @@ class PCB(Connection):
                  self.mate_unmate_cycles <= 50:
                 self.piK = 3.0
             else:
+<<<<<<< HEAD
+                self.piK = 4.0                                      # pragma: no cover
+=======
                 self.piK = 4.0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.hazard_rate_model['piK'] = self.piK
 
             # Active pins correction factor.
@@ -208,4 +276,8 @@ class PCB(Connection):
             # Environmental correction factor.
             self.piE = self._piE[self.quality - 1][self.environment_active - 1]
 
+<<<<<<< HEAD
+        return Connection.calculate(self)
+=======
         return Connection.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

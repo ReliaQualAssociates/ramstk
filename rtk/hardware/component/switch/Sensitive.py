@@ -15,12 +15,21 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+    from hardware.component.switch.Switch import Model as Switch
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities
     from hardware.component.switch.Switch import Model as Switch
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.switch.Switch import Model as Switch
 
 __author__ = 'Andrew Rowland'
@@ -30,7 +39,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,6 +55,16 @@ class Sensitive(Switch):
     The Sensitive Switch data model contains the attributes and methods of a
     Sensitive Switch component.  The attributes of a Sensitive Switch are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 68
+
+    :ivar load_type: default value: 0
+    :ivar n_contacts: default value: 0
+    :ivar cycles_per_hour: default value: 0.0
+    :ivar actuation_differential: default value: 0.0
+    :ivar piCYC: default value: 0.0
+    :ivar piL: default value: 0.0
+=======
     :cvar int subcategory: Switch subcategory.
 
     :ivar int load_type: the MIL-HDBK-217FN2 load type input.
@@ -51,14 +74,22 @@ class Sensitive(Switch):
                                         differential (inches) input.
     :ivar float piCYC: the MIL-HDBK-217FN2 switch cycle factor.
     :ivar float piL: the MIL-HDBK-217FN2 load type factor.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specification MIL-S-8805.
 
     Hazard Rate Models:
+<<<<<<< HEAD
+        # MIL-HDBK-217F, section 14.2.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
         # MIL-HDBK-217FN2, section 14.2.
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piE = [1.0, 3.0, 18.0, 8.0, 29.0, 10.0, 18.0, 13.0, 22.0, 46.0, 0.5,
                 25.0, 67.0, 1200.0]
@@ -71,11 +102,18 @@ class Sensitive(Switch):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a Sensitive Switch data model instance.
+=======
         Method to initialize a Sensitive Switch data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Sensitive, self).__init__()
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -87,6 +125,7 @@ class Sensitive(Switch):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.load_type = 0
         self.n_contacts = 0                 # Number of active contacts
         self.cycles_per_hour = 0.0
@@ -96,7 +135,11 @@ class Sensitive(Switch):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the Sensitive Switch data model attributes.
+=======
         Method to set the Sensitive Switch data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -117,18 +160,30 @@ class Sensitive(Switch):
             self.piCYC = float(values[101])
             self.piL = float(values[102])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the Sensitive Switch data model
+        attributes.
+=======
         Method to retrieve the current values of the Sensitive Switch data
         model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (load_type, cycles_per_hour, actuation_differential, piCYC,
                   piL)
@@ -143,15 +198,25 @@ class Sensitive(Switch):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the Sensitive Switch data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Sensitive Switch data
         model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
 # TODO: Re-write calculate_part; current McCabe Complexity metric = 13.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -189,4 +254,8 @@ class Sensitive(Switch):
                 self.piL = exp((_stress / 0.2)**2.0)
             self.hazard_rate_model['piL'] = self.piL
 
+<<<<<<< HEAD
+        return Switch.calculate(self)
+=======
         return Switch.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

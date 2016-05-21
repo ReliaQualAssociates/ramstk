@@ -5,18 +5,33 @@ This is the test class for testing Revision module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       TestRevision.py is part of The RTK Project
+#
+# All rights reserved.
+
+import unittest
+from nose.plugins.attrib import attr
+
+=======
 #       tests.unit.TestRevision.py is part of The RTK Project
 #
 # All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
+import dao.DAO as _dao
+from revision.Revision import Model, Revision
+=======
 import unittest
 from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 from revision.Revision import Model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,6 +49,12 @@ class TestRevisionModel(unittest.TestCase):
         Method to setup the test fixture for the Revision class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
         self.good_values = (0, 1, 50.0, 'days', 'Test Mission')
@@ -217,3 +238,131 @@ class TestRevisionModel(unittest.TestCase):
         self.assertEqual(self.DUT.cost, 100.0)
         self.assertAlmostEqual(self.DUT.cost_per_failure, 0.5013)
         self.assertAlmostEqual(self.DUT.cost_per_hour, 10.0)
+<<<<<<< HEAD
+
+
+class TestRevisionController(unittest.TestCase):
+    """
+    Class for testing the Revision data controller class.
+    """
+
+    def setUp(self):
+        """
+        Method to setup the test fixture for the Revision class.
+        """
+
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+        self.DUT = Revision()
+
+    @attr(all=True, integration=True)
+    def test_request_revisions(self):
+        """
+        (TestRevision)
+        """
+
+        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+
+    @attr(all=True, integration=True)
+    def test_request_revisions(self):
+        """
+        (TestRevision) request_revisions should return 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+# TODO: Test that method fails when no Revisions exist in database.
+    @attr(all=True, integration=True)
+    def test_add_revision(self):
+        """
+        (TestRevision) add_revision returns 0 on success and new Requirement data model added to dictionary
+        """
+
+        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        (_results,
+         _error_code,
+         _revision_id) = self.DUT.add_revision(code='-', name='Original',
+                            remarks='This is the baseline revision')
+
+        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
+                                   Model))
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=False, integration=False)
+    def test_add_revision_no_code(self):
+        """
+        (TestRevision) add_revision returns 0 on success and new Requirement data model added to dictionary
+        """
+# TODO: Requires configuration file values to set the default code.
+        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        (_results,
+         _error_code,
+         _revision_id) = self.DUT.add_revision(None, name='Original',
+                            remarks='This is the baseline revision')
+
+        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
+                                   Model))
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_add_revision_no_name(self):
+        """
+        (TestRevision) add_revision returns 0 with no name passed
+        """
+
+        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        (_results,
+         _error_code,
+         _revision_id) = self.DUT.add_revision(code='-', name=None,
+                            remarks='This is the baseline revision')
+
+        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
+                                   Model))
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(self.DUT.dicRevisions[_revision_id].name,
+                         'New Revision')
+
+    @attr(all=True, integration=True)
+    def test_delete_revision(self):
+        """
+        (TestRevision) delete_revision returns 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        (_results,
+         _error_code) = self.DUT.delete_revision(self.DUT._last_id)
+
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_calculate_revision(self):
+        """
+        (TestRevision) calculate_revision returns 0 on success
+        """
+
+        self.DUT.request_revisions(self._dao)
+        self.assertEqual(self.DUT.calculate_revision(0, 10.0, 1.0), 0)
+
+    @attr(all=True, integration=True)
+    def test_save_revision(self):
+        """
+        (TestRevision) save_revision returns (True, 0) on success
+        """
+
+        self.DUT.request_revisions(self._dao)
+        self.assertEqual(self.DUT.save_revision(1), (True, 0))
+
+    @attr(all=True, integration=True)
+    def test_save_all_revisions(self):
+        """
+        (TestRevision) save_all_revisions returns False on success
+        """
+
+        self.DUT.request_revisions(self._dao)
+        self.assertFalse(self.DUT.save_all_revisions())
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

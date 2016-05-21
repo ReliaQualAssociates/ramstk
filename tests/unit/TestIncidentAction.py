@@ -6,17 +6,30 @@ models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestAction.py is part of The RTK Project
+<<<<<<< HEAD
+#       tests.verification.TestAction.py is part of The RTK Project
 #
 # All rights reserved.
-
-import sys
-from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestAction.py is part of The RTK Project
+#
+# All rights reserved.
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+<<<<<<< HEAD
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import dao.DAO as _dao
 from incident.action.Action import Model, Action
 
@@ -36,7 +49,11 @@ class TestIncidentActionModel(unittest.TestCase):
         Setup the test fixture for the IncidentAction class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+=======
         _database = '/tmp/tempdb.rtk'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -136,6 +153,12 @@ class TestIncidentActionController(unittest.TestCase):
         Sets up the test fixture for the Incident Action class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Action()
 
     @attr(all=True, unit=True)
@@ -148,3 +171,51 @@ class TestIncidentActionController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicActions, {})
+<<<<<<< HEAD
+
+    @attr(all=True, integration=True)
+    def test_request_actions(self):
+        """
+        (TestIncidentAction) request_actions should return 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_actions(self._dao, 1)[1], 0)
+
+    @attr(all=True, integration=True)
+    def test_add_action(self):
+        """
+        (TestIncidentAction) add_action should return 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_actions(self._dao, 1)[1], 0)
+        self.assertEqual(self.DUT.add_action(1)[1], 0)
+
+    @attr(all=True, integration=True)
+    def test_save_action(self):
+        """
+        (TestIncidentAction) save_action returns 0 on success
+        """
+
+        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 2,
+                   0, False, 2, 0, False)
+
+        self.assertEqual(self.DUT.request_actions(self._dao, 1)[1], 0)
+        _action = self.DUT.dicActions[min(self.DUT.dicActions.keys())]
+        _action.set_attributes(_values)
+
+        (_results,
+         _error_code) = self.DUT.save_action(min(self.DUT.dicActions.keys()))
+
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_save_all_actions(self):
+        """
+        (TestIncidentAction) save_all_actions returns 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_actions(self._dao, 1)[1], 0)
+        self.assertFalse(self.DUT.save_all_actions())
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

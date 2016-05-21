@@ -16,6 +16,15 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+    from hardware.component.integrated_circuit.IntegratedCircuit import \
+         Model as IntegratedCircuit
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
@@ -23,6 +32,7 @@ try:
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
 
@@ -33,7 +43,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -132,10 +146,17 @@ class VLSI(IntegratedCircuit):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -162,14 +183,24 @@ class VLSI(IntegratedCircuit):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the VLSI IC data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the VLSI IC data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
         # TODO: Re-write calculate_part; current McCabe Complexity metric = 13.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp, log
 
         self.hazard_rate_model = {}
@@ -202,7 +233,11 @@ class VLSI(IntegratedCircuit):
             self.hazard_rate_model['lambda_eos'] = self.lambda_eos
 
             # Manufacturing process factor.
+<<<<<<< HEAD
+            if self.manufacturing == 1:     # pragma: no cover
+=======
             if self.manufacturing == 1:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.piMFG = 0.55
             else:
                 self.piMFG = 2.0
@@ -241,4 +276,8 @@ class VLSI(IntegratedCircuit):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
+<<<<<<< HEAD
+        return IntegratedCircuit.calculate(self)
+=======
         return IntegratedCircuit.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

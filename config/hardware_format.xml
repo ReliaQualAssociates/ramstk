@@ -823,7 +823,11 @@ experience. -->
         <column>
             <defaulttitle>Total Power Dissipation</defaulttitle>
             <usertitle>Total Power Dissipation</usertitle>
+<<<<<<< HEAD
+            <datatype>gint</datatype>
+=======
             <datatype>gfloat</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>89</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -851,7 +855,11 @@ experience. -->
         <column>
             <defaulttitle>Junction Temperature</defaulttitle>
             <usertitle>Junction Temperature</usertitle>
+<<<<<<< HEAD
+            <datatype>gint</datatype>
+=======
             <datatype>gfloat</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>92</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -860,7 +868,11 @@ experience. -->
         <column>
             <defaulttitle>Knee Temperature</defaulttitle>
             <usertitle>Knee Temperature</usertitle>
+<<<<<<< HEAD
+            <datatype>gint</datatype>
+=======
             <datatype>gfloat</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>93</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -869,7 +881,11 @@ experience. -->
         <column>
             <defaulttitle>Thermal Resistance</defaulttitle>
             <usertitle>Thermal Resistance</usertitle>
+<<<<<<< HEAD
+            <datatype>gint</datatype>
+=======
             <datatype>gfloat</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>94</position>
             <widget>text</widget>
             <editable>0</editable>
@@ -878,7 +894,11 @@ experience. -->
         <column>
             <defaulttitle>Reference Temperature</defaulttitle>
             <usertitle>Reference Temperature</usertitle>
+<<<<<<< HEAD
+            <datatype>gint</datatype>
+=======
             <datatype>gfloat</datatype>
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             <position>95</position>
             <widget>text</widget>
             <editable>0</editable>

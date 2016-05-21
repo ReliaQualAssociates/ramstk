@@ -5,7 +5,11 @@ This is the test class for testing Assembly module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       tests.hardware.TestAssembly.py is part of The RTK Project
+=======
 #       tests.unit.TestAssembly.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -35,7 +39,11 @@ class TestAssemblyModel(unittest.TestCase):
         Setup the test fixture for the Assembly class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+=======
         _database = '/tmp/tempdb.rtk'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._dao = _dao(_database)
 
         self.DUT = Model()

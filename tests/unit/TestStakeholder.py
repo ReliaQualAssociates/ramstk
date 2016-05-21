@@ -5,16 +5,30 @@ This is the test class for testing Stakeholder module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestStakeholder.py is part of The RTK Project
+<<<<<<< HEAD
+#       TestStakeholder.py is part of The RTK Project
 #
 # All rights reserved.
-import sys
-from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestStakeholder.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+<<<<<<< HEAD
+import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from stakeholder.Stakeholder import Model, Stakeholder
 
 __author__ = 'Andrew Rowland'
@@ -139,6 +153,12 @@ class TestStakeholderController(unittest.TestCase):
         Sets up the test fixture for the Stakeholder class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Stakeholder()
 
     @attr(all=True, unit=True)
@@ -151,3 +171,69 @@ class TestStakeholderController(unittest.TestCase):
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicStakeholders, {})
+<<<<<<< HEAD
+
+    @attr(all=True, integration=True)
+    def test_request_inputs(self):
+        """
+        (TestStakeholder) request_inputs should return 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
+# TODO: Test that method fails when no Stakeholder inputs exist in database.
+    @attr(all=True, integration=True)
+    def test_add_input(self):
+        """
+        (TestStakeholder) add_input returns 0 on success and new Stakeholder data model added to dictionary
+        """
+
+        self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
+        (_results,
+         _error_code) = self.DUT.add_input(0)
+
+        self.assertTrue(isinstance(self.DUT.dicStakeholders[self.DUT._last_id],
+                                   Model))
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_delete_input(self):
+        """
+        (TestStakeholder) delete_input returns 0 on success
+        """
+
+        self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
+        (_results,
+         _error_code) = self.DUT.delete_input(self.DUT._last_id)
+
+        self.assertTrue(_results)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, integration=True)
+    def test_save_input(self):
+        """
+        (TestStakeholder) save_input returns (True, 0) on success
+        """
+
+        self.DUT.request_inputs(self._dao, 0)
+        self.assertEqual(self.DUT.save_input(1), (True, 0))
+
+    @attr(all=True, integration=True)
+    def test_save_all_inputs(self):
+        """
+        (TestStakeholder) save_all_inputs returns False on success
+        """
+
+        self.DUT.request_inputs(self._dao, 0)
+        self.assertFalse(self.DUT.save_all_inputs())
+
+    @attr(all=True, integration=True)
+    def test_calculate_stakeholder(self):
+        """
+        (TestStakeholder) calculate_stakeholder returns 0 on success
+        """
+
+        self.DUT.request_inputs(self._dao, 0)
+        self.assertEqual(self.DUT.calculate_stakeholder(1), (1.2, 1.2))
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

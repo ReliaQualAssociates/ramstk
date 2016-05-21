@@ -16,12 +16,21 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+    from hardware.component.inductor.Inductor import Model as Inductor
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities
     from hardware.component.inductor.Inductor import Model as Inductor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.inductor.Inductor import Model as Inductor
 
 __author__ = 'Andrew Rowland'
@@ -31,7 +40,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -43,6 +56,19 @@ class Transformer(Inductor):
     The Transformer data model contains the attributes and methods of a
     Transformer component.  The attributes of a Transformer are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 62
+
+    :ivar base_hr: default value: 0.0
+    :ivar reason: default value: ""
+    :ivar piE: default value: 0.0
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 11.1.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
     :cvar int subcategory: default value: 62
 
     :ivar int family: the index in the transformer family list.
@@ -63,6 +89,7 @@ class Transformer(Inductor):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _piE = [1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0,
             34.0, 610.0]
@@ -81,11 +108,18 @@ class Transformer(Inductor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a Transformer data model instance.
+=======
         Method to initialize a Transformer data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Transformer, self).__init__()
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -97,6 +131,7 @@ class Transformer(Inductor):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.family = 0
         self.power_loss = 0.0
         self.case_area = 0.0
@@ -105,7 +140,11 @@ class Transformer(Inductor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the Transformer data model attributes.
+=======
         Method to set the Transformer data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -127,17 +166,28 @@ class Transformer(Inductor):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the Transformer data model
+=======
         Method to retrieve the current values of the Transformer data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (family, power_loss, case_area, weight, input_power)
@@ -151,15 +201,25 @@ class Transformer(Inductor):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the inductive Transformer data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the inductive Transformer data
         model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
 # TODO: Re-write calculate_part; current McCabe Complexity metric = 12.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -207,4 +267,8 @@ class Transformer(Inductor):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
+<<<<<<< HEAD
+        return Inductor.calculate(self)
+=======
         return Inductor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

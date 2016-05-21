@@ -17,11 +17,19 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +37,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,6 +54,15 @@ class Model(object):
     of Failure failure mechanism.  A PoF will consist of one or more failure
     mechanism.  The attributes of a Mechanism are:
 
+<<<<<<< HEAD
+    :ivar dicLoads: Dictionary of the operating loads associated with the
+                    failure mechanism.  Key is the Load ID; value is a
+                    pointer to the instance of the operating Load data model.
+
+    :ivar assembly_id: default value: None
+    :ivar mechanism_id: default value: None
+    :ivar description: default value: ''
+=======
     :ivar dict dicLoads: Dictionary of the operating loads associated with the
                          failure mechanism.  Key is the Load ID; value is a
                          pointer to the instance of the operating Load data
@@ -50,6 +71,7 @@ class Model(object):
                            with.
     :ivar int mechanism_id: the PoF Mechanism ID.
     :ivar str description: the description of the PoF Mechanism.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -57,6 +79,12 @@ class Model(object):
         Method to initialize a Mechanism data model instance.
         """
 
+<<<<<<< HEAD
+        # Set public dict attribute default values.
+        self.dicLoads = {}
+
+        # Set public scalar attribute default values.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -69,6 +97,7 @@ class Model(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assembly_id = None
         self.mechanism_id = None
         self.description = ''
@@ -90,6 +119,15 @@ class Model(object):
             self.mechanism_id = int(values[1])
             self.description = str(values[2])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+        except ValueError as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
@@ -97,6 +135,7 @@ class Model(object):
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)

@@ -15,6 +15,15 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+    from hardware.component.connection.Connection import Model as Connection
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    from rtk.hardware.component.connection.Connection import Model as Connection
+=======
     import Configuration
     import Utilities
     from hardware.component.connection.Connection import Model as Connection
@@ -23,6 +32,7 @@ except ImportError:                         # pragma: no cover
     import rtk.Utilities as Utilities
     from rtk.hardware.component.connection.Connection import Model as \
                                                              Connection
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -31,7 +41,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -44,6 +58,19 @@ class PTH(Connection):
     and methods of a PTH connection component.  The attributes of a PTH
     connection are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 75
+
+    :ivar base_hr: default value: 0.0
+    :ivar reason: default value: ""
+    :ivar piE: default value: 0.0
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 16.1.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
     :cvar int subcategory: the Connection subcategory.
 
     :ivar float base_hr: the MIL-HDBK-217FN2 base/generic hazard rate.
@@ -55,6 +82,7 @@ class PTH(Connection):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _piQ = [1.0, 2.0]
     _piE = [1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
@@ -67,11 +95,18 @@ class PTH(Connection):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a PTH connection data model instance.
+=======
         Method to initialize a PTH connection data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(PTH, self).__init__()
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -83,6 +118,7 @@ class PTH(Connection):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.technology = 0
         self.n_wave_soldered = 0
         self.n_hand_soldered = 0
@@ -92,7 +128,11 @@ class PTH(Connection):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the PTH Connection data model attributes.
+=======
         Method to set the PTH Connection data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -115,17 +155,28 @@ class PTH(Connection):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the PCB Connection data model
+=======
         Method to retrieve the current values of the PCB Connection data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (technology, n_wave_soldered, n_hand_soldered,
@@ -141,9 +192,15 @@ class PTH(Connection):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the PTH Connection data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the PTH Connection data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -181,7 +238,11 @@ class PTH(Connection):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
+<<<<<<< HEAD
+        return Connection.calculate(self)
+=======
         return Connection.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class NonPTH(Connection):
@@ -190,6 +251,19 @@ class NonPTH(Connection):
     attributes and methods of a Non-PTH connection component.  The attributes
     of a Non-PTH connection are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 76
+
+    :ivar base_hr: default value: 0.0
+    :ivar reason: default value: ""
+    :ivar piE: default value: 0.0
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 17.1.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
     :cvar int subcategory: the Connection subcategory.
 
     :ivar float base_hr: the MIL-HDBK-217FN2 base/generic hazard rate.
@@ -201,6 +275,7 @@ class NonPTH(Connection):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lambdab = [0.00012, 0.00026, 0.0026, 0.000069, 0.00005, 0.00014]
     _piQ = [1.0, 1.0, 2.0, 20.0]
@@ -229,11 +304,18 @@ class NonPTH(Connection):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a Non-PTH connection data model instance.
+=======
         Method to initialize a Non-PTH connection data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(NonPTH, self).__init__()
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -245,12 +327,17 @@ class NonPTH(Connection):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.connection_type = 0
         self.piQ = 0.0
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the Non-PTH Connection data model attributes.
+=======
         Method to set the Non-PTH Connection data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -269,17 +356,28 @@ class NonPTH(Connection):
 # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the PCB Connection data model
+=======
         Method to retrieve the current values of the PCB Connection data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (connection_type)
@@ -292,10 +390,16 @@ class NonPTH(Connection):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the Non-PTH Connection data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Non-PTH Connection data
         model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -323,4 +427,8 @@ class NonPTH(Connection):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
+<<<<<<< HEAD
+        return Connection.calculate(self)
+=======
         return Connection.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

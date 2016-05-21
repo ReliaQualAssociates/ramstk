@@ -6,16 +6,30 @@ models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestThumbwheel.py is part of The RTK Project
+<<<<<<< HEAD
+#       tests.hardware.TestThumbwheel.py is part of The RTK Project
 #
 # All rights reserved.
-import sys
-from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestThumbwheel.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+<<<<<<< HEAD
+import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.switch.Thumbwheel import Thumbwheel
 
 __author__ = 'Andrew Rowland'
@@ -34,6 +48,12 @@ class TestThumbwheelModel(unittest.TestCase):
         Setup the test fixture for the Thumbwheel Switch class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Thumbwheel()
 
     @attr(all=True, unit=True)
@@ -207,14 +227,22 @@ class TestThumbwheelModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestThumbwheel) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestThumbwheel) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 16.0)
@@ -224,7 +252,11 @@ class TestThumbwheelModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_resistive(self):
         """
+<<<<<<< HEAD
+        (TestThumbwheel) calculate should return False on success when calculating MIL-HDBK-217F stress results with a resistive load
+=======
         (TestThumbwheel) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with a resistive load
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -236,7 +268,11 @@ class TestThumbwheelModel(unittest.TestCase):
         self.DUT.operating_current = 0.023
         self.DUT.rated_current = 0.05
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          '(lambdab + piN * lambdab2) * piCYC * piL * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.0067)
@@ -250,7 +286,11 @@ class TestThumbwheelModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_inductive(self):
         """
+<<<<<<< HEAD
+        (TestThumbwheel) calculate should return False on success when calculating MIL-HDBK-217F stress results with an inductive load
+=======
         (TestThumbwheel) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with an inductive load
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -262,7 +302,11 @@ class TestThumbwheelModel(unittest.TestCase):
         self.DUT.operating_current = 0.023
         self.DUT.rated_current = 0.05
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          '(lambdab + piN * lambdab2) * piCYC * piL * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.086)
@@ -276,7 +320,11 @@ class TestThumbwheelModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_lamp(self):
         """
+<<<<<<< HEAD
+        (TestThumbwheel) calculate should return False on success when calculating MIL-HDBK-217F stress results with a lamp load
+=======
         (TestThumbwheel) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with a lamp load
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -288,7 +336,11 @@ class TestThumbwheelModel(unittest.TestCase):
         self.DUT.operating_current = 0.023
         self.DUT.rated_current = 0.05
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          '(lambdab + piN * lambdab2) * piCYC * piL * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.086)
@@ -302,7 +354,11 @@ class TestThumbwheelModel(unittest.TestCase):
     @attr(all=True, unit=False)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
+        (TestThumbwheel) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
         (TestThumbwheel) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -313,12 +369,20 @@ class TestThumbwheelModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.000000000000001
 
+<<<<<<< HEAD
+        self.assertTrue(self.DUT.calculate())
+=======
         self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     @attr(all=True, unit=False)
     def test_calculate_217_stress_zero_division(self):
         """
+<<<<<<< HEAD
+        (TestThumbwheel) calculate should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+=======
         (TestThumbwheel) calculate_part should return True when a ZeroDivisionError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -329,4 +393,8 @@ class TestThumbwheelModel(unittest.TestCase):
         self.DUT.effective_resistance = 0.5
         self.DUT.reference_temperature = 0.0
 
+<<<<<<< HEAD
+        self.assertTrue(self.DUT.calculate())
+=======
         self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

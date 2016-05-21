@@ -15,6 +15,12 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
+<<<<<<< HEAD
+import numpy as np
+
+import dao.DAO as _dao
+from analyses.statistics.CrowAMSAA import *
+=======
 
 from analyses.statistics.growth.CrowAMSAA import calculate_average_mtbf, \
                                                  calculate_cramer_vonmises, \
@@ -28,6 +34,7 @@ from analyses.statistics.growth.CrowAMSAA import calculate_average_mtbf, \
                                                  calculate_t1, \
                                                  calculate_total_time, \
                                                  cramer_vonmises_critical_value
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,12 +42,19 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
+<<<<<<< HEAD
+class TestDuane(unittest.TestCase):
+=======
 class TestCrowAMSAA(unittest.TestCase):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
     Class for testing the Crow-AMSAA model functions.
     """
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_crow_amsaa_parameters_exact(self):
+=======
     def test00_calculate_initial_mtbf_program(self):
         """
         (TestCrowAMSAA) calculate_initial_mtbf should return a float value on success
@@ -356,6 +370,7 @@ class TestCrowAMSAA(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test07_calculate_crow_amsaa_parameters_exact(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) calculate_crow_amsaa_parameters should return 0 when encountering no errors using exact failure times
         """
@@ -374,7 +389,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_beta_hat, 0.6142104)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_crow_amsaa_parameters_grouped(self):
+=======
     def test07_calculate_crow_amsaa_parameters_grouped(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) calculate_crow_amsaa_parameters should return 0 when encountering no errors using grouped data
         """
@@ -391,7 +410,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_beta_hat, 0.8136085)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_crow_amsaa_parameters_no_failures(self):
+=======
     def test08_calculate_crow_amsaa_parameters_no_failures(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) calculate_crow_amsaa_parameters should return 1 when passed an empty list of failure counts
         """
@@ -406,7 +429,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_beta_hat, 0.0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_crow_amsaa_mean(self):
+=======
     def test09_calculate_crow_amsaa_mean(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) calculate_crow_amsaa_mean should return False
         """
@@ -424,7 +451,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_instantaneous_mean, 8.7792208)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_cramer_vonmises(self):
+=======
     def test10_calculate_cramer_vonmises(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) calculate_cramer_vonmises should return False
         """
@@ -439,6 +470,10 @@ class TestCrowAMSAA(unittest.TestCase):
                       1116.3, 1161.1, 1257.1, 1276.3, 1308.9, 1340.3, 1437.3,
                       1482.0, 1489.9, 1715.1, 1828.9, 1971.5, 2303.4, 2429.7,
                       2457.4, 2535.2, 2609.9, 2674.2, 2704.8, 2849.6, 2923.5]
+<<<<<<< HEAD
+        alpha = 0.332
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         beta = 0.616
 
         _Cvm = calculate_cramer_vonmises(n_failures, fail_times, beta, 3000.0,
@@ -446,7 +481,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.04909242)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_cramer_vonmises_critical_value_exact(self):
+=======
     def test11_cramer_vonmises_critical_value_exact(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) cramer_vonmises_critical_value should return the critical value when the degrees of freedom is a key
         """
@@ -455,7 +494,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.171)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_cramer_vonmises_critical_value_interpolate_df(self):
+=======
     def test12_cramer_vonmises_critical_value_interpolate_df(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) cramer_vonmises_critical_value should return the critical value when the degrees of freedom is not a key
         """
@@ -464,7 +507,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.1725)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_cramer_vonmises_critical_value_interpolate_confidence(self):
+=======
     def test13_cramer_vonmises_critical_value_interpolate_confidence(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) cramer_vonmises_critical_value should return the critical value when the confidence level is not a key
         """
@@ -473,7 +520,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_Cvm, 0.127)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_crow_amsaa_chi_square_exact(self):
+=======
     def test14_calculate_crow_amsaa_chi_square_exact(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) calculate_crow_amsaa_chi_square should return the chi-square test statistic when using exact data
         """
@@ -496,7 +547,11 @@ class TestCrowAMSAA(unittest.TestCase):
         self.assertAlmostEqual(_chi_square, 149.3506494)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_crow_amsaa_chi_square_grouped(self):
+=======
     def test14a_calculate_crow_amsaa_chi_square_grouped(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestCrowAMSAA) calculate_crow_amsaa_chi_square should return the chi-square test statistic when using grouped data
         """

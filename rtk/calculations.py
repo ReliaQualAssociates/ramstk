@@ -55,6 +55,552 @@ def calculate_part(model):
     return _lambdap
 
 
+def overstressed(partmodel, partrow, systemmodel, systemrow):
+    """
+    Determines whether the component is overstressed based on derating
+    rules.
+
+    Currently only default derating rules from Reliability Toolkit:
+    Commercial Practices Edition, Section 6.3.3 are used.
+
+    +------------+----------------------------+-------------------+
+    | Component  |                            |    Environment    |
+    |   Type     |     Derating Parameter     | Severe  | Benign  |
+    +============+============================+=========+=========+
+    | Capacitor  | DC Voltage                 |   60%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Temp from Max Limit        |   10C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Circuit Bkr| Current                    |   80%   |   80%   |
+    +------------+----------------------------+---------+---------+
+    | Connectors | Voltage                    |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Current                    |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Insert Temp from Max Limit |   25C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Diodes     | Power Dissipation          |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temperature   |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Fiber      | Bend Radius                |  200%   |  200%   |
+    | Optics     +----------------------------+---------+---------+
+    |            | Cable Tension              |   50%   |   50%   |
+    +------------+----------------------------+---------+---------+
+    | Fuses      | Current (Maximum           |   50%   |   70%   |
+    |            | Capability)                |         |         |
+    +------------+----------------------------+---------+---------+
+    | Inductors  | Operating Current          |   60%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Dielectric Voltage         |   50%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Temp from Hot Spot         |   15C   |         |
+    +------------+----------------------------+---------+---------+
+    | Lamps      | Voltage                    |   94%   |   94%   |
+    +------------+----------------------------+---------+---------+
+    | Memories   | Supply Voltage             |  +/-5%  |  +/-5%  |
+    |            +----------------------------+---------+---------+
+    |            | Output Current             |   80%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Micro      | Supply Voltage             |  +/-5%  |  +/-5%  |
+    | circuits   +----------------------------+---------+---------+
+    |            | Fan Out                    |   80%   |   80%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | GaAs Micro | Max Junction Temp          |  135C   |   N/A   |
+    | circuits   |                            |         |         |
+    +------------+----------------------------+---------+---------+
+    | Micro      | Supply Voltage             |  +/-5%  |  +/-5%  |
+    | processors +----------------------------+---------+---------+
+    |            | Fan Out                    |   80%   |   80%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Photo      | Reverse Voltage            |   70%   |    70%  |
+    | diode      +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Photo      | Max Junction Temp          |  125C   |   N/A   |
+    | transistor |                            |         |         |
+    +------------+----------------------------+---------+---------+
+    | Relays     | Resistive Load Current     |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Capacitive Load Current    |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Inductive Load Current     |   40%   |   50%   |
+    |            +----------------------------+---------+---------+
+    |            | Contact Power              |   50%   |   60%   |
+    +------------+----------------------------+---------+---------+
+    | Resistors  | Power Dissipation          |   50%   |   80%   |
+    |            +----------------------------+---------+---------+
+    |            | Temp from Max Limit        |   30C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Transistor,| Power Dissipation          |   70%   |   90%   |
+    | Silicon    +----------------------------+---------+---------+
+    |            | Breakdown Voltage          |   75%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Transistor,| Power Dissipation          |   70%   |   90%   |
+    | GaAs       +----------------------------+---------+---------+
+    |            | Breakdown Voltage          |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  135C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+    | Thyristors | On-State Current           |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Off-State Voltage          |   70%   |   90%   |
+    |            +----------------------------+---------+---------+
+    |            | Max Junction Temp          |  125C   |   N/A   |
+    +------------+----------------------------+---------+---------+
+
+    :param partmodel: the winParts full gtk.TreeModel().
+    :type partmodel: gtk.TreeModel
+    :param partrow: the currently selected gtk.TreeIter() in the winParts full
+                    gtk.TreeModel().
+    :type partrow: gtk.TreeIter
+    :param systemmodel: the Hardware class gtk.TreeModel().
+    :type systemmodel: gtk.TreeModel
+    :param systemrow: the currently selected gtk.TreeIter() in the Hardware
+                      class gtk.TreeModel().
+    :type systemrow: gtk.TreeIter
+    """
+
+    # |------------------  <---- Knee Temperature
+    # |                  \
+    # |                   \
+    # |                    \
+    # |                     \  <---- Maximum Temperature
+    # +------------------------
+    overstress = False
+    reason = ""
+    r_index = 1
+    harsh = True
+
+    Eidx = systemmodel.get_value(systemrow, 22)
+    Tmax = partmodel.get_value(partrow, 55)
+
+    category = systemmodel.get_value(systemrow, 11)
+    subcategory = systemmodel.get_value(systemrow, 78)
+
+    # If the active environment is Benign Ground, Fixed Ground,
+    # Sheltered Naval, or Space Flight it is NOT harsh.
+    if Eidx == 1 or Eidx == 2 or Eidx == 4 or Eidx == 11:
+        harsh = False
+
+    if category == 1:                       # Capacitor
+        Voper = partmodel.get_value(partrow, 66)
+        Vrate = partmodel.get_value(partrow, 94)
+        Toper = systemmodel.get_value(systemrow, 80)
+
+        if harsh:
+            if Voper > 0.60 * Vrate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 60% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+            if Tmax - Toper <= 10.0:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating temperature " \
+                                                 "within 10.0C of maximum " \
+                                                 "rated temperature.\n"
+                r_index += 1
+        else:
+            if Voper > 0.90 * Vrate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 90% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+
+    elif category == 2:                     # Connection
+        Tmax = partmodel.get_value(partrow, 55)
+        Ioper = partmodel.get_value(partrow, 62)
+        Voper = partmodel.get_value(partrow, 66)
+        Irate = partmodel.get_value(partrow, 92)
+        Vrate = partmodel.get_value(partrow, 94)
+        Trise = partmodel.get_value(partrow, 107)
+        Toper = partmodel.get_value(partrow, 80)
+
+        if harsh:
+            if Voper > 0.7 * Vrate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 70% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+            if Ioper > 0.7 * Irate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 70% " \
+                                                 "rated current.\n"
+                r_index += 1
+            if (Trise + Toper - Tmax) < 25:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating temperature " \
+                                                 "within 25.0C of maximum " \
+                                                 "rated temperature.\n"
+                r_index += 1
+        else:
+            if Voper > 0.9 * Vrate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 90% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+            if Ioper > 0.9 * Irate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
+                r_index += 1
+
+    elif category == 3:                     # Inductive Device
+        Ths = partmodel.get_value(partrow, 39)
+        Ioper = partmodel.get_value(partrow, 62)
+        Voper = partmodel.get_value(partrow, 66)
+        Irate = partmodel.get_value(partrow, 92)
+        Vrate = partmodel.get_value(partrow, 94)
+        Toper = partmodel.get_value(partrow, 105)
+
+        if harsh:
+            if Ioper > 0.60 * Irate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 60% " \
+                                                 "rated current.\n"
+                r_index += 1
+            if Voper > 0.50 * Vrate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 50% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+            if Ths - Toper < 15.0:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating temperature " \
+                                                 "within 15.0C of maximum " \
+                                                 "rated temperature.\n"
+                r_index += 1
+        else:
+            if Ioper > 0.90 * Irate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
+                r_index += 1
+            if Voper > 0.90 * Vrate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 90% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+
+    elif category == 4:                     # Integrated Circuit
+        Tjunc = partmodel.get_value(partrow, 39)
+        Ioper = partmodel.get_value(partrow, 62)
+        Voper = partmodel.get_value(partrow, 66)
+        Irate = partmodel.get_value(partrow, 92)
+        Vrate = partmodel.get_value(partrow, 94)
+
+        if subcategory < 3:                 # GaAs
+            if harsh:
+                if Tjunc > 135.0:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Junction temperature " \
+                                                     "> 135.0C.\n"
+                    r_index += 1
+        else:
+            if harsh:
+                if Voper > 1.05 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "105% rated voltage.\n"
+                    r_index += 1
+                if Voper < 0.95 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage < " \
+                                                     "95% rated voltage.\n"
+                    r_index += 1
+                if Ioper > 0.80 * Irate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "80% rated current.\n"
+                    r_index += 1
+                if Tjunc > 125.0:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Junction temperature " \
+                                                     "> 125.0C.\n"
+                    r_index += 1
+            else:
+                if Voper > 1.05 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "105% rated voltage.\n"
+                    r_index += 1
+                if Voper < 0.95 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage < " \
+                                                     "95% rated voltage.\n"
+                    r_index += 1
+                if Ioper > 0.90 * Irate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "90% rated current.\n"
+                    r_index += 1
+
+    elif category == 6:                     # Miscellaneous
+        if subcategory == 80:               # Crystal
+            print "Bug #113: No overstress calculations for crystals."
+        elif subcategory == 81:             # Lamps
+            Voper = partmodel.get_value(partrow, 66)
+            Vrated = partmodel.get_value(partrow, 94)
+            if Voper >= 0.94 * Vrated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 94% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+        elif subcategory == 82:             # Fuse
+            Ioper = partmodel.get_value(partrow, 62)
+            Irated = partmodel.get_value(partrow, 92)
+            if harsh and Ioper >= 0.50 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 50% " \
+                                                 "rated current.\n"
+                r_index += 1
+            elif Ioper >= 0.70 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 70% " \
+                                                 "rated current.\n"
+                r_index += 1
+        elif subcategory == 83:             # Filter
+            print "Bug #115: No overstress calculations for filters."
+
+    elif category == 7:                     # Relay
+        Aidx = partmodel.get_value(partrow, 30)
+        Ioper = partmodel.get_value(partrow, 62)
+        Irated = partmodel.get_value(partrow, 92)
+
+        if harsh:
+            if Aidx == 1 and Ioper > 0.75 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 75% " \
+                                                 "rated current.\n"
+                r_index += 1
+            elif Aidx == 2 and Ioper > 0.75 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 75% " \
+                                                 "rated current.\n"
+                r_index += 1
+            elif Aidx == 3 and Ioper > 0.40 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 40% " \
+                                                 "rated current.\n"
+                r_index += 1
+        else:
+            if Aidx == 1 and Ioper > 0.90 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
+                r_index += 1
+            elif Aidx == 2 and Ioper > 0.90 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 90% " \
+                                                 "rated current.\n"
+                r_index += 1
+            elif Aidx == 3 and Ioper > 0.50 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 50% " \
+                                                 "rated current.\n"
+                r_index += 1
+
+    elif category == 8:                    # Resistor
+        Poper = partmodel.get_value(partrow, 64)
+        Prated = partmodel.get_value(partrow, 93)
+
+        if harsh:
+            if Poper > 0.5 * Prated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating power > 50% " \
+                                                 "rated power.\n"
+                r_index += 1
+        else:
+            if Poper > 0.8 * Prated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating power > 80% " \
+                                                 "rated power.\n"
+                r_index += 1
+
+    elif category == 9:                    # Semiconductor
+        Tjunc = partmodel.get_value(partrow, 39)
+        Ioper = partmodel.get_value(partrow, 62)
+        Poper = partmodel.get_value(partrow, 64)
+        Voper = partmodel.get_value(partrow, 66)
+        Irate = partmodel.get_value(partrow, 92)
+        Prate = partmodel.get_value(partrow, 93)
+        Vrate = partmodel.get_value(partrow, 94)
+
+        if subcategory == 1 or subcategory == 2:    # Diodes
+            if harsh:
+                if Poper > 0.7 * Prate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "70% rated power.\n"
+                    r_index += 1
+                if Tjunc > 125.0:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
+                    r_index += 1
+            else:
+                if Poper > 0.9 * Prate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating power " \
+                                                     "> 90% rated power.\n"
+                    r_index += 1
+
+        elif subcategory > 2 and subcategory < 6:    # Optoelectronics
+            if Voper > 0.70 * Vrate:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating voltage > 70% " \
+                                                 "rated voltage.\n"
+                r_index += 1
+            if Tjunc > 125.0:
+                overstress = True
+                reason = reason + str(r_index) + ". Junction temperature > " \
+                                                 "125.0C.\n"
+                r_index += 1
+
+        elif subcategory == 6:              # Thyristor
+            if harsh:
+                if Ioper > 0.70 * Irate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "70% rated current.\n"
+                    r_index += 1
+                if Voper > 0.70 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "70% rated voltage.\n"
+                    r_index += 1
+                if Tjunc > 125.0:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
+                    r_index += 1
+            else:
+                if Ioper > 0.90 * Irate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "90% rated current.\n"
+                    r_index += 1
+                if Voper > 0.90 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "90% rated voltage.\n"
+                    r_index += 1
+
+        elif subcategory == 7:             # GaAs transistor
+            if harsh:
+                if Poper > 0.70 * Prate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "70% rated power.\n"
+                    r_index += 1
+                if Voper > 0.70 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage " \
+                                                     "> 70% rated voltage.\n"
+                    r_index += 1
+                if Tjunc > 135.0:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
+                    r_index += 1
+            else:
+                if Poper > 0.90 * Prate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "90% rated power.\n"
+                    r_index += 1
+                if Voper > 0.90 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "90% rated voltage.\n"
+                    r_index += 1
+
+        elif subcategory > 7:              # Silicon transistor
+            if harsh:
+                if Poper > 0.70 * Prate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "70% rated power.\n"
+                    r_index += 1
+                if Voper > 0.75 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "70% rated voltage.\n"
+                    r_index += 1
+                if Tjunc > 125.0:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Junction " \
+                                                     "temperature > 125.0C.\n"
+                    r_index += 1
+            else:
+                if Poper > 0.90 * Prate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating power > " \
+                                                     "90% rated power.\n"
+                    r_index += 1
+                if Voper > 0.90 * Vrate:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating voltage > " \
+                                                     "90% rated voltage.\n"
+                    r_index += 1
+
+    elif category == 10:                   # Switching Device
+        Aidx = partmodel.get_value(partrow, 5)
+        Ioper = partmodel.get_value(partrow, 62)
+        Irated = partmodel.get_value(partrow, 92)
+
+        if subcategory == 71:              # Circuit Breaker
+            if Ioper > 0.8 * Irated:
+                overstress = True
+                reason = reason + str(r_index) + ". Operating current > 80% " \
+                                                 "rated current.\n"
+                r_index += 1
+
+        else:
+            if harsh:
+                if Aidx == 1 and Ioper > 0.75 * Irated:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 75% rated current.\n"
+                    r_index += 1
+                elif Aidx == 2 and Ioper > 0.75 * Irated:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "75% rated current.\n"
+                    r_index += 1
+                elif Aidx == 3 and Ioper > 0.40 * Irated:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current > " \
+                                                     "40% rated current.\n"
+                    r_index += 1
+            else:
+                if Aidx == 1 and Ioper > 0.90 * Irated:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 90% rated current.\n"
+                    r_index += 1
+                elif Aidx == 2 and Ioper > 0.90 * Irated:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 90% rated current.\n"
+                    r_index += 1
+                elif Aidx == 3 and Ioper > 0.50 * Irated:
+                    overstress = True
+                    reason = reason + str(r_index) + ". Operating current " \
+                                                     "> 50% rated current.\n"
+                    r_index += 1
+
+    return overstress, reason
+
+
 def similar_hazard_rate(component, new_qual, new_environ, new_temp):
     """
     Calculates the estimated hazard rate of a similar item based on
@@ -322,6 +868,98 @@ def dormant_hazard_rate(component):
         return True
 
 
+def criticality_analysis(modeca, itemca, rpn):
+    """
+    Function to perform criticality calculations for FMECA.
+
+    :param list modeca: list containing inputs for the MIL-STD-1629A mode
+                        criticality calculation.
+    :param list itemca: list containing inputs for the MIL-STD-1629A item
+                        criticality calculation.
+    :param list rpn: list containing inputs for the automotive criticality
+                     calculation.
+    :return: modeca, itemca, rpn; mode criticality, item criticality, and RPN.
+    :rtype: list, list, list
+    """
+
+    fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+
+    _item_crit = u''
+
+    # First, calculate the mode criticality and assign result to position 4.
+    # Second, calculate the mode failure rate and assign result to position 5.
+    # Third, calculate the item criticality and assign result to position 6.
+    _keys = modeca.keys()
+    for i in range(len(_keys)):
+        modeca[_keys[i]][4] = modeca[_keys[i]][0] * modeca[_keys[i]][1] * \
+            modeca[_keys[i]][2] * modeca[_keys[i]][3]
+        modeca[_keys[i]][5] = modeca[_keys[i]][1] * modeca[_keys[i]][2]
+
+    # Now calculate the item criticality in accordance with MIL-STD-1629A.
+    _keys = itemca.keys()
+    for i in range(len(_keys)):
+        _cats = sorted(list(set([j[1] for j in itemca[_keys[i]]])))
+        for k in range(len(_cats)):
+            _crit = 0.0
+            _modes = [j[0] for j in itemca[_keys[i]] if j[1] == _cats[k]]
+            for _m in range(len(_modes)):
+                _crit += modeca[_modes[_m]][4]
+
+            if _cats[k] is not None and _cats[k] != '' and \
+               _crit is not None and _crit != '':
+                _item_crit = _item_crit + _util.none_to_string(_cats[k]) + \
+                    ": " + str(fmt.format(_util.none_to_string(_crit))) + "\n"
+
+        itemca[_keys[i]].append(_item_crit)
+
+    # Now calculate the rpn criticality.
+    _keys = rpn.keys()
+    for i in range(len(_keys)):
+        rpn[_keys[i]][3] = rpn[_keys[i]][0] * rpn[_keys[i]][1] * \
+            rpn[_keys[i]][2]
+        rpn[_keys[i]][7] = rpn[_keys[i]][4] * rpn[_keys[i]][5] * \
+            rpn[_keys[i]][6]
+
+    return modeca, itemca, rpn
+
+
+def beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
+    """
+    Function to calculate the mean, standard error, and bounds on the mean of
+    a beta distribution.  These are the project management estimators, not
+    exact calculations.
+
+    :param float a: the minimum expected value.
+    :param float m: most likely value.
+    :param float b: the maximum expected value.
+    :param float alpha: the desired confidence level.
+    :return: _meanll, _mean, _meanul, _sd; the calculated mean, bounds, and
+                                           standard error.
+    :rtype: tuple of floats
+    """
+
+    from scipy.stats import norm            # pylint: disable=E0611
+
+    if alpha < 0.0:
+        _util.rtk_information(_(u"Confidence level take a value between 0 and "
+                                u"100 inclusive [0, 100].  Please select and "
+                                u"appropriate confidence level and try "
+                                u"again."))
+        return a, m, b, 0.0
+    elif alpha > 1.0:
+        _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
+    else:
+        _z_norm = norm.ppf(1.0 - ((1.0 - alpha) / 2.0))
+
+    _mean = (a + 4.0 * m + b) / 6.0
+    _sd = (b - a) / 6.0
+
+    _meanll = _mean - _z_norm * _sd
+    _meanul = _mean + _z_norm * _sd
+
+    return _meanll, _mean, _meanul, _sd
+
+
 def calculate_field_ttf(dates):
     """
     Function to calculate the time to failure (TTF) of field incidents.
@@ -337,5 +975,45 @@ def calculate_field_ttf(dates):
     _start = datetime.strptime(dates[0], "%Y-%m-%d")
     _fail = datetime.strptime(dates[1], "%Y-%m-%d")
     _ttf = _fail - _start
-    print _ttf.days
+
     return _ttf.days
+
+
+def smooth_curve(x, y, num):                # pylint: disable=C0103
+    """
+    Function to produce smoothed plots where there are a small number of data
+    points in the original data set.
+
+    :param array x: a numpy array of the raw x-values.
+    :param array y: a numpy array of the raw y-values.
+    :param int num: the number of points to generate.
+    :return: _new_x, _new_y
+    :rtype: list
+    """
+
+    from scipy.interpolate import spline    # pylint: disable=E0611
+
+    _error = False
+    x = np.array(x)
+    y = np.array(y)
+
+    # Create a new set of x values to be used for smoothing the data.  The new
+    # x values are in the range of the minimum and maximum x values passed to
+    # the function.  The number of new data points between these values is
+    # determined by the value of parameter num.
+    _new_x = np.linspace(x.min(), x.max(), num)     # pylint: disable=E1101
+
+    # Attempt to create a new set of y values using the original x, original y,
+    # and new x values.  If the operation is unsuccessful, create a list of
+    # length num the new y, all set to zero.  Also set the error variable to
+    # True.
+    try:
+        _new_y = spline(x, y, _new_x)
+    except ValueError:
+        _error = True
+        _new_y = np.zeros(num)              # pylint: disable=E1101
+
+    _new_x = _new_x.tolist()                # pylint: disable=E1103
+    _new_y = _new_y.tolist()
+
+    return _new_x, _new_y, _error

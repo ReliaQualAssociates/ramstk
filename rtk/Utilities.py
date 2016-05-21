@@ -961,6 +961,13 @@ def rtk_error(prompt, _parent=None):
     :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
     """
 
+<<<<<<< HEAD
+    prompt = prompt + u"  Check the error log %s for additional information " \
+                      u"(if any).  Please e-mail bugs@reliaqual.com with a " \
+                      u"description of the problem, the workflow you are " \
+                      u"using and the error log attached if the problem " \
+                      u"persists." % (_conf.LOG_DIR + 'RTK_error.log')
+=======
     _icon = _conf.ICON_DIR + '32x32/error.png'
     _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
     _image = gtk.Image()
@@ -972,13 +979,17 @@ def rtk_error(prompt, _parent=None):
                       u"problem, the workflow you are using and the error " \
                       u"log attached if the problem persists.".format(
                       _conf.LOG_DIR + 'RTK_error.log')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
                                 message_format=prompt)
+<<<<<<< HEAD
+=======
 
     _dialog.set_image(_image)
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     _dialog.run()
     _dialog.destroy()
 

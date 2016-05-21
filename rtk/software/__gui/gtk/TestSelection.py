@@ -7,7 +7,11 @@ Software Package Test Selection Matrix Work Book View
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       rtk.software.gui.gtk.TestSelection.py is part of The RTK Project
+=======
 #       rtk.software.__gui.gtk.TestSelection.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -38,9 +42,15 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+except ImportError:
+    import rtk.Configuration as _conf
+=======
     import Configuration
 except ImportError:
     import rtk.Configuration as Configuration
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -48,7 +58,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -57,6 +71,59 @@ _ = gettext.gettext
 
 class CSCITestSelection(gtk.ScrolledWindow):
     """
+<<<<<<< HEAD
+    The Work Book view for analyzing and displaying the Test Selection Matrix
+    for a CSCI.  The attributes of a Test Selection Matrix Work Book view are:
+
+    :cvar _lst_test_rankings: default value: [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''],
+                                              [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0, 0, ''],
+                                              [0, 0, 1, 0, 0, 0, '16', '3', '2', '2', '-', '-', 0, 0, ''],
+                                              [0, 0, 0, 1, 0, 0, '32', '4', '3', '4', '2', '1', 0, 0, ''],
+                                              [0, 0, 0, 0, 1, 0, '58', '5', '1', '3', '1', '2', 0, 0, ''],
+                                              [0, 0, 0, 0, 0, 1, '44', '5', '5', '6', '3', '3', 0, 0, ''],
+                                              [1, 0, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
+                                              [0, 1, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
+                                              [1, 1, 0, 0, 0, 0, '-', '1', '1', '3', '-', '-', 0, 0, ''],
+                                              [0, 0, 1, 1, 0, 0, '-', '4', '6', '4', '7', '1', 0, 0, ''],
+                                              [0, 1, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
+                                              [1, 0, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
+                                              [0, 0, 1, 0, 0, 1, '-', '5', '3', '7', '10', '2', 0, 0, ''],
+                                              [1, 0, 0, 1, 0, 0, '-', '6', '10', '8', '7', '5', 0, 0, ''],
+                                              [0, 1, 0, 1, 0, 0, '-', '6', '9', '9', '7', '5', 0, 0, ''],
+                                              [0, 1, 1, 0, 1, 0, '-', '12', '12', '10', '3', '9', 0, 0, ''],
+                                              [0, 0, 0, 1, 1, 0, '-', '13', '12', '11', '1', '10', 0, 0, ''],
+                                              [1, 0, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
+                                              [0, 1, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
+                                              [0, 0, 0, 0, 1, 1, '-', '15', '11', '14', '1', '11', 0, 0, ''],
+                                              [0, 0, 0, 1, 0, 1, '-', '13', '2', '15', '6', '12', 0, 0, '']]
+    """
+
+    _lst_test_rankings = [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''],
+                          [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0, 0, ''],
+                          [0, 0, 1, 0, 0, 0, '16', '3', '2', '2', '-', '-', 0, 0, ''],
+                          [0, 0, 0, 1, 0, 0, '32', '4', '3', '4', '2', '1', 0, 0, ''],
+                          [0, 0, 0, 0, 1, 0, '58', '5', '1', '3', '1', '2', 0, 0, ''],
+                          [0, 0, 0, 0, 0, 1, '44', '5', '5', '6', '3', '3', 0, 0, ''],
+                          [1, 0, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
+                          [0, 1, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''],
+                          [1, 1, 0, 0, 0, 0, '-', '1', '1', '3', '-', '-', 0, 0, ''],
+                          [0, 0, 1, 1, 0, 0, '-', '4', '6', '4', '7', '1', 0, 0, ''],
+                          [0, 1, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
+                          [1, 0, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''],
+                          [0, 0, 1, 0, 0, 1, '-', '5', '3', '7', '10', '2', 0, 0, ''],
+                          [1, 0, 0, 1, 0, 0, '-', '6', '10', '8', '7', '5', 0, 0, ''],
+                          [0, 1, 0, 1, 0, 0, '-', '6', '9', '9', '7', '5', 0, 0, ''],
+                          [0, 1, 1, 0, 1, 0, '-', '12', '12', '10', '3', '9', 0, 0, ''],
+                          [0, 0, 0, 1, 1, 0, '-', '13', '12', '11', '1', '10', 0, 0, ''],
+                          [1, 0, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
+                          [0, 1, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''],
+                          [0, 0, 0, 0, 1, 1, '-', '15', '11', '14', '1', '11', 0, 0, ''],
+                          [0, 0, 0, 1, 0, 1, '-', '13', '2', '15', '6', '12', 0, 0, '']]
+
+    def __init__(self):
+        """
+        Creates a scrolled window for the CSCI Test Selection Matrix.
+=======
     The List Book view for analyzing and displaying the Test Selection Matrix
     for a CSCI.  The attributes of a Test Selection Matrix List Book view are:
 
@@ -113,10 +180,17 @@ class CSCITestSelection(gtk.ScrolledWindow):
     def __init__(self):
         """
         Method to initialize a CSCI Test Selection Matrix.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.ScrolledWindow.__init__(self)
 
+<<<<<<< HEAD
+        # Initialize private scalar attributes.
+        self._software_model = None
+
+        self.tvwTestSelectionMatrix = gtk.TreeView()
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -130,6 +204,7 @@ class CSCITestSelection(gtk.ScrolledWindow):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     def create_test_planning_matrix(self):
         """
@@ -137,9 +212,15 @@ class CSCITestSelection(gtk.ScrolledWindow):
         """
 
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+<<<<<<< HEAD
+        self.add(self.tvwTestSelectionMatrix)
+
+        self.tvwTestSelectionMatrix.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+=======
         self.add(self._treeview)
 
         self._treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create and load the Test Matrix for CSCI-level testing.
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
@@ -150,9 +231,17 @@ class CSCITestSelection(gtk.ScrolledWindow):
                                gobject.TYPE_STRING, gobject.TYPE_STRING,
                                gobject.TYPE_INT, gobject.TYPE_INT,
                                gobject.TYPE_STRING)
+<<<<<<< HEAD
+        self.tvwTestSelectionMatrix.set_model(_model)
+        self.tvwTestSelectionMatrix.set_tooltip_text(_(u"Software module "
+                                                       u"level test "
+                                                       u"technique selection "
+                                                       u"matrix."))
+=======
         self._treeview.set_model(_model)
         self._treeview.set_tooltip_text(_(u"Software module (CSCI) level test "
                                           u"technique selection matrix."))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _headings = [_(u"Error/Anomaly\nDetection"),
                      _(u"Structure\nAnalysis &amp;\nDocumentation"),
@@ -184,7 +273,11 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _column.set_max_width(75)
             _column.set_sort_column_id(i)
             _column.set_widget(_label)
+<<<<<<< HEAD
+            self.tvwTestSelectionMatrix.append_column(_column)
+=======
             self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         for i in range(len(_headings[6:])):
             _cell = gtk.CellRendererText()
@@ -207,7 +300,11 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _column.set_max_width(75)
             _column.set_sort_column_id(i + 6)
             _column.set_widget(_label)
+<<<<<<< HEAD
+            self.tvwTestSelectionMatrix.append_column(_column)
+=======
             self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _cell = gtk.CellRendererToggle()
         _cell.set_property('activatable', 1)
@@ -230,7 +327,11 @@ class CSCITestSelection(gtk.ScrolledWindow):
         _column.set_max_width(75)
         _column.set_sort_column_id(12)
         _column.set_widget(_label)
+<<<<<<< HEAD
+        self.tvwTestSelectionMatrix.append_column(_column)
+=======
         self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _cell.connect('toggled', self._on_cell_toggled, 12, _model)
 
         _cell = gtk.CellRendererToggle()
@@ -254,7 +355,11 @@ class CSCITestSelection(gtk.ScrolledWindow):
         _column.set_max_width(75)
         _column.set_sort_column_id(13)
         _column.set_widget(_label)
+<<<<<<< HEAD
+        self.tvwTestSelectionMatrix.append_column(_column)
+=======
         self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _cell.connect('toggled', self._on_cell_toggled, 13, _model)
 
         for i in range(len(self._lst_test_rankings)):
@@ -269,15 +374,24 @@ class CSCITestSelection(gtk.ScrolledWindow):
         Method to load the test matrix Recommended and Selected columns for the
         selected CSCI.
 
+<<<<<<< HEAD
+        :param `rtk.software.Software` software: the software CSCI to load into
+                                                 the test matrix.
+=======
         :param software: the :py:class:`rtk.software.Software.Model` to load
                          into the test matrix.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         self._software_model = software
 
+<<<<<<< HEAD
+        _model = self.tvwTestSelectionMatrix.get_model()
+=======
         _model = self._treeview.get_model()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _row = _model.get_iter_root()
 
         try:
@@ -294,6 +408,21 @@ class CSCITestSelection(gtk.ScrolledWindow):
 
     def _on_cell_toggled(self, cell, path, position, model):
         """
+<<<<<<< HEAD
+        Called whenever a gtk.TreeView() CellRenderer is edited for the
+        test selection worksheet.
+
+        :param cell: the gtk.CellRenderer() that was edited.
+        :type cell: gtk.CellRenderer
+        :param path: the gtk.Treeview() path of the gtk.CellRenderer() that was
+                     edited.
+        :type path: string
+        :param position: the column position in the Software class gtk.TreeView()
+                         of the edited gtk.CellRenderer().
+        :type position: integer
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+=======
         Method called whenever a gtk.TreeView() CellRenderer is edited for the
         test selection worksheet.
 
@@ -304,6 +433,7 @@ class CSCITestSelection(gtk.ScrolledWindow):
                              gtk.TreeView() of the edited gtk.CellRenderer().
         :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
                                     belongs to.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
@@ -321,6 +451,60 @@ class CSCITestSelection(gtk.ScrolledWindow):
 
 class UnitTestSelection(gtk.ScrolledWindow):
     """
+<<<<<<< HEAD
+    The Work Book view for analyzing and displaying the Test Selection Matrix
+    for a Software Unit.  The attributes of a Test Selection Matrix Work Book
+    view are:
+
+    :ivar _lst_test_rankings: default value: [[1, 0, 0, 0, 0, 0, '6', '2', '2', '1', '-', '-', 'L', 'M', '', '', '', '', 'H', '', '', '', 0, 0, ''],
+                                              [0, 1, 0, 0, 0, 0, '4', '1', '6', '2', '-', '-', '', 'L', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 0, 1, 0, 0, 0, '8', '4', '1', '3', '-', '-', 'L', 'H', '', 'L', 'H', '', 'L', 'M', '', 'L', 0, 0, ''],
+                                              [0, 0, 0, 1, 0, 0, '16', '3', '4', '4', '2', '1', 'L', 'L', '', 'L', 'H', '', '', 'H', '', 'L', 0, 0, ''],
+                                              [0, 0, 0, 0, 1, 0, '29', '6', '3', '5', '1', '3', 'L', 'M', '', '', 'H', 'L', '', 'H', '', 'L', 0, 0, ''],
+                                              [0, 0, 0, 0, 0, 1, '22', '5', '5', '6', '2', '2', 'L', '', 'L', '', 'M', 'L', '', 'M', '', 'L', 0, 0, ''],
+                                              [1, 1, 0, 0, 0, 0, '-', '1', '9', '1', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [1, 0, 1, 0, 0, 0, '-', '3', '1', '2', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 1, 1, 0, 0, 0, '-', '2', '7', '3', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [1, 0, 0, 1, 0, 0, '-', '10', '2', '4', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 0, 1, 0, 0, 1, '-', '9', '4', '5', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [1, 0, 0, 0, 0, 1, '-', '5', '5', '6', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [1, 0, 0, 0, 1, 0, '-', '12', '3', '7', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 0, 1, 1, 0, 0, '-', '6', '6', '8', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 0, 0, 1, 0, 1, '-', '7', '10', '8', '6', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 1, 0, 1, 0, 0, '-', '8', '12', '10', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 0, 0, 0, 1, 1, '-', '13', '11', '11', '1', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 1, 0, 0, 1, 0, '-', '11', '14', '12', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 1, 0, 0, 0, 1, '-', '4', '15', '13', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 0, 1, 0, 1, 0, '-', '15', '8', '14', '37', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                                              [0, 0, 0, 1, 1, 0, '-', '14', '13', '15', '1', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, '']]
+    """
+
+    _lst_test_rankings = [[1, 0, 0, 0, 0, 0, '6', '2', '2', '1', '-', '-', 'L', 'M', '', '', '', '', 'H', '', '', '', 0, 0, ''],
+                          [0, 1, 0, 0, 0, 0, '4', '1', '6', '2', '-', '-', '', 'L', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 0, 1, 0, 0, 0, '8', '4', '1', '3', '-', '-', 'L', 'H', '', 'L', 'H', '', 'L', 'M', '', 'L', 0, 0, ''],
+                          [0, 0, 0, 1, 0, 0, '16', '3', '4', '4', '2', '1', 'L', 'L', '', 'L', 'H', '', '', 'H', '', 'L', 0, 0, ''],
+                          [0, 0, 0, 0, 1, 0, '29', '6', '3', '5', '1', '3', 'L', 'M', '', '', 'H', 'L', '', 'H', '', 'L', 0, 0, ''],
+                          [0, 0, 0, 0, 0, 1, '22', '5', '5', '6', '2', '2', 'L', '', 'L', '', 'M', 'L', '', 'M', '', 'L', 0, 0, ''],
+                          [1, 1, 0, 0, 0, 0, '-', '1', '9', '1', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [1, 0, 1, 0, 0, 0, '-', '3', '1', '2', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 1, 1, 0, 0, 0, '-', '2', '7', '3', '-', '-', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [1, 0, 0, 1, 0, 0, '-', '10', '2', '4', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 0, 1, 0, 0, 1, '-', '9', '4', '5', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [1, 0, 0, 0, 0, 1, '-', '5', '5', '6', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [1, 0, 0, 0, 1, 0, '-', '12', '3', '7', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 0, 1, 1, 0, 0, '-', '6', '6', '8', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 0, 0, 1, 0, 1, '-', '7', '10', '8', '6', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 1, 0, 1, 0, 0, '-', '8', '12', '10', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 0, 0, 0, 1, 1, '-', '13', '11', '11', '1', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 1, 0, 0, 1, 0, '-', '11', '14', '12', '3', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 1, 0, 0, 0, 1, '-', '4', '15', '13', '7', '1', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 0, 1, 0, 1, 0, '-', '15', '8', '14', '37', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
+                          [0, 0, 0, 1, 1, 0, '-', '14', '13', '15', '1', '11', '', '', '', '', '', '', '', '', '', '', 0, 0, '']]
+
+    def __init__(self):
+        """
+        Creates a scrolled window for the Unit Test Selection Matrix.
+=======
     The List Book view for analyzing and displaying the Test Selection Matrix
     for a Software Unit.  The attributes of a Test Selection Matrix List Book
     view are:
@@ -381,10 +565,17 @@ class UnitTestSelection(gtk.ScrolledWindow):
     def __init__(self):
         """
         Method to initialize a Unit Test Selection Matrix.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.ScrolledWindow.__init__(self)
 
+<<<<<<< HEAD
+        # Initialize private scalar attributes.
+        self._software_model = None
+
+        self.tvwTestSelectionMatrix = gtk.TreeView()
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -398,6 +589,7 @@ class UnitTestSelection(gtk.ScrolledWindow):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     def create_test_planning_matrix(self):
         """
@@ -405,9 +597,15 @@ class UnitTestSelection(gtk.ScrolledWindow):
         """
 
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+<<<<<<< HEAD
+        self.add(self.tvwTestSelectionMatrix)
+
+        self.tvwTestSelectionMatrix.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+=======
         self.add(self._treeview)
 
         self._treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create and load the Test Matrix for unit-level testing.
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
@@ -423,9 +621,16 @@ class UnitTestSelection(gtk.ScrolledWindow):
                                gobject.TYPE_STRING, gobject.TYPE_STRING,
                                gobject.TYPE_INT, gobject.TYPE_INT,
                                gobject.TYPE_STRING)
+<<<<<<< HEAD
+        self.tvwTestSelectionMatrix.set_model(_model)
+        self.tvwTestSelectionMatrix.set_tooltip_text(_(u"Software unit-level "
+                                                       u"test technique "
+                                                       u"selection matrix."))
+=======
         self._treeview.set_model(_model)
         self._treeview.set_tooltip_text(_(u"Software unit-level test "
                                           u"technique selection matrix."))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _headings = [_(u"Error/Anomaly\nDetection"),
                      _(u"Structure\nAnalysis &amp;\nDocumentation"),
@@ -464,7 +669,11 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _column.set_max_width(75)
             _column.set_sort_column_id(i)
             _column.set_widget(_label)
+<<<<<<< HEAD
+            self.tvwTestSelectionMatrix.append_column(_column)
+=======
             self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         for i in range(len(_headings[6:])):
             _cell = gtk.CellRendererText()
@@ -485,7 +694,11 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _column.set_max_width(75)
             _column.set_sort_column_id(i + 6)
             _column.set_widget(_label)
+<<<<<<< HEAD
+            self.tvwTestSelectionMatrix.append_column(_column)
+=======
             self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _cell = gtk.CellRendererToggle()
         _cell.set_property('activatable', 1)
@@ -505,7 +718,11 @@ class UnitTestSelection(gtk.ScrolledWindow):
         _column.set_max_width(75)
         _column.set_sort_column_id(22)
         _column.set_widget(_label)
+<<<<<<< HEAD
+        self.tvwTestSelectionMatrix.append_column(_column)
+=======
         self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _cell.connect('toggled', self._on_cell_toggled, 22, _model)
 
         _cell = gtk.CellRendererToggle()
@@ -526,7 +743,11 @@ class UnitTestSelection(gtk.ScrolledWindow):
         _column.set_max_width(75)
         _column.set_sort_column_id(23)
         _column.set_widget(_label)
+<<<<<<< HEAD
+        self.tvwTestSelectionMatrix.append_column(_column)
+=======
         self._treeview.append_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _cell.connect('toggled', self._on_cell_toggled, 23, _model)
 
         for i in range(len(self._lst_test_rankings)):
@@ -541,15 +762,24 @@ class UnitTestSelection(gtk.ScrolledWindow):
         Method to load the test matrix Recommended and Selected columns for the
         selected software Unit.
 
+<<<<<<< HEAD
+        :param `rtk.software.Software` software: the software Unit to load into
+                                                 the test matrix.
+=======
         :param software: the :py:class:`rtk.software.Software.Model` to load
                          into the test matrix.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         self._software_model = software
 
+<<<<<<< HEAD
+        _model = self.tvwTestSelectionMatrix.get_model()
+=======
         _model = self._treeview.get_model()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _row = _model.get_iter_root()
 
         try:
@@ -569,6 +799,18 @@ class UnitTestSelection(gtk.ScrolledWindow):
         Called whenever a gtk.TreeView() CellRenderer is edited for the
         test selection worksheet.
 
+<<<<<<< HEAD
+        :param cell: the gtk.CellRenderer() that was edited.
+        :type cell: gtk.CellRenderer
+        :param path: the gtk.Treeview() path of the gtk.CellRenderer() that was
+                     edited.
+        :type path: string
+        :param position: the column position in the Software class gtk.TreeView()
+                         of the edited gtk.CellRenderer().
+        :type position: integer
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: gtk.TreeModel
+=======
         :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.Treeview() path of the gtk.CellRenderer() that
                          was edited.
@@ -576,6 +818,7 @@ class UnitTestSelection(gtk.ScrolledWindow):
                              gtk.TreeView() of the edited gtk.CellRenderer().
         :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
                                     belongs to.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """

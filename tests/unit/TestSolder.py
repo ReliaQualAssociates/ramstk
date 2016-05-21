@@ -5,9 +5,16 @@ This is the test class for testing Solder Connection module algorithms and model
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       tests.hardware.TestSolder.py is part of The RTK Project
+#
+# All rights reserved.
+
+=======
 #       tests.unit.TestSolder.py is part of The RTK Project
 #
 # All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -15,6 +22,10 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
+import dao.DAO as _dao
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.connection.Solder import PTH, NonPTH
 
 __author__ = 'Andrew Rowland'
@@ -33,6 +44,12 @@ class TestPTHModel(unittest.TestCase):
         Setup the test fixture for the Solder Connection class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = PTH()
 
     @attr(all=True, unit=True)
@@ -215,13 +232,21 @@ class TestPTHModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestPTH) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestPTH) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -232,7 +257,11 @@ class TestPTHModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
+        (TestPTH) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+=======
         (TestPTH) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -244,7 +273,11 @@ class TestPTHModel(unittest.TestCase):
         self.DUT.n_hand_soldered = 10
         self.DUT.n_circuit_planes = 10
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * (N1 * piC + N2 * (piC + 13.0)) * piQ * piE')
@@ -268,6 +301,12 @@ class TestNonPTHModel(unittest.TestCase):
         Setup the test fixture for the Solder Connection class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = NonPTH()
 
     @attr(all=True, unit=True)
@@ -442,14 +481,22 @@ class TestNonPTHModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestNonPTH) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestNonPTH) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
         self.DUT.connection_type = 3
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -460,7 +507,11 @@ class TestNonPTHModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
+        (TestNonPTH) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+=======
         (TestNonPTH) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -469,7 +520,11 @@ class TestNonPTHModel(unittest.TestCase):
 
         self.DUT.connection_type = 3
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')

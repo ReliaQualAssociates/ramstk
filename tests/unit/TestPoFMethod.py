@@ -15,7 +15,12 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
+import dao.DAO as _dao
+from analyses.pof.Method import *
+=======
 from analyses.pof.Method import Model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

@@ -32,6 +32,13 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
+except ImportError:
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
+=======
     import Configuration
     import Utilities
     import gui.gtk.Widgets as Widgets
@@ -39,21 +46,59 @@ except ImportError:
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
+<<<<<<< HEAD
+__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+
+# Add localization support.
+try:
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
 __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
+<<<<<<< HEAD
+class AddRequirement(gtk.Dialog):
+    """
+    This is the assistant that walks the user through the process of adding
+    a new requirement to the open RTK Program database.
+    """
+
+    def __init__(self, controller, level=0):
+        """
+        Initialize on instance of the Add Requirement Assistant.
+
+        :param rtk.requirement.Requirement.Requirement controller: the Requirement data controller instance.
+        :keyword int level: the level to add the new Requirement(s).
+                            0 = sibling
+                            1 = child
+        """
+
+        gtk.Dialog.__init__(self, title=_(u"RTK Requirement Addition "
+                                          u"Assistant"),
+                            parent=None,
+                            flags=(gtk.DIALOG_MODAL |
+                                   gtk.DIALOG_DESTROY_WITH_PARENT),
+                            buttons=(gtk.STOCK_APPLY, gtk.RESPONSE_ACCEPT,
+                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+
+        self._controller = controller
+
+        self.txtQuantity = _widg.make_entry(width=50)
+=======
 class AddRequirement(gtk.Assistant):
     """
     This is the assistant that walks the user through the process of adding
@@ -131,10 +176,48 @@ class AddRequirement(gtk.Assistant):
         _results = [['1'], ['2'], ['3'], ['4'], ['5']]
         _model = self.cmbPriority.get_model()
         Widgets.load_combo(self.cmbPriority, _results)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+<<<<<<< HEAD
+        _fixed = gtk.Fixed()
+        self.vbox.pack_start(_fixed)        # pylint: disable=E1101
+
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        # Place the widgets used to display general information.        #
+        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
+        if level == 0:
+            _level = 'sibling'
+        else:
+            _level = 'child'
+        _label = _widg.make_label(_(u"This is the RTK Requirement Addition "
+                                    u"Assistant.  Enter the information "
+                                    u"requested below and then press 'Apply' "
+                                    u"to add new {0:s} Requirements to the "
+                                    u"RTK Project database.").format(_level),
+                                  width=600, height=-1, wrap=True)
+        _fixed.put(_label, 5, 10)
+        _y_pos = _label.size_request()[1] + 50
+
+        _labels = [_(u"Number of {0:s} requirements to add:").format(_level)]
+        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fixed, 5, _y_pos)
+        _x_pos += 50
+
+        # Set the tooltips.
+        self.txtQuantity.set_tooltip_text(_(u"Enter the number of {0:s} "
+                                            u"Requirements to "
+                                            u"add.").format(_level))
+        self.txtQuantity.set_text("1")
+
+        # Place the widgets.
+        _fixed.put(self.txtQuantity, _x_pos, _y_pos[0])
+
+        _fixed.show_all()
+
+    def _cancel(self, __button):
+=======
         # Create the introduction page.
         _fixed = gtk.Fixed()
 
@@ -392,12 +475,17 @@ class AddRequirement(gtk.Assistant):
         return _code
 
     def _cancel(self, __assistant):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         Method to destroy the assistant when the 'Cancel' button is
         pressed.
 
+<<<<<<< HEAD
+        :param gtk.Button __button: the gtk.Button() that called this method.
+=======
         :param gtk.Assistant __assistant: the current instance of the
                                           assistant.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.destroy()

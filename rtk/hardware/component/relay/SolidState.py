@@ -15,10 +15,17 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    from hardware.component.relay.Relay import Model as Relay
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+=======
     import Configuration
     from hardware.component.relay.Relay import Model as Relay
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.relay.Relay import Model as Relay
 
 __author__ = 'Andrew Rowland'
@@ -28,7 +35,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -40,6 +51,15 @@ class SolidState(Relay):
     The SolidState Relay data model contains the attributes and methods of a
     SolidState Relay component.  The attributes of a SolidState Relay are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 65
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 13.2.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
     :cvar int subcategory: default value: 65
 
     Hazard Rate Models:
@@ -47,6 +67,7 @@ class SolidState(Relay):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piQ = [1.0, 4.0]
     _lst_piE = [1.0, 3.0, 12.0, 6.0, 17.0, 12.0, 19.0, 21.0, 32.0, 23.0, 0.4,
@@ -61,15 +82,25 @@ class SolidState(Relay):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize an SolidState Relay data model instance.
+=======
         Method to initialize an Solid State Relay data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(SolidState, self).__init__()
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the Mechanical Relay data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Mechanical Relay data
         model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -106,4 +137,8 @@ class SolidState(Relay):
             self.piE = self._lst_piE[self.environment_active - 1]
             self.hazard_rate_model['piE'] = self.piE
 
+<<<<<<< HEAD
+        return Relay.calculate(self)
+=======
         return Relay.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

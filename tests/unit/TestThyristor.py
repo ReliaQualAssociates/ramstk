@@ -5,16 +5,30 @@ This is the test class for testing Thyristor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestThyristor.py is part of The RTK Project
+<<<<<<< HEAD
+#       tests.hardware.TestThyristor.py is part of The RTK Project
 #
 # All rights reserved.
-import sys
-from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestThyristor.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+<<<<<<< HEAD
+import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.semiconductor.Thyristor import *
 
 __author__ = 'Andrew Rowland'
@@ -33,6 +47,12 @@ class TestThyristorModel(unittest.TestCase):
         Setup the test fixture for the Thyristor class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Thyristor()
 
     @attr(all=True, unit=True)
@@ -261,7 +281,11 @@ class TestThyristorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestThyristor) calculate should return False on success when calculating MIL-HDBK-217F parts count results for a GaAs laser
+=======
         (TestThyristor) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results for a GaAs laser
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
@@ -269,7 +293,11 @@ class TestThyristorModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.type = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.072)
@@ -279,7 +307,11 @@ class TestThyristorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
+        (TestThyristor) calculate should return False on success when calculating MIL-HDBK-217F stress results
+=======
         (TestThyristor) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -290,7 +322,11 @@ class TestThyristorModel(unittest.TestCase):
         self.DUT.rated_voltage = 33.0
         self.DUT.junction_temperature = 32.0
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piR * piS * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.0022)

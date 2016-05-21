@@ -3,27 +3,51 @@
 This is the test class for testing Relay module algorithms and models.
 """
 
-# -*- coding: utf-8 -*-
-#
-#       tests.unit.TestRelay.py is part of The RTK Project
-#
-# All rights reserved.
-import sys
-from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
-
-import unittest
-from nose.plugins.attrib import attr
-
-from hardware.component.relay.Relay import Model
-from hardware.component.relay.Mechanical import Mechanical
-from hardware.component.relay.SolidState import SolidState
-
+<<<<<<< HEAD
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
+# -*- coding: utf-8 -*-
+#
+#       tests.hardware.TestRelay.py is part of The RTK Project
+#
+# All rights reserved.
+
+import unittest
+from nose.plugins.attrib import attr
+
+=======
+# -*- coding: utf-8 -*-
+#
+#       tests.unit.TestRelay.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+<<<<<<< HEAD
+import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+from hardware.component.relay.Relay import Model
+from hardware.component.relay.Mechanical import Mechanical
+from hardware.component.relay.SolidState import SolidState
+
+<<<<<<< HEAD
+=======
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 class TestRelayModel(unittest.TestCase):
     """
@@ -35,6 +59,12 @@ class TestRelayModel(unittest.TestCase):
         Setup the test fixture for the Relay class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
     @attr(all=True, unit=True)
@@ -207,6 +237,12 @@ class TestMechanicalModel(unittest.TestCase):
         Setup the test fixture for the Mechanical class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Mechanical()
 
     @attr(all=True, unit=True)
@@ -392,7 +428,11 @@ class TestMechanicalModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestMechanical) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestMechanical) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
@@ -400,7 +440,11 @@ class TestMechanicalModel(unittest.TestCase):
         self.DUT.construction = 1
         self.DUT.quality = 2
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 3.8)
@@ -410,7 +454,11 @@ class TestMechanicalModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_temp(self):
         """
+<<<<<<< HEAD
+        (TestMechanical) calculate should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+=======
         (TestMechanical) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for the 85C specification
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -427,7 +475,11 @@ class TestMechanicalModel(unittest.TestCase):
         self.DUT.application = 1
         self.DUT.construction = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piL * piC * piCYC * piF * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -443,7 +495,11 @@ class TestMechanicalModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_cycle(self):
         """
+<<<<<<< HEAD
+        (TestMechanical) calculate should return False on success when calculating MIL-HDBK-217F stress results for a high cycle relay
+=======
         (TestMechanical) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a high cycle relay
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -460,7 +516,11 @@ class TestMechanicalModel(unittest.TestCase):
         self.DUT.application = 1
         self.DUT.construction = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piL * piC * piCYC * piF * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -484,6 +544,12 @@ class TestSolidStateModel(unittest.TestCase):
         Setup the test fixture for the SolidState class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = SolidState()
 
     @attr(all=True, unit=True)
@@ -513,7 +579,11 @@ class TestSolidStateModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestSolidState) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestSolidState) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
@@ -521,7 +591,11 @@ class TestSolidStateModel(unittest.TestCase):
         self.DUT.construction = 1
         self.DUT.quality = 2
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 6.8)
@@ -531,7 +605,11 @@ class TestSolidStateModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
+        (TestMechanical) calculate should return False on success when calculating MIL-HDBK-217F stress results
+=======
         (TestMechanical) calculate_part should return False on success when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -539,7 +617,11 @@ class TestSolidStateModel(unittest.TestCase):
         self.DUT.quality = 2
         self.DUT.construction = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

@@ -8,14 +8,27 @@ This is the test class for testing the Matrix class.
 #       tests.unit.TestMatrix.py is part of The RTK Project
 #
 # All rights reserved.
+<<<<<<< HEAD
+
+import sys
+from os.path import dirname
+=======
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
+import dao.DAO as _dao
+from datamodels.matrix.Matrix import Model, Matrix, ParentError, NoMatrixError
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+=======
 from datamodels.matrix.Matrix import Model, Matrix      # pylint: disable=E0401
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -115,6 +128,12 @@ class TestMatrixController(unittest.TestCase):
 
     def setUp(self):
 
+<<<<<<< HEAD
+        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Matrix()
 
     @attr(all=True, unit=True)
@@ -125,5 +144,9 @@ class TestMatrixController(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Matrix))
 
+<<<<<<< HEAD
+        self.assertEqual(self.DUT._dao, None)
+=======
         self.assertEqual(self.DUT._dao, None)           # pylint: disable=W0212
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.dicMatrices, {})

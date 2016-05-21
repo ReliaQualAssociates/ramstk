@@ -5,16 +5,30 @@ This is the test class for testing Carbon Film resistor module algorithms and mo
 
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestFilm.py is part of The RTK Project
+<<<<<<< HEAD
+#       tests.hardware.TestFilm.py is part of The RTK Project
 #
 # All rights reserved.
-import sys
-from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+=======
+#       tests.unit.TestFilm.py is part of The RTK Project
+#
+# All rights reserved.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+import sys
+from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+<<<<<<< HEAD
+import dao.DAO as _dao
+=======
+import unittest
+from nose.plugins.attrib import attr
+
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.resistor.fixed.Film import *
 from hardware.component.resistor.variable.Film import *
 
@@ -34,6 +48,12 @@ class TestFilmModel(unittest.TestCase):
         Setup the test fixture for the Carbon Film resistor class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Film()
 
     @attr(all=True, unit=True)
@@ -132,7 +152,11 @@ class TestFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilm) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestCarbonFilm) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
@@ -140,7 +164,11 @@ class TestFilmModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.specification = 2
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.02)
@@ -150,7 +178,11 @@ class TestFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_insulated(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for insulated resistors
+=======
         (TestCarbonFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for insulated resistors
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -162,7 +194,11 @@ class TestFilmModel(unittest.TestCase):
         self.DUT.resistance = 1.0E4
         self.DUT.specification = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -175,7 +211,11 @@ class TestFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_non_insulated(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for non-insulated resistors
+=======
         (TestCarbonFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for non-insulated resistors
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -186,7 +226,11 @@ class TestFilmModel(unittest.TestCase):
         self.DUT.resistance = 3.3E5
         self.DUT.specification = 3
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -199,7 +243,11 @@ class TestFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid_resistance(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+=======
         (TestCarbonFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -210,7 +258,11 @@ class TestFilmModel(unittest.TestCase):
         self.DUT.resistance = 3.3E6
         self.DUT.specification = 3
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -223,7 +275,11 @@ class TestFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+=======
         (TestCarbonFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -234,7 +290,11 @@ class TestFilmModel(unittest.TestCase):
         self.DUT.resistance = 3.3E7
         self.DUT.specification = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -247,7 +307,11 @@ class TestFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilm) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
         (TestCarbonFilm) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -257,7 +321,11 @@ class TestFilmModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
+<<<<<<< HEAD
+        self.assertTrue(self.DUT.calculate())
+=======
         self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestFilmPowerPowerModel(unittest.TestCase):
@@ -270,6 +338,12 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         Setup the test fixture for the Carbon Film Power resistor class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = FilmPower()
 
     @attr(all=True, unit=True)
@@ -306,7 +380,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmPower) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestCarbonFilmPower) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
@@ -314,7 +392,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         self.DUT.hazard_rate_type = 1
         self.DUT.specification = 2
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.21)
@@ -324,7 +406,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmPower) calculate should return False on success when calculating MIL-HDBK-217F stress results with low resistance range
+=======
         (TestCarbonFilmPower) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with low resistance range
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -335,7 +421,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 33.0
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -348,7 +438,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid1_resistance(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmPower) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+=======
         (TestCarbonFilmPower) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -358,7 +452,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3300.0
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -371,7 +469,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid2_resistance(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmPower) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+=======
         (TestCarbonFilmPower) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistance
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -381,7 +483,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E5
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -394,7 +500,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmPower) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+=======
         (TestCarbonFilmPower) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -404,7 +514,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 3.3E7
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -417,7 +531,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmPower) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
         (TestCarbonFilmPower) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -427,7 +545,11 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E4
 
+<<<<<<< HEAD
+        self.assertTrue(self.DUT.calculate())
+=======
         self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestFilmNetworkModel(unittest.TestCase):
@@ -440,6 +562,12 @@ class TestFilmNetworkModel(unittest.TestCase):
         Setup the test fixture for the Carbon Film Network resistor class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = FilmNetwork()
 
     @attr(all=True, unit=True)
@@ -575,14 +703,22 @@ class TestFilmNetworkModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmNetwork) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestCarbonFilmNetwork) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.055)
@@ -592,7 +728,11 @@ class TestFilmNetworkModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_case_temp_known(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmNetwork) calculate should return False on success when calculating MIL-HDBK-217F stress results with case temperature known
+=======
         (TestCarbonFilmNetwork) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with case temperature known
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -604,7 +744,11 @@ class TestFilmNetworkModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.n_resistors = 8
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piNR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -618,7 +762,11 @@ class TestFilmNetworkModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_case_temp_unknown(self):
         """
+<<<<<<< HEAD
+        (TestCarbonFilmNetwork) calculate should return False on success when calculating MIL-HDBK-217F stress results with case temperature unknown
+=======
         (TestCarbonFilmNetwork) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with case temperature unknown
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -630,7 +778,11 @@ class TestFilmNetworkModel(unittest.TestCase):
         self.DUT.rated_power = 0.25
         self.DUT.n_resistors = 8
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piNR * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -652,6 +804,12 @@ class TestVarFilmModel(unittest.TestCase):
         Setup the test fixture for the VarFilm Variable resistor class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = VarFilm()
 
     @attr(all=True, unit=True)
@@ -683,7 +841,11 @@ class TestVarFilmModel(unittest.TestCase):
                                                        3.4, 52.0])
         self.assertEqual(self.DUT.subcategory, 39)
         self.assertEqual(self.DUT.n_taps, 3)
+<<<<<<< HEAD
+        self.assertEqual(self.DUT.style, 0)
+=======
         self.assertEqual(self.DUT.specification, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.piTAPS, 0.0)
         self.assertEqual(self.DUT.piV, 0.0)
 
@@ -712,7 +874,11 @@ class TestVarFilmModel(unittest.TestCase):
          _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.n_taps, 5)
+<<<<<<< HEAD
+        self.assertEqual(self.DUT.style, 1)
+=======
         self.assertEqual(self.DUT.specification, 1)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.piTAPS, 0.75)
         self.assertEqual(self.DUT.piV, 0.3)
 
@@ -788,14 +954,22 @@ class TestVarFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestVarFilm) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestVarFilm) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 1.3)
@@ -805,7 +979,11 @@ class TestVarFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_resistance(self):
         """
+<<<<<<< HEAD
+        (TestVarFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for low resistances
+=======
         (TestVarFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for low resistances
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -817,9 +995,15 @@ class TestVarFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 200.0
         self.DUT.resistance = 3.3E3
         self.DUT.n_taps = 5
+<<<<<<< HEAD
+        self.DUT.style = 1
+
+        self.assertFalse(self.DUT.calculate())
+=======
         self.DUT.specification = 1
 
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -834,7 +1018,11 @@ class TestVarFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid1_resistance(self):
         """
+<<<<<<< HEAD
+        (TestVarFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+=======
         (TestVarFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for mid-range resistances
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -845,9 +1033,15 @@ class TestVarFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 200.0
         self.DUT.resistance = 1.3E5
         self.DUT.n_taps = 5
+<<<<<<< HEAD
+        self.DUT.style = 1
+
+        self.assertFalse(self.DUT.calculate())
+=======
         self.DUT.specification = 1
 
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -862,7 +1056,11 @@ class TestVarFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mid2_resistance(self):
         """
+<<<<<<< HEAD
+        (TestVarFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistances
+=======
         (TestVarFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with mid-range resistances
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -873,9 +1071,15 @@ class TestVarFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 200.0
         self.DUT.resistance = 3.3E5
         self.DUT.n_taps = 5
+<<<<<<< HEAD
+        self.DUT.style = 2
+
+        self.assertFalse(self.DUT.calculate())
+=======
         self.DUT.specification = 2
 
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -890,7 +1094,11 @@ class TestVarFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_resistance(self):
         """
+<<<<<<< HEAD
+        (TestVarFilm) calculate should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+=======
         (TestVarFilm) calculate_part should return False on success when calculating MIL-HDBK-217F stress results with high resistance
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -901,9 +1109,15 @@ class TestVarFilmModel(unittest.TestCase):
         self.DUT.rated_voltage = 350.0
         self.DUT.resistance = 1.6E6
         self.DUT.n_taps = 5
+<<<<<<< HEAD
+        self.DUT.style = 2
+
+        self.assertFalse(self.DUT.calculate())
+=======
         self.DUT.specification = 2
 
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piTAPS * piR * piV * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -918,7 +1132,11 @@ class TestVarFilmModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_overflow(self):
         """
+<<<<<<< HEAD
+        (TestVarFilm) calculate should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+=======
         (TestVarFilm) calculate_part should return True when an OverflowError is raised when calculating MIL-HDBK-217F stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -927,6 +1145,12 @@ class TestVarFilmModel(unittest.TestCase):
         self.DUT.operating_power = 1130.0
         self.DUT.rated_power = 0.25
         self.DUT.resistance = 1.1E6
+<<<<<<< HEAD
+        self.DUT.style = 1
+
+        self.assertTrue(self.DUT.calculate())
+=======
         self.DUT.specification = 1
 
         self.assertTrue(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

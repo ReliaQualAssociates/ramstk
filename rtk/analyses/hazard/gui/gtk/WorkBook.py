@@ -40,6 +40,13 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
+except ImportError:
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
+=======
     import Configuration
     import Utilities
     import gui.gtk.Widgets as Widgets
@@ -47,6 +54,7 @@ except ImportError:
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -54,7 +62,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -65,6 +77,16 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
     """
     The Work Book view displays all the attributes for the selected
     Hazard Analysis.  The attributes of a Hazard Analysis Work Book view are:
+<<<<<<< HEAD
+    """
+
+    def __init__(self, controller):
+        """
+        Initializes the Work Book view for the Hazard Analysis module.
+
+        :param rtk.analyses.hazard.Hazard controller: the Hazard Analysis data
+                                                      controller.
+=======
 
     :ivar list _lst_handler_id: list of gtk.Widget() signal handler IDs.
     :ivar :py:class:`rtk.hardware.ModuleBook` _modulebook: the Hardware Module
@@ -95,10 +117,24 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                            data controller.
         :param modulebook: the :py:class:`rtk.hardware.ModuleBook` associated
                            with the Hazard.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.HBox.__init__(self)
 
+<<<<<<< HEAD
+        # Initialize private list attributes.
+        self._lst_handler_id = []
+
+        # Initialize public scalar attributes.
+        self.dtcHazard = controller
+
+        self.btnCalculateHazard = _widg.make_button(width=35,
+                                                    image='calculate')
+        self.btnAddHazard = _widg.make_button(width=35, image='add')
+        self.btnDeleteHazard = _widg.make_button(width=35, image='remove')
+        self.btnSaveHazard = _widg.make_button(width=35, image='save')
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -120,6 +156,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         self.btnAddHazard = Widgets.make_button(width=35, image='add')
         self.btnDeleteHazard = Widgets.make_button(width=35, image='remove')
         self.btnSaveHazard = Widgets.make_button(width=35, image='save')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.tvwHazard = gtk.TreeView()
 
@@ -127,12 +164,37 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
     def create_page(self):                  # pylint: disable=R0914
         """
+<<<<<<< HEAD
+        Creates the page for displaying the hazard analysis for the selected
+        Hardware item.
+=======
         Method to create the page for displaying the hazard analysis for the
         selected Hardware item.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
+<<<<<<< HEAD
+
+        _path = "/root/tree[@name='Risk']/column/usertitle"
+        _heading = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(_path)
+
+        _path = "/root/tree[@name='Risk']/column/datatype"
+        _datatype = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(_path)
+
+        _path = "/root/tree[@name='Risk']/column/widget"
+        _widget = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(_path)
+
+        _path = "/root/tree[@name='Risk']/column/position"
+        _position = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(_path)
+
+        _path = "/root/tree[@name='Risk']/column/editable"
+        _editable = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(_path)
+
+        _path = "/root/tree[@name='Risk']/column/visible"
+        _visible = etree.parse(_conf.RTK_FORMAT_FILE[17]).xpath(_path)
+=======
 # TODO: Re-write create_page; current McCabe Complexity metric = 16.
         _path = "/root/tree[@name='Risk']/column/usertitle"
         _heading = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
@@ -151,6 +213,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         _path = "/root/tree[@name='Risk']/column/visible"
         _visible = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create a list of GObject datatypes to pass to the model.
         _types = []
@@ -171,14 +234,31 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _columns = int(len(_heading))
         for i in range(_columns):
             _column = gtk.TreeViewColumn()
+<<<<<<< HEAD
+            #self._col_order.append(int(_position_[i].text))
+
+            if _widget[i].text == 'combo':
+=======
             # self._col_order.append(int(_position_[i].text))
 
             if Widgetset[i].text == 'combo':
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _cell = gtk.CellRendererCombo()
                 _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
 
                 _cellmodel.append([""])
                 if i == 3:
+<<<<<<< HEAD
+                    for j in range(len(_conf.RTK_HAZARDS)):
+                        _cellmodel.append([_conf.RTK_HAZARDS[j][0] +
+                                           ", " + _conf.RTK_HAZARDS[j][1]])
+                elif i == 6 or i == 10 or i == 14 or i == 18:
+                    for j in range(len(_conf.RTK_SEVERITY)):
+                        _cellmodel.append([_conf.RTK_SEVERITY[j][1]])
+                elif i == 7 or i == 11 or i == 15 or i == 19:
+                    for j in range(len(_conf.RTK_FAILURE_PROBABILITY)):
+                        _cellmodel.append([_conf.RTK_FAILURE_PROBABILITY[j][1]])
+=======
                     for j in range(len(Configuration.RTK_HAZARDS)):
                         _cellmodel.append([Configuration.RTK_HAZARDS[j][0] +
                                            ", " +
@@ -190,6 +270,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                     for j in range(len(Configuration.RTK_FAILURE_PROBABILITY)):
                         _cellmodel.append(
                             [Configuration.RTK_FAILURE_PROBABILITY[j][1]])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
                 # Prevent users from adding new values.
                 _cell.set_property('has-entry', False)
@@ -197,7 +278,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _cell.set_property('text-column', 0)
                 _cell.connect('changed', self._on_cell_edit,
                               int(_position[i].text))
+<<<<<<< HEAD
+            elif _widget[i].text == 'spin':
+=======
             elif Widgetset[i].text == 'spin':
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _cell = gtk.CellRendererSpin()
                 _adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
                 _cell.set_property('adjustment', _adjustment)
@@ -231,11 +316,19 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=int(_position[i].text))
 
+<<<<<<< HEAD
+            _column.set_cell_data_func(_cell, _widg.format_cell,
+                                       (int(_position[i].text),
+                                        _datatype[i].text))
+            _column.set_resizable(True)
+            _column.connect('notify::width', _widg.resize_wrap, _cell)
+=======
             _column.set_cell_data_func(_cell, Widgets.format_cell,
                                        (int(_position[i].text),
                                         _datatype[i].text))
             _column.set_resizable(True)
             _column.connect('notify::width', Widgets.resize_wrap, _cell)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             if i > 0:
                 _column.set_reorderable(True)
@@ -261,7 +354,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwHazard)
 
+<<<<<<< HEAD
+        _frame = _widg.make_frame(label=_(u"Hazards Analysis"))
+=======
         _frame = Widgets.make_frame(label=_(u"Hazards Analysis"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -271,7 +368,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _bbox.pack_start(self.btnDeleteHazard, False, False)
         _bbox.pack_start(self.btnCalculateHazard, False, False)
         _bbox.pack_start(self.btnSaveHazard, False, False)
+<<<<<<< HEAD
+        #_bbox.pack_start(self.btnTrickledown, False, False)
+=======
         # _bbox.pack_start(self.btnTrickledown, False, False)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.btnCalculateHazard.set_tooltip_text(_(u"Calculates the hazard "
                                                    u"risk index (HRI) and "
@@ -281,12 +382,21 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                                                    u"analysis."))
         self.btnSaveHazard.set_tooltip_text(_(u"Saves the selected hazard "
                                               u"analysis."))
+<<<<<<< HEAD
+        #self.btnTrickledown.set_tooltip_text(_(u"Sets the reliability, hazard "
+        #                                       u"rate and MTBF goal of the "
+        #                                       u"immediately subordinate "
+        #                                       u"hardware items to the "
+        #                                       u"values calculated by the "
+        #                                       u"alloction."))
+=======
         # self.btnTrickledown.set_tooltip_text(_(u"Sets the reliability, hazard "
         #                                        u"rate and MTBF goal of the "
         #                                        u"immediately subordinate "
         #                                        u"hardware items to the "
         #                                        u"values calculated by the "
         #                                        u"alloction."))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Connect to callback functions.
         self._lst_handler_id.append(
@@ -301,23 +411,36 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         self._lst_handler_id.append(
             self.btnSaveHazard.connect('clicked',
                                        self._on_button_clicked, 3))
+<<<<<<< HEAD
+        #self._lst_handler_id.append(
+        #    self.btnTrickledown.connect('clicked',
+        #                                self._on_button_clicked, 4))
+=======
         # self._lst_handler_id.append(
         #     self.btnTrickledown.connect('clicked',
         #                                 self._on_button_clicked, 4))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
     def load_page(self, controller, hardware_id, path=None):    # pylint: disable=R0914
         """
+<<<<<<< HEAD
+        Loads the Hazard Analysis gtk.TreeModel() with hazard information.
+=======
         Method to load the Hazard Analysis gtk.TreeModel() with hazard
         information.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 
+<<<<<<< HEAD
+=======
         self._hardware_model = controller.dicHardware[hardware_id]
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _model = self.tvwHazard.get_model()
         _model.clear()
 
@@ -331,6 +454,16 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _hardware = controller.dicHardware[hardware_id]
             _hazard_rate = _hardware.hazard_rate_logistics
             _name = _hardware.name
+<<<<<<< HEAD
+            _ass_sev = _conf.RTK_SEVERITY[_hazard.assembly_severity - 1][1]
+            _ass_prob = _conf.RTK_FAILURE_PROBABILITY[_hazard.assembly_probability - 1][1]
+            _ass_sev_f = _conf.RTK_SEVERITY[_hazard.assembly_severity_f - 1][1]
+            _ass_prob_f = _conf.RTK_FAILURE_PROBABILITY[_hazard.assembly_probability_f - 1][1]
+            _sys_sev = _conf.RTK_SEVERITY[_hazard.system_severity - 1][1]
+            _sys_prob = _conf.RTK_FAILURE_PROBABILITY[_hazard.system_probability - 1][1]
+            _sys_sev_f = _conf.RTK_SEVERITY[_hazard.system_severity_f - 1][1]
+            _sys_prob_f = _conf.RTK_FAILURE_PROBABILITY[_hazard.system_probability_f - 1][1]
+=======
             _ass_sev = Configuration.RTK_SEVERITY[_hazard.assembly_severity - 1][1]
             _ass_prob = Configuration.RTK_FAILURE_PROBABILITY[_hazard.assembly_probability - 1][1]
             _ass_sev_f = Configuration.RTK_SEVERITY[_hazard.assembly_severity_f - 1][1]
@@ -339,6 +472,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _sys_prob = Configuration.RTK_FAILURE_PROBABILITY[_hazard.system_probability - 1][1]
             _sys_sev_f = Configuration.RTK_SEVERITY[_hazard.system_severity_f - 1][1]
             _sys_prob_f = Configuration.RTK_FAILURE_PROBABILITY[_hazard.system_probability_f - 1][1]
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _data = [_hazard.hazard_id, _name, _hazard_rate,
                      _hazard.potential_hazard, _hazard.potential_cause,
                      _hazard.assembly_effect, _ass_sev, _ass_prob,
@@ -373,8 +507,13 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
     def _on_button_clicked(self, __button, index):
         """
+<<<<<<< HEAD
+        Responds to gtk.Button() clicked signals and calls the correct function
+        or method, passing any parameters as needed.
+=======
         Method to respond to gtk.Button() clicked signals and call the correct
         function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -383,8 +522,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+=======
 # TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 14.
         _return = False
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         if index == 0:                      # Add hazard to analysis.
             # Add the hazard.
@@ -392,6 +534,33 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
              _error_code, _last_id) = self.dtcHazard.add_hazard(
                  self._hardware_model.hardware_id)
 
+<<<<<<< HEAD
+            # Get the Hazard gtk.TreeModel().
+            _model = self.tvwHazard.get_model()
+
+            # Get the attributes of the newly added hazard.
+            _attributes = self.dtcHazard.dicHazard[
+                (self._hardware_model.hardware_id, _last_id)].get_attributes()
+
+            # Get some hardware information.
+            _hazard_rate = self._hardware_model.hazard_rate_logistics
+            _name = self._hardware_model.name
+
+            # Add the new hazard to the gtk.TreeView().
+            _data = [_last_id, _name, _hazard_rate, _attributes[2],
+                     _attributes[3], _attributes[4], '', '', _attributes[7],
+                     _attributes[8], '', '', _attributes[11], _attributes[12],
+                     '', '', _attributes[15], _attributes[16], '', '',
+                     _attributes[19], _attributes[20], _attributes[21],
+                     _attributes[22], _attributes[23], _attributes[24],
+                     _attributes[25], _attributes[26], _attributes[27],
+                     _attributes[28], _attributes[29], _attributes[30],
+                     _attributes[31], _attributes[32], _attributes[33],
+                     _attributes[34], _attributes[35], _attributes[36],
+                     _attributes[37], _attributes[38], _attributes[39]]
+            _model.append(None, _data)
+        elif index == 1:                    # Delete selected hazard from analysis.
+=======
             if _error_code != 0:
                 _content = "rtk.analyses.hazard.gui.gtk.WorkBook._on_button_clicked: " \
                            "Received error code {1:d} while adding a " \
@@ -436,11 +605,21 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _model.append(None, _data)
 
         elif index == 1:                    # Delete selected hazard.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             (_model, _row) = self.tvwHazard.get_selection().get_selected()
             _hazard_id = _model.get_value(_row, 0)
             (_results,
              _error_code) = self.dtcHazard.delete_hazard(
                  self._hardware_model.hardware_id, _hazard_id)
+<<<<<<< HEAD
+            if _results:
+                try:
+                    _path = _model.get_path(_model.iter_next(_row))
+                except TypeError:
+                    _path = None
+                self._load_hazard_analysis_page(
+                    self._hardware_model.hardware_id, _path)
+=======
 
             if _error_code != 0:
                 _content = "rtk.analyses.hazard.gui.gtk.WorkBook._on_button_clicked: " \
@@ -461,6 +640,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             else:
                 _model.remove(_row)
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         elif index == 2:                    # Calculate hazard analysis.
             _hardware_id = self._hardware_model.hardware_id
             _model = self.tvwHazard.get_model()
@@ -475,6 +655,15 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _model.set_value(_row, 20, _hazard.system_hri_f)
                 _row = _model.iter_next(_row)
         elif index == 3:                    # Save hazard analysis.
+<<<<<<< HEAD
+            self.dtcHazard.save_all_hazards()
+
+        return False
+
+    def _on_cell_edit(self, cell, path, new_text, index):
+        """
+        Responds to edited signals from the Hazard gtk.TreeView().
+=======
             _error_codes = self.dtcHazard.save_all_hazards()
             _error_codes = [_code for _code in _error_codes if _code[2] != 0]
 
@@ -497,6 +686,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
     def _on_cell_edit(self, cell, path, new_text, index):   # pylint: disable=R0912
         """
         Method to respond to 'edited' signals from the Hazard gtk.TreeView().
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.CellRenderer cell: the gtk.CellRenderer() that called this
                                       method.
@@ -508,6 +698,20 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+        _model = self.tvwHazard.get_model()
+
+        try:
+            _cellmodel = cell.get_property('model')
+            new_text = _cellmodel.get(new_text, 0)[0]
+            _hardware_id = self._hardware_model.hardware_id
+            _hazard_id = _model[path][0]
+            _hazard = self.dtcHazard.dicHazard[(_hardware_id, _hazard_id)]
+            if index in [6, 10, 14, 18]:
+                try:
+                    _score = [_s for _s in _conf.RTK_SEVERITY
+=======
 # TODO: Re-write _on_cell_edit; current McCabe Complexity metric = 40.
         _model = self.tvwHazard.get_model()
 
@@ -521,14 +725,20 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             if index in [6, 10, 14, 18]:
                 try:
                     _score = [_s for _s in Configuration.RTK_SEVERITY
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                               if _s[1] == new_text][0][4]
                 except IndexError:
                     _score = 0
             elif index in [7, 11, 15, 19]:
                 try:
+<<<<<<< HEAD
+                    _score = [_s for _s in _conf.RTK_FAILURE_PROBABILITY
+                              if _s[1] == new_text][0][2]
+=======
                     _score = [_score for _score
                               in Configuration.RTK_FAILURE_PROBABILITY
                               if _score[1] == new_text][0][2]
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 except IndexError:
                     _score = 0
 
@@ -563,6 +773,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             elif _convert == 'gfloat':
                 _model[path][index] = float(new_text)
 
+<<<<<<< HEAD
+=======
             if index == 4:
                 _hazard.potential_cause = new_text
             elif index == 5:
@@ -604,4 +816,5 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             elif index == 40:
                 _hazard.user_integer_3 = int(new_text)
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False

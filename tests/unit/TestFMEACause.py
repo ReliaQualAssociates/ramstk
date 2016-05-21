@@ -3,15 +3,36 @@
 This is the test class for testing the Cause class.
 """
 
+<<<<<<< HEAD
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.fmea.TestCause.py is part of The RTK Project
 #
 # All rights reserved.
+<<<<<<< HEAD
+
+import unittest
+from nose.plugins.attrib import attr
+
+# We add this to ensure the imports within the rtk packages will work.
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
+<<<<<<< HEAD
+import dao.DAO as _dao
+
+from analyses.fmea.Cause import Model
+=======
 import unittest
 from nose.plugins.attrib import attr
 
@@ -22,6 +43,7 @@ __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class TestCauseModel(unittest.TestCase):
@@ -122,6 +144,8 @@ class TestCauseModel(unittest.TestCase):
         self.DUT.set_attributes(values)
         result = self.DUT.get_attributes()
         self.assertEqual(result, values)
+<<<<<<< HEAD
+=======
 
 
 class TestCauseController(unittest.TestCase):
@@ -143,3 +167,4 @@ class TestCauseController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Cause))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

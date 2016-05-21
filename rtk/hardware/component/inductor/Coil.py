@@ -42,6 +42,19 @@ class Coil(Inductor):
     The inductive Coil data model contains the attributes and methods of an
     inductive Coil component.  The attributes of an inductive Coil are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 63
+
+    :ivar base_hr: default value: 0.0
+    :ivar reason: default value: ""
+    :ivar piE: default value: 0.0
+
+    Hazard Rate Models:
+        # MIL-HDBK-217F, section 16.1.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
     :cvar int subcategory: default value: 63
 
     :ivar int construction: the index in the construction list for the Coil.
@@ -52,6 +65,7 @@ class Coil(Inductor):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _piC = [1.0, 2.0]
     _piE = [1.0, 4.0, 12.0, 5.0, 16.0, 5.0, 7.0, 6.0, 8.0, 24.0, 0.5, 13.0,
@@ -67,11 +81,18 @@ class Coil(Inductor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize an inductive Coil data model instance.
+=======
         Method to initialize an inductive Coil data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Coil, self).__init__()
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -83,12 +104,17 @@ class Coil(Inductor):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.construction = 0
         self.piC = 0.0
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the inductive Coil data model attributes.
+=======
         Method to set the inductive Coil data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -117,7 +143,11 @@ class Coil(Inductor):
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the inductive Coil data model
+=======
         Method to retrieve the current values of the inductive Coil data model
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (technology, n_wave_soldered, n_hand_soldered,
@@ -131,14 +161,24 @@ class Coil(Inductor):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the inductive Coil data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the inductive Coil data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
 # TODO: Re-write calculate_part; current McCabe Complexity metrix = 11.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -190,4 +230,8 @@ class Coil(Inductor):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
+<<<<<<< HEAD
+        return Inductor.calculate(self)
+=======
         return Inductor.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

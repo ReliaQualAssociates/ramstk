@@ -16,7 +16,9 @@ import gettext
 import locale
 
 # Import modules for mathematics.
+from math import exp, log, sqrt
 import numpy as np
+from scipy.optimize import fsolve
 from scipy.stats import chi2                # pylint: disable=E0611
 
 # Import other RTK modules.
@@ -1150,39 +1152,6 @@ class Growth(dtcTesting):
         # Ensure confidence is stored as a fractional value.
         if _test.confidence > 1.0:
             _test.confidence = _test.confidence / 100.0
-
-        # Ensure potential infinity values are changed.
-        _test.alpha_hat[1] = _test.alpha_hat[1] \
-                             if not (np.nan and np.inf) else 0.0
-        _test.alpha_hat[0] = _test.alpha_hat[0] \
-                             if not (np.nan and np.inf) else _test.alpha_hat[1]
-        _test.alpha_hat[2] = _test.alpha_hat[2] \
-                             if not (np.nan and np.inf) else _test.alpha_hat[1]
-
-        _test.beta_hat[1] = _test.beta_hat[1] \
-                            if not (np.nan and np.inf) else 0.0
-        _test.beta_hat[0] = _test.beta_hat[0] \
-                            if not (np.nan and np.inf) else _test.beta_hat[1]
-        _test.beta_hat[2] = _test.beta_hat[2] \
-                            if not (np.nan and np.inf) else _test.beta_hat[1]
-
-        _test.cum_mean[-1][1] = _test.cum_mean[-1][1] \
-                                if not (np.nan and np.inf) else 0.0
-        _test.cum_mean[-1][0] = _test.cum_mean[-1][0] \
-                                if not (np.nan and np.inf) \
-                                else _test.cum_mean[-1][1]
-        _test.cum_mean[-1][2] = _test.cum_mean[-1][2] \
-                                if not (np.nan and np.inf) \
-                                else _test.cum_mean[-1][1]
-
-        _test.instantaneous_mean[-1][1] = _test.instantaneous_mean[-1][1] \
-                                          if not (np.nan and np.inf) else 0.0
-        _test.instantaneous_mean[-1][0] = _test.instantaneous_mean[-1][0] \
-                                          if not (np.nan and np.inf) else \
-                                          _test.instantaneous_mean[-1][1]
-        _test.instantaneous_mean[-1][2] = _test.instantaneous_mean[-1][2] \
-                                          if not (np.nan and np.inf) else \
-                                          _test.instantaneous_mean[-1][1]
 
         _query = "UPDATE rtk_tests \
                   SET fld_name='{1:s}', fld_description='{2:s}', \

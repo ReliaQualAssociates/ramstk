@@ -1,8 +1,14 @@
 #!/usr/bin/env python
 """
+<<<<<<< HEAD
+#############################################################################
+Hardware.Component.Semiconductor.Transistor Package Bipolar Transistor Module
+#############################################################################
+=======
 ############################################
 Transistor Package Bipolar Transistor Module
 ############################################
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 """
 
 # -*- coding: utf-8 -*-
@@ -16,6 +22,15 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+    from hardware.component.semiconductor.Semiconductor import Model as \
+        Semiconductor
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities
     from hardware.component.semiconductor.Semiconductor import Model as \
@@ -23,6 +38,7 @@ try:
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 
@@ -33,7 +49,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -46,20 +66,36 @@ class LFBipolar(Semiconductor):
     methods of a Low Frequency Bipolar Transistor component.  The attributes of
     a Low Frequency Bipolar Transistor are:
 
+<<<<<<< HEAD
+    :cvar subcategory: default value: 14
+
+    :ivar application: default value: 0
+    :ivar piA: default value: 0.0
+    :ivar piR: default value: 0.0
+    :ivar piS: default value: 0.0
+=======
     :cvar int subcategory: default value: 14
 
     :ivar int application: the MIL-HDBK-217FN2 application index.
     :ivar float piA: the MIL-HDBK-217FN2 application factor.
     :ivar float piR: the MIL-HDBK-217FN2 power rating factor.
     :ivar float piS: the MIL-HDBK-217FN2 voltage stress factor.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specification MIL-S-19500.
 
     Hazard Rate Models:
+<<<<<<< HEAD
+        # MIL-HDBK-217F, section 6.3.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
         # MIL-HDBK-217FN2, section 6.3.
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piA = [1.5, 0.7]
     _lst_piE = [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5,
@@ -76,8 +112,12 @@ class LFBipolar(Semiconductor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a Low Frequency Bipolar Transistor data model instance.
+=======
         Method to initialize a Low Frequency Bipolar Transistor data model
         instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(LFBipolar, self).__init__()
@@ -94,8 +134,12 @@ class LFBipolar(Semiconductor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the Low Frequency Bipolar Transistor data model attributes.
+=======
         Method to set the Low Frequency Bipolar Transistor data model
         attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -114,18 +158,30 @@ class LFBipolar(Semiconductor):
             self.piR = float(values[102])
             self.piS = float(values[103])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the Low Frequency Bipolar Transistor
+        data model attributes.
+=======
         Method to retrieves the current values of the Low Frequency Bipolar
         Transistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (application, piA, piR, piS)
         :rtype: tuple
@@ -137,10 +193,17 @@ class LFBipolar(Semiconductor):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the Low Frequency Bipolar Transistor
+        data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Low Frequency Bipolar
         Transistor data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -163,8 +226,12 @@ class LFBipolar(Semiconductor):
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
+<<<<<<< HEAD
+            self.piT = exp(-2114.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+=======
             self.piT = exp(-2114.0 * ((1.0 / (self.junction_temperature +
                                               273.0)) - (1.0 / 298.0)))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the application factor for the model.
@@ -183,19 +250,31 @@ class LFBipolar(Semiconductor):
             self.piS = 0.045 * exp(3.1 * _stress)
             self.hazard_rate_model['piS'] = self.piS
 
+<<<<<<< HEAD
+        return Semiconductor.calculate(self)
+
+    def _overstressed(self):
+        """
+        Determines whether the Low Frequency Bipolar Transistor is overstressed
+        based on it's rated values and operating environment.
+=======
         return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
         """
         Method to determine whether the Low Frequency Bipolar Transistor is
         overstressed based on it's rated values and operating environment.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _reason_num = 1
+<<<<<<< HEAD
+=======
         _reason = ''
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _harsh = True
 
         self.overstress = False
@@ -208,6 +287,20 @@ class LFBipolar(Semiconductor):
         if _harsh:
             if self.operating_power > 0.70 * self.rated_power:
                 self.overstress = True
+<<<<<<< HEAD
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating power > 70% rated power.\n"
+                _reason_num += 1
+            if self.operating_voltage > 0.75 * self.rated_voltage:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating voltage > 70% rated voltage.\n"
+                _reason_num += 1
+            if self.junction_temperature > 125.0:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Junction temperature > 125.0C.\n"
+=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 70% rated power.\n"
                 _reason_num += 1
@@ -220,10 +313,22 @@ class LFBipolar(Semiconductor):
                 self.overstress = True
                 _reason = _reason + str(_reason_num) + \
                           ". Junction temperature > 125.0C.\n"
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _reason_num += 1
         else:
             if self.operating_power > 0.90 * self.rated_power:
                 self.overstress = True
+<<<<<<< HEAD
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating power > 90% rated power.\n"
+                _reason_num += 1
+            if self.operating_voltage > 0.90 * self.rated_voltage:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating voltage > 90% rated voltage.\n"
+                _reason_num += 1
+
+=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 90% rated power.\n"
                 _reason_num += 1
@@ -235,6 +340,7 @@ class LFBipolar(Semiconductor):
 
         self.reason = _reason
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False
 
 
@@ -247,16 +353,28 @@ class HFLNBipolar(Semiconductor):
 
     :cvar subcategory: default value: 17
 
+<<<<<<< HEAD
+    :ivar piR: default value: 0.0
+    :ivar piS: default value: 0.0
+=======
     :ivar float piR: the MIL-HDBK-217FN2
     :ivar float piS: the MIL-HDBK-217FN2
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specification MIL-S-19500.
 
     Hazard Rate Models:
+<<<<<<< HEAD
+        # MIL-HDBK-217F, section 6.6.
+    """
+
+    # MIL-HDK-217F hazard rate calculation variables.
+=======
         # MIL-HDBK-217FN2, section 6.6.
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piE = [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0,
                 24.0, 250.0]
@@ -270,8 +388,13 @@ class HFLNBipolar(Semiconductor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a High Frequency Low Noise Bipolar Transistor data model
+        instance.
+=======
         Method to initialize a High Frequency Low Noise Bipolar Transistor data
         model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(HFLNBipolar, self).__init__()
@@ -283,8 +406,13 @@ class HFLNBipolar(Semiconductor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the High Frequency Low Noise Bipolar Transistor data model
+        attributes.
+=======
         Method to set the High Frequency Low Noise Bipolar Transistor data
         model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -301,18 +429,30 @@ class HFLNBipolar(Semiconductor):
             self.piR = float(values[101])
             self.piS = float(values[102])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the High Frequency Low Noise Bipolar
+        Transistor data model attributes.
+=======
         Method to retrieve the current values of the High Frequency Low Noise
         Bipolar Transistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (piR, piS)
         :rtype: tuple
@@ -324,10 +464,17 @@ class HFLNBipolar(Semiconductor):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the High Frequency Low Noise Bipolar
+        Transistor data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the High Frequency Low Noise
         Bipolar Transistor data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -344,8 +491,12 @@ class HFLNBipolar(Semiconductor):
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
+<<<<<<< HEAD
+            self.piT = exp(-2114.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
+=======
             self.piT = exp(-2114.0 * ((1.0 / (self.junction_temperature +
                                               273.0)) - (1.0 / 298.0)))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the power rating factor for the model.
@@ -360,6 +511,14 @@ class HFLNBipolar(Semiconductor):
             self.piS = 0.045 * exp(3.1 * _stress)
             self.hazard_rate_model['piS'] = self.piS
 
+<<<<<<< HEAD
+        return Semiconductor.calculate(self)
+
+    def _overstressed(self):
+        """
+        Determines whether the High Frequency Low Noise Bipolar Transistor is
+        overstressed based on it's rated values and operating environment.
+=======
         return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
@@ -367,13 +526,17 @@ class HFLNBipolar(Semiconductor):
         Method to determine whether the High Frequency Low Noise Bipolar
         Transistor is overstressed based on it's rated values and operating
         environment.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _reason_num = 1
+<<<<<<< HEAD
+=======
         _reason = ''
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _harsh = True
 
         self.overstress = False
@@ -386,6 +549,20 @@ class HFLNBipolar(Semiconductor):
         if _harsh:
             if self.operating_power > 0.70 * self.rated_power:
                 self.overstress = True
+<<<<<<< HEAD
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating power > 70% rated power.\n"
+                _reason_num += 1
+            if self.operating_voltage > 0.75 * self.rated_voltage:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating voltage > 70% rated voltage.\n"
+                _reason_num += 1
+            if self.junction_temperature > 125.0:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Junction temperature > 125.0C.\n"
+=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 70% rated power.\n"
                 _reason_num += 1
@@ -398,10 +575,22 @@ class HFLNBipolar(Semiconductor):
                 self.overstress = True
                 _reason = _reason + str(_reason_num) + \
                           ". Junction temperature > 125.0C.\n"
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _reason_num += 1
         else:
             if self.operating_power > 0.90 * self.rated_power:
                 self.overstress = True
+<<<<<<< HEAD
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating power > 90% rated power.\n"
+                _reason_num += 1
+            if self.operating_voltage > 0.90 * self.rated_voltage:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating voltage > 90% rated voltage.\n"
+                _reason_num += 1
+
+=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 90% rated power.\n"
                 _reason_num += 1
@@ -413,6 +602,7 @@ class HFLNBipolar(Semiconductor):
 
         self.reason = _reason
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False
 
 
@@ -453,8 +643,13 @@ class HFHPBipolar(Semiconductor):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a High Frequency High Power Bipolar Transistor data model
+        instance.
+=======
         Method to initialize a High Frequency High Power Bipolar Transistor
         data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(HFHPBipolar, self).__init__()
@@ -469,8 +664,13 @@ class HFHPBipolar(Semiconductor):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the High Frequency High Power Bipolar Transistor data model
+        attributes.
+=======
         Method to set the High Frequency High Power Bipolar Transistor data
         model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -491,18 +691,30 @@ class HFHPBipolar(Semiconductor):
             self.piA = float(values[102])
             self.piM = float(values[103])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the High Frequency High Power Bipolar
+        Transistor data model attributes.
+=======
         Method to retrieve the current values of the High Frequency High Power
         Bipolar Transistor data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (construction, application, matching, frequency, piA, piM)
         :rtype: tuple
@@ -515,10 +727,17 @@ class HFHPBipolar(Semiconductor):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+        """
+        Calculates the hazard rate for the High Frequency High Power Bipolar
+        Transistor data model.
+=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the High Frequency High Power
         Bipolar Transistor data model.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -539,6 +758,11 @@ class HFHPBipolar(Semiconductor):
             # Set the temperature factor for the model.
 # TODO: Adjust equation to account for CR voltages as in MIL-HDBK-217F.
             if self.construction == 1:
+<<<<<<< HEAD
+                self.piT = 0.1 * exp(-2903.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 373.0)))
+            else:
+                self.piT = 0.38 * exp(-5794.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 373.0)))
+=======
                 self.piT = 0.1 * exp(-2903.0 * ((1.0 /
                                                  (self.junction_temperature +
                                                   273.0)) - (1.0 / 373.0)))
@@ -546,6 +770,7 @@ class HFHPBipolar(Semiconductor):
                 self.piT = 0.38 * exp(-5794.0 * ((1.0 /
                                                   (self.junction_temperature +
                                                    273.0)) - (1.0 / 373.0)))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the power rating factor for the model.
@@ -559,6 +784,14 @@ class HFHPBipolar(Semiconductor):
             self.piM = self._lst_piM[self.matching - 1]
             self.hazard_rate_model['piM'] = self.piM
 
+<<<<<<< HEAD
+        return Semiconductor.calculate(self)
+
+    def _overstressed(self):
+        """
+        Determines whether the High Frequency High Power Bipolar Transistor is
+        overstressed based on it's rated values and operating environment.
+=======
         return Semiconductor.calculate_part(self)
 
     def _overstressed(self):
@@ -566,13 +799,17 @@ class HFHPBipolar(Semiconductor):
         Method to determine whether the High Frequency High Power Bipolar
         Transistor is overstressed based on it's rated values and operating
         environment.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _reason_num = 1
+<<<<<<< HEAD
+=======
         _reason = ''
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _harsh = True
 
         self.overstress = False
@@ -585,6 +822,20 @@ class HFHPBipolar(Semiconductor):
         if _harsh:
             if self.operating_power > 0.70 * self.rated_power:
                 self.overstress = True
+<<<<<<< HEAD
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating power > 70% rated power.\n"
+                _reason_num += 1
+            if self.operating_voltage > 0.75 * self.rated_voltage:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating voltage > 70% rated voltage.\n"
+                _reason_num += 1
+            if self.junction_temperature > 125.0:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Junction temperature > 125.0C.\n"
+=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 70% rated power.\n"
                 _reason_num += 1
@@ -597,10 +848,22 @@ class HFHPBipolar(Semiconductor):
                 self.overstress = True
                 _reason = _reason + str(_reason_num) + \
                           ". Junction temperature > 125.0C.\n"
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _reason_num += 1
         else:
             if self.operating_power > 0.90 * self.rated_power:
                 self.overstress = True
+<<<<<<< HEAD
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating power > 90% rated power.\n"
+                _reason_num += 1
+            if self.operating_voltage > 0.90 * self.rated_voltage:
+                self.overstress = True
+                self.reason = self.reason + str(_reason_num) + \
+                              ". Operating voltage > 90% rated voltage.\n"
+                _reason_num += 1
+
+=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 90% rated power.\n"
                 _reason_num += 1
@@ -612,4 +875,5 @@ class HFHPBipolar(Semiconductor):
 
         self.reason = _reason
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False

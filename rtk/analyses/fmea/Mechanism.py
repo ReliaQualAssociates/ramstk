@@ -11,6 +11,13 @@ FMEA Mechanism Module
 #
 # All rights reserved.
 
+<<<<<<< HEAD
+# Import other RTK modules.
+try:
+    import Utilities as _util
+except ImportError:
+    import rtk.Utilities as _util
+=======
 # Import modules for localization support.
 import gettext
 import locale
@@ -22,12 +29,15 @@ try:
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
+<<<<<<< HEAD
+=======
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
@@ -35,12 +45,16 @@ except locale.Error:                        # pragma: no cover
 
 _ = gettext.gettext
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 class OutOfRangeError(Exception):
     """
     Exception raised when an input value is outside legal limits.
     """
 
+<<<<<<< HEAD
+    pass
+=======
     def __init__(self, message):
         """
         Method to initialize OutOfRangeError instance.
@@ -49,6 +63,7 @@ class OutOfRangeError(Exception):
         Exception.__init__(self)
 
         self.message = message
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class Model(object):
@@ -57,6 +72,18 @@ class Model(object):
     failure mechanism.  A Mode will consist of one or more Mechanisms.
     The attributes of a Mechanism are:
 
+<<<<<<< HEAD
+    :ivar mode_id: default value: 0
+    :ivar mechanism_id: default value: 0
+    :ivar description: default value: ''
+    :ivar rpn_occurrence: default value: 0
+    :ivar rpn_detection: default value: 0
+    :ivar rpn: default value: 0
+    :ivar rpn_occurrence_new: default value: 0
+    :ivar rpn_detection_new: default value: ''
+    :ivar rpn_new: default value: 0
+    :ivar include_pof: default value: 0
+=======
     :ivar int mode_id: the ID of the failure Mode this failure Mechanism is
                        associated with.
     :ivar int mechanism_id: the failure Mechanism ID.
@@ -73,6 +100,7 @@ class Model(object):
     :ivar int rpn_new: the Risk Priority Number after action.
     :ivar int include_pof: indicates whether or not to include the failure
                            Mechanism in the Physics of Failure analysis.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -80,6 +108,9 @@ class Model(object):
         Method to initialize an Mechanism data model instance.
         """
 
+<<<<<<< HEAD
+        # Set public dict attribute default values.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -87,13 +118,18 @@ class Model(object):
         # Define private scalar attributes.
 
         # Define public dictionary attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.dicCauses = {}
         self.dicControls = {}
         self.dicActions = {}
 
+<<<<<<< HEAD
+        # Set public scalar attribute default values.
+=======
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.mode_id = 0
         self.mechanism_id = 0
         self.description = ''
@@ -129,6 +165,15 @@ class Model(object):
             self.rpn_new = int(values[8])
             self.include_pof = int(values[9])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+        except ValueError as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
@@ -136,6 +181,7 @@ class Model(object):
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)
@@ -159,7 +205,11 @@ class Model(object):
 
     def calculate(self, severity, severity_new):
         """
+<<<<<<< HEAD
+        Calculate the Risk Priority Number (RPN) for the Mechanism.
+=======
         Method to calculate the Risk Priority Number (RPN) for the Mechanism.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             RPN = S * O * D
 
@@ -170,6 +220,20 @@ class Model(object):
         :rtype: bool
         """
 
+<<<<<<< HEAD
+        if not 0 < severity < 11:
+            raise OutOfRangeError
+        if not 0 < self.rpn_occurrence < 11:
+            raise OutOfRangeError
+        if not 0 < self.rpn_detection < 11:
+            raise OutOfRangeError
+        if not 0 < severity_new < 11:
+            raise OutOfRangeError
+        if not 0 < self.rpn_occurrence_new < 11:
+            raise OutOfRangeError
+        if not 0 < self.rpn_detection_new < 11:
+            raise OutOfRangeError
+=======
         _return = False
 
         if not 0 < severity < 11:
@@ -196,13 +260,23 @@ class Model(object):
             _return = True
             raise OutOfRangeError(_(u"RPN new detection is outside the range "
                                     u"[1, 10]."))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.rpn = int(severity) * int(self.rpn_occurrence) * \
                    int(self.rpn_detection)
         self.rpn_new = int(severity_new) * int(self.rpn_occurrence_new) * \
                    int(self.rpn_detection_new)
 
+<<<<<<< HEAD
+        if not 0 < self.rpn < 1001:
+            raise OutOfRangeError
+        if not 0 < self.rpn_new < 1001:
+            raise OutOfRangeError
+
+        return False
+=======
         return _return
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class Mechanism(object):

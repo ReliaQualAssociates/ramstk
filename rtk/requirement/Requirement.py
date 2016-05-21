@@ -7,7 +7,11 @@ Requirement Package Data Module
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       Requirement.py is part of The RTK Project
+=======
 #       rtk.requirement.Requirement.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -75,6 +79,9 @@ class Model(object):
         Method to initialize a Requirement data model instance.
         """
 
+<<<<<<< HEAD
+        # Initialize public list attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -84,16 +91,25 @@ class Model(object):
         # Define public dictionary attributes.
 
         # Define public list attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.lst_clear = []
         self.lst_complete = []
         self.lst_consistent = []
         self.lst_verifiable = []
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+        self.revision_id = None
+        self.requirement_id = None
+        self.description = ''
+        self.code = ''
+=======
         # Define public scalar attributes.
         self.revision_id = None
         self.requirement_id = None
         self.description = ''
         self.code = ''                      # TODO: See bug 179
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.requirement_type = ''
         self.priority = 1
         self.specification = ''
@@ -107,7 +123,11 @@ class Model(object):
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the Requirement data model attributes.
+=======
         Method to set the Requirement data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -122,7 +142,11 @@ class Model(object):
             self.revision_id = int(values[0])
             self.requirement_id = int(values[1])
             self.description = str(values[2])
+<<<<<<< HEAD
+            self.code = str(values[3])
+=======
             self.code = str(values[3])      # TODO: See bug 179
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.requirement_type = str(values[4])
             self.priority = int(values[5])
             self.specification = str(values[6])
@@ -148,8 +172,12 @@ class Model(object):
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the Requirement data model attributes.
+=======
         Method to retrieve the current values of the Requirement data model
         attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (self.revsion_id, self.requirement_id, self.description,
                   self.code, self.requirement_type, self.priority,
@@ -158,7 +186,11 @@ class Model(object):
                   self.validated_date, self.parent_id)
         :rtype: tuple
         """
+<<<<<<< HEAD
+
+=======
         # TODO: See bug 179
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _values = (self.revision_id, self.requirement_id, self.description,
                    self.code, self.requirement_type, self.priority,
                    self.specification, self.page_number, self.figure_number,
@@ -169,8 +201,13 @@ class Model(object):
 
     def pack_values(self, lstvalues):       # pylint: disable=R0201
         """
+<<<<<<< HEAD
+        Packs the clear, complete, consistent, and verifiable answers into a
+        string for saving to the RTK Project database.
+=======
         Method to pack the clear, complete, consistent, and verifiable answers
         into a string for saving to the RTK Project database.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param list lstvalues: a list of 0's and 1's indicating the answer to
                                the set of clear, complete, consistent, or
@@ -187,8 +224,13 @@ class Model(object):
 
     def unpack_values(self, strvalues):     # pylint: disable=R0201
         """
+<<<<<<< HEAD
+        Unpacks the clear, complete, consistent, and verifiable answers into a
+        list of integers for displaying in the GUI.
+=======
         Method to unpack the clear, complete, consistent, and verifiable
         answers into a list of integers for displaying in the GUI.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param str strvalues: a string of 0's and 1's indicating the answer to
                               the set of clear, complete, consistent, or
@@ -221,6 +263,21 @@ class Requirement(object):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initializes a Requirement data controller instance.
+        """
+
+        # Initialize private scalar attributes.
+        self._dao = None
+        self._last_id = None
+
+        # Initialize public dictionary attributes.
+        self.dicRequirements = {}
+
+    def request_requirements(self, dao, revision_id):
+        """
+        Reads the RTK Project database and loads all the requirements
+=======
         Method to initialize a Requirement data controller instance.
         """
 
@@ -242,6 +299,7 @@ class Requirement(object):
     def request_requirements(self, dao, revision_id):
         """
         Method to reads the RTK Project database and loads all the requirements
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         associated with the selected Revision.  For each requirement returned:
 
         #. Retrieve the requirements from the RTK Project database.
@@ -280,6 +338,14 @@ class Requirement(object):
 
         return(_results, _error_code)
 
+<<<<<<< HEAD
+    def add_requirement(self, revision_id, parent_id=None):
+        """
+        Adds a new Requirement to the RTK Project for the selected Revision.
+
+        :param int revision_id: the Revision ID to add the new Requirement(s).
+        :keyword int parent_id: the Requirement ID of the parent requirement.
+=======
     def add_requirement(self, revision_id, parent_id=None, opt_args=None):
         """
         Method to add a new Requirement to the RTK Project database for the
@@ -291,6 +357,7 @@ class Requirement(object):
                            [Requirement Description, Requirement Type,
                             Specification, Page Number, Figure Number, Owner,
                             Priority, Derived]
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: (_results, _error_code)
         :rtype: tuple
         """
@@ -299,6 +366,11 @@ class Requirement(object):
         if parent_id is None:
             parent_id = -1
 
+<<<<<<< HEAD
+        _query = "INSERT INTO tbl_requirements \
+                  (fld_revision_id, fld_parent_id) \
+                  VALUES ({0:d}, {1:d})".format(revision_id, parent_id)
+=======
         # Set default values if no optional arguments are passed.
         if opt_args is None:
             opt_args = ['', '', '', '', '', '', 1, 0]
@@ -313,6 +385,7 @@ class Requirement(object):
                                          opt_args[1], opt_args[2], opt_args[3],
                                          opt_args[4], opt_args[5], opt_args[6],
                                          opt_args[7])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         (_results,
          _error_code,
          _requirement_id) = self._dao.execute(_query, commit=True)
@@ -331,18 +404,32 @@ class Requirement(object):
                                          parent_id))
             self.dicRequirements[_requirement.requirement_id] = _requirement
 
+<<<<<<< HEAD
+        return(_requirement, _error_code)
+
+    def delete_requirement(self, requirement_id):
+        """
+        Deletes a Requirement from the RTK Project.
+=======
         return(_requirement, _error_code, _requirement_id)
 
     def delete_requirement(self, requirement_id):
         """
         Method to delete the selected Requirement from the RTK Project
         database.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int function_id: the Requirement ID to delete.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
+<<<<<<< HEAD
+        # Delete all the child requirements, if any.
+        _query = "DELETE FROM tbl_requirements \
+                  WHERE fld_parent_id={0:d}".format(requirement_id)
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+=======
         _error_codes = [0, 0]
 
         # Delete all the child requirements, if any.
@@ -350,16 +437,25 @@ class Requirement(object):
                   WHERE fld_parent_id={0:d}".format(requirement_id)
         (_results, _error_codes[0], __) = self._dao.execute(_query,
                                                             commit=True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Then delete the parent requirement.
         _query = "DELETE FROM tbl_requirements \
                   WHERE fld_requirement_id={0:d}".format(requirement_id)
+<<<<<<< HEAD
+        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+
+        self.dicRequirements.pop(requirement_id)
+
+        return(_results, _error_code)
+=======
         (_results, _error_codes[1], __) = self._dao.execute(_query,
                                                             commit=True)
 
         self.dicRequirements.pop(requirement_id)
 
         return(_results, _error_codes)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     def copy_requirements(self, revision_id):
         """
@@ -370,8 +466,12 @@ class Requirement(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
         # TODO: See bug 179
         # TODO: Write one or more integration tests for this method.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Find the existing maximum Requirement ID already in the RTK Program
         # database and increment it by one.  If there are no existing
         # Requirements set the first Requirement ID to zero.
@@ -408,7 +508,10 @@ class Requirement(object):
                                                             commit=True)
 
             # Add the new Requirement to the requirements analysis table.
+<<<<<<< HEAD
+=======
 # TODO: Removed this when refactoring REVISION.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _query = "INSERT INTO rtk_requirement_analysis \
                       (fld_requirement_id) \
                       VALUES ({0:d})".format(_requirement_id)
@@ -437,13 +540,21 @@ class Requirement(object):
 
     def save_requirement(self, requirement_id):
         """
+<<<<<<< HEAD
+        Saves the Requirement attributes to the RTK Project database.
+=======
         Method to save the Requirement attributes to the RTK Project database.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int requirement_id: the ID of the requirement to save.
         :return: (_results, _error_code)
         :rtype: tuple
         """
+<<<<<<< HEAD
+
+=======
         # TODO: See bug 179
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _requirement = self.dicRequirements[requirement_id]
 
         # Pack the answers to the analysis questions into a string for saving.
@@ -471,23 +582,38 @@ class Requirement(object):
                       _requirement.parent_id, _clear, _complete, _consistent,
                       _verifiable)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+<<<<<<< HEAD
+# TODO: Handle errors.
+=======
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return(_results, _error_code)
 
     def save_all_requirements(self):
         """
+<<<<<<< HEAD
+        Saves all Requirement data models managed by the controller.
+=======
         Method to save all Requirement data models managed by the controller.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
+=======
         _error_codes = []
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         for _requirement in self.dicRequirements.values():
             (_results,
              _error_code) = self.save_requirement(_requirement.requirement_id)
 
+<<<<<<< HEAD
+        return False
+=======
             _error_codes.append((_requirement.requirement_id, _error_code))
 
         return _error_codes
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

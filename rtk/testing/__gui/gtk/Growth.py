@@ -466,6 +466,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
                                            u"developmental program associated "
                                            u"with the selected reliability "
                                            u"growth plan."))
+
         self.txtt1.set_tooltip_text(_(u"The estimated time to the first fix "
                                       u"during the reliability growth "
                                       u"program."))
@@ -1117,7 +1118,6 @@ class Feasibility(gtk.HPaned):              # pylint: disable=R0902, R0904
     Feasibility Work Book view are:
 
     :ivar list _lst_handler_id: default value: []
-
     :ivar _testing_model: the :py:class:`rtk.testing.growth.Growth.Model`
     :ivar dtcGrowth: the :py:class:`rtk.testing.growth.Growth.Growth`
     :ivar axAxisOC:
@@ -1463,7 +1463,6 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
     :ivar :py:class:`rtk.testing.growth.Model` _testing_model: default value: None
     :ivar float _cvm_critical: default value: 0.0
     :ivar :py:class:`rtk.testing.growth.Growth` dtcGrowth:
-
     """
 
     def __init__(self, controller, listbook):
@@ -1886,7 +1885,6 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
         # Load the individual widgets.
         if model.grouped == 1:
             self.optGrouped.set_active(True)
-
         else:
             self.optIndividual.set_active(True)
 
@@ -2081,7 +2079,7 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
 
         return False
 
-    def _get_observed_values(self, means):
+    def _get_observed_values(self):
         """
         Method to create lists of the point estimate of observed values, the
         alpha lower limit and alpha upper limit on observed values.

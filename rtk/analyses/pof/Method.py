@@ -17,11 +17,19 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +37,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -42,12 +54,20 @@ class Model(object):
     Failure test method.  A PoF will consist of one or more Methods per
     operating stress.  The attributes of a Method are:
 
+<<<<<<< HEAD
+    :ivar stress_id: default value: None
+    :ivar method_id: default value: None
+    :ivar description: default value: ''
+    :ivar boundary_conditions: default value: ''
+    :ivar remarks: default value: ''
+=======
     :ivar int stress_id: the PoF Stress ID associated with the PoF test Method.
     :ivar int method_id: the ID of the PoF test Method.
     :ivar str description: the description of the PoF test Method.
     :ivar str boundary_conditions: the boundary conditions for the PoF test
                                    Method.
     :ivar str remarks: any remarks associated with the PoF test Method.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self, stress_id=None):
@@ -55,6 +75,9 @@ class Model(object):
         Method to initialize a Method data model instance.
         """
 
+<<<<<<< HEAD
+        # Set public scalar attribute default values.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -66,6 +89,7 @@ class Model(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.stress_id = stress_id
         self.method_id = None
         self.description = ''
@@ -91,6 +115,15 @@ class Model(object):
             self.boundary_conditions = str(values[3])
             self.remarks = str(values[4])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+        except ValueError as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
@@ -98,6 +131,7 @@ class Model(object):
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)
@@ -118,10 +152,16 @@ class Model(object):
 
 class Method(object):
     """
+<<<<<<< HEAD
+    The Method data controller provides an interface between the Method data model
+    and an RTK view model.  A single Method data controller can control one or
+    more Method data models.  Currently the Method data controller is unused.
+=======
     The Method data controller provides an interface between the Method data
     model and an RTK view model.  A single Method data controller can control
     one or more Method data models.  Currently the Method data controller is
     unused.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):

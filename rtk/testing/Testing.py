@@ -17,11 +17,19 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities as Utilities
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +37,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -41,6 +53,22 @@ class Model(object):
     The Testing data model contains the attributes and methods of a test. The
     attributes of a Testing model are:
 
+<<<<<<< HEAD
+    :ivar int _int_mission_id: default value: -1
+    :ivar float _flt_test_termination_time: default value: 0.0
+    :ivar int revision_id: default value: None
+    :ivar int assembly_id: default value: None
+    :ivar int test_id: default value: 0
+    :ivar str name: default value: ''
+    :ivar str description: default value: ''
+    :ivar str attachment: default value: ''
+    :ivar int test_type: default value: 0
+    :ivar float cum_time: default value: 0.0
+    :ivar float cum_failures: default value: 0.0
+    :ivar float confidence: default value: 0.75
+    :ivar float consumer_risk: default value: 0.0
+    :ivar float producer_risk: default value: 0.0
+=======
     :ivar int _int_mission_id:
     :ivar int revision_id:
     :ivar int assembly_id:
@@ -54,6 +82,7 @@ class Model(object):
     :ivar float confidence:
     :ivar float consumer_risk:
     :ivar float producer_risk:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -61,14 +90,22 @@ class Model(object):
         Method to initialize a Testing data model instance.
         """
 
+<<<<<<< HEAD
+        # Initialize private dict attributes.
+=======
         # Initialize private dictionary attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self._int_mission_id = -1
 
+<<<<<<< HEAD
+        # Initialize public dict attributes.
+=======
         # Initialize public dictionary attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Initialize public list attributes.
 
@@ -114,18 +151,29 @@ class Model(object):
             self.consumer_risk = float(values[10])
             self.producer_risk = float(values[11])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the Testing data model attributes.
+=======
         Method to retrieve the current values of the Testing data model
         attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (revision_id, assembly_id, test_id, name, description,
                   attachment, test_type, cum_time, cum_failures, confidence,
@@ -157,6 +205,11 @@ class Testing(object):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initializes a Testing data controller instance.
+        """
+
+=======
         Method to initialize a Testing data controller instance.
         """
 
@@ -164,6 +217,7 @@ class Testing(object):
 
         # Initialize private list attributes.
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Initialize private scalar attributes.
         self._dao = None
         self._last_id = None
@@ -171,6 +225,13 @@ class Testing(object):
         # Initialize public dictionary attributes.
         self.dicTests = {}
 
+<<<<<<< HEAD
+    def request_tests(self, dao, revision_id):
+        """
+        Reads the RTK Project database and loads all the stakeholder inputs
+        associated with the selected Revision.  For each stakeholder input
+        returned:
+=======
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
@@ -179,6 +240,7 @@ class Testing(object):
         """
         Method to read the RTK Project database and load all the tests
         associated with the selected Revision.  For each tests returned:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         #. Retrieve the inputs from the RTK Project database.
         #. Create a Testing data model instance.
@@ -187,9 +249,15 @@ class Testing(object):
         #. Add the instance to the dictionary of Testings being managed
            by this controller.
 
+<<<<<<< HEAD
+        :param rtk.DAO dao: the Data Access object to use for communicating
+                            with the RTK Project database.
+        :param int revision_id: the Revision ID to select the stakeholders for.
+=======
         :param dao: the :py:class:`rtk.DAO.DAO` to use for communicating with
                     the RTK Project database.
         :param int revision_id: the Revision ID to select the Tests for.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: (_results, _error_code)
         :rtype: tuple
         """

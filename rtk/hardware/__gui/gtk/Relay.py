@@ -7,7 +7,11 @@ Relay Module Component Specific Work Book View
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       hardware.gui.gtk.Relay.py is part of The RTK Project
+=======
 #       rtk.hardware.gui.gtk.Relay.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -34,16 +38,28 @@ except ImportError:
 
 # Modules required for plotting.
 import matplotlib
+<<<<<<< HEAD
+matplotlib.use('GTK')
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
+except ImportError:
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
+=======
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -51,14 +67,21 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
+<<<<<<< HEAD
+=======
 matplotlib.use('GTK')
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 class Inputs(gtk.Frame):
     """
@@ -99,16 +122,49 @@ class Inputs(gtk.Frame):
 
     def __init__(self, model):
         """
+<<<<<<< HEAD
+        Creates an input frame for the Relay data model.
+
+        :param :class `rtk.hardware.Relay.model`: the Relay data model whose
+                                                  attributes will be displayed.
+=======
         Method to create an input frame for the Relay data model.
 
         :param model: the :py:class:`rtk.hardware.relay.Relay.Model` whose
                       attributes will be displayed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.Frame.__init__(self)
 
         self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
 
+<<<<<<< HEAD
+        # ===== ===== === Initialize private list attributes === ===== ===== #
+        self._lst_labels = [_(u"Quality:"), _(u"\u03C0<sub>Q</sub> Override:"),
+                            _(u"Construction:"),
+                            _(u"Rated Temperature (\u00B0C):"),
+                            _(u"Load Type:"), _(u"Contact Form:"),
+                            _(u"Contact Rating:"), _(u"Application:"),
+                            _(u"Cycling Rate (Cycles/Hour):")]
+        self._lst_handler_id = []
+
+        # ===== ===== == Initialize private scalar attributes == ===== ===== #
+        self._hardware_model = model
+        self._subcategory = model.subcategory
+
+        # ===== = Create the input widgets common to all Relay types = ===== #
+        self.cmbQuality = _widg.make_combo(simple=True)
+        self.cmbConstruction = _widg.make_combo(simple=True)
+        self.txtQOverride = _widg.make_entry(width=100)
+
+        # Create the tooltips for the input widgets.
+        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
+                                           u"level for the selected relay."))
+        self.cmbConstruction.set_tooltip_text(_(u"Select and display the type "
+                                                u"of construction for the "
+                                                u"sselected relay."))
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -158,11 +214,58 @@ class Inputs(gtk.Frame):
         self.txtCyclePerHour.set_tooltip_text(_(u"Enter and display the "
                                                 u"average cycles per hour for "
                                                 u"the selected relay."))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.txtQOverride.set_tooltip_text(_(u"Enter and display the the "
                                              u"user-defined quality factor "
                                              u"for the selected relay."))
 
         # Connect signals to callback functions.
+<<<<<<< HEAD
+        _index = 0
+        self._lst_handler_id.append(
+            self.cmbQuality.connect('changed',
+                                    self._on_combo_changed, _index))
+        _index += 1
+        self._lst_handler_id.append(
+            self.txtQOverride.connect('focus-out-event',
+                                      self._on_focus_out, _index))
+        _index += 1
+        self._lst_handler_id.append(
+            self.cmbConstruction.connect('changed',
+                                         self._on_combo_changed, _index))
+        _index += 1
+
+        # Create the input widgets specific to Relay subcategories.
+        if self._subcategory == 64:         # Mechanical
+            self.cmbTempRating = _widg.make_combo(simple=True)
+            self.cmbLoadType = _widg.make_combo(simple=True)
+            self.cmbContactForm = _widg.make_combo(simple=True)
+            self.cmbContactRating = _widg.make_combo(simple=True)
+            self.cmbApplication = _widg.make_combo(simple=True)
+            self.txtCyclePerHour = _widg.make_entry(width=100)
+
+            # Create the tooltips for the input widgets.
+            self.cmbTempRating.set_tooltip_text(_(u"Select and display the "
+                                                  u"temperature rating for "
+                                                  u"the selected relay."))
+            self.cmbLoadType.set_tooltip_text(_(u"Select and display the "
+                                                u"type of load connected to "
+                                                u"the selected relay."))
+            self.cmbContactForm.set_tooltip_text(_(u"Select and display the "
+                                                   u"contact form for the "
+                                                   u"selected relay."))
+            self.cmbContactRating.set_tooltip_text(_(u"Select and display the "
+                                                     u"contact current rating "
+                                                     u"for the selected "
+                                                     u"relay."))
+            self.cmbApplication.set_tooltip_text(_(u"Select and display the "
+                                                   u"application for the "
+                                                   u"selected relay."))
+            self.txtCyclePerHour.set_tooltip_text(_(u"Enter and display the "
+                                                    u"average cycles per hour "
+                                                    u"for the selected "
+                                                    u"relay."))
+=======
         self._lst_handler_id.append(
             self.cmbQuality.connect('changed',
                                     self._on_combo_changed, 0))
@@ -195,16 +298,22 @@ class Inputs(gtk.Frame):
                                        _(u"Rated Temperature (\u00B0C):"),
                                        _(u"Load Type:"), _(u"Contact Form:"),
                                        _(u"Cycling Rate (Cycles/Hour):")]
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             # Populate the gtk.ComboBox().
             _lst_quality = ["", "R", "P", "X", "U", "M", "L",
                             _(u"Non-Established Reliability"), _(u"Lower")]
+<<<<<<< HEAD
+            for _index, _quality in enumerate(_lst_quality):
+                self.cmbQuality.insert_text(_index, _quality)
+=======
             _lst_form = ["", "SPST", "DPST", "SPDT", "3PST", "4PST", "DPDT",
                          "3PDT", "4PDT", "6PDT"]
             for _index, _quality in enumerate(_lst_quality):
                 self.cmbQuality.insert_text(_index, _quality)
             for _index, _form in enumerate(_lst_form):
                 self.cmbContactForm.insert_text(_index, _form)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             self.cmbTempRating.insert_text(0, '')
             self.cmbTempRating.insert_text(1, u"85\u00B0C")
@@ -215,18 +324,57 @@ class Inputs(gtk.Frame):
             self.cmbLoadType.insert_text(2, _(u"Inductive"))
             self.cmbLoadType.insert_text(3, _(u"Lamp"))
 
+<<<<<<< HEAD
+            _lst_form = ["", "SPST", "DPST", "SPDT", "3PST", "4PST", "DPDT",
+                         "3PDT", "4PDT", "6PDT"]
+            for _index, _form in enumerate(_lst_form):
+                self.cmbContactForm.insert_text(_index, _form)
+
+            self.cmbContactRating.insert_text(0, '')
+            self.cmbContactRating.insert_text(1, _(u"Signal Current (Low mV and mA)"))
+=======
             self.cmbContactRating.insert_text(0, '')
             self.cmbContactRating.insert_text(1, _(u"Signal Current (Low mV "
                                                    u"and mA)"))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.cmbContactRating.insert_text(2, "0-5 Amp")
             self.cmbContactRating.insert_text(3, "5-20 Amp")
             self.cmbContactRating.insert_text(4, "20-600 Amp")
 
+<<<<<<< HEAD
+            # Connect signals to callback functions.
+            self._lst_handler_id.append(
+                self.cmbTempRating.connect('changed',
+                                           self._on_combo_changed, _index))
+            _index += 1
+            self._lst_handler_id.append(
+                self.cmbLoadType.connect('changed',
+                                         self._on_combo_changed, _index))
+            _index += 1
+            self._lst_handler_id.append(
+                self.cmbContactForm.connect('changed',
+                                            self._on_combo_changed, _index))
+            _index += 1
+            self._lst_handler_id.append(
+                self.cmbContactRating.connect('changed',
+                                              self._on_combo_changed, _index))
+            _index += 1
+            self._lst_handler_id.append(
+                self.cmbApplication.connect('changed',
+                                            self._on_combo_changed, _index))
+            _index += 1
+            self._lst_handler_id.append(
+                self.txtCyclePerHour.connect('focus-out-event',
+                                             self._on_focus_out, _index))
+
+        elif self._subcategory == 65:       # Solid State
+=======
         elif self._subcategory == 65:       # Solid State
             self._lst_stress_labels = [_(u"Quality:"),
                                        _(u"\u03C0<sub>Q</sub> Override:"),
                                        _(u"Construction:")]
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             # Populate the gtk.ComboBox().
             self.cmbQuality.insert_text(0, '')
             self.cmbQuality.insert_text(1, u"MIL-SPEC")
@@ -239,8 +387,12 @@ class Inputs(gtk.Frame):
 
     def create_217_count_inputs(self, x_pos=5):
         """
+<<<<<<< HEAD
+        Creates the MIL-HDBK-217FN2 part count input widgets for Relays.
+=======
         Method to create the MIL-HDBK-217FN2 parts count input gtk.Widgets()
         for Relays.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
@@ -248,7 +400,11 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
+<<<<<<< HEAD
+                          _(u"MIL-HDBK-217FN2 Part Count Inputs") +
+=======
                           _(u"MIL-HDBK-217FN2 Parts Count Inputs") +
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                           "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -257,6 +413,15 @@ class Inputs(gtk.Frame):
 
         _fixed = gtk.Fixed()
 
+<<<<<<< HEAD
+        (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels[:3],
+                                             _fixed, 5, 5)
+        _x_pos = max(x_pos, _x_pos) + 50
+
+        _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
+        _fixed.put(self.txtQOverride, _x_pos, _y_pos[1])
+        _fixed.put(self.cmbConstruction, _x_pos, _y_pos[2])
+=======
         (_x_pos,
          _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
@@ -264,6 +429,7 @@ class Inputs(gtk.Frame):
         if self.cmbQuality.get_parent() is not None:
             self.cmbQuality.reparent(_fixed)
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
@@ -277,8 +443,13 @@ class Inputs(gtk.Frame):
 
     def create_217_stress_inputs(self, x_pos=5):
         """
+<<<<<<< HEAD
+        Creates the MIL-HDBK-217FN2 part stress input widgets for Integrated
+        Circuits.
+=======
         Method to create the MIL-HDBK-217FN2 part stress input gtk.Widgets()
         for Relays.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
@@ -303,6 +474,27 @@ class Inputs(gtk.Frame):
 
         # Create and place all the labels for the inputs.
         if self._subcategory == 64:         # Mechanical
+<<<<<<< HEAD
+            (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels,
+                                                 _fixed, 5, 5)
+        else:
+            (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels[:3],
+                                                 _fixed, 5, 5)
+        _x_pos = max(x_pos, _x_pos) + 50
+
+        # Place all the input widgets.
+        _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
+        _fixed.put(self.txtQOverride, _x_pos, _y_pos[1])
+        _fixed.put(self.cmbConstruction, _x_pos, _y_pos[2])
+
+        if self._subcategory == 64:         # Mechanical
+            _fixed.put(self.cmbTempRating, _x_pos, _y_pos[3])
+            _fixed.put(self.cmbLoadType, _x_pos, _y_pos[4])
+            _fixed.put(self.cmbContactForm, _x_pos, _y_pos[5])
+            _fixed.put(self.cmbContactRating, _x_pos, _y_pos[6])
+            _fixed.put(self.cmbApplication, _x_pos, _y_pos[7])
+            _fixed.put(self.txtCyclePerHour, _x_pos, _y_pos[8])
+=======
             (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels,
                                                    _fixed, 5, 5)
         else:
@@ -326,11 +518,19 @@ class Inputs(gtk.Frame):
             _fixed.put(self.txtCyclePerHour, _x_pos, _y_pos[8])
         elif self._subcategory == 65:       # Solid State
             _fixed.put(self.cmbConstruction, _x_pos, _y_pos[2])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _fixed.show_all()
 
         return _x_pos
 
+<<<<<<< HEAD
+    def load_217_stress_inputs(self, model):
+        """
+        Loads the Relay class MIL-HDBK-217FN2 part stress gtk.Widgets().
+
+        :param model: the Hardware data model to load the attributes from.
+=======
     def load_217_count_inputs(self, model):
         """
         Method to load the Relay class MIL-HDBK-217FN2 parts count results
@@ -353,10 +553,30 @@ class Inputs(gtk.Frame):
 
         :param model: the :py:class:`rtk.hardware.relay.Relay.Model` to load
                       the attributes from.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
+        fmt = '{0:0.' + str(_conf.PLACES) + 'G}'
+
+        self.cmbQuality.set_active(model.quality)
+        self.cmbConstruction.set_active(model.construction)
+        self.txtQOverride.set_text(str(fmt.format(model.q_override)))
+
+        if self._subcategory == 64:         # Mechanical
+            self.cmbTempRating.set_active(model.temperature_rating)
+            self.cmbLoadType.set_active(model.load_type)
+            self.cmbContactForm.set_active(model.contact_form)
+            self.cmbContactRating.set_active(model.contact_rating)
+            self.cmbApplication.set_active(model.application)
+            self.txtCyclePerHour.set_text(
+                str(fmt.format(model.cycles_per_hour)))
+
+            self._load_application(model.contact_rating)
+            self._load_construction(model.contact_rating, model.application)
+=======
         fmt = '{0:0.' + str(Configuration.PLACES) + 'G}'
 
         self.cmbQuality.set_active(model.quality)
@@ -377,13 +597,19 @@ class Inputs(gtk.Frame):
                 str(fmt.format(model.cycles_per_hour)))
         elif self._subcategory == 65:       # Solid State
             self.cmbConstruction.set_active(model.construction)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
     def _on_combo_changed(self, combo, index):
         """
+<<<<<<< HEAD
+        Responds to gtk.ComboBox() changed signals and calls the correct
+        function or method, passing any parameters as needed.
+=======
         Method to respond to gtk.ComboBox() 'changed' signals and call the
         correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list oc the callback
@@ -419,8 +645,13 @@ class Inputs(gtk.Frame):
 
     def _on_focus_out(self, entry, __event, index):
         """
+<<<<<<< HEAD
+        Responds to gtk.Entry() focus_out signals and calls the correct
+        function or method, passing any parameters as needed.
+=======
         Method to respond to gtk.Entry() 'focus_out' signals and call the
         correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -453,8 +684,11 @@ class Inputs(gtk.Frame):
         :rtype: bool
         """
 
+<<<<<<< HEAD
+=======
         self.cmbApplication.handler_block(self._lst_handler_id[7])
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Remove existing entries.
         _model = self.cmbApplication.get_model()
         _model.clear()
@@ -465,8 +699,11 @@ class Inputs(gtk.Frame):
             self.cmbApplication.insert_text(
                 i, self._lst_application[rating - 1][i])
 
+<<<<<<< HEAD
+=======
         self.cmbApplication.handler_unblock(self._lst_handler_id[7])
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False
 
     def _load_construction(self, rating, application):
@@ -480,24 +717,34 @@ class Inputs(gtk.Frame):
         :rtype: bool
         """
 
+<<<<<<< HEAD
+=======
         self.cmbConstruction.handler_block(self._lst_handler_id[2])
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Remove existing entries.
         _model = self.cmbConstruction.get_model()
         _model.clear()
 
         # Load the new entries.
+<<<<<<< HEAD
+        _n_constructions = len(self._lst_construction[rating - 1][application - 1])
+=======
         try:
             _n_constructions = len(self._lst_construction[rating - 1][application - 1])
         except IndexError:
             _n_constructions = 0
             print rating, application
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         for i in range(_n_constructions):
             self.cmbConstruction.insert_text(
                 i, self._lst_construction[rating - 1][application - 1][i])
 
+<<<<<<< HEAD
+=======
         self.cmbConstruction.handler_unblock(self._lst_handler_id[2])
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False
 
 
@@ -509,16 +756,41 @@ class Results(gtk.Frame):
 
     def __init__(self, model):
         """
+<<<<<<< HEAD
+        Initializes an instance of the Relay assessment results view.
+
+        :param model: the instance of the Relay data model to create the view
+                      for.
+=======
         Method to initialize an instance of the Relay assessment results view.
 
         :param model: the :py:class:`rtk.hardware.relay.Relay.Model` to create
                       the view for.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         gtk.Frame.__init__(self)
 
+<<<<<<< HEAD
+        # Initialize private list attributes.
+        self._lst_labels = ["",
+                            u"\u03BB<sub>b</sub>:", u"\u03C0<sub>Q</sub>:",
+                            u"\u03C0<sub>E</sub>:", u"\u03C0<sub>L</sub>:",
+                            u"\u03C0<sub>C</sub>:", u"\u03C0<sub>CYC</sub>:",
+                            u"\u03C0<sub>F</sub>:"]
+
+        # ===== ===== == Initialize private scalar attributes == ===== ===== #
+        self._hardware_model = model
+        self._subcategory = model.subcategory
+
+        # Create the result widgets.
+        self.txtLambdaB = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+        self.txtPiQ = _widg.make_entry(width=100, editable=False, bold=True)
+        self.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -552,12 +824,32 @@ class Results(gtk.Frame):
         self.txtPiCYC = Widgets.make_entry(width=100, editable=False,
                                            bold=True)
         self.txtPiF = Widgets.make_entry(width=100, editable=False, bold=True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.figDerate = Figure(figsize=(6, 4))
         self.axsDerate = self.figDerate.add_subplot(111)
         self.pltDerate = FigureCanvas(self.figDerate)
 
         if self._subcategory == 64:         # Mechanical
+<<<<<<< HEAD
+            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub></span>"
+
+            self.txtPiL = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+            self.txtPiC = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+            self.txtPiCYC = _widg.make_entry(width=100, editable=False,
+                                             bold=True)
+            self.txtPiF = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+
+        elif self._subcategory == 65:       # Solid State
+            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+
+    def create_217_stress_results(self, x_pos=5):
+        """
+        Creates the MIL-HDBK-217FN2 part stress result widgets for Relays.
+=======
             self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub></span>"
 
         elif self._subcategory == 65:       # Solid State
@@ -624,6 +916,7 @@ class Results(gtk.Frame):
         """
         Method to create the MIL-HDBK-217FN2 part stress result gtk.Widgets()
         for Relays.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :keyword int x_pos: the x position of the display widgets.
         :return: _x_pos: the x-coordinate of the widgets.
@@ -647,12 +940,39 @@ class Results(gtk.Frame):
 
         self.add(_scrollwindow)
 
+<<<<<<< HEAD
+        # Create the tooltips for all the results display widgets.
+        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
+                                           u"for the selected relay."))
+        self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for the "
+                                       u"selected relay."))
+        self.txtPiE.set_tooltip_text(_(u"Displays the environment factor for "
+                                       u"the selected relay."))
+
+        if self._subcategory == 64:
+            # Create and place all the labels for the inputs.
+            (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels,
+                                                 _fixed, 5, 25)
+            _x_pos = max(x_pos, _x_pos) + 30
+
+            self.txtPiL.set_tooltip_text(_(u"Displays the load stress factor "
+                                           u"for the selected relay."))
+            self.txtPiC.set_tooltip_text(_(u"Displays the contact form factor "
+                                           u"for the selected relay."))
+            self.txtPiCYC.set_tooltip_text(_(u"Displays the cycling factor "
+                                             u"for the selected relay."))
+            self.txtPiF.set_tooltip_text(_(u"Displays the application and "
+                                           u"construction factor for the "
+                                           u"selected relay."))
+
+=======
         if self._subcategory == 64:
             # Create and place all the labels for the inputs.
             (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels,
                                                    _fixed, 5, 25)
             _x_pos = max(x_pos, _x_pos) + 30
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _fixed.put(self.txtPiL, _x_pos, _y_pos[4])
             _fixed.put(self.txtPiC, _x_pos, _y_pos[5])
             _fixed.put(self.txtPiCYC, _x_pos, _y_pos[6])
@@ -660,8 +980,13 @@ class Results(gtk.Frame):
 
         else:
             # Create and place all the labels for the inputs.
+<<<<<<< HEAD
+            (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels[:4],
+                                                 _fixed, 5, 25)
+=======
             (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels[:4],
                                                    _fixed, 5, 25)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
@@ -673,6 +998,13 @@ class Results(gtk.Frame):
 
         return _x_pos
 
+<<<<<<< HEAD
+    def load_217_stress_results(self, model):
+        """
+        Loads the Relay class result gtk.Widgets().
+
+        :param model: the Relay data model to load the attributes from.
+=======
     def load_217_count_results(self, model):
         """
         Method to load the Relay class MIL-HDBK-217FN2 parts count result
@@ -698,11 +1030,16 @@ class Results(gtk.Frame):
 
         :param model: the :py:class:`rtk.hardware.relay.Relay.Model` to load
                       the attributes from.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
+        fmt = '{0:0.' + str(_conf.PLACES) + 'G}'
+=======
         fmt = '{0:0.' + str(Configuration.PLACES) + 'G}'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.txtLambdaB.set_text(str(fmt.format(model.base_hr)))
         self.txtPiQ.set_text(str(fmt.format(model.piQ)))
@@ -718,10 +1055,16 @@ class Results(gtk.Frame):
 
     def load_derate_plot(self, model, frame):
         """
+<<<<<<< HEAD
+        Loads the stress derate plot for the Relay class.
+
+        :param model: the Hardware data model to load the attributes from.
+=======
         Method to load the stress derate plot for the Relay class.
 
         :param model: the :py:class:`rtk.hardware.relay.Relay.Model` to load
                       the attributes from.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -737,19 +1080,29 @@ class Results(gtk.Frame):
               float(model.knee_temperature),
               float(model.max_rated_temperature)]
 
+<<<<<<< HEAD
+        self.axsDerate.plot(_x, model.lst_derate_criteria[0], 'r.-', linewidth=2)
+        self.axsDerate.plot(_x, model.lst_derate_criteria[1], 'b.-', linewidth=2)
+        self.axsDerate.plot(model.temperature_active, model.current_ratio, 'go')
+=======
         self.axsDerate.plot(_x, model.lst_derate_criteria[0], 'r.-',
                             linewidth=2)
         self.axsDerate.plot(_x, model.lst_derate_criteria[1], 'b.-',
                             linewidth=2)
         self.axsDerate.plot(model.temperature_active,
                             model.current_ratio, 'go')
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         if(_x[0] != _x[2] and
            model.lst_derate_criteria[1][0] != model.lst_derate_criteria[1][2]):
             self.axsDerate.axis([0.95 * _x[0], 1.05 * _x[2],
                                  model.lst_derate_criteria[1][2],
                                  1.05 * model.lst_derate_criteria[1][0]])
         else:
+<<<<<<< HEAD
+            self.axsDerate.cla().axis([0.95, 1.05, 0.0, 1.05])
+=======
             self.axsDerate.axis([0.95, 1.05, 0.0, 1.05])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.axsDerate.set_title(_(u"Current Derating Curve for %s at %s") %
                                  (model.part_number, model.ref_des),
@@ -758,7 +1111,11 @@ class Results(gtk.Frame):
                                            'verticalalignment': 'baseline'})
         _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
                          _(u"Voltage Operating Point")])
+<<<<<<< HEAD
+        _leg = self.axsDerate.legend(_legend, 'upper right', shadow=True)
+=======
         _leg = self.axsDerate.legend(_legend, loc='upper right', shadow=True)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         for _text in _leg.get_texts():
             _text.set_fontsize('small')
 

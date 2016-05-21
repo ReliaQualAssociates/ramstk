@@ -17,7 +17,11 @@ import sys
 import gettext
 import locale
 
+<<<<<<< HEAD
+# Modules required for the GUI.
+=======
 # Import modules for the GUI.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import pango
 try:
     import pygtk
@@ -38,10 +42,15 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
+<<<<<<< HEAD
+import Configuration as _conf
+import gui.gtk.Widgets as _widg
+=======
 try:
     import Configuration
 except ImportError:
     import rtk.Configuration as Configuration
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -49,7 +58,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2016 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -75,7 +88,11 @@ def _format_cell(__column, cell, model, row, position):
     _cell_type = gobject.type_name(model.get_column_type(position))
 
     if _cell_type == 'gfloat':
+<<<<<<< HEAD
+        _fmt = '{0:0.' + str(_conf.PLACES) + 'f}'
+=======
         _fmt = '{0:0.' + str(Configuration.PLACES) + 'f}'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     elif _cell_type == 'gint':
         _fmt = '{0:0.0f}'
     else:
@@ -118,12 +135,19 @@ def _resize_wrap(column, __param, cell):
     return False
 
 
+<<<<<<< HEAD
+class Matrix(gtk.TreeView):
+    """
+    The List Book view for displaying a Matrix.  The attributes of a matrix
+    List Book view are:
+=======
 class Matrix(gobject.GObject):
     """
     The List Book view for displaying a Matrix.  The attributes of a matrix
     List Book view are:
 
     :ivar _lst_matrix_icons: list of icons to use in the various Matrix views.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self, model=None):
@@ -135,6 +159,14 @@ class Matrix(gobject.GObject):
                                       Matrix.
         """
 
+<<<<<<< HEAD
+        gtk.TreeView.__init__(self)
+
+        self.set_model(model)
+
+    def insert_column(self, heading, position, editable=True,
+                      background='white', foreground='black'):
+=======
         self.__gobject_init__()
 
         # Define private dictionary attributes.
@@ -163,6 +195,7 @@ class Matrix(gobject.GObject):
 
     def add_column(self, heading, position, editable=True, background='white',
                    foreground='black'):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         Method to create and add a column to the Matrix at the end.
 
@@ -183,14 +216,21 @@ class Matrix(gobject.GObject):
         _label.set_angle(90)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_markup("<span weight='bold'>" + heading + "</span>")
+<<<<<<< HEAD
+=======
         _label.set_tooltip_markup("<span weight='bold'>" + heading + "</span>")
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _label.set_use_markup(True)
         _label.show_all()
 
         _column = gtk.TreeViewColumn()
         _column.set_visible(1)
 
+<<<<<<< HEAD
+        if position in [0, 1]:
+=======
         if position in [0, 1, 2]:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _cell = gtk.CellRendererText()
             _cell.set_property('background', background)
             _cell.set_property('editable', editable)
@@ -198,6 +238,15 @@ class Matrix(gobject.GObject):
             _cell.set_property('wrap-width', 250)
             _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             _cell.set_property('yalign', 0.1)
+<<<<<<< HEAD
+            _cell.connect('edited', self._on_tree_edited, position)
+            _column.pack_start(_cell, True)
+            _column.set_attributes(_cell, text=position)
+        else:
+            _cell = gtk.CellRendererPixbuf()
+            _column.pack_start(_cell, True)
+            _column.set_attributes(_cell, pixbuf=position)
+=======
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=position)
         else:
@@ -213,6 +262,7 @@ class Matrix(gobject.GObject):
             _cell = gtk.CellRendererPixbuf()
             _column.pack_start(_cell, False)
             _column.set_attributes(_cell, pixbuf=_position)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             _cell = gtk.CellRendererCombo()
             _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
@@ -228,11 +278,20 @@ class Matrix(gobject.GObject):
             _cell.set_property('wrap-width', 250)
             _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
             _cell.set_property('yalign', 0.1)
+<<<<<<< HEAD
+            _cell.connect('changed', self._on_combo_changed, position)
+            _column.pack_start(_cell, True)
+            _column.set_attributes(_cell, text=position)
+
+        # Make sure non-editable cells have a light gray background.
+        if not editable and col_type != 6:
+=======
             _cell.connect('changed', self._on_combo_changed, _position)
             _column.pack_end(_cell, True)
 
         # Make sure non-editable cells have a light gray background.
         if not editable:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _cell.set_property('background', 'light gray')
 
         _column.set_alignment(0.5)
@@ -242,6 +301,9 @@ class Matrix(gobject.GObject):
         _column.set_cell_data_func(_cell, _format_cell, position)
         _column.connect('notify::width', _resize_wrap, _cell)
 
+<<<<<<< HEAD
+        self.append_column(_column)
+=======
         self.treeview.append_column(_column)
 
         return False
@@ -260,6 +322,7 @@ class Matrix(gobject.GObject):
         _column = _model.get_n_columns()[position]
 
         self.treeview.remove_column(_column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
@@ -284,6 +347,9 @@ class Matrix(gobject.GObject):
             if _item[0] == -1:              # Indicates a top-level item.
                 prow = None
 
+<<<<<<< HEAD
+            _piter = model.append(prow, _item[2:])
+=======
             _data = _item[1:4]
 
             # Add the proper Pixbuf right before the database index that
@@ -298,6 +364,7 @@ class Matrix(gobject.GObject):
                 _piter = model.append(prow, _data)
             except ValueError:
                 print model.get_n_columns(), len(_data), _data
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _parent_id = _item[1]
 
             # Find the child items of the current parent item.  These will be
@@ -307,6 +374,10 @@ class Matrix(gobject.GObject):
 
         return False
 
+<<<<<<< HEAD
+    def _on_combo_changed(self, cell, path, new_row, position):
+        """
+=======
     def _on_combo_changed(self, cell, __path, row, column):
         """
         Callback method to respond to changed signals for the
@@ -322,10 +393,49 @@ class Matrix(gobject.GObject):
                            in the Matrix.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         _model = cell.get_property('model')
 
+<<<<<<< HEAD
+        if _model.get_value(new_row, 0) == 'P':
+            cell.set_property('cell-background', 'pink')
+        elif _model.get_value(new_row, 0) == 'C':
+            cell.set_property('cell-background', 'green')
+        else:
+            cell.set_property('cell-background', 'white')
+
+        return False
+
+    def _on_tree_edited(self, cell, path, new_text, position):
+        """
+        Callback method whenever a gtk.TreeView() gtk.CellRenderer() is edited.
+
+        :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
+        :param str path: the gtk.TreeView() path of the gtk.CellRenderer() that
+                         was edited.
+        :param str new_text: the new text in the edited gtk.CellRenderer().
+        :param int position: the column position of the edited
+                             gtk.CellRenderer().
+        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
+                                    belongs to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _model = self.get_model()
+        _convert = gobject.type_name(_model.get_column_type(position))
+
+        if new_text is None:
+            _model[path][position] = not cell.get_active()
+        elif _convert == 'gchararray':
+            _model[path][position] = str(new_text)
+        elif _convert == 'gint':
+            _model[path][position] = int(new_text)
+        elif _convert == 'gfloat':
+            _model[path][position] = float(new_text)
+=======
         (_matrix_model,
          _matrix_row) = self.treeview.get_selection().get_selected()
 
@@ -342,12 +452,16 @@ class Matrix(gobject.GObject):
         _matrix_model.set_value(_matrix_row, column, _icon)
 
         self.emit('changed', self.treeview, _value, column)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
 
 # Register the new widget type.
 gobject.type_register(Matrix)
+<<<<<<< HEAD
+=======
 gobject.signal_new('changed', Matrix, gobject.SIGNAL_RUN_FIRST,
                    gobject.TYPE_NONE,
                    (gtk.TreeView(), gobject.TYPE_INT, gobject.TYPE_INT))
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

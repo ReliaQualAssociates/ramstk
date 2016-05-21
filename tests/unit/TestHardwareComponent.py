@@ -5,7 +5,11 @@ This is the test class for testing Component module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       tests.hardware.TestComponent.py is part of The RTK Project
+=======
 #       tests.unit.TestComponent.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 

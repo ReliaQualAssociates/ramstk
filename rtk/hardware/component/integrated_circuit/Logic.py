@@ -16,6 +16,15 @@ import gettext
 import locale
 
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+    from hardware.component.integrated_circuit.IntegratedCircuit import Model as IntegratedCircuit
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+    from rtk.hardware.component.integrated_circuit.IntegratedCircuit import Model as IntegratedCircuit
+=======
     import Configuration
     import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
@@ -25,6 +34,7 @@ except ImportError:                         # pragma: no cover
     import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
         Model as IntegratedCircuit
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -33,7 +43,11 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -145,10 +159,17 @@ class Logic(IntegratedCircuit):
             # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except(TypeError, ValueError) as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -171,14 +192,22 @@ class Logic(IntegratedCircuit):
 
         return _values
 
+<<<<<<< HEAD
+    def calculate(self):
+=======
     def calculate_part(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         Calculates the hazard rate for the inductive Logic IC data model.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
         # TODO: Re-write calculate_part; current McCabe Complexixty metric = 20.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -210,6 +239,15 @@ class Logic(IntegratedCircuit):
                 self.C1 = self._C1[self.technology - 1][0]
             elif self.n_gates > 100 and self.n_gates < 1001:
                 self.C1 = self._C1[self.technology - 1][1]
+<<<<<<< HEAD
+            elif self.n_gates > 1000 and self.n_gates < 3001:   # pragma: nocover
+                self.C1 = self._C1[self.technology - 1][2]
+            elif self.n_gates > 3000 and self.n_gates < 10001:  # pragma: nocover
+                self.C1 = self._C1[self.technology - 1][3]
+            elif self.n_gates > 10000 and self.n_gates < 30001: # pragma: nocover
+                self.C1 = self._C1[self.technology - 1][4]
+            elif self.n_gates > 30000 and self.n_gates < 60001: # pragma: nocover
+=======
             elif self.n_gates > 1000 and self.n_gates < 3001:
                 self.C1 = self._C1[self.technology - 1][2]
             elif self.n_gates > 3000 and self.n_gates < 10001:
@@ -217,6 +255,7 @@ class Logic(IntegratedCircuit):
             elif self.n_gates > 10000 and self.n_gates < 30001:
                 self.C1 = self._C1[self.technology - 1][4]
             elif self.n_gates > 30000 and self.n_gates < 60001:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.C1 = self._C1[self.technology - 1][5]
             self.hazard_rate_model['C1'] = self.C1
 
@@ -252,4 +291,8 @@ class Logic(IntegratedCircuit):
             # Environmental correction factor.
             self.piE = self._piE[self.environment_active - 1]
 
+<<<<<<< HEAD
+        return IntegratedCircuit.calculate(self)
+=======
         return IntegratedCircuit.calculate_part(self)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

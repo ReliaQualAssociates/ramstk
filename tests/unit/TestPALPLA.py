@@ -5,7 +5,11 @@ This is the test class for testing PAL/PLA IC module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       tests.hardware.TestPALPLA.py is part of The RTK Project
+=======
 #       tests.unit.TestPALPLA.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -16,6 +20,10 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+<<<<<<< HEAD
+import dao.DAO as _dao
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.integrated_circuit.PALPLA import *
 
 __author__ = 'Andrew Rowland'
@@ -34,6 +42,12 @@ class TestPALPLAModel(unittest.TestCase):
         Setup the test fixture for the PAL/PLA IC class.
         """
 
+<<<<<<< HEAD
+        _database = '/home/andrew/projects/RTKTestDB.rtk'
+        self._dao = _dao(_database)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = PALPLA()
 
     @attr(all=True, unit=True)
@@ -218,14 +232,22 @@ class TestPALPLAModel(unittest.TestCase):
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """
+<<<<<<< HEAD
+        (TestPALPLA) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestPALPLA) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
         self.DUT.technology = 1
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
@@ -233,7 +255,11 @@ class TestPALPLAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count_all(self):
         """
+<<<<<<< HEAD
+        (TestPALPLA) calculate should return False on success when calculating MIL-HDBK-217F parts count results
+=======
         (TestPALPLA) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.n_gates = 100
@@ -257,7 +283,11 @@ class TestPALPLAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
+<<<<<<< HEAD
+        (TestPALPLA) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
+=======
         (TestPALPLA) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -275,7 +305,11 @@ class TestPALPLAModel(unittest.TestCase):
         self.DUT.years_production = 1.5
         self.DUT.case_temperature = 35.0
 
+<<<<<<< HEAD
+        self.assertFalse(self.DUT.calculate())
+=======
         self.assertFalse(self.DUT.calculate_part())
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.assertEqual(self.DUT.junction_temperature, 50.0)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],

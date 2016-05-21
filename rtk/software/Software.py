@@ -17,11 +17,19 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import Utilities as _util
+except ImportError:                         # pragma: no cover
+    import rtk.Configuration as _conf
+    import rtk.Utilities as _util
+=======
     import Configuration
     import Utilities
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -29,7 +37,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -92,8 +104,13 @@ def _calculate_application_risk(module):
     |  18   | Development Tools            |   High   |
     +-------+------------------------------+----------+
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -123,8 +140,13 @@ def _calculate_development_risk(module):
         Low development risk (Dc > 0.9) is assigned a 0.5.
         High development risk (Dc < 0.5) is assigned a 2.
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
@@ -154,6 +176,14 @@ def _calculate_anomaly_risk(module):
         SA = 1.0 if 0.4 >= AM <= 0.6
         SA = 1.1 if AM < 0.4
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+    """
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
 
@@ -162,6 +192,7 @@ def _calculate_anomaly_risk(module):
     """
 # TODO: Consider re-writing _calculate_anomaly_risk; current McCabe Complexity metric = 10.
     _error_code = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     if module.phase_id == 2:                # Requirements review
         _ratios = [0, 0, 0]
@@ -176,7 +207,15 @@ def _calculate_anomaly_risk(module):
                module.lst_anomaly_mgmt[0][5]) == 1:
                 _ratios[2] = 1
         except ZeroDivisionError:
+<<<<<<< HEAD
+            _util.rtk_error(_(u"Attempted to divide by zero when "
+                              u"calculating the anomaly management risk "
+                              u"for {0:s}.  Perhaps you forgot to answer one "
+                              u"or more questions.").format(
+                                  module.description))
+=======
             _error_code = 10
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _n_yes = module.lst_anomaly_mgmt[0][4] + \
                  sum(module.lst_anomaly_mgmt[0][7:]) + sum(_ratios)
@@ -193,7 +232,11 @@ def _calculate_anomaly_risk(module):
     else:
         module.sa = 1.0
 
+<<<<<<< HEAD
+    return False
+=======
     return _error_code
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 def _calculate_traceability_risk(module):
@@ -207,13 +250,22 @@ def _calculate_traceability_risk(module):
         ST = 1.0 if requirements can be traced
         ST = 1.1 otherwise
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
+<<<<<<< HEAD
+
+=======
 # TODO: Consider re-writing _calculate_traceability_risk; current McCabe Complexity metric = 10.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     if module.phase_id == 2:            # Requirements review
         if module.lst_traceability[0][0] == 1:  # Low risk
             module.st = 1.0
@@ -248,6 +300,14 @@ def _calculate_quality_risk(module):
         SQ = 1.0 if DR >= 0.5
         SQ = 1.1 if DR < 0.5
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+    """
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
 
@@ -256,6 +316,7 @@ def _calculate_quality_risk(module):
     """
 # TODO: Re-write _calculate_quality_risk; current McCabe Complexity metric = 12.
     _error_code = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     if module.phase_id == 2:                # Requirements review
         _ratios = [0, 0]
@@ -267,7 +328,16 @@ def _calculate_quality_risk(module):
                module.lst_sftw_quality[0][10] == 1:
                 _ratios[1] = 1
         except ZeroDivisionError:
+<<<<<<< HEAD
+            print ""
+# TODO: Move this to the view module.
+        #    _util.rtk_error(_(u"Attempted to divide by zero when "
+        #                      u"calculating the software quality risk for "
+        #                      u"{0:s}.  Perhaps you forgot to answer one or "
+        #                      u"more questions.").format(module.description))
+=======
             _error_code = 10
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _n_yes = sum(module.lst_sftw_quality[0][:8]) + \
                  sum(module.lst_sftw_quality[0][12:]) + \
@@ -294,7 +364,17 @@ def _calculate_quality_risk(module):
                module.lst_sftw_quality[1][14]) > 0.75:
                 _ratios[4] = 1
         except ZeroDivisionError:
+<<<<<<< HEAD
+            print ""
+        # TODO: Move this to the view module.
+        #    _util.rtk_error(_(u"Attempted to divide by zero when "
+        #                      u"calculating the software quality risk for "
+        #                      u"{0:s}.  Perhaps you forgot to answer one "
+        #                     u"or more questions.").format(
+        #                         module.description))
+=======
             _error_code = 10
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _n_yes = sum(module.lst_sftw_quality[1][:2]) + \
                  sum(module.lst_sftw_quality[1][4:6]) + \
@@ -308,7 +388,11 @@ def _calculate_quality_risk(module):
     else:
         module.sq = 1.0
 
+<<<<<<< HEAD
+    return False
+=======
     return _error_code
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 def _calculate_language_type_risk(module):
@@ -323,29 +407,50 @@ def _calculate_language_type_risk(module):
 
     SL = (HLOC / SLOC) + (1.4 * ALOC / SLOC)
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
 
     :return: _error_code
     :rtype: int
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     # Calculate the Language Type factor:
     #
     #   HLOC = SLOC - ALOC
     #   SL = HLOC / SLOC + 1.4 * ALOC / SLOC
+<<<<<<< HEAD
+=======
 
     _error_code = 0
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     module.hloc = module.sloc - module.aloc
     try:
         module.sl = (module.hloc / module.sloc) + \
                     (1.4 * module.aloc / module.sloc)
     except ZeroDivisionError:
+<<<<<<< HEAD
+        _util.rtk_error(_(u"Attempted to divide by zero when calculating "
+                          u"the software language risk for {0:s}.  Perhaps "
+                          u"you forgot to answer one or more "
+                          u"questions.").format(module.description))
+        module.sl = 1.4
+
+    return False
+=======
         _error_code = 10
         module.sl = 1.4
 
     return _error_code
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 def _calculate_risk_reduction(module):
@@ -359,6 +464,14 @@ def _calculate_risk_reduction(module):
     software failure rates.  RTK also provides test planning guidance in
     the same manner as RL-TR-92-52.
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+    """
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
 
@@ -367,6 +480,7 @@ def _calculate_risk_reduction(module):
     """
 # TODO: Re-write _calculate_risk_reduction; current McCabe Complexity metric = 13.
     _error_code = 0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     # Calculate the risk reduction due to the test effort.
     try:
@@ -382,8 +496,18 @@ def _calculate_risk_reduction(module):
         else:
             _test_ratio = 1.0
     except ZeroDivisionError:
+<<<<<<< HEAD
+        print ""
+        # TODO: Move this to the view module.
+        # _util.rtk_error(_(u"Attempted to divide by zero when "
+        #                   u"calculating the test effort risk "
+        #                   u"reduction for {0:s}.  Perhaps you forgot "
+        #                   u"to answer one or more questions.").format(
+        #                       module.description))
+=======
         _error_code = 10
         _test_ratio = 0.0
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     module.te = 1.0
     if _test_ratio > 0.4:
@@ -399,7 +523,17 @@ def _calculate_risk_reduction(module):
         elif module.tu / module.tt < 0.5:
             module.tm = 1.1
     except ZeroDivisionError:
+<<<<<<< HEAD
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when "
+    #                      u"calculating the test method risk "
+    #                      u"reduction for {0:s}.  Perhaps you forgot "
+    #                      u"to answer one or more questions.").format(
+    #                          module.description))
+=======
         _error_code = 10
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     # Calculate the risk reduction due to test coverage.
     try:
@@ -413,14 +547,29 @@ def _calculate_risk_reduction(module):
         else:
             _VS = 1.0
     except ZeroDivisionError:
+<<<<<<< HEAD
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when "
+    #                      u"calculating the test coverage risk "
+    #                      u"reduction for {0:s}.  Perhaps you forgot "
+    #                      u"to answer one or more questions.").format(
+    #                          module.description))
+        _VS = 1.0
+=======
         _error_code = 10
         _VS = 1.0
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     module.tc = 1.0 / _VS
 
     module.t_risk = module.te * module.tm * module.tc
 
+<<<<<<< HEAD
+    return False
+=======
     return _error_code
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 def _calculate_reliability_estimation_number(module):
@@ -429,6 +578,24 @@ def _calculate_reliability_estimation_number(module):
     selected software module.  The methodology is outlined in RL-TR-92-52,
     Section 300.
 
+<<<<<<< HEAD
+    :param module: the :py:class:`rtk.software.CSCI` or
+                   :py:class:`rtk.software.Unit` data model to calculate.
+
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+    """
+
+    try:
+        module.ew = module.et / float(module.et - module.os)
+    except ZeroDivisionError:
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when calculating "
+    #                      u"the workload for {0:s}.  Perhaps you forgot "
+    #                      u"to provide one or more inputs.").format(
+    #                          module.description))
+=======
     :param module: the :py:class:`rtk.software.CSCI.Model` or
                    :py:class:`rtk.software.Unit.Model` data model to calculate.
 
@@ -442,6 +609,7 @@ def _calculate_reliability_estimation_number(module):
         module.ew = module.et / float(module.et - module.os)
     except ZeroDivisionError:
         _error_code = 10
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     module.ev = 0.1 + 4.5 * module.ec
 
@@ -450,12 +618,30 @@ def _calculate_reliability_estimation_number(module):
     try:
         module.ft1 = module.dr_test / module.test_time
     except ZeroDivisionError:
+<<<<<<< HEAD
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when calculating "
+    #                      u"the average failure rate during test for "
+    #                      u"{0:s}.  Perhaps you forgot to provide one or "
+    #                      u"more inputs.").format(module.description))
+=======
         _error_code = 10
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     try:
         module.ft2 = module.dr_eot / module.test_time_eot
     except ZeroDivisionError:
+<<<<<<< HEAD
+        print ""
+# TODO: Move this to the view module.
+    #    _util.rtk_error(_(u"Attempted to divide by zero when calculating "
+    #                      u"the average failure rate at end of test for "
+    #                      u"{0:s}.  Perhaps you forgot to provide one or "
+    #                      u"more inputs.").format(module.description))
+=======
         _error_code = 10
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     _T1 = 0.02 * module.t_risk
     _T2 = 0.14 * module.t_risk
@@ -463,13 +649,119 @@ def _calculate_reliability_estimation_number(module):
     module.ren_avg = module.ft1 * _T1
     module.ren_eot = module.ft2 * _T2
 
+<<<<<<< HEAD
+    return False
+=======
     return _error_code
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class Model(object):                        # pylint: disable=R0902
     """
     The Software data model contains the attributes and methods of a Software
     item.  The Software class is a meta-class for the Assembly and Component
+<<<<<<< HEAD
+    classes.  A :class:`rtk.software.BoM` will consist of one or more Software
+    items.  The attributes of a Software item are:
+
+    :ivar lst_development: list to hold the answers to the development
+                           environment questions.
+    :ivar lst_anomaly_mgmt: list to hold the answers to the anomaly management
+                            technique questions.
+    :ivar lst_traceability: list to hold the answers to the requirements
+                            traceability questions.
+    :ivar lst_sftw_quality: list to hold the answers to the software quality
+                            questions.
+    :ivar lst_modularity: list to hold the answers to the software modularity
+                          questions.
+
+    :ivar dicCSCI: dictionary of the CSCI data models that are children of this
+                   data model.  Key is the Software ID; value is a pointer to
+                   the CSCI data model instance.
+    :ivar dicUnits: dictionary of the Unit data models that are children
+                    of this data model.  Key is the Software ID; value is a
+                    pointer to the Unit data model instance.
+
+    :ivar int revision_id: ID of the Revision the software module is associated
+                           with. default value: None
+    :ivar software_id: default value: None
+    :ivar level_id: default value: 0
+    :ivar description: default value: ""
+    :ivar application_id: default value: 0
+    :ivar development_id: default value: 0
+    :ivar a_risk: default value: 0.0
+    :ivar do: default value: 0.0
+    :ivar dd: default value: 0
+    :ivar dc: default value: 0.0
+    :ivar d_risk: default value: 0.0
+    :ivar am: default value: 0.0
+    :ivar sa: default value: 0.0
+    :ivar st: default value: 0.0
+    :ivar dr: default value: 0.0
+    :ivar sq: default value: 0.0
+    :ivar s1: default value: 0.0
+    :ivar hloc: default value: 0
+    :ivar aloc: default value: 0
+    :ivar sloc: default value: 0
+    :ivar sl: default value: 0.0
+    :ivar ax: default value: 0
+    :ivar bx: default value: 0
+    :ivar cx: default value: 0
+    :ivar nm: default value: 0
+    :ivar sx: default value: 0.0
+    :ivar um: default value: 0
+    :ivar wm: default value: 0
+    :ivar xm: default value: 0
+    :ivar sm: default value: 0.0
+    :ivar df: default value: 0.0
+    :ivar sr: default value: 0.0
+    :ivar s2: default value: 0.0
+    :ivar rpfom: default value: 0.0
+    :ivar parent_id: default value: 0
+    :ivar dev_assess_type: default value: 0
+    :ivar phase_id: default value: 0
+    :ivar tcl: default value: 0
+    :ivar test_path: default value: 0
+    :ivar category: default value: 0
+    :ivar test_effort: default value: 0
+    :ivar test_approach: default value: 0
+    :ivar labor_hours_test: default value: 0.0
+    :ivar labor_hours_dev: default value: 0.0
+    :ivar budget_test: default value: 0.0
+    :ivar budget_dev: default value: 0.0
+    :ivar schedule_test: default value: 0.0
+    :ivar schedule_dev: default value: 0.0
+    :ivar branches: default value: 0
+    :ivar branches_test: default value: 0
+    :ivar inputs: default value: 0
+    :ivar inputs_test: default value: 0
+    :ivar nm_test: default value: 0
+    :ivar interfaces: default value: 0
+    :ivar interfaces_test: default value: 0
+    :ivar te: default value: 0.0
+    :ivar tm: default value: 0.0
+    :ivar tc: default value: 0.0
+    :ivar t_risk: default value: 0.0
+    :ivar ft1: default value: 0.0
+    :ivar ft2: default value: 0.0
+    :ivar ren_avg: default value: 0.0
+    :ivar ren_eot: default value: 0.0
+    :ivar ec: default value: 0.0
+    :ivar ev: default value: 0.0
+    :ivar et: default value: 0.0
+    :ivar os: default value: 0.0
+    :ivar ew: default value: 0.0
+    :ivar e_risk: default value: 0.0
+    :ivar failure_rate: default value: 0.0
+    :ivar units: default value: 0
+    :ivar units_test: default value: 0
+    :ivar cb: default value: 0
+    :ivar ncb: default value: 0
+    :ivar dr_test: default value: 0
+    :ivar test_time: default value: 0.0
+    :ivar dr_eot: default value: 0
+    :ivar test_time_eot: default value: 0.0
+=======
     classes.  A :py:class:`rtk.software.BoM.Model` will consist of one or more
     Software items.  The attributes of a Software item are:
 
@@ -596,11 +888,16 @@ class Model(object):                        # pylint: disable=R0902
     :ivar int dr_eot: the total number of discrepency reports crreated at end
                       of test.
     :ivar float test_time_eot: the total test time at end of test.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initialize a Software data model instance.
+=======
         Method to initialize a Software data model instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         # Lists to hold the answers to the risk factor questions.  The values
@@ -629,6 +926,13 @@ class Model(object):                        # pylint: disable=R0902
                                    [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
                                    [0, 0]]
 
+<<<<<<< HEAD
+        # Initialize public dictionary attributes.
+        self.dicCSCI = {}
+        self.dicUnits = {}
+
+        # Initialize public instance scalar attributes.
+=======
         # Define public dictionary attributes.
         self.dicCSCI = {}
         self.dicUnits = {}
@@ -637,6 +941,7 @@ class Model(object):                        # pylint: disable=R0902
         # Define public list attributes.
 
         # Define public scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.revision_id = None
         self.software_id = None
         self.level_id = 0
@@ -718,7 +1023,11 @@ class Model(object):                        # pylint: disable=R0902
 
     def set_attributes(self, values):
         """
+<<<<<<< HEAD
+        Sets the Software data model attributes.
+=======
         Method to set the Software data model attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -807,18 +1116,29 @@ class Model(object):                        # pylint: disable=R0902
             self.dr_eot = int(values[74])
             self.test_time_eot = float(values[75])
         except IndexError as _err:
+<<<<<<< HEAD
+            _code = _util.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = _util.error_handler(_err.args)
+=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = Utilities.error_handler(_err.args)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
+<<<<<<< HEAD
+        Retrieves the current values of the Software data model attributes.
+=======
         Method to retrieve the current values of the Software data model
         attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (revision_id, software_id, level_id, description,
                   application_id, development_id, a_risk, do, dd, dc, d_risk,
@@ -859,6 +1179,16 @@ class Model(object):                        # pylint: disable=R0902
 
     def calculate(self, module):
         """
+<<<<<<< HEAD
+        Iterively calculates various software attributes.
+
+        :param module: the :py:class:`rtk.software.CSCI` or
+                       :py:class:`rtk.software.Unit` data model to calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+=======
         Method to iterively calculate various software attributes.
 
         :param module: the :py:class:`rtk.software.CSCI.Model` or
@@ -869,6 +1199,7 @@ class Model(object):                        # pylint: disable=R0902
 
         _error_codes = [0, 0, 0, 0, 0]
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # First we calculate all the software Units that are direct children of
         # the current CSCI.
         try:
@@ -877,17 +1208,24 @@ class Model(object):                        # pylint: disable=R0902
             _units = []
 
         for _unit in _units:
+<<<<<<< HEAD
+            self.calculate(_unit)
+=======
             self.dicErrors[_unit.software_id] = self.calculate(_unit)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             _unit.calculate_complexity_risk()
             _unit.calculate_modularity_risk()
 
+<<<<<<< HEAD
+=======
             if _unit.phase_id in [4, 5]:
                 _error_codes[0] = _calculate_anomaly_risk(module)
                 _error_codes[1] = _calculate_quality_risk(module)
             if _unit.phase_id == 5:
                 _error_codes[2] = _calculate_language_type_risk(module)
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _unit.s1 = _unit.sa * _unit.st * _unit.sq
             _unit.s2 = _unit.sl * _unit.sm * _unit.sx
             _unit.rpfom = _unit.a_risk * _unit.d_risk * _unit.s1 * _unit.s2
@@ -900,11 +1238,17 @@ class Model(object):                        # pylint: disable=R0902
             _cscis = []
 
         for _csci in _cscis:
+<<<<<<< HEAD
+            self.calculate(_csci)
+=======
             self.dicErrors[_csci.software_id] = self.calculate(_csci)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             _csci.calculate_complexity_risk()
             _csci.calculate_modularity_risk()
 
+<<<<<<< HEAD
+=======
             if _csci.phase_id in [2, 3, 4, 5]:
                 _error_codes[0] = _calculate_anomaly_risk(module)
                 _error_codes[1] = _calculate_quality_risk(module)
@@ -912,17 +1256,32 @@ class Model(object):                        # pylint: disable=R0902
             if _csci.phase_id in [4, 5]:
                 _error_codes[2] = _calculate_language_type_risk(module)
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _csci.s1 = _csci.sa * _csci.st * _csci.sq
             _csci.s2 = _csci.sl * _csci.sm * _csci.sx
             _csci.rpfom = _csci.a_risk * _csci.d_risk * _csci.s1 * _csci.s2
 
         _calculate_application_risk(module)
         _calculate_development_risk(module)
+<<<<<<< HEAD
+        if module.phase_id in [2, 3, 4, 5]:
+            _calculate_anomaly_risk(module)
+            _calculate_traceability_risk(module)
+            _calculate_quality_risk(module)
+        if module.phase_id in [4, 5]:
+            _calculate_language_type_risk(module)
+
+        _calculate_risk_reduction(module)
+        _calculate_reliability_estimation_number(module)
+
+        return False
+=======
 
         _error_codes[3] = _calculate_risk_reduction(module)
         _error_codes[4] = _calculate_reliability_estimation_number(module)
 
         return _error_codes
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class Software(object):
@@ -934,7 +1293,11 @@ class Software(object):
 
     def __init__(self):
         """
+<<<<<<< HEAD
+        Initializes an Software data controller instance.
+=======
         Method to initialize a Software data controller instance.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         pass

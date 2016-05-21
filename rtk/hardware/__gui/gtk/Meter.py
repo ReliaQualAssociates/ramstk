@@ -7,7 +7,11 @@ Meter Package Component Specific Work Book View
 
 # -*- coding: utf-8 -*-
 #
+<<<<<<< HEAD
+#       hardware.gui.gtk.Meter.py is part of The RTK Project
+=======
 #       rtk.hardware.gui.gtk.Meter.py is part of The RTK Project
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -34,11 +38,19 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
+except ImportError:
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
+=======
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -46,7 +58,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -56,21 +72,59 @@ _ = gettext.gettext
 class Inputs(gtk.Frame):
     """
     The Work Book view for displaying all the attributes for an integrated
+<<<<<<< HEAD
+    circuit.  The attributes of an inntegrated circuit Work Book view are:
+=======
     circuit.  The attributes of an Meter Work Book view are:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self, model):
         """
+<<<<<<< HEAD
+        Creates an input frame for the meter data model.
+
+        :param :class `rtk.hardware.Meter.model`: the Meter data model whose
+                                                  attributes will be displayed.
+=======
         Method to create an input frame for the Meter data model.
 
         :param model: the :py:class:`rtk.hardware.component.meter.Meter.Model`
                       whose attributes will be displayed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.Frame.__init__(self)
 
         self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
 
+<<<<<<< HEAD
+        # ===== ===== === Initialize private list attributes === ===== ===== #
+        self._lst_labels = [_(u"Application:")]
+
+        self._lst_handler_id = []
+
+        # ===== ===== == Initialize private scalar attributes == ===== ===== #
+        self._hardware_model = model
+        self._subcategory = model.subcategory
+
+        # ===== = Create the input widgets common to all Meter types = ===== #
+        self.cmbApplication = _widg.make_combo(simple=True)
+
+        # Subcategory specific attributes.
+        if self._subcategory == 2:          # Panel
+            self._lst_labels.append(_(u"Quality:"))
+            self._lst_labels.append(_(u"Quality Override:"))
+            self._lst_labels.append(_(u"Function:"))
+
+            self.cmbQuality = _widg.make_combo(simple=True)
+            self.cmbFunction = _widg.make_combo(simple=True)
+            self.txtCommercialPiQ = _widg.make_entry(width=100)
+
+    def create_217_count_inputs(self, x_pos=5):
+        """
+        Creates the MIL-HDBK-217FN2 part count input widgets for Meters.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -129,6 +183,7 @@ class Inputs(gtk.Frame):
         """
         Method to create the MIL-HDBK-217FN2 parts count input gtk.Widgets()
         for Meters.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
@@ -136,7 +191,11 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
+<<<<<<< HEAD
+                          _(u"MIL-HDBK-217FN2 Part Count Inputs") +
+=======
                           _(u"MIL-HDBK-217FN2 Parts Count Inputs") +
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                           "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -151,6 +210,8 @@ class Inputs(gtk.Frame):
 
         self.add(_scrollwindow)
 
+<<<<<<< HEAD
+=======
         # Create and place the inputs if this is a panel meter.
         if self._subcategory == 2:
             (_x_pos, _y_pos) = Widgets.make_labels(self._lst_count_labels,
@@ -161,14 +222,20 @@ class Inputs(gtk.Frame):
                 self.cmbQuality.reparent(_fixed)
             _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.show_all()
 
         return x_pos
 
     def create_217_stress_inputs(self, x_pos=5):
         """
+<<<<<<< HEAD
+        Creates the MIL-HDBK-217FN2 part stress input widgets for Integrated
+        Circuits.
+=======
         Method to create the MIL-HDBK-217FN2 part stress input gtk.Widgets()
         for Meters.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
@@ -192,6 +259,26 @@ class Inputs(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
+<<<<<<< HEAD
+        (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels, _fixed, 5, 5)
+        _x_pos = max(x_pos, _x_pos) + 50
+
+        # Create the tooltips for all the input widgets.
+        self.cmbApplication.set_tooltip_text(_(u"Select and display the "
+                                               u"type of application for the "
+                                               u"selected meter."))
+
+        # Place all the input widgets.
+        _fixed.put(self.cmbApplication, _x_pos, _y_pos[0])
+
+        # Connect signals to callback functions.
+        _index = 0
+        self._lst_handler_id.append(
+            self.cmbApplication.connect('changed',
+                                        self._on_combo_changed, _index))
+        _index += 1
+
+=======
         (_x_pos,
          _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
@@ -199,6 +286,7 @@ class Inputs(gtk.Frame):
         # Place all the input widgets.
         _fixed.put(self.cmbApplication, _x_pos, _y_pos[0])
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         if self._subcategory == 1:          # Elapsed time
             # Populate the gtk.ComboBox().
             self.cmbApplication.insert_text(0, '')
@@ -221,17 +309,58 @@ class Inputs(gtk.Frame):
             self.cmbQuality.insert_text(0, u"MIL-M-10304")
             self.cmbQuality.insert_text(0, _(u"Lower"))
 
+<<<<<<< HEAD
+            self.cmbQuality.set_tooltip_text(_(u"Select and display the "
+                                               u"quality level for the "
+                                               u"selected meter."))
+            self.txtCommercialPiQ.set_tooltip_text(_(u"Displays the "
+                                                     u"user-defined quality "
+                                                     u"factor for the "
+                                                     u"selected meter.  This "
+                                                     u"value over rides the "
+                                                     u"quality factor "
+                                                     u"selected above."))
+            self.cmbFunction.set_tooltip_text(_(u"Select and display the "
+                                                u"function of the "
+                                                u"selected meter."))
+
+            # Place all the input widgets.
+=======
             # Place all the input widgets.
             if self.cmbQuality.get_parent() is not None:
                 self.cmbQuality.reparent(_fixed)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _fixed.put(self.cmbQuality, _x_pos, _y_pos[1])
             _fixed.put(self.txtCommercialPiQ, _x_pos, _y_pos[2])
             _fixed.put(self.cmbFunction, _x_pos, _y_pos[3])
 
+<<<<<<< HEAD
+            # Connect signals to callback functions.
+            self._lst_handler_id.append(
+                self.cmbQuality.connect('changed',
+                                        self._on_combo_changed, _index))
+            _index += 1
+            self._lst_handler_id.append(
+                self.cmbFunction.connect('changed',
+                                         self._on_combo_changed, _index))
+            _index += 1
+            self._lst_handler_id.append(
+                self.txtCommercialPiQ.connect('focus-out-event',
+                                              self._on_focus_out, _index))
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.show_all()
 
         return _x_pos
 
+<<<<<<< HEAD
+    def load_217_stress_inputs(self, model):
+        """
+        Loads the Connection class gtk.Widgets().
+
+        :param model: the Hardware data model to load the attributes from.
+=======
     def load_217_count_inputs(self, model):
         """
         Method to load the Meter class MIL-HDBK-217FN2 parts count input
@@ -255,11 +384,16 @@ class Inputs(gtk.Frame):
 
         :param model: the :py:class:`rtk.hardware.component.meter.Meter.Model`
                       to load the attributes from.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
+        fmt = '{0:0.' + str(_conf.PLACES) + 'G}'
+=======
         fmt = '{0:0.' + str(Configuration.PLACES) + 'G}'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.cmbApplication.set_active(model.application)
 
@@ -273,8 +407,13 @@ class Inputs(gtk.Frame):
 
     def _on_combo_changed(self, combo, index):
         """
+<<<<<<< HEAD
+        Responds to gtk.ComboBox() changed signals and calls the correct
+        function or method, passing any parameters as needed.
+=======
         Method to respond to gtk.ComboBox() 'changed' signals and call the
         correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list oc the callback
@@ -287,10 +426,17 @@ class Inputs(gtk.Frame):
         combo.handler_block(self._lst_handler_id[index])
 
         if index == 0:
+<<<<<<< HEAD
+            self._hardware_model.application = combo.get_active()
+        elif index == 1 and self._subcategory == 2:
+            self._hardware_model.quality = combo.get_active()
+        elif index == 2 and self._subcategory == 2:
+=======
             self._hardware_model.quality = combo.get_active()
         elif index == 2:
             self._hardware_model.application = combo.get_active()
         elif index == 3:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._hardware_model.function = combo.get_active()
 
         combo.handler_unblock(self._lst_handler_id[index])
@@ -299,8 +445,13 @@ class Inputs(gtk.Frame):
 
     def _on_focus_out(self, entry, __event, index):
         """
+<<<<<<< HEAD
+        Responds to gtk.Entry() focus_out signals and calls the correct
+        function or method, passing any parameters as needed.
+=======
         Method to respond to gtk.Entry() 'focus_out' signals and call the
         correct function or method, passing any parameters as needed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -314,7 +465,11 @@ class Inputs(gtk.Frame):
 
         entry.handler_block(self._lst_handler_id[index])
 
+<<<<<<< HEAD
+        if index == 3 and self._subcategory == 2:
+=======
         if index == 1:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self._hardware_model.q_override = float(entry.get_text())
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -325,21 +480,70 @@ class Inputs(gtk.Frame):
 class Results(gtk.Frame):
     """
     The Work Book view for displaying all the output attributes for a
+<<<<<<< HEAD
+    meter.  The output attributes of a meter Work Book view are:
+=======
     meter.  The output attributes of a Meter Work Book view are:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self, model):
         """
+<<<<<<< HEAD
+        Initializes an instance of the meter assessment results view.
+
+        :param model: the instance of the Meter data model to create the view
+                      for.
+=======
         Method to initialize an instance of the Meter assessment results view.
 
         :param model: the :py:class:`rtk.hardware.component.meter.Meter.Model`
                       to create the view for.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         gtk.Frame.__init__(self)
 
+<<<<<<< HEAD
+        # Initialize private list attributes.
+        self._lst_labels = ['', u"\u03BB<sub>b</sub>:", u"\u03C0<sub>E</sub>:"]
+
+        # ===== ===== == Initialize private scalar attributes == ===== ===== #
+        self._hardware_model = model
+        self._subcategory = model.subcategory
+
+        # Create the result widgets.
+        self.txtLambdaB = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+        self.txtPiE = _widg.make_entry(width=100, editable=False, bold=True)
+
+        # Subcategory specific attributes.
+        if self._subcategory == 1:          # Elapsed time
+            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
+            self._lst_labels.append(u"\u03C0<sub>T</sub>:")
+
+            self.txtPiT = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+
+        elif self._subcategory == 2:        # Panel
+            self._lst_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+            self._lst_labels.append(u"\u03C0<sub>A</sub>:")
+            self._lst_labels.append(u"\u03C0<sub>F</sub>:")
+            self._lst_labels.append(u"\u03C0<sub>Q</sub>:")
+
+            self.txtPiA = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+            self.txtPiF = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+            self.txtPiQ = _widg.make_entry(width=100, editable=False,
+                                           bold=True)
+
+    def create_217_stress_results(self, x_pos=5):
+        """
+        Creates the MIL-HDBK-217FN2 part stress result widgets for Meters.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -440,6 +644,7 @@ class Results(gtk.Frame):
         """
         Method to create the MIL-HDBK-217FN2 part stress result gtk.Widgets()
         for Meters.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :keyword int x_pos: the x position of the display widgets.
         :return: _x_pos: the x-coordinate of the widgets.
@@ -464,6 +669,18 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
+<<<<<<< HEAD
+        (_x_pos, _y_pos) = _widg.make_labels(self._lst_labels, _fixed, 5, 25)
+        _x_pos = max(x_pos, _x_pos) + 30
+
+        # Create the tooltips for all the results display widgets.
+        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
+                                           u"for the selected meter."))
+        self.txtPiE.set_tooltip_text(_(u"Displays the environment factor for "
+                                       u"the selected meter."))
+
+        # Place the reliability result display widgets.
+=======
         (_x_pos,
          _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
@@ -471,16 +688,33 @@ class Results(gtk.Frame):
         # Place the reliability result display widgets.
         if self.txtLambdaB.get_parent() is not None:
             self.txtLambdaB.reparent(_fixed)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(self.txtLambdaB, _x_pos, _y_pos[1])
         _fixed.put(self.txtPiE, _x_pos, _y_pos[2])
 
         # Subcategory specific widgets.
         if self._subcategory == 1:
+<<<<<<< HEAD
+            self.txtPiT.set_tooltip_text(_(u"Displays the temperature factor "
+                                           u"for the selected meter."))
+
+            _fixed.put(self.txtPiT, _x_pos, _y_pos[3])
+
+        elif self._subcategory == 2:
+            self.txtPiA.set_tooltip_text(_(u"Displays the application factor "
+                                           u"for the selected meter."))
+            self.txtPiF.set_tooltip_text(_(u"Displays the function factor for "
+                                           u"the selected meter."))
+            self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for "
+                                           u"the selected meter."))
+
+=======
             _fixed.put(self.txtPiT, _x_pos, _y_pos[3])
 
         elif self._subcategory == 2:
             if self.txtPiQ.get_parent() is not None:
                 self.txtPiQ.reparent(_fixed)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _fixed.put(self.txtPiA, _x_pos, _y_pos[3])
             _fixed.put(self.txtPiF, _x_pos, _y_pos[4])
             _fixed.put(self.txtPiQ, _x_pos, _y_pos[5])
@@ -489,6 +723,13 @@ class Results(gtk.Frame):
 
         return _x_pos
 
+<<<<<<< HEAD
+    def load_217_stress_results(self, model):
+        """
+        Loads the Inductor class result gtk.Widgets().
+
+        :param model: the Inductor data model to load the attributes from.
+=======
     def load_217_count_results(self, model):
         """
         Method to load the Meter class MIL-HDBK-217FN2 parts count result
@@ -516,11 +757,16 @@ class Results(gtk.Frame):
 
         :param model: the :py:class:`rtk.hardware.component.meter.Meter.Model`
                       to load the attributes from.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
+        fmt = '{0:0.' + str(_conf.PLACES) + 'G}'
+=======
         fmt = '{0:0.' + str(Configuration.PLACES) + 'G}'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.txtLambdaB.set_text(str(fmt.format(model.base_hr)))
         self.txtPiE.set_text(str(fmt.format(model.piE)))
@@ -536,10 +782,16 @@ class Results(gtk.Frame):
 
     def load_derate_plot(self, __model, frame):
         """
+<<<<<<< HEAD
+        Loads the stress derate plot for the Meter class.
+
+        :param __model: the Hardware data model to load the attributes from.
+=======
         Method to load the stress derate plot for the Meter class.
 
         :param __model: the :py:class:`rtk.hardware.component.meter.Meter.Model`
                         to load the attributes from.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param gtk.Frame frame: the gtk.Frame() to embed the derate plot into.
         :return: False if successful or True if an error is encountered.
         :rtype: bool

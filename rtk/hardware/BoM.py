@@ -17,7 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+=======
     import Configuration
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from hardware.assembly.Assembly import Model as Assembly
     from hardware.component.Component import Model as Component
     import hardware.component.capacitor.electrolytic.Aluminum as Aluminum
@@ -74,7 +78,11 @@ try:
     import hardware.component.switch.Thumbwheel as Thumbwheel
     import hardware.component.switch.Toggle as Toggle
 except ImportError:                         # pragma: no cover
+<<<<<<< HEAD
+    import rtk.Configuration as _conf
+=======
     import rtk.Configuration as Configuration
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.assembly.Assembly import Model as Assembly
     from rtk.hardware.component.Component import Model as Component
     import rtk.hardware.component.capacitor.electrolytic.Aluminum as Aluminum
@@ -140,13 +148,19 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
+<<<<<<< HEAD
+=======
 def load_capacitor(subcategory):
     """
     Function to load the capacitor data model.
@@ -332,6 +346,7 @@ def load_switch(subcategory):
     return _component
 
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 class ParentError(Exception):
     """
     Exception raised when a revision ID is not passed or when initializing an
@@ -355,6 +370,66 @@ class BoM(object):
                        model instance.
     """
 
+<<<<<<< HEAD
+    _dicComponents = {1: {1: Paper.Bypass(), 2: Paper.Feedthrough(),
+                          3: Plastic.Film(), 4: Paper.Metallized(),
+                          5: Plastic.Plastic(), 6: Plastic.SuperMetallized(),
+                          7: Mica.Mica(), 8: Mica.Button(), 9: Glass.Glass(),
+                          10: Ceramic.General(), 11: Ceramic.Chip(),
+                          12: Tantalum.Solid(), 13: Tantalum.NonSolid(),
+                          14: Aluminum.Wet(), 15: Aluminum.Dry(),
+                          16: Variable.Ceramic(), 17: Variable.Piston(),
+                          18: Variable.AirTrimmer(), 19: Variable.Vacuum()},
+                      2: {1: Multipin.Multipin(), 2: PCB.PCB(),
+                          3: Socket.Socket(), 4: Solder.PTH(),
+                          5: Solder.NonPTH()},
+                      3: {1: Transformer.Transformer(), 2: Coil.Coil()},
+                      4: {1: Linear.Linear(), 2: Logic.Logic(),
+                          3: PALPLA.PALPLA(),
+                          4: Microprocessor.Microprocessor(),
+                          5: Memory.ROM(), 6: Memory.EEPROM(),
+                          7: Memory.DRAM(), 8: Memory.SRAM(), 9: GaAs.GaAs(),
+                          10: VLSI.VLSI()},
+                      5: {1: Meter.ElapsedTime(), 2: Meter.Panel()},
+                      6: {1: Crystal.Crystal(), 2: Filter.Filter(),
+                          3: Fuse.Fuse(), 4: Lamp.Lamp()},
+                      7: {1: Mechanical.Mechanical(),
+                          2: SolidState.SolidState()},
+                      8: {1: Composition.Composition(), 2: Film.Film(),
+                          3: Film.FilmPower(), 4: Film.FilmNetwork(),
+                          5: Wirewound.Wirewound(),
+                          6: Wirewound.WirewoundPower(),
+                          7: Wirewound.WirewoundChassisMount(),
+                          8: Thermistor.Thermistor(),
+                          9: VarWirewound.VarWirewound(),
+                          10: VarWirewound.PrecisionWirewound(),
+                          11: VarWirewound.SemiPrecisionWirewound(),
+                          12: VarWirewound.PowerWirewound(),
+                          13: NonWirewound.NonWirewound(),
+                          14: VarComposition.VarComposition(),
+                          15: VarFilm.VarFilm()},
+                      9: {1: Diode.LowFrequency(), 2: Diode.HighFrequency(),
+                          3: Bipolar.LFBipolar(), 4: FET.LFSiFET(),
+                          5: Unijunction.Unijunction(),
+                          6: Bipolar.HFLNBipolar(), 7: Bipolar.HFHPBipolar(),
+                          8: FET.HFGaAsFET(), 9: FET.HFSiFET(),
+                          10: Thyristor.Thyristor(), 11: Detector.Detector(),
+                          12: Display.Display(), 13: LaserDiode.LaserDiode()},
+                      10: {1: Toggle.Toggle(), 2: Sensitive.Sensitive(),
+                           3: Rotary.Rotary(), 4: Thumbwheel.Thumbwheel(),
+                           5: Breaker.Breaker()}}
+
+    def __init__(self):
+        """
+        Initializes a BoM data controller instance.
+        """
+
+        # Initialize private scalar attributes.
+        self._dao = None
+        self._last_id = None
+
+        # Initialize public dictionary attributes.
+=======
     def __init__(self):
         """
         Method to initialize a BoM data controller instance.
@@ -365,13 +440,19 @@ class BoM(object):
         self._last_id = None
 
         # Define public dictionary attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.dicHardware = {}
 
     def request_bom(self, dao, revision_id):
         """
+<<<<<<< HEAD
+        Reads the RTK Project database and loads all the Hardware associated
+        with the selected Revision.  For each hardware item returned:
+=======
         Method to read the RTK Project database and load all the Hardware
         associated with the selected Revision.  For each hardware item
         returned:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         #. Retrieve the hardware assemblies and components from the RTK Project
            database.
@@ -381,8 +462,13 @@ class BoM(object):
         #. Add the instance to the dictionary of hardware being managed
            by this controller.
 
+<<<<<<< HEAD
+        :param rtk.DAO dao: the Data Access object to use for communicating
+                            with the RTK Project database.
+=======
         :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
                     with the RTK Project database.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param int revision_id: the Revision ID to select the requirements for.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -482,10 +568,18 @@ class BoM(object):
         for i in range(_n_assemblies):
             if _results[i][24] == 0:
                 _hardware = Assembly()
+<<<<<<< HEAD
+            elif _results[i][24] == 1:
+                _hardware = self.load_component(_results[i][90],
+                                                _results[i][91])
+            _hardware.set_attributes(_results[i])
+            self.dicHardware[_hardware.hardware_id] = _hardware
+=======
                 _hardware.set_attributes(_results[i])
                 self.dicHardware[_hardware.hardware_id] = _hardware
             elif _results[i][24] == 1:
                 self.load_component(_results[i])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         for _key in self.dicHardware.keys():
             _hardware = self.dicHardware[_key]
@@ -506,6 +600,34 @@ class BoM(object):
 
         return(_results, _error_code)
 
+<<<<<<< HEAD
+    def load_component(self, category, subcategory):
+        """
+        Loads the correct Component based on the category and subcategory ID's.
+
+        :param int category: the category ID of the component to load.
+        :param int subcategory: the sub-category ID of the component to load.
+        :return: an instance of the appropriate Component class.
+        :rtype: object
+        """
+
+        if subcategory < 1:
+            return Component()
+
+        # Grab the correct component data model from the dictionary of models.
+        _hardware = self._dicComponents[category][subcategory]
+
+        # Assign the new model the appropriate category and subcategory IDs.
+        _hardware.category_id = category
+        _hardware.subcategory_id = subcategory
+        _hardware.part = 1
+
+        return _hardware
+
+    def add_hardware(self, revision_id, hardware_type, parent_id=None):
+        """
+        Adds a new Hardware item to the RTK Project for the selected Revision.
+=======
     def load_component(self, attributes):
         """
         Method to load the correct Component based on the category and
@@ -555,6 +677,7 @@ class BoM(object):
         """
         Method to add a new Hardware item to the RTK Project for the selected
         Revision.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID to add the new Hardware
                                 item(s).
@@ -569,7 +692,11 @@ class BoM(object):
         # By default we add the new Hardware item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
+<<<<<<< HEAD
+            # TODO: Replace this with an RTK error or warning dialog and then return.
+=======
 # TODO: Replace this with an RTK error or warning dialog and then return.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             parent_id = 0
 
         _query = "INSERT INTO rtk_hardware \
@@ -596,6 +723,23 @@ class BoM(object):
                       VALUES({0:d})".format(_hardware_id)
         (_results, _error_code, _) = self._dao.execute(_query, commit=True)
 
+<<<<<<< HEAD
+        # If the record was successfully added to the reliability table, add a
+        # record to the allocation and similar item table.
+        if _results and hardware_type == 0:
+            _query = "INSERT INTO rtk_allocation \
+                      (fld_hardware_id, fld_parent_id) \
+                      VALUES({0:d}, {1:d})".format(_hardware_id, parent_id)
+            (_results, _error_code, _) = self._dao.execute(_query, commit=True)
+            if _results:
+                _query = "INSERT INTO rtk_similar_item \
+                          (fld_hardware_id) \
+                          VALUES({0:d})".format(_hardware_id)
+                (_results, _error_code, _) = self._dao.execute(_query,
+                                                               commit=True)
+
+=======
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # If the new hardware item was added successfully to all the tables in
         # the RTK Project database:
         #   1. Retrieve the ID of the newly inserted hardware item.
@@ -608,8 +752,11 @@ class BoM(object):
             self._last_id = self._dao.get_last_id('rtk_hardware')[0]
             if hardware_type == 0:
                 _hardware = Assembly()
+<<<<<<< HEAD
+=======
             elif hardware_type == 1:
                 _hardware = Component()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _hardware.set_attributes((revision_id, self._last_id, '', '', '',
                                       '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
                                       50.0, '', 1, 0, 10.0, '', '', 0, '',
@@ -628,7 +775,11 @@ class BoM(object):
 
     def delete_hardware(self, hardware_id):
         """
+<<<<<<< HEAD
+        Deletes a Hardware item from the RTK Project.
+=======
         Method to delete a Hardware item from the RTK Project database.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the Hardware ID to delete.
         :return: (_results, _error_code)
@@ -664,8 +815,12 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+<<<<<<< HEAD
+
+=======
         # TODO: Re-write copy_hardware; current McCabe Complexity index = 14.
         # TODO: Write one or more integration tests for copy_hardware.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # Find the existing maximum Hardware ID already in the RTK Program
         # database and increment it by one.  If there are no existing
         # Hardware items set the first Hardware ID to zero.
@@ -826,14 +981,22 @@ class BoM(object):
 
     def save_hardware_item(self, hardware_id):
         """
+<<<<<<< HEAD
+        Saves the Assembly or Component attributes to the RTK Project database.
+=======
         Method to save the Assembly or Component attributes to the RTK Project
         Sdatabase.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the ID of the hardware to save.
         :return: (_results, _error_code)
         :rtype: tuple
         """
+<<<<<<< HEAD
+
+=======
 # TODO: Re-write save_hardware_item; current McCabe Complexity index = 11.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _hardware = self.dicHardware[hardware_id]
 
         # Save the base attributes.
@@ -1043,8 +1206,12 @@ class BoM(object):
 
     def save_bom(self):
         """
+<<<<<<< HEAD
+        Saves all Assembly and Component data models managed by the controller.
+=======
         Method to save all Assembly and Component data models managed by the
         controller.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1056,14 +1223,25 @@ class BoM(object):
 
         return False
 
+<<<<<<< HEAD
+    def request_calculate(self):
+        """
+        Requests the Hardware BoM calculations be performed.
+=======
     def request_calculate(self, hardware_id=0):
         """
         Method to request the Hardware BoM calculations be performed.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
+<<<<<<< HEAD
+        self.dicHardware[0].calculate(self.dicHardware[0])
+        self.save_bom()
+=======
         self.dicHardware[hardware_id].calculate(self.dicHardware[hardware_id])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False

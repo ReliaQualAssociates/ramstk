@@ -27,23 +27,35 @@ def error_handler(message):
     """
     Method to handle SQLite3 errors and return actionable error codes.
 
+<<<<<<< HEAD
+    :param str msg: the error message to parse.
+=======
     :param str message: the error message to parse.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     :return: _err_code
     :rtype: int
     """
 
     _error_code = 0
+<<<<<<< HEAD
+    print message
+=======
 
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     if "PRIMARY KEY must be unique" in message[0]:  # Primary key not unique.
         _error_code = 1555
     elif "syntax error" in message[0]:              # Syntax error in SQL statement.
         _error_code = 78
     elif "database is locked" in message[0]:        # Database is locked.
         _error_code = 5
+<<<<<<< HEAD
+    else:
+=======
     elif "foreign key constraint failed" in message[0]:
         _error_code = 787
     else:
         print "Unhandled error in SQLite3.py: {0:s}".format(message)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _error_code = message[0]
 
     return _error_code

@@ -37,7 +37,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT = Model()
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_create(self):
+=======
     def test00_create(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) __init__ should return a Software model
         """
@@ -122,7 +126,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.test_time_eot, 0.0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_set_attributes(self):
+=======
     def test01_set_attributes(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) set_attributes should return a 0 error code on success
         """
@@ -139,7 +147,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_set_attributes_wrong_type(self):
+=======
     def test02_set_attributes_wrong_type(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) set_attributes should return a 10 error code when passed a wrong data type
         """
@@ -156,7 +168,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_set_attributes_missing_index(self):
+=======
     def test03_set_attributes_missing_index(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) set_attributes should return a 40 error code when too few items are passed
         """
@@ -173,7 +189,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_get_attributes(self):
+=======
     def test04_get_attributes(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) get_attributes should return a tuple of attribute values
         """
@@ -188,7 +208,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.get_attributes(), _values)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_attribute_sanity(self):
+=======
     def test05_attribute_sanity(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) get_attributes(set_attributes(values)) == values
         """
@@ -205,7 +229,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(_result, _values)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_application_risk(self):
+=======
     def test06_calculate_application_risk(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) _calculate_application_risk should return False on success
         """
@@ -224,7 +252,11 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.a_risk, 3.0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_development_risk(self):
+=======
     def test07_calculate_development_risk(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) _calculate_development_risk should return False on success
         """
@@ -251,17 +283,27 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.d_risk, 1.0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_anomaly_risk(self):
+        """
+        (TestSoftware) _calculate_anomaly_risk should return False on success
+=======
     def test08_calculate_anomaly_risk(self):
         """
         (TestSoftware) _calculate_anomaly_risk should return a 0 error code on success
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.phase_id = 2               # Requirements review
         self.DUT.lst_anomaly_mgmt = [[5, 5, 10, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0,
                                       1, 1, 1, 0, 1, 0]]
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_anomaly_risk(self.DUT))
+=======
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertAlmostEqual(self.DUT.am, 0.3684211)
         self.assertEqual(self.DUT.sa, 0.9)
 
@@ -270,12 +312,19 @@ class TestSoftwareModel(unittest.TestCase):
                                      [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
                                      1, 1, 0, 1, 0]]
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_anomaly_risk(self.DUT))
+=======
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertAlmostEqual(self.DUT.am, 0.1428571)
         self.assertEqual(self.DUT.sa, 0.9)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_traceability_risk(self):
+=======
     def test09_calculate_anomaly_risk_zero_division_error(self):
         """
         (TestSoftware) _calculate_anomaly_risk should return a 10 error code when attempting to divide by zero
@@ -302,6 +351,7 @@ class TestSoftwareModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test10_calculate_traceability_risk(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) _calculate_traceability_risk should return False on success
         """
@@ -325,17 +375,27 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.st, 1.0)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_quality_risk(self):
+        """
+        (TestSoftware) _calculate_quality_risk should return False on success
+=======
     def test11_calculate_quality_risk(self):
         """
         (TestSoftware) _calculate_quality_risk should return a 0 error code on success
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.phase_id = 2
         self.DUT.lst_sftw_quality = [[1, 1, 1, 1, 1, 1, 0, 1, 5, 4, 4, 4, 1, 1,
                                       1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_quality_risk(self.DUT))
+=======
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertAlmostEqual(self.DUT.dr, 0.12)
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
@@ -345,12 +405,21 @@ class TestSoftwareModel(unittest.TestCase):
                                       3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
                                       0, 0, 0]]
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_quality_risk(self.DUT))
+=======
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertAlmostEqual(self.DUT.dr, 0.2631579)
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_language_type_risk(self):
+        """
+        (TestSoftware) _calculate_language_type_risk should return False on success
+=======
     def test12_calculate_quality_risk_zero_division_error(self):
         """
         (TestSoftware) _calculate_quality_risk should return a 10 error code when attempting to divide by zero
@@ -415,17 +484,27 @@ class TestSoftwareModel(unittest.TestCase):
     def test13_calculate_language_type_risk(self):
         """
         (TestSoftware) _calculate_language_type_risk should return a 0 error code on success
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.sloc = 150
         self.DUT.aloc = 15
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_language_type_risk(self.DUT))
+=======
         _error_code = _calculate_language_type_risk(self.DUT)
         self.assertEqual(_error_code, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hloc, 135)
         self.assertAlmostEqual(self.DUT.sl, 0.14)
 
     @attr(all=True, unit=True)
+<<<<<<< HEAD
+    def test_calculate_risk_reduction_labor(self):
+        """
+        (TestSoftware) calculate_risk_reduction should return False on success when using labor hours
+=======
     def test14_calculate_language_type_risk_zero_division_error(self):
         """
         (TestSoftware) _calculate_language_type_risk should return a 10 error code when attempting to divide by zero
@@ -443,10 +522,16 @@ class TestSoftwareModel(unittest.TestCase):
     def test15_calculate_risk_reduction_labor(self):
         """
         (TestSoftware) calculate_risk_reduction should return a 0 error code on success when using labor hours
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.level_id = 2
 
+<<<<<<< HEAD
+        self.DUT.test_effort = 1
+        self.DUT.labor_hours_test = 15
+        self.DUT.labor_hours_dev = 150
+=======
         self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
                                        [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
                                        [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
@@ -460,6 +545,7 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.budget_dev = 150894.00
         self.DUT.schedule_test = 15
         self.DUT.schedule_dev = 186
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT.nm_test = 4
         self.DUT.nm = 5
         self.DUT.interfaces_test = 10
@@ -467,6 +553,18 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.tu = 3
         self.DUT.tt = 5
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_risk_reduction(self.DUT))
+        self.assertEqual(self.DUT.te, 1.0)
+        self.assertAlmostEqual(self.DUT.tm, 1.0)
+        self.assertAlmostEqual(self.DUT.tc, 1.2244898)
+        self.assertAlmostEqual(self.DUT.t_risk, 1.2244898)
+
+    @attr(all=True, unit=True)
+    def test_calculate_risk_reduction_budget(self):
+        """
+        (TestSoftware) calculate_risk_reduction should return False on success when using budget
+=======
         _error_code = _calculate_risk_reduction(self.DUT)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.te, 1.0)
@@ -478,10 +576,16 @@ class TestSoftwareModel(unittest.TestCase):
     def test16_calculate_risk_reduction_budget(self):
         """
         (TestSoftware) calculate_risk_reduction should return a 0 error code on success when using budget
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.level_id = 3
 
+<<<<<<< HEAD
+        self.DUT.test_effort = 2
+        self.DUT.budget_test = 15286.00
+        self.DUT.budget_dev = 150894.00
+=======
         self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
                                        [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
                                        [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
@@ -495,6 +599,7 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.budget_dev = 150894.00
         self.DUT.schedule_test = 15
         self.DUT.schedule_dev = 186
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT.branches_test = 61
         self.DUT.branches = 85
         self.DUT.inputs_test = 10
@@ -502,6 +607,18 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.tu = 3
         self.DUT.tt = 5
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_risk_reduction(self.DUT))
+        self.assertAlmostEqual(self.DUT.te, 1.0)
+        self.assertAlmostEqual(self.DUT.tm, 1.0)
+        self.assertAlmostEqual(self.DUT.tc, 1.2895070)
+        self.assertAlmostEqual(self.DUT.t_risk, 1.2895070)
+
+    @attr(all=True, unit=True)
+    def test_calculate_risk_reduction_schedule(self):
+        """
+        (TestSoftware) calculate_risk_reduction should return False on success when using schedule
+=======
         _error_code = _calculate_risk_reduction(self.DUT)
         self.assertEqual(_error_code, 0)
         self.assertAlmostEqual(self.DUT.te, 1.0)
@@ -513,10 +630,14 @@ class TestSoftwareModel(unittest.TestCase):
     def test17_calculate_risk_reduction_schedule(self):
         """
         (TestSoftware) calculate_risk_reduction should return a 0 error code on success when using schedule
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.level_id = 3
 
+<<<<<<< HEAD
+        self.DUT.test_effort = 3
+=======
         self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
                                        [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
                                        [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
@@ -528,6 +649,7 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.labor_hours_dev = 150
         self.DUT.budget_test = 15286.00
         self.DUT.budget_dev = 150894.00
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT.schedule_test = 15
         self.DUT.schedule_dev = 186
         self.DUT.branches_test = 61
@@ -537,6 +659,18 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.tu = 3
         self.DUT.tt = 5
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_risk_reduction(self.DUT))
+        self.assertAlmostEqual(self.DUT.te, 1.0)
+        self.assertAlmostEqual(self.DUT.tm, 1.0)
+        self.assertAlmostEqual(self.DUT.tc, 1.2895070)
+        self.assertAlmostEqual(self.DUT.t_risk, 1.2895070)
+
+    @attr(all=True, unit=True)
+    def test_calculate_reliability_estimation_number(self):
+        """
+        (TestSoftware) calculate_reliability_estimation_number should return False on success
+=======
         _error_code = _calculate_risk_reduction(self.DUT)
         self.assertEqual(_error_code, 0)
         self.assertAlmostEqual(self.DUT.te, 1.0)
@@ -641,6 +775,7 @@ class TestSoftwareModel(unittest.TestCase):
     def test21_calculate_reliability_estimation_number(self):
         """
         (TestSoftware) calculate_reliability_estimation_number should return a 0 error code on success
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.level_id = 3
@@ -654,8 +789,12 @@ class TestSoftwareModel(unittest.TestCase):
         self.DUT.test_time_eot = 1.3
         self.DUT.t_risk = 7.035549936788876
 
+<<<<<<< HEAD
+        self.assertFalse(_calculate_reliability_estimation_number(self.DUT))
+=======
         _error_code = _calculate_reliability_estimation_number(self.DUT)
         self.assertEqual(_error_code, 0)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertAlmostEqual(self.DUT.ew, 1.8823529)
         self.assertAlmostEqual(self.DUT.ev, 81.1)
         self.assertAlmostEqual(self.DUT.ft1, 9.8387097)
@@ -664,6 +803,10 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.ren_eot, 5.3037223)
         self.assertAlmostEqual(self.DUT.e_risk, 152.65882352941176)
 
+<<<<<<< HEAD
+    @attr(all=True, unit=False)
+    def test_calculate(self):
+=======
     @attr(all=True, unit=True)
     def test22_calculate_workload_zero_division_error(self):
         """
@@ -726,6 +869,7 @@ class TestSoftwareModel(unittest.TestCase):
 
     @attr(all=True, unit=False)
     def test25_calculate(self):
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestSoftware) calculate should return False on success
         """

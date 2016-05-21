@@ -38,11 +38,19 @@ except ImportError:
 
 # Import other RTK modules.
 try:
+<<<<<<< HEAD
+    import Configuration as _conf
+    import gui.gtk.Widgets as _widg
+except ImportError:
+    import rtk.Configuration as _conf
+    import rtk.gui.gtk.Widgets as _widg
+=======
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.gui.gtk.Widgets as Widgets
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -52,7 +60,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 
 try:
+<<<<<<< HEAD
+    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -61,9 +73,14 @@ _ = gettext.gettext
 
 class ModuleView(object):
     """
+<<<<<<< HEAD
+    The Module Book view displays all the Revisions associated with the RTK
+    Project in a flat list.  The attributes of a Module Book view are:
+=======
     The Module Book view ro display all the Functions associated with the
     selected Revision in the RTK Project in a hierarchical list.  The
     attributes of a Function Module Book view are:
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     :ivar _model: the :py:class:`rtk.function.Function.Model` data model that
                   is currently selected.
@@ -97,17 +114,30 @@ class ModuleView(object):
         :param *args: other user arguments to pass to the Module View.
         """
 
+<<<<<<< HEAD
+        # Initialize private scalar attributes.
+=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
 
         # Define private scalar attributes.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._dtc_function = controller.dtcFunction
         self._dtc_fmea = controller.dtcFMEA
         self._dtc_profile = controller.dtcProfile
         self._model = None
         self._fmea_model = None
 
+<<<<<<< HEAD
+        # Initialize public scalar attributes.
+        self.mdcRTK = controller
+
+        (self.treeview,
+         self._lst_col_order) = _widg.make_treeview('Function', 1,
+                                                    _conf.RTK_COLORS[2],
+                                                    _conf.RTK_COLORS[3])
+=======
         # Define public dictionary attributes.
 
         # Define public list attributes.
@@ -119,6 +149,7 @@ class ModuleView(object):
          self._lst_col_order) = Widgets.make_treeview('Function', 1,
                                                       Configuration.RTK_COLORS[2],
                                                       Configuration.RTK_COLORS[3])
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
                                          u"functions."))
@@ -138,7 +169,11 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
+<<<<<<< HEAD
+        _icon = _conf.ICON_DIR + '32x32/function.png'
+=======
         _icon = Configuration.ICON_DIR + '32x32/function.png'
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -167,6 +202,15 @@ class ModuleView(object):
 
     def request_load_data(self, dao, revision_id):
         """
+<<<<<<< HEAD
+        Loads the Function Module Book view gtk.TreeModel() with function
+        information.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: boolean
+        """
+        # TODO: Remove dao parameter after converting all modules.
+=======
         Method to load the Function Module Book view gtk.TreeModel() with
         Function information.
 
@@ -175,6 +219,7 @@ class ModuleView(object):
         :rtype: boolean
         """
 # TODO: Remove dao parameter after converting all modules.
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         (_functions,
          __) = self._dtc_function.request_functions(self.mdcRTK.project_dao,
                                                     revision_id)
@@ -198,7 +243,11 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
+<<<<<<< HEAD
+        self.listbook.load(revision_id)
+=======
         self.listbook.load()
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
@@ -232,9 +281,15 @@ class ModuleView(object):
 
     def update(self, position, new_text):
         """
+<<<<<<< HEAD
+        Updates the Module Book gtk.TreeView() with changes to the Function
+        data model attributes.  Called by other views when the Function data
+        model attributes are edited via their gtk.Widgets().
+=======
         Method to update the Module Book gtk.TreeView() with changes to the
         Function data model attributes.  Called by other views when the
         Function data model attributes are edited via their gtk.Widgets().
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -251,8 +306,13 @@ class ModuleView(object):
 
     def _on_button_press(self, treeview, event):
         """
+<<<<<<< HEAD
+        Callback function for handling mouse clicks on the Function package
+        Module Book gtk.TreeView().
+=======
         Method for handling mouse clicks on the Function package Module Book
         gtk.TreeView().
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.TreeView treeview: the Function class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
@@ -274,8 +334,12 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
+<<<<<<< HEAD
+            print "Pop-up a menu!"
+=======
             # TODO: See bug 177
             pass
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
@@ -294,6 +358,19 @@ class ModuleView(object):
 
         (_model, _row) = treeview.get_selection().get_selected()
 
+<<<<<<< HEAD
+        _function_id = _model.get_value(_row, 1)
+        self._model = self._dtc_function.dicFunctions[_function_id]
+
+        try:
+            self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
+        except KeyError:
+            self._dtc_fmea.add_fmea(None, _function_id)
+            self._fmea_model = self._dtc_fmea.dicFFMEA[_function_id]
+
+        _profile_model = self._dtc_profile.dicProfiles[self._model.revision_id]
+        self.workbook.load(self._model, self._fmea_model, _profile_model)
+=======
         if _row is not None:
             _function_id = _model.get_value(_row, 1)
             self._model = self._dtc_function.dicFunctions[_function_id]
@@ -306,6 +383,7 @@ class ModuleView(object):
 
             _profile_model = self._dtc_profile.dicProfiles[self._model.revision_id]
             self.workbook.load(self._model, self._fmea_model, _profile_model)
+>>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
