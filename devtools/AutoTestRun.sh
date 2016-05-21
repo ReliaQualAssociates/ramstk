@@ -9,17 +9,26 @@ cd /home/andrew/projects/RTK/tests
 
 unit_test_run() {
 	
-	DIRECTORY=$1
+	TESTFILE=$1
+    OUTFILE=`echo $TESTFILE | cut -d '.' -f1 | sed 's/Test//'`
 
-	$NOSETESTS --quiet --with-coverage --cover-branches --cover-min-percentage=80 --with-html --html-file="_test_results/${DIRECTORY}_unit_tests.html" --attr=unit=True ./${DIRECTORY}
+	$NOSETESTS --quiet --with-coverage --cover-branches \
+        --cover-min-percentage=80 --cover-tests --with-html \
+        --html-file="_test_results/${OUTFILE}UnitTests.html" \
+        --attr=unit=True unit/${TESTFILE}
 
 }
 
 integration_test_run() {
 	
-	DIRECTORY=$1
+	TESTFILE=$1
+    OUTFILE=`echo $TESTFILE | cut -d '.' -f1 | sed 's/Test//'`
 
-	$NOSETESTS --quiet --with-coverage --cover-branches --cover-min-percentage=80 --with-html --html-file="_test_results/${DIRECTORY}_integration_tests.html" --attr=integration=True ./$DIRECTORY
+	$NOSETESTS --quiet --with-coverage --cover-branches \
+    --cover-min-percentage=80 --cover-tests --with-html \
+    --html-file="_test_results/${OUTFILE}IntegrationTests.html" \
+    --attr=integration=True integration/${TESTFILE}
+
 }
 
 # Get command line arguments.
@@ -31,6 +40,9 @@ do
             ALL=1
             UNIT=1
             INTEGRATION=1
+            ;;
+        -c|--config)
+            CONFIG=$2
             ;;
 		-u|--unit)
 			UNIT=1
@@ -46,15 +58,21 @@ done
 
 if [ "x$UNIT" != "x" ];
 then
-
-	unit_test_run $DIRECTORY
+    
+    while IFS='' read -r file;
+    do
+	    unit_test_run $file
+    done < "${PWD}/${CONFIG}"
 
 fi
 
 if [ "x$INTEGRATION" != "x" ];
 then
 	
-    integration_test_run $DIRECTORY
+    while IFS='' read -r file;
+    do
+        integration_test_run $file
+    done < "${PWD}/${CONFIG}"
 
 fi
 
