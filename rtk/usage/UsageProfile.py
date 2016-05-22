@@ -43,19 +43,11 @@ class Model(object):
     data models to produce an overall usage profile.  A Revision will consist
     of one Usage Profile.  The attributes of a Usage Profile are:
 
-<<<<<<< HEAD
-    :ivar dicMissions: Dictionary of the Missions associated with the Usage
-    Profile.  Key is the Mission ID; value is a pointer to the instance of the
-    Mission data model.
-
-    :ivar revision_id: default value: None
-=======
     :ivar dict dicMissions: Dictionary of the Missions associated with the
                             Usage Profile.  Key is the Mission ID; value is a
                             pointer to the instance of the Mission data model.
     :ivar int revision_id: the ID of the Revision the Usage Profile is
                            associated with.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self, revision_id):
@@ -66,12 +58,6 @@ class Model(object):
                                 associated with.
         """
 
-<<<<<<< HEAD
-        # Set public dict attribute default values.
-        self.dicMissions = {}
-
-        # Set public scalar attribute default values.
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -84,7 +70,6 @@ class Model(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.revision_id = revision_id
 
 
@@ -94,20 +79,12 @@ class UsageProfile(object):
     Profile data model and an RTK view model.  A single Usage Profile
     controller can control one or more Usage Profile data models.
 
-<<<<<<< HEAD
-    :ivar _dao: default value: None
-
-    :ivar dicProfiles: Dictionary of the Usage Profile data models controlled.
-    Key is the Revision ID; value is a pointer to the instance of the Usage
-    Profile data model.
-=======
     :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` used to communicate with the
                 RTK Project database.
     :ivar dict dicProfiles: Dictionary of the Usage Profile data models
                             controlled.  Key is the Revision ID; value is a
                             pointer to the instance of the Usage Profile data
                             model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -115,14 +92,6 @@ class UsageProfile(object):
         Method to initialize a Usage Profile controller instance.
         """
 
-<<<<<<< HEAD
-        # Initialize private scalar attributes.
-        self._dao = None
-
-        # Initialize public dictionary attributes.
-        self.dicProfiles = {}
-
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -137,7 +106,6 @@ class UsageProfile(object):
 
         # Define public scalar attributes.
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     def request_profile(self, revision_id, dao):
         """
         Method to load the entire mission profile for a Revision.  Starting at
@@ -157,12 +125,8 @@ class UsageProfile(object):
 
         :param int revision_id: the Revision ID that the Usage Profile will be
                                 associated with.
-<<<<<<< HEAD
-        :param rtk.DAO dao: the Data Access object to use for communicating
-=======
         :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-                            with the RTK Project database.
+                    with the RTK Project database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -218,13 +182,8 @@ class UsageProfile(object):
 
     def add_profile(self, revision_id):
         """
-<<<<<<< HEAD
-        Adds a new Usage Profile to the dictionary of profiles managed by this
-        controller.
-=======
         Method to add a new Usage Profile to the dictionary of profiles managed
         by this controller.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID to add the Usage Profile.
         :return: False if successful or True if an error is encountered.
@@ -237,11 +196,7 @@ class UsageProfile(object):
 
     def add_mission(self, revision_id):
         """
-<<<<<<< HEAD
-        Adds a new Mission to the Usage Profile.
-=======
         Method to add a new Mission to the Usage Profile.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID of the Usage Profile to add the
                                 new mission.
@@ -266,14 +221,9 @@ class UsageProfile(object):
 
     def delete_mission(self, revision_id, mission_id):
         """
-<<<<<<< HEAD
-        Deletes a Mission from the Usage Profile.
-
-=======
         Method to delete a Mission from the Usage Profile.
 
         :param int revision_id: the Revision ID the Mission is associated with.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param int mission_id: the Mission ID to delete.
         :return: (_results, _error_code)
         :rtype: tuple
@@ -290,11 +240,7 @@ class UsageProfile(object):
 
     def add_phase(self, revision_id, mission_id):
         """
-<<<<<<< HEAD
-        Adds a new Phase to the Usage Profile.
-=======
         Method to add a new Phase to the Usage Profile.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID of the Usage Profile to add the
                                 new Phase.
@@ -327,11 +273,7 @@ class UsageProfile(object):
 
     def delete_phase(self, revision_id, mission_id, phase_id):
         """
-<<<<<<< HEAD
-        Deletes a Phase from the Usage Profile.
-=======
         Method to delete a Phase from the Usage Profile.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID from which to delete.
         :param int mission_id: the Mission ID from which to delete.
@@ -355,11 +297,7 @@ class UsageProfile(object):
 
     def add_environment(self, revision_id, mission_id, phase_id):
         """
-<<<<<<< HEAD
-        Adds an Environment to the Usage Profile.
-=======
         Method to add an Environment to the Usage Profile.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID of the Usage Profile to add the
                                 new Environment.
@@ -399,11 +337,7 @@ class UsageProfile(object):
     def delete_environment(self, revision_id, mission_id, phase_id,
                            environment_id):
         """
-<<<<<<< HEAD
-        Deletes an Environment from the Usage Profile.
-=======
         Method to delete an Environment from the Usage Profile.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID from which to delete.
         :param int mission_id: the Mission ID from which to delete.
@@ -429,13 +363,8 @@ class UsageProfile(object):
 
     def save_profile(self, revision_id):
         """
-<<<<<<< HEAD
-        Saves the Usage Profile.  Wrapper for the _save_mission, _save_phase,
-        and _save_environment methods.
-=======
         Method to save the Usage Profile.  Wrapper for the _save_mission,
         _save_phase, and _save_environment methods.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID of the Usage Profile to save.
         :return: False if successful or True if an error is encountered.
@@ -455,15 +384,9 @@ class UsageProfile(object):
 
     def _save_mission(self, mission):
         """
-<<<<<<< HEAD
-        Saves the Mission attributes to the RTK Project database.
-
-        :param rtk.usage.Mission.Model: the Mission data model to save.
-=======
         Method to save the Mission attributes to the RTK Project database.
 
         :param mission: the :py:class:`rtk.usage.Mission.Model` to save.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: _error_code
         :rtype: int
         """
@@ -481,15 +404,9 @@ class UsageProfile(object):
 
     def _save_phase(self, phase):
         """
-<<<<<<< HEAD
-        Saves the Phase attributes to the RTK Project database.
-
-        :param rtk.usage.Phase.Model: the Phase data model to save.
-=======
         Method to save the Phase attributes to the RTK Project database.
 
         :param phase: the :py:class:`rtk.usage.Phase.Model` to save.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: (_results, _error_code)
         :rtype: tuple
         """
@@ -508,16 +425,10 @@ class UsageProfile(object):
 
     def _save_environment(self, environment):
         """
-<<<<<<< HEAD
-        Saves the Environment attributes to the RTK Project database.
-
-        :param rtk.usage.Environment.Model: the Environment data model to save.
-=======
         Method to save the Environment attributes to the RTK Project database.
 
         :param environment: the :py:class:`rtk.usage.Environment.Model` to
                             save.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: (_results, _error_code)
         :rtype: tuple
         """
