@@ -39,7 +39,7 @@ class TestSQLite3Model(unittest.TestCase):
         self.DUT = _dao(_database)
 
     @attr(all=True, integration=True)
-    def test_create_sqlite3(self):
+    def test01_create_sqlite3(self):
         """
         (TestSQLite3) SQLite3 __init__() should return an sqlite3.Connection
         """
@@ -49,7 +49,7 @@ class TestSQLite3Model(unittest.TestCase):
                                    sqlite3.Connection))
 
     @attr(all=True, integration=True)
-    def test_execute(self):
+    def test02_execute(self):
         """
         (TestSQLite3) execute should return 0 when an SQL query is successfully executed
         """
@@ -59,7 +59,7 @@ class TestSQLite3Model(unittest.TestCase):
         self.assertEqual(self.DUT.execute(_query)[1], 0)
 
     @attr(all=True, integration=True)
-    def test_get_next_id(self):
+    def test03_get_next_id(self):
         """
         (TestSQLite3) Tests that the next ID can be retrieved.
         """

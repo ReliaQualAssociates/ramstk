@@ -8,27 +8,14 @@ This is the test class for testing the Matrix class.
 #       tests.unit.TestMatrix.py is part of The RTK Project
 #
 # All rights reserved.
-<<<<<<< HEAD
-
-import sys
-from os.path import dirname
-=======
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-from datamodels.matrix.Matrix import Model, Matrix, ParentError, NoMatrixError
-
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
-=======
 from datamodels.matrix.Matrix import Model, Matrix      # pylint: disable=E0401
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -49,7 +36,7 @@ class TestMatrixModel(unittest.TestCase):
         self.DUT = Model()
 
     @attr(all=True, unit=True)
-    def test_matrix_create(self):
+    def test01_matrix_create(self):
         """
         (TestMatrix) __init__ should return instance of Matrix data model
         """
@@ -63,7 +50,7 @@ class TestMatrixModel(unittest.TestCase):
         self.assertEqual(self.DUT.n_col, 1)
 
     @attr(all=True, unit=True)
-    def test_set_attributes(self):
+    def test02_set_attributes(self):
         """
         (TestMatrix) set_attributes should return a zero code and empty message on success
         """
@@ -75,7 +62,7 @@ class TestMatrixModel(unittest.TestCase):
         self.assertEqual(_msg, '')
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_type(self):
+    def test02a_set_attributes_wrong_type(self):
         """
         (TestMatrix) set_attributes should return a 10 error code when passed a wrong type
         """
@@ -87,7 +74,7 @@ class TestMatrixModel(unittest.TestCase):
         self.assertEqual(_msg, 'ERROR: Matrix Model - Converting one or more inputs to the correct data type.')
 
     @attr(all=True, unit=True)
-    def test_set_attributes_missing(self):
+    def test02b_set_attributes_missing(self):
         """
         (TestMatrix) set_attributes should return a 40 error code when passed too few values
         """
@@ -99,7 +86,7 @@ class TestMatrixModel(unittest.TestCase):
         self.assertEqual(_msg, 'ERROR: Matrix Model - Insufficient input values.')
 
     @attr(all=True, unit=True)
-    def test_get_attributes(self):
+    def test03_get_attributes(self):
         """
         (TestMatrix) get_attributes() should return a tuple of values
         """
@@ -109,7 +96,7 @@ class TestMatrixModel(unittest.TestCase):
         self.assertEqual(self.DUT.get_attributes(), _values)
 
     @attr(all=True, unit=True)
-    def test_sanity(self):
+    def test04_sanity(self):
         """
         (TestMatrix) get_attributes(set_attributes(values)) == values
         """
@@ -128,25 +115,14 @@ class TestMatrixController(unittest.TestCase):
 
     def setUp(self):
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Matrix()
 
     @attr(all=True, unit=True)
-    def test_create_controller(self):
+    def test01_create_controller(self):
         """
         (TestMatrix) __init__ should return instance of Matrix data controller
         """
 
         self.assertTrue(isinstance(self.DUT, Matrix))
-
-<<<<<<< HEAD
-        self.assertEqual(self.DUT._dao, None)
-=======
         self.assertEqual(self.DUT._dao, None)           # pylint: disable=W0212
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.dicMatrices, {})

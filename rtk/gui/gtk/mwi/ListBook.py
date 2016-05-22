@@ -60,11 +60,7 @@ def destroy(__widget, __event=None):
     :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
                                     method.
     :return: False if successful or True if an error is encountered.
-<<<<<<< HEAD
-    :rtype: boolean
-=======
     :rtype: bool
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     gtk.main_quit()

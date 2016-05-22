@@ -64,11 +64,7 @@ def make_button(height=40, width=200, label="", image='default'):
                         - commit
                         - default (default)
     :return: _button
-<<<<<<< HEAD
-    :rtype: gtk.Button
-=======
     :rtype: gtk.Button()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     if width == 0:
@@ -603,11 +599,7 @@ def format_cell(__column, cell, model, row, data):
     """
 
     if data[1] == 'gfloat':
-<<<<<<< HEAD
-        fmt = '{0:0.' + str(_conf.PLACES) + 'f}'
-=======
         fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     elif data[1] == 'gint':
         fmt = '{0:0.0f}'
     else:
@@ -709,11 +701,7 @@ def make_column_heading(heading=""):
     :rtype: gtk.Label
     """
 
-<<<<<<< HEAD
-    _heading = "<span weight='bold'>%s</span>" % unicode(heading)
-=======
     _heading = "<span weight='bold'>{0:s}</span>".format(unicode(heading))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     _label = gtk.Label()
     _label.set_markup(_heading)
