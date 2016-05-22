@@ -51,7 +51,7 @@ class Model(object):
                          parameter.
     :ivar float mean: the expected average of the Environment parameter.
     :ivar float variance: the expected variance on the Environment parameter.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
     """
 
     def __init__(self):
@@ -109,7 +109,7 @@ class Model(object):
 =======
         :return: (revision_id, mission_id, phase_id, test_id, environment_id,
                   name, units, minimum, maximum, mean, variance)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         :rtype: tuple
         """
 

@@ -186,7 +186,7 @@ class MTBFICalculator(gtk.Dialog):
         self.destroy()
 
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 class MTTFFCalculator(gtk.Dialog):
     """
     This is the assistant that calculate the mean time to first failure for
