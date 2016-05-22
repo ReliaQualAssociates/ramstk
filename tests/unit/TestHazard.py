@@ -5,11 +5,7 @@ This is the test class for testing Hazard module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       TestHazard.py is part of The RTK Project
-=======
 #       tests.unit.TestHazard.py is part of The RTK Project
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -39,11 +35,7 @@ class TestHazardModel(unittest.TestCase):
         Setup the test fixture for the Hazard class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-=======
         _database = '/tmp/tempdb.rtk'
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._dao = _dao(_database)
 
         self.DUT = Model()
@@ -282,13 +274,6 @@ class TestHazardController(unittest.TestCase):
         Sets up the test fixture for the Hazard class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-        self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Hazard()
 
     @attr(all=True, unit=True)
@@ -300,63 +285,3 @@ class TestHazardController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Hazard))
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT.dicHazard, {})
-<<<<<<< HEAD
-
-    @attr(all=True, integration=True)
-    def test_request_hazard(self):
-        """
-        (TestHazard) request_hazard should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_add_hazard(self):
-        """
-        (TestHazard) add_hazard should return 0 on success
-        """
-
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
-        self.assertEqual(self.DUT.add_hazard(0)[1], 0)
-
-    @attr(all=True, integration=True)
-    def test_delete_hazard(self):
-        """
-        (TestHazard) delete_hazard should return 0 on success
-        """
-# TODO: Get last id to delete.
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_hazard(0, 1)
-
-        self.assertTrue(_results)
-        self.assertEqual(_error_code, 0)
-
-    @attr(all=True, integration=True)
-    def test_calculate_hazard(self):
-        """
-        (TestHazard) calculate_hazard should return False on success
-        """
-
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
-        self.assertFalse(self.DUT.calculate_hazard(0, 2))
-
-    @attr(all=True, integration=True)
-    def test_save_hazard(self):
-        """
-        (TestHazard) save_hazard returns (True, 0) on success
-        """
-
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
-        self.assertEqual(self.DUT.save_hazard(0, 2), (True, 0))
-
-    @attr(all=True, integration=True)
-    def test_save_all_hazards(self):
-        """
-        (TestHazard) save_all_hazards returns False on success
-        """
-
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
-        self.assertFalse(self.DUT.save_all_hazards())
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
