@@ -8,10 +8,6 @@ This is the test class for testing the Action class.
 #       rtk.tests.fmea.TestAction.py is part of The RTK Project
 #
 # All rights reserved.
-<<<<<<< HEAD
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -19,12 +15,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-from analyses.fmea.Action import Model
-=======
 from analyses.fmea.Action import Model, Action
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -140,8 +131,6 @@ class TestActionModel(unittest.TestCase):
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
         self.assertEqual(_result, _values)
-<<<<<<< HEAD
-=======
 
 
 class TestActionController(unittest.TestCase):
@@ -163,4 +152,3 @@ class TestActionController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Action))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

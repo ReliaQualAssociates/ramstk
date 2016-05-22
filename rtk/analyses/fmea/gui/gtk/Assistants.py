@@ -32,19 +32,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
-=======
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.gui.gtk.Widgets as Widgets
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -53,11 +45,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -72,12 +60,8 @@ class AddControlAction(gtk.Dialog):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize on instance of the Add Control or Action Assistant.
-=======
         Method to initialize on instance of the Add Control or Action
         Assistant.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.Dialog.__init__(self, title=_(u"RTK FMEA/FMECA Design Control and "
@@ -88,11 +72,6 @@ class AddControlAction(gtk.Dialog):
                             buttons=(gtk.STOCK_APPLY, gtk.RESPONSE_ACCEPT,
                                      gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 
-<<<<<<< HEAD
-        self.rdoControl = _widg.make_option_button(None, _(u"Add control"))
-        self.rdoAction = _widg.make_option_button(self.rdoControl,
-                                                  _(u"Add action"))
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -107,7 +86,6 @@ class AddControlAction(gtk.Dialog):
         self.rdoControl = Widgets.make_option_button(None, _(u"Add control"))
         self.rdoAction = Widgets.make_option_button(self.rdoControl,
                                                     _(u"Add action"))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
@@ -118,15 +96,6 @@ class AddControlAction(gtk.Dialog):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display general information.        #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"This is the RTK Design Control and "
-                                    u"Action Addition Assistant.  Enter the "
-                                    u"information requested below and then "
-                                    u"press 'Apply' to add a new design "
-                                    u"control or action to the RTK Project "
-                                    u"database."),
-                                  width=600, height=-1, wrap=True)
-=======
         _label = Widgets.make_label(_(u"This is the RTK Design Control and "
                                       u"Action Addition Assistant.  Enter the "
                                       u"information requested below and then "
@@ -134,20 +103,14 @@ class AddControlAction(gtk.Dialog):
                                       u"control or action to the RTK Project "
                                       u"database."),
                                     width=600, height=-1, wrap=True)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, 5, 10)
         _y_pos = _label.size_request()[1] + 50
 
         # Set the tooltips.
-<<<<<<< HEAD
-        self.rdoControl.set_tooltip_text(_(u"Select to add a design control"
-                                           u"to the selected failure cause."))
-=======
         self.rdoControl.set_tooltip_text(_(u"Select to add a design control "
                                            u"to the selected failure cause."))
         self.rdoAction.set_tooltip_text(_(u"Select to add an Action to the "
                                           u"selected failure cause."))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Place the widgets.
         _fixed.put(self.rdoControl, 10, _y_pos)
