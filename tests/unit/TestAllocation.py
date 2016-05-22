@@ -16,10 +16,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from analyses.allocation.Allocation import Model, Allocation
 
 __author__ = 'Andrew Rowland'
@@ -38,12 +34,6 @@ class TestAllocationModel(unittest.TestCase):
         Setup the test fixture for the Allocation class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
     @attr(all=True, unit=True)
@@ -395,11 +385,7 @@ class TestAllocationModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.mtbf_goal, 6666.66666666)
 
     @attr(all=True, unit=True)
-<<<<<<< HEAD
-    def test_set_goals_ht_input(self):
-=======
     def test_set_goals_ht_input_zero(self):
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         (TestAllocation) _calculate_goals should return True when passing hazard rate goal of zero
         """
@@ -421,13 +407,6 @@ class TestAllocationController(unittest.TestCase):
         Sets up the test fixture for the Allocation class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-        self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Allocation()
 
     @attr(all=True, unit=True)
@@ -439,7 +418,3 @@ class TestAllocationController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Allocation))
         self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT.dicAllocation, {})
-<<<<<<< HEAD
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

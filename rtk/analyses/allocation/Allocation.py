@@ -17,17 +17,11 @@ import locale
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-=======
     import Configuration
     import Utilities
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,39 +29,13 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
-<<<<<<< HEAD
-def _error_handler(message):
-    """
-    Converts string errors to integer error codes.
-
-    :param str message: the message to convert to an error code.
-    :return: _err_code
-    :rtype: int
-    """
-
-    if 'argument must be a string or a number' in message[0]:   # Type error
-        _error_code = 10
-    elif 'index out of range' in message[0]:   # Index error
-        _error_code = 40
-    else:                                   # Unhandled error
-        _error_code = 1000                  # pragma: no cover
-
-    return _error_code
-
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 class Model(object):
     """
     The Allocation data model contains the attributes and methods of an
@@ -95,11 +63,7 @@ class Model(object):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initializes an Allocation data model instance.
-=======
         Method to initialize an Allocation data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         # Initialize private scalar attributes.  These are set as a convenience
@@ -132,11 +96,7 @@ class Model(object):
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Allocation data model attributes.
-=======
         Method to set the Allocation data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -172,29 +132,18 @@ class Model(object):
             self.hazard_rate = float(values[21])
             self.mission_time = float(values[22])
         except IndexError as _err:
-<<<<<<< HEAD
-            _code = _error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = _error_handler(_err.args)
-=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Allocation data model attributes.
-=======
         Method to retrieve the current values of the Allocation data model
         attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (hardware_id, reliability_goal, hazard_rate_goal, mtbf_goal,
                   included, n_sub_systems, n_sub_elements, weight_factor,
@@ -217,11 +166,7 @@ class Model(object):
 
     def equal_apportionment(self, n_children, parent_goal):
         """
-<<<<<<< HEAD
-        Performs an equal apportionment of the reliability goal.
-=======
         Method to perform an equal apportionment of the reliability goal.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int n_children: the number of immediate children comprising the
                                parent hardware item.
@@ -251,11 +196,7 @@ class Model(object):
 
     def agree_apportionment(self, n_children, parent_goal):
         """
-<<<<<<< HEAD
-        Performs an AGREE apportionment of a reliability requirement.
-=======
         Method to perform an AGREE apportionment of a reliability requirement.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int n_children: the number of immediate children comprising the
                                parent hardware item.
@@ -287,18 +228,14 @@ class Model(object):
 
     def arinc_apportionment(self, system_hr, parent_goal):
         """
-<<<<<<< HEAD
-        Performs an ARINC apportionment of the reliability requirement.
-=======
         Method to perform an ARINC apportionment of the reliability
         requirement.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param float system_hr: the current system hazard rate.
         :param float parent_goal: the goal hazard rate of the parent hardware
                                   item.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         from math import exp
@@ -322,13 +259,8 @@ class Model(object):
 
     def foo_apportionment(self, cum_weight, parent_goal):
         """
-<<<<<<< HEAD
-        Performs a feasibility of objectives (FOO) apportionment of the
-        reliability requirement.
-=======
         Method to perform a feasibility of objectives (FOO) apportionment of
         the reliability requirement.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int cum_weight: the cumulative weight factor for all subordinate
                                assemblies.
@@ -412,22 +344,14 @@ class Allocation(object):
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
                 Project database.
-<<<<<<< HEAD
-    :ivar dicAllocation: Dictionary of the Allocation data models managed.  Key is the Hardware ID; value is a pointer to the Allocation data model instance.
-=======
     :ivar dict dicAllocation: Dictionary of the Allocation data models managed.
                               Key is the Hardware ID; value is a pointer to the
                               Allocation data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initializes an Allocation data controller instance.
-=======
         Method to initialize an Allocation data controller instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         # Initialize private scalar attributes.
@@ -438,13 +362,8 @@ class Allocation(object):
 
     def request_allocation(self, dao):
         """
-<<<<<<< HEAD
-        Reads the RTK Project database and loads all the Allocation.  For each
-        Allocation returned:
-=======
         Method to read the RTK Project database and loads all the Allocation.
         For each Allocation returned:
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         #. Retrieve the Allocation from the RTK Project database.
         #. Create an Allocation data model instance.
@@ -495,14 +414,6 @@ class Allocation(object):
 
         return(_results, _error_code)
 
-<<<<<<< HEAD
-    def add_allocation(self):
-        """
-        Adds a new Allocation data model to the dictionary of models controlled
-        by an instance of the Allocation data controller.
-
-        :param int hardware_id: the hardware ID of the new Allocation.
-=======
     def add_allocation(self, hardware_id, parent_id):
         """
         Method to add a new Allocation data model to the dictionary of models
@@ -510,21 +421,10 @@ class Allocation(object):
 
         :param int hardware_id: the Hardware ID of the Allocation to add.
         :param int parent_id: the ID of the parent Hardware item.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-<<<<<<< HEAD
-        self.request_allocation(self._dao)
-
-        return False
-
-    def delete_allocation(self, hardware_id):
-        """
-        Deletes an Allocation data model instance from the dictionary of models
-        controlled by an instance of the Allocation data controller.
-=======
         # Add a new Allocation model to the open RTK Project database.
         _query = "INSERT INTO rtk_allocation (fld_hardware_id, fld_parent_id) \
                   VALUES ({0:d}, {1:d})".format(hardware_id, parent_id)
@@ -544,7 +444,6 @@ class Allocation(object):
         """
         Method to delete an Allocation data model instance from the dictionary
         of models controlled by an instance of the Allocation data controller.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the hardware ID of the Allocation to delete.
         :return: False if successful or True if an error is encountered.
@@ -557,14 +456,9 @@ class Allocation(object):
 
     def allocate(self, hardware_id):
         """
-<<<<<<< HEAD
-        Performs the allocation.
-
-=======
         Method to request the allocation be performed.
 
         :param int hardware_id: the ID of the hardware item to allocate.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered
         :rtype: bool
         """
@@ -597,11 +491,7 @@ class Allocation(object):
 
     def save_allocation(self, hardware_id):
         """
-<<<<<<< HEAD
-        Saves the Allocation for the selected Hardware.
-=======
         Method to save the Allocation for the selected Hardware.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the ID of the hardware whose Allocation is to
                                 be saved.
@@ -636,37 +526,17 @@ class Allocation(object):
                       _allocation.parent_id, _allocation.method,
                       _allocation.goal_measure, hardware_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-<<<<<<< HEAD
-        # TODO: Handle errors.
-=======
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return (_results, _error_code)
 
     def save_all_allocation(self):
         """
-<<<<<<< HEAD
-        Saves all Allocation data models managed by the controller.
-=======
         Method to save all Allocation data models managed by the controller.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-<<<<<<< HEAD
-        for _allocation in self.dicAllocation.values():
-            (_results,
-             _error_code) = self.save_allocation(_allocation.hardware_id)
-
-        return False
-
-    def trickle_down(self, hardware_id):
-        """
-        Sets the next indenture level hardware items' goal to the allocated
-        values calculated at the parent level.
-=======
         _error_codes = []
 
         for _allocation in self.dicAllocation.values():
@@ -680,7 +550,6 @@ class Allocation(object):
         """
         Method to set the next indenture level hardware items' goal to the
         allocated values calculated at the parent level.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int hardware_id: the Hardware ID to trickle down.
         :return: False if successful or True if an error is encountered
@@ -691,10 +560,7 @@ class Allocation(object):
                      if _a.parent_id == hardware_id]
         for _child in _children:
             _child.reliability_goal = _child.reliability_alloc
-<<<<<<< HEAD
-=======
             if _child.method == 0:
                 _child.method = self.dicAllocation[hardware_id].method
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
