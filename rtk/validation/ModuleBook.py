@@ -34,16 +34,6 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import Utilities as _util
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-    import rtk.gui.gtk.Widgets as _widg
-#from ListBook import ListView
-=======
     import Configuration
     import Utilities
     import gui.gtk.Widgets as Widgets
@@ -52,7 +42,6 @@ except ImportError:
     import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
 # from ListBook import ListView
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from WorkBook import WorkView
 
 __author__ = 'Andrew Rowland'
@@ -61,11 +50,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -80,46 +65,25 @@ class ModuleView(object):
     :ivar list _lst_handler_id: list containing the ID's of the callback
                                 signals for each gtk.Widget() associated with
                                 an editable Validation attribute.
-<<<<<<< HEAD
-    :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :py:class:`gtk.TreeView`.
-=======
     :ivar list _lst_col_order: list containing the order of the columns in the
                                Module View :py:class:`gtk.TreeView`.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     :ivar _model: the :py:class:`rtk.validation.Validation.Model` data model
                   that is currently selected.
     :ivar _listbook: the :py:class:`rtk.validation.ListBook.ListView`
                      associated with this instance of the Module View.
     :ivar _workbook: the :py:class:`rtk.validation.WorkBook.WorkView`
                      associated with this instance of the Module View.
-<<<<<<< HEAD
-    :ivar dtcValidation: the :py:class:`rtk.validation.Validation` data
-                         controller to use for accessing the Validation data
-                         models.
-=======
     :ivar mdcRTK: the :py:class:`rtk.RTK.RTK` master data controller to use.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     :ivar treeview: the :py:class:`gtk.TreeView` displaying the list of
                     Validation tasks.
     """
 
-<<<<<<< HEAD
-    def __init__(self, controller, rtk_view, position, *args):
-        """
-        Initializes the Module Book view for the Validation package.
-
-        :param controller: the instance of the
-                           :py:class:`rtk.validation.Validation` data
-                           controller to use with this view.
-=======
     def __init__(self, controller, rtk_view, position, *args):      # pylint: disable=W0613
         """
         Method to initialize the Module Book view for the Validation package.
 
         :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
                            data controller to use with this view.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Validation
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
@@ -127,38 +91,16 @@ class ModuleView(object):
         :param *args: other user arguments to pass to the Module View.
         """
 
-<<<<<<< HEAD
-        # Initialize private dict attributes.
-
-        # Initialize private list attribute
-        self._lst_handler_id = []
-
-        # Initialize private scalar attributes.
-=======
         # Define private dictionary attributes.
 
         # Define private list attribute
         self._lst_handler_id = []
 
         # Define private scalar attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.workbook = None
         self.listbook = None
         self._model = None
 
-<<<<<<< HEAD
-        # Initialize public scalar attributes.
-        self.dtcValidation = controller
-
-        # Create the main Validation class treeview.
-        (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Validation', 4,
-                                                    _conf.RTK_COLORS[8],
-                                                    _conf.RTK_COLORS[9])
-
-        self.treeview.set_tooltip_text(_(u"Displays the list of verification "
-                                         u"and validation tasks."))
-=======
         # Define public dictionary attributes.
 
         # Define public list attribute
@@ -172,7 +114,6 @@ class ModuleView(object):
         (self.treeview,
          self._lst_col_order) = Widgets.make_treeview('Validation', 4,
                                                       _fg_color, _bg_color)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Load the gtk.CellRendererCombo() holding the task types.
         _cell = self.treeview.get_column(
@@ -180,13 +121,8 @@ class ModuleView(object):
         _model = _cell[0].get_property('model')
         _model.clear()
         _model.append([""])
-<<<<<<< HEAD
-        for i in range(len(_conf.RTK_TASK_TYPE)):
-            _model.append([_conf.RTK_TASK_TYPE[i]])
-=======
         for i in range(len(Configuration.RTK_TASK_TYPE)):
             _model.append([Configuration.RTK_TASK_TYPE[i]])
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Load the gtk.CellRendererCombo() holding the measurement units.
         _cell = self.treeview.get_column(
@@ -194,13 +130,9 @@ class ModuleView(object):
         _model = _cell[0].get_property('model')
         _model.clear()
         _model.append([""])
-<<<<<<< HEAD
-        for i in range(len(_conf.RTK_MEASUREMENT_UNITS)):
-            _model.append([_conf.RTK_MEASUREMENT_UNITS[i]])
-=======
+
         for i in range(len(Configuration.RTK_MEASUREMENT_UNITS)):
             _model.append([Configuration.RTK_MEASUREMENT_UNITS[i]])
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Reset the limits of adjustment on the percent complete
         # gtk.CellRendererSpin() to 0 - 100 with steps of 1.
@@ -222,14 +154,11 @@ class ModuleView(object):
                 pass
             i += 1
 
-<<<<<<< HEAD
-=======
         # Set gtk.Widget() tooltips.
         self.treeview.set_tooltip_text(_(u"Displays the list of verification "
                                          u"and validation tasks."))
 
         # Connect gtk.Widget() signals to callback methods.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._on_row_changed,
                                   None, None))
@@ -240,11 +169,7 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
-<<<<<<< HEAD
-        _icon = _conf.ICON_DIR + '32x32/validation.png'
-=======
         _icon = Configuration.ICON_DIR + '32x32/validation.png'
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -268,19 +193,6 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-<<<<<<< HEAD
-        #self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
-
-        # Create a Work View to associate with this Module View.
-        self.workbook = WorkView(rtk_view.workview, self)
-
-    def request_load_data(self, dao, revision_id):
-        """
-        Loads the Validation Module Book view gtk.TreeModel() with Validataion
-        task information.
-
-        :param dao: the :py:class: `rtk.dao.DAO` object used to communicate
-=======
         # self.listbook = ListView(self)
 
         # Create a Work View to associate with this Module View.
@@ -292,39 +204,22 @@ class ModuleView(object):
         Validation task information.
 
         :param dao: the :py:class:`rtk.dao.DAO.DAO` object used to communicate
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                     with the RTK Project database.
         :param int revision_id: the ID of the revision to load validation data
                                 for.
         :return: False if successful or True if an error is encountered.
-<<<<<<< HEAD
-        :rtype: boolean
-        """
-
-        # Retrieve all the development program tests.
-        (_tasks, __) = self.dtcValidation.request_tasks(dao, revision_id)
-=======
         :rtype: bool
         """
 
         # Retrieve all the development program Validation tasks.
         (_tasks,
          __) = self.mdcRTK.dtcValidation.request_tasks(dao, revision_id)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Clear the Validation Module View gtk.TreeModel().
         _model = self.treeview.get_model()
         _model.clear()
         for _task in _tasks:
             _data = [_task[0], _task[1], _task[2],
-<<<<<<< HEAD
-                     _conf.RTK_TASK_TYPE[_task[3] - 1], _task[4], _task[5],
-                     _task[6], _task[7], _task[8], _task[9],
-                     _util.ordinal_to_date(_task[10]),
-                     _util.ordinal_to_date(_task[11]), _task[12], _task[13],
-                     _task[14], _task[15], _task[16], _task[17], _task[18],
-                     _task[19], _task[20], _task[21], _task[22], _task[23]]
-=======
                      Configuration.RTK_TASK_TYPE[_task[3] - 1], _task[4],
                      _task[5], _task[6], _task[7], _task[8], _task[9],
                      Utilities.ordinal_to_date(_task[10]),
@@ -332,7 +227,6 @@ class ModuleView(object):
                      _task[13], _task[14], _task[15], _task[16], _task[17],
                      _task[18], _task[19], _task[20], _task[21], _task[22],
                      _task[23]]
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             _model.append(None, _data)
 
@@ -344,27 +238,15 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-<<<<<<< HEAD
-        self.dtcValidation.request_status(revision_id)
-
-        #self.listbook.load(revision_id)
-=======
         self.mdcRTK.dtcValidation.request_status(revision_id)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
     def update(self, position, new_text):
         """
-<<<<<<< HEAD
-        Updates the selected row in the Module Book gtk.TreeView() with changes
-        to the Validation data model attributes.  Called by other views when
-        the Validation data model attributes are edited via their
-=======
         Method to update the selected row in the Module Book gtk.TreeView()
         with changes to the Validation data model attributes.  Called by other
         views when the Validation data model attributes are edited via their
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
@@ -381,13 +263,8 @@ class ModuleView(object):
 
     def _on_button_press(self, treeview, event):
         """
-<<<<<<< HEAD
-        Callback method for handling mouse clicks on the Validation package
-        Module Book gtk.TreeView().
-=======
         Method to handle mouse clicks on the Validation package Module Book
         gtk.TreeView().
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.TreeView treeview: the Validation class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
@@ -400,10 +277,7 @@ class ModuleView(object):
                                     * 5 = backward
                                     * 8 =
                                     * 9 =
-<<<<<<< HEAD
 
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -417,25 +291,15 @@ class ModuleView(object):
 
     def _on_row_changed(self, treeview, __path, __column):
         """
-<<<<<<< HEAD
-        Callback function to handle events for the Validation package Module
-        Book gtk.TreeView().  It is called whenever a Module Book
-        gtk.TreeView() row is activated.
-=======
         Method to handle events for the Validation package Module Book
         gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
         row is activated.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.TreeView treeview: the Validation class gtk.TreeView().
         :param str __path: the actived row gtk.TreeView() path.
         :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.
-<<<<<<< HEAD
-        :rtype: boolean
-=======
         :rtype: bool
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         treeview.handler_block(self._lst_handler_id[0])
@@ -444,16 +308,10 @@ class ModuleView(object):
 
         _validation_id = _model.get_value(_row, 1)
 
-<<<<<<< HEAD
-        self._model = self.dtcValidation.dicTasks[_validation_id]
-
-        self.workbook.load(self._model)
-=======
         self._model = self.mdcRTK.dtcValidation.dicTasks[_validation_id]
 
         self.workbook.load(self._model)
         # self.listbook.load(revision_id)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -461,11 +319,7 @@ class ModuleView(object):
 
     def _on_cell_edited(self, __cell, __path, new_text, index):
         """
-<<<<<<< HEAD
-        Callback method to handle events for the Validation package Module Book
-=======
         Method to handle events for the Validation package Module Book
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         gtk.CellRenderer().  It is called whenever a Module Book
         gtk.CellRenderer() is edited.
 
@@ -478,17 +332,6 @@ class ModuleView(object):
         :return: False if successful and True if an error is encountered.
         :rtype: bool
         """
-<<<<<<< HEAD
-
-        if self._lst_col_order[index] == 2:
-            self._model.task_description = new_text
-        elif self._lst_col_order[index] == 3:
-            self._model.task_type = _conf.RTK_TASK_TYPE.index(new_text) + 1
-        elif self._lst_col_order[index] == 4:
-            self._model.task_specification = new_text
-        elif self._lst_col_order[index] == 5:
-            self._model.measurement_unit = _conf.RTK_MEASUREMENT_UNITS.index(new_text) + 1
-=======
 # TODO: Re-write _on_cell_edited; current McCabe Complexity metric = 17.
         if self._lst_col_order[index] == 2:
             self._model.task_description = new_text
@@ -500,7 +343,6 @@ class ModuleView(object):
         elif self._lst_col_order[index] == 5:
             _unit = Configuration.RTK_MEASUREMENT_UNITS.index(new_text) + 1
             self._model.measurement_unit = _unit
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         elif self._lst_col_order[index] == 6:
             self._model.min_acceptable = float(new_text)
         elif self._lst_col_order[index] == 7:

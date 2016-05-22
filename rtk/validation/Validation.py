@@ -14,10 +14,10 @@ Validation Package Data Module
 
 # Import other RTK modules.
 try:
-    import Utilities as _util
+    import Utilities
     from analyses.statistics.Bounds import calculate_beta_bounds
 except ImportError:                         # pragma: no cover
-    import rtk.Utilities as _util
+    import rtk.Utilities as Utilities
     from rtk.analyses.statistics.Bounds import calculate_beta_bounds
 
 __author__ = 'Andrew Rowland'
@@ -32,32 +32,6 @@ class Model(object):                       # pylint: disable=R0902, R0904
     verification and validation task. The attributes of a Validation model
     are:
 
-<<<<<<< HEAD
-    :ivar revision_id: default value: 0
-    :ivar validation_id: default value: 0
-    :ivar task_description: default value: ''
-    :ivar task_type: default value: ''
-    :ivar task_specification: default value: ''
-    :ivar measurement_unit: default value: 0
-    :ivar min_acceptable: default value: 0.0
-    :ivar mean_acceptable: default value: 0.0
-    :ivar max_acceptable: default value: 0.0
-    :ivar variance_acceptable: default value: 0.0
-    :ivar start_date: default value: 719163
-    :ivar end_date: default value: 719163
-    :ivar status: default value: 0.0
-    :ivar minimum_time: default value: 0.0
-    :ivar average_time: default value: 0.0
-    :ivar maximum_time: default value: 0.0
-    :ivar mean_time: default value: 0.0
-    :ivar time_variance: default value: 0.0
-    :ivar minimum_cost: default value: 0.0
-    :ivar average_cost: default value: 0.0
-    :ivar maximum_cost: default value: 0.0
-    :ivar mean_cost: default value: 0.0
-    :ivar cost_variance: default value: 0.0
-    :ivar confidence: default value: 95.0
-=======
     :ivar int revision_id: the ID of the Revision the Validation task is
                            associated with.
     :ivar int validation_id: the ID of the Validation task.
@@ -99,7 +73,6 @@ class Model(object):                       # pylint: disable=R0902, R0904
                                completing the Validation task.
     :ivar float confidence: the confidence level for calculating the mean time
                             and mean cost of the Validation task.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -107,19 +80,6 @@ class Model(object):                       # pylint: disable=R0902, R0904
         Method to initialize a Validation data model instance.
         """
 
-<<<<<<< HEAD
-        # Initialize private dict attributes.
-
-        # Initialize private list attributes.
-
-        # Initialize private scalar attributes.
-
-        # Initialize public dict attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-=======
         # Define private dict attributes.
 
         # Define private list attributes.
@@ -131,7 +91,6 @@ class Model(object):                       # pylint: disable=R0902, R0904
         # Define public list attributes.
 
         # Define public scalar attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.revision_id = 0
         self.validation_id = 0
         self.task_description = ''
@@ -196,22 +155,18 @@ class Model(object):                       # pylint: disable=R0902, R0904
             self.cost_variance = float(values[22])
             self.confidence = float(values[23])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Verificaiton data model attributes.
-=======
         Method to retrieve the current values of the Validation data model
         attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (revision_id, validation_id, task_description, task_type,
                   task_specification, measurement_unit, min_acceptable,
@@ -274,13 +229,8 @@ class Validation(object):
     manage one or more Validation data models.  The attributes of a
     Validation data controller are:
 
-<<<<<<< HEAD
-    :ivar _dao: the :class:`rtk.dao.DAO` to use when communicating with the RTK
-                Project database.
-=======
     :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
                 the RTK Project database.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     :ivar int _last_id: the last Validation ID used.
     :ivar dict dicTasks: Dictionary of the Validation data models managed.  Key
                          is the Validation ID; value is a pointer to the
@@ -292,19 +242,6 @@ class Validation(object):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initializes a Validation data controller instance.
-        """
-
-        # Initialize private scalar attributes.
-        self._dao = None
-        self._last_id = None
-
-        # Initialize public dictionary attributes.
-        self.dicTasks = {}
-        self.dicStatus = {}
-
-=======
         Method to initialize a Validation data controller instance.
         """
 
@@ -324,7 +261,6 @@ class Validation(object):
 
         # Define public scalar attributes.
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     def request_tasks(self, dao, revision_id):
         """
         Method to read the RTK Project database and load all the Validation
@@ -401,11 +337,7 @@ class Validation(object):
 
     def add_task(self, revision_id):
         """
-<<<<<<< HEAD
-        Adds a new Validation activity to the RTK Program's database.
-=======
         Method to add a new Validation activity to the RTK Program's database.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int revision_id: the Revision ID to select the tasks for.
         :return: (_results, _error_code)
@@ -425,8 +357,8 @@ class Validation(object):
         # If the new test was added successfully to the RTK Project database:
         #   1. Retrieve the ID of the newly inserted task.
         #   2. Create a new Validation model instance.
-        #   4. Set the attributes of the new Validation model instance.
-        #   5. Add the new Validation model to the controller dictionary.
+        #   3. Set the attributes of the new Validation model instance.
+        #   4. Add the new Validation model to the controller dictionary.
         if _results:
             self._last_id = self._dao.get_last_id('rtk_validation')[0]
 
@@ -441,13 +373,8 @@ class Validation(object):
 
     def delete_task(self, validation_id):
         """
-<<<<<<< HEAD
-        Deletes the currently selected Validation task from the RTK Program's
-        database.
-=======
         Method to delete the currently selected Validation task from the RTK
         Program's database.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param int validation_id: the ID of the Validation task to delete.
         :return: (_results, _error_code)
@@ -505,11 +432,7 @@ class Validation(object):
 
     def save_all_tasks(self):
         """
-<<<<<<< HEAD
-        Saves all Validation data models managed by the controller.
-=======
         Method to save all Validation data models managed by the controller.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
