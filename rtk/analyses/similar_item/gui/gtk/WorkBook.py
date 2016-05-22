@@ -41,13 +41,6 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
-=======
     import Configuration
     import Utilities
     import gui.gtk.Widgets as Widgets
@@ -55,7 +48,6 @@ except ImportError:
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -63,11 +55,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -81,29 +69,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
     are:
 
     :ivar list _lst_handler_id: default value: []
-<<<<<<< HEAD
-    :ivar dict dtcSimilarItem: the Similar Item Analysis data controller.
-    :ivar gtk.Button btnEditFunction:
-    :ivar gtk.Button btnCalculate:
-    :ivar gtk.Button btnSave:
-    :ivar gtk.ComboBox cmbSimilarItemMethod:
-    :ivar gtk.ComboBox cmbFromQuality:
-    :ivar gtk.ComboBox cmbToQuality:
-    :ivar gtk.ComboBox cmbFromEnvironment:
-    :ivar gtk.ComboBox cmbToEnvironment:
-    :ivar gtk.TreeView tvwSimilarItem:
-    :ivar gtk.Entry txtFromTemperature:
-    :ivar gtk.Entry txtToTemperature:
-    """
-
-    def __init__(self, controller):
-        """
-        Initializes the Work Book view for the Similar Item Analysis module.
-
-        :param rtk.analyses.similar_item.SimilarItem controller: the Similar
-                                                                 Item data
-                                                                 controller.
-=======
     :ivar :py:class:`rtk.analyses.similar_item.SimilarItem.SimilarItem` dtcSimilarItem:
         the Similar Item Analysis data controller.
     :ivar gtk.Button btnEditFunction: the gtk.Button() to launch the function
@@ -140,36 +105,10 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                            data controller.
         :param modulebook: the :py:class:`rtk.hardware.ModuleBook` associated
                            with the Hazard.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         gtk.HBox.__init__(self)
 
-<<<<<<< HEAD
-        # Initialize private list attributes.
-        self._lst_handler_id = []
-
-        # Initialize private scalar attributes.
-
-        # Initialize public scalar attributes.
-        self.dtcSimilarItem = controller
-
-        self.btnEditFunction = _widg.make_button(width=35, image='edit')
-        self.btnCalculate = _widg.make_button(width=35, image='calculate')
-        self.btnSave = _widg.make_button(width=35, image='save')
-
-        self.cmbSimilarItemMethod = _widg.make_combo(width=150)
-        self.cmbFromQuality = _widg.make_combo(width=150)
-        self.cmbToQuality = _widg.make_combo(width=150)
-        self.cmbFromEnvironment = _widg.make_combo(width=150)
-        self.cmbToEnvironment = _widg.make_combo(width=150)
-
-        self.txtFromTemperature = _widg.make_entry(width=100)
-        self.txtToTemperature = _widg.make_entry(width=100)
-
-        self.tvwSimilarItem = gtk.TreeView()
-
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -263,18 +202,12 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             self.txtToTemperature.connect('focus-out-event',
                                           self._on_focus_out, 9))
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.show_all()
 
     def create_page(self):                  # pylint: disable=R0914
         """
-<<<<<<< HEAD
-        Create the Similar Item analysis gtk.Notebook() page for displaying the
-        similar item analysis for the selected Hardware.
-=======
         Method to create the Similar Item analysis gtk.Notebook() page for
         displaying the similar item analysis for the selected Hardware.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
@@ -284,31 +217,13 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         # Create the Similar Item Analysis gtk.TreeView().              #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _path = "/root/tree[@name='SIA']/column/usertitle"
-<<<<<<< HEAD
-        _heading = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(_path)
-
-        _path = "/root/tree[@name='SIA']/column/datatype"
-        _datatype = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(_path)
-
-        _path = "/root/tree[@name='SIA']/column/widget"
-        _widget = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(_path)
-
-        _path = "/root/tree[@name='SIA']/column/position"
-        _position = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(_path)
-
-        _path = "/root/tree[@name='SIA']/column/editable"
-        _editable = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(_path)
-
-        _path = "/root/tree[@name='SIA']/column/visible"
-        _visible = etree.parse(_conf.RTK_FORMAT_FILE[8]).xpath(_path)
-=======
         _heading = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/datatype"
         _datatype = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/widget"
-        Widgetset = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
+        _widget = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/position"
         _position = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
@@ -318,7 +233,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         _path = "/root/tree[@name='SIA']/column/visible"
         _visible = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create a list of GObject datatypes to pass to the model.
         _types = []
@@ -336,15 +250,10 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _columns = int(len(_heading))
         for i in range(_columns):
             _column = gtk.TreeViewColumn()
-<<<<<<< HEAD
-            #self._col_order.append(int(_position_[i].text))
 
-            if _widget[i].text == 'spin':
-=======
             # self._col_order.append(int(_position_[i].text))
 
             if Widgetset[i].text == 'spin':
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _cell = gtk.CellRendererSpin()
                 _adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
                 _cell.set_property('adjustment', _adjustment)
@@ -357,13 +266,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             if int(_editable[i].text) == 0:
                 _cell.set_property('background', 'light gray')
             else:
-<<<<<<< HEAD
-                _cell.set_property('background', _conf.RTK_COLORS[6])
-                _cell.set_property('foreground', _conf.RTK_COLORS[7])
-=======
                 _cell.set_property('background', Configuration.RTK_COLORS[6])
                 _cell.set_property('foreground', Configuration.RTK_COLORS[7])
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _cell.set_property('wrap-width', 250)
                 _cell.set_property('wrap-mode', pango.WRAP_WORD)
                 _cell.connect('edited', self._on_cell_edit,
@@ -381,34 +285,18 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _column.set_visible(int(_visible[i].text))
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=int(_position[i].text))
-
             _column.set_widget(_label)
-
-<<<<<<< HEAD
-            _column.set_cell_data_func(_cell, _widg.format_cell,
-                                       (int(_position[i].text),
-                                        _datatype[i].text))
-            _column.set_resizable(True)
-            _column.connect('notify::width', _widg.resize_wrap, _cell)
-=======
             _column.set_cell_data_func(_cell, Widgets.format_cell,
                                        (int(_position[i].text),
                                         _datatype[i].text))
             _column.set_resizable(True)
             _column.connect('notify::width', Widgets.resize_wrap, _cell)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             if i > 0:
                 _column.set_reorderable(True)
 
             self.tvwSimilarItem.append_column(_column)
 
-<<<<<<< HEAD
-        self.tvwSimilarItem.set_tooltip_text(_(u"Displays the similar items "
-                                               u"analysis for the selected "
-                                               u"assembly."))
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.tvwSimilarItem.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -430,11 +318,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwSimilarItem)
 
-<<<<<<< HEAD
-        _frame = _widg.make_frame(label=_(u"Similar Item Analysis"))
-=======
         _frame = Widgets.make_frame(label=_(u"Similar Item Analysis"))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -444,114 +328,44 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _bbox.pack_start(self.btnCalculate, False, False)
         _bbox.pack_start(self.btnSave, False, False)
 
-<<<<<<< HEAD
-        self.btnEditFunction.set_tooltip_text(_(u"Edit the user-defined "
-                                                u"similar item analyses."))
-        self.btnCalculate.set_tooltip_text(_(u"Calculates the similar item "
-                                             u"analysis for the selected "
-                                             u"hardware item."))
-        self.btnSave.set_tooltip_text(_(u"Saves the selected similiar item "
-                                        u"analysis."))
-
-        # Connect to callback functions.
-        self._lst_handler_id.append(
-            self.btnEditFunction.connect('clicked',
-                                         self._on_button_clicked, 0))
-        self._lst_handler_id.append(
-            self.btnCalculate.connect('clicked',
-                                      self._on_button_clicked, 1))
-        self._lst_handler_id.append(
-            self.btnSave.connect('clicked',
-                                 self._on_button_clicked, 2))
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display the similar item analysis.  #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.Combo()
         _results = [[_(u"Topic 6.3.3"), 0],
                     [_(u"User-Defined"), 1]]
-<<<<<<< HEAD
-        _widg.load_combo(self.cmbSimilarItemMethod, _results)
-=======
+
         Widgets.load_combo(self.cmbSimilarItemMethod, _results)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _results = [[_(u"Space"), 0],
                     [_(u"Full Military"), 1],
                     [_(u"Ruggedized"), 2],
                     [_(u"Commercial"), 3]]
-<<<<<<< HEAD
-        _widg.load_combo(self.cmbFromQuality, _results)
-        _widg.load_combo(self.cmbToQuality, _results)
-=======
+
         Widgets.load_combo(self.cmbFromQuality, _results)
         Widgets.load_combo(self.cmbToQuality, _results)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _results = [[_(u"Ground, Benign"), 0], [_(u"Ground, Mobile"), 1],
                     [_(u"Naval, Sheltered"), 2],
                     [_(u"Airborne, Inhabited, Cargo"), 3],
                     [_(u"Airborne, Rotary Wing"), 4], [_(u"Space, Flight"), 5]]
-<<<<<<< HEAD
-        _widg.load_combo(self.cmbFromEnvironment, _results)
-        _widg.load_combo(self.cmbToEnvironment, _results)
-=======
+
         Widgets.load_combo(self.cmbFromEnvironment, _results)
         Widgets.load_combo(self.cmbToEnvironment, _results)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _labels = [_(u"Similar Item Method:"), _(u"From Quality:"),
                    _(u"To Quality:"), _(u"From Environment:"),
                    _(u"To Environment:"), _(u"From Temperature:"),
                    _("To Temperature:")]
 
-<<<<<<< HEAD
-        self.cmbSimilarItemMethod.set_tooltip_text(_(u"Selects the method for "
-                                                     u"determining the "
-                                                     u"reliability of the new "
-                                                     u"design based on the "
-                                                     u"reliability of a "
-                                                     u"similar item."))
-        self.cmbFromQuality.set_tooltip_text(_(u"Selects the quality level of "
-                                               u"the baseline, similar item."))
-        self.cmbToQuality.set_tooltip_text(_(u"Selects the quality level of "
-                                             u"the new design."))
-        self.cmbFromEnvironment.set_tooltip_text(_(u"Selects the environment "
-                                                   u"category of the "
-                                                   u"baseline, similar item."))
-        self.cmbToEnvironment.set_tooltip_text(_(u"Selects the environment "
-                                                 u"category of the new "
-                                                 u"design."))
-        self.txtFromTemperature.set_tooltip_text(_(u"Selects the operating, "
-                                                   u"ambient temperature of "
-                                                   u"the baseline, similar "
-                                                   u"item."))
-        self.txtToTemperature.set_tooltip_text(_(u"Selects the operating, "
-                                                 u"ambient temperature of "
-                                                 u"the new design."))
-
-        _x_pos = 5
-        _label = _widg.make_label(_labels[0], width=-1)
-=======
         _x_pos = 5
         _label = Widgets.make_label(_labels[0], width=-1)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, _x_pos, 5)
         _x_pos = _x_pos + _label.size_request()[0] + 25
         _fixed.put(self.cmbSimilarItemMethod, _x_pos, 5)
 
         _x_pos = 350
-<<<<<<< HEAD
-        _label = _widg.make_label(_labels[1], width=-1)
-        _fixed.put(_label, _x_pos, 5)
-        _width = _label.size_request()[0]
-        _label = _widg.make_label(_labels[3], width=-1)
-        _fixed.put(_label, _x_pos, 40)
-        _width = max(_width, _label.size_request()[0])
-        _label = _widg.make_label(_labels[5], width=-1)
-=======
+
         _label = Widgets.make_label(_labels[1], width=-1)
         _fixed.put(_label, _x_pos, 5)
         _width = _label.size_request()[0]
@@ -559,7 +373,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _fixed.put(_label, _x_pos, 40)
         _width = max(_width, _label.size_request()[0])
         _label = Widgets.make_label(_labels[5], width=-1)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, _x_pos, 75)
         _width = max(_width, _label.size_request()[0])
         _x_pos = _x_pos + _width + 25
@@ -568,15 +381,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _fixed.put(self.txtFromTemperature, _x_pos, 75)
 
         _x_pos = 650
-<<<<<<< HEAD
-        _label = _widg.make_label(_labels[2], width=-1)
-        _fixed.put(_label, _x_pos, 5)
-        _width = _label.size_request()[0]
-        _label = _widg.make_label(_labels[4], width=-1)
-        _fixed.put(_label, _x_pos, 40)
-        _width = max(_width, _label.size_request()[0])
-        _label = _widg.make_label(_labels[6], width=-1)
-=======
+
         _label = Widgets.make_label(_labels[2], width=-1)
         _fixed.put(_label, _x_pos, 5)
         _width = _label.size_request()[0]
@@ -584,7 +389,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _fixed.put(_label, _x_pos, 40)
         _width = max(_width, _label.size_request()[0])
         _label = Widgets.make_label(_labels[6], width=-1)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _fixed.put(_label, _x_pos, 75)
         _width = max(_width, _label.size_request()[0])
         _x_pos = _x_pos + _width + 25
@@ -592,40 +396,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _fixed.put(self.cmbToEnvironment, _x_pos, 40)
         _fixed.put(self.txtToTemperature, _x_pos, 75)
 
-<<<<<<< HEAD
-        self._lst_handler_id.append(
-            self.cmbSimilarItemMethod.connect('changed',
-                                              self._on_combo_changed, 3))
-        self._lst_handler_id.append(
-            self.cmbFromQuality.connect('changed',
-                                        self._on_combo_changed, 4))
-        self._lst_handler_id.append(
-            self.cmbToQuality.connect('changed',
-                                      self._on_combo_changed, 5))
-        self._lst_handler_id.append(
-            self.cmbFromEnvironment.connect('changed',
-                                            self._on_combo_changed, 6))
-        self._lst_handler_id.append(
-            self.cmbToEnvironment.connect('changed',
-                                          self._on_combo_changed, 7))
-        self._lst_handler_id.append(
-            self.txtFromTemperature.connect('focus-out-event',
-                                            self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.txtToTemperature.connect('focus-out-event',
-                                          self._on_focus_out, 9))
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False
 
     def load_page(self, controller, hardware_id, path=None):
         """
-<<<<<<< HEAD
-        Function to load the widgets on the Similar Item Analysis page.
-=======
         Method to load the widgets on the Similar Item Analysis page.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param `rtk.hardware.Hardware.Hardware` controller: the Hardware data
                                                             controller instance
@@ -702,10 +477,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         self.tvwSimilarItem.row_activated(path, _column)
         self.tvwSimilarItem.expand_all()
 
-<<<<<<< HEAD
-=======
         self.cmbSimilarItemMethod.set_active(_similar_items[0].method)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.cmbFromQuality.set_active(_similar_items[0].from_quality)
         self.cmbToQuality.set_active(_similar_items[0].to_quality)
         self.cmbFromEnvironment.set_active(_similar_items[0].from_environment)
@@ -728,36 +500,18 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         (_model, _row) = self.tvwSimilarItem.get_selection().get_selected()
 
         _title = _(u"RTK - Edit Similar Item Analysis Functions")
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"You can define up to five functions.  "
-                                    u"You can use the system failure rate, "
-                                    u"selected assembly failure rate, the "
-                                    u"change factor, the user float, the user "
-                                    u"integer values, and results of other "
-                                    u"functions.\n\n \
-=======
         _label = Widgets.make_label(_(u"You can define up to five functions.  "
                                       u"You can use the system failure rate, "
                                       u"selected assembly failure rate, the "
                                       u"change factor, the user float, the "
                                       u"user integer values, and results of "
                                       u"other functions.\n\n \
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         System hazard rate is hr_sys\n \
         Assembly hazard rate is hr\n \
         Change factor is pi[1-8]\n \
         User float is uf[1-3]\n \
         User integer is ui[1-3]\n \
         Function result is res[1-5]"), width=600, height=-1, wrap=True)
-<<<<<<< HEAD
-        _label2 = _widg.make_label(_(u"For example, pi1*pi2+pi3, multiplies "
-                                     u"the first two change factors and adds "
-                                     u"the value to the third change factor."),
-                                   width=600, height=-1, wrap=True)
-
-        # Build the dialog assistant.
-        _dialog = _widg.make_dialog(_title)
-=======
         _label2 = Widgets.make_label(_(u"For example, pi1*pi2+pi3, multiplies "
                                        u"the first two change factors and "
                                        u"adds the value to the third change "
@@ -766,7 +520,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         # Build the dialog assistant.
         _dialog = Widgets.make_dialog(_title)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _fixed = gtk.Fixed()
 
@@ -776,62 +529,37 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _fixed.put(_label2, 5, _y_pos)
         _y_pos += _label2.size_request()[1] + 10
 
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"User function 1:"))
-        _txtFunction1 = _widg.make_entry()
-=======
         _label = Widgets.make_label(_(u"User function 1:"))
         _txtFunction1 = Widgets.make_entry()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _txtFunction1.set_text(_model.get_value(_row, 30))
 
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction1, 195, _y_pos)
         _y_pos += 30
 
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"User function 2:"))
-        _txtFunction2 = _widg.make_entry()
-=======
         _label = Widgets.make_label(_(u"User function 2:"))
         _txtFunction2 = Widgets.make_entry()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _txtFunction2.set_text(_model.get_value(_row, 31))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction2, 195, _y_pos)
         _y_pos += 30
 
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"User function 3:"))
-        _txtFunction3 = _widg.make_entry()
-=======
         _label = Widgets.make_label(_(u"User function 3:"))
         _txtFunction3 = Widgets.make_entry()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _txtFunction3.set_text(_model.get_value(_row, 32))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction3, 195, _y_pos)
         _y_pos += 30
 
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"User function 4:"))
-        _txtFunction4 = _widg.make_entry()
-=======
         _label = Widgets.make_label(_(u"User function 4:"))
         _txtFunction4 = Widgets.make_entry()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _txtFunction4.set_text(_model.get_value(_row, 33))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction4, 195, _y_pos)
         _y_pos += 30
 
-<<<<<<< HEAD
-        _label = _widg.make_label(_(u"User function 5:"))
-        _txtFunction5 = _widg.make_entry()
-=======
         _label = Widgets.make_label(_(u"User function 5:"))
         _txtFunction5 = Widgets.make_entry()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _txtFunction5.set_text(_model.get_value(_row, 34))
         _fixed.put(_label, 5, _y_pos)
         _fixed.put(_txtFunction5, 195, _y_pos)
@@ -846,11 +574,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         # Run the dialog and apply the changes if the 'OK' button is pressed.
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
-<<<<<<< HEAD
-            #_util.set_cursor(self._app, gtk.gdk.WATCH)
-=======
             # Utilities.set_cursor(self._app, gtk.gdk.WATCH)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             if _chkApplyAll.get_active():
                 _row = _model.get_iter_root()
@@ -882,11 +606,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _model.set_value(_row, 33, _similar_item.function_4)
                 _model.set_value(_row, 34, _similar_item.function_5)
 
-<<<<<<< HEAD
-            #_util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
-=======
             # Utilities.set_cursor(self._app, gtk.gdk.LEFT_PTR)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _dialog.destroy()
 
@@ -894,13 +614,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
     def _on_button_clicked(self, __button, index):
         """
-<<<<<<< HEAD
-        Responds to gtk.Button() clicked signals and calls the correct function
-        or method, passing any parameters as needed.
-=======
         Method to respond to gtk.Button() 'clicked' signals and call the
         correct function or method, passing any parameters as needed.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -910,31 +625,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :rtype: bool
         """
 
-<<<<<<< HEAD
-        (_model, _row) = self.tvwSimilarItem.get_selection().get_selected()
-        _hardware_id = _model.get_value(_row, 0)
-        _hazard_rate = _model.get_value(_row, 3)
-=======
         _return = False
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         if index == 0:                      # Edit functions.
             self._edit_function()
         elif index == 1:                    # Calculate the analysis.
-<<<<<<< HEAD
-            _method = self.cmbSimilarItemMethod.get_active()
-            self.dtcSimilarItem.calculate(_hardware_id, _hazard_rate, _method)
-            _similar_item = self.dtcSimilarItem.dicSimilarItem[_hardware_id]
-            _model.set_value(_row, 35, _similar_item.result_1)
-        elif index == 2:                    # Save the analysis.
-            self.dtcSimilarItem.save_all_similar_item()
-
-        return False
-
-    def _on_cell_edit(self, cell, path, new_text, index):   # pylint: disable=R0912
-        """
-        Responds to edited signals from the Similar Item gtk.TreeView().
-=======
             _model = self.tvwSimilarItem.get_model()
             _row = _model.get_iter_root()
 
@@ -978,7 +673,6 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         """
         Method to respond to gtk.CellRenderer() 'edited' signals from the
         Similar Item gtk.TreeView().
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.CellRenderer cell: the gtk.CellRenderer() that called this
                                       method.
@@ -990,11 +684,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-<<<<<<< HEAD
-
-=======
 # TODO: Re-write _on_cell_edit; current McCabe Complexity metric = 40.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         (_model, _row) = self.tvwSimilarItem.get_selection().get_selected()
         _hardware_id = _model.get_value(_row, 0)
         _similar_item = self.dtcSimilarItem.dicSimilarItem[_hardware_id]
@@ -1085,19 +775,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
     def _on_combo_changed(self, combo, index):
         """
-<<<<<<< HEAD
-        Responds to gtk.ComboBox() changed signals and calls the correct
-        function or method, passing any parameters as needed.
-
-        :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
-        :param int index: the index in the handler ID list oc the callback
-=======
         Method to respond to gtk.ComboBox() 'changed' signals and call the
         correct function or method, passing any parameters as needed.
 
         :param gtk.ComboBox combo: the gtk.ComboBox() that called this method.
         :param int index: the index in the handler ID list of the callback
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                           signal associated with the gtk.ComboBox() that
                           called this method.
         :return: False if successful or True is an error is encountered.
@@ -1111,13 +793,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         combo.handler_block(self._lst_handler_id[index])
 
-<<<<<<< HEAD
-        if index == 4:                      # From quality
-=======
         if index == 3:                      # SIA method
             _similar_item.method = combo.get_active()
         elif index == 4:                    # From quality
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _similar_item.from_quality = combo.get_active()
         elif index == 5:                    # To quality.
             _similar_item.to_quality = combo.get_active()
@@ -1132,22 +810,13 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
     def _on_focus_out(self, entry, __event, index):
         """
-<<<<<<< HEAD
-        Responds to gtk.Entry() focus_out signals and calls the correct
-        function or method, passing any parameters as needed.
-=======
         Method to respond to gtk.Entry() 'focus_out' signals and call the
         correct function or method, passing any parameters as needed.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Entry entry: the gtk.Entry() that called this method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
                                       method.
-<<<<<<< HEAD
-        :param int index: the index in the handler ID list oc the callback
-=======
         :param int index: the index in the handler ID list of the callback
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                           signal associated with the gtk.Entry() that
                           called this method.
         :return: False if successful or True is an error is encountered.
