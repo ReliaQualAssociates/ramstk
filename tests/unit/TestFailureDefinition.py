@@ -13,6 +13,7 @@ models.
 
 import sys
 from os.path import dirname
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
@@ -116,11 +117,7 @@ class TestUsageProfileController(unittest.TestCase):
 
     def setUp(self):
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-=======
         _database = '/tmp/tempdb.rtk'
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self._dao = _dao(_database)
 
         self.DUT = FailureDefinition()
