@@ -5,30 +5,17 @@ This is the test class for testing Thermistor module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestThermistor.py is part of The RTK Project
-#
-# All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
-=======
 #       tests.unit.TestThermistor.py is part of The RTK Project
 #
 # All rights reserved.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-=======
 import unittest
 from nose.plugins.attrib import attr
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.resistor.variable.Thermistor import *
 
 __author__ = 'Andrew Rowland'
@@ -47,12 +34,6 @@ class TestThermistorModel(unittest.TestCase):
         Setup the test fixture for the Thermistor resistor class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Thermistor()
 
     @attr(all=True, unit=True)
@@ -182,22 +163,14 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.quality = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 1.6)
@@ -207,11 +180,7 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_bead(self):
         """
-<<<<<<< HEAD
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F stress results for a bead thermistor
-=======
         (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a bead thermistor
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -219,11 +188,7 @@ class TestThermistorModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.type = 1
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.021)
@@ -234,11 +199,7 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_disk(self):
         """
-<<<<<<< HEAD
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F stress results for a disk thermistor
-=======
         (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a disk thermistor
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -246,11 +207,7 @@ class TestThermistorModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.type = 2
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.065)
@@ -261,11 +218,7 @@ class TestThermistorModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_rod(self):
         """
-<<<<<<< HEAD
-        (TestThermistor) calculate should return False on success when calculating MIL-HDBK-217F stress results for a rod thermistor
-=======
         (TestThermistor) calculate_part should return False on success when calculating MIL-HDBK-217F stress results for a rod thermistor
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -273,11 +226,7 @@ class TestThermistorModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.type = 3
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.105)

@@ -16,21 +16,12 @@ import gettext
 import locale
 
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import Utilities as _util
-    from hardware.component.resistor.Resistor import Model as Resistor
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-=======
     import Configuration
     import Utilities
     from hardware.component.resistor.Resistor import Model as Resistor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
 
 __author__ = 'Andrew Rowland'
@@ -40,11 +31,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -56,16 +43,6 @@ class Wirewound(Resistor):
     The Wirewound resistor data model contains the attributes and methods of
     a Wirewound resistor.  The attributes of a Wirewound resistor are:
 
-<<<<<<< HEAD
-    :cvar _lst_piR: list of resistance factor values.
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 29
-=======
     :cvar list _lst_piR: list of MIL-HDBK-217FN2 resistance factor values.
     :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
                          values.
@@ -76,7 +53,6 @@ class Wirewound(Resistor):
     :cvar list _lst_lambdab_count: list of base hazard rate values for the
                                    MIL-HDBK-217FN2 parts count method.
     :cvar int subcategory: default value: 29
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-R-93, MIL-R-39005.
 
@@ -98,25 +74,15 @@ class Wirewound(Resistor):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize a Wirewound resistor data model instance.
-=======
         Method to initialize a Wirewound resistor data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Wirewound, self).__init__()
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Wirewound resistor data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Wirewound resistor data
         model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -134,12 +100,8 @@ class Wirewound(Resistor):
             try:
                 self.base_hr = 0.0031 * \
                     exp(((self.temperature_active + 273.0) / 398.0)**10.0) * \
-<<<<<<< HEAD
-                    exp((_stress * ((self.temperature_active + 273.0) / 273.0))**1.5)
-=======
                     exp((_stress * ((self.temperature_active + 273.0) /
                                     273.0))**1.5)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -156,11 +118,7 @@ class Wirewound(Resistor):
                 self.piR = 5.0
             self.hazard_rate_model['piR'] = self.piR
 
-<<<<<<< HEAD
-        return Resistor.calculate(self)
-=======
         return Resistor.calculate_part(self)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class WirewoundPower(Resistor):
@@ -169,19 +127,6 @@ class WirewoundPower(Resistor):
     methods of a Wirewound Power resistor.  The attributes of a Wirewound
     Power resistor are:
 
-<<<<<<< HEAD
-    :cvar _lst_piR: list of resistance factor values.
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 30
-
-    :ivar specification: default value: 0
-    :ivar style: default value: 0
-=======
     :cvar list _lst_piR: list of MIL-HDBK-217FN2 resistance factor values.
     :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
                          values.
@@ -196,7 +141,6 @@ class WirewoundPower(Resistor):
     :ivar int specification: index of the specification applicable to the
                              resistor.
     :ivar int style: index of the resistor style.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-R-26 and MIL-R-39007.
 
@@ -263,11 +207,7 @@ class WirewoundPower(Resistor):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize a Wirewound Power resistor data model instance.
-=======
         Method to initialize a Wirewound Power resistor data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(WirewoundPower, self).__init__()
@@ -279,11 +219,7 @@ class WirewoundPower(Resistor):
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Wirewound Power resistor data model attributes.
-=======
         Method to set the Wirewound Power resistor data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -300,30 +236,18 @@ class WirewoundPower(Resistor):
             self.specification = int(values[117])
             self.style = int(values[118])
         except IndexError as _err:
-<<<<<<< HEAD
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
-=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Wirewound Power resistor data model
-        attributes.
-=======
         Method to retrieve the current values of the Wirewound Power resistor
         data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (specification, style)
         :rtype: tuple
@@ -335,25 +259,15 @@ class WirewoundPower(Resistor):
 
         return _values
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Wirewound Power resistor data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Wirewound Power resistor
         data model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-<<<<<<< HEAD
-
-=======
 # TODO: Re-write calculate_part; current McCabe Complexity metric = 19.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -370,12 +284,8 @@ class WirewoundPower(Resistor):
                 self.base_hr = \
                     0.00148 * \
                     exp(((self.temperature_active + 273.0) / 298.0)**2.0) * \
-<<<<<<< HEAD
-                    exp((_stress / 0.5) * ((self.temperature_active + 273.0) / 273.0))
-=======
                     exp((_stress / 0.5) * ((self.temperature_active + 273.0) /
                                            273.0))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
                 # TODO: Handle overflow error.
@@ -389,32 +299,6 @@ class WirewoundPower(Resistor):
                     self.piR = self._lst_piR[self.specification - 1][self.style - 1][1]
                 elif self.resistance > 1000.0 and self.resistance <= 5000.0:
                     self.piR = self._lst_piR[self.specification - 1][self.style - 1][2]
-<<<<<<< HEAD
-                elif self.resistance > 5000.0 and self.resistance <= 7500.0:    # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][3]
-                elif self.resistance > 7500.0 and self.resistance <= 10000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][4]
-                elif self.resistance > 10000.0 and self.resistance <= 15000.0:  # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][5]
-                elif self.resistance > 15000.0 and self.resistance <= 20000.0:  # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][6]
-                elif self.resistance > 20000.0:                                 # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][7]
-            elif self.specification == 2:   # MIL-R-26
-                if self.resistance <= 100.0:                                    # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][0]
-                elif self.resistance > 100.0 and self.resistance <= 1000.0:     # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][1]
-                elif self.resistance > 1000.0 and self.resistance <= 10000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][2]
-                elif self.resistance > 10000.0 and self.resistance <= 100000.0: # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][3]
-                elif(self.resistance > 100000.0 and
-                     self.resistance <= 150000.0):                              # pragma: no cover
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][4]
-                elif(self.resistance > 150000.0 and
-                     self.resistance <= 200000.0):                              # pragma: no cover
-=======
                 elif self.resistance > 5000.0 and self.resistance <= 7500.0:
                     self.piR = self._lst_piR[self.specification - 1][self.style - 1][3]
                 elif self.resistance > 7500.0 and self.resistance <= 10000.0:
@@ -439,16 +323,11 @@ class WirewoundPower(Resistor):
                     self.piR = self._lst_piR[self.specification - 1][self.style - 1][4]
                 elif(self.resistance > 150000.0 and
                      self.resistance <= 200000.0):
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                     self.piR = self._lst_piR[self.specification - 1][self.style - 1][5]
 
             self.hazard_rate_model['piR'] = self.piR
 
-<<<<<<< HEAD
-        return Resistor.calculate(self)
-=======
         return Resistor.calculate_part(self)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class WirewoundChassisMount(Resistor):
@@ -457,16 +336,6 @@ class WirewoundChassisMount(Resistor):
     attributes and methods of a Wirewound Chassis Mount Power  resistor.  The
     attributes of a Wirewound Chassis Mount Power resistor are:
 
-<<<<<<< HEAD
-    :cvar _lst_piR: list of resistance factor values.
-    :cvar _lst_piE: list of environment factor values.
-    :cvar _lst_piQ_count: list of quality factor values for the parts count
-                          method.
-    :cvar _lst_piQ_stress: list of quality factor values for the parts stress
-                           method.
-    :cvar _lst_lambdab_count: list of base hazard rate values for parts count.
-    :cvar subcategory: default value: 31
-=======
     :cvar list _lst_piR: list of MIL-HDBK-217FN2 resistance factor values.
     :cvar list _lst_piE: list of MIL-HDBK-217FN2 operating environment factor
                          values.
@@ -477,7 +346,6 @@ class WirewoundChassisMount(Resistor):
     :cvar list _lst_lambdab_count: list of base hazard rate values for the
                                    MIL-HDBK-217FN2 parts count method.
     :cvar int subcategory: default value: 31
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
     Covers specifications MIL-R-18546 and MIL-R-39009.
 
@@ -511,13 +379,8 @@ class WirewoundChassisMount(Resistor):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize a Wirewound Chassis Mount Power resistor data model
-        instance.
-=======
         Method to initialize a Wirewound Chassis Mount Power resistor data
         model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(WirewoundChassisMount, self).__init__()
@@ -527,12 +390,8 @@ class WirewoundChassisMount(Resistor):
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Wirewound Chassis Mount Power resistor data model attributes.
-=======
         Method to set the Wirewound Chassis Mount Power resistor data model
         attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -549,30 +408,18 @@ class WirewoundChassisMount(Resistor):
             self.characteristic = int(values[117])
             self.style = int(values[118])
         except IndexError as _err:
-<<<<<<< HEAD
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
-=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Wirewound Chassis Mount Power
-        resistor data model attributes.
-=======
         Method to retrieve the current values of the Wirewound Chassis Mount
         Power resistor data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (specification, style)
         :rtype: tuple
@@ -584,17 +431,10 @@ class WirewoundChassisMount(Resistor):
 
         return _values
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Wirewound Chassis Mount Power
-        resistor data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Wirewound Chassis Mount
         Power resistor data model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -610,35 +450,15 @@ class WirewoundChassisMount(Resistor):
             # Base hazard rate.
             _stress = self.operating_power / self.rated_power
             self.base_hr = 0.00015 * \
-<<<<<<< HEAD
-                           exp(2.64 * ((self.temperature_active + 273.0) / 273.0)) * \
-                           exp((_stress / -.466) * ((self.temperature_active + 273.0) / 273.0))
-=======
                            exp(2.64 * ((self.temperature_active + 273.0) /
                                        273.0)) * \
                            exp((_stress / -.466) * ((self.temperature_active +
                                                      273.0) / 273.0))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Resistance factor.
             if self.resistance <= 500.0:
                 self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][0]
-<<<<<<< HEAD
-            elif self.resistance > 500.0 and self.resistance <= 1000.0:     # pragma: no cover
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][1]
-            elif self.resistance > 1000.0 and self.resistance <= 5000.0:    # pragma: no cover
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][2]
-            elif self.resistance > 5000.0 and self.resistance <= 10000.0:   # pragma: no cover
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][3]
-            elif self.resistance > 10000.0 and self.resistance <= 20000.0:  # pragma: no cover
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][4]
-            elif self.resistance > 20000.0:                                 # pragma: no cover
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][5]
-            self.hazard_rate_model['piR'] = self.piR
-
-        return Resistor.calculate(self)
-=======
             elif self.resistance > 500.0 and self.resistance <= 1000.0:
                 self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][1]
             elif self.resistance > 1000.0 and self.resistance <= 5000.0:
@@ -652,4 +472,3 @@ class WirewoundChassisMount(Resistor):
             self.hazard_rate_model['piR'] = self.piR
 
         return Resistor.calculate_part(self)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

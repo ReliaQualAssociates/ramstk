@@ -5,16 +5,10 @@ This is the test class for testing Hardware module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestHardware.py is part of The RTK Project
-#
-# All rights reserved.
-
-=======
 #       tests.unit.TestHardware.py is part of The RTK Project
 #
 # All rights reserved.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -22,12 +16,8 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-from hardware.Hardware import Model, Hardware
-=======
 from hardware.Hardware import Model
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -45,12 +35,6 @@ class TestHardwareModel(unittest.TestCase):
         Setup the test fixture for the Hardware class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Model()
 
     @attr(all=True, unit=True)

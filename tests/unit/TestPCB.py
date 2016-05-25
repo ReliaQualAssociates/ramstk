@@ -5,30 +5,17 @@ This is the test class for testing PCB Connection module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestPCB.py is part of The RTK Project
-#
-# All rights reserved.
-
-import unittest
-from nose.plugins.attrib import attr
-
-=======
 #       tests.unit.TestPCB.py is part of The RTK Project
 #
 # All rights reserved.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-=======
 import unittest
 from nose.plugins.attrib import attr
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.connection.PCB import PCB
 
 __author__ = 'Andrew Rowland'
@@ -47,12 +34,6 @@ class TestPCBModel(unittest.TestCase):
         Setup the test fixture for the PCB Connection class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = PCB()
 
     @attr(all=True, unit=True)
@@ -234,22 +215,14 @@ class TestPCBModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestPCB) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestPCB) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
-        self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.1)
@@ -259,11 +232,7 @@ class TestPCBModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-<<<<<<< HEAD
-        (TestPCB) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestPCB) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -273,12 +242,7 @@ class TestPCBModel(unittest.TestCase):
         self.DUT.n_active_contacts = 20
         self.DUT.mate_unmate_cycles = 10.0
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -291,11 +255,7 @@ class TestPCBModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_no_active_contacts(self):
         """
-<<<<<<< HEAD
-        (TestPCB) calculate should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
-=======
         (TestPCB) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -305,12 +265,7 @@ class TestPCBModel(unittest.TestCase):
         self.DUT.n_active_contacts = 1
         self.DUT.mate_unmate_cycles = 10.0
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piK * piP')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

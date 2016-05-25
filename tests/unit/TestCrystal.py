@@ -5,16 +5,10 @@ This is the test class for testing Crystal module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestCrystal.py is part of The RTK Project
-#
-# All rights reserved.
-
-=======
 #       tests.unit.TestCrystal.py is part of The RTK Project
 #
 # All rights reserved.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -22,12 +16,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-from hardware.component.miscellaneous.Crystal import *
-=======
 from hardware.component.miscellaneous.Crystal import Crystal
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -45,12 +34,6 @@ class TestCrystalModel(unittest.TestCase):
         Setup the test fixture for the Crystal class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Crystal()
 
     @attr(all=True, unit=True)
@@ -66,7 +49,7 @@ class TestCrystalModel(unittest.TestCase):
         self.assertEqual(self.DUT.category_id, 0)
 
         # Verify Crystal class was properly initialized.
-        self.assertEqual(self.DUT.category, 10)
+        self.assertEqual(self.DUT.category, 6)
         self.assertEqual(self.DUT.quality, 0)
         self.assertEqual(self.DUT.q_override, 0.0)
         self.assertEqual(self.DUT.frequency, 0.0)
@@ -207,6 +190,7 @@ class TestCrystalModel(unittest.TestCase):
                        0.0, 0,
                        0, 0, 0.0, 30.0, 0.0, 358.0,
                        3, 0.05, 2.5, 0.001, 1.0, 1.0, '')
+
         self.DUT.set_attributes(_in_values)
         _result = self.DUT.get_attributes()
         self.assertEqual(_result, _out_values)
@@ -214,31 +198,20 @@ class TestCrystalModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestCrystal) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestCrystal) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
         self.DUT.environment_active = 5
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
+
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.51)
         self.assertEqual(self.DUT.hazard_rate_active, 5.1E-7)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-<<<<<<< HEAD
-        (TestCrystal) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestCrystal) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
@@ -246,11 +219,7 @@ class TestCrystalModel(unittest.TestCase):
         self.DUT.quality = 1
         self.DUT.frequency = 2.5
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 """
-<<<<<<< HEAD
-#########################################
-Hardware.Assembly Package Assembly Module
-#########################################
-=======
 ################################
 Hardware Package Assembly Module
 ################################
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 """
 
 # -*- coding: utf-8 -*-
@@ -23,21 +17,12 @@ import locale
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import Utilities as _util
-    from hardware.Hardware import Model as Hardware
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-=======
     import Configuration
     import Utilities
     from hardware.Hardware import Model as Hardware
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.Hardware import Model as Hardware
 
 __author__ = 'Andrew Rowland'
@@ -46,11 +31,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -70,19 +51,6 @@ class Model(Hardware):                        # pylint: disable=R0902
                          children of this data model.  Key is the Hardware ID;
                          value is a pointer to the Component data model
                          instance.
-
-<<<<<<< HEAD
-    :ivar cost_type: default value: 0
-    :ivar repairable: default value: 1
-    :ivar total_part_quantity: default value: 0
-    :ivar total_power_dissipation: default value: 0
-    :ivar detection_fr: default value: 0.0
-    :ivar detection_percent: default value: 0.0
-    :ivar isolation_fr: default value: 0.0
-    :ivar isolation_percent: default value: 0.0
-    :ivar percent_isolation_group_ri: default value: 0.0
-    :ivar percent_isolation_single_ri: default value: 0.0
-=======
     :ivar int cost_type: indicates method used to determine cost of assembly.
                          * 0 = specified
                          * 1 = calculated
@@ -105,27 +73,15 @@ class Model(Hardware):                        # pylint: disable=R0902
     :ivar float percent_isolation_single_ri: the percentage of the Assembly
                                              hazard rate that is isolable to a
                                              single component.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize an Assembly data model instance.
-=======
         Method to initialize an Assembly data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Model, self).__init__()
 
-<<<<<<< HEAD
-        # Initialize public dictionary attributes.
-        self.dicAssemblies = {}
-        self.dicComponents = {}
-
-        # Initialize public scalar attributes.
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -139,16 +95,10 @@ class Model(Hardware):                        # pylint: disable=R0902
         # Define public list attributes.
 
         # Define public scalar attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.cost_type = 0
         self.repairable = 1
         self.total_part_quantity = 0
         self.total_power_dissipation = 0
-<<<<<<< HEAD
-
-        # Maintainability attributes.
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.detection_fr = 0.0
         self.detection_percent = 0.0
         self.isolation_fr = 0.0
@@ -158,11 +108,7 @@ class Model(Hardware):                        # pylint: disable=R0902
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Assembly data model attributes.
-=======
         Method to set the Assembly data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -182,31 +128,19 @@ class Model(Hardware):                        # pylint: disable=R0902
                 self.total_part_quantity = int(values[88])
                 self.total_power_dissipation = float(values[89])
             except IndexError as _err:
-<<<<<<< HEAD
-                _code = _util.error_handler(_err.args)
-                _msg = "ERROR: Insufficient input values."
-            except TypeError as _err:
-                _code = _util.error_handler(_err.args)
-                _msg = "ERROR: Converting one or more inputs to correct data type."
-=======
                 _code = Utilities.error_handler(_err.args)
                 _msg = _(u"ERROR: Insufficient input values.")
             except TypeError as _err:
                 _code = Utilities.error_handler(_err.args)
                 _msg = _(u"ERROR: Converting one or more inputs to correct "
                          u"data type.")
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Assembly data model attributes.
-=======
         Method to retrieve the current values of the Assembly data model
         attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (revision_id, hardware_id, alt_part_number, attachments,
                   cage_code, comp_ref_des, cost, cost_failure, cost_hour,
@@ -235,28 +169,13 @@ class Assembly(object):
     """
     The Assembly data controller provides an interface between the Assembly
     data model and an RTK view model.  A single Assembly controller can manage
-<<<<<<< HEAD
-    one or more Assembly data models.  The attributes of an Assembly data
-    controller are:
-
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-                Project database.
-    :ivar dicHardware: Dictionary of the Assembly data models managed.
-                       Key is the Hardware ID; value is a pointer to the
-                       Assembly data model instance.
-=======
     one or more Assembly data models.  The Assembly data controller is
     currently unused.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initializes an Assembly data controller instance.
-=======
         Method to initialize an Assembly data controller instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         pass

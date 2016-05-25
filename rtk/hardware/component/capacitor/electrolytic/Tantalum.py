@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 """
-<<<<<<< HEAD
-#################################################################
-Hardware.Component.Capacitor.Electrolytic Package Tantalum Module
-#################################################################
-=======
 #############################################
 Hardware Package Electrolytic Tantalum Module
 #############################################
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 """
 
 # -*- coding: utf-8 -*-
@@ -22,21 +16,12 @@ import gettext
 import locale
 
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import Utilities as _util
-    from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-=======
     import Configuration
     import Utilities
     from hardware.component.capacitor.Capacitor import Model as Capacitor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
 __author__ = 'Andrew Rowland'
@@ -46,11 +31,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -116,17 +97,10 @@ class Solid(Capacitor):
             self.effective_resistance = float(values[103])
             self.piSR = float(values[104])
         except IndexError as _err:
-<<<<<<< HEAD
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = _util.error_handler(_err.args)
-=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -146,25 +120,15 @@ class Solid(Capacitor):
 
         return _values
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Solid Tantalum capacitor data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Solid Tantalum capacitor
         data model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-<<<<<<< HEAD
-
-=======
 # TODO: Consider re-writing calculate; current McCabe Complexity metrix = 10.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         from math import exp
 
         self.hazard_rate_model = {}
@@ -208,11 +172,7 @@ class Solid(Capacitor):
                 self.piSR = 0.33
             self.hazard_rate_model['piSR'] = self.piSR
 
-<<<<<<< HEAD
-        return Capacitor.calculate(self)
-=======
         return Capacitor.calculate_part(self)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class NonSolid(Capacitor):
@@ -240,13 +200,8 @@ class NonSolid(Capacitor):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initializes the Fixed Non-Solid Tantalum Electrolytic Capacitor
-        Component Class.
-=======
         Method to initialize the Fixed Non-Solid Tantalum Electrolytic
         Capacitor Component Class.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(NonSolid, self).__init__()
@@ -264,11 +219,7 @@ class NonSolid(Capacitor):
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Non-Solid Tantalum capacitor data model attributes.
-=======
         Method to set the Non-Solid Tantalum capacitor data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -285,30 +236,18 @@ class NonSolid(Capacitor):
             self.construction = int(values[119])
             self.piC = float(values[104])
         except IndexError as _err:
-<<<<<<< HEAD
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = _util.error_handler(_err.args)
-=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Non-Solid Tantalum capacitor data
-        model attributes.
-=======
         Method to retrieve the current values of the Non-Solid Tantalum
         capacitor data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (construciton, piCV)
         :rtype: tuple
@@ -320,17 +259,10 @@ class NonSolid(Capacitor):
 
         return _values
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Non-Solid Tantalum capacitor data
-        model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Non-Solid Tantalum
         capacitor data model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -365,8 +297,4 @@ class NonSolid(Capacitor):
             self.piC = self._piC[self.construction - 1]
             self.hazard_rate_model['piC'] = self.piC
 
-<<<<<<< HEAD
-        return Capacitor.calculate(self)
-=======
         return Capacitor.calculate_part(self)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

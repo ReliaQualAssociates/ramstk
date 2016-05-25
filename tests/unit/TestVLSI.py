@@ -6,11 +6,7 @@ and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestVLSI.py is part of The RTK Project
-=======
 #       tests.unit.TestVLSI.py is part of The RTK Project
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -20,13 +16,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
-
-<<<<<<< HEAD
-import dao.DAO as _dao
-from hardware.component.integrated_circuit.VLSI import *
-=======
 from hardware.component.integrated_circuit.VLSI import VLSI
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -44,12 +34,6 @@ class TestVLSIModel(unittest.TestCase):
         Setup the test fixture for the VLSI IC class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = VLSI()
 
     @attr(all=True, unit=True)
@@ -248,33 +232,21 @@ class TestVLSIModel(unittest.TestCase):
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestVLSI) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestVLSI) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
-        self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
 
     @attr(all=True, unit=True)
     def test_calculate_217_count_all(self):
         """
-<<<<<<< HEAD
-        (TestVLSI) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestVLSI) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.application = 1
@@ -292,11 +264,7 @@ class TestVLSIModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-<<<<<<< HEAD
-        (TestVLSI) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestVLSI) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -317,12 +285,7 @@ class TestVLSIModel(unittest.TestCase):
         self.DUT.feature_size = 0.80
         self.DUT.die_area = 0.5
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.junction_temperature, 50.0)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambda_bd * piMFG * piT * piCD + lambda_bp * piE * piQ * piPT + lambda_eos')

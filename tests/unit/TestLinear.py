@@ -5,11 +5,7 @@ This is the test class for testing Linear IC module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestLinear.py is part of The RTK Project
-=======
 #       tests.unit.TestLinear.py is part of The RTK Project
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -20,12 +16,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-from hardware.component.integrated_circuit.Linear import *
-=======
 from hardware.component.integrated_circuit.Linear import Linear
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -43,12 +34,6 @@ class TestLinearModel(unittest.TestCase):
         Setup the test fixture for the Linear IC class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Linear()
 
     @attr(all=True, unit=True)
@@ -233,34 +218,22 @@ class TestLinearModel(unittest.TestCase):
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestLinear) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestLinear) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
         self.DUT.technology = 1
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
-        self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
 
     @attr(all=True, unit=True)
     def test_calculate_217_count_all(self):
         """
-<<<<<<< HEAD
-        (TestLinear) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestLinear) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.n_transistors = 100
@@ -290,11 +263,7 @@ class TestLinearModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-<<<<<<< HEAD
-        (TestLinear) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestLinear) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -312,12 +281,7 @@ class TestLinearModel(unittest.TestCase):
         self.DUT.years_production = 1.5
         self.DUT.case_temperature = 35.0
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.junction_temperature, 50.0)
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          '(C1 * piT + C2 * piE) * piQ * piL')

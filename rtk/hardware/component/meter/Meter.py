@@ -16,15 +16,6 @@ import locale
 
 try:
     import calculations as _calc
-<<<<<<< HEAD
-    import Configuration as _conf
-    import Utilities as _util
-    from hardware.component.Component import Model as Component
-except ImportError:                         # pragma: no cover
-    import rtk.calculations as _calc
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
-=======
     import Configuration
     import Utilities
     from hardware.component.Component import Model as Component
@@ -32,7 +23,6 @@ except ImportError:                         # pragma: no cover
     import rtk.calculations as _calc
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.Component import Model as Component
 
 __author__ = 'Andrew Rowland'
@@ -42,11 +32,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -58,17 +44,6 @@ class Model(Component):
     The Meter data model contains the attributes and methods of a Meter
     component.  The attributes of an Meter are:
 
-<<<<<<< HEAD
-    :cvar category: default value: 9
-
-    :ivar application: default value: 0
-    :ivar base_hr: default value: 0.0
-    :ivar reason: default value: ""
-    :ivar piE: default value: 0.0
-
-    Hazard Rate Models:
-        # MIL-HDBK-217F, sections 12.3 and 18.1.
-=======
     :cvar int category: the Component category.
 
     :ivar int application: the MIL-HDBK-217FN2 application list index.
@@ -78,28 +53,17 @@ class Model(Component):
 
     Hazard Rate Models:
         # MIL-HDBK-217FN2, sections 12.3 and 18.1.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     category = 9
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize an Meter data model instance.
-=======
         Method to initialize an Meter data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Model, self).__init__()
 
-<<<<<<< HEAD
-        # Initialize public list attributes.
-        self.lst_derate_criteria = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
-
-        # Initialize public scalar attributes.
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -112,7 +76,6 @@ class Model(Component):
         self.lst_derate_criteria = [[0.0, 0.0, 0.0], [0.0, 0.0, 0.0]]
 
         # Define public scalar attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.application = 0                # Application index.
         self.base_hr = 0.0                  # Base hazard rate.
         self.reason = ""                    # Overstress reason.
@@ -120,11 +83,7 @@ class Model(Component):
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Meter data model attributes.
-=======
         Method to set the Meter data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -141,15 +100,6 @@ class Model(Component):
             self.base_hr = float(values[96])
             self.piE = float(values[97])
             self.application = int(values[116])
-<<<<<<< HEAD
-            # TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
-        except IndexError as _err:
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
-=======
 # TODO: Add field to rtk_stress to hold overstress reason.
             self.reason = ''
         except IndexError as _err:
@@ -157,18 +107,13 @@ class Model(Component):
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Meter data model
-=======
         Method to retrieve the current values of the Meter data model
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (base_hr, piE, application, reason)
@@ -182,15 +127,9 @@ class Model(Component):
 
         return _values
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Meter data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Meter data model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -218,12 +157,8 @@ class Model(Component):
                                    self.add_adj_factor) * \
                                   (self.duty_cycle / 100.0) * \
                                   self.mult_adj_factor * self.quantity
-<<<<<<< HEAD
-        self.hazard_rate_active = self.hazard_rate_active / _conf.FRMULT
-=======
         self.hazard_rate_active = self.hazard_rate_active / \
                                   Configuration.FRMULT
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Calculate operating point ratios.
         self.current_ratio = self.operating_current / self.rated_current
@@ -238,20 +173,6 @@ class ElapsedTime(Model):
     The Elapsed Time Meter data model contains the attributes and methods of an
     Elapsed Time Meter component.  The attributes of an Elapsed Time Meter are:
 
-<<<<<<< HEAD
-    :cvar subcategory: default value: 77
-
-    :ivar application: default value: 0
-    :ivar base_hr: default value: 0.0
-    :ivar reason: default value: ""
-    :ivar piE: default value: 0.0
-
-    Hazard Rate Models:
-        # MIL-HDBK-217F, sections 12.3.
-    """
-
-    # MIL-HDK-217F hazard rate calculation variables.
-=======
     :cvar int subcategory: the Meter subcategory.
 
     :ivar piT: the MIL-HDBK-217FN2 temperature stress factor.
@@ -261,7 +182,7 @@ class ElapsedTime(Model):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_lambdab = [20.0, 30.0, 80.0]
     _lst_piE = [1.0, 2.0, 12.0, 7.0, 18.0, 5.0, 8.0, 16.0, 25.0, 26.0, 0.5,
@@ -278,21 +199,11 @@ class ElapsedTime(Model):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize an Elapsed Time Meter data model instance.
-=======
         Method to initialize an Elapsed Time Meter data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(ElapsedTime, self).__init__()
 
-<<<<<<< HEAD
-        # Initialize private list attributes.
-        self._lambdab_count = []
-
-        # Initialize public scalar attributes.
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -305,16 +216,11 @@ class ElapsedTime(Model):
         # Define public list attributes.
 
         # Define public scalar attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.piT = 0.0                      # Temperature stress pi factor.
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Elapsed Time Meter data model attributes.
-=======
         Method to set the Elapsed Time Meter data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -330,30 +236,18 @@ class ElapsedTime(Model):
         try:
             self.piT = float(values[98])
         except IndexError as _err:
-<<<<<<< HEAD
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
-=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Elapsed Time Meter data model
-        attributes.
-=======
         Method to retrieve the current values of the Elapsed Time Meter data
         model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: (piT)
         :rtype: tuple
@@ -365,16 +259,10 @@ class ElapsedTime(Model):
 
         return _values
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Elapsed Time Meter data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Elapsed Time Meter data
         model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -415,11 +303,7 @@ class ElapsedTime(Model):
                 self.piT = 1.0
             self.hazard_rate_model['piT'] = self.piT
 
-<<<<<<< HEAD
-        return Model.calculate(self)
-=======
         return Model.calculate_part(self)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 
 class Panel(Model):
@@ -427,22 +311,6 @@ class Panel(Model):
     The Panel Meter data model contains the attributes and methods of an
     Panel Meter component.  The attributes of an Panel Meter are:
 
-<<<<<<< HEAD
-    :cvar subcategory: default value: 78
-
-    :ivar quality: default value: 0
-    :ivar q_override: default value: 0.0
-    :ivar function: default value: 0
-    :ivar piA: default value: 0.0
-    :ivar piF: default value: 0.0
-    :ivar piQ: default value: 0.0
-
-    Hazard Rate Models:
-        # MIL-HDBK-217F, sections 18.1.
-    """
-
-    # MIL-HDK-217F hazard rate calculation variables.
-=======
     :cvar int subcategory: the Meter subcategory.
 
     :ivar int quality: teh MIL-HDBK-217FN2 quality list index.
@@ -457,7 +325,7 @@ class Panel(Model):
     """
 
     # MIL-HDBK-217FN2 hazard rate calculation variables.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piE = [1.0, 4.0, 25.0, 12.0, 35.0, 28.0, 42.0, 58.0, 73.0, 60.0, 1.1,
                 60.0, 0.0, 0.0]
@@ -472,21 +340,11 @@ class Panel(Model):
 
     def __init__(self):
         """
-<<<<<<< HEAD
-        Initialize a Panel Meter data model instance.
-=======
         Method to initialize a Panel Meter data model instance.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         super(Panel, self).__init__()
 
-<<<<<<< HEAD
-        # Initialize private list attributes.
-        self._lambdab_count = []
-
-        # Initialize public scalar attributes.
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -499,7 +357,6 @@ class Panel(Model):
         # Define public list attributes.
 
         # Define public scalar attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.quality = 0
         self.q_override = 0.0
         self.function = 0
@@ -509,11 +366,7 @@ class Panel(Model):
 
     def set_attributes(self, values):
         """
-<<<<<<< HEAD
-        Sets the Panel Meter data model attributes.
-=======
         Method to set the Panel Meter data model attributes.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param tuple values: tuple of values to assign to the instance
                              attributes.
@@ -534,28 +387,17 @@ class Panel(Model):
             self.quality = int(values[117])
             self.function = int(values[118])
         except IndexError as _err:
-<<<<<<< HEAD
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
-=======
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except(TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
 
     def get_attributes(self):
         """
-<<<<<<< HEAD
-        Retrieves the current values of the Panel Meter data model
-=======
         Method to retrieve the current values of the Panel Meter data model
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         attributes.
 
         :return: (quality, function, q_override, piA, piF, piQ)
@@ -569,15 +411,9 @@ class Panel(Model):
 
         return _values
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Panel Meter data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Panel Meter data model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -624,8 +460,4 @@ class Panel(Model):
             self.piE = self._lst_piE[self.environment_active - 1]
             self.hazard_rate_model['piE'] = self.piE
 
-<<<<<<< HEAD
-        return Model.calculate(self)
-=======
         return Model.calculate_part(self)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e

@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 """
-<<<<<<< HEAD
-#################################################################################
-Hardware.Component.Semiconductor.Transistor Package Unijunction Transistor Module
-#################################################################################
-=======
 ################################################
 Transistor Package Unijunction Transistor Module
 ################################################
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 """
 
 # -*- coding: utf-8 -*-
@@ -22,19 +16,11 @@ import gettext
 import locale
 
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    from hardware.component.semiconductor.Semiconductor import Model as \
-        Semiconductor
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as _conf
-=======
     import Configuration
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 except ImportError:                         # pragma: no cover
     import rtk.Configuration as Configuration
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
 
@@ -45,11 +31,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # Add localization support.
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -92,17 +74,10 @@ class Unijunction(Semiconductor):
         # Initialize public scalar attributes.
         self.base_hr = 0.0083
 
-<<<<<<< HEAD
-    def calculate(self):
-        """
-        Calculates the hazard rate for the Unijunction
-        Transistor data model.
-=======
     def calculate_part(self):
         """
         Method to calculate the hazard rate for the Unijunction Transistor
         data model.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -119,17 +94,6 @@ class Unijunction(Semiconductor):
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
-<<<<<<< HEAD
-            self.piT = exp(-2483.0 * ((1.0 / (self.junction_temperature + 273.0)) - (1.0 / 298.0)))
-            self.hazard_rate_model['piT'] = self.piT
-
-        return Semiconductor.calculate(self)
-
-    def _overstressed(self):
-        """
-        Determines whether the Unijunction Transistor is overstressed based on
-        it's rated values and operating environment.
-=======
             self.piT = exp(-2483.0 * ((1.0 / (self.junction_temperature +
                                               273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
@@ -140,17 +104,13 @@ class Unijunction(Semiconductor):
         """
         Method to determine whether the Unijunction Transistor is overstressed
         based on it's rated values and operating environment.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _reason_num = 1
-<<<<<<< HEAD
-=======
         _reason = ''
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _harsh = True
 
         self.overstress = False
@@ -163,20 +123,6 @@ class Unijunction(Semiconductor):
         if _harsh:
             if self.operating_power > 0.70 * self.rated_power:
                 self.overstress = True
-<<<<<<< HEAD
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 70% rated power.\n"
-                _reason_num += 1
-            if self.operating_voltage > 0.75 * self.rated_voltage:
-                self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 70% rated voltage.\n"
-                _reason_num += 1
-            if self.junction_temperature > 125.0:
-                self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Junction temperature > 125.0C.\n"
-=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 70% rated power.\n"
                 _reason_num += 1
@@ -189,22 +135,10 @@ class Unijunction(Semiconductor):
                 self.overstress = True
                 _reason = _reason + str(_reason_num) + \
                           ". Junction temperature > 125.0C.\n"
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
                 _reason_num += 1
         else:
             if self.operating_power > 0.90 * self.rated_power:
                 self.overstress = True
-<<<<<<< HEAD
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating power > 90% rated power.\n"
-                _reason_num += 1
-            if self.operating_voltage > 0.90 * self.rated_voltage:
-                self.overstress = True
-                self.reason = self.reason + str(_reason_num) + \
-                              ". Operating voltage > 90% rated voltage.\n"
-                _reason_num += 1
-
-=======
                 _reason = _reason + str(_reason_num) + \
                           ". Operating power > 90% rated power.\n"
                 _reason_num += 1
@@ -216,5 +150,4 @@ class Unijunction(Semiconductor):
 
         self.reason = _reason
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False

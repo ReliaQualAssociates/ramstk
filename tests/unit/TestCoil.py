@@ -5,16 +5,10 @@ This is the test class for testing Inductive Coil module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestCoil.py is part of The RTK Project
-#
-# All rights reserved.
-
-=======
 #       tests.unit.TestCoil.py is part of The RTK Project
 #
 # All rights reserved.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -22,10 +16,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.inductor.Coil import Coil
 
 __author__ = 'Andrew Rowland'
@@ -44,12 +34,6 @@ class TestCoilModel(unittest.TestCase):
         Setup the test fixture for the Inductive Coil class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Coil()
 
     @attr(all=True, unit=True)
@@ -224,23 +208,15 @@ class TestCoilModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestCoil) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestCoil) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
         self.DUT.construction = 1
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
-        self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.031)
@@ -250,28 +226,17 @@ class TestCoilModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_low_delta_t(self):
         """
-<<<<<<< HEAD
-        (TestCoil) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestCoil) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
         self.DUT.hazard_rate_type = 2
         self.DUT.quality = 3
-
         self.DUT.specification = 2
         self.DUT.insulation_class = 1
-
         self.DUT.construction = 1
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piC * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -284,28 +249,17 @@ class TestCoilModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_high_delta_t(self):
         """
-<<<<<<< HEAD
-        (TestCoil) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestCoil) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
         self.DUT.hazard_rate_type = 2
         self.DUT.quality = 3
-
         self.DUT.specification = 2
         self.DUT.insulation_class = 2
-
         self.DUT.construction = 1
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piC * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -318,11 +272,7 @@ class TestCoilModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_mil_c_15035(self):
         """
-<<<<<<< HEAD
-        (TestCoil) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestCoil) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -334,12 +284,7 @@ class TestCoilModel(unittest.TestCase):
 
         self.DUT.construction = 1
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piC * piQ * piE')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],

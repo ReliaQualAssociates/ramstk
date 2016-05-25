@@ -5,16 +5,10 @@ This is the test class for testing Fuse module algorithms and models.
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestFuse.py is part of The RTK Project
-#
-# All rights reserved.
-
-=======
 #       tests.unit.TestFuse.py is part of The RTK Project
 #
 # All rights reserved.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -22,10 +16,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.miscellaneous.Fuse import *
 
 __author__ = 'Andrew Rowland'
@@ -44,12 +34,6 @@ class TestFuseModel(unittest.TestCase):
         Setup the test fixture for the Fuse class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Fuse()
 
     @attr(all=True, unit=True)
@@ -65,13 +49,8 @@ class TestFuseModel(unittest.TestCase):
         self.assertEqual(self.DUT.category_id, 0)
 
         # Verify Fuse class was properly initialized.
-<<<<<<< HEAD
-        self.assertEqual(self.DUT.category, 10)
-        self.assertEqual(self.DUT.subcategory, 82)
-=======
         self.assertEqual(self.DUT.category, 6)
         self.assertEqual(self.DUT.subcategory, 3)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.base_hr, 0.01)
         self.assertEqual(self.DUT.piE, 0.0)
 
@@ -199,6 +178,7 @@ class TestFuseModel(unittest.TestCase):
                        0.0, 0,
                        0, 0, 0.0, 30.0, 0.0, 358.0,
                        0.01, 1.1, '')
+
         self.DUT.set_attributes(_in_values)
         _result = self.DUT.get_attributes()
         self.assertEqual(_result, _out_values)
@@ -206,41 +186,25 @@ class TestFuseModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestFuse) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestFuse) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 1
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.01)
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 1.0E-8)
 
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-<<<<<<< HEAD
-        (TestFuse) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestFuse) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.hazard_rate_type = 2
         self.DUT.environment_active = 3
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE')
         self.assertEqual(self.DUT.hazard_rate_model['lambdab'], 0.01)

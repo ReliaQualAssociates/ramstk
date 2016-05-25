@@ -5,16 +5,10 @@ This is the test class for testing IC Socket Connection module algorithms and mo
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       tests.hardware.TestSocket.py is part of The RTK Project
-#
-# All rights reserved.
-
-=======
 #       tests.unit.TestSocket.py is part of The RTK Project
 #
 # All rights reserved.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -22,10 +16,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-<<<<<<< HEAD
-import dao.DAO as _dao
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from hardware.component.connection.Socket import Socket
 
 __author__ = 'Andrew Rowland'
@@ -44,12 +34,6 @@ class TestSocketModel(unittest.TestCase):
         Setup the test fixture for the IC Socket Connection class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/projects/RTKTestDB.rtk'
-        self._dao = _dao(_database)
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         self.DUT = Socket()
 
     @attr(all=True, unit=True)
@@ -224,23 +208,15 @@ class TestSocketModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_count(self):
         """
-<<<<<<< HEAD
-        (TestSocket) calculate should return False on success when calculating MIL-HDBK-217F parts count results
-=======
         (TestSocket) calculate_part should return False on success when calculating MIL-HDBK-217F parts count results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.configuration = 1
         self.DUT.environment_active = 5
         self.DUT.hazard_rate_type = 1
         self.DUT.quality = 1
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
-        self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
+        self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piQ')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.035)
@@ -250,24 +226,14 @@ class TestSocketModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress(self):
         """
-<<<<<<< HEAD
-        (TestSocket) calculate should return False on success when calculating MIL-HDBK-217F parts stress results
-=======
         (TestSocket) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
         self.DUT.hazard_rate_type = 2
-
         self.DUT.n_active_contacts = 20
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piP')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
@@ -279,11 +245,7 @@ class TestSocketModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_calculate_217_stress_no_active_contacts(self):
         """
-<<<<<<< HEAD
-        (TestSocket) calculate should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
-=======
         (TestSocket) calculate_part should return False on success when calculating MIL-HDBK-217F parts stress results with no active contacts
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         self.DUT.environment_active = 2
@@ -291,12 +253,7 @@ class TestSocketModel(unittest.TestCase):
 
         self.DUT.n_active_contacts = 1
 
-<<<<<<< HEAD
-        self.assertFalse(self.DUT.calculate())
-=======
         self.assertFalse(self.DUT.calculate_part())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
-
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piP')
         self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
