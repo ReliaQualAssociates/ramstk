@@ -38,19 +38,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
-=======
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.gui.gtk.Widgets as Widgets
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -60,11 +52,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -76,69 +64,6 @@ class ModuleView(object):
     The Module Book view displays all the Requirements associated with the RTK
     Project in a hierarchical list.  The attributes of a Module Book view are:
 
-<<<<<<< HEAD
-    :ivar _model: the :class:`rtk.requirement.Requirement.Model` data model
-                  that is currently selected.
-    :ivar _stakeholder_model: the :class:`rtk.stakeholder.Stakeholder.Model`
-                              data model that is currently selected.
-    :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View :class:`gtk.TreeView`.
-    :ivar _workbook: the :class:`rtk.requirement.WorkBook.WorkView` associated
-                     with this instance of the Module View.
-    :ivar dtcRequirement: the :class:`rtk.requirement.Requirement.Requirement`
-                          data controller to use for accessing the Requirement
-                          data models.
-    :ivar dtcStakeholder: the :class:`rtk.stakeholder.Stakeholder.Stakeholder`
-                          data controller to use for accessing the Stakeholder
-                          data models.
-    :ivar treeview: the :class:`gtk.TreeView` displaying the list of
-                    Requirements.
-    """
-
-    def __init__(self, controller, rtk_view, position, *args):
-        """
-        Initializes the Module Book view for the Function package.
-
-        :param rtk.requirement.Requirement controller: the instance of the
-                                                       Requirement data
-                                                       controller to use with
-                                                       this view.
-        :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Requirement
-                                      view into.
-        :param int position: the page position in the gtk.Notebook() to
-                             insert the Requirement view.  Pass -1 to add to the
-                             end.
-        :param *args: other user arguments to pass to the Module View.
-        """
-
-        # Initialize private scalar attributes.
-        self._model = None
-        self._stakeholder_model = None
-
-        # initialize public dict attributes.
-        self.dicRequirementTypes = {}
-        self.dicOwners = {}
-
-        # Initialize public scalar attributes.
-        self.dtcRequirement = controller
-        self.dtcStakeholder = args[0][0]
-        self.dtcMatrices = args[0][1]
-        self.site_dao = args[0][2]
-
-        # Create the main Requirement class treeview.
-        (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Requirement', 2,
-                                                    _conf.RTK_COLORS[4],
-                                                    _conf.RTK_COLORS[5])
-# TODO: Move this to RTK.py and create an application-wide dict.
-        # Load the Requirements Type gtk.CellRendererCombo()
-        _query = "SELECT fld_requirement_type_desc, \
-                         fld_requirement_type_code, \
-                         fld_requirement_type_id \
-                  FROM tbl_requirement_type"
-        (_results, _error_code, __) = self.site_dao.execute(_query,
-                                                            commit=False)
-=======
     :ivar _model: the :py:class:`rtk.requirement.Requirement.Model` data model
                   that is currently selected.
     :ivar _stakeholder_model: the :py:class:`rtk.stakeholder.Stakeholder.Model`
@@ -194,24 +119,17 @@ class ModuleView(object):
                                                       _bg_color, _fg_color)
 
         # Load the Requirements Type gtk.CellRendererCombo()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _cell = self.treeview.get_column(
             self._lst_col_order[4]).get_cell_renderers()
         _cellmodel = _cell[0].get_property('model')
         _cellmodel.clear()
         _cellmodel.append([""])
         self.dicRequirementTypes[''] = ["", 0]
-<<<<<<< HEAD
-        for __, _requirement in enumerate(_results):
-            _cellmodel.append([_requirement[0]])
-            self.dicRequirementTypes[_requirement[0]] = [_requirement[1],
-                                                         _requirement[2]]
-=======
+
         # Each _type is [Description, Code, ID]
         for __, _type in enumerate(Configuration.RTK_REQUIREMENT_TYPES):
             _cellmodel.append([_type[0]])
             self.dicRequirementTypes[_type[0]] = [_type[1], _type[2]]
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Load the Priority gtk.CellRendererCombo()
         _cell = self.treeview.get_column(
@@ -221,28 +139,14 @@ class ModuleView(object):
         _cellmodel.append([""])
         for i in range(1, 6):
             _cellmodel.append([str(i)])
-<<<<<<< HEAD
-# TODO: Move this to RTK.py and create an application-wide dict.
-        # Load the Owner gtk.CellRendererCombo()
-        _query = "SELECT fld_group_name, fld_group_id \
-                  FROM tbl_groups \
-                  ORDER BY fld_group_name ASC"
-        (_results, _error_code, __) = self.site_dao.execute(_query,
-                                                            commit=False)
-=======
 
         # Load the Owner gtk.CellRendererCombo()
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _cell = self.treeview.get_column(
             self._lst_col_order[10]).get_cell_renderers()
         _cellmodel = _cell[0].get_property('model')
         _cellmodel.clear()
         _cellmodel.append([""])
-<<<<<<< HEAD
-        for _index, _owner in enumerate(_results):
-=======
         for _index, _owner in enumerate(Configuration.RTK_WORKGROUPS):
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
             _cellmodel.append([_owner[0]])
             self.dicOwners[_owner[0]] = [_owner[1], _index]
 
@@ -257,24 +161,15 @@ class ModuleView(object):
         for i in [2, 4, 5, 6, 7, 8, 10]:
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cell_renderers()
-<<<<<<< HEAD
-            _cell[0].connect('edited', self._on_cell_edited, i,
-                             self.treeview.get_model())
-=======
             self._dic_handler_id[i] = _cell[0].connect('edited',
                                                        self._on_cell_edited, i,
                                                        self.treeview.get_model())
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
-<<<<<<< HEAD
-        _icon = _conf.ICON_DIR + '32x32/requirement.png'
-=======
         _icon = Configuration.ICON_DIR + '32x32/requirement.png'
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -297,24 +192,6 @@ class ModuleView(object):
                                       position=position)
 
         # Create a List View to associate with this Module View.
-<<<<<<< HEAD
-        self.listbook = ListView(rtk_view.listview, self, self.dtcMatrices)
-
-        # Create a Work View to associate with this Module View.
-        self.workbook = WorkView(rtk_view.workview, self)
-
-    def request_load_data(self, dao, revision_id):
-        """
-        Loads the Requirement Module Book view gtk.TreeModel() with requirement
-        information.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        (_requirements,
-         __) = self.dtcRequirement.request_requirements(dao, revision_id)
-=======
         self.listbook = ListView(self)
 
         # Create a Work View to associate with this Module View.
@@ -332,7 +209,6 @@ class ModuleView(object):
 # TODO: Remove dao parameter after converting all modules.
         (_requirements, __) = self._dtc_requirements.request_requirements(
             self.mdcRTK.project_dao, revision_id)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Only load the requirements associated with the selected Revision.
         _requirements = [_r for _r in _requirements if _r[0] == revision_id]
@@ -343,11 +219,7 @@ class ModuleView(object):
         _model.clear()
 
         # Recusively load the Requirement Module View gtk.TreeModel().
-<<<<<<< HEAD
-        self._load_treeview(dao, _top_reqs, _requirements, _model)
-=======
         self._load_treeview(_top_reqs, _requirements, _model)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Select the first row in the gtk.TreeView().
         _row = _model.get_iter_root()
@@ -358,66 +230,38 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-<<<<<<< HEAD
-        #self.listbook.load(revision_id)
-
-        return False
-
-    def _load_treeview(self, dao, parents, requirements, model, row=None):
-=======
         self.listbook.load()
 
         return False
 
     def _load_treeview(self, parents, requirements, model, row=None):
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         Method to recursively load the gtk.TreeModel().  Recursive loading is
         needed to accomodate the hierarchical structure of Requirements.
 
-<<<<<<< HEAD
-        :param rtk.DAO dao: the Data Access Object to pass to the FMEA data
-                            controller.
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param list parents: the list of top-level requirements to load.
         :param list requirements: the complete list of requirements to use for
                                   finding the child requirements for each
                                   parent.
-<<<<<<< HEAD
-        :param gtk.TreeModel model: the Requirement Module View gtk.TreeModel().
-        :keyword gtk.TreeIter row: the parent gtk.TreeIter().
-        """
-# TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
-=======
         :param gtk.TreeModel model: the Requirement Module View
                                     gtk.TreeModel().
         :keyword gtk.TreeIter row: the parent gtk.TreeIter().
         """
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         for _requirement in parents:
             if _requirement[13] == -1:
                 row = None
             _piter = model.append(row, _requirement)
             _parent_id = _requirement[1]
 
-<<<<<<< HEAD
-            self.dtcStakeholder.request_inputs(dao, _requirement[0])
-=======
             self._dtc_stakeholder.request_inputs(self.mdcRTK.project_dao,
                                                  _requirement[0])
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
             # Find the child requirements of the current parent requirement.
             # These # will be the new parent requirements to pass to this
             # method.
             _parents = [_r for _r in requirements if _r[13] == _parent_id]
-<<<<<<< HEAD
-            self._load_treeview(dao, _parents, requirements, model, _piter)
-=======
             self._load_treeview(_parents, requirements, model, _piter)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
@@ -441,18 +285,13 @@ class ModuleView(object):
 
     def _on_button_press(self, treeview, event):
         """
-<<<<<<< HEAD
-        Callback requirement for handling mouse clicks on the Requirement package
-=======
         Callback method for handling mouse clicks on the Requirement package
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         Module Book gtk.TreeView().
 
         :param gtk.TreeView treeview: the Requirement class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
                                     (the important attribute is which mouse
                                     button was clicked).
-
                                     * 1 = left
                                     * 2 = scrollwheel
                                     * 3 = right
@@ -460,7 +299,6 @@ class ModuleView(object):
                                     * 5 = backward
                                     * 8 =
                                     * 9 =
-
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -468,50 +306,26 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
-<<<<<<< HEAD
-            print "Pop-up a menu!"
-=======
-            # TODO: See bug 178
+# TODO: See bug 178
             pass
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         return False
 
     def _on_row_changed(self, treeview, __path, __column):
         """
-<<<<<<< HEAD
-        Callback requirement to handle events for the Requirement package Module Book
-        gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
-        row is activated.
-=======
         Callback method to handle events for the Requirement package Module
         Book gtk.TreeView().  It is called whenever a Module Book
         gtk.TreeView() row is activated.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.TreeView treeview: the Requirement class gtk.TreeView().
         :param str __path: the actived row gtk.TreeView() path.
         :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.
-<<<<<<< HEAD
-        :rtype: boolean
-=======
         :rtype: bool
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         (_model, _row) = treeview.get_selection().get_selected()
 
-<<<<<<< HEAD
-        _requirement_id = _model.get_value(_row, 1)
-        self._model = self.dtcRequirement.dicRequirements[_requirement_id]
-
-        self.workbook.load(self._model)
-
-        return False
-
-    def _on_cell_edited(self, __cell, path, new_text, position, model):
-=======
         if _row is not None:
             _requirement_id = _model.get_value(_row, 1)
             self._model = self._dtc_requirements.dicRequirements[_requirement_id]
@@ -520,16 +334,11 @@ class ModuleView(object):
         return False
 
     def _on_cell_edited(self, cell, path, new_text, position, model):
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
         Callback requirement to handle edits of the Requirement package Module
         Book gtk.Treeview().
 
-<<<<<<< HEAD
-        :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-=======
         :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
@@ -540,11 +349,8 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-<<<<<<< HEAD
-=======
 # TODO: Refactor _on_cell_edited; current McCabe Complexity Metrix = 11.
         cell.handler_block(self._dic_handler_id[position])
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Update the gtk.TreeModel() with the new value.
         _type = gobject.type_name(model.get_column_type(position))
@@ -574,9 +380,6 @@ class ModuleView(object):
 
         self.workbook.update()
 
-<<<<<<< HEAD
-=======
         cell.handler_unblock(self._dic_handler_id[position])
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         return False

@@ -18,7 +18,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # -*- coding: utf-8 -*-
 #
 #       rtk,requirement.ListBook.py is part of the RTK Project
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 #
 # All rights reserved.
 
@@ -30,7 +30,7 @@ import sys
 import gettext
 import locale
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 # Modules required for the GUI.
 try:
     import pygtk
@@ -83,7 +83,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -146,7 +146,7 @@ class ListView(gtk.VBox):
 
         :param modulebook: the :py:class:`rtk.requirement.ModuleBook` to
                            associate with this List Book.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         """
 
         gtk.VBox.__init__(self)
@@ -213,7 +213,7 @@ class ListView(gtk.VBox):
         self.tvwIncidentsList = gtk.TreeView()
 
         # Put it all together.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         _notebook = self._create_notebook()
         self.pack_start(_notebook)
 
@@ -225,7 +225,7 @@ class ListView(gtk.VBox):
         Creates the Requirement class gtk.Notebook() for the List View.
 =======
         Method to create the Requirement class List View gtk.Notebook().
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 
         :return: _notebook
         :rtype: gtk.Notebook
@@ -246,7 +246,7 @@ class ListView(gtk.VBox):
         elif Configuration.TABPOS[1] == 'right':
             _notebook.set_tab_pos(gtk.POS_RIGHT)
         elif Configuration.TABPOS[1] == 'top':
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
             _notebook.set_tab_pos(gtk.POS_TOP)
         else:
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
@@ -277,7 +277,7 @@ class ListView(gtk.VBox):
             self.btnSaveRqmtVal.connect('clicked',
                                         self._on_button_clicked, 5))
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         return _notebook
 
     def _create_hardware_matrix_page(self, notebook):
@@ -340,7 +340,7 @@ class ListView(gtk.VBox):
                                                        u"Requirement, if at "
                                                        u"all."))
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         _label = gtk.Label()
         _label.set_markup(_(u"<span weight='bold'>Hardware\nMatrix</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -354,7 +354,7 @@ class ListView(gtk.VBox):
         notebook.insert_page(_frame, tab_label=_label, position=-1)
 =======
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 
         return False
 
@@ -418,7 +418,7 @@ class ListView(gtk.VBox):
                                                        u"Requirement, if at "
                                                        u"all."))
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         _label = gtk.Label()
         _label.set_markup(_(u"<span weight='bold'>Software\nMatrix</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -432,7 +432,7 @@ class ListView(gtk.VBox):
         notebook.insert_page(_frame, tab_label=_label, position=-1)
 =======
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 
         return False
 
@@ -497,7 +497,7 @@ class ListView(gtk.VBox):
                                                          u"Requirement, if at "
                                                          u"all."))
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         _label = gtk.Label()
         _label.set_markup(_(u"<span weight='bold'>Validation\nMatrix</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -526,7 +526,7 @@ class ListView(gtk.VBox):
         """
         Method to load the Requirement List Book.
 
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -933,6 +933,6 @@ class ListView(gtk.VBox):
         self._dtc_matrices.save_matrix(index)
 
         button.handler_unblock(self._lst_handler_id[index])
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 
         return False

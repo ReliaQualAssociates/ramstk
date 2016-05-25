@@ -46,7 +46,7 @@ except ImportError:
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -63,7 +63,7 @@ __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -176,7 +176,7 @@ class AddRequirement(gtk.Assistant):
         _results = [['1'], ['2'], ['3'], ['4'], ['5']]
         _model = self.cmbPriority.get_model()
         Widgets.load_combo(self.cmbPriority, _results)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
@@ -475,7 +475,7 @@ class AddRequirement(gtk.Assistant):
         return _code
 
     def _cancel(self, __assistant):
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         """
         Method to destroy the assistant when the 'Cancel' button is
         pressed.
@@ -485,7 +485,7 @@ class AddRequirement(gtk.Assistant):
 =======
         :param gtk.Assistant __assistant: the current instance of the
                                           assistant.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         """
 
         self.destroy()
