@@ -5,31 +5,17 @@ Requirement Package List Book View
 ##################################
 """
 
-<<<<<<< HEAD
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-# -*- coding: utf-8 -*-
-#
-#       ListBook.py is part of the RTK Project
-=======
 # -*- coding: utf-8 -*-
 #
 #       rtk,requirement.ListBook.py is part of the RTK Project
-
 #
 # All rights reserved.
 
 import sys
 
-<<<<<<< HEAD
-=======
 # Import modules for localization support.
 import gettext
 import locale
-
 
 # Modules required for the GUI.
 try:
@@ -50,22 +36,6 @@ try:
 except ImportError:
     sys.exit(1)
 
-<<<<<<< HEAD
-# Import modules for localization support.
-import gettext
-import locale
-
-# Import other RTK modules.
-try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
-
-try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
 # Import other RTK modules.
 try:
     import Configuration
@@ -83,7 +53,6 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -95,30 +64,6 @@ class ListView(gtk.VBox):
     The List Book view displays all the matrices and lists associated with the
     Requirement Class.  The attributes of a List Book view are:
 
-<<<<<<< HEAD
-    :ivar _listview:
-    :ivar _modulebook:
-    :ivar _dtc_matrices:
-    :ivar _lst_matrix_icons: list of icons to use in the various Matrix views.
-    :ivar tvwHardwareMatrix:
-    :ivar tvwSoftwareMatrix:
-    :ivar tvwTestMatrix:
-    :ivar tvwPartsList:
-    :ivar tvwIncidentsList:
-    """
-
-    def __init__(self, listview, modulebook, matrices):
-        """
-        Initializes the Work Book view for the Requirement package.
-
-        :param rtk.gui.gtk.mwi.ListView listview: the List View container to
-                                                  insert this Work Book into.
-        :param rtk.requirement.ModuleBook: the Requirement Module Book to
-                                           associate with this List Book.
-        :param rtk.datamodels.matrix.Matrix matrices: the Matrix data
-                                                      controller to use with
-                                                      this view.
-=======
     :ivar _dtc_matrices: the :py:class:`rtk.datamodels.Matrix.Matrix` data
                          controller instance.
     :ivar _lst_handler_id: list containing the signal handler ID's for each of
@@ -146,38 +91,10 @@ class ListView(gtk.VBox):
 
         :param modulebook: the :py:class:`rtk.requirement.ModuleBook` to
                            associate with this List Book.
-
         """
 
         gtk.VBox.__init__(self)
 
-<<<<<<< HEAD
-        # Initialize private list attributes.
-        _icon = _conf.ICON_DIR + '32x32/none.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self._lst_matrix_icons = [_icon]
-        _icon = _conf.ICON_DIR + '32x32/partial.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self._lst_matrix_icons.append(_icon)
-        _icon = _conf.ICON_DIR + '32x32/complete.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self._lst_matrix_icons.append(_icon)
-
-        # Initialize private scalar attributes.
-        self._listview = listview
-        self._modulebook = modulebook
-        self._dtc_matrices = matrices
-
-        # Validation Matrix page widgets.
-        self.tvwHardwareMatrix = gtk.TreeView()
-        self.tvwSoftwareMatrix = gtk.TreeView()
-        self.tvwValidationMatrix = gtk.TreeView()
-
-        # Put it all together.
-        #_toolbar = self._create_toolbar()
-        #self.pack_start(_toolbar, expand=False)
-
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -213,7 +130,6 @@ class ListView(gtk.VBox):
         self.tvwIncidentsList = gtk.TreeView()
 
         # Put it all together.
-
         _notebook = self._create_notebook()
         self.pack_start(_notebook)
 
@@ -221,11 +137,7 @@ class ListView(gtk.VBox):
 
     def _create_notebook(self):
         """
-<<<<<<< HEAD
-        Creates the Requirement class gtk.Notebook() for the List View.
-=======
         Method to create the Requirement class List View gtk.Notebook().
-
 
         :return: _notebook
         :rtype: gtk.Notebook
@@ -234,13 +146,6 @@ class ListView(gtk.VBox):
         _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
-<<<<<<< HEAD
-        if _conf.TABPOS[1] == 'left':
-            _notebook.set_tab_pos(gtk.POS_LEFT)
-        elif _conf.TABPOS[1] == 'right':
-            _notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif _conf.TABPOS[1] == 'top':
-=======
         if Configuration.TABPOS[1] == 'left':
             _notebook.set_tab_pos(gtk.POS_LEFT)
         elif Configuration.TABPOS[1] == 'right':
@@ -255,8 +160,6 @@ class ListView(gtk.VBox):
         self._create_software_matrix_page(_notebook)
         self._create_validation_matrix_page(_notebook)
 
-<<<<<<< HEAD
-=======
         # Connect widget signals to callback methods.  We do this here rather
         # than in each method so the _lst_handler_id index is the same as the
         # dicMatrix key for each Matrix.
@@ -266,7 +169,6 @@ class ListView(gtk.VBox):
             self.mtxSoftware.connect('changed', self._on_matrix_changed, 1))
         self._lst_handler_id.append(
             self.mtxValidation.connect('changed', self._on_matrix_changed, 2))
-
         self._lst_handler_id.append(
             self.btnSaveRqmtHard.connect('clicked',
                                          self._on_button_clicked, 3))
@@ -277,29 +179,10 @@ class ListView(gtk.VBox):
             self.btnSaveRqmtVal.connect('clicked',
                                         self._on_button_clicked, 5))
 
-
         return _notebook
 
     def _create_hardware_matrix_page(self, notebook):
         """
-<<<<<<< HEAD
-        Creates the requirement-hardware matrix page in the List View.
-
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        # Create the Validation-Requirement matrix.
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwHardwareMatrix)
-
-        _frame = _widg.make_frame()
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-=======
         Method to create the Requirement/Hardware matrix page in the List View.
 
         :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
@@ -340,7 +223,6 @@ class ListView(gtk.VBox):
                                                        u"Requirement, if at "
                                                        u"all."))
 
-
         _label = gtk.Label()
         _label.set_markup(_(u"<span weight='bold'>Hardware\nMatrix</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -350,34 +232,12 @@ class ListView(gtk.VBox):
                                   u"between system requirements and hardware "
                                   u"items."))
 
-<<<<<<< HEAD
-        notebook.insert_page(_frame, tab_label=_label, position=-1)
-=======
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
-
 
         return False
 
     def _create_software_matrix_page(self, notebook):
         """
-<<<<<<< HEAD
-        Creates the requirement-software matrix page in the List View.
-
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        # Create the Parts list.
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwSoftwareMatrix)
-
-        _frame = _widg.make_frame()
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-=======
         Method to create the Requirement/Software matrix page in the List View.
 
         :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
@@ -418,7 +278,6 @@ class ListView(gtk.VBox):
                                                        u"Requirement, if at "
                                                        u"all."))
 
-
         _label = gtk.Label()
         _label.set_markup(_(u"<span weight='bold'>Software\nMatrix</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -428,34 +287,12 @@ class ListView(gtk.VBox):
                                   u"between system requirements and system "
                                   u"software items."))
 
-<<<<<<< HEAD
-        notebook.insert_page(_frame, tab_label=_label, position=-1)
-=======
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
-
 
         return False
 
     def _create_validation_matrix_page(self, notebook):
         """
-<<<<<<< HEAD
-        Creates the requirement-validation matrix page in the List View.
-
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
-        :return: False if successful or True if an error is encountered.
-        :rtype: boolean
-        """
-
-        # Create the Validation-Requirement matrix.
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add(self.tvwValidationMatrix)
-
-        _frame = _widg.make_frame()
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-=======
         Method to create the Requirement/Validation matrix page in the List
         View.
 
@@ -497,7 +334,6 @@ class ListView(gtk.VBox):
                                                          u"Requirement, if at "
                                                          u"all."))
 
-
         _label = gtk.Label()
         _label.set_markup(_(u"<span weight='bold'>Validation\nMatrix</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
@@ -507,17 +343,6 @@ class ListView(gtk.VBox):
                                   u"between system requirements and "
                                   u"validation tasks."))
 
-<<<<<<< HEAD
-        notebook.insert_page(_frame, tab_label=_label, position=-1)
-
-        return False
-
-    def load(self, revision_id):
-        """
-        Loads the Requirement List Book.
-
-        :param int revision_id: the Revision ID to load the List Book for.
-=======
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
         return False
@@ -526,169 +351,10 @@ class ListView(gtk.VBox):
         """
         Method to load the Requirement List Book.
 
-
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-<<<<<<< HEAD
-        self._load_hardware_matrix_page(revision_id)
-        self._load_software_matrix_page(revision_id)
-        self._load_validation_matrix_page(revision_id)
-
-        return False
-
-    def _load_hardware_matrix_page(self, revision_id):
-        """
-        Loads the Hardware-Requirement matrix page.
-
-        :param int revision_id: the Revision ID to load the Hardware-Requirement
-                                matrix for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-# TODO: Update query when hardware table exists in database.
-        _query = "SELECT fld_matrix_id, fld_row_id, fld_col_id, fld_value \
-                  FROM rtk_matrices \
-                  WHERE fld_revision_id={0:d} \
-                  AND fld_matrix_type=0".format(revision_id)
-
-        self._dtc_matrices.request_matrix(revision_id, _query, 0)
-        _rows = self._dtc_matrices.request_rows(revision_id, 0)
-        _n_row = len(_rows)
-        try:
-            _n_col = len(_rows[0])
-        except KeyError:
-            _n_col = 0
-
-        for i in range(_n_col):
-            _column = gtk.TreeViewColumn("Column {0:d}".format(i))
-
-            _cell = gtk.CellRendererPixbuf()
-            _cell.set_property('xalign', 0.5)
-            _cell.set_property('yalign', 0.5)
-            #_cell.connect('edited', edit_tree, int(position[i].text), model)
-
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, pixbuf=i)
-
-            _column.set_visible(1)
-            self.tvwHardwareMatrix.append_column(_column)
-
-        try:
-            gobject_types = [gtk.gdk.Pixbuf] * (_n_col)
-            _model = gtk.TreeStore(*gobject_types)
-            self.tvwHardwareMatrix.set_model(_model)
-            for i in range(_n_row):
-                _data = []
-                for j in range(_n_col):
-                    _data.append(self._lst_matrix_icons[_rows[i][j]])
-                _model.append(None, _data)
-        except TypeError:
-            pass
-
-        return False
-
-    def _load_software_matrix_page(self, revision_id):
-        """
-        Loads the Software-Requirement matrix page.
-
-        :param int revision_id: the Revision ID to load the Software-Requirement
-                                matrix for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-# TODO: Update query when software table exists in database.
-        _query = "SELECT fld_matrix_id, fld_row_id, fld_col_id, fld_value \
-                  FROM rtk_matrices \
-                  WHERE fld_revision_id={0:d} \
-                  AND fld_matrix_type=1".format(revision_id)
-
-        self._dtc_matrices.request_matrix(revision_id, _query, 1)
-        _rows = self._dtc_matrices.request_rows(revision_id, 1)
-        _n_row = len(_rows)
-        try:
-            _n_col = len(_rows[0])
-        except KeyError:
-            _n_col = 0
-
-        for i in range(_n_col):
-            _column = gtk.TreeViewColumn("Column {0:d}".format(i))
-
-            _cell = gtk.CellRendererPixbuf()
-            _cell.set_property('xalign', 0.5)
-            _cell.set_property('yalign', 0.5)
-            #_cell.connect('edited', edit_tree, int(position[i].text), model)
-
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, pixbuf=i)
-
-            _column.set_visible(1)
-            self.tvwHardwareMatrix.append_column(_column)
-
-        try:
-            gobject_types = [gtk.gdk.Pixbuf] * (_n_col)
-            _model = gtk.TreeStore(*gobject_types)
-            self.tvwHardwareMatrix.set_model(_model)
-            for i in range(_n_row):
-                _data = []
-                for j in range(_n_col):
-                    _data.append(self._lst_matrix_icons[_rows[i][j]])
-                _model.append(None, _data)
-        except TypeError:
-            pass
-
-        return False
-
-    def _load_validation_matrix_page(self, revision_id):
-        """
-        Loads the Testing-Requirement matrix page.
-
-        :param int revision_id: the Revision ID to load the Testing-Requirement
-                                matrix for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-# TODO: Update query when validation table exists in database.
-        _query = "SELECT fld_matrix_id, fld_row_id, fld_col_id, fld_value \
-                  FROM rtk_matrices \
-                  WHERE fld_revision_id={0:d} \
-                  AND fld_matrix_type=2".format(revision_id)
-
-        self._dtc_matrices.request_matrix(revision_id, _query, 1)
-        _rows = self._dtc_matrices.request_rows(revision_id, 1)
-        _n_row = len(_rows)
-        try:
-            _n_col = len(_rows[0])
-        except KeyError:
-            _n_col = 0
-
-        for i in range(_n_col):
-            _column = gtk.TreeViewColumn("Column {0:d}".format(i))
-
-            _cell = gtk.CellRendererPixbuf()
-            _cell.set_property('xalign', 0.5)
-            _cell.set_property('yalign', 0.5)
-            #_cell.connect('edited', edit_tree, int(position[i].text), model)
-
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, pixbuf=i)
-
-            _column.set_visible(1)
-            self.tvwHardwareMatrix.append_column(_column)
-
-        try:
-            gobject_types = [gtk.gdk.Pixbuf] * (_n_col)
-            _model = gtk.TreeStore(*gobject_types)
-            self.tvwHardwareMatrix.set_model(_model)
-            for i in range(_n_row):
-                _data = []
-                for j in range(_n_col):
-                    _data.append(self._lst_matrix_icons[_rows[i][j]])
-                _model.append(None, _data)
-        except TypeError:
-            pass
-=======
         _matrix_ids = self._dtc_matrices.dicMatrices.keys()
 
         for _index, _matrix_id in enumerate(_matrix_ids):
