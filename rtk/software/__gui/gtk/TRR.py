@@ -7,11 +7,7 @@ Software Package Risk Analysis Test Readiness Review Specific Work Book View
 
 # -*- coding: utf-8 -*-
 #
-<<<<<<< HEAD
-#       rtk.software.gui.gtk.TRR.py is part of The RTK Project
-=======
 #       rtk.software.__gui.gtk.TRR.py is part of The RTK Project
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 #
 # All rights reserved.
 
@@ -38,19 +34,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-<<<<<<< HEAD
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
-except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
-=======
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.gui.gtk.Widgets as Widgets
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -58,11 +46,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-<<<<<<< HEAD
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
-=======
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -75,13 +59,9 @@ class CSCIRiskAnalysis(gtk.VPaned):
     Readiness Review phase for CSCI.  The attributes of a TRR Work Book view
     are:
 
-<<<<<<< HEAD
-    :ivar _lst_handler_id: default value: []
-=======
     :ivar list _lst_handler_id: the list of gtk.Widget() signal handler IDs.
     :ivar _software_model: the :py:class:`rtk.software.Software.Model` to
                            display.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -92,28 +72,6 @@ class CSCIRiskAnalysis(gtk.VPaned):
 
         gtk.VPaned.__init__(self)
 
-<<<<<<< HEAD
-        # Initialize private list attributes.
-        self._lst_handler_id = []
-
-        # Initialize private scalar attributes.
-        self._software_model = None
-
-        # CSCI-level quantity from WS8D and WS9D (4 questions)
-        self.txtTRRLTCMQ1 = _widg.make_entry(width=50)
-        self.txtTRRLTCMQ2 = _widg.make_entry(width=50)
-        self.txtTRRLTCMQ3 = _widg.make_entry(width=50)
-        self.txtTRRLTCMQ4 = _widg.make_entry(width=50)
-
-    def create_risk_analysis_page(self, notebook):
-        """
-        Method to create the development environment risk analysis page and add
-        it to the risk analysis gtk.Notebook().
-
-        :param gtk.Notebook notebook: the gtk.Notebook() instance that will
-                                      hold the development environment analysis
-                                      questions.
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -156,7 +114,6 @@ class CSCIRiskAnalysis(gtk.VPaned):
                                       hold the TRR risk analysis questions.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -170,13 +127,8 @@ class CSCIRiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdcscilt)
 
-<<<<<<< HEAD
-        _frame = _widg.make_frame(_(u"Software Module Language Type, "
-                                    u"Complexity, &amp; Modularity"))
-=======
         _frame = Widgets.make_frame(_(u"Software Module Language Type, "
                                       u"Complexity, &amp; Modularity"))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -194,13 +146,8 @@ class CSCIRiskAnalysis(gtk.VPaned):
                      u"module:"),
                    _(u"4. Total higher order language lines of code in this "
                      u"module:")]
-<<<<<<< HEAD
-        (_x_pos, _y_pos) = _widg.make_labels(_labels, _fxdcscilt,
-                                             5, 5, wrap=False)
-=======
         (_x_pos,
          _y_pos) = Widgets.make_labels(_labels, _fxdcscilt, 5, 5, wrap=False)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos += 125
 
         _fxdcscilt.put(self.txtTRRLTCMQ1, _x_pos, _y_pos[0])
@@ -208,22 +155,6 @@ class CSCIRiskAnalysis(gtk.VPaned):
         _fxdcscilt.put(self.txtTRRLTCMQ3, _x_pos, _y_pos[2])
         _fxdcscilt.put(self.txtTRRLTCMQ4, _x_pos, _y_pos[3])
 
-<<<<<<< HEAD
-        self._lst_handler_id.append(
-            self.txtTRRLTCMQ1.connect('focus-out-event',
-                                      self._on_focus_out, 0))
-        self._lst_handler_id.append(
-            self.txtTRRLTCMQ2.connect('focus-out-event',
-                                      self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtTRRLTCMQ3.connect('focus-out-event',
-                                      self._on_focus_out, 2))
-        self._lst_handler_id.append(
-            self.txtTRRLTCMQ4.connect('focus-out-event',
-                                      self._on_focus_out, 3))
-
-=======
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _(u"Test\nReadiness\nReview") +
@@ -242,13 +173,8 @@ class CSCIRiskAnalysis(gtk.VPaned):
         """
         Method to load the Test Readiness Review Risk Analysis answers.
 
-<<<<<<< HEAD
-        :param `rtk.software.Software` model: the Software data model to load
-                                              the gtk.ToggleButton() from.
-=======
         :param model: the :py:class:`rtk.software.Software.Model` data model to
                       load the gtk.ToggleButton() from.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -295,13 +221,9 @@ class UnitRiskAnalysis(gtk.VPaned):
     Readiness Review phase for Units.  The attributes of a TRR Work Book view
     are:
 
-<<<<<<< HEAD
-    :ivar _lst_handler_id: default value: []
-=======
     :ivar list _lst_handler_id: the list of gtk.Widget() signal handler IDs.
     :ivar _software_model: the :py:class:`rtk.software.Software.Model` to
                            display.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
     """
 
     def __init__(self):
@@ -312,45 +234,6 @@ class UnitRiskAnalysis(gtk.VPaned):
 
         gtk.VPaned.__init__(self)
 
-<<<<<<< HEAD
-        # Initialize private list attributes.
-        self._lst_handler_id = []
-
-        # Initialize private scalar attributes.
-        self._software_model = None
-
-        # Unit-level Yes/No from WS2C (2 questions)
-        self.chkTRRAMQ1 = _widg.make_check_button()
-        self.chkTRRAMQ2 = _widg.make_check_button()
-
-        # Unit-level Yes/No from WS4C (14 questions)
-        self.chkTRRQCQ1 = _widg.make_check_button()
-        self.chkTRRQCQ2 = _widg.make_check_button()
-        self.chkTRRQCQ3 = _widg.make_check_button()
-        self.chkTRRQCQ4 = _widg.make_check_button()
-        self.chkTRRQCQ5 = _widg.make_check_button()
-        self.chkTRRQCQ6 = _widg.make_check_button()
-        self.chkTRRQCQ7 = _widg.make_check_button()
-        self.chkTRRQCQ8 = _widg.make_check_button()
-        self.chkTRRQCQ9 = _widg.make_check_button()
-        self.chkTRRQCQ10 = _widg.make_check_button()
-        self.chkTRRQCQ11 = _widg.make_check_button()
-        self.chkTRRQCQ12 = _widg.make_check_button()
-        self.chkTRRQCQ13 = _widg.make_check_button()
-        self.chkTRRQCQ14 = _widg.make_check_button()
-
-        # Unit-level Yes/No from WS8D (3 questions)
-        self.txtTRRLTCMQ1 = _widg.make_entry(width=50)
-        self.txtTRRLTCMQ2 = _widg.make_entry(width=50)
-        self.txtTRRLTCMQ3 = _widg.make_entry(width=50)
-        self.txtLTCMQ4 = _widg.make_entry(width=50)
-        self.txtLTCMQ5 = _widg.make_entry(width=50)
-
-    def create_risk_analysis_page(self, notebook):
-        """
-        Method to create the TRR risk analysis page and add it to the risk
-        analysis gtk.Notebook().
-=======
         # Define private dictionary attributes.
 
         # Define private list attributes.
@@ -395,16 +278,12 @@ class UnitRiskAnalysis(gtk.VPaned):
         """
         Method to create the Test Readiness Review risk analysis page and add
         it to the risk analysis gtk.Notebook().
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         :param gtk.Notebook notebook: the gtk.Notebook() instance that will
                                       hold the development environment analysis
                                       questions.
-<<<<<<< HEAD
-=======
         :return: False if successful or True if an error is encountered.
         :rtype: bool
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -417,13 +296,8 @@ class UnitRiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdunitlt)
 
-<<<<<<< HEAD
-        _frame = _widg.make_frame(_(u"Software Unit Language Type, "
-                                    u"Complexity, &amp; Modularity"))
-=======
         _frame = Widgets.make_frame(_(u"Software Unit Language Type, "
                                       u"Complexity, &amp; Modularity"))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -435,11 +309,7 @@ class UnitRiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdunitqc)
 
-<<<<<<< HEAD
-        _frame = _widg.make_frame(_(u"Software Unit Quality Control"))
-=======
         _frame = Widgets.make_frame(_(u"Software Unit Quality Control"))
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -460,13 +330,8 @@ class UnitRiskAnalysis(gtk.VPaned):
                      u"this unit:"),
                    _(u"5. Number of unconditional branching statements in "
                      u"this unit:")]
-<<<<<<< HEAD
-        (_x_pos, _y_pos1) = _widg.make_labels(_labels, _fxdunitlt,
-                                              5, 5, wrap=False)
-=======
         (_x_pos,
          _y_pos1) = Widgets.make_labels(_labels, _fxdunitlt, 5, 5, wrap=False)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
 
         # Create the quality control and anomaly management risk pane for
         # the unit.
@@ -504,13 +369,8 @@ class UnitRiskAnalysis(gtk.VPaned):
                      u"standard."),
                    _(u"16. All references to the same data in this unit "
                      u"use a single, unique name.")]
-<<<<<<< HEAD
-        (_x_pos2, _y_pos2) = _widg.make_labels(_labels, _fxdunitqc,
-                                               5, 5, wrap=False)
-=======
         (_x_pos2,
          _y_pos2) = Widgets.make_labels(_labels, _fxdunitqc, 5, 5, wrap=False)
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         _x_pos = max(_x_pos, _x_pos2) + 125
 
         _fxdunitlt.put(self.txtTRRLTCMQ1, _x_pos, _y_pos1[0])
@@ -549,7 +409,6 @@ class UnitRiskAnalysis(gtk.VPaned):
             self.txtLTCMQ4.connect('focus-out-event', self._on_focus_out, 3))
         self._lst_handler_id.append(
             self.txtLTCMQ5.connect('focus-out-event', self._on_focus_out, 4))
-
         self._lst_handler_id.append(
             self.chkTRRAMQ1.connect('toggled', self._on_toggled, 5))
         self._lst_handler_id.append(
@@ -601,13 +460,8 @@ class UnitRiskAnalysis(gtk.VPaned):
         """
         Method to load the Test Readiness Review Risk Analysis answers.
 
-<<<<<<< HEAD
-        :param `rtk.software.Software` model: the Software data model to load
-                                              the gtk.ToggleButton() from.
-=======
         :param model: the :py:class:`rtk.software.Software.Model` data model to
                       load the gtk.ToggleButton() from.
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

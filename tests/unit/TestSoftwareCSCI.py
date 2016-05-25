@@ -36,11 +36,8 @@ class TestCSCIModel(unittest.TestCase):
         Setup the test fixture for the CSCI class.
         """
 
-<<<<<<< HEAD
-        _database = '/home/andrew/Analyses/RTK/RTKTestDB.rtk'
-=======
         _database = '/tmp/tempdb.rtk'
->>>>>>> 98978f0b719800855ef5f1cfd5ce703a5e45632e
+
         self._dao = _dao(_database)
 
         self.DUT = Model()
