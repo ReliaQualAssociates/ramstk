@@ -160,21 +160,19 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
 
-    def request_load_data(self, dao, revision_id):
+    def request_load_data(self):
         """
         Method to load the Testing Module Book view gtk.TreeModel() with
         testing information.
 
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` object used to communicate
-                    with the RTK Project database.
-        :param int revision_id: the ID of the revision to load testing data
-                                for.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
 # TODO: Consider re-writing request_load_data; current McCabe Complexity metric = 10.
         # Retrieve all the development program tests.
-        (_tests, __) = self.mdcRTK.dtcTesting.request_tests(dao, revision_id)
+        (_tests,
+         __) = self.mdcRTK.dtcTesting.request_tests(self.mdcRTK.project_dao,
+                                                    self.mdcRTK.revision_id)
 
         # Clear the Testing Module View gtk.TreeModel().
         _model = self.treeview.get_model()
@@ -190,7 +188,8 @@ class ModuleView(object):
                 _icon = Configuration.ICON_DIR + '32x32/ess.png'
             elif _test[5] == 4:
                 _icon = Configuration.ICON_DIR + '32x32/growth.png'
-                self.mdcRTK.dtcGrowth.request_tests(dao, _test)
+                self.mdcRTK.dtcGrowth.request_tests(self.mdcRTK.project_dao,
+                                                    _test)
             elif _test[5] == 5:
                 _icon = Configuration.ICON_DIR + '32x32/demonstration.png'
             elif _test[5] == 6:

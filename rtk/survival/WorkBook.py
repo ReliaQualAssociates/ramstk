@@ -706,12 +706,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         if index == 0:
             self._mdcRTK.dtcSurvival.add_survival(self._model.revision_id)
-            self._modulebook.request_load_data(self._mdcRTK.project_dao,
-                                               self._model.revision_id)
+            self._modulebook.request_load_data()
         elif index == 1:
             self._mdcRTK.dtcSurvival.delete_survival(self._model.survival_id)
-            self._modulebook.request_load_data(self._mdcRTK.project_dao,
-                                               self._model.revision_id)
+            self._modulebook.request_load_data()
         elif index == 2:
             _survival_id = self._model.survival_id
             if self._mdcRTK.dtcSurvival.request_calculate(_survival_id):

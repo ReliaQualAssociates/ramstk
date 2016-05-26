@@ -198,22 +198,19 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
 
-    def request_load_data(self, dao, revision_id):
+    def request_load_data(self):
         """
         Method to load the Validation Module Book view gtk.TreeModel() with
         Validation task information.
 
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` object used to communicate
-                    with the RTK Project database.
-        :param int revision_id: the ID of the revision to load validation data
-                                for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         # Retrieve all the development program Validation tasks.
         (_tasks,
-         __) = self.mdcRTK.dtcValidation.request_tasks(dao, revision_id)
+         __) = self.mdcRTK.dtcValidation.request_tasks(self.mdcRTK.project_dao,
+                                                       self.mdcRTK.revision_id)
 
         # Clear the Validation Module View gtk.TreeModel().
         _model = self.treeview.get_model()
@@ -238,7 +235,7 @@ class ModuleView(object):
             _column = self.treeview.get_column(0)
             self.treeview.row_activated(_path, _column)
 
-        self.mdcRTK.dtcValidation.request_status(revision_id)
+        self.mdcRTK.dtcValidation.request_status(self.mdcRTK.revision_id)
 
         return False
 

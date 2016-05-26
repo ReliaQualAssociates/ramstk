@@ -1531,9 +1531,7 @@ class WorkView(gtk.VBox):
                     self.dtcMatrices.delete_row(_matrix_id, _row_id)
 
             # Refresh Module Book view.
-            self._modulebook.request_load_data(
-                self._modulebook.mdcRTK.project_dao,
-                self._rqmt_model.revision_id)
+            self._modulebook.request_load_data()
 
         return _return
 

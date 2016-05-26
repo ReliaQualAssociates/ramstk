@@ -197,21 +197,21 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
 
-    def request_load_data(self, dao, revision_id):
+    def request_load_data(self):
         """
         Method to load the Requirement Module Book view gtk.TreeModel() with
         Requirement information.
 
-        :param int revision_id: the ID of the Revision to load the Functions.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Remove dao parameter after converting all modules.
+
         (_requirements, __) = self._dtc_requirements.request_requirements(
-            self.mdcRTK.project_dao, revision_id)
+            self.mdcRTK.project_dao, self.mdcRTK.revision_id)
 
         # Only load the requirements associated with the selected Revision.
-        _requirements = [_r for _r in _requirements if _r[0] == revision_id]
+        _requirements = [_r for _r in _requirements
+                         if _r[0] == self.mdcRTK.revision_id]
         _top_reqs = [_r for _r in _requirements if _r[13] == -1]
 
         # Clear the Requirement Module View gtk.TreeModel().

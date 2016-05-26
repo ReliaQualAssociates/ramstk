@@ -165,19 +165,18 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
 
-    def request_load_data(self, dao, revision_id):
+    def request_load_data(self):
         """
         Method to load the Function Module Book view gtk.TreeModel() with
         Function information.
 
-        :param int revision_id: the ID of the Revision to load the Functions.
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Remove dao parameter after converting all modules.
+
         (_functions,
          __) = self._dtc_function.request_functions(self.mdcRTK.project_dao,
-                                                    revision_id)
+                                                    self.mdcRTK.revision_id)
 
         # Find the list of top level Functions.
         _top_funcs = [_f for _f in _functions if _f[19] == -1]

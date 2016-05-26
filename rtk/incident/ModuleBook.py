@@ -104,7 +104,6 @@ class ModuleView(object):
 
         # Define private scalar attributes.
         self._model = None
-        self._dao = None
 
         # Define public dictionary attributes.
 
@@ -232,24 +231,19 @@ class ModuleView(object):
         # Create a List View to associate with this Module View.
         self.listbook = ListView(self)
 
-    def request_load_data(self, dao, revision_id, query=None):
+    def request_load_data(self, query=None):
         """
         Method to load the Incident Module Book view gtk.TreeModel() with
         Validataion task information.
 
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` object used to communicate
-                    with the RTK Project database.
-        :param int revision_id: the ID of the Revision to load incident data
-                                for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self._dao = dao
-
         # Retrieve all the development program tests.
         (_incidents,
-         __) = self.mdcRTK.dtcIncident.request_incidents(dao, revision_id,
+         __) = self.mdcRTK.dtcIncident.request_incidents(self.mdcRTK.project_dao,
+                                                         self.mdcRTK.revision_id,
                                                          self.load_all_revisions,
                                                          query)
 
@@ -301,14 +295,13 @@ class ModuleView(object):
         """
         Method to request a filtered set of incidents.
 
-        :param int revision_id: the revision ID for the filtered incident list.
         :param str query: the query with the filtering criteria to pass to the
                           open RTK Program database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self.request_load_data(self._dao, revision_id, query)
+        self.request_load_data(query)
 
         return False
 
@@ -325,7 +318,7 @@ class ModuleView(object):
         # Retrieve all the affected components associated with the selected
         # incident.
         (_components,
-         __) = self.mdcRTK.dtcComponent.request_components(self._dao,
+         __) = self.mdcRTK.dtcComponent.request_components(self.mdcRTK.project_dao,
                                                            incident_id)
 
         return _components
@@ -389,7 +382,8 @@ class ModuleView(object):
         # Retrieve all the affected components associated with the selected
         # incident.
         (_actions,
-         __) = self.mdcRTK.dtcAction.request_actions(self._dao, incident_id)
+         __) = self.mdcRTK.dtcAction.request_actions(self.mdcRTK.project_dao,
+                                                     incident_id)
 
         return _actions
 

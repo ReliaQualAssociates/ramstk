@@ -101,7 +101,6 @@ class ModuleView(object):
         # Initialize private scalar attributes.
         self.workbook = None
         self.listbook = None
-        self._dao = None
         self._model = None
 
         # Initialize public scalar attributes.
@@ -168,24 +167,19 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
 
-    def request_load_data(self, dao, revision_id):
+    def request_load_data(self):
         """
         Method to load the Survival Module Book view gtk.TreeModel() with
         Survival analyses information.
 
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` used to communicate with
-                    the RTK Project database.
-        :param int revision_id: the ID of the revision to load survival data
-                                for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self._dao = self.mdcRTK.project_dao
-
         # Retrieve all the development program survival analyses.
         (_survivals,
-         __) = self.mdcRTK.dtcSurvival.request_survival(self._dao, revision_id)
+         __) = self.mdcRTK.dtcSurvival.request_survival(self.mdcRTK.project_dao,
+                                                        self.mdcRTK.revision_id)
 
         # Clear the Survival Module View gtk.TreeModel().
         _model = self.treeview.get_model()
@@ -220,7 +214,7 @@ class ModuleView(object):
         # If the Survival analysis was successfully added to the database, add
         # it from the list.
         if _results:
-            self.request_load_data(self._dao, revision_id)
+            self.request_load_data(self.mdcRTK.project_dao, revision_id)
 
         return False
 

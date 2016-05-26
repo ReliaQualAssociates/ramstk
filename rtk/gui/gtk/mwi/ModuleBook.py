@@ -450,7 +450,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         return view(controller, self, position, args)
 
-    def load_module_page(self, view, dao, revision_id):
+    def load_module_page(self, view):
         """
         Method to request the RTK module data controller retrieve the data from
         the RTK model and load it into the RTK module view.
@@ -468,7 +468,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             self.workview.add(view.workbook)
             self.workview.show_all()
 
-        _page = view.request_load_data(dao, revision_id)
+        _page = view.request_load_data()
 
         return _page
 

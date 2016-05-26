@@ -155,7 +155,7 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
 
-    def request_load_data(self, dao, revision_id=None):
+    def request_load_data(self):
         """
         Loads the Revision Module Book view gtk.TreeModel() with revision
         information.
@@ -163,7 +163,7 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-        # TODO: Remove dao and revision_id parameters after converting all modules.
+
         (_revisions,
          __) = self._dtc_revision.request_revisions(self.mdcRTK.project_dao)
 

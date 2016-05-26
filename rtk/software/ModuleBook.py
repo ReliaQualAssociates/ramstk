@@ -92,7 +92,6 @@ class ModuleView(object):
         self._lst_handler_id = []
 
         # Define private scalar attributes.
-        self._dao = None
         self._model = None
 
         # Define public dictionary attribute
@@ -162,24 +161,22 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(rtk_view.workview, self)
 
-    def request_load_data(self, dao, revision_id):
+    def request_load_data(self):
         """
         Method to load the Software Module Book view gtk.TreeModel() with
         Software information.
 
-        :param dao: the :py:class:`rtk.dao.DAO` object used to communicate
-                    with the RTK Project database.
-        :param int revision_id: the ID of the revision to load software data
-                                for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         (_software,
-         __) = self.mdcRTK.dtcSoftwareBoM.request_bom(dao, revision_id)
+         __) = self.mdcRTK.dtcSoftwareBoM.request_bom(self.mdcRTK.project_dao,
+                                                      self.mdcRTK.revision_id)
 
         # Only load the software associated with the selected Revision.
-        _software = [_s for _s in _software if _s[0] == revision_id]
+        _software = [_s for _s in _software
+                     if _s[0] == self.mdcRTK.revision_id]
         _top_items = [_s for _s in _software if _s[1] == 0]
 
         # Clear the Software Module View gtk.TreeModel().
@@ -187,7 +184,7 @@ class ModuleView(object):
         _model.clear()
 
         # Recusively load the Software Module View gtk.TreeModel().
-        self._load_treeview(dao, _top_items, _software, _model)
+        self._load_treeview(_top_items, _software, _model)
 
         # Select the first row in the gtk.TreeView().
         _row = _model.get_iter_root()
@@ -200,13 +197,11 @@ class ModuleView(object):
 
         return False
 
-    def _load_treeview(self, dao, parents, software, model, row=None):
+    def _load_treeview(self, parents, software, model, row=None):
         """
         Method to recursively load the gtk.TreeModel().  Recursive loading is
         needed to accomodate the hierarchical structure of Software.
 
-        :param dao: the :py:class:`rtk.dao.DAO` to pass to the Software data
-                    controller.
         :param list parents: the list of top-level software modules to load.
         :param list software: the complete list of software to use for finding
                               the child software for each parent.
@@ -215,7 +210,7 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
+
         _icon = Configuration.ICON_DIR + '32x32/csci.png'
         _csci_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _icon = Configuration.ICON_DIR + '32x32/unit.png'
@@ -237,7 +232,7 @@ class ModuleView(object):
             # module.  These will be the new parent software modules to pass to
             # this method.
             _parents = [_s for _s in software if _s[34] == _parent_id]
-            self._load_treeview(dao, _parents, software, model, _piter)
+            self._load_treeview(_parents, software, model, _piter)
 
         return False
 

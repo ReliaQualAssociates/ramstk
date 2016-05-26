@@ -257,6 +257,7 @@ class RTK(object):
         self.loaded = False
         self.site_dao = None
         self.project_dao = None
+        self.revision_id = None
 
         # Data controllers.
         self.dtcMatrices = Matrix()
@@ -691,14 +692,11 @@ class RTK(object):
         # that aren't active in the project, remove the page from the
         # RTK Module view.
         i = 0
-        _first_revision = None
         for _module in _results[0]:
             if _module == 1 and i < len(Configuration.RTK_MODULES):
-                self.module_book.load_module_page(Configuration.RTK_MODULES[i],
-                                                  self.project_dao,
-                                                  _first_revision)
+                self.module_book.load_module_page(Configuration.RTK_MODULES[i])
                 if i == 0:
-                    _first_revision = min(self.dtcRevision.dicRevisions.keys())
+                    self.revision_id = min(self.dtcRevision.dicRevisions.keys())
                 Configuration.RTK_PAGE_NUMBER.append(i)
             else:
                 self.module_book.notebook.remove_page(i)
@@ -720,9 +718,10 @@ class RTK(object):
         :rtype: bool
         """
 
+        self.revision_id = revision_id
+
         for _moduleview in Configuration.RTK_MODULES[1:]:
-            self.module_book.load_module_page(_moduleview, self.project_dao,
-                                              revision_id)
+            self.module_book.load_module_page(_moduleview)
 
         return False
 

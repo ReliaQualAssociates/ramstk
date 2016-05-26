@@ -1142,9 +1142,7 @@ class WorkView(gtk.VBox):
         # Launch the Add Function gtk.Assistant().
         AddFunction(self._modulebook, level, _revision_id, _parent_id)
 
-# TODO: Remove self._modulebook.mdcRTK.project_dao parameter after converting all modules.
-        self._modulebook.request_load_data(self._modulebook.mdcRTK.project_dao,
-                                           _revision_id)
+        self._modulebook.request_load_data()
 
         return False
 

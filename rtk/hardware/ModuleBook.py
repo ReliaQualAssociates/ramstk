@@ -97,7 +97,6 @@ class ModuleView(object):
         self._lst_handler_id = []
 
         # Define private scalar attributes.
-        self._dao = None
         self._model = None
         self._allocation_model = None
 
@@ -169,7 +168,7 @@ class ModuleView(object):
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
 
-    def request_load_data(self, dao, revision_id):
+    def request_load_data(self):
         """
         Loads the Hardware Module Book view gtk.TreeModel() with hardware
         information.
@@ -179,26 +178,29 @@ class ModuleView(object):
         """
 
         (_hardware,
-         __) = self.mdcRTK.dtcHardwareBoM.request_bom(dao, revision_id)
-        self.mdcRTK.dtcAllocation.request_allocation(dao)
-        self.mdcRTK.dtcHazard.request_hazard(dao)
-        self.mdcRTK.dtcSimilarItem.request_similar_item(dao)
+         __) = self.mdcRTK.dtcHardwareBoM.request_bom(self.mdcRTK.project_dao,
+                                                      self.mdcRTK.revision_id)
+        self.mdcRTK.dtcAllocation.request_allocation(self.mdcRTK.project_dao)
+        self.mdcRTK.dtcHazard.request_hazard(self.mdcRTK.project_dao)
+        self.mdcRTK.dtcSimilarItem.request_similar_item(self.mdcRTK.project_dao)
 
         # Only load the hardware associated with the selected Revision.
-        _hardware = [_h for _h in _hardware if _h[0] == revision_id]
+        _hardware = [_h for _h in _hardware
+                     if _h[0] == self.mdcRTK.revision_id]
         _top_items = [_h for _h in _hardware if _h[23] == -1]
 
         # Load all the FMECA and PoF analyses.
         for _h in _hardware:
-            self.mdcRTK.dtcFMEA.request_fmea(dao, _h[1], None, revision_id)
-            self.mdcRTK.dtcPoF.request_pof(dao, _h[1])
+            self.mdcRTK.dtcFMEA.request_fmea(self.mdcRTK.project_dao, _h[1],
+                                             None, self.mdcRTK.revision_id)
+            self.mdcRTK.dtcPoF.request_pof(self.mdcRTK.project_dao, _h[1])
 
         # Clear the Hardware Module View gtk.TreeModel().
         _model = self.treeview.get_model()
         _model.clear()
 
         # Recusively load the Hardware Module View gtk.TreeModel().
-        self._load_treeview(dao, _top_items, _hardware, _model)
+        self._load_treeview(_top_items, _hardware, _model)
 
         # Select the first row in the gtk.TreeView().
         _row = _model.get_iter_root()
@@ -211,13 +213,11 @@ class ModuleView(object):
 
         return False
 
-    def _load_treeview(self, dao, parents, hardware, model, row=None):
+    def _load_treeview(self, parents, hardware, model, row=None):
         """
         Method to recursively load the gtk.TreeModel().  Recursive loading is
         needed to accomodate the hierarchical structure of Hardware.
 
-        :param rtk.DAO dao: the Data Access Object to pass to the Hardware data
-                            controller.
         :param list parents: the list of top-level Hardware items to load.
         :param list hardware: the complete list of Hardware to use for finding
                               the child Hardware for each parent.
@@ -226,7 +226,7 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Is passing the dao object around the best way or is it better as a private instance attribute?
+
         _icon = Configuration.ICON_DIR + '32x32/assembly.png'
         _assembly_icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _icon = Configuration.ICON_DIR + '32x32/component.png'
@@ -244,7 +244,7 @@ class ModuleView(object):
             # Find the child hardware of the current parent hardware.  These
             # will be the new parent hardware to pass to this method.
             _parents = [_h for _h in hardware if _h[23] == _parent_id]
-            self._load_treeview(dao, _parents, hardware, model, _piter)
+            self._load_treeview(_parents, hardware, model, _piter)
 
         return False
 
