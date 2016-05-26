@@ -2,7 +2,7 @@
 """
 Contains functions for creating the process map navigator.
 """
-
+# TODO: Create this as a new Class.
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'

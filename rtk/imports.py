@@ -41,6 +41,7 @@ import xlrd
 import Configuration as _conf
 import gui.gtk.Widgets as _widg
 
+# TODO: Move this to each applicable class.
 class ImportAssistant:
 
     def __init__(self, widget, application):

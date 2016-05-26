@@ -54,7 +54,7 @@ except locale.Error:
 import gettext
 _ = gettext.gettext
 
-
+# TODO: Move this to the Survival class.
 class AssignMTBFResults(object):
     """
     Assigns the MTBF and failure rate results to the assembly associated with

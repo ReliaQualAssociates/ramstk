@@ -55,7 +55,7 @@ except locale.Error:
 import gettext
 _ = gettext.gettext
 
-
+# TODO: Move this to the Hardware class Assistant.
 class ExportHardware:
     """
     This is the gtk.Assistant that walks the user through the process of
