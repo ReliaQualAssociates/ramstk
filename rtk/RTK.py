@@ -302,8 +302,8 @@ class RTK(object):
             self.work_book = self.module_book.create_workview()
 
         # Validate the license.
-        if self._validate_license():
-            sys.exit(2)
+        # if self._validate_license():
+        #    sys.exit(2)
 
         # Create loggers.
         (self.debug_log,
