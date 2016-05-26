@@ -40,9 +40,9 @@ except ImportError:
 import matplotlib
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-import pkg_resources
-pkg_resources.require('matplotlib==1.4.3')
-matplotlib.use('GTK')
+if 'linux' in sys.platform:
+    import pkg_resources
+    pkg_resources.require('matplotlib==1.4.3')
 
 # Import other RTK modules.
 try:
@@ -63,6 +63,8 @@ except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
+
+matplotlib.use('GTK')
 
 
 class Results(gtk.HPaned):

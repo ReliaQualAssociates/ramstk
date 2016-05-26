@@ -44,11 +44,11 @@ except ImportError:
 
 # Plotting package.
 import matplotlib
-matplotlib.use('GTK')
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
 from matplotlib.figure import Figure
-import pkg_resources
-pkg_resources.require('matplotlib==1.4.3')
+if 'linux' in sys.platform:
+    import pkg_resources
+    pkg_resources.require('matplotlib==1.4.3')
 
 # Import other RTK modules.
 try:
@@ -69,6 +69,8 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 _ = gettext.gettext
+
+matplotlib.use('GTK')
 
 
 class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
