@@ -2079,7 +2079,7 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
 
         return False
 
-    def _get_observed_values(self):
+    def _get_observed_values(self, means):
         """
         Method to create lists of the point estimate of observed values, the
         alpha lower limit and alpha upper limit on observed values.

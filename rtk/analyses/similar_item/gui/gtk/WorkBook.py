@@ -253,7 +253,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
             # self._col_order.append(int(_position_[i].text))
 
-            if Widgetset[i].text == 'spin':
+            if _widget[i].text == 'spin':
                 _cell = gtk.CellRendererSpin()
                 _adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
                 _cell.set_property('adjustment', _adjustment)
