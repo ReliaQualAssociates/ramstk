@@ -431,59 +431,6 @@ def string_to_boolean(string):
     return _result
 
 
-def save_project(__widget, app):
-    """
-    Saves the RTK information to the open RTK Program database.
-
-    :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :param rtk app: the current instance of the RTK application.
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    if not app.LOADED:
-        return True
-
-    app.winTree.statusbar.push(2, _(u"Saving"))
-
-    set_cursor(app, gtk.gdk.WATCH)
-
-    app.REVISION.save_revision()
-    app.REQUIREMENT.save_requirement()
-    app.FUNCTION.save_function()
-    app.HARDWARE.save_hardware()
-    app.SOFTWARE.save_software()
-    # app.winParts.save_component()
-
-    # Update the next ID for each type of object.
-    _values = (Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
-               Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
-               Configuration.RTK_PREFIX[9], Configuration.RTK_PREFIX[11],
-               Configuration.RTK_PREFIX[13], Configuration.RTK_PREFIX[15],
-               Configuration.RTK_PREFIX[17], 1)
-
-    _query = "UPDATE tbl_program_info \
-              SET fld_revision_next_id=%d, fld_function_next_id=%d, \
-                  fld_assembly_next_id=%d, fld_part_next_id=%d, \
-                  fld_fmeca_next_id=%d, fld_mode_next_id=%d, \
-                  fld_effect_next_id=%d, fld_cause_next_id=%d, \
-                  fld_software_next_id=%d \
-              WHERE fld_program_id=%d" % _values
-    app.DB.execute_query(_query, None, app.ProgCnx, commit=True)
-
-    # conf = Configuration.RTKConf('user')
-    # conf.writeConfigurationiguration()
-
-    _query = "VACUUM"
-    print app.DB.execute_query(_query, None, app.ProgCnx)
-
-    set_cursor(app, gtk.gdk.LEFT_PTR)
-
-    app.winTree.statusbar.pop(2)
-
-    return False
-
-
 def delete_project(__widget, app):
     """
     Deletes an existing RTK Project.

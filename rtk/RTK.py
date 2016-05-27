@@ -680,7 +680,9 @@ class RTK(object):
                                         u"can be opened."))
             return True
 
-        self.module_book.statusbar.push(2, _(u"Opening Program Database..."))
+        _message = _(u"Opening Program "
+                     u"Database {0:s}".format(Configuration.RTK_PROG_INFO[2]))
+        self.module_book.statusbar.push(2, _message)
 
         # Connect to the project database.
         self.project_dao = DAO(Configuration.RTK_PROG_INFO[2])
@@ -740,6 +742,59 @@ class RTK(object):
         self.module_book.statusbar.pop(2)
 
         self.loaded = True
+
+        return False
+
+    def request_save_project(self, __widget):
+        """
+        Method to save the entire RTK Project to the open RTK Project database.
+
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if not self.loaded:
+            return True
+
+        _message = _(u"Saving Program "
+                     u"Database {0:s}".format(Configuration.RTK_PROG_INFO[2]))
+        self.module_book.statusbar.push(2, _message)
+
+        self.dtcRevision.save_all_revisions()
+        self.dtcRequirement.save_all_requirements()
+        self.dtcStakeholder.save_all_inputs()
+        self.dtcFunction.save_all_functions()
+        self.dtcHardwareBoM.save_bom()
+        self.dtcSoftwareBoM.save_bom()
+        self.dtcSurvival.save_all_survivals()
+        self.dtcGrowth.save_all_tests()
+        self.dtcValidation.save_all_tasks()
+
+        # Save everything that is revision-specific for each revision.
+        for _revision_id in self.dtcRevision.dicRevisions.keys():
+            self.dtcDefinitions.save_definitions(_revision_id)
+            self.dtcProfile.save_profile(_revision_id)
+
+        # Update the next ID for each type of object.
+        _query = "UPDATE tbl_program_info \
+                  SET fld_revision_next_id={0:d}, fld_function_next_id={1:d}, \
+                      fld_assembly_next_id={2:d}, fld_part_next_id={3:d}, \
+                      fld_fmeca_next_id={4:d}, fld_mode_next_id={5:d}, \
+                      fld_effect_next_id={6:d}, fld_cause_next_id={7:d}, \
+                      fld_software_next_id={8:d} \
+                  WHERE fld_program_id={9:d}".format(
+                    Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
+                    Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
+                    Configuration.RTK_PREFIX[9], Configuration.RTK_PREFIX[11],
+                    Configuration.RTK_PREFIX[13], Configuration.RTK_PREFIX[15],
+                    Configuration.RTK_PREFIX[17], 1)
+        self.project_dao.execute(_query, commit=True)
+
+        _query = "VACUUM"
+        self.project_dao.execute(_query, commit=False)
+
+        self.module_book.statusbar.pop(2)
 
         return False
 

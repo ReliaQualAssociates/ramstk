@@ -239,7 +239,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image.set_from_file(Configuration.ICON_DIR + '16x16/save.png')
         _menu_item.set_label(_(u"Save"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', Utilities.save_project, self._app)
+        _menu_item.connect('activate', self._mdcRTK.request_save_project)
         _menu.append(_menu_item)
 
         _menu_item = gtk.MenuItem(label=_("Save _As"), use_underline=True)
@@ -405,7 +405,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', Utilities.save_project, self._app)
+        _button.connect('clicked', self._mdcRTK.request_save_project)
         _toolbar.insert(_button, _position)
         _position += 1
 
