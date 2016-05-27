@@ -316,9 +316,7 @@ class AddRequirement(gtk.Assistant):
                         u"more requirements.")
             Utilities.rtk_error(_prompt)
 
-# TODO: Remove self._modulebook.mdcRTK.project_dao parameter after converting all modules.
-        self._modulebook.request_load_data(self._controller.project_dao,
-                                           self._revision_id)
+        self._modulebook.request_load_data()
 
         return False
 

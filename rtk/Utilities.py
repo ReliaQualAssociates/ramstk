@@ -41,9 +41,9 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import Configuration as _conf
+import Configuration
 import login as _login
-import gui.gtk.Widgets as _widg
+import gui.gtk.Widgets as Widgets
 
 _ = gettext.gettext
 
@@ -66,7 +66,7 @@ def read_configuration():
         _homedir = environ['USERPROFILE']
 
     # Get a config instance for the site configuration file.
-    conf = _conf.RTKConf('site')
+    conf = Configuration.RTKConf('site')
     if not file_exists(conf.conf_file):
         rtk_warning(_(u"Site configuration file {0:s} not found.  This "
                       u"typically indicates RTK was installed improperly or "
@@ -74,40 +74,40 @@ def read_configuration():
                       u"uninstall and re-install RTK.").format(conf.conf_file))
         return True
 
-    _conf.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
-    _conf.SITE_DIR = conf.read_configuration().get('Backend', 'path')
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'host'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.COM_BACKEND = conf.read_configuration().get('Backend', 'type')
+    Configuration.SITE_DIR = conf.read_configuration().get('Backend', 'path')
+    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'host'))
+    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
                                                             'socket'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
                                                             'database'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'user'))
-    _conf.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend', 'user'))
+    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
                                                             'password'))
 
     # Get a config instance for the user configuration file.
-    conf = _conf.RTKConf('user')
+    conf = Configuration.RTKConf('user')
 
-    _conf.BACKEND = conf.read_configuration().get('Backend', 'type')
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.BACKEND = conf.read_configuration().get('Backend', 'type')
+    Configuration.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
                                                              'host'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
                                                              'socket'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
                                                              'database'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
                                                              'user'))
-    _conf.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
+    Configuration.RTK_PROG_INFO.append(conf.read_configuration().get('Backend',
                                                              'password'))
 
-    _conf.FRMULT = float(conf.read_configuration().get('General',
+    Configuration.FRMULT = float(conf.read_configuration().get('General',
                                                        'frmultiplier'))
-    _conf.PLACES = conf.read_configuration().get('General', 'decimal')
-    _conf.RTK_MODE_SOURCE = conf.read_configuration().get('General',
+    Configuration.PLACES = conf.read_configuration().get('General', 'decimal')
+    Configuration.RTK_MODE_SOURCE = conf.read_configuration().get('General',
                                                           'modesource')
-    _conf.TABPOS[0] = conf.read_configuration().get('General', 'treetabpos')
-    _conf.TABPOS[1] = conf.read_configuration().get('General', 'listtabpos')
-    _conf.TABPOS[2] = conf.read_configuration().get('General', 'booktabpos')
+    Configuration.TABPOS[0] = conf.read_configuration().get('General', 'treetabpos')
+    Configuration.TABPOS[1] = conf.read_configuration().get('General', 'listtabpos')
+    Configuration.TABPOS[2] = conf.read_configuration().get('General', 'booktabpos')
 
     # Get directory and file information.
     icondir = conf.read_configuration().get('Directories', 'icondir')
@@ -115,116 +115,116 @@ def read_configuration():
     logdir = conf.read_configuration().get('Directories', 'logdir')
     progdir = conf.read_configuration().get('Directories', 'progdir')
 
-    _conf.CONF_DIR = conf.conf_dir
-    if not dir_exists(_conf.CONF_DIR):
+    Configuration.CONF_DIR = conf.conf_dir
+    if not dir_exists(Configuration.CONF_DIR):
         rtk_warning(_(u"Configuration directory %s does not exist.  "
-                      u"Exiting.") % _conf.CONF_DIR)
+                      u"Exiting.") % Configuration.CONF_DIR)
 
-    _conf.ICON_DIR = conf.conf_dir + icondir + '/'
-    if not dir_exists(_conf.ICON_DIR):
-        _conf.ICON_DIR = conf.icon_dir
+    Configuration.ICON_DIR = conf.conf_dir + icondir + '/'
+    if not dir_exists(Configuration.ICON_DIR):
+        Configuration.ICON_DIR = conf.icon_dir
 
-    _conf.DATA_DIR = conf.conf_dir + datadir + '/'
-    if not dir_exists(_conf.DATA_DIR):
-        _conf.DATA_DIR = conf.data_dir
+    Configuration.DATA_DIR = conf.conf_dir + datadir + '/'
+    if not dir_exists(Configuration.DATA_DIR):
+        Configuration.DATA_DIR = conf.data_dir
 
-    _conf.LOG_DIR = conf.conf_dir + logdir + '/'
-    if not dir_exists(_conf.LOG_DIR):
-        _conf.LOG_DIR = conf.log_dir
+    Configuration.LOG_DIR = conf.conf_dir + logdir + '/'
+    if not dir_exists(Configuration.LOG_DIR):
+        Configuration.LOG_DIR = conf.log_dir
 
-    _conf.PROG_DIR = progdir
-    if not dir_exists(_conf.PROG_DIR):
-        _conf.PROG_DIR = _homedir + '/Analyses/RTK/'
+    Configuration.PROG_DIR = progdir
+    if not dir_exists(Configuration.PROG_DIR):
+        Configuration.PROG_DIR = _homedir + '/Analyses/RTK/'
 
     # Get list of format files.
     formatfile = conf.read_configuration().get('Files', 'revisionformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'functionformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'requirementformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'hardwareformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'validationformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'rgformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'fracaformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'partformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'siaformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'fmecaformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'stakeholderformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'testformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'mechanismformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'rgincidentformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'incidentformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'softwareformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'datasetformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'riskformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'ffmecaformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
     formatfile = conf.read_configuration().get('Files', 'sfmecaformat')
-    _conf.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
+    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
 
     # Get color information.
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'revisionbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'revisionfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'functionbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'functionfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'requirementbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'requirementfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'assemblybg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'assemblyfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'validationbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'validationfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracabg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracafg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgbg'))
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors', 'rgfg'))
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracabg'))
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors', 'fracafg'))
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partbg'))
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors', 'partfg'))
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'overstressbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'overstressfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'taggedbg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'taggedfg'))
-    _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                           'nofrmodelfg'))
     try:
-        _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+        Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                               'softwarebg'))
     except NoOptionError:
-        _conf.RTK_COLORS.append('#FFFFFF')
+        Configuration.RTK_COLORS.append('#FFFFFF')
     try:
-        _conf.RTK_COLORS.append(conf.read_configuration().get('Colors',
+        Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
                                                               'softwarefg'))
     except NoOptionError:
-        _conf.RTK_COLORS.append('#FFFFFF')
+        Configuration.RTK_COLORS.append('#FFFFFF')
 
     return(icondir, datadir, logdir)
 
@@ -264,71 +264,6 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     return _logger
 
 
-def parse_config(configfile):
-    """
-    This function parses the XML configuration file passed as a parameter.
-
-    :param str configfile: the configuration file that needs to be parsed.
-    """
-
-    from lxml import etree
-
-    _tree = etree.parse(configfile)
-
-    return _tree
-
-
-def split_string(string):
-    """
-    Splits a colon-delimited string into its constituent parts.
-
-    :param list string: the colon delimited string that needs to be split into
-                        a list.
-    :return: _strlist
-    :rtype: list of strings
-    """
-
-    _strlist = string.rsplit(':')
-
-    return _strlist
-
-
-def none_to_string(string):
-    """
-    Converts None types to an empty string.
-
-    :param str string: the string to convert.
-    :return: string; the converted string.
-    :rtype: str
-    """
-
-    if string is None or string == 'None':
-        return ''
-    else:
-        return string
-
-
-def string_to_boolean(string):
-    """
-    Converts string representations of TRUE/FALSE to an integer value for use
-    in the database.
-
-    :param str string: the string to convert.
-    :return: _result
-    :rtype: int
-    """
-
-    _result = 0
-
-    _string = str(string)
-
-    if(_string.lower() == 'true' or _string.lower() == 'yes' or
-       _string.lower() == 't' or _string.lower() == 'y'):
-        _result = 1
-
-    return _result
-
-
 def date_to_ordinal(date):
     """
     Converts date strings to ordinal dates for use in the database.
@@ -344,41 +279,6 @@ def date_to_ordinal(date):
         return parse(str(date)).toordinal()
     except(ValueError, TypeError):
         return parse('01/01/70').toordinal()
-
-
-def ordinal_to_date(ordinal):
-    """
-    Converts ordinal dates to date strings in ISO-8601 format.  Defaults to
-    the current date if a bad value is passed as the argument.
-
-    :param int ordinal: the ordinal date to convert.
-    :return: the ISO-8601 date representation of the passed ordinal.
-    :rtype: date
-    """
-
-    from datetime import datetime
-
-    try:
-        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
-    except ValueError:
-        ordinal = datetime.now().toordinal()
-        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
-
-
-def tuple_to_list(origtuple, origlist):
-    """
-    Appends a tuple to a list.
-
-    :param tuple origtuple: the tuple to add to the list.
-    :param list origlist: the existing list to add the tuple elements to.
-    :return: origlist; the orginal list with the tuple items added.
-    :rtype: list
-    """
-
-    for __, _tuple in enumerate(origtuple):
-        origlist.append(_tuple)
-
-    return origlist
 
 
 def dir_exists(directory):
@@ -432,6 +332,93 @@ def file_exists(_file):
     return os.path.isfile(_file)
 
 
+def missing_to_default(field, default):
+    """
+    Function to convert missing values into default values.
+
+    :param field: the original, missing, value.
+    :param default: the new, default, value.
+    :return: field; the new value if field is an empty string, the old value
+             otherwise.
+    :rtype: any
+    """
+
+    if field == '':
+        return default
+    else:
+        return field
+
+
+def none_to_string(string):
+    """
+    Converts None types to an empty string.
+
+    :param str string: the string to convert.
+    :return: string; the converted string.
+    :rtype: str
+    """
+
+    if string is None or string == 'None':
+        return ''
+    else:
+        return string
+
+
+def split_string(string):
+    """
+    Splits a colon-delimited string into its constituent parts.
+
+    :param list string: the colon delimited string that needs to be split into
+                        a list.
+    :return: _strlist
+    :rtype: list of strings
+    """
+
+    _strlist = string.rsplit(':')
+
+    return _strlist
+
+
+def string_to_boolean(string):
+    """
+    Converts string representations of TRUE/FALSE to an integer value for use
+    in the database.
+
+    :param str string: the string to convert.
+    :return: _result
+    :rtype: int
+    """
+
+    _result = 0
+
+    _string = str(string)
+
+    if(_string.lower() == 'true' or _string.lower() == 'yes' or
+       _string.lower() == 't' or _string.lower() == 'y'):
+        _result = 1
+
+    return _result
+
+
+def ordinal_to_date(ordinal):
+    """
+    Converts ordinal dates to date strings in ISO-8601 format.  Defaults to
+    the current date if a bad value is passed as the argument.
+
+    :param int ordinal: the ordinal date to convert.
+    :return: the ISO-8601 date representation of the passed ordinal.
+    :rtype: date
+    """
+
+    from datetime import datetime
+
+    try:
+        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
+    except ValueError:
+        ordinal = datetime.now().toordinal()
+        return str(datetime.fromordinal(int(ordinal)).strftime('%Y-%m-%d'))
+
+
 def create_project(widget, app):            # pylint: disable=R0914
     """
     Creates a new RTK Project.
@@ -444,33 +431,33 @@ def create_project(widget, app):            # pylint: disable=R0914
 
     set_cursor(app, gtk.gdk.WATCH)
 
-    if _conf.BACKEND == 'mysql':
+    if Configuration.BACKEND == 'mysql':
 
         login = _login.Login(_(u"Create a RTK Program Database"))
         if login.answer != gtk.RESPONSE_ACCEPT:
             return True
 
-        dialog = _widg.make_dialog(_(u"RTK - New Program"))
+        dialog = Widgets.make_dialog(_(u"RTK - New Program"))
 
-        label = _widg.make_label(_(u"New Program Name"))
-        txtProgName = _widg.make_entry()
-        dialog.vbox.pack_start(label)       # pylint: disable=E1101
+        label = Widgets.make_label(_(u"New Program Name"))
+        txtProgName = Widgets.make_entry()
+        dialog.vbox.pack_start(label)           # pylint: disable=E1101
         dialog.vbox.pack_start(txtProgName)     # pylint: disable=E1101
         label.show()
         txtProgName.show()
 
-        label = _widg.make_label(_(u"Assigned User"))
-        txtUser = _widg.make_entry()
-        dialog.vbox.pack_start(label)       # pylint: disable=E1101
-        dialog.vbox.pack_start(txtUser)     # pylint: disable=E1101
+        label = Widgets.make_label(_(u"Assigned User"))
+        txtUser = Widgets.make_entry()
+        dialog.vbox.pack_start(label)           # pylint: disable=E1101
+        dialog.vbox.pack_start(txtUser)         # pylint: disable=E1101
         label.show()
         txtUser.show()
 
-        label = _widg.make_label(_(u"Using Password"))
-        txtPasswd = _widg.make_entry()
+        label = Widgets.make_label(_(u"Using Password"))
+        txtPasswd = Widgets.make_entry()
         txtPasswd.set_invisible_char("*")
-        dialog.vbox.pack_start(label)       # pylint: disable=E1101
-        dialog.vbox.pack_start(txtPasswd)   # pylint: disable=E1101
+        dialog.vbox.pack_start(label)           # pylint: disable=E1101
+        dialog.vbox.pack_start(txtPasswd)       # pylint: disable=E1101
         label.show()
         txtPasswd.show()
 
@@ -481,9 +468,9 @@ def create_project(widget, app):            # pylint: disable=R0914
 
         dialog.destroy()
 
-        _conf.RTK_PROG_INFO[2] = None
+        Configuration.RTK_PROG_INFO[2] = None
         query = "CREATE DATABASE IF NOT EXISTS %s"
-        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
+        cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
         results = app.DB.execute_query(query,
                                        new_program,
                                        cnx,
@@ -492,10 +479,10 @@ def create_project(widget, app):            # pylint: disable=R0914
         if not results:
             return True
 
-        _conf.RTK_PROG_INFO[2] = new_program
-        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
+        Configuration.RTK_PROG_INFO[2] = new_program
+        cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
 
-        sqlfile = open(_conf.DATA_DIR + 'newprogram_mysql.sql', 'r')
+        sqlfile = open(Configuration.DATA_DIR + 'newprogram_mysql.sql', 'r')
 
         queries = sqlfile.read().split(';')
         program = "USE '%s'"
@@ -514,7 +501,7 @@ def create_project(widget, app):            # pylint: disable=R0914
 
         cnx.close()
 
-    elif _conf.BACKEND == 'sqlite3':
+    elif Configuration.BACKEND == 'sqlite3':
         _dialog = gtk.FileChooserDialog(title=_(u"Create a RTK Program "
                                                 u"Database"),
                                         action=gtk.FILE_CHOOSER_ACTION_SAVE,
@@ -522,7 +509,7 @@ def create_project(widget, app):            # pylint: disable=R0914
                                                  gtk.RESPONSE_ACCEPT,
                                                  gtk.STOCK_CANCEL,
                                                  gtk.RESPONSE_REJECT))
-        _dialog.set_current_folder(_conf.PROG_DIR)
+        _dialog.set_current_folder(Configuration.PROG_DIR)
 
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
             _new_program = _dialog.get_filename()
@@ -530,13 +517,13 @@ def create_project(widget, app):            # pylint: disable=R0914
             _new_program = _new_program + '.rtk'
 
             if file_exists(_new_program):
-                _dlgConfirm = _widg.make_dialog(_(u"RTK - Confirm Overwrite"),
+                _dlgConfirm = Widgets.make_dialog(_(u"RTK - Confirm Overwrite"),
                                                 dlgbuttons=(gtk.STOCK_YES,
                                                             gtk.RESPONSE_YES,
                                                             gtk.STOCK_NO,
                                                             gtk.RESPONSE_NO))
 
-                _label = _widg.make_label(_(u"RTK Program database already "
+                _label = Widgets.make_label(_(u"RTK Program database already "
                                             u"exists.\n\n%s\n\n"
                                             u"Overwrite?") %
                                           _new_program, width=-1, height=-1,
@@ -552,10 +539,10 @@ def create_project(widget, app):            # pylint: disable=R0914
                     _dialog.destroy()
                     return True
 
-            _conf.RTK_PROG_INFO[2] = _new_program
-            _cnx = app.DB.get_connection(_conf.RTK_PROG_INFO[2])
+            Configuration.RTK_PROG_INFO[2] = _new_program
+            _cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO[2])
 
-            _sqlfile = open(_conf.DATA_DIR + 'newprogram_sqlite3.sql', 'r')
+            _sqlfile = open(Configuration.DATA_DIR + 'newprogram_sqlite3.sql', 'r')
             for _query in _sqlfile.read().split(';'):
                 app.DB.execute_query(_query, None, _cnx, commit=True)
 
@@ -589,8 +576,9 @@ def open_project(__widget, application, dlg=1, filename=''):    # pylint: disabl
                           u"RTK application before a new database can be "
                           u"opened."))
         return True
+
 # TODO: Update the MySQL/MariaDB code.
-    if _conf.BACKEND == 'mysql':
+    if Configuration.BACKEND == 'mysql':
 
         login = _login.Login(_(u"RTK Program Database Login"))
 
@@ -598,10 +586,10 @@ def open_project(__widget, application, dlg=1, filename=''):    # pylint: disabl
             return True
 
         query = "SHOW DATABASES"
-        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
+        cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
         results = app.DB.execute_query(query, None, cnx)
 
-        dialog = _widg.make_dialog(_(u"RTK: Open Program"))
+        dialog = Widgets.make_dialog(_(u"RTK: Open Program"))
 
         model = gtk.TreeStore(gobject.TYPE_STRING)
         treeview = gtk.TreeView(model)
@@ -632,7 +620,8 @@ def open_project(__widget, application, dlg=1, filename=''):    # pylint: disabl
 
         if dialog.run() == gtk.RESPONSE_ACCEPT:
             (_model, _row) = treeview.get_selection().get_selected()
-            _conf.RTK_PROG_INFO[2] = _model.get_value(_row, 0)
+            Configuration.RTK_PROG_INFO[2] = _model.get_value(_row, 0)
+            set_cursor(application, gtk.gdk.WATCH)
             dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))     # pylint: disable=E1101
             application.open_project()
 
@@ -640,15 +629,14 @@ def open_project(__widget, application, dlg=1, filename=''):    # pylint: disabl
 
         cnx.close()
 
-    elif _conf.BACKEND == 'sqlite3':
-
+    elif Configuration.BACKEND == 'sqlite3':
         if dlg == 1:
             _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
                                             buttons=(gtk.STOCK_OK,
                                                      gtk.RESPONSE_ACCEPT,
                                                      gtk.STOCK_CANCEL,
                                                      gtk.RESPONSE_REJECT))
-            _dialog.set_current_folder(_conf.PROG_DIR)
+            _dialog.set_current_folder(Configuration.PROG_DIR)
 
             # Set some filters to select all files or only some text files.
             _filter = gtk.FileFilter()
@@ -662,16 +650,19 @@ def open_project(__widget, application, dlg=1, filename=''):    # pylint: disabl
             _filter.add_pattern("*")
             _dialog.add_filter(_filter)
 
+            set_cursor(application, gtk.gdk.WATCH)
             if _dialog.run() == gtk.RESPONSE_ACCEPT:
-                _conf.RTK_PROG_INFO[2] = _dialog.get_filename()
+                Configuration.RTK_PROG_INFO[2] = _dialog.get_filename()
                 _dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))    # pylint: disable=E1101
                 application.open_project()
 
             _dialog.destroy()
 
         else:
-            _conf.RTK_PROG_INFO[2] = filename
+            Configuration.RTK_PROG_INFO[2] = filename
             application.open_project()
+
+    set_cursor(application, gtk.gdk.LEFT_PTR)
 
     return False
 
@@ -701,11 +692,11 @@ def save_project(__widget, app):
     # app.winParts.save_component()
 
     # Update the next ID for each type of object.
-    _values = (_conf.RTK_PREFIX[1], _conf.RTK_PREFIX[3],
-               _conf.RTK_PREFIX[5], _conf.RTK_PREFIX[7],
-               _conf.RTK_PREFIX[9], _conf.RTK_PREFIX[11],
-               _conf.RTK_PREFIX[13], _conf.RTK_PREFIX[15],
-               _conf.RTK_PREFIX[17], 1)
+    _values = (Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
+               Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
+               Configuration.RTK_PREFIX[9], Configuration.RTK_PREFIX[11],
+               Configuration.RTK_PREFIX[13], Configuration.RTK_PREFIX[15],
+               Configuration.RTK_PREFIX[17], 1)
 
     _query = "UPDATE tbl_program_info \
               SET fld_revision_next_id=%d, fld_function_next_id=%d, \
@@ -716,8 +707,8 @@ def save_project(__widget, app):
               WHERE fld_program_id=%d" % _values
     app.DB.execute_query(_query, None, app.ProgCnx, commit=True)
 
-    # conf = _conf.RTKConf('user')
-    # conf.write_configuration()
+    # conf = Configuration.RTKConf('user')
+    # conf.writeConfigurationiguration()
 
     _query = "VACUUM"
     print app.DB.execute_query(_query, None, app.ProgCnx)
@@ -739,14 +730,14 @@ def delete_project(__widget, app):
     :rtype: bool
     """
 
-    if _conf.BACKEND == 'mysql':
+    if Configuration.BACKEND == 'mysql':
         query = "SHOW DATABASES"
-        cnx = app.DB.get_connection(_conf.RTK_PROG_INFO)
+        cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
         results = app.DB.execute_query(query,
                                        None,
                                        cnx)
 
-        dialog = _widg.make_dialog(_("RTK - Delete Program"))
+        dialog = Widgets.make_dialog(_("RTK - Delete Program"))
 
         model = gtk.TreeStore(gobject.TYPE_STRING)
         treeview = gtk.TreeView(model)
@@ -792,7 +783,7 @@ def delete_project(__widget, app):
 
         cnx.close()
 
-    elif _conf.BACKEND == 'sqlite3':
+    elif Configuration.BACKEND == 'sqlite3':
 
         dialog = gtk.FileChooserDialog(_(u"RTK - Delete Program"),
                                        None,
@@ -856,7 +847,7 @@ def select_source_file(assistant, title):
                                     (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                                      gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
     _dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
-    _dialog.set_current_folder(_conf.PROG_DIR)
+    _dialog.set_current_folder(Configuration.PROG_DIR)
 
     # Set some filters to select all files or only some text files.
     _filter = gtk.FileFilter()
@@ -903,24 +894,6 @@ def select_source_file(assistant, title):
     return _headers, _contents
 
 
-def missing_to_default(field, default):
-    """
-    Function to convert missing values from the external file into default
-    values before loading into the open RTK Program database.
-
-    :param field: the original, missing, value.
-    :param default: the new, default, value.
-    :return: field; the new value if field is an emtpy string, the old value
-             otherwise.
-    :rtype: any
-    """
-
-    if field == '':
-        return default
-    else:
-        return field
-
-
 def confirm_action(_prompt_, _image_='default', _parent_=None):
     """
     Dialog to confirm user actions such as deleting a Project.
@@ -931,16 +904,16 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
                                 dialog.
     """
 
-    dialog = _widg.make_dialog("")
+    dialog = Widgets.make_dialog("")
 
     hbox = gtk.HBox()
 
-    file_image = _conf.ICON_DIR + '32x32/' + _image_ + '.png'
+    file_image = Configuration.ICON_DIR + '32x32/' + _image_ + '.png'
     image = gtk.Image()
     image.set_from_file(file_image)
     hbox.pack_start(image)
 
-    label = _widg.make_label(_prompt_)
+    label = Widgets.make_label(_prompt_)
     hbox.pack_end(label)
     dialog.vbox.pack_start(hbox)            # pylint: disable=E1101
     hbox.show_all()
@@ -961,7 +934,7 @@ def rtk_error(prompt, _parent=None):
     :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
     """
 
-    _icon = _conf.ICON_DIR + '32x32/error.png'
+    _icon = Configuration.ICON_DIR + '32x32/error.png'
     _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
     _image = gtk.Image()
     _image.set_from_pixbuf(_icon)
@@ -971,7 +944,7 @@ def rtk_error(prompt, _parent=None):
                       u"bugs@reliaqual.com with a description of the " \
                       u"problem, the workflow you are using and the error " \
                       u"log attached if the problem persists.".format(
-                      _conf.LOG_DIR + 'RTK_error.log')
+                      Configuration.LOG_DIR + 'RTK_error.log')
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
@@ -1034,39 +1007,6 @@ def rtk_warning(prompt, _parent=None):
     _dialog.destroy()
 
 
-def add_items(title, prompt=""):
-    """
-    Adds one or more items to a treeview hierarchy.
-
-    :param str title: the string to put in the title bar of the dialog.
-    :param str prompt: the prompt to put on the dialog.
-    """
-
-    _dialog = _widg.make_dialog(title)
-
-    _fixed = gtk.Fixed()
-    _fixed.set_size_request(600, 80)
-
-    _label = _widg.make_label(prompt, -1, -1)
-    _x_pos = _label.size_request()[0] + 50
-    txtQuantity = _widg.make_entry(width=50)
-    txtQuantity.set_text("1")
-
-    _fixed.put(_label, 5, 10)
-    _fixed.put(txtQuantity, _x_pos, 10)
-    _fixed.show_all()
-
-    _dialog.vbox.pack_start(_fixed)         # pylint: disable=E1101
-
-    _n_items = 0
-    if _dialog.run() == gtk.RESPONSE_ACCEPT:
-        _n_items = int(txtQuantity.get_text())
-
-    _dialog.destroy()
-
-    return _n_items
-
-
 def cut_copy_paste(__widget, action):
     """
     Cuts, copies, and pastes.
@@ -1127,27 +1067,6 @@ def find(widget, action):
     return False
 
 
-def find_all_in_list(searchlist, value, start=0):
-    """
-    Finds all instances of value in the list starting at position start.
-
-    :param list searchlist: the list to search.
-    :param any value: the value to search for in the list.
-    :keyword int start: the position in the list to start the search.
-    :return: positions; the list of positions where the value is found.
-    :rtype: int
-    """
-
-    positions = []
-    i = start - 1
-    try:
-        i = searchlist.index(value, i + 1)
-        positions.append(i)
-        return positions
-    except ValueError:
-        pass
-
-
 def undo():
     """
     Undoes the last change.
@@ -1161,53 +1080,6 @@ def redo():
     Re-does the last change.
     """
 # TODO: Write redo function.
-    return False
-
-
-def create_comp_ref_des(__widget, app):
-    """
-    Iterively creates composite reference designators.
-
-    :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :param rtk app: the current instance of the RTK application.
-    :return: False if successful or True if an error is encounterd.
-    """
-
-    _model = app.HARDWARE.treeview.get_model()
-    _model.foreach(build_comp_ref_des)
-
-    return False
-
-
-def build_comp_ref_des(model, __path, row):
-    """
-    Creates the composite reference designator for the currently selected row
-    in the System gtk.Treemodel.
-
-    :param gtk.Treemodel model: the Hardware class gtk.TreeModel().
-    :param tuple __path: the path of the currently selected gtk.TreeIter() in
-                         the Hardware class gtk.TreeModel().
-    :param gtk.TreeIter row: the currently selected gtk.TreeIter() in the
-                             Hardware class gtk.TreeModel().
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    _ref_des = model.get_value(row, 68)
-
-    # If the currently selected row has no parent, the composite reference
-    # designator is the same as the reference designator.  Otherwise, build the
-    # composite reference designator by appending the current row's reference
-    # designator to the parent's composite reference designator.
-    if not model.iter_parent(row):
-        _comp_ref_des = _ref_des
-    else:
-        _p_row = model.iter_parent(row)
-        _p_comp_ref_des = model.get_value(_p_row, 12)
-        _comp_ref_des = _p_comp_ref_des + ":" + _ref_des
-
-    model.set_value(row, 12, _comp_ref_des)
-
     return False
 
 
@@ -1227,7 +1099,7 @@ def add_parts_system_hierarchy(__widget, app):
     set_cursor(app, gtk.gdk.WATCH)
 
     # Find the revision id.
-    if _conf.RTK_MODULES[0] == 1:
+    if Configuration.RTK_MODULES[0] == 1:
         _revision_id = app.REVISION.revision_id
     else:
         _revision_id = 0
@@ -1251,7 +1123,7 @@ def add_parts_system_hierarchy(__widget, app):
     _n_added = 0
     for __, _part_num in enumerate(_results):
         # Create a description from the part prefix and part index.
-        _part_name = str(_conf.RTK_PREFIX[6]) + ' ' + str(_conf.RTK_PREFIX[7])
+        _part_name = str(Configuration.RTK_PREFIX[6]) + ' ' + str(Configuration.RTK_PREFIX[7])
 
         _parent = app.HARDWARE.dicPaths[_part_num[1]]
 
@@ -1265,7 +1137,7 @@ def add_parts_system_hierarchy(__widget, app):
             _n_added += 1
 
         # Increment the part index and assembly id.
-        _conf.RTK_PREFIX[7] = _conf.RTK_PREFIX[7] + 1
+        Configuration.RTK_PREFIX[7] = Configuration.RTK_PREFIX[7] + 1
         _assembly_id += 1
 
     if _n_added != len(_results):
@@ -1279,69 +1151,6 @@ def add_parts_system_hierarchy(__widget, app):
     set_cursor(app, gtk.gdk.LEFT_PTR)
 
     return False
-
-
-def component_add(app, values):
-    """
-    Function to add a component to the RTK Program database.
-
-    :param rtk app: the running instance of the RTK application.
-    :param tuple values: tuple containing the values to pass to the queries.
-                         - Revision ID
-                         - Assembly ID
-                         - Component Name
-                         - Part?
-                         - Parent Assembly
-                         - Part Number
-    :return: False if successul or True if an error is encountered.
-    :rtype: bool
-    """
-
-    _error = False
-
-    # Insert the new part into tbl_system.
-    _query = "INSERT INTO tbl_system (fld_revision_id, fld_assembly_id, \
-                                      fld_name, fld_part, \
-                                      fld_parent_assembly, \
-                                      fld_part_number) \
-              VALUES (%d, %d, '%s', %d, '%s', '%s')" % values
-    if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
-        app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component %s as a child of assembly %s to the "
-                            "system table." % (values[5], values[4]))
-        _error = True
-
-    # Insert the new component into tbl_prediction.
-    _query = "INSERT INTO tbl_prediction \
-              (fld_revision_id, fld_assembly_id) \
-              VALUES (%d, %d)" % (values[0], values[1])
-    if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
-        app.debug_log.error("utilities.py:component_add - Failed to add new "
-                            "component %s as a child of assembly %s to the "
-                            "prediction table." % (values[5], values[4]))
-        _error = True
-
-    # Retrieve the list of function id's in the open RTK Program database.
-    _query = "SELECT fld_function_id \
-              FROM tbl_functions \
-              WHERE fld_revision_id=%d" % values[0]
-    _functions = app.DB.execute_query(_query, None, app.ProgCnx)
-
-    # Add a record to the functional matrix table for each function that exists
-    # in the open RTK program database.
-    for __, _function in enumerate(_functions):
-        _query = "INSERT INTO tbl_functional_matrix \
-                  (fld_revision_id, fld_function_id, \
-                   fld_assembly_id, fld_relationship) \
-                  VALUES(%d, %d, %d, '')" % \
-                 (values[0], _function[0], values[1])
-        if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
-            app.debug_log.error("utilities.py:component_add - Failed to add "
-                                "new component to the functional matrix "
-                                "table.")
-            _error = True
-
-    return _error
 
 
 def add_failure_modes(app, revision_id, assembly_id, category_id,
@@ -1367,7 +1176,7 @@ def add_failure_modes(app, revision_id, assembly_id, category_id,
               WHERE fld_category_id=%d \
               AND fld_subcategory_id=%d \
               AND fld_source=%d" % (category_id, subcategory_id,
-                                    int(_conf.RTK_MODE_SOURCE))
+                                    int(Configuration.RTK_MODE_SOURCE))
     _modes = app.COMDB.execute_query(_query, None, app.ComCnx)
     try:
         _n_modes = len(_modes)
@@ -1389,52 +1198,6 @@ def add_failure_modes(app, revision_id, assembly_id, category_id,
         rtk_error(_(u"Problem adding one or more failure modes to the open "
                     u"RTK Program database."))
         return True
-
-    return False
-
-
-def calculate_max_text_width(text, font):
-    """
-    Function to calculate the maximum width of the text string that is using a
-    particular font.
-
-    :param str text: the text string to calculate.
-    :param str font: the font being used.
-    :return: _max
-    :rtype: int
-    """
-
-    _max = 0
-    _lines = text.split('\n')
-    for _line in _lines:
-        _max = max(_max, font.width(_line))
-
-    return _max + 50
-
-
-def trickledown(model, row, index_, value_):
-    """
-    Iteratively trickles down a particular parameter value from a parent to
-    it's children.
-
-    :param gtkTreeModel model: the gtkTreeModel() containing the information to
-                               trickle down.
-    :param gtk.TreeIter row: the selected gtk.TreeIter() in the gtk.TreeModel()
-                             containing the information to trickle down.
-    :param int index_: the column in the gtk.TreeModel() containing the
-                       information to trickle down.
-    :param any value_: the value of the parameter to trickle down.
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    _n_children = model.iter_n_children(row)
-
-    for i in range(_n_children):
-        chrow = model.iter_nth_child(row, i)
-        model.set_value(chrow, index_, value_)
-        if model.iter_has_child(chrow):
-            trickledown(model, chrow, index_, value_)
 
     return False
 
@@ -1464,8 +1227,9 @@ def date_select(__widget, __event=None, entry=None):
 
     from datetime import datetime
 
-    _dialog = _widg.make_dialog(_(u"Select Date"),
-                                dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+    _dialog = Widgets.make_dialog(_(u"Select Date"),
+                                  dlgbuttons=(gtk.STOCK_OK,
+                                              gtk.RESPONSE_ACCEPT))
 
     _calendar = gtk.Calendar()
     _dialog.vbox.pack_start(_calendar)      # pylint: disable=E1101
@@ -1487,11 +1251,11 @@ def date_select(__widget, __event=None, entry=None):
     return _date
 
 
-def set_cursor(app, cursor):
+def set_cursor(controller, cursor):
     """
     Function to set the cursor for a gtk.gdk.Window()
 
-    :param rtk app: the running instance of the RTK application.
+    :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
     :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only handles
                                   one of the following:
                                   - gtk.gdk.X_CURSOR
@@ -1527,25 +1291,13 @@ def set_cursor(app, cursor):
                                   - gtk.gdk.XTERM - selection bar
     """
 
-    app.window.set_cursor(gtk.gdk.Cursor(cursor))
-    app.window.set_cursor(gtk.gdk.Cursor(cursor))
-    app.window.set_cursor(gtk.gdk.Cursor(cursor))
+    controller.module_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.list_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.work_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
 
     gtk.gdk.flush()
 
     return False
-
-
-def long_call(app):
-    """
-    Function for restoring the cursor to normal after a long call.
-
-    :param app: the running instance of the RTK application.
-    """
-
-    app.winTree.window.set_cursor(None)
-    app.winParts.window.set_cursor(None)
-    app.winWorkBook.window.set_cursor(None)
 
 
 class Options(gtk.Window):                  # pylint: disable=R0902
@@ -1577,19 +1329,19 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         # ----- ----- ----- -- RTK module options - ----- ----- ----- #
         # Only show the active modules page if a RTK Program database is open.
-        if _conf.RTK_PROG_INFO[2] != '':
+        if Configuration.RTK_PROG_INFO[2] != '':
             _fixed = gtk.Fixed()
 
-            self.chkRevisions = _widg.make_check_button(_(u"Revisions"))
-            self.chkFunctions = _widg.make_check_button(_(u"Functions"))
-            self.chkRequirements = _widg.make_check_button(_(u"Requirements"))
-            self.chkSoftware = _widg.make_check_button(_(u"Software"))
-            self.chkValidation = _widg.make_check_button(_(u"Validation "
+            self.chkRevisions = Widgets.make_check_button(_(u"Revisions"))
+            self.chkFunctions = Widgets.make_check_button(_(u"Functions"))
+            self.chkRequirements = Widgets.make_check_button(_(u"Requirements"))
+            self.chkSoftware = Widgets.make_check_button(_(u"Software"))
+            self.chkValidation = Widgets.make_check_button(_(u"Validation "
                                                            u"Tasks"))
-            self.chkRG = _widg.make_check_button(_(u"Reliability Tests"))
-            self.chkIncidents = _widg.make_check_button(_(u"Program "
+            self.chkRG = Widgets.make_check_button(_(u"Reliability Tests"))
+            self.chkIncidents = Widgets.make_check_button(_(u"Program "
                                                           u"Incidents"))
-            self.chkSurvivalAnalysis = _widg.make_check_button(_(u"Survival "
+            self.chkSurvivalAnalysis = Widgets.make_check_button(_(u"Survival "
                                                                  u"Analysis"))
 
             self.btnSaveModules = gtk.Button(stock=gtk.STOCK_SAVE)
@@ -1636,13 +1388,13 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         # ----- ----- ----- Create default value options ----- ----- ----- #
         _fixed = gtk.Fixed()
 
-        self.cmbModuleBookTabPosition = _widg.make_combo(simple=True)
-        self.cmbWorkBookTabPosition = _widg.make_combo(simple=True)
-        self.cmbListBookTabPosition = _widg.make_combo(simple=True)
+        self.cmbModuleBookTabPosition = Widgets.make_combo(simple=True)
+        self.cmbWorkBookTabPosition = Widgets.make_combo(simple=True)
+        self.cmbListBookTabPosition = Widgets.make_combo(simple=True)
 
-        self.txtFRMultiplier = _widg.make_entry()
-        self.txtDecimalPlaces = _widg.make_entry(width=75)
-        self.txtMissionTime = _widg.make_entry(width=75)
+        self.txtFRMultiplier = Widgets.make_entry()
+        self.txtDecimalPlaces = Widgets.make_entry(width=75)
+        self.txtMissionTime = Widgets.make_entry(width=75)
 
         # Create color selection buttons.
         self.btnRevisionBGColor = gtk.ColorButton()
@@ -1667,86 +1419,86 @@ class Options(gtk.Window):                  # pylint: disable=R0902
             self.cmbWorkBookTabPosition.append_text(_position)
             self.cmbListBookTabPosition.append_text(_position)
 
-        _label = _widg.make_label(_(u"Module Book tab position:"))
+        _label = Widgets.make_label(_(u"Module Book tab position:"))
         _fixed.put(_label, 5, 5)
         _fixed.put(self.cmbModuleBookTabPosition, 310, 5)
-        _label = _widg.make_label(_(u"Work Book tab position:"))
+        _label = Widgets.make_label(_(u"Work Book tab position:"))
         _fixed.put(_label, 5, 35)
         _fixed.put(self.cmbWorkBookTabPosition, 310, 35)
-        _label = _widg.make_label(_(u"List Book tab position:"))
+        _label = Widgets.make_label(_(u"List Book tab position:"))
         _fixed.put(_label, 5, 65)
         _fixed.put(self.cmbListBookTabPosition, 310, 65)
-        _label = _widg.make_label(_(u"Failure rate multiplier:"))
+        _label = Widgets.make_label(_(u"Failure rate multiplier:"))
         _fixed.put(_label, 5, 125)
         _fixed.put(self.txtFRMultiplier, 310, 125)
-        _label = _widg.make_label(_(u"Decimal places:"))
+        _label = Widgets.make_label(_(u"Decimal places:"))
         _fixed.put(_label, 5, 155)
         _fixed.put(self.txtDecimalPlaces, 310, 155)
-        _label = _widg.make_label(_(u"Default mission time:"))
+        _label = Widgets.make_label(_(u"Default mission time:"))
         _fixed.put(_label, 5, 185)
         _fixed.put(self.txtMissionTime, 310, 185)
 
-        _label = _widg.make_label(_(u"Revision Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Revision Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 225)
         _fixed.put(self.btnRevisionBGColor, 340, 225)
-        _label = _widg.make_label(_(u"Revision Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Revision Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 255)
         _fixed.put(self.btnRevisionFGColor, 340, 255)
-        _label = _widg.make_label(_(u"Function Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Function Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 285)
         _fixed.put(self.btnFunctionBGColor, 340, 285)
-        _label = _widg.make_label(_(u"Function Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Function Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 315)
         _fixed.put(self.btnFunctionFGColor, 340, 315)
-        _label = _widg.make_label(_(u"Requirements Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Requirements Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 345)
         _fixed.put(self.btnRequirementsBGColor, 340, 345)
-        _label = _widg.make_label(_(u"Requirements Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Requirements Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 375)
         _fixed.put(self.btnRequirementsFGColor, 340, 375)
-        _label = _widg.make_label(_(u"Hardware Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Hardware Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 405)
         _fixed.put(self.btnHardwareBGColor, 340, 405)
-        _label = _widg.make_label(_(u"Hardware Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Hardware Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 435)
         _fixed.put(self.btnHardwareFGColor, 340, 435)
-        _label = _widg.make_label(_(u"Software Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Software Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 465)
         _fixed.put(self.btnSoftwareBGColor, 340, 465)
-        _label = _widg.make_label(_(u"Software Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Software Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 495)
         _fixed.put(self.btnSoftwareFGColor, 340, 495)
-        _label = _widg.make_label(_(u"Validation  Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Validation  Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 525)
         _fixed.put(self.btnValidationBGColor, 340, 525)
-        _label = _widg.make_label(_(u"Validation Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Validation Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 555)
         _fixed.put(self.btnValidationFGColor, 340, 555)
-        _label = _widg.make_label(_(u"Incident Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Incident Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 585)
         _fixed.put(self.btnIncidentBGColor, 340, 585)
-        _label = _widg.make_label(_(u"Incident Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Incident Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 615)
         _fixed.put(self.btnIncidentFGColor, 340, 615)
-        _label = _widg.make_label(_(u"Testing Tree Background Color:"),
+        _label = Widgets.make_label(_(u"Testing Tree Background Color:"),
                                   width=350)
         _fixed.put(_label, 5, 645)
         _fixed.put(self.btnTestingBGColor, 340, 645)
-        _label = _widg.make_label(_(u"Testing Tree Foreground Color:"),
+        _label = Widgets.make_label(_(u"Testing Tree Foreground Color:"),
                                   width=350)
         _fixed.put(_label, 5, 675)
         _fixed.put(self.btnTestingFGColor, 340, 675)
@@ -1806,19 +1558,19 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         self.btnListEdit = gtk.Button(_(u"Edit List"))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/edit.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/edit.png')
         self.btnListEdit.set_image(_image)
         self.btnListEdit.connect('clicked', self._edit_list)
 
         self.btnListAdd = gtk.Button(_(u"Add Item"))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/add.png')
         self.btnListAdd.set_image(_image)
         self.btnListAdd.connect('clicked', self._add_to_list)
 
         self.btnListRemove = gtk.Button(_(u"Remove Item"))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
         self.btnListRemove.set_image(_image)
         self.btnListRemove.connect('clicked', self._remove_from_list)
 
@@ -1991,13 +1743,13 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         self.btnSave = gtk.Button(_(u"Save"))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
         self.btnSave.set_image(_image)
         self.btnSave.connect('clicked', self._save_options)
 
         self.btnQuit = gtk.Button(_(u"Close"))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/quit.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/quit.png')
         self.btnQuit.set_image(_image)
         self.btnQuit.connect('clicked', self._quit)
 
@@ -2032,12 +1784,12 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         _tab_pos = {'bottom': 0, 'left': 1, 'right': 2, 'top': 3}
 
         # Make a backup of the original configuration file.
-        _conf_file = _conf.CONF_DIR + 'RTK.conf'
+        Configuration_file = Configuration.CONF_DIR + 'RTK.conf'
 
         _parser = SafeConfigParser()
 
-        if file_exists(_conf_file):
-            _parser.read(_conf_file)
+        if file_exists(Configuration_file):
+            _parser.read(Configuration_file)
 
             # Set tab positions.
             self.cmbModuleBookTabPosition.set_active(
@@ -2189,7 +1941,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         _color = '#%s%s%s' % (_red, _green, _blue)
 
         # Set the color variable.
-        _conf.RTK_COLORS[rtk_colors] = _color
+        Configuration.RTK_COLORS[rtk_colors] = _color
 
         return False
 
@@ -2210,31 +1962,31 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         # Retrieve the default heading text from the format file.
         _path = "/root/tree[@name='%s']/column/defaulttitle" % _name
-        _default = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
+        _default = etree.parse(Configuration.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve the default heading text from the format file.
         _path = "/root/tree[@name='%s']/column/usertitle" % _name
-        _user = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
+        _user = etree.parse(Configuration.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve the column position from the format file.
         _path = "/root/tree[@name='%s']/column/position" % _name
-        _position = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
+        _position = etree.parse(Configuration.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve whether or not the column is editable from the format file.
         _path = "/root/tree[@name='%s']/column/editable" % _name
-        _editable = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
+        _editable = etree.parse(Configuration.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve whether or not the column is visible from the format file.
         _path = "/root/tree[@name='%s']/column/visible" % _name
-        _visible = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
+        _visible = etree.parse(Configuration.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve datatypes from the format file.
         _path = "/root/tree[@name='%s']/column/datatype" % _name
-        _datatype = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
+        _datatype = etree.parse(Configuration.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         # Retrieve widget types from the format file.
         _path = "/root/tree[@name='%s']/column/widget" % _name
-        _widget = etree.parse(_conf.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
+        _widget = etree.parse(Configuration.RTK_FORMAT_FILE[_fmt_idx]).xpath(_path)
 
         _model = self.tvwEditTree.get_model()
         _model.clear()
@@ -2246,7 +1998,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
                      _widget[_index].text]
             _model.append(_data)
 
-        if _conf.RTK_PROG_INFO[2] == '':
+        if Configuration.RTK_PROG_INFO[2] == '':
             self.notebook.set_current_page(3)
         else:
             self.notebook.set_current_page(4)
@@ -2490,12 +2242,12 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         from shutil import copyfile
 
         # Make a backup of the original configuration file.
-        _conf_file = _conf.CONF_DIR + 'RTK.conf'
-        copyfile(_conf_file, _conf_file + '.bak')
+        Configuration_file = Configuration.CONF_DIR + 'RTK.conf'
+        copyfile(Configuration_file, Configuration_file + '.bak')
 
         # Find out which page is selected in the gtk.Notebook().
         _page = self.notebook.get_current_page()
-        if _conf.RTK_PROG_INFO[2] == '':
+        if Configuration.RTK_PROG_INFO[2] == '':
             _page += 1
 
         # Call the proper save function.
@@ -2511,7 +2263,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         if _error:
             rtk_warning(_(u"Problem saving your RTK configuration.  "
                           u"Restoring previous configuration values."))
-            copyfile(_conf_file + '.bak', _conf_file)
+            copyfile(Configuration_file + '.bak', Configuration_file)
             return True
 
         return False
@@ -2525,7 +2277,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         """
 
         # Save the active modules for the open RTK Program database.
-        if _conf.RTK_PROG_INFO[2] != '':
+        if Configuration.RTK_PROG_INFO[2] != '':
             _values = (self.chkRevisions.get_active(),
                        self.chkFunctions.get_active(),
                        self.chkRequirements.get_active(),
@@ -2556,13 +2308,13 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         :rtype: bool
         """
 
-        _conf_file = _conf.CONF_DIR + 'RTK.conf'
+        Configuration_file = Configuration.CONF_DIR + 'RTK.conf'
 
         _parser = SafeConfigParser()
 
         # Write the new colors to the configuration file.
-        if file_exists(_conf_file):
-            _parser.read(_conf_file)
+        if file_exists(Configuration_file):
+            _parser.read(Configuration_file)
 
             try:
                 _parser.set('General', 'frmultiplier',
@@ -2600,32 +2352,32 @@ class Options(gtk.Window):                  # pylint: disable=R0902
             except AttributeError:
                 _parser.set('General', 'booktabpos', 'bottom')
 
-            _parser.set('Colors', 'revisionbg', _conf.RTK_COLORS[0])
-            _parser.set('Colors', 'revisionfg', _conf.RTK_COLORS[1])
-            _parser.set('Colors', 'functionbg', _conf.RTK_COLORS[2])
-            _parser.set('Colors', 'functionfg', _conf.RTK_COLORS[3])
-            _parser.set('Colors', 'requirementbg', _conf.RTK_COLORS[4])
-            _parser.set('Colors', 'requirementfg', _conf.RTK_COLORS[5])
-            _parser.set('Colors', 'assemblybg', _conf.RTK_COLORS[6])
-            _parser.set('Colors', 'assemblyfg', _conf.RTK_COLORS[7])
-            _parser.set('Colors', 'validationbg', _conf.RTK_COLORS[8])
-            _parser.set('Colors', 'validationfg', _conf.RTK_COLORS[9])
-            _parser.set('Colors', 'rgbg', _conf.RTK_COLORS[10])
-            _parser.set('Colors', 'rgfg', _conf.RTK_COLORS[11])
-            _parser.set('Colors', 'fracabg', _conf.RTK_COLORS[12])
-            _parser.set('Colors', 'fracafg', _conf.RTK_COLORS[13])
-            _parser.set('Colors', 'partbg', _conf.RTK_COLORS[14])
-            _parser.set('Colors', 'partfg', _conf.RTK_COLORS[15])
-            _parser.set('Colors', 'overstressbg', _conf.RTK_COLORS[16])
-            _parser.set('Colors', 'overstressfg', _conf.RTK_COLORS[17])
-            _parser.set('Colors', 'taggedbg', _conf.RTK_COLORS[18])
-            _parser.set('Colors', 'taggedfg', _conf.RTK_COLORS[19])
-            _parser.set('Colors', 'nofrmodelfg', _conf.RTK_COLORS[20])
-            _parser.set('Colors', 'softwarebg', _conf.RTK_COLORS[21])
-            _parser.set('Colors', 'softwarefg', _conf.RTK_COLORS[22])
+            _parser.set('Colors', 'revisionbg', Configuration.RTK_COLORS[0])
+            _parser.set('Colors', 'revisionfg', Configuration.RTK_COLORS[1])
+            _parser.set('Colors', 'functionbg', Configuration.RTK_COLORS[2])
+            _parser.set('Colors', 'functionfg', Configuration.RTK_COLORS[3])
+            _parser.set('Colors', 'requirementbg', Configuration.RTK_COLORS[4])
+            _parser.set('Colors', 'requirementfg', Configuration.RTK_COLORS[5])
+            _parser.set('Colors', 'assemblybg', Configuration.RTK_COLORS[6])
+            _parser.set('Colors', 'assemblyfg', Configuration.RTK_COLORS[7])
+            _parser.set('Colors', 'validationbg', Configuration.RTK_COLORS[8])
+            _parser.set('Colors', 'validationfg', Configuration.RTK_COLORS[9])
+            _parser.set('Colors', 'rgbg', Configuration.RTK_COLORS[10])
+            _parser.set('Colors', 'rgfg', Configuration.RTK_COLORS[11])
+            _parser.set('Colors', 'fracabg', Configuration.RTK_COLORS[12])
+            _parser.set('Colors', 'fracafg', Configuration.RTK_COLORS[13])
+            _parser.set('Colors', 'partbg', Configuration.RTK_COLORS[14])
+            _parser.set('Colors', 'partfg', Configuration.RTK_COLORS[15])
+            _parser.set('Colors', 'overstressbg', Configuration.RTK_COLORS[16])
+            _parser.set('Colors', 'overstressfg', Configuration.RTK_COLORS[17])
+            _parser.set('Colors', 'taggedbg', Configuration.RTK_COLORS[18])
+            _parser.set('Colors', 'taggedfg', Configuration.RTK_COLORS[19])
+            _parser.set('Colors', 'nofrmodelfg', Configuration.RTK_COLORS[20])
+            _parser.set('Colors', 'softwarebg', Configuration.RTK_COLORS[21])
+            _parser.set('Colors', 'softwarefg', Configuration.RTK_COLORS[22])
 
             try:
-                _parser.write(open(_conf_file, 'w'))
+                _parser.write(open(Configuration_file, 'w'))
                 return False
             except EnvironmentError:
                 return True
@@ -2730,7 +2482,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         (_name, _fmt_idx) = self._get_format_info()
 
         # Get the format file for the gtk.TreeView to be edited.
-        _format_file = _conf.RTK_FORMAT_FILE[_fmt_idx]
+        _format_file = Configuration.RTK_FORMAT_FILE[_fmt_idx]
         _basename = os.path.basename(_format_file)
 
         # Open the format file for writing.

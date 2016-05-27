@@ -15,7 +15,6 @@ rtk/requirement/Requirement.py:# TODO: See bug 179
 rtk/requirement/WorkBook.py:# TODO: Activate and test report buttons when reports have been refactored.
 rtk/requirement/ModuleBook.py:# TODO: See bug 178
 rtk/requirement/ModuleBook.py:# TODO: Refactor _on_cell_edited; current McCabe Complexity Metrix = 11.
-rtk/requirement/Assistants.py:# TODO: Remove self._modulebook.mdcRTK.project_dao parameter after converting all modules.
 rtk/revision/ModuleBook.py:# TODO: Remove the last two parameters after re-writing the method.
 rtk/revision/Assistants.py:        # TODO: Copy FMEA for functions and hardware.
 rtk/hardware/WorkBook.py:# TODO: Re-write _create_component_inputs; current McCabe Complexity metric = 19.

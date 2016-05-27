@@ -790,7 +790,6 @@ experience. -->
             <editable>0</editable>
             <visible>0</visible>
         </column>
-
         <column>
             <defaulttitle>Cost Type</defaulttitle>
             <usertitle>Cost Type</usertitle>

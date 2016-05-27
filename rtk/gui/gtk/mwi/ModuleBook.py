@@ -34,11 +34,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
+    import Configuration
+    import Utilities
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.Utilities as _util
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -48,7 +48,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -76,16 +76,18 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
     This is the Module view for the pyGTK multiple window interface.
     """
 
-    def __init__(self, application):
+    def __init__(self, controller):
         """
-        Initializes an instance of the Module view class.
+        Method to initialize an instance of the Module view class.
+
+        :param controller:
         """
 
         # Initialize private list attributes.
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._application = application
+        self._mdcRTK = controller
 
         # Initialize public scalar attributes.
         self.listview = None
@@ -100,10 +102,10 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _width = gtk.gdk.screen_width() / _n_screens
         _height = gtk.gdk.screen_height()
 
-        if _conf.OS == 'Linux':
+        if Configuration.OS == 'Linux':
             _width = (2 * _width / 3) - 10
             _height = 2 * _height / 7
-        elif _conf.OS == 'Windows':
+        elif Configuration.OS == 'Windows':
             _width = (2 * _width / 3) - 30
             _height = 2 * _height / 7
 
@@ -124,11 +126,11 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _vbox.pack_start(self.toolbar, expand=False, fill=False)
 
         # Find the user's preferred gtk.Notebook tab position.
-        if _conf.TABPOS[0] == 'left':
+        if Configuration.TABPOS[0] == 'left':
             _position = gtk.POS_LEFT
-        elif _conf.TABPOS[0] == 'right':
+        elif Configuration.TABPOS[0] == 'right':
             _position = gtk.POS_RIGHT
-        elif _conf.TABPOS[0] == 'top':
+        elif Configuration.TABPOS[0] == 'top':
             _position = gtk.POS_TOP
         else:
             _position = gtk.POS_BOTTOM
@@ -184,13 +186,13 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu2 = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_(u"_Project"), use_underline=True)
-        #_menu_item.connect('activate', _util.create_project, self)
+        #_menu_item.connect('activate', Utilities.create_project, self)
         _menu2.append(_menu_item)
 
         # Add assembly entry.
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/insert_sibling.png')
         _menu_item.set_label(_(u"Sibling Assembly"))
         _menu_item.set_image(_image)
         #_menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
@@ -198,7 +200,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/insert_child.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/insert_child.png')
         _menu_item.set_label(_(u"Child Assembly"))
         _menu_item.set_image(_image)
         #_menu_item.connect('activate', self._app.HARDWARE.add_hardware, 1)
@@ -207,7 +209,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         # Add component entry.
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/part.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/part.png')
         _menu_item.set_label(_(u"Component"))
         _menu_item.set_image(_image)
         #_menu_item.connect('activate', self._app.HARDWARE.add_hardware, 2)
@@ -216,7 +218,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         # Add New menu.
         _mnuNew = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/new.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/new.png')
         _mnuNew.set_label(_(u"New"))
         _mnuNew.set_image(_image)
 
@@ -225,30 +227,30 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/open.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/open.png')
         _menu_item.set_label(_(u"Open"))
         _menu_item.set_image(_image)
-        _menu_item.connect('activate', _util.open_project, self._application)
+        _menu_item.connect('activate', Utilities.open_project, self._mdcRTK)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/save.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/save.png')
         _menu_item.set_label(_(u"Save"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', _util.save_project, self._app)
+        #_menu_item.connect('activate', Utilities.save_project, self._app)
         _menu.append(_menu_item)
 
         _menu_item = gtk.MenuItem(label=_("Save _As"), use_underline=True)
-        #_menu_item.connect('activate', _util.save_project, self._app)
+        #_menu_item.connect('activate', Utilities.save_project, self._app)
         _menu.append(_menu_item)
         #_menu_item = gtk.MenuItem(label=_("_Close"), use_underline=True)
-        #_menu_item.connect('activate', _util.close)
+        #_menu_item.connect('activate', Utilities.close)
         #_menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/exit.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/exit.png')
         _menu_item.set_label(_("Exit"))
         _menu_item.set_image(_image)
         #_menu_item.connect('activate', self.quit_RTK)
@@ -260,41 +262,41 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _menu = gtk.Menu()
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/undo.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/undo.png')
         _menu_item.set_label(_("Undo"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', _util.undo)
+        #_menu_item.connect('activate', Utilities.undo)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/redo.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/redo.png')
         _menu_item.set_label(_("Redo"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', _util.redo)
+        #_menu_item.connect('activate', Utilities.redo)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/cut.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/cut.png')
         _menu_item.set_label(_("Cut"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', _util.cut_copy_paste, 0)
+        #_menu_item.connect('activate', Utilities.cut_copy_paste, 0)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/copy.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/copy.png')
         _menu_item.set_label(_("Copy"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', _util.cut_copy_paste, 1)
+        #_menu_item.connect('activate', Utilities.cut_copy_paste, 1)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '16x16/paste.png')
+        _image.set_from_file(Configuration.ICON_DIR + '16x16/paste.png')
         _menu_item.set_label(_("Paste"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', _util.cut_copy_paste, 2)
+        #_menu_item.connect('activate', Utilities.cut_copy_paste, 2)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("Select _All"), use_underline=True)
-        #_menu_item.connect('activate', _util.select_all)
+        #_menu_item.connect('activate', Utilities.select_all)
         _menu.append(_menu_item)
 
         _mnuEdit = gtk.MenuItem(label=_("_Edit"), use_underline=True)
@@ -302,17 +304,17 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_("_Find"), use_underline=True)
-        #_menu_item.connect('activate', _util.find, 0)
+        #_menu_item.connect('activate', Utilities.find, 0)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("Find _Next"), use_underline=True)
-        #_menu_item.connect('activate', _util.find, 1)
+        #_menu_item.connect('activate', Utilities.find, 1)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("Find _Previous"),
                                   use_underline=True)
-        #_menu_item.connect('activate', _util.find, 2)
+        #_menu_item.connect('activate', Utilities.find, 2)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("_Replace"), use_underline=True)
-        #_menu_item.connect('activate', _util.find, 3)
+        #_menu_item.connect('activate', Utilities.find, 3)
         _menu.append(_menu_item)
 
         _mnuSearch = gtk.MenuItem(label=_("_Search"), use_underline=True)
@@ -333,11 +335,11 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_("_Options"), use_underline=True)
-        #_menu_item.connect('activate', _util.options, self._app)
+        #_menu_item.connect('activate', Utilities.options, self._app)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("_Composite Ref Des"),
                                   use_underline=True)
-        #_menu_item.connect('activate', _util.create_comp_ref_des, self._app)
+        _menu_item.connect('activate', self._create_comp_ref_des)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("_Update Design Review Criteria"),
                                   use_underline=True)
@@ -345,7 +347,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("_Add Parts to System Hierarchy"),
                                   use_underline=True)
-        #_menu_item.connect('activate', _util.add_parts_system_hierarchy, self._app)
+        #_menu_item.connect('activate', Utilities.add_parts_system_hierarchy, self._app)
         _menu.append(_menu_item)
 
         _mnuTools = gtk.MenuItem(label=_("_Tools"), use_underline=True)
@@ -375,9 +377,9 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Create a new RTK Project Database."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/new.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/new.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', _util.create_project, self._app)
+        #_button.connect('clicked', Utilities.create_project, self._app)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -386,9 +388,9 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Connect to an existing RTK Project "
                                    u"Database."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/open.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/open.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', _util.open_project, self._application)
+        _button.connect('clicked', Utilities.open_project, self._mdcRTK)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -400,9 +402,9 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Save the currently open RTK Project "
                                    u"Database."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', _util.save_project, self._app)
+        #_button.connect('clicked', Utilities.save_project, self._app)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -414,7 +416,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Save the currently open RTK Program "
                                    u"Database then quits."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/save-exit.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/save-exit.png')
         _button.set_icon_widget(_image)
         #_button.connect('clicked', self.save_quit_RTK)
         _toolbar.insert(_button, _position)
@@ -425,7 +427,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Quits without saving the currently open "
                                    u"RTK Program Database."))
         _image = gtk.Image()
-        _image.set_from_file(_conf.ICON_DIR + '32x32/exit.png')
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/exit.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', destroy)
         _toolbar.insert(_button, _position)
@@ -495,7 +497,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             self.listview.remove(self.listview.get_child())
 
         try:
-            _listbook = _conf.RTK_MODULES[page_num].listbook
+            _listbook = Configuration.RTK_MODULES[page_num].listbook
         except IndexError:
             _listbook = None
 
@@ -507,11 +509,55 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             self.workview.remove(self.workview.get_child())
 
         try:
-            _workbook = _conf.RTK_MODULES[page_num].workbook
+            _workbook = Configuration.RTK_MODULES[page_num].workbook
         except IndexError:
             _workbook = None
 
         if _workbook is not None:
             self.workview.add(_workbook)
+
+        return False
+
+    def _create_comp_ref_des(self, __widget):
+        """
+        Method to iterively create composite reference designators.
+
+        :param gtk.Widget __widget: the gtk.Widget() that called this function.
+        :return: False if successful or True if an error is encounterd.
+        """
+
+        _hardware = Configuration.RTK_MODULES[3]
+        _model = _hardware.treeview.get_model()
+
+        _model.foreach(self._build_composite_ref_des)
+
+        return False
+
+    def _build_composite_ref_des(self, model, __path, row):
+        """
+        Method to build the composite reference designator.
+
+        :return: False if successful or True if an error is encountered
+        :rtype: bool
+        """
+
+        _hardware_id = model.get_value(row, 1)
+        _hardware_model = self._mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
+
+        _ref_des = model.get_value(row, 27)
+
+        # If the currently selected row has no parent, the composite reference
+        # designator is the same as the reference designator.  Otherwise, build
+        # the composite reference designator by appending the current row's
+        # reference designator to the parent's composite reference designator.
+        if not model.iter_parent(row):
+            _comp_ref_des = _ref_des
+        else:
+            _p_row = model.iter_parent(row)
+            _p_comp_ref_des = model.get_value(_p_row, 5)
+            _comp_ref_des = _p_comp_ref_des + ":" + _ref_des
+
+        model.set_value(row, 5, _comp_ref_des)
+        _hardware_model.comp_ref_des = _comp_ref_des
 
         return False
