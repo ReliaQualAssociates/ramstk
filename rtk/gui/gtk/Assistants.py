@@ -65,8 +65,7 @@ _ = gettext.gettext
 
 class CreateProject(object):
     """
-    This is the gtk.Assistant() that guides the user through the process of
-    creating a new RTK Project database.
+    This is the class used to create a new RTK Project database.
     """
 
     def __init__(self, __button, controller):
@@ -102,7 +101,7 @@ class CreateProject(object):
         """
         Method to create a RTK Project database using MySQL/MariaDB.
         """
-
+# TODO: Update MySQL/MariaDB code.
         login = _login.Login(_(u"Create a RTK Program Database"))
         if login.answer != gtk.RESPONSE_ACCEPT:
             return True
@@ -237,11 +236,47 @@ class CreateProject(object):
         return True
 
 
-    #def _open_mysql(self):
-    #    """
-    #    Method to open a MySQL/MariaDB RTK program database.
-    #    """
+class OpenProject(object):
+    """
+    This is the gtk.Assistant() that guides the user through the process of
+    creating a new RTK Project database.
+    """
+
+    def __init__(self, __button, controller):
+        """
+        Method to initialize an instance of the Create Project Assistant.
+
+        :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
+        """
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._mdcRTK = controller
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+        Utilities.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+
+        if Configuration.BACKEND == 'mysql':
+            self._open_mysql_project()
+        elif Configuration.BACKEND == 'sqlite3':
+            self._open_sqlite3_project()
+
+        Utilities.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+
+    def _open_mysql_project(self):
+        """
+        Method to open a MySQL/MariaDB RTK program database.
+        """
 # TODO: Update the MySQL/MariaDB code.
+        pass
     #    login = _login.Login(_(u"RTK Program Database Login"))
 
     #    if login.answer != gtk.RESPONSE_ACCEPT:
@@ -291,37 +326,37 @@ class CreateProject(object):
 
     #    cnx.close()
 
-    #def _open_sqlite3(self):
-    #    """
-    #    Method to open a SQLite3 RTK program database.
-    #    """
+    def _open_sqlite3_project(self):
+        """
+        Method to open a SQLite3 RTK program database.
+        """
 
-    #    _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
-    #                                    buttons=(gtk.STOCK_OK,
-    #                                             gtk.RESPONSE_ACCEPT,
-    #                                             gtk.STOCK_CANCEL,
-    #                                             gtk.RESPONSE_REJECT))
-    #    _dialog.set_current_folder(Configuration.PROG_DIR)
+        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
+                                        buttons=(gtk.STOCK_OK,
+                                                 gtk.RESPONSE_ACCEPT,
+                                                 gtk.STOCK_CANCEL,
+                                                 gtk.RESPONSE_REJECT))
+        _dialog.set_current_folder(Configuration.PROG_DIR)
 
         # Set some filters to select all files or only some text files.
-    #    _filter = gtk.FileFilter()
-    #    _filter.set_name(_(u"RTK Program Databases"))
-    #    _filter.add_pattern("*.rfb")
-    #    _filter.add_pattern("*.rtk")
-    #    _dialog.add_filter(_filter)
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"RTK Program Databases"))
+        _filter.add_pattern("*.rtk")
+        _dialog.add_filter(_filter)
 
-    #    _filter = gtk.FileFilter()
-    #    _filter.set_name(_(u"All files"))
-    #    _filter.add_pattern("*")
-    #    _dialog.add_filter(_filter)
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"All files"))
+        _filter.add_pattern("*")
+        _dialog.add_filter(_filter)
 
-    #    if _dialog.run() == gtk.RESPONSE_ACCEPT:
-    #        Configuration.RTK_PROG_INFO[2] = _dialog.get_filename()
-    #        _dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            Configuration.RTK_PROG_INFO[2] = _dialog.get_filename()
 
-    #    _dialog.destroy()
+        _dialog.destroy()
 
-    #    return False
+        self._mdcRTK.request_open_project()
+
+        return False
 
 
 #def import_project(__widget, __app):

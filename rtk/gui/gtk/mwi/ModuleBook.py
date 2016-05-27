@@ -41,7 +41,7 @@ except ImportError:
     import rtk.Utilities as Utilities
 from ListBook import ListView
 from WorkBook import WorkView
-from gui.gtk.Assistants import CreateProject
+from gui.gtk.Assistants import CreateProject, OpenProject
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -231,7 +231,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image.set_from_file(Configuration.ICON_DIR + '16x16/open.png')
         _menu_item.set_label(_(u"Open"))
         _menu_item.set_image(_image)
-        _menu_item.connect('activate', self._mdcRTK.open_project)
+        _menu_item.connect('activate', OpenProject, self._mdcRTK)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
@@ -391,7 +391,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/open.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', self._mdcRTK.open_project)
+        _button.connect('clicked', OpenProject, self._mdcRTK)
         _toolbar.insert(_button, _position)
         _position += 1
 
