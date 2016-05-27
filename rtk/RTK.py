@@ -641,17 +641,33 @@ class RTK(object):
 
         return False
 
-    def open_project(self):
+    def open_project(self, __widget):
         """
         Method to open an RTK Project database and load it into the views.
+
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
         """
+
+        if self.loaded:
+            Utilities.rtk_information(_(u"A database is already open.  Only "
+                                        u"one database can be open at a time "
+                                        u"in RTK.  You must quit the RTK "
+                                        u"application before a new database "
+                                        u"can be opened."))
+            return True
+
+        Utilities.set_cursor(self, gtk.gdk.WATCH)
 
         self.module_book.statusbar.push(2, _(u"Opening Program Database..."))
 
+        if Configuration.BACKEND == 'mysql':
+            self._open_mysql()
+        elif Configuration.BACKEND == 'sqlite3':
+            self._open_sqlite3()
+
         # Connect to the project database.
         self.project_dao = DAO(Configuration.RTK_PROG_INFO[2])
-
-        self.project_dao.execute("PRAGMA foreign_keys = ON", commit=False)
+        self.project_dao.execute("PRAGMA foreign_keys=ON", commit=False)
 
         # Get a connection to the program database and then retrieve the
         # program information.
@@ -708,6 +724,10 @@ class RTK(object):
 
         self.loaded = True
 
+        Utilities.set_cursor(self, gtk.gdk.LEFT_PTR)
+
+        return False
+
     def load_revision(self, revision_id):
         """
         Method to load the active RTK module data whenever a new Revision is
@@ -722,6 +742,118 @@ class RTK(object):
 
         for _moduleview in Configuration.RTK_MODULES[1:]:
             self.module_book.load_module_page(_moduleview)
+
+        return False
+
+    def request_create_project(self):
+        """
+        Method to request a new RTK Project database be created.
+        """
+
+        if Configuration.BACKEND == 'mysql':
+            self._create_mysql_project()
+        elif Configuration.BACKEND == 'sqlite3':
+            # Connect to the new database.
+            _database = Configuration.PROG_DIR + '/' + \
+                        Configuration.RTK_PROG_INFO[2]
+            _dao = DAO(_database)
+
+            # Add all the tables to the new database.
+            _sqlfile = open(Configuration.DATA_DIR +
+                            'newprogram_sqlite3.sql', 'r')
+            for _query in _sqlfile.read().split(';'):
+                _dao.execute(_query, commit=True)
+
+        # Close the connection.
+        _dao.close()
+
+        self.open_project(None)
+
+        return False
+
+    def _open_mysql(self):
+        """
+        Method to open a MySQL/MariaDB RTK program database.
+        """
+# TODO: Update the MySQL/MariaDB code.
+        login = _login.Login(_(u"RTK Program Database Login"))
+
+        if login.answer != gtk.RESPONSE_ACCEPT:
+            return True
+
+        _query = "SHOW DATABASES"
+        _cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
+        results = app.DB.execute_query(query, None, cnx)
+
+        dialog = Widgets.make_dialog(_(u"RTK: Open Program"))
+
+        model = gtk.TreeStore(gobject.TYPE_STRING)
+        treeview = gtk.TreeView(model)
+
+        column = gtk.TreeViewColumn(_(u"Program"))
+        treeview.append_column(column)
+        cell = gtk.CellRendererText()
+        cell.set_property('editable', False)
+        column.pack_start(cell, True)
+        column.add_attribute(cell, 'text', 0)
+
+        scrollwindow = gtk.ScrolledWindow()
+        width, height = gtk.gdk.get_default_root_window().get_size()
+        scrollwindow.set_size_request((width / 6), (height / 6))
+        scrollwindow.add(treeview)
+
+        for __, _database in enumerate(results):
+            # Don't display the MySQL administrative/test databases.
+            if(_database[0] != 'information_schema' and
+               _database[0] != 'test' and
+               _database[0] != 'mysql' and
+               _database[0] != 'RTKcom' and
+               _database[0] != '#mysql50#lost+found'):
+                model.append(None, [_database[0]])
+
+        dialog.vbox.pack_start(scrollwindow)    # pylint: disable=E1101
+        scrollwindow.show_all()
+
+        if dialog.run() == gtk.RESPONSE_ACCEPT:
+            (_model, _row) = treeview.get_selection().get_selected()
+            Configuration.RTK_PROG_INFO[2] = _model.get_value(_row, 0)
+            set_cursor(application, gtk.gdk.WATCH)
+            dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            application.open_project()
+
+        dialog.destroy()
+
+        cnx.close()
+
+    def _open_sqlite3(self):
+        """
+        Method to open a SQLite3 RTK program database.
+        """
+
+        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
+                                        buttons=(gtk.STOCK_OK,
+                                                 gtk.RESPONSE_ACCEPT,
+                                                 gtk.STOCK_CANCEL,
+                                                 gtk.RESPONSE_REJECT))
+        _dialog.set_current_folder(Configuration.PROG_DIR)
+
+        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"RTK Program Databases"))
+        _filter.add_pattern("*.rfb")
+        _filter.add_pattern("*.rtk")
+        _dialog.add_filter(_filter)
+
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"All files"))
+        _filter.add_pattern("*")
+        _dialog.add_filter(_filter)
+
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            Configuration.RTK_PROG_INFO[2] = _dialog.get_filename()
+            _dialog.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+
+        _dialog.destroy()
 
         return False
 

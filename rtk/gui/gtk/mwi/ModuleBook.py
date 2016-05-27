@@ -41,6 +41,7 @@ except ImportError:
     import rtk.Utilities as Utilities
 from ListBook import ListView
 from WorkBook import WorkView
+from gui.gtk.Assistants import CreateProject
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -186,7 +187,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu2 = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_(u"_Project"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.create_project, self)
+        _menu_item.connect('activate', CreateProject, self._mdcRTK)
         _menu2.append(_menu_item)
 
         # Add assembly entry.
@@ -230,7 +231,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image.set_from_file(Configuration.ICON_DIR + '16x16/open.png')
         _menu_item.set_label(_(u"Open"))
         _menu_item.set_image(_image)
-        _menu_item.connect('activate', Utilities.open_project, self._mdcRTK)
+        _menu_item.connect('activate', self._mdcRTK.open_project)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
@@ -379,7 +380,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/new.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', Utilities.create_project, self._app)
+        _button.connect('clicked', CreateProject, self._mdcRTK)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -390,7 +391,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/open.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', Utilities.open_project, self._mdcRTK)
+        _button.connect('clicked', self._mdcRTK.open_project)
         _toolbar.insert(_button, _position)
         _position += 1
 

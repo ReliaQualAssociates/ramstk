@@ -56,13 +56,13 @@ CREATE TABLE "tbl_program_info" (
     "fld_effect_next_id" INTEGER NOT NULL DEFAULT(1),
     "fld_cause_prefix" VARCHAR(16) NOT NULL DEFAULT('CAUSE'),
     "fld_cause_next_id" INTEGER NOT NULL DEFAULT(1),
-    "fld_sftwr_prefix" VARCHAR(16) NOT NULL DEFAULT('MODULE'),
-    "fld_sftwr_next_id" INTEGER NOT NULL DEFAULT(1),
+    "fld_software_prefix" VARCHAR(16) NOT NULL DEFAULT('MODULE'),
+    "fld_software_next_id" INTEGER NOT NULL DEFAULT(1),
     "fld_revision_active" TINYINT NOT NULL DEFAULT(1),
     "fld_requirement_active" TINYINT NOT NULL DEFAULT(1),
     "fld_function_active" TINYINT NOT NULL DEFAULT(1),
     "fld_hardware_active" TINYINT NOT NULL DEFAULT(1),
-    "fld_sftwr_active" TINYINT NOT NULL DEFAULT(1),
+    "fld_software_active" TINYINT NOT NULL DEFAULT(1),
     "fld_vandv_active" TINYINT NOT NULL DEFAULT(1),
     "fld_testing_active" TINYINT NOT NULL DEFAULT(1),
     "fld_rcm_active" TINYINT NOT NULL DEFAULT(1),
@@ -1616,13 +1616,4 @@ CREATE TABLE "rtk_age_exploration" (
     "fld_approved" INTEGER DEFAULT(0)                   --
 );
 
---DELETE FROM "sqlite_sequence";
---INSERT INTO "sqlite_sequence" VALUES('tbl_system', 0);
---INSERT INTO "sqlite_sequence" VALUES('tbl_similar_item', 0);
---INSERT INTO "sqlite_sequence" VALUES('tbl_program_info', 0);
---INSERT INTO "sqlite_sequence" VALUES('tbl_functions', 0);
---INSERT INTO "sqlite_sequence" VALUES('tbl_revisions', 0);
---INSERT INTO "sqlite_sequence" VALUES('tbl_requirements', 0);
---INSERT INTO "sqlite_sequence" VALUES('tbl_validation', 0);
-
---END TRANSACTION;
+END TRANSACTION;

@@ -70,3 +70,10 @@ class DAO(object):
         _last_id = self.model.get_last_id(table)
 
         return _last_id
+
+    def close(self):
+        """
+        Method to close the database connection.
+        """
+
+        print self.model.connection.close()
