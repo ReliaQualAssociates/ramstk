@@ -1571,7 +1571,7 @@ class ImportIncident(gtk.Assistant):
         :rtype: boolean
         """
 # TODO: Re-write _import; current McCabe Complexity metric = 18.
-        Utilities.set_cursor(self, gtk.gdk.WATCH)
+        Widgets.set_cursor(self.modulebook.mdcRTK, gtk.gdk.WATCH)
 
         _import_errors = 0
         self._import_log.info('The following records could not be imported to '
@@ -1711,7 +1711,7 @@ class ImportIncident(gtk.Assistant):
                                         u"{1:s} for more details.").format(
                                             _import_errors, self._import_log))
 
-        Utilities.set_cursor(self, gtk.gdk.LEFT_PTR)
+        Widgets.set_cursor(self.modulebook.mdcRTK, gtk.gdk.LEFT_PTR)
 
         # Reload the Incident class gtk.TreeView().
         self._modulebook.request_load_data(self._dao, self._revision_id)

@@ -574,7 +574,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         # Run the dialog and apply the changes if the 'OK' button is pressed.
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
-            # Utilities.set_cursor(self._app, gtk.gdk.WATCH)
+            # Widgets.set_cursor(self._app, gtk.gdk.WATCH)
 
             if _chkApplyAll.get_active():
                 _row = _model.get_iter_root()
@@ -606,7 +606,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _model.set_value(_row, 33, _similar_item.function_4)
                 _model.set_value(_row, 34, _similar_item.function_5)
 
-            # Utilities.set_cursor(self._app, gtk.gdk.LEFT_PTR)
+            # Widgets.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
         _dialog.destroy()
 

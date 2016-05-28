@@ -92,14 +92,14 @@ class CreateProject(object):
 
         # Initialize public scalar attributes.
 
-        Utilities.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+        Widgets.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
         if Configuration.BACKEND == 'mysql':
             self._request_create_mysql_project()
         elif Configuration.BACKEND == 'sqlite3':
             self._request_create_sqlite3_project()
 
-        Utilities.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+        Widgets.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
     def _request_create_mysql_project(self):
         """
@@ -268,14 +268,14 @@ class OpenProject(object):
 
         # Initialize public scalar attributes.
 
-        Utilities.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+        Widgets.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
         if Configuration.BACKEND == 'mysql':
             self._request_open_mysql_project()
         elif Configuration.BACKEND == 'sqlite3':
             self._request_open_sqlite3_project()
 
-        Utilities.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+        Widgets.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
     def _request_open_mysql_project(self):
         """

@@ -19,8 +19,6 @@ from os import environ, name
 # Add localization support.
 import gettext
 
-from ConfigParser import SafeConfigParser, NoOptionError
-
 # Modules required for the GUI.
 try:
     import pygtk
@@ -42,7 +40,6 @@ except ImportError:
 
 # Import other RTK modules.
 import Configuration
-import login as _login
 import gui.gtk.Widgets as Widgets
 
 _ = gettext.gettext
@@ -515,6 +512,7 @@ def delete_project(__widget, app):
         else:
             dialog.destroy()
 
+
 def select_source_file(assistant, title):
     """
     Function to select the file containing the data to import to the open RTK
@@ -781,7 +779,7 @@ def add_parts_system_hierarchy(__widget, app):
     :return: False if successul or True if an error is encountered.
     :rtype: bool
     """
-
+# TODO: Move this to the Incident class.
     set_cursor(app, gtk.gdk.WATCH)
 
     # Find the revision id.
@@ -853,7 +851,7 @@ def add_failure_modes(app, revision_id, assembly_id, category_id,
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-
+# TODO: Move this to the Hardware class.
     _err = False
 
     # Retrieve the default failure modes for the component from the common
@@ -924,52 +922,3 @@ def date_select(__widget, __event=None, entry=None):
         entry.grab_focus()
 
     return _date
-
-
-def set_cursor(controller, cursor):
-    """
-    Function to set the cursor for a gtk.gdk.Window()
-
-    :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
-    :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only handles
-                                  one of the following:
-                                  - gtk.gdk.X_CURSOR
-                                  - gtk.gdk.ARROW
-                                  - gtk.gdk.CENTER_PTR
-                                  - gtk.gdk.CIRCLE
-                                  - gtk.gdk.CROSS
-                                  - gtk.gdk.CROSS_REVERSE
-                                  - gtk.gdk.CROSSHAIR
-                                  - gtk.gdk.DIAMOND_CROSS
-                                  - gtk.gdk.DOUBLE_ARROW
-                                  - gtk.gdk.DRAFT_LARGE
-                                  - gtk.gdk.DRAFT_SMALL
-                                  - gtk.gdk.EXCHANGE
-                                  - gtk.gdk.FLEUR
-                                  - gtk.gdk.GUMBY
-                                  - gtk.gdk.HAND1
-                                  - gtk.gdk.HAND2
-                                  - gtk.gdk.LEFT_PTR - non-busy cursor
-                                  - gtk.gdk.PENCIL
-                                  - gtk.gdk.PLUS
-                                  - gtk.gdk.QUESTION_ARROW
-                                  - gtk.gdk.RIGHT_PTR
-                                  - gtk.gdk.SB_DOWN_ARROW
-                                  - gtk.gdk.SB_H_DOUBLE_ARROW
-                                  - gtk.gdk.SB_LEFT_ARROW
-                                  - gtk.gdk.SB_RIGHT_ARROW
-                                  - gtk.gdk.SB_UP_ARROW
-                                  - gtk.gdk.SB_V_DOUBLE_ARROW
-                                  - gtk.gdk.TCROSS
-                                  - gtk.gdk.TOP_LEFT_ARROW
-                                  - gtk.gdk.WATCH - when application is busy
-                                  - gtk.gdk.XTERM - selection bar
-    """
-
-    controller.module_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.list_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.work_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
-
-    gtk.gdk.flush()
-
-    return False

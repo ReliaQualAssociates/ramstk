@@ -1,14 +1,14 @@
 #!/usr/bin/env python
 """
 This module contains functions for creating, populating, destroying, and
-interacting with pyGTK widgets.  Import this module as _widg in other modules
-that create, populate, destroy, or interact with pyGTK widgets in the RTK
+interacting with pyGTK widgets.  Import this module in other modules that
+create, populate, destroy, or interact with pyGTK widgets in the RTK
 application.
 """
 
 # -*- coding: utf-8 -*-
 #
-#       widgets.py is part of The RTK Project
+#       rtk.gui.gtk.widgets.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -50,7 +50,7 @@ _ = gettext.gettext
 
 def make_button(height=40, width=200, label="", image='default'):
     """
-    Utility function to create gtk.Button() widgets.
+    Function to create gtk.Button() widgets.
 
     :keyword int height: the height of the gtk.Button().  Default is 40.
     :keyword int  width: the width of the gtk.Button().  Default is 200.
@@ -89,7 +89,7 @@ def make_button(height=40, width=200, label="", image='default'):
 
 def make_check_button(label="", width=-1):
     """
-    Utility function to create gtk.CheckButton() widgets.
+    Function to create gtk.CheckButton() widgets.
 
     :keyword str label: the text to display with the gtk.CheckButton().
                         Default is an empty string.
@@ -110,7 +110,7 @@ def make_check_button(label="", width=-1):
 
 def make_option_button(btngroup=None, btnlabel=_(u"")):
     """
-    Utility function to create gtk.RadioButton() widgets.
+    Function to create gtk.RadioButton() widgets.
 
     :keyword str btngroup: the group the gtk.RadioButton() belongs to, if any.
                            Default is None.
@@ -127,7 +127,7 @@ def make_option_button(btngroup=None, btnlabel=_(u"")):
 
 def make_combo(width=200, height=30, simple=True):
     """
-    Utility function to create gtk.ComboBox widgets.
+    Function to create gtk.ComboBox widgets.
 
     :keyword int width: width of the gtk.ComboBox() widget.  Default is 200.
     :keyword int height: height of the gtk.ComboBox widget.  Default is 30.
@@ -160,7 +160,7 @@ def make_combo(width=200, height=30, simple=True):
 
 def load_combo(combo, entries, simple=True, index=0):
     """
-    Utility function to load gtk.ComboBox widgets.
+    Function to load gtk.ComboBox() widgets.
 
     :param gtk.ComboBox combo: the gtk.ComboBox() to load.
     :param list entries: the information to load into the gtk.ComboBox().
@@ -194,7 +194,7 @@ def make_dialog(dlgtitle, dlgparent=None,
                 dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                             gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)):
     """
-    Utility function to create gtk.Dialog() widgets.
+    Function to create gtk.Dialog() widgets.
 
     :param str dlgtitle: the title text for the gtk.Dialog().
     :keyword gtk.Window dlgparent: the parent window to associate the
@@ -223,7 +223,7 @@ def make_dialog(dlgtitle, dlgparent=None,
 def make_entry(width=200, height=25, editable=True, bold=False,
                color='#BBDDFF'):
     """
-    Utility function to create gtk.Entry() widgets.
+    Function to create gtk.Entry() widgets.
 
     :keyword int width: width of the gtk.Entry() widget.  Default is 200.
     :keyword int height: height of the gtk.Entry() widget.  Default is 25.
@@ -263,7 +263,7 @@ def make_entry(width=200, height=25, editable=True, bold=False,
 def make_label(text, width=190, height=25, bold=True, wrap=False,
                justify=gtk.JUSTIFY_LEFT):
     """
-    Utility function to create gtk.Label() widgets.
+    Function to create gtk.Label() widgets.
 
     :param str text: the text to display in the gtk.Label() widget.
     :param int width: width of the gtk.Label() widget.  Default is 190.
@@ -304,11 +304,11 @@ def make_label(text, width=190, height=25, bold=True, wrap=False,
 
 def make_labels(text, container, x_pos, y_pos, y_inc=25, wrap=True):
     """
-    Utility function to make and place a group of labels.  The width of each
-    label is set using a natural request.  This ensures the label doesn't cut
-    off letters.  The maximum size of the labels is determined and used to set
-    the left position of widget displaying the data described by the label.
-    This ensures everything lines up.  It also returns a list of y-coordinates
+    Function to make and place a group of labels.  The width of each label is
+    set using a natural request.  This ensures the label doesn't cut off
+    letters.  The maximum size of the labels is determined and used to set the
+    left position of widget displaying the data described by the label.  This
+    ensures everything lines up.  It also returns a list of y-coordinates
     indicating the placement of each label that is used to place the
     corresponding widget.
 
@@ -342,7 +342,7 @@ def make_labels(text, container, x_pos, y_pos, y_inc=25, wrap=True):
 
 def make_text_view(txvbuffer=None, width=200, height=100):
     """
-    Utility function to create gtk.TextView() widgets encapsulated
+    Function to create gtk.TextView() widgets encapsulated
     within a gtkScrolledWindow() widget.
 
     :keyword gtk.TextBuffer txvbuffer: the gtk.TextBuffer() to associate with
@@ -367,7 +367,7 @@ def make_text_view(txvbuffer=None, width=200, height=100):
 
 def make_frame(label=_(u"")):
     """
-    Utility function to create gtk.Frame() widgets.
+    Function to create gtk.Frame() widgets.
 
     :keyword str label: the text to display in the gtk.Frame() label.  Default
                         is an empty string.
@@ -390,7 +390,7 @@ def make_frame(label=_(u"")):
 
 def make_fixed():
     """
-    Utility function to create gtk.Fixed() containers.
+    Function to create gtk.Fixed() containers.
 
     :return: _fixed
     :rtype: gtk.Fixed
@@ -403,7 +403,7 @@ def make_fixed():
 
 def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):   # pylint: disable=R0914
     """
-    Utility function to create gtk.TreeView() widgets.
+    Function to create gtk.TreeView() widgets.
 
     :param str name: the name of the gtk.TreeView() to read formatting
                      information for.
@@ -616,7 +616,7 @@ def format_cell(__column, cell, model, row, data):
 
 def edit_tree(cell, path, new_text, position, model):
     """
-    Called whenever a gtk.TreeView() gtk.CellRenderer() is edited.
+    Function called when a gtk.TreeView() gtk.CellRenderer() is edited.
 
     :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
     :param str path: the gtk.TreeView() path of the gtk.CellRenderer() that was
@@ -645,7 +645,7 @@ def edit_tree(cell, path, new_text, position, model):
 
 def cell_toggled(cell, path, position, model):
     """
-    Called whenever a gtk.TreeView() gtk.CellRendererToggle() is edited.
+    Function called when a gtk.TreeView() gtk.CellRendererToggle() is edited.
 
     :param gtk.CellRendererToggle cell: the gtk.CellRendererToggle() that was
                                         edited.
@@ -666,7 +666,7 @@ def cell_toggled(cell, path, position, model):
 
 def resize_wrap(column, __param, cell):
     """
-    This function dynamically sets the wrap-width property for a
+    Function to dynamically set the wrap-width property for a
     gtk.CellRenderer() in the gtk.TreeView() when the column width is resized.
 
     :param gtk.TreeViewColumn column: the gtk.TreeViewColumn() being resized.
@@ -694,7 +694,7 @@ def resize_wrap(column, __param, cell):
 
 def make_column_heading(heading=""):
     """
-    This function creates labels to use for gtk.TreeView() column headings.
+    Function to create labels to use for gtk.TreeView() column headings.
 
     :keyword str heading: the text to use for the heading.
     :return: _label
@@ -944,7 +944,7 @@ def create_legend(axis, text, fontsize='small', legframeon=False,
 
 def expand_plot(event):
     """
-    Utility function to display a plot in it's own window.
+    Function to display a plot in it's own window.
 
     :param matplotlib.MouseEvent event: the matplotlib MouseEvent() that called
                                         this method.
@@ -975,7 +975,7 @@ def expand_plot(event):
 
 def close_plot(__window, __event, plot, parent):
     """
-    Utility function to close the plot.
+    Function to close the plot.
 
     :param gtk.Window __window: the gtk.Window() that is being destroyed.
     :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this method.
@@ -987,5 +987,54 @@ def close_plot(__window, __event, plot, parent):
     """
 
     plot.reparent(parent)
+
+    return False
+
+
+def set_cursor(controller, cursor):
+    """
+    Function to set the cursor for a gtk.gdk.Window()
+
+    :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
+    :param gtk.gdk.Cursor cursor: the gtk.gdk.Cursor() to set.  Only handles
+                                  one of the following:
+                                  - gtk.gdk.X_CURSOR
+                                  - gtk.gdk.ARROW
+                                  - gtk.gdk.CENTER_PTR
+                                  - gtk.gdk.CIRCLE
+                                  - gtk.gdk.CROSS
+                                  - gtk.gdk.CROSS_REVERSE
+                                  - gtk.gdk.CROSSHAIR
+                                  - gtk.gdk.DIAMOND_CROSS
+                                  - gtk.gdk.DOUBLE_ARROW
+                                  - gtk.gdk.DRAFT_LARGE
+                                  - gtk.gdk.DRAFT_SMALL
+                                  - gtk.gdk.EXCHANGE
+                                  - gtk.gdk.FLEUR
+                                  - gtk.gdk.GUMBY
+                                  - gtk.gdk.HAND1
+                                  - gtk.gdk.HAND2
+                                  - gtk.gdk.LEFT_PTR - non-busy cursor
+                                  - gtk.gdk.PENCIL
+                                  - gtk.gdk.PLUS
+                                  - gtk.gdk.QUESTION_ARROW
+                                  - gtk.gdk.RIGHT_PTR
+                                  - gtk.gdk.SB_DOWN_ARROW
+                                  - gtk.gdk.SB_H_DOUBLE_ARROW
+                                  - gtk.gdk.SB_LEFT_ARROW
+                                  - gtk.gdk.SB_RIGHT_ARROW
+                                  - gtk.gdk.SB_UP_ARROW
+                                  - gtk.gdk.SB_V_DOUBLE_ARROW
+                                  - gtk.gdk.TCROSS
+                                  - gtk.gdk.TOP_LEFT_ARROW
+                                  - gtk.gdk.WATCH - when application is busy
+                                  - gtk.gdk.XTERM - selection bar
+    """
+
+    controller.module_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.list_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.work_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
+
+    gtk.gdk.flush()
 
     return False
