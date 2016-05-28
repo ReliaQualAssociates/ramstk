@@ -36,12 +36,13 @@ except ImportError:
 try:
     import Configuration
     import Utilities
+    from gui.gtk.Assistants import CreateProject, OpenProject, Options
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
+    from rtk.gui.gtk.Assistants import CreateProject, OpenProject, Options
 from ListBook import ListView
 from WorkBook import WorkView
-from gui.gtk.Assistants import CreateProject, OpenProject
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -81,7 +82,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         """
         Method to initialize an instance of the Module view class.
 
-        :param controller:
+        :param controller: the :py:class:`rtk.RTK.RTK`master data controller.
         """
 
         # Initialize private list attributes.
@@ -185,51 +186,15 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu = gtk.Menu()
 
-        _menu2 = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"_Project"), use_underline=True)
+        _menu_item = gtk.MenuItem(label=_(u"New _Project"), use_underline=True)
         _menu_item.connect('activate', CreateProject, self._mdcRTK)
-        _menu2.append(_menu_item)
-
-        # Add assembly entry.
-        _menu_item = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/insert_sibling.png')
-        _menu_item.set_label(_(u"Sibling Assembly"))
-        _menu_item.set_image(_image)
-        #_menu_item.connect('activate', self._app.HARDWARE.add_hardware, 0)
-        _menu2.append(_menu_item)
-
-        _menu_item = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/insert_child.png')
-        _menu_item.set_label(_(u"Child Assembly"))
-        _menu_item.set_image(_image)
-        #_menu_item.connect('activate', self._app.HARDWARE.add_hardware, 1)
-        _menu2.append(_menu_item)
-
-        # Add component entry.
-        _menu_item = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/part.png')
-        _menu_item.set_label(_(u"Component"))
-        _menu_item.set_image(_image)
-        #_menu_item.connect('activate', self._app.HARDWARE.add_hardware, 2)
-        _menu2.append(_menu_item)
+        _menu.append(_menu_item)
 
         # Add New menu.
-        _mnuNew = gtk.ImageMenuItem()
-        _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/new.png')
-        _mnuNew.set_label(_(u"New"))
-        _mnuNew.set_image(_image)
-
-        _mnuNew.set_submenu(_menu2)
-        _menu.append(_mnuNew)
-
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '16x16/open.png')
-        _menu_item.set_label(_(u"Open"))
+        _menu_item.set_label(_(u"_Open"))
         _menu_item.set_image(_image)
         _menu_item.connect('activate', OpenProject, self._mdcRTK)
         _menu.append(_menu_item)
@@ -237,24 +202,21 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '16x16/save.png')
-        _menu_item.set_label(_(u"Save"))
+        _menu_item.set_label(_(u"_Save"))
         _menu_item.set_image(_image)
-        _menu_item.connect('activate', self._mdcRTK.request_save_project)
+        _menu_item.connect('activate', self._request_save_project)
         _menu.append(_menu_item)
 
-        _menu_item = gtk.MenuItem(label=_("Save _As"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.save_project, self._app)
+        _menu_item = gtk.MenuItem(label=_(u"_Close"), use_underline=True)
+        _menu_item.connect('activate', self._request_close_project)
         _menu.append(_menu_item)
-        #_menu_item = gtk.MenuItem(label=_("_Close"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.close)
-        #_menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '16x16/exit.png')
-        _menu_item.set_label(_("Exit"))
+        _menu_item.set_label(_(u"E_xit"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', self.quit_RTK)
+        _menu_item.connect('activate', destroy)
         _menu.append(_menu_item)
 
         _mnuFile = gtk.MenuItem(label=_("_File"), use_underline=True)
@@ -336,7 +298,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_("_Options"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.options, self._app)
+        _menu_item.connect('activate', Options, self._mdcRTK)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("_Composite Ref Des"),
                                   use_underline=True)
@@ -345,11 +307,6 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _menu_item = gtk.MenuItem(label=_("_Update Design Review Criteria"),
                                   use_underline=True)
         #_menu_item.connect('activate', ReviewCriteria, self._app)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_("_Add Parts to System Hierarchy"),
-                                  use_underline=True)
-        #_menu_item.connect('activate', Utilities.add_parts_system_hierarchy, self._app)
-        _menu.append(_menu_item)
 
         _mnuTools = gtk.MenuItem(label=_("_Tools"), use_underline=True)
         _mnuTools.set_submenu(_menu)
@@ -405,7 +362,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
-        _button.connect('clicked', self._mdcRTK.request_save_project)
+        _button.connect('clicked', self._request_save_project)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -419,7 +376,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/save-exit.png')
         _button.set_icon_widget(_image)
-        #_button.connect('clicked', self.save_quit_RTK)
+        _button.connect('clicked', self._request_save_project, True)
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -516,6 +473,38 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         if _workbook is not None:
             self.workview.add(_workbook)
+
+        return False
+
+    def _request_save_project(self, __widget, quit=False):
+        """
+        Method to request the RTK master data controller save the open Project.
+
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
+        :keyword bool close: indicates whether or not to quit RTK after saving
+                             the project.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self._mdcRTK.save_project()
+
+        if quit:
+            destroy(__widget)
+
+        return False
+
+    def _request_close_project(self, __widget):
+        """
+        Method to request the RTK master data controller close the open
+        Project.
+
+        :param gtk.Widget __widget: the gtk.Widget() that called this method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self._mdcRTK.close_project()
 
         return False
 

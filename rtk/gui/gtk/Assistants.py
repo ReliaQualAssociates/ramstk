@@ -19,6 +19,8 @@ import ntpath
 from os import name, remove
 from datetime import datetime
 
+from ConfigParser import SafeConfigParser, NoOptionError
+
 # Modules required for the GUI.
 try:
     import pygtk
@@ -72,6 +74,8 @@ class CreateProject(object):
         """
         Method to initialize an instance of the Create Project Assistant.
 
+        :param gtk.ToolButton __button: the gtk.ToolButton() that launched this
+                                        class.
         :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
         """
 
@@ -91,13 +95,13 @@ class CreateProject(object):
         Utilities.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
         if Configuration.BACKEND == 'mysql':
-            self._create_mysql_project()
+            self._request_create_mysql_project()
         elif Configuration.BACKEND == 'sqlite3':
-            self._create_sqlite3_project()
+            self._request_create_sqlite3_project()
 
         Utilities.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
-    def _create_mysql_project(self):
+    def _request_create_mysql_project(self):
         """
         Method to create a RTK Project database using MySQL/MariaDB.
         """
@@ -170,7 +174,7 @@ class CreateProject(object):
 
         cnx.close()
 
-    def _create_sqlite3_project(self):
+    def _request_create_sqlite3_project(self):
         """
         Method to create a RTK Project database using SQLite3.
         """
@@ -218,7 +222,7 @@ class CreateProject(object):
 
         _dialog.destroy()
 
-        self._mdcRTK.request_create_project()
+        self._mdcRTK.create_project()
 
         return False
 
@@ -246,6 +250,8 @@ class OpenProject(object):
         """
         Method to initialize an instance of the Create Project Assistant.
 
+        :param gtk.ToolButton __button: the gtk.ToolButton() that launched this
+                                        class.
         :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
         """
 
@@ -265,18 +271,29 @@ class OpenProject(object):
         Utilities.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
         if Configuration.BACKEND == 'mysql':
-            self._open_mysql_project()
+            self._request_open_mysql_project()
         elif Configuration.BACKEND == 'sqlite3':
-            self._open_sqlite3_project()
+            self._request_open_sqlite3_project()
 
         Utilities.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
-    def _open_mysql_project(self):
+    def _request_open_mysql_project(self):
         """
         Method to open a MySQL/MariaDB RTK program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 # TODO: Update the MySQL/MariaDB code.
         pass
+    #    if self._mdcRTK.loaded:
+    #        Utilities.rtk_information(_(u"A database is already open.  Only "
+    #                                    u"one database can be open at a time "
+    #                                    u"in RTK.  You must quit the RTK "
+    #                                    u"application before a new database "
+    #                                    u"can be opened."))
+    #        return True
+
     #    login = _login.Login(_(u"RTK Program Database Login"))
 
     #    if login.answer != gtk.RESPONSE_ACCEPT:
@@ -326,10 +343,21 @@ class OpenProject(object):
 
     #    cnx.close()
 
-    def _open_sqlite3_project(self):
+    def _request_open_sqlite3_project(self):
         """
         Method to open a SQLite3 RTK program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
+        if self._mdcRTK.loaded:
+            Utilities.rtk_information(_(u"A database is already open.  Only "
+                                        u"one database can be open at a time "
+                                        u"in RTK.  You must quit the RTK "
+                                        u"application before a new database "
+                                        u"can be opened."))
+            return True
 
         _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
                                         buttons=(gtk.STOCK_OK,
@@ -354,33 +382,9 @@ class OpenProject(object):
 
         _dialog.destroy()
 
-        self._mdcRTK.request_open_project()
+        self._mdcRTK.open_project()
 
         return False
-
-
-#def import_project(__widget, __app):
-#    """
-#    Imports project information from external files such as Excel, CVS, other
-#    delimited text files, etc.
-
-#    :param gtk.Widget __widget: the gtk.Widget() that called this function.
-#    :param rtk __app: the current instance of the RTK application.
-#    :return: False if successful or True if an error is encountered.
-#    :rtype: bool
-#    """
-
-#    _dialog = gtk.FileChooserDialog(_(u"Select Project to Import"), None,
-#                                    gtk.FILE_CHOOSER_ACTION_OPEN,
-#                                    (gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT,
-#                                     gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-#    if _dialog.run() == gtk.RESPONSE_ACCEPT:
-#        print "Importing project."
-
-#    _dialog.destroy()
-
-#    return False
 
 
 class Options(gtk.Window):                  # pylint: disable=R0902

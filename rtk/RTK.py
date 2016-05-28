@@ -180,8 +180,10 @@ class RTK(object):
     This is the RTK controller class.  The attributes of RTK are:
 
     :ivar bool loaded:
-    :ivar site_dao:
-    :ivar project_dao:
+    :ivar site_dao: the :py:class:`rtk.DAO.DAO` used to communicate with the
+                    site database.
+    :ivar project_dao: the :py:class:`rtk.DAO.DAO` used to communicate with the
+                       open RTK Project database.
     :ivar dtcMatrices: the :py:class:`rtk.datamodels.Matrix.Matrix` data
                        controller.
     :ivar dtcRevision: the :py:class:`rtk.revision.Revision.Revision` data
@@ -399,7 +401,7 @@ class RTK(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # TODO: Re-write _load_commons; current McCabe Complexity metrix = 25.
+# TODO: Re-write _load_commons; current McCabe Complexity metrix = 25.
         _query = "SELECT fld_group_name, fld_group_id \
                   FROM tbl_groups \
                   ORDER BY fld_group_name ASC"
@@ -641,7 +643,7 @@ class RTK(object):
 
         return False
 
-    def request_create_project(self):
+    def create_project(self):
         """
         Method to request a new RTK Project database be created.
         """
@@ -667,18 +669,10 @@ class RTK(object):
 
         return False
 
-    def request_open_project(self):
+    def open_project(self):
         """
         Method to open an RTK Project database and load it into the views.
         """
-
-        if self.loaded:
-            Utilities.rtk_information(_(u"A database is already open.  Only "
-                                        u"one database can be open at a time "
-                                        u"in RTK.  You must quit the RTK "
-                                        u"application before a new database "
-                                        u"can be opened."))
-            return True
 
         _message = _(u"Opening Program "
                      u"Database {0:s}".format(Configuration.RTK_PROG_INFO[2]))
@@ -745,11 +739,10 @@ class RTK(object):
 
         return False
 
-    def request_save_project(self, __widget):
+    def save_project(self):
         """
         Method to save the entire RTK Project to the open RTK Project database.
 
-        :param gtk.Widget __widget: the gtk.Widget() that called this method.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -784,17 +777,42 @@ class RTK(object):
                       fld_effect_next_id={6:d}, fld_cause_next_id={7:d}, \
                       fld_software_next_id={8:d} \
                   WHERE fld_program_id={9:d}".format(
-                    Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
-                    Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
-                    Configuration.RTK_PREFIX[9], Configuration.RTK_PREFIX[11],
-                    Configuration.RTK_PREFIX[13], Configuration.RTK_PREFIX[15],
-                    Configuration.RTK_PREFIX[17], 1)
+                      Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
+                      Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
+                      Configuration.RTK_PREFIX[9],
+                      Configuration.RTK_PREFIX[11],
+                      Configuration.RTK_PREFIX[13],
+                      Configuration.RTK_PREFIX[15],
+                      Configuration.RTK_PREFIX[17], 1)
         self.project_dao.execute(_query, commit=True)
 
         _query = "VACUUM"
         self.project_dao.execute(_query, commit=False)
 
         self.module_book.statusbar.pop(2)
+
+        return False
+
+    def close_project(self):
+        """
+        Method to close the currently open RTK Project database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        for _moduleview in Configuration.RTK_MODULES:
+            _moduleview.treeview.get_model().clear()
+
+        self.project_dao.close()
+
+        _icon = Configuration.ICON_DIR + '32x32/db-disconnected.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        self.icoStatus.set_from_pixbuf(_icon)
+        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
+                                     u"project database."))
+
+        self.loaded = False
 
         return False
 
