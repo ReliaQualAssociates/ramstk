@@ -1426,7 +1426,7 @@ class Feasibility(gtk.HPaned):              # pylint: disable=R0902, R0904
             self._feasibility = self._testing_model.assess_plan_feasibility()
 
             if self._feasibility[2] > -1:
-                Utilities.rtk_warning(_(u"You have not entered the number of "
+                Widgets.rtk_warning(_(u"You have not entered the number of "
                                         u"test units for test phase {0:d}.  "
                                         u"Unable to calculate the average "
                                         u"test time per test unit.  Please "
@@ -1435,7 +1435,7 @@ class Feasibility(gtk.HPaned):              # pylint: disable=R0902, R0904
                                         u"again.").format(self._feasibility[2],
                                                           self._feasibility[2]))
             if self._feasibility[3] > -1:
-                Utilities.rtk_warning(_(u"Start date and end date are the "
+                Widgets.rtk_warning(_(u"Start date and end date are the "
                                         u"same for test phase {0:d}.  Unable "
                                         u"to calculate the average test time "
                                         u"per week for a test unit.  Please "

@@ -609,39 +609,6 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
         dialog.destroy()
         return False
 
-def rtk_question(prompt, _parent=None):
-    """
-    Dialog to display runtime questions to the user.
-
-    :param str prompt: the prompt to display in the dialog.
-    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
-    :return: gtk.RESPONSE_YES or gtk.RESPONSE_NO
-    :rtype: GTK response type
-    """
-
-    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
-                                gtk.MESSAGE_QUESTION, gtk.BUTTONS_YES_NO,
-                                message_format=prompt)
-    _response = _dialog.run()
-    _dialog.destroy()
-
-    return _response
-
-
-def rtk_warning(prompt, _parent=None):
-    """
-    Dialog to display runtime warnings to the user.
-
-    :param str prompt: the prompt to display in the dialog.
-    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
-    """
-
-    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
-                                gtk.MESSAGE_WARNING, gtk.BUTTONS_OK,
-                                message_format=prompt)
-    _dialog.run()
-    _dialog.destroy()
-
 
 def cut_copy_paste(__widget, action):
     """

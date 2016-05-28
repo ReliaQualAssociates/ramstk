@@ -364,7 +364,7 @@ class RTK(object):
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            Utilities.rtk_warning(_(u"Cannot find license file %s.  "
+            Widgets.rtk_warning(_(u"Cannot find license file %s.  "
                                     u"If your license file is elsewhere, "
                                     u"please place it in %s." %
                                     (_license_file, Configuration.DATA_DIR)))
