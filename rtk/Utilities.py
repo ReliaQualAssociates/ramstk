@@ -1,8 +1,7 @@
 #!/usr/bin/env python
 """
 Contains utility functions for interacting with the RTK application.  Import
-this module as _util in other modules that need to interact with the RTK
-application.
+this module in other modules that need to interact with the RTK application.
 """
 
 # -*- coding: utf-8 -*-
@@ -64,12 +63,12 @@ def read_configuration():
 
     # Get a config instance for the site configuration file.
     conf = Configuration.RTKConf('site')
-    if not file_exists(conf.conf_file):
-        rtk_warning(_(u"Site configuration file {0:s} not found.  This "
-                      u"typically indicates RTK was installed improperly or "
-                      u"RTK files have been corrupted.  You may try to "
-                      u"uninstall and re-install RTK.").format(conf.conf_file))
-        return True
+    #if not file_exists(conf.conf_file):
+    #    rtk_warning(_(u"Site configuration file {0:s} not found.  This "
+    #                  u"typically indicates RTK was installed improperly or "
+    #                  u"RTK files have been corrupted.  You may try to "
+    #                  u"uninstall and re-install RTK.").format(conf.conf_file))
+    #    return True
 
     Configuration.COM_BACKEND = conf.read_configuration().get('Backend',
                                                               'type')
@@ -428,91 +427,6 @@ def string_to_boolean(string):
     return _result
 
 
-def delete_project(__widget, app):
-    """
-    Deletes an existing RTK Project.
-
-    :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :param rtk app: the current instance of the RTK application.
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    if Configuration.BACKEND == 'mysql':
-        query = "SHOW DATABASES"
-        cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
-        results = app.DB.execute_query(query,
-                                       None,
-                                       cnx)
-
-        dialog = Widgets.make_dialog(_("RTK - Delete Program"))
-
-        model = gtk.TreeStore(gobject.TYPE_STRING)
-        treeview = gtk.TreeView(model)
-
-        column = gtk.TreeViewColumn('Program')
-        treeview.append_column(column)
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', False)
-        column.pack_start(cell, True)
-        column.add_attribute(cell, 'text', 0)
-
-        scrollwindow = gtk.ScrolledWindow()
-        width, height = gtk.gdk.get_default_root_window().get_size()
-        scrollwindow.set_size_request((width / 6), (height / 6))
-        scrollwindow.add(treeview)
-
-        numprograms = len(results)
-        for i in range(numprograms):
-            # Don't display the MySQL administrative/test databases.
-            if(results[i][0] != 'information_schema' and
-               results[i][0] != 'test'):
-                model.append(None, [results[i][0]])
-
-        dialog.vbox.pack_start(scrollwindow)    # pylint: disable=E1101
-        treeview.show()
-        scrollwindow.show()
-
-        if dialog.run() == gtk.RESPONSE_ACCEPT:
-            (_model, _row) = treeview.get_selection().get_selected()
-            project = _model.get_value(_row, 0)
-        else:
-            dialog.destroy()
-
-        if confirm_action(_("Really delete %s?") % project, 'question'):
-            query = "DROP DATABASE IF EXISTS %s"
-            results = app.DB.execute_query(query,
-                                           project,
-                                           cnx)
-
-            dialog.destroy()
-        else:
-            dialog.destroy()
-
-        cnx.close()
-
-    elif Configuration.BACKEND == 'sqlite3':
-
-        dialog = gtk.FileChooserDialog(_(u"RTK - Delete Program"),
-                                       None,
-                                       gtk.DIALOG_MODAL |
-                                       gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
-
-        if dialog.run() == gtk.RESPONSE_ACCEPT:
-            project = dialog.get_filename()
-        else:
-            dialog.destroy()
-
-        if(confirm_action(_(u"Really delete {0:s}?").format(project)),
-           'question'):
-            os.remove(project)
-            dialog.destroy()
-        else:
-            dialog.destroy()
-
-
 def select_source_file(assistant, title):
     """
     Function to select the file containing the data to import to the open RTK
@@ -576,38 +490,6 @@ def select_source_file(assistant, title):
         assistant.destroy()
 
     return _headers, _contents
-
-
-def confirm_action(_prompt_, _image_='default', _parent_=None):
-    """
-    Dialog to confirm user actions such as deleting a Project.
-
-    :param str _prompt_: the prompt to display in the dialog.
-    :param str _image_: the icon to display in the dialog.
-    :param gtk.Window _parent_: the parent gtk.Window(), if any, for the
-                                dialog.
-    """
-
-    dialog = Widgets.make_dialog("")
-
-    hbox = gtk.HBox()
-
-    file_image = Configuration.ICON_DIR + '32x32/' + _image_ + '.png'
-    image = gtk.Image()
-    image.set_from_file(file_image)
-    hbox.pack_start(image)
-
-    label = Widgets.make_label(_prompt_)
-    hbox.pack_end(label)
-    dialog.vbox.pack_start(hbox)            # pylint: disable=E1101
-    hbox.show_all()
-
-    if dialog.run() == gtk.RESPONSE_ACCEPT:
-        dialog.destroy()
-        return True
-    else:
-        dialog.destroy()
-        return False
 
 
 def cut_copy_paste(__widget, action):
