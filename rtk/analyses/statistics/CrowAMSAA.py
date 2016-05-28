@@ -154,7 +154,7 @@ def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
                                             full_output=True)
 # TODO: Move this to the view module.
         if _ier != 1:
-            #_util.rtk_information(_(u"The solution for the shape parameter "
+            #Widgets.rtk_information(_(u"The solution for the shape parameter "
             #                        u"did not converge in %d iterations.  Try "
             #                        u"using regression.") % _info['nfev'])
             return 1.0, 1.0

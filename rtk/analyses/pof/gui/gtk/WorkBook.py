@@ -543,7 +543,7 @@ class WorkView(gtk.HBox):
         _return = False
 
         if level == 1:                     # Failure Mechanism
-            Utilities.rtk_information(_(u"Failure mechanisms must be "
+            Widgets.rtk_information(_(u"Failure mechanisms must be "
                                         u"associated with a failure mode.  A "
                                         u"failure mechanism must be added to "
                                         u"the appropriate failure mode on the "

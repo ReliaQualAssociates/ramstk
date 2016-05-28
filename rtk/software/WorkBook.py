@@ -1359,7 +1359,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _row = _model.iter_parent(_row)
             _software_id = _model.get_value(_row, 1)
             if _level_id == 1:
-                Utilities.rtk_information(_(u"Can not add a sibling to the "
+                Widgets.rtk_information(_(u"Can not add a sibling to the "
                                             u"System Software."))
 
             elif _level_id == 2:

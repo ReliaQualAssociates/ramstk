@@ -287,7 +287,7 @@ class OpenProject(object):
 # TODO: Update the MySQL/MariaDB code.
         pass
     #    if self._mdcRTK.loaded:
-    #        Utilities.rtk_information(_(u"A database is already open.  Only "
+    #        Widgets.rtk_information(_(u"A database is already open.  Only "
     #                                    u"one database can be open at a time "
     #                                    u"in RTK.  You must quit the RTK "
     #                                    u"application before a new database "
@@ -352,11 +352,11 @@ class OpenProject(object):
         """
 
         if self._mdcRTK.loaded:
-            Utilities.rtk_information(_(u"A database is already open.  Only "
-                                        u"one database can be open at a time "
-                                        u"in RTK.  You must quit the RTK "
-                                        u"application before a new database "
-                                        u"can be opened."))
+            Widgets.rtk_information(_(u"A database is already open.  Only "
+                                      u"one database can be open at a time "
+                                      u"in RTK.  You must quit the RTK "
+                                      u"application before a new database "
+                                      u"can be opened."))
             return True
 
         _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),

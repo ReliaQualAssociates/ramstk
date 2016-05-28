@@ -1068,3 +1068,20 @@ def rtk_error(prompt, _parent=None):
 
     _dialog.run()
     _dialog.destroy()
+
+
+def rtk_information(prompt, _parent=None):
+    """
+    Function to display runtime information to the user.
+
+    :param str prompt: the prompt to display in the dialog.
+    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
+    """
+
+    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
+                                gtk.MESSAGE_INFO, gtk.BUTTONS_OK,
+                                message_format=prompt)
+    _dialog.set_markup(prompt)
+
+    _dialog.run()
+    _dialog.destroy()

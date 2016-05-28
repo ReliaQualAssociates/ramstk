@@ -1439,7 +1439,7 @@ class ImportIncident(gtk.Assistant):
         (_file_fields,
          self._file_contents) = Utilities.select_source_file(self, _title)
         if len(_file_fields) == 0:
-            Utilities.rtk_information(_(u"Source file must have headings for "
+            Widgets.rtk_information(_(u"Source file must have headings for "
                                         u"each column of data.  Please add "
                                         u"headings to the source file and try "
                                         u"again."))
@@ -1706,7 +1706,7 @@ class ImportIncident(gtk.Assistant):
                 _import_errors += 1
 
         if _import_errors > 0:
-            Utilities.rtk_information(_(u"Error importing {0:d} program "
+            Widgets.rtk_information(_(u"Error importing {0:d} program "
                                         u"incidents.  Refer to the import log "
                                         u"{1:s} for more details.").format(
                                             _import_errors, self._import_log))
@@ -1905,7 +1905,7 @@ class CreateDataSet(object):
         _window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
         if _n_inconsistent > 0:
-            Utilities.rtk_information(_(u"There were {0:d} records with "
+            Widgets.rtk_information(_(u"There were {0:d} records with "
                                         u"inconsistent information.  These "
                                         u"were not used in the creation of "
                                         u"the dataset. Please see file "

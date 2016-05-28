@@ -656,7 +656,7 @@ class ListView(gtk.Notebook):
                      _attributes[7], _attributes[8], _attributes[9],
                      _attributes[10], 3, 1, 0)
         else:
-            _util.rtk_information(_(u"You cannot add a child object to "
+            Widgets.rtk_information(_(u"You cannot add a child object to "
                                     u"an environmental condition in a "
                                     u"usage profile."))
             _return = True

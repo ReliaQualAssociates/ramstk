@@ -175,7 +175,7 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
 
     # TODO: Move this to the View module.
     #if len(_x) == 0:
-    #    _util.rtk_information(_(u"There are no single times-to-failure "
+    #    Widgets.rtk_information(_(u"There are no single times-to-failure "
     #                            u"in your data set.  All of your "
     #                            u"observations are censored.  Rank "
     #                            u"regression methods cannot handle data "

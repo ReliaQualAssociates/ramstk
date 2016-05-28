@@ -226,7 +226,7 @@ def calculate_beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
 
     if alpha < 0.0:
 # TODO: Move to the view module.
-        #_util.rtk_information(_(u"Confidence level take a value between 0 and "
+        #Widgets.rtk_information(_(u"Confidence level take a value between 0 and "
         #                        u"100 inclusive [0, 100].  Please select and "
         #                        u"appropriate confidence level and try "
         #                        u"again."))
