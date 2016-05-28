@@ -1100,3 +1100,40 @@ def rtk_warning(prompt, _parent=None):
                                 message_format=prompt)
     _dialog.run()
     _dialog.destroy()
+
+
+def date_select(__widget, __event=None, entry=None):
+    """
+    Function to select a date from a calendar widget.
+
+    :param gtk.Widget __widget: the gtk.Widget() that called this function.
+    :param gtk.Entry entry: the gtk.Entry() widget in which to display the
+                            date.
+    :return: _date
+    :rtype: date string (YYYY-MM-DD)
+    """
+
+    from datetime import datetime
+
+    _dialog = Widgets.make_dialog(_(u"Select Date"),
+                                  dlgbuttons=(gtk.STOCK_OK,
+                                              gtk.RESPONSE_ACCEPT))
+
+    _calendar = gtk.Calendar()
+    _dialog.vbox.pack_start(_calendar)      # pylint: disable=E1101
+    _dialog.vbox.show_all()                 # pylint: disable=E1101
+
+    if _dialog.run() == gtk.RESPONSE_ACCEPT:
+        _date = _calendar.get_date()
+        _date = datetime(_date[0], _date[1] + 1,
+                         _date[2]).date().strftime("%Y-%m-%d")
+    else:
+        _date = "1970-01-01"
+
+    _dialog.destroy()
+
+    if entry is not None:
+        entry.set_text(_date)
+        entry.grab_focus()
+
+    return _date

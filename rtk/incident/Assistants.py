@@ -200,7 +200,7 @@ class AddIncident(object):
                                                    label="...", image=None)
             self.btnCalendar.set_tooltip_text(_(u"Launch a calendar to select "
                                                 u"the incident date"))
-            self.btnCalendar.connect('clicked', Utilities.date_select, None,
+            self.btnCalendar.connect('clicked', Widgets.date_select, None,
                                      self.txtIncidentDate)
             self.fxdPageGeneral.put(self.btnCalendar, _x_pos + 105, _y_pos[0])
 

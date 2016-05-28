@@ -92,7 +92,7 @@ def _on_start_edit(cell, editable, __path, index):
 
     if isinstance(editable, gtk.Entry):
         if index in [32, 36, 38]:
-            Utilities.date_select(cell, None, editable)
+            Widgets.date_select(cell, None, editable)
 
     return False
 

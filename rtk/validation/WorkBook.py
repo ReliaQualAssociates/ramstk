@@ -303,10 +303,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.txtVarAcceptable.connect('focus-out-event',
                                           self._on_focus_out, 7))
-        self.btnEndDate.connect('button-release-event', Utilities.date_select,
+        self.btnEndDate.connect('button-release-event', Widgets.date_select,
                                 self.txtEndDate)
         self.btnStartDate.connect('button-release-event',
-                                  Utilities.date_select, self.txtStartDate)
+                                  Widgets.date_select, self.txtStartDate)
         self.txtStartDate.connect('changed', self._on_focus_out, None, 8)
         self._lst_handler_id.append(
             self.txtStartDate.connect('focus-out-event',

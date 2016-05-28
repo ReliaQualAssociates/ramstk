@@ -622,7 +622,7 @@ class WorkView(gtk.VBox):
         self._lst_handler_id[12] = self.txtValidatedDate.connect(
             'changed', self._on_focus_out, None, 12)
         self._lst_handler_id[13] = self.btnValidateDate.connect(
-            'button-release-event', Utilities.date_select,
+            'button-release-event', Widgets.date_select,
             self.txtValidatedDate)
 
         _fixed.show_all()

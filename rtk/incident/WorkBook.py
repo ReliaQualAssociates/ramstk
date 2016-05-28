@@ -503,20 +503,20 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.btnSaveAction.connect('clicked', self._on_button_clicked, 0))
 
         self.btnActionDueDate.connect('button-release-event',
-                                      Utilities.date_select,
+                                      Widgets.date_select,
                                       self.txtActionDueDate)
         self.btnActionApproveDate.connect('button-release-event',
-                                          Utilities.date_select,
+                                          Widgets.date_select,
                                           self.txtActionApproveDate)
         self.btnActionCloseDate.connect('button-release-event',
-                                        Utilities.date_select,
+                                        Widgets.date_select,
                                         self.txtActionCloseDate)
         self.btnReviewDate.connect('button-release-event',
-                                   Utilities.date_select, self.txtReviewDate)
+                                   Widgets.date_select, self.txtReviewDate)
         self.btnApproveDate.connect('button-release-event',
-                                    Utilities.date_select, self.txtApproveDate)
+                                    Widgets.date_select, self.txtApproveDate)
         self.btnClosureDate.connect('button-release-event',
-                                    Utilities.date_select, self.txtCloseDate)
+                                    Widgets.date_select, self.txtCloseDate)
 
         self._lst_handler_id.append(
             self.chkAccepted.connect('toggled', self._on_check_toggled, 1))

@@ -380,7 +380,7 @@ class AddRGRecord(gtk.Assistant):
                                         u"the record is being added."))
         self.btnDate = Widgets.make_button(height=25, width=25, label="...",
                                            image=None)
-        self.btnDate.connect('button-release-event', Utilities.date_select,
+        self.btnDate.connect('button-release-event', Widgets.date_select,
                              self.txtDate)
         self.txtTime = Widgets.make_entry()
         self.txtTime.set_tooltip_text(_(u"Test time."))

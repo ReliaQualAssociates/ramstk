@@ -316,8 +316,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Connect gtk.Widget() signals to callback methods.
         self.btnStartDate.connect('button-release-event',
-                                  Utilities.date_select, self.txtStartDate)
-        self.btnEndDate.connect('button-release-event', Utilities.date_select,
+                                  Widgets.date_select, self.txtStartDate)
+        self.btnEndDate.connect('button-release-event', Widgets.date_select,
                                 self.txtEndDate)
 
         self._lst_handler_id.append(
