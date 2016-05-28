@@ -12,9 +12,9 @@ Failure Definition Module
 # All rights reserved.
 
 try:
-    import Utilities as _util
+    import Utilities
 except ImportError:
-    import rtk.Utilities as _util
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -61,13 +61,13 @@ class Model(object):
             self.definition_id = int(values[1])
             self.definition = str(values[2])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
         except ValueError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Wrong input data type."
 
         return(_code, _msg)
@@ -192,15 +192,21 @@ class FailureDefinition(object):
 
         :param int revision_id: the Revision ID for which to save the Failure
                                 Definitions.
-        :return: (_results, _error_code)
+        :return: (_results, _error_codes)
         :rtype: tuple
         """
+
+        _results = []
+        _error_codes = []
 
         for _definition in self.dicDefinitions[revision_id].values():
             _query = "UPDATE tbl_failure_definitions \
                       SET fld_definition='{0:s}' \
-                      WHERE fld_definition_id={1:d}".format(_definition.definition,
-                                                            _definition.definition_id)
-            (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+                      WHERE fld_definition_id={1:d}".format(
+                          _definition.definition, _definition.definition_id)
+            (_result, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+            _results.append(_result)
+            _error_codes.append(_error_code)
+
+        return(_results, _error_codes)
