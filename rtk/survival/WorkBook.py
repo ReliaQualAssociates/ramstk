@@ -713,7 +713,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         elif index == 2:
             _survival_id = self._model.survival_id
             if self._mdcRTK.dtcSurvival.request_calculate(_survival_id):
-                Utilities.rtk_error(_(u"Error calculating survival analysis."))
+                Widgets.rtk_error(_(u"Error calculating survival analysis."))
             else:
                 self.load(self._model)
         elif index == 3:

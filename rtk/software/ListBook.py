@@ -704,7 +704,7 @@ class ListView(gtk.VBox):
             if _return:
                 _prompt = _(u"One or more errors occurred while attempting to "
                             u"calculate software reliability.")
-                Utilities.rtk_error(_prompt)
+                Widgets.rtk_error(_prompt)
             else:
                 # Load the risk map.
                 _software = self._dtcBoM.dicSoftware.values()

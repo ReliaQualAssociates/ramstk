@@ -799,7 +799,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
                 self._testing_model.mtbfgp = _mtbfgp
                 self.txtMTBFGP.set_text(str(fmt.format(_mtbfgp)))
             else:
-                Utilities.rtk_error(_(u"To calculate the growth potential "
+                Widgets.rtk_error(_(u"To calculate the growth potential "
                                       u"MTBF, you must provide the following "
                                       u"inputs with values greater than "
                                       u"zero:\n\n"
@@ -817,7 +817,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
             if _alpha > 0.0 and _mtbfa > 0.0 and _mtbfg > 0.0 and _ttt > 0.0:
                 _t1 = CrowAMSAA.calculate_t1(_alpha, _mtbfa, _mtbfg, _ttt)
             else:
-                Utilities.rtk_error(_(u"To calculate the minimum length of "
+                Widgets.rtk_error(_(u"To calculate the minimum length of "
                                       u"the first phase, you must provide the "
                                       u"following inputs with values greater "
                                       u"than zero:\n\n"
@@ -839,7 +839,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
                 _ttt = CrowAMSAA.calculate_total_time(_alpha, _mtbfa, _mtbfg,
                                                       _t1)
             else:
-                Utilities.rtk_error(_(u"To calculate the minimum total test "
+                Widgets.rtk_error(_(u"To calculate the minimum total test "
                                       u"time required to achieve the goal "
                                       u"MTBF, you must provide the following "
                                       u"inputs with values greater than "
@@ -861,7 +861,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
                 _alpha = CrowAMSAA.calculate_growth_rate(_mtbfa, _mtbfg, _ttt,
                                                          _t1)
             else:
-                Utilities.rtk_error(_(u"To calculate the minimum required "
+                Widgets.rtk_error(_(u"To calculate the minimum required "
                                       u"growth rate to achieve the goal MTBF, "
                                       u"you must provide the following inputs "
                                       u"with values greater than zero:\n\n"
@@ -883,7 +883,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
                 _ms = SPLAN.calculate_management_strategy(_fef, _mtbfa,
                                                           _mtbfgp)
             else:
-                Utilities.rtk_error(_(u"To calculate the minimum required "
+                Widgets.rtk_error(_(u"To calculate the minimum required "
                                       u"management strategy to achiave the "
                                       u"goal MTBF, you must provide the "
                                       u"following inputs with values greater "
@@ -902,7 +902,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
             if _ttt > 0.0 and _ms > 0.0 and _mtbfa > 0.0:
                 _prob = SPLAN.calculate_probability(_ttt, _ms, _mtbfa)
             else:
-                Utilities.rtk_error(_(u"To calculate the probability of "
+                Widgets.rtk_error(_(u"To calculate the probability of "
                                       u"observing a failure during the first "
                                       u"test phase, you must provide the "
                                       u"following inputs with values greater "

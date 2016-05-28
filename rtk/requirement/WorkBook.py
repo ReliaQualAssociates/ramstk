@@ -1327,7 +1327,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while attempting to update the "
                         u"attributes of failure mode {0:d}.".format(_id))
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -1424,7 +1424,7 @@ class WorkView(gtk.VBox):
                             u"affinity group to the RTK Common database.")
 
             self._modulebook.mdcRTK.debug_log.error(_content)
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -1456,7 +1456,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while saving one or more "
                         u"requirement.")
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -1517,7 +1517,7 @@ class WorkView(gtk.VBox):
             _prompt = _(u"An error occurred while attempting to delete "
                         u"requirement {0:s}.".format(
                             self._rqmt_model.description))
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 

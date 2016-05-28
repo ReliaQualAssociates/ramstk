@@ -521,7 +521,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             _prompt = _(u"An error occurred while attempting to save "
                         u"allocation for "
                         u"{0:s}.".format(self._hardware_model.name))
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -541,7 +541,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
                 _prompt = _(u"An error occurred while attempting to save "
                             u"allocations.")
-                Utilities.rtk_error(_prompt)
+                Widgets.rtk_error(_prompt)
 
                 _return = True
 

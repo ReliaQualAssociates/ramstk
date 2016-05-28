@@ -608,7 +608,7 @@ class WorkView(gtk.HBox):
 
         if _error_code != 0:
             self._modulebook.mdcRTK.debug_log.error(_content)
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -684,7 +684,7 @@ class WorkView(gtk.HBox):
 
         if _error_code != 0:
             self._modulebook.mdcRTK.debug_log.error(_content)
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -774,7 +774,7 @@ class WorkView(gtk.HBox):
 
         if _error_code != 0:
             self._modulebook.mdcRTK.debug_log.error(_content)
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 

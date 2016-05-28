@@ -106,7 +106,7 @@ class Model(Software):                      # pylint: disable=R0902
         try:
             self.sx = (1.5 * self.ax + self.bx + 0.8 * self.cx) / self.nm
         except ZeroDivisionError:
-            Utilities.rtk_error(_(u"Attempted to divide by zero when "
+            Widgets.rtk_error(_(u"Attempted to divide by zero when "
                                   u"calculating the software complexity risk "
                                   u"for {0:s}.  Perhaps you forgot to answer "
                                   u"one or more questions.").format(
@@ -158,7 +158,7 @@ class Model(Software):                      # pylint: disable=R0902
         try:
             self.sm = (0.9 * self.um + self.wm + 2.0 * self.xm) / self.nm
         except ZeroDivisionError:
-            Utilities.rtk_error(_(u"Attempted to divide by zero when "
+            Widgets.rtk_error(_(u"Attempted to divide by zero when "
                                   u"calculating the software modularity risk "
                                   u"for {0:s}.  Perhaps you forgot to answer "
                                   u"one or more questions.").format(

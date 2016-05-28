@@ -1042,7 +1042,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while attempting to update the "
                         u"attributes of failure mode {0:d}.".format(_id))
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -1116,7 +1116,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while saving one or more "
                         u"function.")
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -1174,7 +1174,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while attempting to delete "
                         u"function {0:s}.".format(self._function_model.name))
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -1226,7 +1226,7 @@ class WorkView(gtk.VBox):
 
             _prompt = _(u"An error occurred while attempting to calculate "
                         u"functions.")
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 

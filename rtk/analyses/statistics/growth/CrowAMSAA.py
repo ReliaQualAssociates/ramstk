@@ -308,7 +308,7 @@ def calculate_crow_amsaa_parameters(n_failures, fail_times, t_star=0.0,
     # If they are, raise an error and return 0.0 for both parameters.
 # TODO: Move this to the view module.
     if n_failures == [] or fail_times == []:
-        # _util.rtk_error(_(u"The list of failure times and/or the list of "
+        # Widgets.rtk_error(_(u"The list of failure times and/or the list of "
         #                   u"failure counts is empty.  Cannot estimate "
         #                   u"Crow-AMSAA parameters without both."))
         return 0.0, 0.0

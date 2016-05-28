@@ -405,7 +405,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _prompt = _(u"An error occurred while attempting to add a "
                             u"Hazard to "
                             u"{0:s}.".format(self._hardware_model.name))
-                Utilities.rtk_error(_prompt)
+                Widgets.rtk_error(_prompt)
 
                 _return = True
 
@@ -456,7 +456,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                             u"Hazard {1:d} from "
                             u"{0:s}.".format(self._hardware_model.name,
                                              _hazard_id))
-                Utilities.rtk_error(_prompt)
+                Widgets.rtk_error(_prompt)
 
                 _return = True
 
@@ -490,7 +490,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
                 _prompt = _(u"An error occurred while attempting to save "
                             u"Hazards.")
-                Utilities.rtk_error(_prompt)
+                Widgets.rtk_error(_prompt)
 
                 _return = True
 

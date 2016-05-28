@@ -2065,7 +2065,7 @@ class CreateDataSet(object):
         (_results, __, __) = self._dao.execute(_query, commit=True)
 
         if not _results:
-            Utilities.rtk_error(_(u"Error creating new data set."))
+            Widgets.rtk_error(_(u"Error creating new data set."))
 
         else:
             _failure_date = Utilities.date_to_ordinal(records[0][9])

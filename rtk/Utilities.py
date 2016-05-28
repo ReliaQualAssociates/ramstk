@@ -610,36 +610,6 @@ def confirm_action(_prompt_, _image_='default', _parent_=None):
         return False
 
 
-def rtk_error(prompt, _parent=None):
-    """
-    Dialog to display runtime errors to the user.
-
-    :param str prompt: the prompt to display in the dialog.
-    :param gtk.Window _parent: the parent gtk.Window(), if any, for the dialog.
-    """
-
-    _icon = Configuration.ICON_DIR + '32x32/error.png'
-    _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-    _image = gtk.Image()
-    _image.set_from_pixbuf(_icon)
-
-    prompt = prompt + u"  Check the error log {0:s} for additional " \
-                      u"information (if any).  Please e-mail " \
-                      u"bugs@reliaqual.com with a description of the " \
-                      u"problem, the workflow you are using and the error " \
-                      u"log attached if the problem persists.".format(
-                          Configuration.LOG_DIR + 'RTK_error.log')
-
-    _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
-                                gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,
-                                message_format=prompt)
-
-    _dialog.set_image(_image)
-
-    _dialog.run()
-    _dialog.destroy()
-
-
 def rtk_information(prompt, _parent=None):
     """
     Dialog to display runtime information to the user.

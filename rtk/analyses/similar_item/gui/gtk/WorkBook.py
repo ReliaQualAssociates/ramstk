@@ -663,7 +663,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
                 _prompt = _(u"One or more errors occurred while attempting to "
                             u"save Similar Item Analysis.")
-                Utilities.rtk_error(_prompt)
+                Widgets.rtk_error(_prompt)
 
                 _return = True
 

@@ -272,7 +272,7 @@ class AddFunction(gtk.Assistant):
         if len(_error_codes) > 0:
             _prompt = _(u"An error occurred while attempting to add one or "
                         u"more functions.")
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
         self._modulebook.request_load_data(self._controller.project_dao,
                                            self._revision_id)

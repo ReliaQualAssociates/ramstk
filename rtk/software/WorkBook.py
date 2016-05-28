@@ -1448,7 +1448,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
             _prompt = _(u"One or more errors occurred while attempting to "
                         u"calculate software reliability.")
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
@@ -1502,7 +1502,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
             _prompt = _(u"One or more errors occurred while attempting to "
                         u"calculate software reliability.")
-            Utilities.rtk_error(_prompt)
+            Widgets.rtk_error(_prompt)
 
             _return = True
 
