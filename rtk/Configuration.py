@@ -345,8 +345,8 @@ from os import environ, path, makedirs, name
 import gettext
 
 # Import other RTK modules.
-import Utilities as _util
-import gui.gtk.Widgets as _widg
+import Utilities
+import gui.gtk.Widgets as Widgets
 
 _ = gettext.gettext
 
@@ -493,22 +493,22 @@ class RTKConf(object):
         self.SITE_DIR = _SITEDIR
 
         if level == 'site':
-            if _util.dir_exists(_SITEDIR):
+            if Utilities.dir_exists(_SITEDIR):
                 self.conf_dir = _SITEDIR
             else:
                 self.conf_dir = _HOMEDIR + '/.config/RTK/'
 
-            if _util.dir_exists(_DATADIR):
+            if Utilities.dir_exists(_DATADIR):
                 self.data_dir = _DATADIR
             else:
                 self.data_dir = _HOMEDIR + '/.config/RTK/data/'
 
-            if _util.dir_exists(_ICONDIR):
+            if Utilities.dir_exists(_ICONDIR):
                 self.icon_dir = _ICONDIR
             else:
                 self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
 
-            if _util.dir_exists(_LOGDIR):
+            if Utilities.dir_exists(_LOGDIR):
                 self.log_dir = _LOGDIR
             else:
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
@@ -518,29 +518,29 @@ class RTKConf(object):
         elif level == 'user':
             self.conf_dir = _HOMEDIR + '/.config/RTK/'
 
-            if _util.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
+            if Utilities.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
                 self.data_dir = _HOMEDIR + '/.config/RTK/data/'
             else:
                 self.data_dir = _DATADIR
 
-            if _util.dir_exists(_HOMEDIR + '/.config/RTK/icons'):
+            if Utilities.dir_exists(_HOMEDIR + '/.config/RTK/icons'):
                 self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
             else:
                 self.icon_dir = _ICONDIR
 
-            if _util.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
+            if Utilities.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
                 self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
             else:
                 self.log_dir = _LOGDIR
 
-            if _util.dir_exists(_PROGDIR):
+            if Utilities.dir_exists(_PROGDIR):
                 self.prog_dir = _PROGDIR
             else:
                 self.prog_dir = _HOMEDIR
 
             self.conf_file = self.conf_dir + 'RTK.conf'
 
-            if not _util.file_exists(self.conf_file):
+            if not Utilities.file_exists(self.conf_file):
                 self.create_default_configuration()
 
     def create_default_configuration(self):     # pylint: disable=R0914
@@ -564,47 +564,47 @@ class RTKConf(object):
             _HOMEDIR = environ['USERPROFILE']
 
         if basename(self.conf_file) == 'site.conf':
-            dialog = _widg.make_dialog(_(u"RTK common database "
-                                         u"information..."))
+            dialog = Widgets.make_dialog(_(u"RTK common database "
+                                           u"information..."))
 
-            fixed = _widg.make_fixed()
+            fixed = Widgets.make_fixed()
 
             y_pos = 10
-            label = _widg.make_label(_(u"RTK common database host name:"),
-                                     width=340)
-            txtDBHost = _widg.make_entry()
+            label = Widgets.make_label(_(u"RTK common database host name:"),
+                                       width=340)
+            txtDBHost = Widgets.make_entry()
             txtDBHost.set_text(_(u"localhost"))
             fixed.put(label, 5, y_pos)
             fixed.put(txtDBHost, 345, y_pos)
             y_pos += 30
 
-            label = _widg.make_label(_(u"RTK common database socket:"),
-                                     width=340)
-            txtDBSocket = _widg.make_entry()
+            label = Widgets.make_label(_(u"RTK common database socket:"),
+                                       width=340)
+            txtDBSocket = Widgets.make_entry()
             txtDBSocket.set_text("3306")
             fixed.put(label, 5, y_pos)
             fixed.put(txtDBSocket, 345, y_pos)
             y_pos += 30
 
-            label = _widg.make_label(_(u"RTK common database name:"),
-                                     width=340)
-            txtDBName = _widg.make_entry()
+            label = Widgets.make_label(_(u"RTK common database name:"),
+                                       width=340)
+            txtDBName = Widgets.make_entry()
             txtDBName.set_text("RTKcom")
             fixed.put(label, 5, y_pos)
             fixed.put(txtDBName, 345, y_pos)
             y_pos += 30
 
-            label = _widg.make_label(_(u"RTK common database user name:"),
-                                     width=340)
-            txtDBUser = _widg.make_entry()
+            label = Widgets.make_label(_(u"RTK common database user name:"),
+                                       width=340)
+            txtDBUser = Widgets.make_entry()
             txtDBUser.set_text("RTKcom")
             fixed.put(label, 5, y_pos)
             fixed.put(txtDBUser, 345, y_pos)
             y_pos += 30
 
-            label = _widg.make_label(_(u"RTK common database password:"),
-                                     width=340)
-            txtDBPassword = _widg.make_entry()
+            label = Widgets.make_label(_(u"RTK common database password:"),
+                                       width=340)
+            txtDBPassword = Widgets.make_entry()
             txtDBPassword.set_invisible_char("*")
             txtDBPassword.set_visibility(False)
             txtDBPassword.set_text("RTKcom")
@@ -612,10 +612,10 @@ class RTKConf(object):
             fixed.put(txtDBPassword, 345, y_pos)
             y_pos += 30
 
-            label = _widg.make_label(_(u"RTK common database type:"),
-                                     width=340)
-            cmbDBType = _widg.make_combo()
-            _widg.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
+            label = Widgets.make_label(_(u"RTK common database type:"),
+                                       width=340)
+            cmbDBType = Widgets.make_combo()
+            Widgets.load_combo(cmbDBType, [["mysql"], ["sqlite3"]])
             fixed.put(label, 5, y_pos)
             fixed.put(cmbDBType, 345, y_pos)
 
@@ -655,13 +655,13 @@ class RTKConf(object):
         elif basename(self.conf_file) == 'RTK.conf':
 
             # Create the directories needed for the user.
-            if not _util.dir_exists(self.conf_dir):
+            if not Utilities.dir_exists(self.conf_dir):
                 makedirs(self.conf_dir)
 
-            if not _util.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
+            if not Utilities.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
                 makedirs(_HOMEDIR + '/.config/RTK/data/')
 
-            if not _util.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
+            if not Utilities.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
                 makedirs(_HOMEDIR + '/.config/RTK/logs/')
 
             # Copy format files from _SITEDIR to the user's _CONFDIR.
@@ -769,7 +769,7 @@ class RTKConf(object):
         Writes changes to the user's configuration file.
         """
 
-        if _util.file_exists(self.conf_file):
+        if Utilities.file_exists(self.conf_file):
             config = ConfigParser.ConfigParser()
             config.add_section('General')
             config.set('General', 'reportsize', 'letter')
@@ -876,7 +876,7 @@ class RTKConf(object):
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        if _util.file_exists(self.conf_file):
+        if Utilities.file_exists(self.conf_file):
             config = ConfigParser.ConfigParser()
             config.read(self.conf_file)
         else:
