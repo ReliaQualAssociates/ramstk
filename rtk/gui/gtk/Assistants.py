@@ -432,59 +432,60 @@ class DeleteProject(object):
         :rtype: bool
         """
 # TODO: Update MySQL/MariaDB code.
-        query = "SHOW DATABASES"
-        cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
-        results = app.DB.execute_query(query,
-                                       None,
-                                       cnx)
+        pass
+        #query = "SHOW DATABASES"
+        #cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
+        #results = app.DB.execute_query(query,
+        #                               None,
+        #                               cnx)
 
-        dialog = Widgets.make_dialog(_("RTK - Delete Program"))
+        #dialog = Widgets.make_dialog(_("RTK - Delete Program"))
 
-        model = gtk.TreeStore(gobject.TYPE_STRING)
-        treeview = gtk.TreeView(model)
+        #model = gtk.TreeStore(gobject.TYPE_STRING)
+        #treeview = gtk.TreeView(model)
 
-        column = gtk.TreeViewColumn('Program')
-        treeview.append_column(column)
-        cell = gtk.CellRendererText()
-        cell.set_property('editable', False)
-        column.pack_start(cell, True)
-        column.add_attribute(cell, 'text', 0)
+        #column = gtk.TreeViewColumn('Program')
+        #treeview.append_column(column)
+        #cell = gtk.CellRendererText()
+        #cell.set_property('editable', False)
+        #column.pack_start(cell, True)
+        #column.add_attribute(cell, 'text', 0)
 
-        scrollwindow = gtk.ScrolledWindow()
-        width, height = gtk.gdk.get_default_root_window().get_size()
-        scrollwindow.set_size_request((width / 6), (height / 6))
-        scrollwindow.add(treeview)
+        #scrollwindow = gtk.ScrolledWindow()
+        #width, height = gtk.gdk.get_default_root_window().get_size()
+        #scrollwindow.set_size_request((width / 6), (height / 6))
+        #scrollwindow.add(treeview)
 
-        numprograms = len(results)
-        for i in range(numprograms):
+        #numprograms = len(results)
+        #for i in range(numprograms):
             # Don't display the MySQL administrative/test databases.
-            if(results[i][0] != 'information_schema' and
-               results[i][0] != 'test'):
-                model.append(None, [results[i][0]])
+        #    if(results[i][0] != 'information_schema' and
+        #       results[i][0] != 'test'):
+        #        model.append(None, [results[i][0]])
 
-        dialog.vbox.pack_start(scrollwindow)    # pylint: disable=E1101
-        treeview.show()
-        scrollwindow.show()
+        #dialog.vbox.pack_start(scrollwindow)    # pylint: disable=E1101
+        #treeview.show()
+        #scrollwindow.show()
 
-        if dialog.run() == gtk.RESPONSE_ACCEPT:
-            (_model, _row) = treeview.get_selection().get_selected()
-            project = _model.get_value(_row, 0)
-        else:
-            dialog.destroy()
+        #if dialog.run() == gtk.RESPONSE_ACCEPT:
+        #    (_model, _row) = treeview.get_selection().get_selected()
+        #    project = _model.get_value(_row, 0)
+        #else:
+        #    dialog.destroy()
 
-        if confirm_action(_("Really delete %s?") % project, 'question'):
-            query = "DROP DATABASE IF EXISTS %s"
-            results = app.DB.execute_query(query,
-                                           project,
-                                           cnx)
+        #if confirm_action(_("Really delete %s?") % project, 'question'):
+        #    query = "DROP DATABASE IF EXISTS %s"
+        #    results = app.DB.execute_query(query,
+        #                                   project,
+        #                                   cnx)
 
-            dialog.destroy()
-        else:
-            dialog.destroy()
+        #    dialog.destroy()
+        #else:
+        #    dialog.destroy()
 
-        cnx.close()
+        #cnx.close()
 
-        return False
+        #return False
 
     def _request_delete_sqlite3_project(self):
         """
@@ -563,7 +564,6 @@ class DeleteProject(object):
         self.assistant.destroy()
 
         return True
-
 
 
 class Options(gtk.Window):                  # pylint: disable=R0902

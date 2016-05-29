@@ -29,6 +29,7 @@ from gui.gtk.mwi.ModuleBook import ModuleView
 
 import Configuration
 import Utilities
+import gui.gtk.Widgets as Widgets
 
 from dao.DAO import DAO
 from datamodels.matrix.Matrix import Matrix
@@ -94,16 +95,22 @@ def main():
     return 0
 
 
-def _read_configuration():
+def _read_site_configuration():
     """
-    Reads the site configuration and RTK configuration files.
+    Function to read the site configuration file.
 
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
 
-    # Set the gtk+ theme on Windows.
-    if sys.platform.startswith('win'):
+    _return = False
+
+    if os.name == 'posix':
+        Configuration.OS = 'Linux'
+    elif os.name == 'nt':
+        Configuration.OS = 'Windows'
+
+        # Set the gtk+ theme on Windows.
         # These themes perform well on Windows.
         # Amaranth
         # Aurora
@@ -122,26 +129,228 @@ def _read_configuration():
         # These themes perform poorly.
         # Bluecurve-BerriesAndCream
         # MurrinaChrome
-        gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\GTK\\2.0\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
+        gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\RTK\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
 
-    # Import the test data file if we are executing in developer mode.
-    if len(sys.argv) > 1 and sys.argv[1] == 'devmode':
-        Configuration.MODE = 'developer'
+    # Get a config instance for the site configuration file.
+    _config = Configuration.RTKConf('site')
+    if not Utilities.file_exists(_config.conf_file):
+        Widgets.rtk_warning(_(u"Site configuration file {0:s} not found.  "
+                              u"This typically indicates RTK was installed "
+                              u"improperly or RTK files have been corrupted.  "
+                              u"You may try to uninstall and "
+                              u"re-install RTK.").format(_config.conf_file))
+        _return = True
+    else:
+        Configuration.COM_BACKEND = _config.read_configuration().get('Backend',
+                                                                     'type')
+        Configuration.SITE_DIR = _config.read_configuration().get('Backend',
+                                                                  'path')
 
-    # Read the configuration file.
-    Utilities.read_configuration()
+        Configuration.RTK_COM_INFO.append(
+            _config.read_configuration().get('Backend', 'host'))
+        Configuration.RTK_COM_INFO.append(
+            _config.read_configuration().get('Backend', 'socket'))
+        Configuration.RTK_COM_INFO.append(
+            _config.read_configuration().get('Backend', 'database'))
+        Configuration.RTK_COM_INFO.append(
+            _config.read_configuration().get('Backend', 'user'))
+        Configuration.RTK_COM_INFO.append(
+            _config.read_configuration().get('Backend', 'password'))
+
+    return _return
+
+
+def _read_program_configuration():
+    """
+    Function to read the program configuration file.
+
+    :return: False if successful or True if an error is encountered.
+    :rtype: bool
+    """
+
+    _return = False
 
     if os.name == 'posix':
-        Configuration.OS = 'Linux'
+        _homedir = os.environ['HOME']
     elif os.name == 'nt':
-        Configuration.OS = 'Windows'
+        _homedir = os.environ['USERPROFILE']
 
-    return False
+    # Get a config instance for the user configuration file.
+    _config = Configuration.RTKConf('user')
+
+    Configuration.BACKEND = _config.read_configuration().get('Backend', 'type')
+    Configuration.RTK_PROG_INFO.append(
+        _config.read_configuration().get('Backend', 'host'))
+    Configuration.RTK_PROG_INFO.append(
+        _config.read_configuration().get('Backend', 'socket'))
+    Configuration.RTK_PROG_INFO.append(
+        _config.read_configuration().get('Backend', 'database'))
+    Configuration.RTK_PROG_INFO.append(
+        _config.read_configuration().get('Backend', 'user'))
+    Configuration.RTK_PROG_INFO.append(
+        _config.read_configuration().get('Backend', 'password'))
+
+    Configuration.FRMULT = float(_config.read_configuration().get('General',
+                                                                  'frmultiplier'))
+    Configuration.PLACES = _config.read_configuration().get('General',
+                                                            'decimal')
+    Configuration.RTK_MODE_SOURCE = _config.read_configuration().get('General',
+                                                                     'modesource')
+    Configuration.TABPOS[0] = _config.read_configuration().get('General',
+                                                               'treetabpos')
+    Configuration.TABPOS[1] = _config.read_configuration().get('General',
+                                                               'listtabpos')
+    Configuration.TABPOS[2] = _config.read_configuration().get('General',
+                                                               'booktabpos')
+
+    # Get directory and file information.
+    _datadir = _config.read_configuration().get('Directories', 'datadir')
+    _icondir = _config.read_configuration().get('Directories', 'icondir')
+    _logdir = _config.read_configuration().get('Directories', 'logdir')
+    _progdir = _config.read_configuration().get('Directories', 'progdir')
+
+    Configuration.CONF_DIR = _config.conf_dir
+    if not Utilities.dir_exists(Configuration.CONF_DIR):
+        Widgets.rtk_warning(_(u"Configuration directory {0:s} does not "
+                              u"exist.  "
+                              u"Creating").format(Configuration.CONF_DIR))
+        os.makedirs(Configuration.CONF_DIR)
+        # TODO: Copy format files (*.conf, *.xml, RTKCommon.rtk) from system SITE_DIR to CONF_DIR
+
+    Configuration.DATA_DIR = Configuration.CONF_DIR + _datadir + '/'
+    if not Utilities.dir_exists(Configuration.DATA_DIR):
+        Widgets.rtk_warning(_(u"Data directory {0:s} does not exist.  "
+                              u"Creating").format(Configuration.DATA_DIR))
+        os.makedirs(Configuration.DATA_DIR)
+        # TODO: Copy data files (*.sql, *.map) from system data_dir to DATA_DIR
+
+    Configuration.ICON_DIR = Configuration.CONF_DIR + _icondir + '/'
+    if not Utilities.dir_exists(Configuration.ICON_DIR):
+        Widgets.rtk_warning(_(u"Icon directory {0:s} does not exist.  "
+                              u"Creating").format(Configuration.ICON_DIR))
+        os.makedirs(Configuration.ICON_DIR)
+        # TODO: Copy icons from system icon_dir to ICON_DIR
+
+    Configuration.LOG_DIR = Configuration.CONF_DIR + _logdir + '/'
+    if not Utilities.dir_exists(Configuration.LOG_DIR):
+        Widgets.rtk_warning(_(u"Log directory {0:s} does not exist.  "
+                              u"Creating").format(Configuration.LOG_DIR))
+        os.makedirs(Configuration.LOG_DIR)
+
+    Configuration.PROG_DIR = _progdir
+    if not Utilities.dir_exists(Configuration.PROG_DIR):
+        Widgets.rtk_warning(_(u"RTK Project directory {0:s} does not exist.  "
+                              u"Using default RTK Project directory "
+                              u"{1:s}.").format(Configuration.PROG_DIR,
+                                                _homedir + '/analyses/rtk/'))
+        Configuration.PROG_DIR = _homedir + '/analyses/rtk/'
+        if not Utilities.dir_exists(Configuration.PROG_DIR):
+            os.makedirs(Configuration.PROG_DIR)
+
+    # Get list of format files.
+    _formatfile = _config.read_configuration().get('Files', 'revisionformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'functionformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files',
+                                                   'requirementformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'hardwareformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'validationformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'rgformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'fracaformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'partformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'siaformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'fmecaformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files',
+                                                   'stakeholderformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'testformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'mechanismformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'rgincidentformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'incidentformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'softwareformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'datasetformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'riskformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'ffmecaformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'sfmecaformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+
+    # Get color information.
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'revisionbg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'revisionfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'functionbg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'functionfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'requirementbg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'requirementfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'assemblybg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'assemblyfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'validationbg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'validationfg'))
+    Configuration.RTK_COLORS.append(_config.read_configuration().get('Colors',
+                                                                     'rgbg'))
+    Configuration.RTK_COLORS.append(_config.read_configuration().get('Colors',
+                                                                     'rgfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'fracabg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'fracafg'))
+    Configuration.RTK_COLORS.append(_config.read_configuration().get('Colors',
+                                                                     'partbg'))
+    Configuration.RTK_COLORS.append(_config.read_configuration().get('Colors',
+                                                                     'partfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'overstressbg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'overstressfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'taggedbg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'taggedfg'))
+    Configuration.RTK_COLORS.append(
+        _config.read_configuration().get('Colors', 'nofrmodelfg'))
+    try:
+        Configuration.RTK_COLORS.append(
+            _config.read_configuration().get('Colors', 'softwarebg'))
+    except NoOptionError:
+        Configuration.RTK_COLORS.append('#FFFFFF')
+    try:
+        Configuration.RTK_COLORS.append(
+            _config.read_configuration().get('Colors', 'softwarefg'))
+    except NoOptionError:
+        Configuration.RTK_COLORS.append('#FFFFFF')
+
+    return _return
 
 
 def _initialize_loggers():
     """
-    Creates loggers for the RTK application.
+    Function to create loggers for the RTK application.
 
     :return: (_debug_log, _user_log, _import_log)
     :rtype: tuple
@@ -173,6 +382,14 @@ def _initialize_loggers():
                                           __import_log)
 
     return(_debug_log, _user_log, _import_log)
+
+
+class NoOptionError(Exception):
+    """
+    Exception raised when no option is available in the configuration file.
+    """
+
+    pass
 
 
 class RTK(object):
@@ -241,7 +458,10 @@ class RTK(object):
         """
 
         # Read the site configuration file.
-        _read_configuration()
+        _read_site_configuration()
+
+        # Read the program configuration file.
+        _read_program_configuration()
 
         RTK_INTERFACE = 1
 
@@ -350,6 +570,9 @@ class RTK(object):
         self.module_book.notebook.next_page()
         self.module_book.notebook.prev_page()
 
+    def __del__(self):
+        del self
+
     def _validate_license(self):
         """
         Method to validate the license and the license expiration date.
@@ -364,10 +587,10 @@ class RTK(object):
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            Widgets.rtk_warning(_(u"Cannot find license file %s.  "
-                                    u"If your license file is elsewhere, "
-                                    u"please place it in %s." %
-                                    (_license_file, Configuration.DATA_DIR)))
+            Widgets.rtk_warning(_(u"Cannot find license file {0:s}.  If your "
+                                  u"license file is elsewhere, please place "
+                                  u"it in {1:s}.").format(
+                                      _license_file, Configuration.DATA_DIR))
             return True
 
         _license_key = _license_file.readline().rstrip('\n')
@@ -379,16 +602,16 @@ class RTK(object):
 
         if _license_key != _results[0][0]:
             Widgets.rtk_error(_(u"Invalid license (Invalid key).  Your "
-                                  u"license key is incorrect.  Closing the "
-                                  u"RTK application."))
+                                u"license key is incorrect.  Closing the RTK "
+                                u"application."))
             return True
 
         if datetime.datetime.today().toordinal() > _results[0][1]:
             _expire_date = str(datetime.datetime.fromordinal(int(
                 _results[0][1])).strftime('%Y-%m-%d'))
             Widgets.rtk_error(_(u"Invalid license (Expired).  Your license "
-                                  u"expired on %s.  Closing RTK application." %
-                                  _expire_date))
+                                u"expired on {0:s}.  Closing the RTK "
+                                u"application.").format(_expire_date))
             return True
 
         return False

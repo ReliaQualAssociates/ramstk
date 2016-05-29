@@ -20,7 +20,8 @@ import logging
 
 from Utilities import create_logger, split_string, none_to_string, \
                       string_to_boolean, date_to_ordinal, ordinal_to_date, \
-                      dir_exists, file_exists, missing_to_default
+                      dir_exists, file_exists, missing_to_default, \
+                      error_handler
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -209,3 +210,61 @@ class TestUtilities(unittest.TestCase):
 
         _default = missing_to_default(40, 10)
         self.assertEqual(_default, 40)
+
+    @attr(all=True, unit=True)
+    def test09_error_handler_type_error(self):
+        """
+        (TestUtilities) error_handler should return a 10 error code when passed a TypeError string
+        """
+
+        _error_code = error_handler(
+                          ['The argument must be a string or a number dude!'])
+        self.assertEqual(_error_code, 10)
+
+    @attr(all=True, unit=True)
+    def test09a_error_handler_value_error(self):
+        """
+        (TestUtilities) error_handler should return a 10 error code when passed a ValueError string
+        """
+
+        _error_code = error_handler(
+                          ['That is invalid literal for int() with base 10'])
+        self.assertEqual(_error_code, 10)
+
+        _error_code = error_handler(
+                          ['I could not convert string to float'])
+        self.assertEqual(_error_code, 10)
+
+    @attr(all=True, unit=True)
+    def test09b_error_handler_zero_division_error(self):
+        """
+        (TestUtilities) error_handler should return a 20 error code when passed a ZeroDivisionError string
+        """
+
+        _error_code = error_handler(
+                          ['float division by zero dunna work dude'])
+        self.assertEqual(_error_code, 20)
+
+        _error_code = error_handler(
+                          ['That was integer division or modulo by zero'])
+        self.assertEqual(_error_code, 20)
+
+    @attr(all=True, unit=True)
+    def test09c_error_handler_index_error(self):
+        """
+        (TestUtilities) error_handler should return a 40 error code when passed a IndexError string
+        """
+
+        _error_code = error_handler(
+                          ['That index out of range'])
+        self.assertEqual(_error_code, 40)
+
+    @attr(all=True, unit=True)
+    def test09d_error_handler_default(self):
+        """
+        (TestUtilities) error_handler should return a 1000 error code when passed a error string it can't parse
+        """
+
+        _error_code = error_handler(
+                          ['Some kinda error message'])
+        self.assertEqual(_error_code, 1000)

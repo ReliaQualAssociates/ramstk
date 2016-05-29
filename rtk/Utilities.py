@@ -13,7 +13,6 @@ this module in other modules that need to interact with the RTK application.
 import sys
 import os
 import os.path
-from os import environ, name
 
 # Add localization support.
 import gettext
@@ -32,14 +31,9 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
 
 # Import other RTK modules.
 import Configuration
-import gui.gtk.Widgets as Widgets
 
 _ = gettext.gettext
 
@@ -47,194 +41,6 @@ __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
-
-def read_configuration():
-    """
-    This method reads the site and user configuration files to establish
-    settings for The RTK application.
-    """
-
-    if name == 'posix':
-        _homedir = environ['HOME']
-
-    elif name == 'nt':
-        _homedir = environ['USERPROFILE']
-
-    # Get a config instance for the site configuration file.
-    conf = Configuration.RTKConf('site')
-    #if not file_exists(conf.conf_file):
-    #    rtk_warning(_(u"Site configuration file {0:s} not found.  This "
-    #                  u"typically indicates RTK was installed improperly or "
-    #                  u"RTK files have been corrupted.  You may try to "
-    #                  u"uninstall and re-install RTK.").format(conf.conf_file))
-    #    return True
-
-    Configuration.COM_BACKEND = conf.read_configuration().get('Backend',
-                                                              'type')
-    Configuration.SITE_DIR = conf.read_configuration().get('Backend', 'path')
-    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
-                                                                    'host'))
-    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
-                                                                    'socket'))
-    Configuration.RTK_COM_INFO.append(
-        conf.read_configuration().get('Backend', 'database'))
-    Configuration.RTK_COM_INFO.append(conf.read_configuration().get('Backend',
-                                                                    'user'))
-    Configuration.RTK_COM_INFO.append(
-        conf.read_configuration().get('Backend', 'password'))
-
-    # Get a config instance for the user configuration file.
-    conf = Configuration.RTKConf('user')
-
-    Configuration.BACKEND = conf.read_configuration().get('Backend', 'type')
-    Configuration.RTK_PROG_INFO.append(
-        conf.read_configuration().get('Backend', 'host'))
-    Configuration.RTK_PROG_INFO.append(
-        conf.read_configuration().get('Backend', 'socket'))
-    Configuration.RTK_PROG_INFO.append(
-        conf.read_configuration().get('Backend', 'database'))
-    Configuration.RTK_PROG_INFO.append(
-        conf.read_configuration().get('Backend', 'user'))
-    Configuration.RTK_PROG_INFO.append(
-        conf.read_configuration().get('Backend', 'password'))
-
-    Configuration.FRMULT = float(conf.read_configuration().get('General',
-                                                               'frmultiplier'))
-    Configuration.PLACES = conf.read_configuration().get('General', 'decimal')
-    Configuration.RTK_MODE_SOURCE = conf.read_configuration().get('General',
-                                                                  'modesource')
-    Configuration.TABPOS[0] = conf.read_configuration().get('General',
-                                                            'treetabpos')
-    Configuration.TABPOS[1] = conf.read_configuration().get('General',
-                                                            'listtabpos')
-    Configuration.TABPOS[2] = conf.read_configuration().get('General',
-                                                            'booktabpos')
-
-    # Get directory and file information.
-    icondir = conf.read_configuration().get('Directories', 'icondir')
-    datadir = conf.read_configuration().get('Directories', 'datadir')
-    logdir = conf.read_configuration().get('Directories', 'logdir')
-    progdir = conf.read_configuration().get('Directories', 'progdir')
-
-    Configuration.CONF_DIR = conf.conf_dir
-    if not dir_exists(Configuration.CONF_DIR):
-        rtk_warning(_(u"Configuration directory %s does not exist.  "
-                      u"Exiting.") % Configuration.CONF_DIR)
-
-    Configuration.ICON_DIR = conf.conf_dir + icondir + '/'
-    if not dir_exists(Configuration.ICON_DIR):
-        Configuration.ICON_DIR = conf.icon_dir
-
-    Configuration.DATA_DIR = conf.conf_dir + datadir + '/'
-    if not dir_exists(Configuration.DATA_DIR):
-        Configuration.DATA_DIR = conf.data_dir
-
-    Configuration.LOG_DIR = conf.conf_dir + logdir + '/'
-    if not dir_exists(Configuration.LOG_DIR):
-        Configuration.LOG_DIR = conf.log_dir
-
-    Configuration.PROG_DIR = progdir
-    if not dir_exists(Configuration.PROG_DIR):
-        Configuration.PROG_DIR = _homedir + '/Analyses/RTK/'
-
-    # Get list of format files.
-    formatfile = conf.read_configuration().get('Files', 'revisionformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'functionformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'requirementformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'hardwareformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'validationformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'rgformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'fracaformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'partformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'siaformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'fmecaformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'stakeholderformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'testformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'mechanismformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'rgincidentformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'incidentformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'softwareformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'datasetformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'riskformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'ffmecaformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-    formatfile = conf.read_configuration().get('Files', 'sfmecaformat')
-    Configuration.RTK_FORMAT_FILE.append(conf.conf_dir + formatfile)
-
-    # Get color information.
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'revisionbg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'revisionfg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'functionbg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'functionfg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'requirementbg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'requirementfg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'assemblybg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'assemblyfg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'validationbg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'validationfg'))
-    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
-                                                                  'rgbg'))
-    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
-                                                                  'rgfg'))
-    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
-                                                                  'fracabg'))
-    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
-                                                                  'fracafg'))
-    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
-                                                                  'partbg'))
-    Configuration.RTK_COLORS.append(conf.read_configuration().get('Colors',
-                                                                  'partfg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'overstressbg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'overstressfg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'taggedbg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'taggedfg'))
-    Configuration.RTK_COLORS.append(
-        conf.read_configuration().get('Colors', 'nofrmodelfg'))
-    try:
-        Configuration.RTK_COLORS.append(
-            conf.read_configuration().get('Colors', 'softwarebg'))
-    except NoOptionError:
-        Configuration.RTK_COLORS.append('#FFFFFF')
-    try:
-        Configuration.RTK_COLORS.append(
-            conf.read_configuration().get('Colors', 'softwarefg'))
-    except NoOptionError:
-        Configuration.RTK_COLORS.append('#FFFFFF')
-
-    return(icondir, datadir, logdir)
 
 
 def create_logger(log_name, log_level, log_file, to_tty=False):
@@ -318,6 +124,8 @@ def error_handler(message):
     elif 'could not convert string to float' in message[0]:         # Value error
         _error_code = 10
     elif 'float division by zero' in message[0]:                    # Zero division error
+        _error_code = 20
+    elif 'integer division or modulo by zero' in message[0]:        # Zero division error
         _error_code = 20
     elif 'index out of range' in message[0]:                        # Index error
         _error_code = 40
@@ -490,82 +298,6 @@ def select_source_file(assistant, title):
         assistant.destroy()
 
     return _headers, _contents
-
-
-def cut_copy_paste(__widget, action):
-    """
-    Cuts, copies, and pastes.
-
-    :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :param int action: whether to cut, copy, or paste
-                       0 = cut
-                       1 = copy
-                       2 = paste
-    """
-
-    clipboard = gtk.Clipboard(gtk.gdk.display_manager_get().get_default_display(),
-                              "CLIPBOARD")
-
-    if action == 0:
-        print "Cutting."
-    elif action == 1:
-        print clipboard.set_text("I copied this.")
-        print "Copying."
-    elif action == 2:
-        clipboard.request_text(paste)
-
-    return False
-
-
-def paste(clipboard, contents, user_data):
-    """
-    Callback function to paste text from the clipboard.
-
-    :param gtk.Clipboard clipboard: the gtk.Clipboard() that called this
-                                    function.
-    :param str contents: the contents of the clipboard.
-    :param any user_data: user data.
-    """
-# TODO: Write copy/cut/paste functions.
-    print contents
-
-
-def select_all(widget):
-    """
-    Selects all the rows in a treeview.
-
-    :param gtk.Widget widget: the gtk.Widget() that called this function.
-    """
-# TODO: Write select all function.
-    return False
-
-
-def find(widget, action):
-    """
-    Finds records in the open project.
-
-    :param gtk.Widget widget: the gtk.Widget() that called this function.
-    :param int action: whether to find (0), find next (1), find previous (2),
-                       or replace(3).
-    """
-# TODO: Write find/replace function.
-    return False
-
-
-def undo():
-    """
-    Undoes the last change.
-    """
-# TODO: Write undo function.
-    return False
-
-
-def redo():
-    """
-    Re-does the last change.
-    """
-# TODO: Write redo function.
-    return False
 
 
 def add_parts_system_hierarchy(__widget, app):
