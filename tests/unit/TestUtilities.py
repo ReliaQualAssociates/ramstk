@@ -36,7 +36,7 @@ class TestUtilities(unittest.TestCase):
 
     def setUp(self):
         """
-        Setup the test fixture for the Validation class.
+        Setup the test fixture for the Utilities module.
         """
 
         pass

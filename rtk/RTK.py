@@ -11,8 +11,10 @@ This is the main program for the RTK application.
 
 import datetime
 import gettext
+import glob
 import logging
 import os
+import shutil
 import sys
 
 try:
@@ -25,42 +27,43 @@ try:
 except ImportError:
     sys.exit(1)
 
-from gui.gtk.mwi.ModuleBook import ModuleView
-
+# Import other RTK modules.
 import Configuration
 import Utilities
-import gui.gtk.Widgets as Widgets
-
 from dao.DAO import DAO
 from datamodels.matrix.Matrix import Matrix
 from revision.Revision import Revision
-from revision.ModuleBook import ModuleView as mvwRevision
 from usage.UsageProfile import UsageProfile
 from failure_definition.FailureDefinition import FailureDefinition
 from function.Function import Function
-from function.ModuleBook import ModuleView as mvwFunction
 from analyses.fmea.FMEA import FMEA
 from requirement.Requirement import Requirement
-from requirement.ModuleBook import ModuleView as mvwRequirement
 from stakeholder.Stakeholder import Stakeholder
 from hardware.BoM import BoM as HardwareBoM
-from hardware.ModuleBook import ModuleView as mvwHardware
 from analyses.allocation.Allocation import Allocation
 from analyses.hazard.Hazard import Hazard
 from analyses.similar_item.SimilarItem import SimilarItem
 from analyses.pof.PhysicsOfFailure import PoF
 from software.BoM import BoM as SoftwareBoM
-from software.ModuleBook import ModuleView as mvwSoftware
 from testing.Testing import Testing
 from testing.growth.Growth import Growth
-from testing.ModuleBook import ModuleView as mvwTesting
 from validation.Validation import Validation
-from validation.ModuleBook import ModuleView as mvwValidation
 from incident.Incident import Incident
 from incident.action.Action import Action
 from incident.component.Component import Component
-from incident.ModuleBook import ModuleView as mvwIncident
 from survival.Survival import Survival
+
+import gui.gtk.Widgets as Widgets
+from gui.gtk.mwi.ModuleBook import ModuleView
+
+from revision.ModuleBook import ModuleView as mvwRevision
+from function.ModuleBook import ModuleView as mvwFunction
+from requirement.ModuleBook import ModuleView as mvwRequirement
+from hardware.ModuleBook import ModuleView as mvwHardware
+from software.ModuleBook import ModuleView as mvwSoftware
+from testing.ModuleBook import ModuleView as mvwTesting
+from incident.ModuleBook import ModuleView as mvwIncident
+from validation.ModuleBook import ModuleView as mvwValidation
 from survival.ModuleBook import ModuleView as mvwSurvival
 
 __author__ = 'Andrew Rowland'
@@ -215,21 +218,30 @@ def _read_program_configuration():
                               u"exist.  "
                               u"Creating").format(Configuration.CONF_DIR))
         os.makedirs(Configuration.CONF_DIR)
-        # TODO: Copy format files (*.conf, *.xml, RTKCommon.rtk) from system SITE_DIR to CONF_DIR
+        for _file in glob.glob(Configuration.SITE_DIR + '*.conf'):
+            shutil.copy2(_file, Configuration.CONF_DIR)
+        for _file in glob.glob(Configuration.SITE_DIR + '*.xml'):
+            shutil.copy2(_file, Configuration.CONF_DIR)
+        shutil.copy2(Configuration.SITE_DIR + '/RTKCommon.rtk',
+                     Configuration.CONF_DIR)
 
     Configuration.DATA_DIR = Configuration.CONF_DIR + _datadir + '/'
     if not Utilities.dir_exists(Configuration.DATA_DIR):
         Widgets.rtk_warning(_(u"Data directory {0:s} does not exist.  "
                               u"Creating").format(Configuration.DATA_DIR))
         os.makedirs(Configuration.DATA_DIR)
-        # TODO: Copy data files (*.sql, *.map) from system data_dir to DATA_DIR
+        for _file in glob.glob(Configuration.data_dir + '*.map'):
+            shutil.copy2(_file, Configuration.DATA_DIR)
+        for _file in glob.glob(Configuration.data_dir + '*.sql'):
+            shutil.copy2(_file, Configuration.DATA_DIR)
 
     Configuration.ICON_DIR = Configuration.CONF_DIR + _icondir + '/'
     if not Utilities.dir_exists(Configuration.ICON_DIR):
         Widgets.rtk_warning(_(u"Icon directory {0:s} does not exist.  "
                               u"Creating").format(Configuration.ICON_DIR))
         os.makedirs(Configuration.ICON_DIR)
-        # TODO: Copy icons from system icon_dir to ICON_DIR
+        shutil.copytree(Configuration.icon_dir, Configuration.ICON_DIR,
+                        symlinks=True)
 
     Configuration.LOG_DIR = Configuration.CONF_DIR + _logdir + '/'
     if not Utilities.dir_exists(Configuration.LOG_DIR):
