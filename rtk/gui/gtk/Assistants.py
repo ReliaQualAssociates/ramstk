@@ -584,7 +584,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
     An assistant to provide a GUI to the various configuration files for RTK.
     """
 
-    def __init__(self, __widget, application):        # pylint: disable=R0915
+    def __init__(self, __widget, controller):        # pylint: disable=R0915
         """
         Allows a user to set site-wide options.
 
@@ -594,10 +594,20 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         import pango
 
-        self._app = application
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._mdcRTK = controller
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
 
         gtk.Window.__init__(self)
-        self.set_title(_(u"RTK - Options"))
 
         _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
         _width = gtk.gdk.screen_width() / _n_screens
@@ -1027,10 +1037,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         self.btnSave.set_image(_image)
         self.btnSave.connect('clicked', self._save_options)
 
-        self.btnQuit = gtk.Button(_(u"Close"))
-        _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/quit.png')
-        self.btnQuit.set_image(_image)
+        self.btnQuit = gtk.Button(_(u"Close"), stock=gtk.STOCK_CANCEL)
         self.btnQuit.connect('clicked', self._quit)
 
         _vbox.pack_end(_fixed, expand=False)
@@ -1064,12 +1071,13 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         _tab_pos = {'bottom': 0, 'left': 1, 'right': 2, 'top': 3}
 
         # Make a backup of the original configuration file.
-        Configuration_file = Configuration.CONF_DIR + 'RTK.conf'
+        _conf_file = Configuration.CONF_DIR + 'RTK.conf'
+        self.set_title(_(u"RTK - Options ({0:s})").format(_conf_file))
 
         _parser = SafeConfigParser()
 
-        if file_exists(Configuration_file):
-            _parser.read(Configuration_file)
+        if Utilities.file_exists(_conf_file):
+            _parser.read(_conf_file)
 
             # Set tab positions.
             self.cmbModuleBookTabPosition.set_active(
@@ -1588,13 +1596,15 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         :rtype: bool
         """
 
-        Configuration_file = Configuration.CONF_DIR + 'RTK.conf'
+        _return = False
+
+        _conf_file = Configuration.CONF_DIR + 'RTK.conf'
 
         _parser = SafeConfigParser()
 
         # Write the new colors to the configuration file.
-        if file_exists(Configuration_file):
-            _parser.read(Configuration_file)
+        if Utilities.file_exists(_conf_file):
+            _parser.read(_conf_file)
 
             try:
                 _parser.set('General', 'frmultiplier',
@@ -1657,10 +1667,11 @@ class Options(gtk.Window):                  # pylint: disable=R0902
             _parser.set('Colors', 'softwarefg', Configuration.RTK_COLORS[22])
 
             try:
-                _parser.write(open(Configuration_file, 'w'))
-                return False
+                _parser.write(open(_conf_file, 'w'))
             except EnvironmentError:
-                return True
+                _return = True
+
+        return _return
 
     def _save_list(self):
         """
