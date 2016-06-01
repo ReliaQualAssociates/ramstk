@@ -17,6 +17,7 @@ import sys
 import ntpath
 
 from os import name, remove
+from os.path import basename
 from datetime import datetime
 
 from ConfigParser import SafeConfigParser, NoOptionError
@@ -190,7 +191,7 @@ class CreateProject(object):
 
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
             _new_program = _dialog.get_filename()
-            _new_program = _new_program.rsplit('.')[0]
+            _new_program = basename(_new_program)
             _new_program = _new_program + '.rtk'
 
             if Utilities.file_exists(_new_program):
@@ -390,7 +391,7 @@ class OpenProject(object):
 class DeleteProject(object):
     """
     This is the gtk.Assistant() that guides the user through the process of
-    creating a new RTK Project database.
+    deleting an existing RTK Program database.
     """
 
     def __init__(self, __button, controller):
@@ -418,9 +419,9 @@ class DeleteProject(object):
         Widgets.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
         if Configuration.BACKEND == 'mysql':
-            self._request_open_mysql_project()
+            self._request_delete_mysql_project()
         elif Configuration.BACKEND == 'sqlite3':
-            self._request_open_sqlite3_project()
+            self._request_delete_sqlite3_project()
 
         Widgets.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
@@ -495,28 +496,40 @@ class DeleteProject(object):
         :rtype: bool
         """
 
-        dialog = gtk.FileChooserDialog(_(u"RTK - Delete Program"),
-                                       None,
-                                       gtk.DIALOG_MODAL |
-                                       gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Delete Program"),
+                                        buttons=(gtk.STOCK_OK,
+                                                 gtk.RESPONSE_ACCEPT,
+                                                 gtk.STOCK_CANCEL,
+                                                 gtk.RESPONSE_REJECT))
+        _dialog.set_current_folder(Configuration.PROG_DIR)
 
-        if dialog.run() == gtk.RESPONSE_ACCEPT:
-            project = dialog.get_filename()
-        else:
-            dialog.destroy()
+        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"RTK Program Databases"))
+        _filter.add_pattern("*.rtk")
+        _dialog.add_filter(_filter)
 
-        if(self._confirm_action(_(u"Really delete {0:s}?").format(project)),
-           'question'):
-            os.remove(project)
-            dialog.destroy()
+        _filter = gtk.FileFilter()
+        _filter.set_name(_(u"All files"))
+        _filter.add_pattern("*")
+        _dialog.add_filter(_filter)
+
+        if _dialog.run() == gtk.RESPONSE_ACCEPT:
+            _project = _dialog.get_filename()
+
+            _prompt = _(u"Really delete {0:s}?").format(_project)
+            _confirm = self._confirm_action(_prompt)
+            if _confirm:
+                remove(_project)
+                _dialog.destroy()
+            else:
+                _dialog.destroy()
         else:
-            dialog.destroy()
+            _dialog.destroy()
 
         return False
 
-    def _confirm_action(prompt, image='default', parent=None):
+    def _confirm_action(self, prompt):
         """
         Method to confirm deleting a Project.
 
@@ -534,12 +547,12 @@ class DeleteProject(object):
 
         _hbox = gtk.HBox()
 
-        image = Configuration.ICON_DIR + '32x32/' + image + '.png'
+        _img = Configuration.ICON_DIR + '32x32/question.png'
         _image = gtk.Image()
-        _image.set_from_file(image)
+        _image.set_from_file(_img)
         _hbox.pack_start(_image)
 
-        _label = Widgets.make_label(prompt)
+        _label = Widgets.make_label(prompt, height=-1, width=-1)
         _hbox.pack_end(_label)
         _dialog.vbox.pack_start(_hbox)      # pylint: disable=E1101
         _hbox.show_all()

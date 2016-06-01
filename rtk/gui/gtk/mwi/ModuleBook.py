@@ -36,11 +36,13 @@ except ImportError:
 try:
     import Configuration
     import Utilities
-    from gui.gtk.Assistants import CreateProject, OpenProject, Options
+    from gui.gtk.Assistants import CreateProject, OpenProject, \
+                                   DeleteProject, Options
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
-    from rtk.gui.gtk.Assistants import CreateProject, OpenProject, Options
+    from rtk.gui.gtk.Assistants import CreateProject, OpenProject, \
+                                       DeleteProject, Options
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -349,6 +351,17 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image.set_from_file(Configuration.ICON_DIR + '32x32/open.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', OpenProject, self._mdcRTK)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        # Delete button
+        _button = gtk.ToolButton()
+        _button.set_tooltip_text(_(u"Deletes an existing RTK Program "
+                                   u"Database."))
+        _image = gtk.Image()
+        _image.set_from_file(Configuration.ICON_DIR + '32x32/delete.png')
+        _button.set_icon_widget(_image)
+        _button.connect('clicked', DeleteProject, self._mdcRTK)
         _toolbar.insert(_button, _position)
         _position += 1
 

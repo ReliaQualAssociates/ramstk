@@ -900,7 +900,7 @@ class RTK(object):
         # Close the connection.
         _dao.close()
 
-        self.request_open_project()
+        self.open_project()
 
         return False
 
