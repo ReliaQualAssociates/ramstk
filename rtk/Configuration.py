@@ -925,7 +925,7 @@ class RTKConf(object):
         :return: _config
         :rtype: ConfigParser.ConfigParser()
         """
-        print self.conf_file
+
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.

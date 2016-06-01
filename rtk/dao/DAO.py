@@ -76,4 +76,4 @@ class DAO(object):
         Method to close the database connection.
         """
 
-        print self.model.connection.close()
+        self.model.connection.close()
