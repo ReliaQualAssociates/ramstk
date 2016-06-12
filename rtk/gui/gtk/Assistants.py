@@ -16,9 +16,8 @@ import locale
 import sys
 import ntpath
 
-from os import name, remove
+from os import remove
 from os.path import basename
-from datetime import datetime
 
 from ConfigParser import SafeConfigParser, NoOptionError
 
@@ -63,7 +62,6 @@ except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
-
 
 
 class CreateProject(object):
@@ -204,7 +202,7 @@ class CreateProject(object):
                 _label = Widgets.make_label(_(u"RTK Program database already "
                                               u"exists.\n\n{0:s}\n\n"
                                               u"Overwrite?").format(
-                                                _new_program),
+                                                  _new_program),
                                             width=-1, height=-1, bold=False,
                                             wrap=True)
                 _dlgConfirm.vbox.pack_start(_label)     # pylint: disable=E1101
@@ -600,6 +598,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         # Initialize private scalar attributes.
         self._mdcRTK = controller
+        self._last_id = -1
 
         # Initialize public dictionary attributes.
 
@@ -657,18 +656,16 @@ class Options(gtk.Window):                  # pylint: disable=R0902
                              fld_survival_active, fld_rbd_active, \
                              fld_fta_active \
                       FROM tbl_program_info"
-            _results = self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx,
-                                                  commit=False)
+            #_results = self._mdcRTK.project_dao.execute(_query, commit=False)
 
-            self.chkRevisions.set_active(_results[0][0])
-            self.chkFunctions.set_active(_results[0][1])
-            self.chkRequirements.set_active(_results[0][2])
-            self.chkSoftware.set_active(_results[0][4])
-            self.chkValidation.set_active(_results[0][5])
-            self.chkRG.set_active(_results[0][6])
-            self.chkIncidents.set_active(_results[0][8])
-            self.chkSurvivalAnalysis.set_active(_results[0][10])
+            #self.chkRevisions.set_active(_results[0][0])
+            #self.chkFunctions.set_active(_results[0][1])
+            #self.chkRequirements.set_active(_results[0][2])
+            #self.chkSoftware.set_active(_results[0][4])
+            #self.chkValidation.set_active(_results[0][5])
+            #self.chkRG.set_active(_results[0][6])
+            #self.chkIncidents.set_active(_results[0][8])
+            #self.chkSurvivalAnalysis.set_active(_results[0][10])
 
             _label = gtk.Label(_(u"RTK Modules"))
             _label.set_tooltip_text(_(u"Select active RTK modules."))
@@ -816,10 +813,10 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- - Create list edit options - ----- ----- ----- #
-        _vbox = gtk.VBox()
+        _vpaned = gtk.VPaned()
 
         _fixed = gtk.Fixed()
-        _vbox.pack_start(_fixed)
+        _vpaned.pack1(_fixed)
 
         self.tvwListEditor = gtk.TreeView()
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
@@ -829,22 +826,92 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.tvwListEditor)
-        _vbox.pack_end(_scrollwindow)
+        _vpaned.pack2(_scrollwindow)
 
-        self.rdoMeasurement = gtk.RadioButton(group=None,
-                                              label=_(u"Edit measurement "
-                                                      u"units"))
-        self.rdoRequirementTypes = gtk.RadioButton(group=self.rdoMeasurement,
+        # ----- ----- ----- ----- - RTK-wide Lists - ----- ----- ----- ----- #
+        self.rdoUsers = gtk.RadioButton(group=None, label=_(u"Edit list of "
+                                                            u"RTK users"))
+        self.rdoStatus = gtk.RadioButton(group=self.rdoUsers,
+                                         label=_(u"Edit status list"))
+        self.rdoManufacturers = gtk.RadioButton(group=self.rdoUsers,
+                                                label=_(u"Edit list of "
+                                                        u"manufacturers"))
+
+        # ----- ----- ----- ----- Requirement Lists ----- ----- ----- ----- #
+        self.rdoRequirementTypes = gtk.RadioButton(group=self.rdoUsers,
                                                    label=_(u"Edit requirement "
                                                            u"types"))
-        self.rdoRiskCategory = gtk.RadioButton(group=self.rdoMeasurement,
-                                               label=_(u"Edit risk "
-                                                       u"categories"))
-        self.rdoVandVTasks = gtk.RadioButton(group=self.rdoMeasurement,
+        self.rdoWorkgroups = gtk.RadioButton(group=self.rdoUsers,
+                                             label=_(u"Edit workgroup list"))
+
+        # ----- ----- ----- ---- FMEA and HazOp Lists ---- ----- ----- ----- #
+        self.rdoSeverity = gtk.RadioButton(group=self.rdoUsers,
+                                           label=_(u"Edit failure severity "
+                                                   u"list"))
+        self.rdoFailureProb = gtk.RadioButton(group=self.rdoUsers,
+                                              label=_(u"Edit failure "
+                                                      u"probability list"))
+        self.rdoFMEAActionCat = gtk.RadioButton(group=self.rdoUsers,
+                                                label=_(u"Edit FMEA action "
+                                                        u"category list"))
+        self.rdoFMEAControls = gtk.RadioButton(group=self.rdoUsers,
+                                               label=_(u"Edit list of FMEA "
+                                                       u"controls"))
+        self.rdoHazard = gtk.RadioButton(group=self.rdoUsers,
+                                         label=_(u"Edit potential hazards "
+                                                 u"list"))
+
+        # ----- ----- ----- ----- --- PoF Lists --- ----- ----- ----- ----- #
+        self.rdoDamageModel = gtk.RadioButton(group=self.rdoUsers,
+                                              label=_(u"Edit list of damage "
+                                                      u"models"))
+        self.rdoPoFPriority = gtk.RadioButton(group=self.rdoUsers,
+                                              label=_(u"Edit list of PoF "
+                                                      u"action priorities"))
+        self.rdoMeasParam = gtk.RadioButton(group=self.rdoUsers,
+                                            label=_(u"Edit list of field "
+                                                    u"measurable parameters"))
+        self.rdoClassMeans = gtk.RadioButton(group=self.rdoUsers,
+                                             label=_(u"Edit list of methods "
+                                                     u"for classifying "
+                                                     u"loads"))
+
+        # ----- ----- ----- ----- - Software Lists - ----- ----- ----- ----- #
+        self.rdoSWAppType = gtk.RadioButton(group=self.rdoUsers,
+                                            label=_(u"Edit list of software "
+                                                    u"application types"))
+        self.rdoSWDevPhase = gtk.RadioButton(group=self.rdoUsers,
+                                             label=_(u"Edit list of "
+                                                     u"software development "
+                                                     u"phases"))
+
+        # ----- ----- ----- ----- Validation Lists ----- ----- ----- ----- #
+        self.rdoVandVTasks = gtk.RadioButton(group=self.rdoUsers,
                                              label=_(u"Edit V&V activity "
                                                      u"types"))
-        self.rdoUsers = gtk.RadioButton(group=self.rdoMeasurement,
-                                        label=_(u"Edit user list"))
+        self.rdoMeasurement = gtk.RadioButton(group=self.rdoUsers,
+                                              label=_(u"Edit measurement "
+                                                      u"units"))
+
+        # ----- ----- ----- ----- Incident Lists ----- ----- ----- ----- #
+        self.rdoIncidentType = gtk.RadioButton(group=self.rdoUsers,
+                                               label=_(u"Edit list of "
+                                                       u"incident types"))
+        self.rdoIncidentCategory = gtk.RadioButton(group=self.rdoUsers,
+                                                   label=_(u"Edit list of "
+                                                           u"incident "
+                                                           u"categories"))
+        self.rdoIncidentCriticality = gtk.RadioButton(group=self.rdoUsers,
+                                                      label=_(u"Edit list of "
+                                                              u"incident "
+                                                              u"criticalities"))
+        self.rdoLifeCycle = gtk.RadioButton(group=self.rdoUsers,
+                                            label=_(u"Edit product life-cycle "
+                                                    u"list"))
+        self.rdoDetectionMethod = gtk.RadioButton(group=self.rdoUsers,
+                                                  label=_(u"Edit list of "
+                                                          u"detection "
+                                                          u"methods"))
 
         self.btnListEdit = gtk.Button(_(u"Edit List"))
         _image = gtk.Image()
@@ -864,14 +931,38 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         self.btnListRemove.set_image(_image)
         self.btnListRemove.connect('clicked', self._remove_from_list)
 
-        _fixed.put(self.rdoMeasurement, 5, 5)
-        _fixed.put(self.rdoRequirementTypes, 5, 35)
-        _fixed.put(self.rdoRiskCategory, 5, 65)
-        _fixed.put(self.rdoVandVTasks, 5, 95)
-        _fixed.put(self.rdoUsers, 5, 125)
-        _fixed.put(self.btnListEdit, 5, 205)
-        _fixed.put(self.btnListAdd, 105, 205)
-        _fixed.put(self.btnListRemove, 215, 205)
+        _fixed.put(self.rdoUsers, 5, 5)
+        _fixed.put(self.rdoStatus, 5, 35)
+        _fixed.put(self.rdoManufacturers, 5, 65)
+        _fixed.put(self.rdoRequirementTypes, 5, 95)
+        _fixed.put(self.rdoWorkgroups, 5, 125)
+        _fixed.put(self.rdoSeverity, 5, 155)
+        _fixed.put(self.rdoFailureProb, 5, 185)
+        _fixed.put(self.rdoFMEAActionCat, 5, 215)
+        _fixed.put(self.rdoFMEAControls, 5, 245)
+        self.rdoFMEAControls.set_sensitive(False)
+        _fixed.put(self.rdoHazard, 5, 275)
+        _fixed.put(self.rdoDamageModel, 5, 305)
+        self.rdoDamageModel.set_sensitive(False)
+        _fixed.put(self.rdoPoFPriority, 5, 335)
+        self.rdoPoFPriority.set_sensitive(False)
+        _fixed.put(self.rdoMeasParam, 305, 5)
+        _fixed.put(self.rdoClassMeans, 305, 35)
+        self.rdoClassMeans.set_sensitive(False)
+        _fixed.put(self.rdoSWAppType, 305, 65)
+        _fixed.put(self.rdoSWDevPhase, 305, 95)
+        _fixed.put(self.rdoVandVTasks, 305, 125)
+        _fixed.put(self.rdoMeasurement, 305, 155)
+        _fixed.put(self.rdoIncidentType, 305, 185)
+        _fixed.put(self.rdoIncidentCategory, 305, 215)
+        _fixed.put(self.rdoIncidentCriticality, 305, 245)
+        self.rdoIncidentCriticality.set_sensitive(False)
+        _fixed.put(self.rdoLifeCycle, 305, 275)
+        _fixed.put(self.rdoDetectionMethod, 305, 305)
+        self.rdoDetectionMethod.set_sensitive(False)
+        _fixed.put(self.btnListEdit, 5, 375)
+        _fixed.put(self.btnListAdd, 105, 375)
+        _fixed.put(self.btnListRemove, 215, 375)
 
         for i in range(5):
             _cell = gtk.CellRendererText()
@@ -891,7 +982,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         _label = gtk.Label(_(u"Edit Lists"))
         _label.set_tooltip_text(_(u"Allows editing of lists used in RTK."))
-        self.notebook.insert_page(_vbox, tab_label=_label, position=-1)
+        self.notebook.insert_page(_vpaned, tab_label=_label, position=-1)
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
 
         # ----- ----- ----- -- Create tree edit options - ----- ----- ----- #
@@ -1345,45 +1436,159 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         Method to edit drop down list items.
 
         :param gtk.Button __button: the gtk.Button() that called this method.
-        :return: False
+        :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        if self.rdoMeasurement.get_active():
-            _query = "SELECT fld_measurement_id, fld_measurement_code \
-                      FROM tbl_measurement_units"
-            _header = ["", "Measurement Unit", "", "", "", ""]
-            _pad = ('', '', '', '')
+        if self.rdoUsers.get_active():
+            _query = "SELECT fld_user_id, fld_user_lname, fld_user_fname, \
+                             fld_user_email, fld_user_phone, fld_user_group \
+                      FROM tbl_users \
+                      ORDER BY fld_user_lname, fld_user_fname"
+            _header = ["", "User Last Name", "User First Name", "eMail",
+                       "Phone", "Work Group"]
+            _pad = ()
+            _table = 'tbl_usres'
+        elif self.rdoStatus.get_active():
+            _query = "SELECT fld_status_id, fld_status_name, \
+                             fld_status_description \
+                      FROM tbl_status \
+                      ORDER BY fld_status_name"
+            _header = ["", "Status", "Description", "", "", ""]
+            _pad = ('', '', '')
+            _table = 'tbl_status'
+        elif self.rdoManufacturers.get_active():
+            _query = "SELECT fld_manufacturers_id, fld_manufacturers_noun, \
+                             fld_location, fld_cage_code \
+                      FROM tbl_manufacturers \
+                      ORDER BY fld_manufacturers_noun ASC"
+            _header = ["", "Manufacturer", "Location", "CAGE Code", "", ""]
+            _pad = ('', '')
+            _table = 'tbl_manufacturers'
         elif self.rdoRequirementTypes.get_active():
             _query = "SELECT fld_requirement_type_id, \
                              fld_requirement_type_desc, \
                              fld_requirement_type_code \
-                      FROM tbl_requirement_type"
+                      FROM tbl_requirement_type \
+                      ORDER BY fld_requirement_type_desc ASC"
             _header = ["", "Requirement Type", "Code", "", "", ""]
             _pad = ('', '', '')
-        elif self.rdoRiskCategory.get_active():
-            _query = "SELECT fld_category_id, fld_category_noun, \
-                             fld_category_value \
-                      FROM tbl_risk_category"
-            _header = ["", "Risk Category", "Value", "", "", ""]
+            _table = 'tbl_requirement_type'
+        elif self.rdoWorkgroups.get_active():
+            _query = "SELECT fld_group_id, fld_group_name \
+                      FROM tbl_groups \
+                      ORDER BY fld_group_name ASC"
+            _header = ["", "Work Group", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_groups'
+        elif self.rdoSeverity.get_active():
+            _query = "SELECT fld_severity_id, fld_name, fld_category, \
+                             fld_description \
+                      FROM tbl_severity \
+                      ORDER BY fld_name ASC"
+            _header = ["", "Severity Name", "Severity Category", "Description",
+                       "", ""]
+            _pad = ('', '')
+            _table = 'tbl_severity'
+        elif self.rdoFailureProb.get_active():
+            _query = "SELECT fld_probability_id, fld_probability_name, \
+                             fld_probability_value \
+                      FROM tbl_failure_probability \
+                      ORDER BY fld_probability_value DESC"
+            _header = ["", "Probability Name", "Probability Value", "", "", ""]
             _pad = ('', '', '')
+            _table = 'tbl_failure_probability'
+        elif self.rdoFMEAActionCat.get_active():
+            _query = "SELECT fld_action_id, fld_action_name \
+                      FROM tbl_action_category \
+                      ORDER BY fld_action_name"
+            _header = ["", "Action", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_action_category'
+        elif self.rdoFMEAControls.get_active():
+            print "Edit FMEA controls"
+        elif self.rdoHazard.get_active():
+            _query = "SELECT fld_hazard_id, fld_category, fld_subcategory \
+                      FROM tbl_hazards \
+                      ORDER BY fld_category, fld_subcategory"
+            _header = ["", "Hazard Category", "Hazard", "", "", ""]
+            _pad = ('', '', '')
+            _table = 'tbl_hazards'
+        elif self.rdoDamageModel.get_active():
+            print "Edit damage models"
+        elif self.rdoPoFPriority.get_active():
+            print "Edit PoF priority"
+        elif self.rdoMeasParam.get_active():
+            _query = "SELECT fld_measurement_id, fld_measurement_name \
+                      FROM tbl_measurements \
+                      ORDER BY fld_measurement_name"
+            _header = ["", "Measurement", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_measurements'
+        elif self.rdoClassMeans.get_active():
+            print "Edit classification means"
+        elif self.rdoSWAppType.get_active():
+            _query = "SELECT fld_application_id, fld_application_desc, \
+                             fld_fault_density, fld_transformation_ratio \
+                      FROM tbl_software_application \
+                      ORDER BY fld_application_desc"
+            _header = ["", "Application", "Fault Density",
+                       "Transformation Ratio", "", ""]
+            _pad = ('', '')
+            _table = 'tbl_software_application'
+        elif self.rdoSWDevPhase.get_active():
+            _query = "SELECT fld_phase_id, fld_phase_desc \
+                      FROM tbl_development_phase \
+                      ORDER BY fld_phase_desc"
+            _header = ["", "Development Phase", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_development_phase'
         elif self.rdoVandVTasks.get_active():
             _query = "SELECT fld_validation_type_id, \
                              fld_validation_type_desc, \
                              fld_validation_type_code \
-                      FROM tbl_validation_type"
+                      FROM tbl_validation_type \
+                      ORDER BY fld_validation_type_desc"
             _header = ["", "Validation Type", "Code", "", "", ""]
             _pad = ('', '', '')
-        elif self.rdoUsers.get_active():
-            _query = "SELECT fld_user_id, fld_user_lname, fld_user_fname, \
-                             fld_user_email, fld_user_phone, fld_user_group \
-                      FROM tbl_users"
-            _header = ["", "User Last Name", "User First Name", "eMail",
-                       "Phone", "Work Group"]
-            _pad = ()
+            _table = 'tbl_validation_type'
+        elif self.rdoMeasurement.get_active():
+            _query = "SELECT fld_measurement_id, fld_measurement_code \
+                      FROM tbl_measurement_units \
+                      ORDER BY fld_measurement_code ASC"
+            _header = ["", "Measurement Unit", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_measurement_units'
+        elif self.rdoIncidentType.get_active():
+            _query = "SELECT fld_incident_type_id, fld_incident_type_name \
+                      FROM tbl_incident_type \
+                      ORDER BY fld_incident_type_name"
+            _header = ["", "Incident Type", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_incident_type'
+        elif self.rdoIncidentCategory.get_active():
+            _query = "SELECT fld_incident_cat_id, fld_incident_cat_name \
+                      FROM tbl_incident_category \
+                      ORDER BY fld_incident_cat_name"
+            _header = ["", "Incident Category", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_incident_category'
+        elif self.rdoIncidentCriticality.get_active():
+            print "Edit incident criticality"
+        elif self.rdoLifeCycle.get_active():
+            _query = "SELECT fld_lifecycle_id, fld_lifecycle_name \
+                      FROM tbl_lifecycles \
+                      ORDER BY fld_lifecycle_name"
+            _header = ["", "Lifecycle", "", "", "", ""]
+            _pad = ('', '', '', '')
+            _table = 'tbl_lifecycles'
+        elif self.rdoDetectionMethod.get_active():
+            print "Edit detection methods"
 
-        _results = self._app.COMDB.execute_query(_query, None,
-                                                 self._app.ComCnx)
+        (_results,
+         _error_code,
+         __) = self._mdcRTK.site_dao.execute(_query, commit=False)
+        self._last_id = self._mdcRTK.site_dao.get_last_id(_table)[0]
         try:
             _n_entries = len(_results)
         except TypeError:
@@ -1416,8 +1621,9 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         """
 
         # Add a new row.
+        self._last_id += 1
         _model = self.tvwListEditor.get_model()
-        _row = _model.append([-1, "", "", "", "", ""])
+        _row = _model.append([self._last_id, "", "", "", "", ""])
 
         # Select and activate the new row.
         _path = _model.get_path(_row)
@@ -1446,24 +1652,26 @@ class Options(gtk.Window):                  # pylint: disable=R0902
             _query = "DELETE FROM tbl_requirement_type \
                       WHERE fld_requirement_type_id=%d" % \
                      _model.get_value(_row, 0)
-        elif self.rdoRiskCategory.get_active():
-            _query = "DELETE FROM tbl_risk_category \
-                      WHERE fld_category_id=%d" % \
-                     _model.get_value(_row, 0)
         elif self.rdoVandVTasks.get_active():
             _query = "DELETE tbl_validation_type \
                       WHERE fld_validation_type_id=%d" % \
                      _model.get_value(_row, 0)
         elif self.rdoUsers.get_active():
-            rtk_information(_(u"You cannot remove a user from the RTK Program."
-                              u"  Retaining all users, past and present, is "
-                              u"necessary to ensure audit trails remain "
-                              u"intact."))
+            Widgets.rtk_information(_(u"You cannot remove a user from the RTK "
+                                      u"Program.  Retaining all users, past "
+                                      u"and present, is necessary to ensure "
+                                      u"audit trails remain intact."))
+            return False
+        elif self.rdoWorkgroups.get_active():
+            Widgets.rtk_information(_(u"You cannot remove a workgroup from "
+                                      u"the RTK Program.  Retaining all "
+                                      u"workgroups, past and present, is "
+                                      u"necessary to ensure audit trails "
+                                      u"remain intact."))
             return False
 
-        if not self._app.COMDB.execute_query(_query, None, self._app.ComCnx,
-                                             commit=True):
-            rtk_error(_(u"Problem removing entry from list."))
+        if not self._mdcRTK.site_dao.execute(_query, commit=True):
+            Widgets.rtk_error(_(u"Problem removing entry from list."))
             return True
 
         _model.remove(_row)
@@ -1530,8 +1738,8 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         from shutil import copyfile
 
         # Make a backup of the original configuration file.
-        Configuration_file = Configuration.CONF_DIR + 'RTK.conf'
-        copyfile(Configuration_file, Configuration_file + '.bak')
+        _conf_file = Configuration.CONF_DIR + 'RTK.conf'
+        copyfile(_conf_file, _conf_file + '.bak')
 
         # Find out which page is selected in the gtk.Notebook().
         _page = self.notebook.get_current_page()
@@ -1549,9 +1757,9 @@ class Options(gtk.Window):                  # pylint: disable=R0902
             _error = self._save_tree_layout()
 
         if _error:
-            rtk_warning(_(u"Problem saving your RTK configuration.  "
-                          u"Restoring previous configuration values."))
-            copyfile(Configuration_file + '.bak', Configuration_file)
+            Widgets.rtk_warning(_(u"Problem saving your RTK configuration.  "
+                                  u"Restoring previous configuration values."))
+            copyfile(_conf_file + '.bak', _conf_file)
             return True
 
         return False
@@ -1582,8 +1790,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
                           fld_rcm_active=%d, fld_fraca_active=%d, \
                           fld_fmeca_active=%d, fld_survival_active=%d, \
                           fld_rbd_active=%d, fld_fta_active=%d" % _values
-            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                              commit=True):
+            if not self._mdcRTK.project_dao.execute(_query, commit=True):
                 return True
 
         return False
@@ -1679,86 +1886,163 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         gtk.TreeView().
         """
 
-        def _save_line_item(model, __path, row, self):
-            """
-            Function to save an individual gtk.TreeIter() in the List Editor
-            gtk.TreeView().
-
-            :param gtk.TreeModel model: the List Editor gtk.TreeModel().
-            :param str __path: the path of the active gtk.TreeIter() in the
-                               List Editor gtk.TreeModel().
-            :param gtk.TreeIter row: the selected gtk.TreeIter() in the List
-                                     Editor gtk.TreeModel().
-            :return: False if successful or True if an error is encountered.
-            :rtype: bool
-            """
-
-            if self.rdoMeasurement.get_active():
-                _query = "REPLACE INTO tbl_measurement_units \
-                          (fld_measurement_id, fld_measurement_code) \
-                          VALUES((SELECT fld_measurement_id \
-                                  FROM tbl_measurement_units \
-                                  WHERE fld_measurement_code='%s'), \
-                                 '%s')" % \
-                         (model.get_value(row, 1), model.get_value(row, 1))
-            elif self.rdoRequirementTypes.get_active():
-                _query = "REPLACE INTO tbl_requirement_type \
-                          (fld_requirement_type_id, \
-                           fld_requirement_type_desc, \
-                           fld_requirement_type_code) \
-                          VALUES((SELECT fld_requirement_type_id \
-                                  FROM tbl_requirement_type \
-                                  WHERE fld_requirement_type_desc = '%s'), \
-                                '%s', '%s')" % \
-                         (model.get_value(row, 1), model.get_value(row, 1),
-                          model.get_value(row, 2))
-            elif self.rdoRiskCategory.get_active():
-                _query = "REPLACE INTO tbl_risk_category \
-                          (fld_category_id, fld_category_noun, \
-                           fld_category_value) \
-                          VALUES((SELECT fld_category_id \
-                                  FROM tbl_risk_category \
-                                  WHERE fld_category_noun='%s'), '%s', %d)" % \
-                         (model.get_value(row, 1), model.get_value(row, 1),
-                          int(model.get_value(row, 2)))
-            elif self.rdoVandVTasks.get_active():
-                _query = "REPLACE INTO tbl_validation_type \
-                          (fld_validation_type_id, fld_validation_type_desc, \
-                           fld_validation_type_code) \
-                          VALUES((SELECT fld_validation_type_id \
-                                  FROM tbl_validation_type \
-                                  WHERE fld_validation_type_desc='%s'), \
-                                 '%s', '%s')" % \
-                         (model.get_value(row, 1), model.get_value(row, 1),
-                          model.get_value(row, 2))
-            elif self.rdoUsers.get_active():
-                _query = "INSERT INTO tbl_users \
-                          (fld_user_lname, fld_user_fname, \
-                           fld_user_email, fld_user_phone, fld_user_group) \
-                          VALUES((SELECT fld_user_id \
-                                  FROM tbl_users \
-                                  WHERE fld_user_lname='%s' \
-                                  AND fld_user_fname='%s'), \
-                                 '%s', '%s', '%s', '%s', '%s')" % \
-                         (model.get_value(row, 1), model.get_value(row, 2),
-                          model.get_value(row, 1), model.get_value(row, 2),
-                          model.get_value(row, 3), model.get_value(row, 4),
-                          model.get_value(row, 5))
-
-            # Update the RTK Common Database table.
-            if not self._app.COMDB.execute_query(_query, None,
-                                                 self._app.ComCnx,
-                                                 commit=True):
-                return True
-
-            return False
-
-        set_cursor(self._app, gtk.gdk.WATCH)
+        Widgets.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
         _model = self.tvwListEditor.get_model()
-        _model.foreach(_save_line_item, self)
+        _model.foreach(self._save_line_item, self)
 
-        set_cursor(self._app, gtk.gdk.LEFT_PTR)
+        Widgets.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+
+        return False
+
+    def _save_line_item(self, model, __path, row, self):
+        """
+        Method to save an individual gtk.TreeIter() in the List Editor
+        gtk.TreeView().
+
+        :param gtk.TreeModel model: the List Editor gtk.TreeModel().
+        :param str __path: the path of the active gtk.TreeIter() in the List
+                           Editor gtk.TreeModel().
+        :param gtk.TreeIter row: the selected gtk.TreeIter() in the List
+                                 Editor gtk.TreeModel().
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if self.rdoUsers.get_active():
+            _query = "INSERT INTO tbl_users \
+                      (fld_user_lname, fld_user_fname, \
+                       fld_user_email, fld_user_phone, fld_user_group) \
+                      VALUES('{0:s}', '{1:s}', '{2:s}', '{3:s}', \
+                             '{4:s}')".format(model.get_value(row, 1),
+                                              model.get_value(row, 2),
+                                              model.get_value(row, 3),
+                                              model.get_value(row, 4),
+                                              model.get_value(row, 5))
+        elif self.rdoStatus.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_status \
+                      (fld_status_id, fld_status_name, \
+                       fld_status_description) \
+                      VALUES({0:d}, '{1:s}', \
+                             '{2:s}')".format(model.get_value(row, 0),
+                                              model.get_value(row, 1),
+                                              model.get_value(row, 2))
+        elif self.rdoManufacturers.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_manufacturers \
+                      (fld_manufacturers_noun, fld_location, \
+                       fld_cage_code, fld_manufacturers_id) \
+                      VALUES('{0:s}', '{1:s}', \
+                             '{2:s}', {3:d})".format(model.get_value(row, 1),
+                                                     model.get_value(row, 2),
+                                                     model.get_value(row, 3),
+                                                     model.get_value(row, 0))
+        elif self.rdoRequirementTypes.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_requirement_type \
+                      (fld_requirement_type_id, \
+                       fld_requirement_type_desc, \
+                       fld_requirement_type_code) \
+                      VALUES({0:d}, '{1:s}', \
+                             '{2:s}')".format(model.get_value(row, 0),
+                                              model.get_value(row, 1),
+                                              model.get_value(row, 2))
+        elif self.rdoWorkgroups.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_groups \
+                      (fld_group_id, fld_group_name) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoSeverity.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_severity \
+                      (fld_severity_id, fld_name, fld_category, \
+                       fld_description) \
+                      VALUES({0:d}, '{1:s}', \
+                             '{2:s}', '{3:s}')".format(model.get_value(row, 0),
+                                                       model.get_value(row, 1),
+                                                       model.get_value(row, 2),
+                                                       model.get_value(row, 3))
+        elif self.rdoFailureProb.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_failure_probability \
+                      (fld_probability_id, fld_probability_name, \
+                       fld_probability_value) \
+                      VALUES({0:d}, '{1:s}', \
+                             '{2:s}')".format(model.get_value(row, 0),
+                                              model.get_value(row, 1),
+                                              model.get_value(row, 2))
+        elif self.rdoFMEAActionCat.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_action_category \
+                      (fld_action_id, fld_action_name) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoFMEAControls.get_active():
+            print "Save FMEA controls"
+        elif self.rdoHazard.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_hazards \
+                      (fld_hazard_id, fld_category, fld_subcategory) \
+                      VALUES({0:d}, '{1:s}', \
+                             '{2:s}')".format(model.get_value(row, 0),
+                                              model.get_value(row, 1),
+                                              model.get_value(row, 2))
+        elif self.rdoDamageModel.get_active():
+            print "Save damage models"
+        elif self.rdoPoFPriority.get_active():
+            print "Save PoF priority"
+        elif self.rdoMeasParam.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_measurements \
+                      (fld_measurement_id, fld_measurement_name) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoClassMeans.get_active():
+            print "Save classification means"
+        elif self.rdoSWAppType.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_software_application \
+                      (fld_application_id, fld_application_desc, \
+                       fld_fault_density, fld_transformation_ratio) \
+                      VALUES({0:d}, '{1:s}', \
+                             '{2:s}', '{3:s}')".format(model.get_value(row, 0),
+                                                       model.get_value(row, 1),
+                                                       model.get_value(row, 2),
+                                                       model.get_value(row, 3))
+        elif self.rdoSWDevPhase.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_development_phase \
+                      (fld_phase_id, fld_phase_desc) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoVandVTasks.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_validation_type \
+                      (fld_validation_type_id, fld_validation_type_desc, \
+                       fld_validation_type_code) \
+                      VALUES({0:d}, '{1:s}', \
+                             '{2:s}')".format(model.get_value(row, 0),
+                                              model.get_value(row, 1),
+                                              model.get_value(row, 2))
+        elif self.rdoMeasurement.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_measurement_units \
+                      (fld_measurement_id, fld_measurement_code) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoIncidentType.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_incident_type \
+                      (fld_incident_type_id, fld_incident_type_name) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoIncidentCategory.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_incident_category \
+                      (fld_incident_cat_id, fld_incident_cat_name) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoIncidentCriticality.get_active():
+            print "Save incident criticality"
+        elif self.rdoLifeCycle.get_active():
+            _query = "INSERT OR REPLACE INTO tbl_lifecycles \
+                      (fld_lifecycle_id, fld_lifecycle_name) \
+                      VALUES({0:d}, '{1:s}')".format(model.get_value(row, 0),
+                                                     model.get_value(row, 1))
+        elif self.rdoDetectionMethod.get_active():
+            print "Save detection methods"
+
+        # Update the RTK Common Database table.
+        (_results,
+         _error_code,
+         __) = self._mdcRTK.site_dao.execute(_query, commit=True)
 
         return False
 
@@ -1774,7 +2058,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         # Get the format file for the gtk.TreeView to be edited.
         _format_file = Configuration.RTK_FORMAT_FILE[_fmt_idx]
-        _basename = os.path.basename(_format_file)
+        _basename = basename(_format_file)
 
         # Open the format file for writing.
         _file = open(_format_file, 'w')

@@ -753,6 +753,7 @@ class RTK(object):
                                              in _results]
 
         # Configuration.RTK_QUALITY_LEVELS
+
         _query = "SELECT fld_criticality_id, fld_criticality_name, \
                          fld_criticality_cat \
                   FROM tbl_criticality"

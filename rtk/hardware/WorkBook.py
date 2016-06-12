@@ -724,7 +724,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _model.clear()
         _model.append(None, ['', 0, ''])
         for _man in Configuration.RTK_MANUFACTURERS:
-            _model.append(None, _man)
+            _model.append(None, [_man[0] + " - " + _man[1] +
+                                 " (" + _man[2] + ")", _man[1], _man[2]])
 
         # Create the labels for quadrant #1.
         _labels = [_(u"Assembly Name:"), _(u"Part Number:"),

@@ -12,6 +12,8 @@ unit_test_run() {
 	TESTFILE=$1
     OUTFILE=`echo $TESTFILE | cut -d '.' -f1 | sed 's/Test//'`
 
+    echo "Testing unit/${TESTFILE}"
+
 	$NOSETESTS --quiet --with-coverage --cover-branches \
         --cover-min-percentage=80 --cover-tests --with-html \
         --html-file="_test_results/${OUTFILE}UnitTests.html" \
@@ -23,6 +25,8 @@ integration_test_run() {
 	
 	TESTFILE=$1
     OUTFILE=`echo $TESTFILE | cut -d '.' -f1 | sed 's/Test//'`
+
+    echo "Testing integration/${TESTFILE}"
 
 	$NOSETESTS --quiet --with-coverage --cover-branches \
     --cover-min-percentage=80 --cover-tests --with-html \
