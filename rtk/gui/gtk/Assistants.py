@@ -1895,7 +1895,7 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         return False
 
-    def _save_line_item(self, model, __path, row, self):
+    def _save_line_item(self, model, __path, row):
         """
         Method to save an individual gtk.TreeIter() in the List Editor
         gtk.TreeView().
