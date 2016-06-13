@@ -132,6 +132,7 @@ def _read_site_configuration():
         # These themes perform poorly.
         # Bluecurve-BerriesAndCream
         # MurrinaChrome
+        print "Setting theme to Murrina Blue"
         gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\RTK\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
 
     # Get a config instance for the site configuration file.
@@ -159,7 +160,8 @@ def _read_site_configuration():
             _config.read_configuration().get('Backend', 'user'))
         Configuration.RTK_COM_INFO.append(
             _config.read_configuration().get('Backend', 'password'))
-
+        print Configuration.SITE_DIR
+        print Configuration.RTK_COM_INFO
     return _return
 
 
@@ -192,7 +194,7 @@ def _read_program_configuration():
         _config.read_configuration().get('Backend', 'user'))
     Configuration.RTK_PROG_INFO.append(
         _config.read_configuration().get('Backend', 'password'))
-
+    print Configuration.RTK_PROG_INFO
     Configuration.FRMULT = float(_config.read_configuration().get('General',
                                                                   'frmultiplier'))
     Configuration.PLACES = _config.read_configuration().get('General',
@@ -302,7 +304,7 @@ def _read_program_configuration():
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'sfmecaformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-
+    print Configuration.RTK_FORMAT_FILE
     # Get color information.
     Configuration.RTK_COLORS.append(
         _config.read_configuration().get('Colors', 'revisionbg'))
@@ -356,7 +358,7 @@ def _read_program_configuration():
             _config.read_configuration().get('Colors', 'softwarefg'))
     except NoOptionError:
         Configuration.RTK_COLORS.append('#FFFFFF')
-
+    print Configuration.RTK_COLORS
     return _return
 
 
@@ -470,9 +472,11 @@ class RTK(object):
         """
 
         # Read the site configuration file.
+        print "Reading site configuration"
         _read_site_configuration()
 
         # Read the program configuration file.
+        print "Reading program configuration"
         _read_program_configuration()
 
         RTK_INTERFACE = 1
