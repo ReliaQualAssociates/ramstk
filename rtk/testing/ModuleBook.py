@@ -73,7 +73,7 @@ class ModuleView(object):
     :ivar treeview: the gtk.TreeView displaying the list of Tests.
     """
 
-    def __init__(self, controller, rtk_view, position, *args):
+    def __init__(self, controller, rtk_view, position):
         """
         Method to initialize the Module Book view for the Testing package.
 
@@ -83,7 +83,6 @@ class ModuleView(object):
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
                              the Testing view.  Pass -1 to add to the end.
-        :param *args: other user arguments to pass to the Module View.
         """
 
         # Define private dictionary attributes.

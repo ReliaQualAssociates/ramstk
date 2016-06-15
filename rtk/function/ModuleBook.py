@@ -82,7 +82,7 @@ class ModuleView(object):
                     Functions.
     """
 
-    def __init__(self, controller, rtk_view, position, *args):
+    def __init__(self, controller, rtk_view, position):
         """
         Initializes the Module Book view for the Function package.
 
@@ -94,7 +94,6 @@ class ModuleView(object):
         :param int position: the page position in the gtk.Notebook() to
                              insert the Function view.  Pass -1 to add to the
                              end.
-        :param *args: other user arguments to pass to the Module View.
         """
 
         # Define private dictionary attributes.

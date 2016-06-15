@@ -77,7 +77,7 @@ class ModuleView(object):
                     list of Hardware.
     """
 
-    def __init__(self, controller, rtk_view, position, *args):
+    def __init__(self, controller, rtk_view, position):
         """
         Initializes the Module Book view for the Hardware package.
 
@@ -88,7 +88,6 @@ class ModuleView(object):
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
                              the Hardware view.  Pass -1 to add to the end.
-        :param *args: other user arguments to pass to the Module View.
         """
 
         # Define private dictionary attributes.

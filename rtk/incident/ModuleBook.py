@@ -84,7 +84,7 @@ class ModuleView(object):
                                  Incidents.
     """
 
-    def __init__(self, controller, rtk_view, position, *args):  # pylint: disable=W0613
+    def __init__(self, controller, rtk_view, position):
         """
         Method to initialize the Module Book view for the Incident package.
 
@@ -94,7 +94,6 @@ class ModuleView(object):
                                       view into.
         :param int position: the page position in the gtk.Notebook() to insert
                              the Incident view.  Pass -1 to add to the end.
-        :param *args: other user arguments to pass to the Module View.
         """
 
         # Define private dictionary attributes.

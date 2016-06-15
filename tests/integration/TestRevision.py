@@ -59,7 +59,8 @@ class TestRevisionController(unittest.TestCase):
         (_results,
          _error_code,
          _revision_id) = self.DUT.add_revision(code='-', name='Original',
-                            remarks='This is the baseline revision')
+                                               remarks="This is the baseline \
+                                                        revision")
 
         self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
                                    Model))
@@ -76,7 +77,8 @@ class TestRevisionController(unittest.TestCase):
         (_results,
          _error_code,
          _revision_id) = self.DUT.add_revision(None, name='Original',
-                            remarks='This is the baseline revision')
+                                               remarks="This is the baseline \
+                                                        revision")
 
         self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
                                    Model))
@@ -93,7 +95,8 @@ class TestRevisionController(unittest.TestCase):
         (_results,
          _error_code,
          _revision_id) = self.DUT.add_revision(code='-', name=None,
-                            remarks='This is the baseline revision')
+                                               remarks="This is the baseline \
+                                                        revision")
 
         self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
                                    Model))

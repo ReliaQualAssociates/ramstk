@@ -76,7 +76,7 @@ class ModuleView(object):
     :ivar treeview: the gtk.TreeView() displaying the list of Requirements.
     """
 
-    def __init__(self, controller, rtk_view, position, *args):      # pylint: disable=W0613
+    def __init__(self, controller, rtk_view, position):
         """
         Initializes the Module Book view for the Requirement package.
 
@@ -87,7 +87,6 @@ class ModuleView(object):
         :param int position: the page position in the gtk.Notebook() to
                              insert the Requirement view.  Pass -1 to add to
                              the end.
-        :param *args: other user arguments to pass to the Module View.
         """
 
         # Define private dictionary attributes.
