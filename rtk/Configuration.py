@@ -848,41 +848,41 @@ class RTKConf(object):
 
             _config.add_section('Files')
             _config.set('Files', 'revisionformat',
-                       path.basename(self.RTK_FORMAT_FILE[0]))
+                        path.basename(self.RTK_FORMAT_FILE[0]))
             _config.set('Files', 'functionformat',
-                       path.basename(self.RTK_FORMAT_FILE[1]))
+                        path.basename(self.RTK_FORMAT_FILE[1]))
             _config.set('Files', 'requirementformat',
-                       path.basename(self.RTK_FORMAT_FILE[2]))
+                        path.basename(self.RTK_FORMAT_FILE[2]))
             _config.set('Files', 'hardwareformat',
-                       path.basename(self.RTK_FORMAT_FILE[3]))
+                        path.basename(self.RTK_FORMAT_FILE[3]))
             _config.set('Files', 'validationformat',
-                       path.basename(self.RTK_FORMAT_FILE[4]))
+                        path.basename(self.RTK_FORMAT_FILE[4]))
             _config.set('Files', 'rgformat',
-                       path.basename(self.RTK_FORMAT_FILE[5]))
+                        path.basename(self.RTK_FORMAT_FILE[5]))
             _config.set('Files', 'fracaformat',
-                       path.basename(self.RTK_FORMAT_FILE[6]))
+                        path.basename(self.RTK_FORMAT_FILE[6]))
             _config.set('Files', 'partformat',
-                       path.basename(self.RTK_FORMAT_FILE[7]))
+                        path.basename(self.RTK_FORMAT_FILE[7]))
             _config.set('Files', 'siaformat',
-                       path.basename(self.RTK_FORMAT_FILE[8]))
+                        path.basename(self.RTK_FORMAT_FILE[8]))
             _config.set('Files', 'fmecaformat',
-                       path.basename(self.RTK_FORMAT_FILE[9]))
+                        path.basename(self.RTK_FORMAT_FILE[9]))
             _config.set('Files', 'stakeholderformat',
-                       path.basename(self.RTK_FORMAT_FILE[10]))
+                        path.basename(self.RTK_FORMAT_FILE[10]))
             _config.set('Files', 'testformat',
-                       path.basename(self.RTK_FORMAT_FILE[11]))
+                        path.basename(self.RTK_FORMAT_FILE[11]))
             _config.set('Files', 'mechanismformat',
-                       path.basename(self.RTK_FORMAT_FILE[12]))
+                        path.basename(self.RTK_FORMAT_FILE[12]))
             _config.set('Files', 'rgincidentformat',
-                       path.basename(self.RTK_FORMAT_FILE[13]))
+                        path.basename(self.RTK_FORMAT_FILE[13]))
             _config.set('Files', 'incidentformat',
-                       path.basename(self.RTK_FORMAT_FILE[14]))
+                        path.basename(self.RTK_FORMAT_FILE[14]))
             _config.set('Files', 'softwareformat',
-                       path.basename(self.RTK_FORMAT_FILE[15]))
+                        path.basename(self.RTK_FORMAT_FILE[15]))
             _config.set('Files', 'datasetformat',
-                       path.basename(self.RTK_FORMAT_FILE[16]))
+                        path.basename(self.RTK_FORMAT_FILE[16]))
             _config.set('Files', 'riskformat',
-                       path.basename(self.RTK_FORMAT_FILE[17]))
+                        path.basename(self.RTK_FORMAT_FILE[17]))
 
             _config.add_section('Colors')
             _config.set('Colors', 'revisionbg', self.RTK_COLORS[0])

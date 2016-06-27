@@ -283,7 +283,7 @@ class OpenProject(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Update the MySQL/MariaDB code.
+# TODO: Update MySQL/MariaDB code.
         pass
     #    if self._mdcRTK.loaded:
     #        Widgets.rtk_information(_(u"A database is already open.  Only "
