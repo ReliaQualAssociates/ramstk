@@ -39,9 +39,8 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import Utilities as _util
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
     sys.exit(1)
 
@@ -51,7 +50,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -103,25 +102,25 @@ class ListView(gtk.Notebook):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.btnAddSibling = _widg.make_button(width=35,
-                                               image='insert_sibling')
-        self.btnAddChild = _widg.make_button(width=35, image='insert_child')
-        self.btnRemoveUsage = _widg.make_button(width=35, image='remove')
-        self.btnSaveUsage = _widg.make_button(width=35, image='save')
-        self.btnAddDefinition = _widg.make_button(width=35, image='add')
-        self.btnRemoveDefinition = _widg.make_button(width=35,
-                                                     image='remove')
-        self.btnSaveDefinitions = _widg.make_button(width=35, image='save')
+        self.btnAddSibling = Widgets.make_button(width=35,
+                                                 image='insert_sibling')
+        self.btnAddChild = Widgets.make_button(width=35, image='insert_child')
+        self.btnRemoveUsage = Widgets.make_button(width=35, image='remove')
+        self.btnSaveUsage = Widgets.make_button(width=35, image='save')
+        self.btnAddDefinition = Widgets.make_button(width=35, image='add')
+        self.btnRemoveDefinition = Widgets.make_button(width=35,
+                                                       image='remove')
+        self.btnSaveDefinitions = Widgets.make_button(width=35, image='save')
 
         self.tvwUsageProfile = gtk.TreeView()
         self.tvwFailureDefinitions = gtk.TreeView()
 
         # Set the user's preferred gtk.Notebook tab position.
-        if _conf.TABPOS[1] == 'left':
+        if Configuration.TABPOS[1] == 'left':
             self.set_tab_pos(gtk.POS_LEFT)
-        elif _conf.TABPOS[1] == 'right':
+        elif Configuration.TABPOS[1] == 'right':
             self.set_tab_pos(gtk.POS_RIGHT)
-        elif _conf.TABPOS[1] == 'top':
+        elif Configuration.TABPOS[1] == 'top':
             self.set_tab_pos(gtk.POS_TOP)
         else:
             self.set_tab_pos(gtk.POS_BOTTOM)
@@ -263,7 +262,7 @@ class ListView(gtk.Notebook):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwUsageProfile)
 
-        _frame = _widg.make_frame(label=_(u"Usage Profile"))
+        _frame = Widgets.make_frame(label=_(u"Usage Profile"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -369,7 +368,7 @@ class ListView(gtk.Notebook):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.tvwFailureDefinitions)
 
-        _frame = _widg.make_frame(label=_(u"Failure Definition List"))
+        _frame = Widgets.make_frame(label=_(u"Failure Definition List"))
         _frame.set_shadow_type(gtk.SHADOW_OUT)
         _frame.add(_scrollwindow)
 
@@ -433,7 +432,7 @@ class ListView(gtk.Notebook):
         _model = self.tvwUsageProfile.get_model()
         _model.clear()
         for _mission in self._dtc_profile.dicProfiles[self._revision_id].dicMissions.values():
-            _icon = _conf.ICON_DIR + '32x32/mission.png'
+            _icon = Configuration.ICON_DIR + '32x32/mission.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _mission.mission_id, _mission.description,
                      '', _mission.time_units, 0.0, _mission.time, 0.0, 0.0, 1,
@@ -441,7 +440,7 @@ class ListView(gtk.Notebook):
             _mission_row = _model.append(None, _data)
 
             for _phase in _mission.dicPhases.values():
-                _icon = _conf.ICON_DIR + '32x32/phase.png'
+                _icon = Configuration.ICON_DIR + '32x32/phase.png'
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
                 _data = (_icon, _phase.phase_id, _phase.code,
                          _phase.description, '', _phase.start_time,
@@ -449,7 +448,7 @@ class ListView(gtk.Notebook):
                 _phase_row = _model.append(_mission_row, _data)
 
                 for _environment in _phase.dicEnvironments.values():
-                    _icon = _conf.ICON_DIR + '32x32/environment.png'
+                    _icon = Configuration.ICON_DIR + '32x32/environment.png'
                     _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
                     _data = (_icon, _environment.environment_id,
                              _environment.name, '', _environment.units,
@@ -563,7 +562,7 @@ class ListView(gtk.Notebook):
             (__, __,
              _mission_id) = self._dtc_profile.add_mission(self._revision_id)
             _attributes = _usage_model.dicMissions[_mission_id].get_attributes()
-            _icon = _conf.ICON_DIR + '32x32/mission.png'
+            _icon = Configuration.ICON_DIR + '32x32/mission.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[0], _attributes[3], '', _attributes[2],
                      0.0, _attributes[1], 0.0, 0.0, 1, 0, 0)
@@ -575,7 +574,7 @@ class ListView(gtk.Notebook):
                                                       _mission_id)
             _mission = _usage_model.dicMissions[_mission_id]
             _attributes = _mission.dicPhases[_phase_id].get_attributes()
-            _icon = _conf.ICON_DIR + '32x32/phase.png'
+            _icon = Configuration.ICON_DIR + '32x32/phase.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[2], _attributes[5], _attributes[6], '',
                      _attributes[3], _attributes[4], 0.0, 0.0, 2, 0, 1)
@@ -591,7 +590,7 @@ class ListView(gtk.Notebook):
             _mission = _usage_model.dicMissions[_mission_id]
             _phase = _mission.dicPhases[_phase_id]
             _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
-            _icon = _conf.ICON_DIR + '32x32/environment.png'
+            _icon = Configuration.ICON_DIR + '32x32/environment.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[4], _attributes[5], '', _attributes[6],
                      _attributes[7], _attributes[8], _attributes[9],
@@ -635,7 +634,7 @@ class ListView(gtk.Notebook):
              _phase_id) = self._dtc_profile.add_phase(self._revision_id, _id)
             _mission = _usage_model.dicMissions[_id]
             _attributes = _mission.dicPhases[_phase_id].get_attributes()
-            _icon = _conf.ICON_DIR + '32x32/phase.png'
+            _icon = Configuration.ICON_DIR + '32x32/phase.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[2], _attributes[5], _attributes[6], '',
                      _attributes[3], _attributes[4], 0.0, 0.0, 2, 0, 1)
@@ -650,15 +649,15 @@ class ListView(gtk.Notebook):
             _mission = _usage_model.dicMissions[_mission_id]
             _phase = _mission.dicPhases[_id]
             _attributes = _phase.dicEnvironments[_environment_id].get_attributes()
-            _icon = _conf.ICON_DIR + '32x32/environment.png'
+            _icon = Configuration.ICON_DIR + '32x32/environment.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[4], _attributes[5], '', _attributes[6],
                      _attributes[7], _attributes[8], _attributes[9],
                      _attributes[10], 3, 1, 0)
         else:
             Widgets.rtk_information(_(u"You cannot add a child object to "
-                                    u"an environmental condition in a "
-                                    u"usage profile."))
+                                      u"an environmental condition in a "
+                                      u"usage profile."))
             _return = True
 
         # Insert a new row with the new Usage Profile item and then select the
@@ -807,8 +806,8 @@ class ListView(gtk.Notebook):
 
     def _on_usage_cell_edited(self, __cell, path, new_text, position, model):
         """
-        Callback function to handle edits of the Revision package Work Book
-        Usage Profile gtk.Treeview()s.
+        Method to handle edits of the Revision package Work Book Usage Profile
+        gtk.Treeview()s.
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
@@ -819,7 +818,7 @@ class ListView(gtk.Notebook):
         :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _row = model.get_iter(path)

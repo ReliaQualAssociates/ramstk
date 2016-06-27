@@ -38,11 +38,11 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.Widgets as Widgets
 from ListBook import ListView
 from WorkBook import WorkView
 
@@ -52,7 +52,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -64,9 +64,9 @@ class ModuleView(object):
     The Module Book view displays all the Revisions associated with the RTK
     Project in a flat list.  The attributes of a Module Book view are:
 
-    :ivar _dtc_profile: the :class:`rtk.usage.UsageProfile.UsageProfile` data
-                        controller to use for accessing the Usage Profile data
-                        models.
+    :ivar _dtc_profile: the :py:class:`rtk.usage.UsageProfile.UsageProfile`
+                        data controller to use for accessing the Usage Profile
+                        data models.
     :ivar _dtc_definitions: the :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
                             data controller to use for accessing the Failure
                             Definition data models.
@@ -81,9 +81,9 @@ class ModuleView(object):
     :ivar workbook:
     """
 
-    def __init__(self, controller, rtk_view, position, *args):
+    def __init__(self, controller, rtk_view, position):
         """
-        Initializes the Module Book view for the Revision package.
+        Method to initialize the Module Book view for the Revision package.
 
         :param controller: the :py:class:`rtk.RTK.RTK` data controller to use
                            with this view.
@@ -92,7 +92,6 @@ class ModuleView(object):
         :param int position: the page position in the gtk.Notebook() to
                              insert the Revision view.  Pass -1 to add to the
                              end.
-        :param *args: other user-defined arguments.
         """
 
         # Initialize private scalar attributes.
@@ -107,10 +106,11 @@ class ModuleView(object):
         self.mdcRTK = controller
 
         # Create the main Revision class treeview.
+        _bg_color = Configuration.RTK_COLORS[0]
+        _fg_color = Configuration.RTK_COLORS[1]
         (self.treeview,
-         self._lst_col_order) = _widg.make_treeview('Revision', 0,
-                                                    _conf.RTK_COLORS[0],
-                                                    _conf.RTK_COLORS[1])
+         self._lst_col_order) = Widgets.make_treeview('Revision', 0,
+                                                      _bg_color, _fg_color)
 
         self.treeview.set_tooltip_text(_(u"Displays the list of revisions."))
         self.treeview.connect('cursor_changed', self._on_row_changed,
@@ -129,7 +129,7 @@ class ModuleView(object):
         _scrollwindow.add(self.treeview)
         _scrollwindow.show_all()
 
-        _icon = _conf.ICON_DIR + '32x32/revision.png'
+        _icon = Configuration.ICON_DIR + '32x32/revision.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
@@ -157,11 +157,11 @@ class ModuleView(object):
 
     def request_load_data(self):
         """
-        Loads the Revision Module Book view gtk.TreeModel() with revision
-        information.
+        Method to load the Revision Module Book view gtk.TreeModel() with
+        Revision information.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_revisions,
@@ -192,9 +192,9 @@ class ModuleView(object):
 
     def update(self, position, new_text):
         """
-        Updates the Module Book gtk.TreeView() with changes to the Revision
-        data model attributes.  Called by other views when the Revision data
-        model attributes are edited via their gtk.Widgets().
+        Method to update the Module Book gtk.TreeView() with changes to the
+        Revision data model attributes.  Called by other views when the
+        Revision data model attributes are edited via their gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -211,8 +211,8 @@ class ModuleView(object):
 
     def _on_button_press(self, treeview, event):
         """
-        Callback function for handling mouse clicks on the Revision package
-        Module Book gtk.TreeView().
+        Method for handling mouse clicks on the Revision package Module Book
+        gtk.TreeView().
 
         :param gtk.TreeView treeview: the Revision class gtk.TreeView().
         :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
@@ -240,7 +240,7 @@ class ModuleView(object):
 
     def _on_row_changed(self, treeview, __path, __column):
         """
-        Callback function to handle events for the Revision package Module Book
+        Method to handle events for the Revision package Module Book
         gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
         row is activated.
 
@@ -248,7 +248,7 @@ class ModuleView(object):
         :param str __path: the actived row gtk.TreeView() path.
         :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_model, _row) = treeview.get_selection().get_selected()
@@ -267,7 +267,7 @@ class ModuleView(object):
         (_results,
          _error_code,
          __) = self.mdcRTK.project_dao.execute(_query, commit=False)
-        _conf.RTK_HARDWARE_LIST = [_assembly for _assembly in _results]
+        Configuration.RTK_HARDWARE_LIST = [_assembly for _assembly in _results]
 
         # Load the software list for the selected revision.
         _query = "SELECT fld_description, fld_software_id, fld_description \
@@ -276,7 +276,7 @@ class ModuleView(object):
         (_results,
          _error_code,
          __) = self.mdcRTK.project_dao.execute(_query, commit=False)
-        _conf.RTK_SOFTWARE_LIST = [_module for _module in _results]
+        Configuration.RTK_SOFTWARE_LIST = [_module for _module in _results]
 
         self.workbook.load(self._model)
         self.listbook.load(_revision_id)
@@ -285,7 +285,7 @@ class ModuleView(object):
 
     def _on_cell_edited(self, __cell, path, new_text, position, model):
         """
-        Callback function to handle edits of the Revision package Module Book
+        Method to handle edits of the Revision package Module Book
         gtk.Treeview().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.

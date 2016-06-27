@@ -16,8 +16,12 @@ import gettext
 import locale
 
 # Import other RTK modules.
-import Configuration as _conf               # pylint: disable=E0401
-import Utilities as _util                   # pylint: disable=E0401
+try:
+    import Configuration as Configuration
+    import Utilities as Utilities
+except ImportError:
+    import rtk.Configuration as Configuration
+    import rtk.Utilities as Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -25,7 +29,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:                        # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
@@ -129,8 +133,8 @@ class Model(object):
             self.mmt = float(values[11])
             self.mcmt = float(values[12])
             self.mpmt = float(values[13])
-            self.mtbf = float(values[14])
-            self.mission_mtbf = float(values[15])
+            self.mission_mtbf = float(values[14])
+            self.mtbf = float(values[15])
             self.mttr = float(values[16])
             self.name = str(values[17])
             self.mission_reliability = float(values[18])
@@ -143,10 +147,10 @@ class Model(object):
             self.program_cost = float(values[25])
             self.program_cost_se = float(values[26])
         except IndexError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
         except TypeError as _err:
-            _code = _util.error_handler(_err.args)
+            _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
         return(_code, _msg)
@@ -340,15 +344,16 @@ class Revision(object):
     one or more Revision data models.  The attributes of a Revision data
     controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-    Project database.
-    :ivar dicRevisions: Dictionary of the Revision data models controlled.  Key
-    is the Revision ID; value is a pointer to the Revision data model instance.
+    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
+                the RTK Project database.
+    :ivar dict dicRevisions: Dictionary of the Revision data models controlled.
+                             Key is the Revision ID; value is a pointer to the
+                             Revision data model instance.
     """
 
     def __init__(self):
         """
-        Initializes a Revision data controller instance.
+        Method to initialize a Revision data controller instance.
         """
 
         # Initialize private dictionary attributes.
@@ -368,8 +373,8 @@ class Revision(object):
 
     def request_revisions(self, dao):
         """
-        Reads the RTK Project database and loads all the revisions.  For each
-        revision returned:
+        Method to read the RTK Project database and loads all the Revisions.
+        For each Revision returned:
 
         #. Retrieve the revisions from the RTK Project database.
         #. Create a Revision data model instance.
@@ -405,7 +410,7 @@ class Revision(object):
 
     def add_revision(self, code=None, name=None, remarks=''):
         """
-        Adds a new Revision to the RTK Project.
+        Method to add a new Revision to the RTK Project.
 
         :keyword str code: the code to use for the new Revision.
         :keyword str name: the name of the new Revision.
@@ -415,11 +420,11 @@ class Revision(object):
         """
 
         if code == '' or code is None:
-            code = '{0} {1}'.format(str(_conf.RTK_PREFIX[0]),
-                                    str(_conf.RTK_PREFIX[1]))
+            code = '{0} {1}'.format(str(Configuration.RTK_PREFIX[0]),
+                                    str(Configuration.RTK_PREFIX[1]))
 
             # Increment the revision index.
-            _conf.RTK_PREFIX[1] += 1
+            Configuration.RTK_PREFIX[1] += 1
 
         if name == '' or name is None:
             name = 'New Revision'
@@ -457,7 +462,7 @@ class Revision(object):
 
     def delete_revision(self, revision_id):
         """
-        Deletes a Revision from the RTK Project.
+        Method to delete a Revision from the RTK Project.
 
         :param int revision_id: the Revision ID to delete.
         :return: (_results, _error_code)
@@ -474,8 +479,8 @@ class Revision(object):
 
     def calculate_revision(self, revision_id, mission_time, hr_multiplier=1.0):
         """
-        Calculates reliability, availability, and cost information for a
-        Revision.
+        Method to calculate reliability, availability, and cost information for
+        a Revision.
 
         :param int revision_id: the Revision ID to calculate.
         :param float mission_time: the time to use in the calculations.
@@ -487,43 +492,67 @@ class Revision(object):
 
         _revision = self.dicRevisions[revision_id]
 
-        # First attempt to retrieve results based on components associated
+        # First, attempt to retrieve results based on components associated
         # with the selected revision.
         _query = "SELECT SUM(t1.fld_hazard_rate_active), \
                          SUM(t1.fld_hazard_rate_dormant), \
                          SUM(t1.fld_hazard_rate_software), \
                          SUM(t1.fld_hazard_rate_mission), \
-                         SUM(1.0 / t2.fld_mpmt), SUM(1.0 / t2.fld_mcmt), \
-                         SUM(1.0 / t2.fld_mttr), SUM(1.0 / t2.fld_mmt), \
-                         SUM(t3.fld_cost), COUNT(t1.fld_hardware_id) \
+                         SUM(t2.fld_cost), COUNT(t1.fld_hardware_id) \
                   FROM rtk_reliability AS t1 \
-                  INNER JOIN rtk_maintainability AS t2 \
+                  INNER JOIN rtk_hardware AS t2 \
                   ON t2.fld_hardware_id=t1.fld_hardware_id \
-                  INNER JOIN rtk_hardware AS t3 \
-                  ON t3.fld_hardware_id=t1.fld_hardware_id \
-                  WHERE t3.fld_revision_id={0:d} \
-                  AND t3.fld_part=1".format(revision_id)
+                  WHERE t2.fld_revision_id={0:d} \
+                  AND t2.fld_part=1".format(revision_id)
+# TODO: Update to the following query when maintainability analysis is added to RTK.
+        # _query = "SELECT SUM(t1.fld_hazard_rate_active), \
+        #                  SUM(t1.fld_hazard_rate_dormant), \
+        #                  SUM(t1.fld_hazard_rate_software), \
+        #                  SUM(t1.fld_hazard_rate_mission), \
+        #                  SUM(1.0 / t2.fld_mpmt), SUM(1.0 / t2.fld_mcmt), \
+        #                  SUM(1.0 / t2.fld_mttr), SUM(1.0 / t2.fld_mmt), \
+        #                  SUM(t3.fld_cost), COUNT(t1.fld_hardware_id) \
+        #           FROM rtk_reliability AS t1 \
+        #           INNER JOIN rtk_maintainability AS t2 \
+        #           ON t2.fld_hardware_id=t1.fld_hardware_id \
+        #           INNER JOIN rtk_hardware AS t3 \
+        #           ON t3.fld_hardware_id=t1.fld_hardware_id \
+        #           WHERE t3.fld_revision_id={0:d} \
+        #           AND t3.fld_part=1".format(revision_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
         if _error_code != 0:
             return _error_code
+        else:
+            _revision.n_parts = int(_results[0][5])
 
         # If that doesn't work, attempt to retrieve results based on the first
         # level of assemblies associated with the selected revision.
-        if _results[0][9] == 0:
+        if _results[0][5] == 0:
             _query = "SELECT SUM(t1.fld_hazard_rate_active), \
                              SUM(t1.fld_hazard_rate_dormant), \
                              SUM(t1.fld_hazard_rate_software), \
                              SUM(t1.fld_hazard_rate_mission), \
-                             SUM(1.0 / t2.fld_mpmt), SUM(1.0 / t2.fld_mcmt), \
-                             SUM(1.0 / t2.fld_mttr), SUM(1.0 / t2.fld_mmt), \
-                             SUM(t3.fld_cost) \
+                             SUM(t2.fld_cost) \
                       FROM rtk_reliability AS t1 \
-                      INNER JOIN rtk_maintainability AS t2 \
+                      INNER JOIN rtk_hardware AS t2 \
                       ON t2.fld_hardware_id=t1.fld_hardware_id \
-                      INNER JOIN rtk_hardware AS t3 \
-                      ON t3.fld_hardware_id=t1.fld_hardware_id \
-                      WHERE t3.fld_revision_id={0:d} \
-                      AND t3.fld_level=1 AND t3.fld_part=0".format(revision_id)
+                      WHERE t2.fld_revision_id={0:d} \
+                      AND t2.fld_level=1 AND t2.fld_part=0".format(revision_id)
+# TODO: Update to the following query when maintainability analysis is added to RTK.
+            # _query = "SELECT SUM(t1.fld_hazard_rate_active), \
+            #                  SUM(t1.fld_hazard_rate_dormant), \
+            #                  SUM(t1.fld_hazard_rate_software), \
+            #                  SUM(t1.fld_hazard_rate_mission), \
+            #                  SUM(1.0 / t2.fld_mpmt), SUM(1.0 / t2.fld_mcmt), \
+            #                  SUM(1.0 / t2.fld_mttr), SUM(1.0 / t2.fld_mmt), \
+            #                  SUM(t3.fld_cost) \
+            #           FROM rtk_reliability AS t1 \
+            #           INNER JOIN rtk_maintainability AS t2 \
+            #           ON t2.fld_hardware_id=t1.fld_hardware_id \
+            #           INNER JOIN rtk_hardware AS t3 \
+            #           ON t3.fld_hardware_id=t1.fld_hardware_id \
+            #           WHERE t3.fld_revision_id={0:d} \
+            #           AND t3.fld_level=1 AND t3.fld_part=0".format(revision_id)
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=False)
             if _error_code != 0:
@@ -536,11 +565,20 @@ class Revision(object):
                              fld_failure_rate_dormant, \
                              fld_failure_rate_software, \
                              fld_failure_rate_mission, \
-                             (1.0 / fld_mpmt),(1.0 / fld_mcmt), \
-                             (1.0 / fld_mttr), (1.0 / fld_mmt), fld_cost \
+                             fld_cost \
                       FROM rtk_hardware \
                       WHERE fld_revision_id={0:d} \
                       AND fld_level=0".format(revision_id)
+# TODO: Update to the following query when maintainability analysis is added to RTK.
+            # _query = "SELECT fld_failure_rate_active, \
+            #                  fld_failure_rate_dormant, \
+            #                  fld_failure_rate_software, \
+            #                  fld_failure_rate_mission, \
+            #                  (1.0 / fld_mpmt), (1.0 / fld_mcmt), \
+            #                  (1.0 / fld_mttr), (1.0 / fld_mmt), fld_cost \
+            #           FROM rtk_hardware \
+            #           WHERE fld_revision_id={0:d} \
+            #           AND fld_level=0".format(revision_id)
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=False)
             if _error_code != 0:
@@ -548,14 +586,15 @@ class Revision(object):
 
         _revision.calculate_reliability(_results[0][0:4], mission_time,
                                         hr_multiplier)
-        _revision.calculate_availability(_results[0][4:8])
-        _revision.calculate_costs(_results[0][8], mission_time)
+# TODO: Activate the availability calculations when maintainability analysis is added to RTK.
+        # _revision.calculate_availability(_results[0][4:8])
+        _revision.calculate_costs(_results[0][4], mission_time)
 
         return 0
 
     def save_revision(self, revision_id):
         """
-        Saves the Revision attributes to the RTK Project database.
+        Method to save the Revision attributes to the RTK Project database.
 
         :param int revision_id: the ID of the revision to save.
         :return: (_results, _error_code)
@@ -603,7 +642,7 @@ class Revision(object):
 
     def save_all_revisions(self):
         """
-        Saves all Revision data models managed by the controller.
+        Method to save all Revision data models managed by the controller.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

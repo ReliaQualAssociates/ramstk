@@ -16,7 +16,6 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
 from revision.Revision import Model
 
 __author__ = 'Andrew Rowland'
@@ -47,7 +46,7 @@ class TestRevisionModel(unittest.TestCase):
         self._hr_multiplier = [1.0, 1000000]
 
     @attr(all=True, unit=True)
-    def test_revision_create(self):
+    def test00_revision_create(self):
         """
         (TestRevision) __init__ should return a Revision model
         """
@@ -83,9 +82,9 @@ class TestRevisionModel(unittest.TestCase):
         self.assertEqual(self.DUT.program_cost_se, 0.0)
 
     @attr(all=True, unit=True)
-    def test_set_attributes(self):
+    def test01_set_attributes(self):
         """
-        (TestRequirement) set_attributes should return a 0 error code on success
+        (TestRevision) set_attributes should return a 0 error code on success
         """
 
         _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -96,9 +95,9 @@ class TestRevisionModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
-    def test_requirement_set_attributes_wrong_type(self):
+    def test01a_requirement_set_attributes_wrong_type(self):
         """
-        (TestRequirement) set_attributes should return a 10 error code when passed a wrong data type
+        (TestRevision) set_attributes should return a 10 error code when passed a wrong data type
         """
 
         _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, None, 0.0, 0.0,
@@ -110,9 +109,9 @@ class TestRevisionModel(unittest.TestCase):
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
-    def test_requirement_set_attributes_missing_index(self):
+    def test01b_requirement_set_attributes_missing_index(self):
         """
-        (TestRequirement) set_attributes should return a 40 error code when too few items are passed
+        (TestRevision) set_attributes should return a 40 error code when too few items are passed
         """
 
         _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -123,9 +122,9 @@ class TestRevisionModel(unittest.TestCase):
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
-    def test_requirement_get_attributes(self):
+    def test02_requirement_get_attributes(self):
         """
-        (TestRequirement) get_attributes should return a tuple of attribute values
+        (TestRevision) get_attributes should return a tuple of attribute values
         """
 
         self.assertEqual(self.DUT.get_attributes(),
@@ -134,9 +133,9 @@ class TestRevisionModel(unittest.TestCase):
                           '', 0.0, 0.0, 0.0, 0.0))
 
     @attr(all=True, unit=True)
-    def test_sanity(self):
+    def test03_sanity(self):
         """
-        (TestRequirement) get_attributes(set_attributes(values)) == values
+        (TestRevision) get_attributes(set_attributes(values)) == values
         """
 
         _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -148,15 +147,14 @@ class TestRevisionModel(unittest.TestCase):
         self.assertEqual(_result, _values)
 
     @attr(all=True, unit=True)
-    def test_calculate_reliability(self):
+    def test04_calculate_reliability(self):
         """
         (TestRevision) calculate_reliability should return False on success
         """
 
         self.assertFalse(self.DUT.calculate_reliability(
-                            self._reliability_inputs,
-                            self._mission_time,
-                            self._hr_multiplier[0]))
+            self._reliability_inputs, self._mission_time,
+            self._hr_multiplier[0]))
         self.assertAlmostEqual(self.DUT.hazard_rate, 0.005013)
         self.assertAlmostEqual(self.DUT.mtbf, 199.4813485)
         self.assertAlmostEqual(self.DUT.mission_mtbf, 222.2222222)
@@ -164,21 +162,20 @@ class TestRevisionModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.mission_reliability, 0.9559975)
 
     @attr(all=True, unit=True)
-    def test_calculate_reliability_bad_inputs(self):
+    def test04a_calculate_reliability_bad_inputs(self):
         """
         (TestRevision) calculate_reliability should set hazard rates and MTBF to 0.0 with a bad inputs
         """
 
         self.assertFalse(self.DUT.calculate_reliability(
-                            (None, None, None, None),
-                            self._mission_time,
-                            self._hr_multiplier[0]))
+            (None, None, None, None), self._mission_time,
+            self._hr_multiplier[0]))
         self.assertAlmostEqual(self.DUT.hazard_rate, 0.0)
         self.assertAlmostEqual(self.DUT.mtbf, 0.0)
         self.assertAlmostEqual(self.DUT.reliability, 1.0)
 
     @attr(all=True, unit=True)
-    def test_calculate_availability(self):
+    def test05_calculate_availability(self):
         """
         (TestRevision) calculate_availability should return False on success
         """
@@ -187,12 +184,12 @@ class TestRevisionModel(unittest.TestCase):
         self.DUT.mission_mtbf = 222.2222222
 
         self.assertFalse(self.DUT.calculate_availability(
-                            self._availability_inputs))
+            self._availability_inputs))
         self.assertAlmostEqual(self.DUT.availability, 0.9984261)
         self.assertAlmostEqual(self.DUT.mission_availability, 0.9985869)
 
     @attr(all=True, unit=True)
-    def test_calculate_availability_bad_inputs(self):
+    def test05a_calculate_availability_bad_inputs(self):
         """
         (TestRevision) calculate_availability should set MTXX to 0.0 with bad inputs
         """
@@ -201,12 +198,12 @@ class TestRevisionModel(unittest.TestCase):
         self.DUT.mission_mtbf = 0.0
 
         self.assertFalse(self.DUT.calculate_availability(
-                            (None, None, None, None)))
+            (None, None, None, None)))
         self.assertAlmostEqual(self.DUT.availability, 1.0)
         self.assertAlmostEqual(self.DUT.mission_availability, 1.0)
 
     @attr(all=True, unit=True)
-    def test_calculate_costs(self):
+    def test06_calculate_costs(self):
         """
         (TestRevision) calculate_costs should return False on success
         """

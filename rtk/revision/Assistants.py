@@ -203,7 +203,7 @@ class AddRevision(object):
                                                                    _name,
                                                                    _remarks)
 
-        # TODO: Copy FMEA for functions and hardware.
+# TODO: Copy FMEA for functions and hardware.
         if self.chkFunction.get_active():
             self._controller.dtcFunction.copy_function(_revision_id)
 
