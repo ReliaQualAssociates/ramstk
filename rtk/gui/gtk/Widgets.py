@@ -37,8 +37,13 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import Configuration as _conf
-import CellRendererML
+try:
+    import Configuration
+    import CellRendererML
+except ImportError:
+    import rtk.Configuration as Configuration
+    import rtk.gui.gtk.CellRendererML as CellRendererML
+
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -68,15 +73,15 @@ def make_button(height=40, width=200, label="", image='default'):
     """
 
     if width == 0:
-        width = int((int(_conf.PLACES) + 5) * 8)
+        width = int((int(Configuration.PLACES) + 5) * 8)
 
     _button = gtk.Button(label=label)
 
     if image is not None:
         if width >= 32:
-            _file_image = _conf.ICON_DIR + '32x32/' + image + '.png'
+            _file_image = Configuration.ICON_DIR + '32x32/' + image + '.png'
         else:
-            _file_image = _conf.ICON_DIR + '16x16/' + image + '.png'
+            _file_image = Configuration.ICON_DIR + '16x16/' + image + '.png'
         _image = gtk.Image()
         _image.set_from_file(_file_image)
         _button.set_image(_image)
@@ -401,7 +406,7 @@ def make_fixed():
     return _fixed
 
 
-def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):   # pylint: disable=R0914
+def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
     """
     Function to create gtk.TreeView() widgets.
 
@@ -417,32 +422,32 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):   # pylint: di
              gtk.TreeView() columns.
     :rtype: gtk.TreeView, list
     """
-
+# TODO: Re-write make_treeview; current McCabe Complexity metric=21.
     from lxml import etree
 
     # Retrieve the column heading text from the format file.
     path = "/root/tree[@name='%s']/column/usertitle" % name
-    heading = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    heading = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve the column datatype from the format file.
     path = "/root/tree[@name='%s']/column/datatype" % name
-    datatype = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    datatype = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve the column position from the format file.
     path = "/root/tree[@name='%s']/column/position" % name
-    position = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    position = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve the cell renderer type from the format file.
     path = "/root/tree[@name='%s']/column/widget" % name
-    widget = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    widget = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve whether or not the column is editable from the format file.
     path = "/root/tree[@name='%s']/column/editable" % name
-    editable = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    editable = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Retrieve whether or not the column is visible from the format file.
     path = "/root/tree[@name='%s']/column/visible" % name
-    visible = etree.parse(_conf.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    visible = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
 
     # Create a list of GObject datatypes to pass to the model.
     types = []
@@ -452,7 +457,8 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):   # pylint: di
     gobject_types = [gobject.type_from_name(types[ix])
                      for ix in range(len(types))]
 
-# If this is the Hardware, Software, or Testing tree, add a column for a pixbuf.
+# If this is the Hardware, Software, or Testing tree, add a column for a
+# pixbuf.
 # If this is the FMECA tree, add an integer column and a column for a pixbuf.
     if fmt_idx in [3, 11, 15]:
         gobject_types.append(gtk.gdk.Pixbuf)
@@ -523,7 +529,8 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):   # pylint: di
 
         column = gtk.TreeViewColumn("")
 
-# If this is the Hardware, Software, FMECA, or Testing tree, add a column for a pixbuf.
+# If this is the Hardware, Software, FMECA, or Testing tree, add a column for a
+# pixbuf.
 # If this is the FMECA tree, add a column for an integer and a pixbuf
         if i == 1 and fmt_idx == 3:
             column.set_visible(1)
@@ -599,7 +606,7 @@ def format_cell(__column, cell, model, row, data):
     """
 
     if data[1] == 'gfloat':
-        fmt = '{0:0.' + str(_conf.PLACES) + 'g}'
+        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
     elif data[1] == 'gint':
         fmt = '{0:0.0f}'
     else:
@@ -742,7 +749,7 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-
+# TODO: Re-write load_plot; current McCabe Complexity metric=23.
     axis.cla()
 
     axis.grid(True, which='both')
@@ -1115,9 +1122,8 @@ def date_select(__widget, __event=None, entry=None):
 
     from datetime import datetime
 
-    _dialog = Widgets.make_dialog(_(u"Select Date"),
-                                  dlgbuttons=(gtk.STOCK_OK,
-                                              gtk.RESPONSE_ACCEPT))
+    _dialog = make_dialog(_(u"Select Date"), dlgbuttons=(gtk.STOCK_OK,
+                                                         gtk.RESPONSE_ACCEPT))
 
     _calendar = gtk.Calendar()
     _dialog.vbox.pack_start(_calendar)      # pylint: disable=E1101

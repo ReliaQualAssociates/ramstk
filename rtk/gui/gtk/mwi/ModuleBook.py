@@ -35,12 +35,12 @@ except ImportError:
 # Import other RTK modules.
 try:
     import Configuration
-    import Utilities
+    # import Utilities
     from gui.gtk.Assistants import CreateProject, OpenProject, \
                                    DeleteProject, Options
 except ImportError:
     import rtk.Configuration as Configuration
-    import rtk.Utilities as Utilities
+    # import rtk.Utilities as Utilities
     from rtk.gui.gtk.Assistants import CreateProject, OpenProject, \
                                        DeleteProject, Options
 from ListBook import ListView
@@ -230,38 +230,38 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _image.set_from_file(Configuration.ICON_DIR + '16x16/undo.png')
         _menu_item.set_label(_("Undo"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', Utilities.undo)
+        # _menu_item.connect('activate', Utilities.undo)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '16x16/redo.png')
         _menu_item.set_label(_("Redo"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', Utilities.redo)
+        # _menu_item.connect('activate', Utilities.redo)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '16x16/cut.png')
         _menu_item.set_label(_("Cut"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', Utilities.cut_copy_paste, 0)
+        # _menu_item.connect('activate', Utilities.cut_copy_paste, 0)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '16x16/copy.png')
         _menu_item.set_label(_("Copy"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', Utilities.cut_copy_paste, 1)
+        # _menu_item.connect('activate', Utilities.cut_copy_paste, 1)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '16x16/paste.png')
         _menu_item.set_label(_("Paste"))
         _menu_item.set_image(_image)
-        #_menu_item.connect('activate', Utilities.cut_copy_paste, 2)
+        # _menu_item.connect('activate', Utilities.cut_copy_paste, 2)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("Select _All"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.select_all)
+        # _menu_item.connect('activate', Utilities.select_all)
         _menu.append(_menu_item)
 
         _mnuEdit = gtk.MenuItem(label=_("_Edit"), use_underline=True)
@@ -269,17 +269,17 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_("_Find"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.find, 0)
+        # _menu_item.connect('activate', Utilities.find, 0)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("Find _Next"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.find, 1)
+        # _menu_item.connect('activate', Utilities.find, 1)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("Find _Previous"),
                                   use_underline=True)
-        #_menu_item.connect('activate', Utilities.find, 2)
+        # _menu_item.connect('activate', Utilities.find, 2)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("_Replace"), use_underline=True)
-        #_menu_item.connect('activate', Utilities.find, 3)
+        # _menu_item.connect('activate', Utilities.find, 3)
         _menu.append(_menu_item)
 
         _mnuSearch = gtk.MenuItem(label=_("_Search"), use_underline=True)
@@ -288,11 +288,11 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         # Create the View menu.
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_(u"Pro_cess Map"), use_underline=True)
-        #_menu_item.connect('activate', ProcessMap, self._app)
+        # _menu_item.connect('activate', ProcessMap, self._app)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"_Design Reviews"),
                                   use_underline=True)
-        #_menu_item.connect('activate', DesignReview, self._app)
+        # _menu_item.connect('activate', DesignReview, self._app)
         _menu.append(_menu_item)
 
         _mnuView = gtk.MenuItem(label=_(u"_Process"), use_underline=True)
@@ -308,7 +308,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_("_Update Design Review Criteria"),
                                   use_underline=True)
-        #_menu_item.connect('activate', ReviewCriteria, self._app)
+        # _menu_item.connect('activate', ReviewCriteria, self._app)
 
         _mnuTools = gtk.MenuItem(label=_("_Tools"), use_underline=True)
         _mnuTools.set_submenu(_menu)
@@ -407,7 +407,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         return _toolbar
 
-    def create_module_page(self, view, controller, position, *args):
+    def create_module_page(self, view, controller, position):
         """
         Method to create a Module view page.
 
@@ -421,7 +421,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :rtype: object
         """
 
-        return view(controller, self, position, args)
+        return view(controller, self, position)
 
     def load_module_page(self, view):
         """
@@ -489,7 +489,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         return False
 
-    def _request_save_project(self, __widget, quit=False):
+    def _request_save_project(self, __widget, end=False):
         """
         Method to request the RTK master data controller save the open Project.
 
@@ -502,7 +502,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         self._mdcRTK.save_project()
 
-        if quit:
+        if end:
             destroy(__widget)
 
         return False

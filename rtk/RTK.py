@@ -80,7 +80,7 @@ def main():
     This is the main function for the RTK application.
     """
 
-    # splScr = SplashScreen()
+    # splScreen = SplashScreen()
 
     # If you don't do this, the splash screen will show, but wont render it's
     # contents
@@ -88,10 +88,10 @@ def main():
     #     gtk.main_iteration()
 
     # sleep(3)
-
+    print "Launching the RTK application."
     RTK()
 
-    # splScr.window.destroy()
+    # splScreen.window.destroy()
 
     gtk.main()
 
@@ -132,7 +132,6 @@ def _read_site_configuration():
         # These themes perform poorly.
         # Bluecurve-BerriesAndCream
         # MurrinaChrome
-        print "Setting theme to Murrina Blue"
         gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\RTK\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
 
     # Get a config instance for the site configuration file.
@@ -160,8 +159,7 @@ def _read_site_configuration():
             _config.read_configuration().get('Backend', 'user'))
         Configuration.RTK_COM_INFO.append(
             _config.read_configuration().get('Backend', 'password'))
-        print Configuration.SITE_DIR
-        print Configuration.RTK_COM_INFO
+
     return _return
 
 
@@ -194,9 +192,9 @@ def _read_program_configuration():
         _config.read_configuration().get('Backend', 'user'))
     Configuration.RTK_PROG_INFO.append(
         _config.read_configuration().get('Backend', 'password'))
-    print Configuration.RTK_PROG_INFO
-    Configuration.FRMULT = float(_config.read_configuration().get('General',
-                                                                  'frmultiplier'))
+
+    Configuration.FRMULT = float(
+        _config.read_configuration().get('General', 'frmultiplier'))
     Configuration.PLACES = _config.read_configuration().get('General',
                                                             'decimal')
     Configuration.RTK_MODE_SOURCE = _config.read_configuration().get('General',
@@ -304,7 +302,7 @@ def _read_program_configuration():
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'sfmecaformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-    print Configuration.RTK_FORMAT_FILE
+
     # Get color information.
     Configuration.RTK_COLORS.append(
         _config.read_configuration().get('Colors', 'revisionbg'))
@@ -358,7 +356,7 @@ def _read_program_configuration():
             _config.read_configuration().get('Colors', 'softwarefg'))
     except NoOptionError:
         Configuration.RTK_COLORS.append('#FFFFFF')
-    print Configuration.RTK_COLORS
+
     return _return
 
 
@@ -553,25 +551,24 @@ class RTK(object):
         self._load_commons()
 
         # Plug-in each of the RTK module views.
-        _modview = self.module_book.create_module_page(mvwRevision, self, -1)
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwFunction, self, -1)   # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwRequirement,
-                                                       self, -1)                # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwHardware, self, -1)   # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwSoftware, self, -1)   # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwTesting, self, -1)    # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwValidation, self, -1) # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwIncident, self, -1)   # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
-        _modview = self.module_book.create_module_page(mvwSurvival, self, -1)   # pylint: disable=R0204
-        Configuration.RTK_MODULES.append(_modview)
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwRevision, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwFunction, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwRequirement, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwHardware, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwSoftware, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwTesting, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwValidation, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwIncident, self, -1))
+        Configuration.RTK_MODULES.append(
+            self.module_book.create_module_page(mvwSurvival, self, -1))
 
         _icon = Configuration.ICON_DIR + '32x32/db-disconnected.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
@@ -640,7 +637,7 @@ class RTK(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _load_commons; current McCabe Complexity metrix = 25.
+# TODO: Re-write _load_commons; current McCabe Complexity metric = 25.
         _query = "SELECT fld_group_name, fld_group_id \
                   FROM tbl_groups \
                   ORDER BY fld_group_name ASC"
