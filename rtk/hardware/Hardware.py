@@ -725,6 +725,7 @@ class Model(object):                        # pylint: disable=R0902
 
         from math import exp
 
+        # Calculate the logistics hazard rate.
         hardware.hazard_rate_logistics = hardware.hazard_rate_active + \
                                          hardware.hazard_rate_dormant + \
                                          hardware.hazard_rate_software
@@ -738,13 +739,18 @@ class Model(object):                        # pylint: disable=R0902
                                              hardware.hazard_rate_logistics *
                                              hardware.mission_time)
 
-        # Calculate hazard rate variances.
+        # Calculate logistics hazard rate variances.
         # hardware.hr_active_variance = 1.0 / \
         #                               (hardware.hazard_rate_active**2.0)
         # hardware.hr_dormant_variance = 1.0 / \
         #                                (hardware.hazard_rate_dormant**2.0)
         # hardware.hr_specified_variance = 1.0 / \
         #                                  (hardware.hazard_rate_specified**2.0)
+
+        # Calculate the mission hazard rate.
+# TODO: Add attributes to allow mission (redundancy) calculations.
+        hardware.hazard_rate_mission = hardware.hazard_rate_logistics
+        hardware.reliability_mission = hardware.reliability_logistics
 
         return False
 

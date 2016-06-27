@@ -165,7 +165,8 @@ class Model(Component):
 
         if self.hazard_rate_type == 1:
             # Base hazard rate.
-            self.hazard_rate_model['lambdab'] = self._lambdab_count[self.environment_active - 1]
+            self.hazard_rate_model['lambdab'] = \
+                self._lambdab_count[self.environment_active - 1]
 
         elif self.hazard_rate_type == 2:
             # Set the model's base hazard rate.

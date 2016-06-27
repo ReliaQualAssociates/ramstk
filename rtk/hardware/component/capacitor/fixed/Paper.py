@@ -120,7 +120,6 @@ class Bypass(Capacitor):
 
         if self.hazard_rate_type == 1:
             self.hazard_rate_model['equation'] = 'lambdab * piQ'
-            self._lambdab_count = self._lambdab_count[self.specification - 1]
 
         elif self.hazard_rate_type == 2:
             self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV'
@@ -134,7 +133,7 @@ class Bypass(Capacitor):
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
-                # TODO: Handle overflow error.
+# TODO: Handle overflow error.
                 return True
 
             # Capacitance correction factor.
