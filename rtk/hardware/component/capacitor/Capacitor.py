@@ -16,12 +16,10 @@ import gettext
 import locale
 
 try:
-    import calculations as _calc
     import Configuration
     import Utilities
     from hardware.component.Component import Model as Component
 except ImportError:                         # pragma: no cover
-    import rtk.calculations as _calc
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.Component import Model as Component
@@ -181,7 +179,13 @@ class Model(Component):
             self.hazard_rate_model['piE'] = self.piE
 
         # Calculate component active hazard rate.
-        self.hazard_rate_active = _calc.calculate_part(self.hazard_rate_model)
+        _keys = self.hazard_rate_model.keys()
+        _values = self.hazard_rate_model.values()
+
+        for i in range(len(_keys)):
+            vars()[_keys[i]] = _values[i]
+
+        self.hazard_rate_active = eval(self.hazard_rate_model['equation'])
         self.hazard_rate_active = (self.hazard_rate_active +
                                    self.add_adj_factor) * \
                                   (self.duty_cycle / 100.0) * \
