@@ -16,6 +16,7 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
+from datetime import datetime
 import logging
 
 from Utilities import create_logger, split_string, none_to_string, \
@@ -81,7 +82,7 @@ class TestUtilities(unittest.TestCase):
         self.assertEqual(_string, '')
 
     @attr(all=True, unit=True)
-    def test02b_none_to_string_none(self):
+    def test02b_none_to_string_string(self):
         """
         (TestUtilities) none_to_string should return the original string when passed anything other than None or 'None'
         """
@@ -162,6 +163,18 @@ class TestUtilities(unittest.TestCase):
         self.assertEqual(_date, '2016-05-27')
 
     @attr(all=True, unit=True)
+    def test05a_ordinal_to_date_value_error(self):
+        """
+        (TestUtilities) ordinal_to_date should return the current date in YYYY-MM-DD format when passed a non-ordinal value
+        """
+
+        _ordinal = datetime.now().toordinal()
+        _today = str(datetime.fromordinal(int(_ordinal)).strftime('%Y-%m-%d'))
+
+        _date = ordinal_to_date('Today')
+        self.assertEqual(_date, _today)
+
+    @attr(all=True, unit=True)
     def test06_dir_exists(self):
         """
         (TestUtilities) dir_exists should return True if the directory exists
@@ -170,7 +183,7 @@ class TestUtilities(unittest.TestCase):
         self.assertTrue(dir_exists('/tmp'))
 
     @attr(all=True, unit=True)
-    def test06a_dir_exists(self):
+    def test06a_dir_does_not_exist(self):
         """
         (TestUtilities) dir_exists should return False if the directory does not exists
         """
@@ -186,7 +199,7 @@ class TestUtilities(unittest.TestCase):
         self.assertTrue(file_exists('/tmp/test.log'))
 
     @attr(all=True, unit=True)
-    def test07a_file_exists(self):
+    def test07a_file_does_not_exist(self):
         """
         (TestUtilities) file_exists should return False if the file does not exists
         """

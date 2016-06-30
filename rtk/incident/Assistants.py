@@ -1437,17 +1437,17 @@ class ImportIncident(gtk.Assistant):
 
         _title = _(u"RTK: Import Hardware from File ...")
         (_file_fields,
-         self._file_contents) = Utilities.select_source_file(self, _title)
+         self._file_contents) = Widgets.select_source_file(self, _title)
         if len(_file_fields) == 0:
             Widgets.rtk_information(_(u"Source file must have headings for "
-                                        u"each column of data.  Please add "
-                                        u"headings to the source file and try "
-                                        u"again."))
+                                      u"each column of data.  Please add "
+                                      u"headings to the source file and try "
+                                      u"again."))
             self._cancel()
         if len(self._file_contents) == 0:
-            Utilities.rtk_warning(_(u"No data was found in the source file.  "
-                                    u"Please check the contents of the source "
-                                    u"file and try again."))
+            Widgets.rtk_warning(_(u"No data was found in the source file.  "
+                                  u"Please check the contents of the source "
+                                  u"file and try again."))
             self._cancel()
 
         _cell = gtk.CellRendererCombo()
@@ -1558,7 +1558,7 @@ class ImportIncident(gtk.Assistant):
         """
 
         if current_page == 0:
-            Utilities.select_source_file()
+            Widgets.select_source_file()
         else:
             self.assistant.set_current_page(current_page + 1)
 
@@ -1707,9 +1707,9 @@ class ImportIncident(gtk.Assistant):
 
         if _import_errors > 0:
             Widgets.rtk_information(_(u"Error importing {0:d} program "
-                                        u"incidents.  Refer to the import log "
-                                        u"{1:s} for more details.").format(
-                                            _import_errors, self._import_log))
+                                      u"incidents.  Refer to the import log "
+                                      u"{1:s} for more details.").format(
+                                          _import_errors, self._import_log))
 
         Widgets.set_cursor(self.modulebook.mdcRTK, gtk.gdk.LEFT_PTR)
 
@@ -1906,13 +1906,14 @@ class CreateDataSet(object):
 
         if _n_inconsistent > 0:
             Widgets.rtk_information(_(u"There were {0:d} records with "
-                                        u"inconsistent information.  These "
-                                        u"were not used in the creation of "
-                                        u"the dataset. Please see file "
-                                        u"{1:s} for "
-                                        u"details.".format(_n_inconsistent,
-                                            Configuration.LOG_DIR +
-                                            'RTK_error.log')))
+                                      u"inconsistent information.  These "
+                                      u"were not used in the creation of "
+                                      u"the dataset. Please see file "
+                                      u"{1:s} for "
+                                      u"details.".format(
+                                          _n_inconsistent,
+                                          Configuration.LOG_DIR +
+                                          'RTK_error.log')))
 
         # Load the dataset gtk.TreeView with the newly created dataset if it
         # was created in the RTK Program database.
