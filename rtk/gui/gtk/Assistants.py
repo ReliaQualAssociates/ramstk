@@ -45,10 +45,12 @@ try:
     import Configuration
     import Utilities
     import gui.gtk.Widgets as Widgets
+    import gui.gtk.Login as Login
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
+    import rtk.gui.gtk.Login as Login
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -105,8 +107,8 @@ class CreateProject(object):
         Method to create a RTK Project database using MySQL/MariaDB.
         """
 # TODO: Update MySQL/MariaDB code.
-        login = _login.Login(_(u"Create a RTK Program Database"))
-        if login.answer != gtk.RESPONSE_ACCEPT:
+        _login = Login.Login(_(u"Create a new RTK Program Database"))
+        if _login.answer != gtk.RESPONSE_ACCEPT:
             return True
 
         dialog = Widgets.make_dialog(_(u"RTK - New Program"))
@@ -293,9 +295,9 @@ class OpenProject(object):
     #                                    u"can be opened."))
     #        return True
 
-    #    login = _login.Login(_(u"RTK Program Database Login"))
+    #    _login = Login.Login(_(u"RTK Program Database Login"))
 
-    #    if login.answer != gtk.RESPONSE_ACCEPT:
+    #    if _login.answer != gtk.RESPONSE_ACCEPT:
     #        return True
 
     #    _query = "SHOW DATABASES"
