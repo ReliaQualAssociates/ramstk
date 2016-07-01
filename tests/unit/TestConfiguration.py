@@ -110,7 +110,7 @@ class TestConfiguration(unittest.TestCase):
         """
 
         self.assertFalse(self.userDUT._create_user_configuration())
-        self.assertTrue(isfile('/tmp/RTK.conf'))
+        self.assertTrue(isfile('/tmp/RTK/RTK.conf'))
         self.assertTrue(isfile('/tmp/RTK/data/newprogram_mysql.sql'))
         self.assertTrue(isfile('/tmp/RTK/data/newprogram_sqlite3.sql'))
         self.assertTrue(isfile('/tmp/RTK/data/rtkcommon_mysql.sql'))
