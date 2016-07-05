@@ -53,6 +53,16 @@ class TestUtilities(unittest.TestCase):
         self.assertTrue(isfile('/tmp/test.log'))
 
     @attr(all=True, unit=True)
+    def test00a_create_logger_to_tty(self):
+        """
+        (TestUtilities) create_logger should return a logging.Logger instance
+        """
+
+        _log = create_logger("test.debug", logging.DEBUG, '', True)
+        self.assertTrue(isinstance(_log, logging.Logger))
+        self.assertTrue(isfile('/tmp/test.log'))
+
+    @attr(all=True, unit=True)
     def test01_split_string(self):
         """
         (TestUtilities) split_string should return a list of strings split at the :

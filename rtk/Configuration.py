@@ -346,7 +346,6 @@ import gettext
 
 # Import other RTK modules.
 import Utilities
-import gui.gtk.Widgets as Widgets
 
 _ = gettext.gettext
 
@@ -379,61 +378,61 @@ RTK_SOFTWARE_LIST = []
 
 RTK_MANUFACTURERS = []
 
-# ------------------------------------------------------------------------- #
-# Requirement analysis configuration options.                               #
-# ------------------------------------------------------------------------- #
+# --------------------------------------------------------------------- #
+# Requirement analysis configuration options.                           #
+# --------------------------------------------------------------------- #
 RTK_REQUIREMENT_TYPES = []
 RTK_STAKEHOLDERS = []
 RTK_AFFINITY_GROUPS = []
 
-# ------------------------------------------------------------------------- #
-# Risk analyses configuration options.                                      #
-# ------------------------------------------------------------------------- #
+# --------------------------------------------------------------------- #
+# Risk analyses configuration options.                                  #
+# --------------------------------------------------------------------- #
 RTK_SEVERITY = []
 RTK_FAILURE_PROBABILITY = []
 RTK_HAZARDS = []
 RTK_RISK_POINTS = [4, 10]
 
-# ------------------------------------------------------------------------- #
-# FMEA configuration options.                                               #
-# ------------------------------------------------------------------------- #
-RTK_MODE_SOURCE = 1                         # 1=FMD-97
-RTK_FMECA_METHOD = 1                        # 1=Task 102, 2=RPN
+# --------------------------------------------------------------------- #
+# FMEA configuration options.                                           #
+# --------------------------------------------------------------------- #
+RTK_MODE_SOURCE = 1                     # 1=FMD-97
+RTK_FMECA_METHOD = 1                    # 1=Task 102, 2=RPN
 
-RTK_RPN_FORMAT = 0                          # RPN at mechanism level.
+RTK_RPN_FORMAT = 0                      # RPN at mechanism level.
 RTK_RPN_SEVERITY = []
 RTK_RPN_OCCURRENCE = []
 RTK_RPN_DETECTION = []
 
-# ------------------------------------------------------------------------- #
-# PoF configuration options.                                                #
-# ------------------------------------------------------------------------- #
+# --------------------------------------------------------------------- #
+# PoF configuration options.                                            #
+# --------------------------------------------------------------------- #
 # TODO: Add tables to the common database for these.
 RTK_DAMAGE_MODELS = []
 RTK_OPERATING_PARAMETERS = []
 
-# ------------------------------------------------------------------------- #
-# Hardware configuration options.                                           #
-# ------------------------------------------------------------------------- #
+# --------------------------------------------------------------------- #
+# Hardware configuration options.                                       #
+# --------------------------------------------------------------------- #
 RTK_CATEGORIES = {}
 RTK_SUBCATEGORIES = {}
 
-# ------------------------------------------------------------------------- #
-# Software configuration options.                                           #
-# ------------------------------------------------------------------------- #
+# --------------------------------------------------------------------- #
+# Software configuration options.                                       #
+# --------------------------------------------------------------------- #
 RTK_SW_LEVELS = []
 RTK_SW_APPLICATION = []
 RTK_SW_DEV_PHASES = []
 
-# ------------------------------------------------------------------------- #
-# Validation configuration options.                                         #
-# ------------------------------------------------------------------------- #
+# --------------------------------------------------------------------- #
+# Validation configuration options.                                     #
+# --------------------------------------------------------------------- #
 RTK_TASK_TYPE = []
 RTK_MEASUREMENT_UNITS = []
 
-# ------------------------------------------------------------------------- #
-# Incident configuration options.                                           #
-# ------------------------------------------------------------------------- #
+# --------------------------------------------------------------------- #
+# Incident configuration options.                                       #
+# --------------------------------------------------------------------- #
 RTK_USERS = []
 RTK_INCIDENT_CATEGORY = []
 RTK_INCIDENT_TYPE = []
@@ -456,7 +455,7 @@ TABPOS = ['top', 'bottom', 'bottom']
 
 RTK_GUI_LAYOUT = 'basic'
 
-METHOD = 'STANDARD'                         # STANDARD or LRM
+METHOD = 'STANDARD'                     # STANDARD or LRM
 
 
 class RTKConf(object):
@@ -471,81 +470,107 @@ class RTKConf(object):
         :param str level: indicates which configuration file is to be read.
                           One of 'site' or 'user'.
         """
-# TODO: Re-write __init__; current McCabe Complexity metric = 22.
+
+        _DIRS = {}
+
         if name == 'posix':
             self.OS = 'Linux'
-            _HOMEDIR = environ['HOME']
-            _SITEDIR = '/etc/RTK/'
-            _DATADIR = '/usr/share/RTK/'
-            _ICONDIR = '/usr/share/pixmaps/RTK/'
-            _LOGDIR = '/var/log/RTK/'
-            _PROGDIR = _HOMEDIR + '/analyses/rtk/'
+            self.SITE_DIR = '/etc/RTK/'
+            _DIRS['HOME'] = environ['HOME']
+            _DIRS['DATA'] = '/usr/share/RTK/'
+            _DIRS['ICON'] = '/usr/share/pixmaps/RTK/'
+            _DIRS['LOG'] = '/var/log/RTK/'
+            _DIRS['PROG'] = _DIRS['HOME'] + '/analyses/rtk/'
 
         elif name == 'nt':
             self.OS = 'Windows'
-            _HOMEDIR = environ['USERPROFILE']
-            _SITEDIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
-            _DATADIR = _SITEDIR + 'data/'
-            _ICONDIR = _SITEDIR + 'icons/'
-            _LOGDIR = _SITEDIR + 'logs/'
-            _PROGDIR = _HOMEDIR + '/analyses/rtk/'
-
-        self.SITE_DIR = _SITEDIR
+            self.SITE_DIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
+            _DIRS['HOME'] = environ['USERPROFILE']
+            _DIRS['DATA'] = self.SITE_DIR + 'data/'
+            _DIRS['ICON'] = self.SITE_DIR + 'icons/'
+            _DIRS['LOG'] = self.SITE_DIR + 'logs/'
+            _DIRS['PROG'] = _DIRS['HOME'] + '/analyses/rtk/'
 
         if level == 'site':
-            if Utilities.dir_exists(_SITEDIR):
-                self.conf_dir = _SITEDIR
-            else:
-                self.conf_dir = _HOMEDIR + '/.config/RTK/'
-
-            if Utilities.dir_exists(_DATADIR):
-                self.data_dir = _DATADIR
-            else:
-                self.data_dir = _HOMEDIR + '/.config/RTK/data/'
-
-            if Utilities.dir_exists(_ICONDIR):
-                self.icon_dir = _ICONDIR
-            else:
-                self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
-
-            if Utilities.dir_exists(_LOGDIR):
-                self.log_dir = _LOGDIR
-            else:
-                self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
-
-            self.conf_file = self.conf_dir + 'site.conf'
+            self._set_site_variables(_DIRS)
 
         elif level == 'user':
-            self.conf_dir = _HOMEDIR + '/.config/RTK/'
+            self._set_user_variables(_DIRS)
 
-            if Utilities.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
-                self.data_dir = _HOMEDIR + '/.config/RTK/data/'
-            else:
-                self.data_dir = _DATADIR
+    def _set_site_variables(self, directories):
+        """
+        Method to set the site configuration variables.
 
-            if Utilities.dir_exists(_HOMEDIR + '/.config/RTK/icons'):
-                self.icon_dir = _HOMEDIR + '/.config/RTK/icons'
-            else:
-                self.icon_dir = _ICONDIR
+        :param dict directories: dictionary of directory paths.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
 
-            if Utilities.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
-                self.log_dir = _HOMEDIR + '/.config/RTK/logs/'
-            else:
-                self.log_dir = _LOGDIR
+        if Utilities.dir_exists(self.SITE_DIR):
+            self.conf_dir = self.SITE_DIR
+        else:
+            self.conf_dir = directories['HOME'] + '/.config/RTK/'
 
-            if Utilities.dir_exists(_PROGDIR):
-                self.prog_dir = _PROGDIR
-            else:
-                self.prog_dir = _HOMEDIR
+        if Utilities.dir_exists(directories['DATA']):
+            self.data_dir = directories['DATA']
+        else:
+            self.data_dir = directories['HOME'] + '/.config/RTK/data/'
 
-            self.conf_file = self.conf_dir + 'RTK.conf'
+        if Utilities.dir_exists(directories['ICON']):
+            self.icon_dir = directories['ICON']
+        else:
+            self.icon_dir = directories['HOME'] + '/.config/RTK/icons'
 
-            if not Utilities.file_exists(self.conf_file):
-                self.create_default_configuration()
+        if Utilities.dir_exists(directories['LOG']):
+            self.log_dir = directories['LOG']
+        else:
+            self.log_dir = directories['HOME'] + '/.config/RTK/logs/'
+
+        self.conf_file = self.conf_dir + 'site.conf'
+
+        return False
+
+    def _set_user_variables(self, directories):
+        """
+        Method to set the user-specific configuration variables.
+
+        :param dict directories: dictionary of directory paths.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        self.conf_dir = directories['HOME'] + '/.config/RTK/'
+
+        if Utilities.dir_exists(directories['HOME'] + '/.config/RTK/data/'):
+            self.data_dir = directories['HOME'] + '/.config/RTK/data/'
+        else:
+            self.data_dir = directories['DATA']
+
+        if Utilities.dir_exists(directories['HOME'] + '/.config/RTK/icons'):
+            self.icon_dir = directories['HOME'] + '/.config/RTK/icons'
+        else:
+            self.icon_dir = directories['ICON']
+
+        if Utilities.dir_exists(directories['HOME'] + '/.config/RTK/logs/'):
+            self.log_dir = directories['HOME'] + '/.config/RTK/logs/'
+        else:
+            self.log_dir = directories['LOG']
+
+        if Utilities.dir_exists(directories['PROG']):
+            self.prog_dir = directories['PROG']
+        else:
+            self.prog_dir = directories['HOME']
+
+        self.conf_file = self.conf_dir + 'RTK.conf'
+
+        if not Utilities.file_exists(self.conf_file):
+            self.create_default_configuration()
+
+        return False
 
     def create_default_configuration(self):     # pylint: disable=R0914
         """
-        Creates a default configuration file in the site or user's
+        Method to create a default configuration file in the site or user's
         configuration directory.
 
         :return: False if successful or True if an error is encountered.
@@ -574,101 +599,27 @@ class RTKConf(object):
 
         _config = ConfigParser.ConfigParser()
 
-        _dialog = Widgets.make_dialog(_(u"RTK common database information..."))
+        _config.add_section('Modules')
+        _config.set('Modules', 'function', 'True')
+        _config.set('Modules', 'requirement', 'True')
+        _config.set('Modules', 'hardware', 'True')
+        _config.set('Modules', 'prediction', 'True')
+        _config.set('Modules', 'fmeca', 'True')
+        _config.set('Modules', 'maintainability', 'True')
+        _config.set('Modules', 'software', 'True')
+        _config.set('Modules', 'testing', 'True')
+        _config.set('Modules', 'validation', 'True')
+        _config.set('Modules', 'incident', 'True')
+        _config.set('Modules', 'survival', 'True')
 
-        _fixed = Widgets.make_fixed()
-
-        _y_pos = 10
-        _label = Widgets.make_label(_(u"RTK common database host name:"),
-                                    width=340)
-        _txtDBHost = Widgets.make_entry()
-        _txtDBHost.set_text(_(u"localhost"))
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtDBHost, 345, _y_pos)
-        _y_pos += 30
-
-        _label = Widgets.make_label(_(u"RTK common database socket:"),
-                                    width=340)
-        _txtDBSocket = Widgets.make_entry()
-        _txtDBSocket.set_text("3306")
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtDBSocket, 345, _y_pos)
-        _y_pos += 30
-
-        _label = Widgets.make_label(_(u"RTK common database name:"),
-                                    width=340)
-        _txtDBName = Widgets.make_entry()
-        _txtDBName.set_text("RTKCommon")
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtDBName, 345, _y_pos)
-        _y_pos += 30
-
-        _label = Widgets.make_label(_(u"RTK common database user name:"),
-                                    width=340)
-        _txtDBUser = Widgets.make_entry()
-        _txtDBUser.set_text("RTKCommon")
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtDBUser, 345, _y_pos)
-        _y_pos += 30
-
-        _label = Widgets.make_label(_(u"RTK common database password:"),
-                                    width=340)
-        _txtDBPassword = Widgets.make_entry()
-        _txtDBPassword.set_invisible_char("*")
-        _txtDBPassword.set_visibility(False)
-        _txtDBPassword.set_text("RTKCommon")
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_txtDBPassword, 345, _y_pos)
-        _y_pos += 30
-
-        _label = Widgets.make_label(_(u"RTK common database type:"),
-                                    width=340)
-        _cmbDBType = Widgets.make_combo()
-        Widgets.load_combo(_cmbDBType, [["mysql"], ["sqlite3"]])
-        _fixed.put(_label, 5, _y_pos)
-        _fixed.put(_cmbDBType, 345, _y_pos)
-
-        _fixed.show_all()
-        _dialog.vbox.pack_start(_fixed)
-
-        if _dialog.run() == -3:
-            _lst_RTKCommon = []
-            _lst_RTKCommon.append(_txtDBHost.get_text())
-            try:
-                _lst_RTKCommon.append(int(_txtDBSocket.get_text()))
-            except ValueError:
-                _lst_RTKCommon.append(_txtDBSocket.get_text())
-            _lst_RTKCommon.append(_txtDBName.get_text())
-            _lst_RTKCommon.append(_txtDBUser.get_text())
-            _lst_RTKCommon.append(_txtDBPassword.get_text())
-            _lst_RTKCommon.append(_cmbDBType.get_active_text())
-
-            _dialog.destroy()
-
-            if _lst_RTKCommon[5] == 'sqlite3':
-                _lst_RTKCommon[2] = _lst_RTKCommon[2] + '.rtk'
-
-            _config.add_section('Modules')
-            _config.set('Modules', 'function', 'True')
-            _config.set('Modules', 'requirement', 'True')
-            _config.set('Modules', 'hardware', 'True')
-            _config.set('Modules', 'prediction', 'True')
-            _config.set('Modules', 'fmeca', 'True')
-            _config.set('Modules', 'maintainability', 'True')
-            _config.set('Modules', 'software', 'True')
-            _config.set('Modules', 'testing', 'True')
-            _config.set('Modules', 'validation', 'True')
-            _config.set('Modules', 'incident', 'True')
-            _config.set('Modules', 'survival', 'True')
-
-            _config.add_section('Backend')
-            _config.set('Backend', 'host', _lst_RTKCommon[0])
-            _config.set('Backend', 'socket', _lst_RTKCommon[1])
-            _config.set('Backend', 'database', _lst_RTKCommon[2])
-            _config.set('Backend', 'user', _lst_RTKCommon[3])
-            _config.set('Backend', 'password', _lst_RTKCommon[4])
-            _config.set('Backend', 'type', _lst_RTKCommon[5])
-            _config.set('Backend', 'path', self.SITE_DIR)
+        _config.add_section('Backend')
+        _config.set('Backend', 'host', 'localhost')
+        _config.set('Backend', 'socket', 3306)
+        _config.set('Backend', 'database', '')
+        _config.set('Backend', 'user', 'user')
+        _config.set('Backend', 'password', 'password')
+        _config.set('Backend', 'type', 'sqlite3')
+        _config.set('Backend', 'path', self.SITE_DIR)
 
         try:
             _parser = open(self.conf_file, 'w')
@@ -689,7 +640,7 @@ class RTKConf(object):
         """
 
         import glob
-        import shutil
+        from distutils import dir_util, file_util
 
         _return = False
 
@@ -703,24 +654,39 @@ class RTKConf(object):
 
         # Create the directories needed for the user.
         if not Utilities.dir_exists(self.conf_dir):
-            makedirs(self.conf_dir)
+            try:
+                makedirs(self.conf_dir)
+            except OSError:
+                pass
 
         if not Utilities.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
-            makedirs(_HOMEDIR + '/.config/RTK/data/')
+            try:
+                makedirs(_HOMEDIR + '/.config/RTK/data/')
+            except OSError:
+                pass
 
         if not Utilities.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
-            makedirs(_HOMEDIR + '/.config/RTK/logs/')
+            try:
+                makedirs(_HOMEDIR + '/.config/RTK/logs/')
+            except OSError:
+                pass
 
         # Copy format files from SITE_DIR to the user's _CONFDIR.
         for _file in glob.glob(self.SITE_DIR + '*.xml'):
-            shutil.copy2(_file, self.conf_dir)
+            file_util.copy_file(_file, self.conf_dir)
 
         # Copy SQL files from SITE_DIR to the user's _DATADIR.
         for _file in glob.glob(self.SITE_DIR + '/data/*.sql'):
-            shutil.copy2(_file, self.conf_dir + '/data/')
+            file_util.copy_file(_file, self.conf_dir + '/data/')
 
         # Copy the icons from SITE_DIR to the user's _CONFDIR.
-        shutil.copytree(self.SITE_DIR + '/icons/', self.conf_dir + '/icons/')
+        if not Utilities.dir_exists(self.conf_dir + '/icons/'):
+            makedirs(self.conf_dir + '/icons/')
+        try:
+            dir_util.copy_tree(self.SITE_DIR + '/icons/',
+                               self.conf_dir + '/icons/')
+        except IOError:
+            print self.conf_dir
 
         # Create the default RTK user configuration file.
         _config.add_section('General')
@@ -837,7 +803,7 @@ class RTKConf(object):
             _config.set('Backend', 'type', self.BACKEND)
             _config.set('Backend', 'host', self.RTK_PROG_INFO[0])
             _config.set('Backend', 'socket', self.RTK_PROG_INFO[1])
-            _config.set('Backend', 'database', '')
+            _config.set('Backend', 'database', self.RTK_PROG_INFO[2])
             _config.set('Backend', 'user', self.RTK_PROG_INFO[3])
             _config.set('Backend', 'password', self.RTK_PROG_INFO[4])
 

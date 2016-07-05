@@ -88,7 +88,6 @@ def main():
     #     gtk.main_iteration()
 
     # sleep(3)
-    print "Launching the RTK application."
     RTK()
 
     # splScreen.window.destroy()
@@ -470,11 +469,9 @@ class RTK(object):
         """
 
         # Read the site configuration file.
-        print "Reading site configuration"
         _read_site_configuration()
 
         # Read the program configuration file.
-        print "Reading program configuration"
         _read_program_configuration()
 
         RTK_INTERFACE = 1
@@ -886,7 +883,13 @@ class RTK(object):
         """
 
         if Configuration.BACKEND == 'mysql':
-            self._create_mysql_project()
+
+            # Add all the tables to the new database.
+            _sqlfile = open(Configuration.DATA_DIR +
+                            'newprogram_mysql.sql', 'r')
+            for _query in _sqlfile.read().split(';'):
+                print _query
+
         elif Configuration.BACKEND == 'sqlite3':
             # Connect to the new database.
             _database = Configuration.PROG_DIR + '/' + \
@@ -932,7 +935,7 @@ class RTK(object):
                          fld_software_prefix, fld_software_next_id \
                   FROM tbl_program_info"
         (_results, _error_code, __) = self.project_dao.execute(_query,
-                                                               commit=None)
+                                                               commit=False)
         Configuration.RTK_PREFIX = [_element for _element in _results[0]]
 
         _icon = Configuration.ICON_DIR + '32x32/db-connected.png'
@@ -952,7 +955,8 @@ class RTK(object):
                          fld_survival_active, fld_rcm_active, \
                          fld_rbd_active, fld_fta_active\
                   FROM tbl_program_info"
-        (_results, _error_code, __) = self.project_dao.execute(_query, None)
+        (_results, _error_code, __) = self.project_dao.execute(_query,
+                                                               commit=False)
 
         # For the active RTK modules, load the data.  For the RTK modules
         # that aren't active in the project, remove the page from the

@@ -172,6 +172,8 @@ class TestUtilities(unittest.TestCase):
         (TestRTK) _initialize_loggers should return a tuple of logging.Logger instances
         """
 
+        Configuration.LOG_DIR = '/tmp'
+
         (_debug_log,
          _user_log,
          _import_log) = _initialize_loggers()
@@ -190,3 +192,23 @@ class TestUtilities(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, RTK))
+
+    @attr(all=True, unit=False)
+    def test04_create_new_project(self):
+        """
+        (TestRTK) create_project should return False on success
+        """
+
+        Configuration.RTK_PROG_INFO = ['localhost', 3306, 'BigAssTestDB.rtk',
+                                       '', '']
+        self.assertFalse(self.DUT.create_project())
+
+    @attr(all=True, unit=False)
+    def test05_open_project(self):
+        """
+        (TestRTK) open_project should return False on success
+        """
+
+        Configuration.RTK_PROG_INFO = ['localhost', 3306, 'BigAssTestDB.rtk',
+                                       '', '']
+        self.assertFalse(self.DUT.open_project())

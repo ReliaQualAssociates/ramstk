@@ -780,7 +780,7 @@ class Model(object):                        # pylint: disable=R0902
         return False
 
 
-    def _dormant_hazard_rate(component):
+    def _dormant_hazard_rate(self, component):
         """
         Method to calculate the dormant hazard rate based on active
         environment, dormant environment, and component category.

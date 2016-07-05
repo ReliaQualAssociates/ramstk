@@ -10,30 +10,11 @@ this module in other modules that need to interact with the RTK application.
 #
 # All rights reserved.
 
-import sys
 import os
 import os.path
 
 # Add localization support.
 import gettext
-
-# Modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
-# Import other RTK modules.
-import Configuration
 
 _ = gettext.gettext
 
@@ -60,19 +41,19 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     import logging
 
     _logger = logging.getLogger(log_name)
-
-    _fh = logging.FileHandler(log_file)
-    _fh.setLevel(log_level)
-
     _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-    _fh.setFormatter(_formatter)
 
-    _logger.addHandler(_fh)
+    if not to_tty:
+        _fh = logging.FileHandler(log_file)
+        _fh.setLevel(log_level)
+        _fh.setFormatter(_formatter)
 
-    if to_tty:
+        _logger.addHandler(_fh)
+    else:
         _ch = logging.StreamHandler()
         _ch.setLevel(log_level)
         _ch.setFormatter(_formatter)
+
         _logger.addHandler(_ch)
 
     return _logger
@@ -233,52 +214,3 @@ def string_to_boolean(string):
         _result = 1
 
     return _result
-
-
-def add_failure_modes(app, revision_id, assembly_id, category_id,
-                      subcategory_id):
-    """
-    Function to add default failure modes to the selected component.
-
-    :param rtk app: the running instance of the RTK application.
-    :param int revision_id: the component revision ID.
-    :param int assembly_id: the component assembly ID.
-    :param int category_id: the component category ID.
-    :param int subcategory_id: the component subcategory ID.
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-# TODO: Move this to the Hardware class.
-    _err = False
-
-    # Retrieve the default failure modes for the component from the common
-    # database.
-    _query = "SELECT fld_mode_id, fld_mode_description, fld_mode_ratio \
-              FROM tbl_failure_modes \
-              WHERE fld_category_id=%d \
-              AND fld_subcategory_id=%d \
-              AND fld_source=%d" % (category_id, subcategory_id,
-                                    int(Configuration.RTK_MODE_SOURCE))
-    _modes = app.COMDB.execute_query(_query, None, app.ComCnx)
-    try:
-        _n_modes = len(_modes)
-    except TypeError:
-        _n_modes = 0
-
-    # Add the default failure modes to the open RTK Program database.
-    _base_query = "INSERT INTO tbl_fmeca \
-                   (fld_revision_id, fld_assembly_id, \
-                    fld_mode_description, fld_mode_ratio) \
-                   VALUES (%d, %d, '%s', %f)"
-    for i in range(_n_modes):
-        _query = _base_query % (revision_id, assembly_id, _modes[i][1],
-                                _modes[i][2])
-        if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
-            _err = True
-
-    if _err:
-        rtk_error(_(u"Problem adding one or more failure modes to the open "
-                    u"RTK Program database."))
-        return True
-
-    return False
