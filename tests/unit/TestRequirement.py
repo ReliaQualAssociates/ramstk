@@ -11,11 +11,11 @@ This is the test class for testing Requirement module algorithms and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 from requirement.Requirement import Model, Requirement
 
 __author__ = 'Andrew Rowland'
@@ -51,7 +51,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(self.DUT.revision_id, None)
         self.assertEqual(self.DUT.requirement_id, None)
         self.assertEqual(self.DUT.description, '')
-        self.assertEqual(self.DUT.code, '')
+        self.assertEqual(self.DUT.requirement_code, '')
         self.assertEqual(self.DUT.requirement_type, '')
         self.assertEqual(self.DUT.priority, 1)
         self.assertEqual(self.DUT.specification, '')

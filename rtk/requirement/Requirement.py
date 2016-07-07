@@ -93,7 +93,7 @@ class Model(object):
         self.revision_id = None
         self.requirement_id = None
         self.description = ''
-        self.code = ''                      # TODO: See bug 179
+        self.requirement_code = ''
         self.requirement_type = ''
         self.priority = 1
         self.specification = ''
@@ -122,7 +122,7 @@ class Model(object):
             self.revision_id = int(values[0])
             self.requirement_id = int(values[1])
             self.description = str(values[2])
-            self.code = str(values[3])      # TODO: See bug 179
+            self.requirement_code = str(values[3])
             self.requirement_type = str(values[4])
             self.priority = int(values[5])
             self.specification = str(values[6])
@@ -151,16 +151,15 @@ class Model(object):
         Method to retrieve the current values of the Requirement data model
         attributes.
 
-        :return: (self.revsion_id, self.requirement_id, self.description,
-                  self.code, self.requirement_type, self.priority,
-                  self.specification, self.page_number, self.figure_number,
-                  self.derived, self.owner, self.validated,
-                  self.validated_date, self.parent_id)
+        :return: (revsion_id, requirement_id, description, requirement_code,
+                  requirement_type, priority, specification, page_number,
+                  figure_number, derived, owner, validated, validated_date,
+                  parent_id)
         :rtype: tuple
         """
-# TODO: See bug 179
+
         _values = (self.revision_id, self.requirement_id, self.description,
-                   self.code, self.requirement_type, self.priority,
+                   self.requirement_code, self.requirement_type, self.priority,
                    self.specification, self.page_number, self.figure_number,
                    self.derived, self.owner, self.validated,
                    self.validated_date, self.parent_id)
@@ -370,8 +369,7 @@ class Requirement(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: See bug 179
-# TODO: Write one or more integration tests for this method.
+# TODO: See bug 182.
         # Find the existing maximum Requirement ID already in the RTK Program
         # database and increment it by one.  If there are no existing
         # Requirements set the first Requirement ID to zero.
@@ -397,7 +395,7 @@ class Requirement(object):
                               {5:d}, '{6:s}', '{7:s}', '{8:s}', \
                               '{9:s}')".format(revision_id, _requirement_id,
                                                _requirement.description,
-                                               _requirement.code,
+                                               _requirement.requirement_code,
                                                _requirement.derived,
                                                _requirement.parent_id,
                                                _requirement.owner,
@@ -408,7 +406,6 @@ class Requirement(object):
                                                             commit=True)
 
             # Add the new Requirement to the requirements analysis table.
-# TODO: Removed this when refactoring REVISION.
             _query = "INSERT INTO rtk_requirement_analysis \
                       (fld_requirement_id) \
                       VALUES ({0:d})".format(_requirement_id)
@@ -442,7 +439,7 @@ class Requirement(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
-# TODO: See bug 179
+
         _requirement = self.dicRequirements[requirement_id]
 
         # Pack the answers to the analysis questions into a string for saving.
@@ -462,12 +459,13 @@ class Requirement(object):
                       fld_consistent='{15:s}', fld_verifiable='{16:s}' \
                   WHERE fld_requirement_id={0:d}".format(
                       _requirement.requirement_id, _requirement.description,
-                      _requirement.code, _requirement.requirement_type,
-                      _requirement.priority, _requirement.specification,
-                      _requirement.page_number, _requirement.figure_number,
-                      _requirement.derived, _requirement.owner,
-                      _requirement.validated, _requirement.validated_date,
-                      _requirement.parent_id, _clear, _complete, _consistent,
+                      _requirement.requirement_code, 
+                      _requirement.requirement_type, _requirement.priority, 
+                      _requirement.specification, _requirement.page_number, 
+                      _requirement.figure_number, _requirement.derived, 
+                      _requirement.owner, _requirement.validated, 
+                      _requirement.validated_date, _requirement.parent_id, 
+                      _clear, _complete, _consistent,
                       _verifiable)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 

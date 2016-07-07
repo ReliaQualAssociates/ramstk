@@ -313,18 +313,18 @@ class WorkView(gtk.VBox):
         _menu_item = gtk.MenuItem(label=_(u"Stakeholder Inputs"))
         _menu_item.set_tooltip_text(_(u"Creates the stakeholder inputs report "
                                       u"for the currently selected revision."))
-        #_menu_item.connect('activate', self._create_report)
+        # _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"Requirements Listing"))
         _menu_item.set_tooltip_text(_(u"Creates the requirements listing "
                                       u"for the currently selected revision."))
-        #_menu_item.connect('activate', self._create_report)
+        # _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"V&V Task Listing"))
         _menu_item.set_tooltip_text(_(u"Creates a report of the V&V tasks "
                                       u"for the currently selected revision "
                                       u"sorted by requirement."))
-        #_menu_item.connect('activate', self._create_report)
+        # _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
         _button.set_menu(_menu)
         _menu.show_all()
@@ -888,7 +888,7 @@ class WorkView(gtk.VBox):
 
         self.cmbPriority.set_active(int(self._rqmt_model.priority))
 
-        self.txtCode.set_text(self._rqmt_model.code)
+        self.txtCode.set_text(self._rqmt_model.requirement_code)
         self.txtFigureNumber.set_text(self._rqmt_model.figure_number)
         self.txtPageNumber.set_text(self._rqmt_model.page_number)
         _textbuffer = self.txtRequirement.get_child().get_child().get_buffer()
@@ -936,7 +936,8 @@ class WorkView(gtk.VBox):
         _model.clear()
         _model.append([""])
         for _requirement in self.dtcRequirement.dicRequirements.values():
-            _model.append([_requirement.code + '-' + _requirement.description])
+            _model.append([_requirement.requirement_code + '-' +
+                           _requirement.description])
 
         # Now load the Stakeholder Inputs gtk.TreeView.
         _model = self.tvwStakeholderInput.get_model()
@@ -1123,7 +1124,7 @@ class WorkView(gtk.VBox):
         self.chkValidated.set_active(self._rqmt_model.validated)
         self.cmbPriority.set_active(int(self._rqmt_model.priority))
 
-        self.txtCode.set_text(self._rqmt_model.code)
+        self.txtCode.set_text(self._rqmt_model.requirement_code)
         _textbuffer = self.txtRequirement.get_child().get_child().get_buffer()
         _textbuffer.set_text(self._rqmt_model.description)
         self.txtSpecification.set_text(self._rqmt_model.specification)
@@ -1313,7 +1314,7 @@ class WorkView(gtk.VBox):
             _model[path][position] = float(new_text)
 
         _values = (self._rqmt_model.revision_id, _id) + \
-                  _model.get(_row, 1, 2, 3, 4, 5, 6, 7, 8, 9,
+                  _model.get(_row, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
                              10, 11, 12, 13, 14)
 
         _stakeholder = self.dtcStakeholder.dicStakeholders[_id]
@@ -1560,7 +1561,7 @@ class WorkView(gtk.VBox):
         _pad = '0' * _zeds
         _code = '{0:s}-{1:s}{2:d}'.format(_prefix, _pad, _suffix)
 
-        self._rqmt_model.code = _code
+        self._rqmt_model.requirement_code = _code
 
         self.txtCode.set_text(_code)
 
