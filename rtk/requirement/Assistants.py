@@ -57,12 +57,45 @@ _ = gettext.gettext
 class AddRequirement(gtk.Assistant):
     """
     This is the assistant that walks the user through the process of adding
-    a new Requirement to the open RTK Project database.
+    a new Requirement to the open RTK Project database.  The attributes of an
+    Add Requirement Assistant are:
+
+    :ivar _modulebook: the :py:class:`rtk.requirement.ModuleBook` associated
+                       with this assistant.
+    :ivar _controller: the :py:class:`rtk.RTK.RTK` master data controller to
+                       use with this assistant.
+    :ivar str _level: the level of the requirement (top-level or derived).
+    :ivar int _revision_id: the id of the
+                            :py:class:`rtk.revision.Revision.Model` to
+                            associate the new Requirement with.
+    :ivar int _parent_id: the id of the
+                          :py:class:`rtk.requirement.Requirement.Model` that is
+                          a parent of the new Requirement.
+    :ivar str _code: the string code for the new Requirement.
+    :ivar gtk.ComboBox cmbOwner: the gtk.ComboBox() used to selectthe owner of
+                                 the new Requirement.
+    :ivar gtk.ComboBox cmbRqmtType: the gtk.ComboBox() used to select the type
+                                    of the new Requirement.
+    :ivar gtk.ComboBox cmbPriority: the gtk.ComboBox() used to select the
+                                    priority of the new Requirement.
+    :ivar gtk.Entry txtQuantity: the gtk.Entry() used to enter the number of
+                                 new Requirements to add.
+    :ivar gtk.Entry txtDescription: the gtk.Entry() to enter the description of
+                                    the new Requirement(s).
+    :ivar gtk.Entry txtSpecification: the gtk.Entry() to enter the engineering
+                                      specification associated with the new
+                                      Requirement.
+    :ivar gtk.Entry txtPageNumber: the gtk.Entry() to enter the page number in
+                                   the specification associated the new
+                                   Requirement.
+    :ivar gtk.Entry txtFigureNumber: the gtk.Entry() to enter the figure number
+                                     in the specification associated the new
+                                     Requirement.
     """
 
-    def __init__(self, modulebook, level, revision_id, parent_id=None):     # pylint: disable=R0914
+    def __init__(self, modulebook, level, revision_id, parent_id=None):
         """
-        Initialize on instance of the Add Requirement Assistant.
+        Method to initialize an instance of the Add Requirement Assistant.
 
         :param modulebook: the current instance of
                            :py:class:`rtk.requirement.ModuleBook`
@@ -89,7 +122,6 @@ class AddRequirement(gtk.Assistant):
             self._level = "derived"
         self._revision_id = revision_id
         self._parent_id = parent_id
-        self._code = ''
 
         # Define public dictionary attributes.
 
@@ -131,7 +163,6 @@ class AddRequirement(gtk.Assistant):
         _results = [['1'], ['2'], ['3'], ['4'], ['5']]
         _model = self.cmbPriority.get_model()
         Widgets.load_combo(self.cmbPriority, _results)
-
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #

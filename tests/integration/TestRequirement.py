@@ -11,11 +11,11 @@ This is the test class for testing Requirement module algorithms and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import dao.DAO as _dao
 from requirement.Requirement import Model, Requirement
 
@@ -112,3 +112,12 @@ class TestRequirementController(unittest.TestCase):
         self.DUT.request_requirements(self._dao, 0)
         self.assertEqual(self.DUT.save_all_requirements(),
                          [(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0)])
+
+    @attr(all=True, integration=True)
+    def test06_copy_requirements(self):
+        """
+        (TestRequirement) save_all_requirements returns False on success
+        """
+
+        self.DUT.request_requirements(self._dao, 0)
+        self.assertFalse(self.DUT.copy_requirements(0))

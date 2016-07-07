@@ -7,7 +7,7 @@ Requirement Package List Book View
 
 # -*- coding: utf-8 -*-
 #
-#       rtk,requirement.ListBook.py is part of the RTK Project
+#       rtk.requirement.ListBook.py is part of the RTK Project
 #
 # All rights reserved.
 
@@ -388,8 +388,7 @@ class ListView(gtk.VBox):
         # Load the Function/Hardware matrix data.
         _gobject_types = [gobject.TYPE_INT, gobject.TYPE_STRING,
                           gobject.TYPE_STRING] + \
-                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * \
-                         (matrix.n_col)
+                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * (matrix.n_col)
         _model = gtk.TreeStore(*_gobject_types)
         self.mtxHardware.treeview.set_model(_model)
 
@@ -437,8 +436,7 @@ class ListView(gtk.VBox):
         # Load the Function/Software matrix data.
         _gobject_types = [gobject.TYPE_INT, gobject.TYPE_STRING,
                           gobject.TYPE_STRING] + \
-                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * \
-                         (matrix.n_col)
+                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * (matrix.n_col)
         _model = gtk.TreeStore(*_gobject_types)
         self.mtxSoftware.treeview.set_model(_model)
 
@@ -486,8 +484,7 @@ class ListView(gtk.VBox):
         # Load the Requirement/Validation matrix data.
         _gobject_types = [gobject.TYPE_INT, gobject.TYPE_STRING,
                           gobject.TYPE_STRING] + \
-                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * \
-                         (matrix.n_col)
+                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * (matrix.n_col)
         _model = gtk.TreeStore(*_gobject_types)
         self.mtxValidation.treeview.set_model(_model)
 
@@ -589,7 +586,7 @@ class ListView(gtk.VBox):
         Callback method to respond to button clicks.
 
         :param gtk.Button button: the gtk.Button() that called this method.
-        :param int index:
+        :param int index: the index in the gtk.Widget() signal list.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -599,6 +596,5 @@ class ListView(gtk.VBox):
         self._dtc_matrices.save_matrix(index)
 
         button.handler_unblock(self._lst_handler_id[index])
-
 
         return False

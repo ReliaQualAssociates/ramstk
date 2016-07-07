@@ -64,6 +64,7 @@ _ = gettext.gettext
 
 
 class WorkView(gtk.VBox):
+
     """
     The Work Book view displays all the attributes for the selected
     Requirement.  The attributes of a Work Book view are:
@@ -1314,7 +1315,7 @@ class WorkView(gtk.VBox):
             _model[path][position] = float(new_text)
 
         _values = (self._rqmt_model.revision_id, _id) + \
-                  _model.get(_row, 1, 2, 3, 4, 5, 6, 7, 8, 9, 
+                  _model.get(_row, 1, 2, 3, 4, 5, 6, 7, 8, 9,
                              10, 11, 12, 13, 14)
 
         _stakeholder = self.dtcStakeholder.dicStakeholders[_id]
