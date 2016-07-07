@@ -258,48 +258,6 @@ CREATE TABLE "tbl_requirements" (
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
 
-DROP TABLE IF EXISTS "rtk_requirement_analysis";
-CREATE TABLE "rtk_requirement_analysis" (
-    "fld_requirement_id" INTEGER NOT NULL DEFAULT(0),               -- The ID of the requirement.
-    "fld_clear_q1" TINYINT DEFAULT(0),
-    "fld_clear_q2" TINYINT DEFAULT(0),
-    "fld_clear_q3" TINYINT DEFAULT(0),
-    "fld_clear_q4" TINYINT DEFAULT(0),
-    "fld_clear_q5" TINYINT DEFAULT(0),
-    "fld_clear_q6" TINYINT DEFAULT(0),
-    "fld_clear_q7" TINYINT DEFAULT(0),
-    "fld_clear_q8" TINYINT DEFAULT(0),
-    "fld_clear_q9" TINYINT DEFAULT(0),
-    "fld_clear_q10" TINYINT DEFAULT(0),
-    "fld_complete_q1" TINYINT DEFAULT(0),
-    "fld_complete_q2" TINYINT DEFAULT(0),
-    "fld_complete_q3" TINYINT DEFAULT(0),
-    "fld_complete_q4" TINYINT DEFAULT(0),
-    "fld_complete_q5" TINYINT DEFAULT(0),
-    "fld_complete_q6" TINYINT DEFAULT(0),
-    "fld_complete_q7" TINYINT DEFAULT(0),
-    "fld_complete_q8" TINYINT DEFAULT(0),
-    "fld_complete_q9" TINYINT DEFAULT(0),
-    "fld_complete_q10" TINYINT DEFAULT(0),
-    "fld_consistent_q1" TINYINT DEFAULT(0),
-    "fld_consistent_q2" TINYINT DEFAULT(0),
-    "fld_consistent_q3" TINYINT DEFAULT(0),
-    "fld_consistent_q4" TINYINT DEFAULT(0),
-    "fld_consistent_q5" TINYINT DEFAULT(0),
-    "fld_consistent_q6" TINYINT DEFAULT(0),
-    "fld_consistent_q7" TINYINT DEFAULT(0),
-    "fld_consistent_q8" TINYINT DEFAULT(0),
-    "fld_consistent_q9" TINYINT DEFAULT(0),
-    "fld_consistent_q10" TINYINT DEFAULT(0),
-    "fld_verifiable_q1" TINYINT DEFAULT(0),
-    "fld_verifiable_q2" TINYINT DEFAULT(0),
-    "fld_verifiable_q3" TINYINT DEFAULT(0),
-    "fld_verifiable_q4" TINYINT DEFAULT(0),
-    "fld_verifiable_q5" TINYINT DEFAULT(0),
-    "fld_verifiable_q6" TINYINT DEFAULT(0),
-    FOREIGN KEY("fld_requirement_id") REFERENCES "tbl_requirements"("fld_requirement_id") ON DELETE CASCADE
-);
-
 --
 -- Create tables for storing system hardware structure information.
 --
@@ -372,6 +330,7 @@ CREATE TABLE "rtk_stress" (
     "fld_thermal_resistance" REAL DEFAULT(0),                       -- Thermal resistance of the hardware item.
     "fld_tref" REAL DEFAULT(0),                                     -- Reference temperature of the hardware item.
     "fld_voltage_ratio" REAL DEFAULT(1),                            -- Ratio of operating to rated voltage.
+    "fld_reason" BLOB,                                              -- The reason(s) the component is over-stressed.
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
 INSERT INTO "rtk_stress" VALUES(0, 1, 30, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1);

@@ -7,7 +7,7 @@ Requirement Package Module View
 
 # -*- coding: utf-8 -*-
 #
-#       ModuleBook.py is part of The RTK Project
+#       rtk.requirement.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
 
@@ -68,12 +68,13 @@ class ModuleView(object):
                   that is currently selected.
     :ivar _stakeholder_model: the :py:class:`rtk.stakeholder.Stakeholder.Model`
                               data model that is currently selected.
-    :ivar _lst_col_order: list containing the order of the columns in the
-                          Module View gtk.TreeView().
+    :ivar list _lst_col_order: list containing the order of the columns in the
+                               Module View gtk.TreeView().
     :ivar _workbook: the :py:class:`rtk.requirement.WorkBook.WorkView`
                      associated with this instance of the Module View.
     :ivar mdcRTK: the :py:class:`rtk.RTK.RTK` master data controller to use.
-    :ivar treeview: the gtk.TreeView() displaying the list of Requirements.
+    :ivar gtk.TreeView treeview: the gtk.TreeView() displaying the list of
+                                 Requirements.
     """
 
     def __init__(self, controller, rtk_view, position):
@@ -348,7 +349,7 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Refactor _on_cell_edited; current McCabe Complexity Metric = 11.
+        # TODO: Refactor _on_cell_edited; current McCabe Complexity Metric = 11.
         cell.handler_block(self._dic_handler_id[position])
 
         # Update the gtk.TreeModel() with the new value.

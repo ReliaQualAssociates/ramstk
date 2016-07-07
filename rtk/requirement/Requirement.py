@@ -369,7 +369,7 @@ class Requirement(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: See bug 182.
+
         # Find the existing maximum Requirement ID already in the RTK Program
         # database and increment it by one.  If there are no existing
         # Requirements set the first Requirement ID to zero.
@@ -402,13 +402,6 @@ class Requirement(object):
                                                _requirement.specification,
                                                _requirement.page_number,
                                                _requirement.figure_number)
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=True)
-
-            # Add the new Requirement to the requirements analysis table.
-            _query = "INSERT INTO rtk_requirement_analysis \
-                      (fld_requirement_id) \
-                      VALUES ({0:d})".format(_requirement_id)
             (_results, _error_code, __) = self._dao.execute(_query,
                                                             commit=True)
 
@@ -459,14 +452,13 @@ class Requirement(object):
                       fld_consistent='{15:s}', fld_verifiable='{16:s}' \
                   WHERE fld_requirement_id={0:d}".format(
                       _requirement.requirement_id, _requirement.description,
-                      _requirement.requirement_code, 
-                      _requirement.requirement_type, _requirement.priority, 
-                      _requirement.specification, _requirement.page_number, 
-                      _requirement.figure_number, _requirement.derived, 
-                      _requirement.owner, _requirement.validated, 
-                      _requirement.validated_date, _requirement.parent_id, 
-                      _clear, _complete, _consistent,
-                      _verifiable)
+                      _requirement.requirement_code,
+                      _requirement.requirement_type, _requirement.priority,
+                      _requirement.specification, _requirement.page_number,
+                      _requirement.figure_number, _requirement.derived,
+                      _requirement.owner, _requirement.validated,
+                      _requirement.validated_date, _requirement.parent_id,
+                      _clear, _complete, _consistent, _verifiable)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return(_results, _error_code)

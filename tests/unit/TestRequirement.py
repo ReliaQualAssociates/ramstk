@@ -37,7 +37,7 @@ class TestRequirementModel(unittest.TestCase):
         self.DUT = Model()
 
     @attr(all=True, unit=True)
-    def test_requirement_create(self):
+    def test00_requirement_create(self):
         """
         (TestRequirement) __init__ should return a Requirement model
         """
@@ -64,7 +64,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(self.DUT.parent_id, -1)
 
     @attr(all=True, unit=True)
-    def test_requirement_set_attributes(self):
+    def test01_requirement_set_attributes(self):
         """
         (TestRequirement) set_attributes should return a 0 error code on success
         """
@@ -77,7 +77,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
-    def test_requirement_set_attributes_wrong_type(self):
+    def test01a_requirement_set_attributes_wrong_type(self):
         """
         (TestRequirement) set_attributes should return a 10 error code when passed a wrong data type
         """
@@ -90,7 +90,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
-    def test_requirement_set_attributes_missing_index(self):
+    def test02a_requirement_set_attributes_missing_index(self):
         """
         (TestRequirement) set_attributes should return a 40 error code when too few items are passed
         """
@@ -103,7 +103,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
-    def test_requirement_get_attributes(self):
+    def test03_requirement_get_attributes(self):
         """
         (TestRequirement) get_attributes should return a tuple of attribute values
         """
@@ -113,7 +113,7 @@ class TestRequirementModel(unittest.TestCase):
                           719163, -1))
 
     @attr(all=True, unit=True)
-    def test_attribute_sanity(self):
+    def test04_attribute_sanity(self):
         """
         (TestRequirement) get_attributes(set_attributes(values)) == values
         """
@@ -127,7 +127,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(_result, _values)
 
     @attr(all=True, unit=True)
-    def test_pack_values(self):
+    def test05_pack_values(self):
         """
         (TestRequirement) pack_values should return a string with the same integers as the passed list
         """
@@ -136,7 +136,7 @@ class TestRequirementModel(unittest.TestCase):
         self.assertEqual(self.DUT.pack_values(_values), '0111001011001')
 
     @attr(all=True, unit=True)
-    def test_unpack_values(self):
+    def test06_unpack_values(self):
 
         """
         (TestRequirement) unpack_values should return a list of integers the same as the passed string
@@ -147,7 +147,7 @@ class TestRequirementModel(unittest.TestCase):
                          [0, 1, 1, 1, 0, 0, 1, 0, 1, 1, 0, 0, 1])
 
     @attr(all=True, unit=True)
-    def test_pack_unpack_sanity(self):
+    def test07_pack_unpack_sanity(self):
         """
         (TestRequirement) unpack_values(pack_values(values)) == values
         """
@@ -170,7 +170,7 @@ class TestRequirementController(unittest.TestCase):
         self.DUT = Requirement()
 
     @attr(all=True, unit=True)
-    def test_controller_create(self):
+    def test00_controller_create(self):
         """
         (TestRequirement) __init__ should create a Requirement data controller
         """
