@@ -40,7 +40,7 @@ class TestUsageProfileController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = UsageProfile()
-        self.DUT._dao = self._dao
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test00_request_profile(self):
@@ -48,7 +48,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) request_profile should return False on success
         """
 
-        self.assertFalse(self.DUT.request_profile(0, self._dao))
+        self.assertFalse(self.DUT.request_profile(0))
 
     @attr(all=True, integration=True)
     def test01_add_mission(self):
@@ -56,7 +56,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) add_mission should return (True, 0, last_id) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
 
         (_results, _error_code, _last_id) = self.DUT.add_mission(0)
         self.assertTrue(_results)
@@ -71,7 +71,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) _save_mission should return a 0 error code on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
         _mission = self.DUT.dicProfiles[0].dicMissions[0]
 
         _error_code = self.DUT._save_mission(_mission)
@@ -83,7 +83,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) delete_mission should return (True, 0) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
         _n = len(self.DUT.dicProfiles[0].dicMissions)
 
         (_results, _error_code) = self.DUT.delete_mission(0, _n - 1)
@@ -96,7 +96,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) add_phase should return (True, 0, last_id) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
 
         (_results, _error_code, _last_id) = self.DUT.add_phase(0, 0)
         self.assertTrue(_results)
@@ -111,7 +111,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) _save_phase should return (True, 0) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
         _phase = self.DUT.dicProfiles[0].dicMissions[0].dicPhases[1]
 
         (_results, _error_code) = self.DUT._save_phase(_phase)
@@ -124,7 +124,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) delete_phase should return (True, 0) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
         _n = len(self.DUT.dicProfiles[0].dicMissions[0].dicPhases)
 
         (_results, _error_code) = self.DUT.delete_phase(0, 0, _n - 1)
@@ -137,7 +137,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) add_environment should return (True, 0, last_id) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
 
         (_results, _error_code, _last_id) = self.DUT.add_environment(0, 0, 1)
         self.assertTrue(_results)
@@ -153,7 +153,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) _save_environment should return (True, 0) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
 
         _mission = self.DUT.dicProfiles[0].dicMissions[0]
         _environment = _mission.dicPhases[1].dicEnvironments[1]
@@ -168,7 +168,7 @@ class TestUsageProfileController(unittest.TestCase):
         (TestProfile) delete_environment should return (True, 0) on success
         """
 
-        self.DUT.request_profile(0, self._dao)
+        self.DUT.request_profile(0)
         _mission = self.DUT.dicProfiles[0].dicMissions[0]
         _n = len(_mission.dicPhases[1].dicEnvironments)
 

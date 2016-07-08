@@ -97,7 +97,6 @@ class UsageProfile(object):
         # Define private list attributes.
 
         # Define private scalar attributes.
-        self._dao = None
 
         # Define public dictionary attributes.
         self.dicProfiles = {}
@@ -105,8 +104,9 @@ class UsageProfile(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.dao = None
 
-    def request_profile(self, revision_id, dao):
+    def request_profile(self, revision_id):
         """
         Method to load the entire mission profile for a Revision.  Starting at
         the Mission level, the steps to create the Usage Profile are:
@@ -125,13 +125,9 @@ class UsageProfile(object):
 
         :param int revision_id: the Revision ID that the Usage Profile will be
                                 associated with.
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
-                    with the RTK Project database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        self._dao = dao
 
         _profile = Model(revision_id)
         self.dicProfiles[revision_id] = _profile
@@ -139,7 +135,7 @@ class UsageProfile(object):
         _query = "SELECT * FROM tbl_missions \
                   WHERE fld_revision_id={0:d} \
                   ORDER BY fld_mission_id".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query)
+        (_results, _error_code, __) = self.dao.execute(_query)
         try:
             _n_missions = len(_results)
         except TypeError:
@@ -154,7 +150,7 @@ class UsageProfile(object):
                       WHERE fld_mission_id={0:d}".format(_mission.mission_id)
             (_phases,
              _error_code,
-             __) = self._dao.execute(_query, commit=False)
+             __) = self.dao.execute(_query, commit=False)
             try:
                 _n_phases = len(_phases)
             except TypeError:
@@ -167,7 +163,7 @@ class UsageProfile(object):
 
                 _query = "SELECT * FROM tbl_environments \
                           WHERE fld_phase_id={0:d}".format(_phase.phase_id)
-                (_environments, _error_code, __) = self._dao.execute(_query)
+                (_environments, _error_code, __) = self.dao.execute(_query)
                 try:
                     _n_environments = len(_environments)
                 except TypeError:
@@ -190,7 +186,7 @@ class UsageProfile(object):
         :rtype: bool
         """
 
-        self.request_profile(revision_id, self._dao)
+        self.request_profile(revision_id)
 
         return False
 
@@ -210,7 +206,7 @@ class UsageProfile(object):
                                                   "New Mission")
         (_results,
          _error_code,
-         _last_id) = self._dao.execute(_query, commit=True)
+         _last_id) = self.dao.execute(_query, commit=True)
 
         _mission = Mission()
         _mission.set_attributes((revision_id, _last_id, 0.0, 0.0, '', ''))
@@ -231,7 +227,7 @@ class UsageProfile(object):
 
         _query = "DELETE FROM tbl_missions \
                   WHERE fld_mission_id={0:d}".format(mission_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         _profile = self.dicProfiles[revision_id]
         _profile.dicMissions.pop(mission_id)
@@ -262,7 +258,7 @@ class UsageProfile(object):
 
         (_results,
          _error_code,
-         _last_id) = self._dao.execute(_query, commit=True)
+         _last_id) = self.dao.execute(_query, commit=True)
 
         _phase = Phase()
         _phase.set_attributes((revision_id, mission_id, _last_id,
@@ -291,7 +287,7 @@ class UsageProfile(object):
 
         _query = "DELETE FROM tbl_mission_phase \
                   WHERE fld_phase_id={0:d}".format(phase_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
@@ -325,7 +321,7 @@ class UsageProfile(object):
                                                               0.0, 0.0)
         (_results,
          _error_code,
-         _last_id) = self._dao.execute(_query, commit=True)
+         _last_id) = self.dao.execute(_query, commit=True)
 
         _environment = Environment()
         _environment.set_attributes((revision_id, mission_id, phase_id, 0,
@@ -357,7 +353,7 @@ class UsageProfile(object):
 
         _query = "DELETE FROM tbl_environments \
                   WHERE fld_condition_id={0:d}".format(environment_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
@@ -398,7 +394,7 @@ class UsageProfile(object):
                                                      mission.time_units,
                                                      mission.description,
                                                      mission.mission_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return _error_code
 
@@ -419,7 +415,7 @@ class UsageProfile(object):
                                                    phase.end_time,
                                                    phase.code,
                                                    phase.description)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
@@ -443,6 +439,6 @@ class UsageProfile(object):
                       environment.units, environment.minimum,
                       environment.maximum, environment.mean,
                       environment.variance)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)

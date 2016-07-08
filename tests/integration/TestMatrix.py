@@ -15,8 +15,8 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao                                      # pylint: disable=E0401
-from datamodels.matrix.Matrix import Matrix, ParentError    # pylint: disable=E0401
+import dao.DAO as _dao                          # pylint: disable=E0401
+from datamodels.matrix.Matrix import Matrix     # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -37,23 +37,22 @@ class TestMatrixController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Matrix()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
-    def test0_request_matrix(self):
+    def test00_request_matrix(self):
         """
         (TestMatrix) request_matrix should return a tuple of lists and a 0 error code on success
         """
 
-        (_results, _error_code) = self.DUT.request_matrix(self._dao, 0,
-                                                          [0, 1, 2])
+        (_results, _error_code) = self.DUT.request_matrix()
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(self.DUT._dao, self._dao)      # pylint: disable=W0212
 
         # Check that the Hardware and Software matrices were created and the
         # Testing matrix was not.  Then check the correct column headers are
         # created for the Hardware and Software matrices.
-        self.assertEqual(self.DUT.dicMatrices.keys(), [0, 1, 2])
+        self.assertEqual(self.DUT.dicMatrices.keys(), [0, 1, 2, 3, 4, 5])
         _matrix = self.DUT.dicMatrices[0]
         self.assertEqual(_matrix.lstColumnHeaders, [u'System', u'Sub-System 1',
                                                     u'Sub-System 2',
@@ -68,33 +67,24 @@ class TestMatrixController(unittest.TestCase):
         self.assertEqual(_matrix.lstColumnHeaders, ['System Software'])
 
     @attr(all=True, integration=True)
-    def test1_request_matrix_no_matrix_id(self):
-        """
-        (TestMatrix) request_matrix should raise ParentError with no Matrix ID
-        """
-
-        self.assertRaises(ParentError, self.DUT.request_matrix, self._dao,
-                          None, [0])
-
-    @attr(all=True, integration=True)
-    def test2_add_row(self):
+    def test01_add_row(self):
         """
         (TestMatrix) add_row should return (True, 0) on success
         """
 
-        self.DUT.request_matrix(self._dao, 0, [0])
+        self.DUT.request_matrix()
 
         (_results, _error_code) = self.DUT.add_row(0, -1, 900)
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test3_delete_row(self):
+    def test02_delete_row(self):
         """
         (TestMatrix) delete_row should return (True, 0) on success
         """
 
-        self.DUT.request_matrix(self._dao, 0, [0])
+        self.DUT.request_matrix()
         self.DUT.add_row(0, -1, 900)
         _row_id = self.DUT.dicMatrices[0].n_row - 1
 
@@ -103,12 +93,12 @@ class TestMatrixController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test4_add_column(self):
+    def test03_add_column(self):
         """
         (TestMatrix) add_column should return a list of tuples on success
         """
 
-        self.DUT.request_matrix(self._dao, 0, [0])
+        self.DUT.request_matrix()
 
         _error_codes = self.DUT.add_column(0)
         self.assertEqual(_error_codes,
@@ -116,12 +106,12 @@ class TestMatrixController(unittest.TestCase):
                           (6, 0), (7, 0), (8, 0), (9, 0)])
 
     @attr(all=True, integration=True)
-    def test5_delete_column(self):
+    def test04_delete_column(self):
         """
         (TestMatrix) delete_column should return (True, 0) on success
         """
 
-        self.DUT.request_matrix(self._dao, 0, [0])
+        self.DUT.request_matrix()
         self.DUT.add_column(0)
         _col_id = self.DUT.dicMatrices[0].n_col - 1
 
@@ -130,11 +120,11 @@ class TestMatrixController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
-    def test6_save_matrix(self):
+    def test05_save_matrix(self):
         """
         (TestMatrix) save_matrix should return False on success
         """
 
-        self.DUT.request_matrix(self._dao, 0, [0])
+        self.DUT.request_matrix()
 
         self.assertFalse(self.DUT.save_matrix(0))

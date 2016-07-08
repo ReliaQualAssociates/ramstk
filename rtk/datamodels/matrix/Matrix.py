@@ -181,7 +181,6 @@ class Matrix(object):
         # Define private list attributes.
 
         # Define private scalar attributes.
-        self._dao = None
 
         # Define public dictionary attributes.
         self.dicMatrices = {}
@@ -189,28 +188,17 @@ class Matrix(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.dao = None
 
-    def request_matrix(self, dao, revision_id, matrix_types):
+    def request_matrix(self):
         """
         Method to load the entire set of Matrices for the Revision ID.
 
-        :param dao: the :py:class:`rtk.dao.DAO` object to use for communicating
-                    with the open RTK Project database.
-        :param int revision_id: the ID of the Revision to request the Matrices
-                                for.
-        :param list matrix_types: a list of the types of Matrix to retrieve the
-                                  data for.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
-        # Controller must be associated with a Revision.
-        if revision_id is None:
-            raise ParentError
-
-        self._dao = dao
-
-        for __, _matrix_type in enumerate(matrix_types):
+        for _matrix_type in [0, 1, 2, 3, 4, 5, 6, 7]:
             if _matrix_type in [0, 1, 2]:
                 _id_field = "function_id"
                 _code_field = "code"
@@ -228,23 +216,22 @@ class Matrix(object):
                 _row_table = "rtk_hardware"
 
             _query = "SELECT t1.fld_matrix_id, t1.fld_matrix_type, \
-                             t2.fld_{6:s}, t2.fld_{5:s}, t2.fld_{2:s}, \
+                             t2.fld_{5:s}, t2.fld_{4:s}, t2.fld_{1:s}, \
                              t1.fld_parent_id, t1.fld_row_id, t1.fld_col_id, \
-                             t1.fld_value, t1.fld_col_item_id \
+                             t1.fld_value, t1.fld_col_item_id, \
+                             t1.fld_revision_id \
                       FROM rtk_matrix AS t1 \
-                      INNER JOIN {3:s} AS t2 \
-                      ON t2.fld_{4:s}=t1.fld_row_item_id \
-                      WHERE t1.fld_revision_id={0:d} \
-                      AND t1.fld_matrix_type={1:d} \
+                      INNER JOIN {2:s} AS t2 \
+                      ON t2.fld_{3:s}=t1.fld_row_item_id \
+                      WHERE t1.fld_matrix_type={0:d} \
                       ORDER BY t1.fld_matrix_id, t1.fld_row_id, \
-                               t1.fld_col_id".format(revision_id, _matrix_type,
-                                                     _id_field, _row_table,
-                                                     _id_field, _name_field,
-                                                     _code_field)
-            (_results, _error_code, __) = self._dao.execute(_query)
+                               t1.fld_col_id".format(_matrix_type, _id_field,
+                                                     _row_table, _id_field,
+                                                     _name_field, _code_field)
+            (_results, _error_code, __) = self.dao.execute(_query)
 
             if len(_results) > 0:
-                self._create_matrix(revision_id, _results)
+                self._create_matrix(_results[0][10], _results)
 
                 _column_ids = list(set([_r[9] for _r in _results]))
                 self._request_column_headers(_column_ids, _matrix_type)
@@ -334,7 +321,7 @@ class Matrix(object):
                       FROM rtk_validation \
                       WHERE fld_validation_id IN " + _column_ids
 
-        (_results, _error_code, __) = self._dao.execute(_query)
+        (_results, _error_code, __) = self.dao.execute(_query)
 
         try:
             _n_headers = len(_results)
@@ -404,7 +391,7 @@ class Matrix(object):
             _query = "SELECT DISTINCT fld_col_id, fld_col_item_id \
                       FROM rtk_matrix \
                       WHERE fld_matrix_id={0:d}".format(matrix_id)
-            (_columns, _error_code, __) = self._dao.execute(_query,
+            (_columns, _error_code, __) = self.dao.execute(_query,
                                                             commit=False)
 
             try:
@@ -424,7 +411,7 @@ class Matrix(object):
                                       _matrix.matrix_type, _matrix.n_row + 1,
                                       _columns[i][0], parent_id, row_item_id,
                                       _columns[i][1])
-                (_results, _error_code, __) = self._dao.execute(_query,
+                (_results, _error_code, __) = self.dao.execute(_query,
                                                                 commit=True)
 
                 _cells.append('')
@@ -460,7 +447,7 @@ class Matrix(object):
                       AND fld_matrix_id={1:d} \
                       AND fld_row_id={2:d}".format(_matrix.revision_id,
                                                    matrix_id, row_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             # If the row was successfully deleted, remove it from the Matrix's
@@ -505,7 +492,7 @@ class Matrix(object):
                                       _matrix.matrix_type, _key,
                                       _matrix.n_col, _matrix.dicRows[_key][0],
                                       _matrix.dicRows[_key][1], col_item_id)
-                (__, _error_code, __) = self._dao.execute(_query, commit=True)
+                (__, _error_code, __) = self.dao.execute(_query, commit=True)
 
                 _error_codes.append((_key, _error_code))
 
@@ -539,7 +526,7 @@ class Matrix(object):
                       AND fld_matrix_id={1:d} \
                       AND fld_col_id={2:d}".format(_matrix.revision_id,
                                                    matrix_id, col_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             # If the column was successfully deleted, remove it's values from
@@ -573,6 +560,6 @@ class Matrix(object):
                   AND fld_row_id={3:d} \
                   AND fld_col_id={4:d}".format(parent_id, str(value),
                                                matrix_id, row_id, col_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)

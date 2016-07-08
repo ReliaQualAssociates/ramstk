@@ -40,6 +40,7 @@ class TestRevisionController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Revision()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test01_request_revisions(self):
@@ -47,7 +48,7 @@ class TestRevisionController(unittest.TestCase):
         (TestRevision) request_revisions should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_revisions()[1], 0)
 
     @attr(all=True, integration=True)
     def test02_add_revision(self):
@@ -55,7 +56,7 @@ class TestRevisionController(unittest.TestCase):
         (TestRevision) add_revision returns 0 on success and new Requirement data model added to dictionary
         """
 
-        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_revisions()[1], 0)
         (_results,
          _error_code,
          _revision_id) = self.DUT.add_revision(code='-', name='Original',
@@ -72,8 +73,8 @@ class TestRevisionController(unittest.TestCase):
         """
         (TestRevision) add_revision returns 0 on success and new Requirement data model added to dictionary
         """
-# TODO: Requires configuration file values to set the default code.
-        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        # TODO: Requires configuration file values to set the default code.
+        self.assertEqual(self.DUT.request_revisions()[1], 0)
         (_results,
          _error_code,
          _revision_id) = self.DUT.add_revision(None, name='Original',
@@ -91,7 +92,7 @@ class TestRevisionController(unittest.TestCase):
         (TestRevision) add_revision returns 0 with no name passed
         """
 
-        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_revisions()[1], 0)
         (_results,
          _error_code,
          _revision_id) = self.DUT.add_revision(code='-', name=None,
@@ -111,7 +112,7 @@ class TestRevisionController(unittest.TestCase):
         (TestRevision) delete_revision returns 0 on success
         """
 
-        self.assertEqual(self.DUT.request_revisions(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_revisions()[1], 0)
         (_results,
          _error_code) = self.DUT.delete_revision(self.DUT._last_id)
 
@@ -124,7 +125,7 @@ class TestRevisionController(unittest.TestCase):
         (TestRevision) calculate_revision returns 0 on success
         """
 
-        self.DUT.request_revisions(self._dao)
+        self.DUT.request_revisions()
         self.assertEqual(self.DUT.calculate_revision(0, 10.0, 1.0), 0)
 
     @attr(all=True, integration=True)
@@ -133,7 +134,7 @@ class TestRevisionController(unittest.TestCase):
         (TestRevision) save_revision returns (True, 0) on success
         """
 
-        self.DUT.request_revisions(self._dao)
+        self.DUT.request_revisions()
         self.assertEqual(self.DUT.save_revision(1), (True, 0))
 
     @attr(all=True, integration=True)
@@ -142,5 +143,5 @@ class TestRevisionController(unittest.TestCase):
         (TestRevision) save_all_revisions returns False on success
         """
 
-        self.DUT.request_revisions(self._dao)
+        self.DUT.request_revisions()
         self.assertFalse(self.DUT.save_all_revisions())

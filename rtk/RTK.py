@@ -634,7 +634,7 @@ class RTK(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _load_commons; current McCabe Complexity metric = 25.
+        # WARNING: Refactor _load_commons; current McCabe Complexity metric = 25.
         _query = "SELECT fld_group_name, fld_group_id \
                   FROM tbl_groups \
                   ORDER BY fld_group_name ASC"
@@ -921,6 +921,12 @@ class RTK(object):
         # Connect to the project database.
         self.project_dao = DAO(Configuration.RTK_PROG_INFO[2])
         self.project_dao.execute("PRAGMA foreign_keys=ON", commit=False)
+
+        # Set the data access object for each data controller.
+        self.dtcMatrices.dao = self.project_dao
+        self.dtcRevision.dao = self.project_dao
+        self.dtcProfile.dao = self.project_dao
+        self.dtcDefinitions.dao = self.project_dao
 
         # Get a connection to the program database and then retrieve the
         # program information.

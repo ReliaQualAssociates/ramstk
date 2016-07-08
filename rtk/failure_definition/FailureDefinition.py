@@ -104,29 +104,33 @@ class FailureDefinition(object):
         Initialize a Failure Definition data controller instance.
         """
 
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
         # Initialize private scalar attributes.
-        self._dao = None
 
         # Initialize public dictionary attributes.
         self.dicDefinitions = {}
 
-    def request_definitions(self, revision_id, dao):
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.dao = None
+
+    def request_definitions(self, revision_id):
         """
         Method to load all of the failure definitions for a Revision.
 
         :param int revision_id: the Revision ID that the Failure Definition
                                 will be associated with.
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
-        self._dao = dao
-
         _query = "SELECT * FROM tbl_failure_definitions \
                   WHERE fld_revision_id={0:d}".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=None)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=None)
 
         try:
             _n_definitions = len(_results)
@@ -160,7 +164,7 @@ class FailureDefinition(object):
                   VALUES ({0:d}, '')".format(revision_id)
         (_results,
          _error_code,
-         _last_id) = self._dao.execute(_query, commit=True)
+         _last_id) = self.dao.execute(_query, commit=True)
 
         _definition = Model()
         _definition.set_attributes((revision_id, _last_id, ''))
@@ -180,7 +184,7 @@ class FailureDefinition(object):
 
         _query = "DELETE FROM tbl_failure_definitions \
                   WHERE fld_definition_id={0:d}".format(definition_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         self.dicDefinitions[revision_id].pop(definition_id)
 
@@ -204,7 +208,7 @@ class FailureDefinition(object):
                       SET fld_definition='{0:s}' \
                       WHERE fld_definition_id={1:d}".format(
                           _definition.definition, _definition.definition_id)
-            (_result, _error_code, __) = self._dao.execute(_query, commit=True)
+            (_result, _error_code, __) = self.dao.execute(_query, commit=True)
 
             _results.append(_result)
             _error_codes.append(_error_code)
