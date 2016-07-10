@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Revision Package List Book View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.revision.ListBook.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Revision Package List Book View
+###############################
+"""
 
 import sys
 
@@ -42,7 +42,8 @@ try:
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
-    sys.exit(1)
+    import rtk.Configuration as Configuration   # pylint: disable=E0401
+    import rtk.gui.gtk.Widgets as Widgets       # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -58,28 +59,42 @@ _ = gettext.gettext
 
 
 class ListView(gtk.Notebook):
+
     """
     The List View displays all the matrices and lists associated with the
     Revision Class.  The attributes of a List View are:
 
-    :ivar _lst_handler_id:
-    :ivar _dtc_profile:
-    :ivar _dtc_definitions:
-    :ivar _revision_id:
-    :ivar gtk.Button btnAddSibling:
-    :ivar gtk.Button btnAddChild:
-    :ivar gtk.Button btnRemoveUsage:
-    :ivar gtk.Button btnSaveUsage:
-    :ivar gtk.Button btnAddDefinition:
-    :ivar gtk.Button btnRemoveDefinition:
-    :ivar gtk.Button btnSaveDefinitions:
-    :ivar gtk.TreeView tvwUsageProfile:
-    :ivar gtk.TreeView tvwFailureDefinitions:
+    :ivar list _lst_handler_id: the list of gtk.Widget() signal IDs.
+    :ivar _dtc_profile: the :py:class:`rtk.usage.Usage.UsageProfile` data
+                        controller associated with this List Book.
+    :ivar _dtc_definitions: the :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
+                            data controller associated with this List Book.
+    :ivar int _revision_id: the Revision ID whose information is being
+                            displayed in this List Book.
+    :ivar gtk.Button btnAddSibling: the gtk.Button() to add a sibling item to
+                                    the Usage Profile.
+    :ivar gtk.Button btnAddChild: the gtk.Button() to add a child item to the
+                                  Usage Profile.
+    :ivar gtk.Button btnRemoveUsage: the gtk.Button() to remove the selected
+                                     item from the Usage Profile.
+    :ivar gtk.Button btnSaveUsage: the gtk.Button() to save the Usage Profile.
+    :ivar gtk.Button btnAddDefinition: the gtk.Button() to add a Failure
+                                       Definition.
+    :ivar gtk.Button btnRemoveDefinition: the gtk.Button() to remove the
+                                          selected Failure Defintion.
+    :ivar gtk.Button btnSaveDefinitions: the gtk.Button() to save the Failure
+                                         Definitions.
+    :ivar gtk.TreeView tvwUsageProfile: the gtk.TreeView() to display the
+                                        Usage Profile for the selected
+                                        Revision.
+    :ivar gtk.TreeView tvwFailureDefinitions: the gtk.TreeView() to display the
+                                               Failure Definitions for the
+                                               selected Revision.
     """
 
     def __init__(self, modulebook):
         """
-        Initializes the List View for the Revision package.
+        Method to initialize the List View for the Revision package.
 
         :param modulebook: the :py:class:`rtk.revision.ModuleBook` to associate
                            with this List Book.
@@ -128,12 +143,35 @@ class ListView(gtk.Notebook):
         self._create_usage_profile_page()
         self._create_failure_definition_page()
 
+        # Connect to callback functions.
+        self._lst_handler_id.append(
+            self.btnAddSibling.connect('clicked', self._on_button_clicked, 0))
+        self._lst_handler_id.append(
+            self.btnAddChild.connect('clicked', self._on_button_clicked, 1))
+        self._lst_handler_id.append(
+            self.btnRemoveUsage.connect('clicked', self._on_button_clicked, 2))
+        self._lst_handler_id.append(
+            self.btnSaveUsage.connect('clicked', self._on_button_clicked, 3))
+        self._lst_handler_id.append(
+            self.tvwUsageProfile.connect('cursor_changed',
+                                         self._on_usage_row_changed))
+
+        self._lst_handler_id.append(
+            self.btnAddDefinition.connect('clicked',
+                                          self._on_button_clicked, 5))
+        self._lst_handler_id.append(
+            self.btnRemoveDefinition.connect('clicked',
+                                             self._on_button_clicked, 6))
+        self._lst_handler_id.append(
+            self.btnSaveDefinitions.connect('clicked',
+                                            self._on_button_clicked, 7))
+
         self.show_all()
 
     def _create_usage_profile_page(self):
         """
-        Creates the Revision Work Book page for displaying usage profiles for
-        the selected Revision.
+        Method to create the Revision List Book page for displaying usage
+        profiles for the selected Revision.
 
         :param gtk.Notebook notebook: the gtk.Notebook() to add the page to.
         :return: False if successful or True if an error is encountered.
@@ -273,20 +311,6 @@ class ListView(gtk.Notebook):
         _bbox.pack_start(self.btnRemoveUsage, False, False)
         _bbox.pack_start(self.btnSaveUsage, False, False)
 
-        # Connect to callback functions.
-        self._lst_handler_id.append(
-            self.btnAddSibling.connect('clicked', self._on_button_clicked, 0))
-        self._lst_handler_id.append(
-            self.btnAddChild.connect('clicked', self._on_button_clicked, 1))
-        self._lst_handler_id.append(
-            self.btnRemoveUsage.connect('clicked', self._on_button_clicked, 2))
-        self._lst_handler_id.append(
-            self.btnSaveUsage.connect('clicked', self._on_button_clicked, 3))
-
-        self._lst_handler_id.append(
-            self.tvwUsageProfile.connect('cursor_changed',
-                                         self._on_usage_row_changed))
-
         # Insert the tab.
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" + _(u"Usage\nProfiles") +
@@ -302,8 +326,8 @@ class ListView(gtk.Notebook):
 
     def _create_failure_definition_page(self):
         """
-        Creates the Revision Work Book page for displaying failure definitions
-        for the selected Revision.
+        Method to create the Revision List Book page for displaying failure
+        definitions for the selected Revision.
 
         :param gtk.Notebook notebook: the gtk.Notebook() to add the page to.
         :return: False if successful or True if an error is encountered.
@@ -378,16 +402,6 @@ class ListView(gtk.Notebook):
         _bbox.pack_start(self.btnRemoveDefinition, False, False)
         _bbox.pack_start(self.btnSaveDefinitions, False, False)
 
-        self._lst_handler_id.append(
-            self.btnAddDefinition.connect('clicked',
-                                          self._on_button_clicked, 5))
-        self._lst_handler_id.append(
-            self.btnRemoveDefinition.connect('clicked',
-                                             self._on_button_clicked, 6))
-        self._lst_handler_id.append(
-            self.btnSaveDefinitions.connect('clicked',
-                                            self._on_button_clicked, 7))
-
         # Insert the tab.
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
@@ -403,7 +417,7 @@ class ListView(gtk.Notebook):
 
     def load(self, revision_id):
         """
-        Loads the Revision List Book.
+        Method to load the Revision List Book.
 
         :param int revision_id: the Revision ID to load the List Book for.
         :return: False if successful or True if an error is encountered.
@@ -419,7 +433,7 @@ class ListView(gtk.Notebook):
 
     def _load_usage_profile(self, path=None):
         """
-        Loads the Usage Profile gkt.TreeView().
+        Method to load the Usage Profile gkt.TreeView().
 
         :keyword str path: the path in the gtk.TreeView() to select as active
                            after loading the Usage Profile.
@@ -474,7 +488,7 @@ class ListView(gtk.Notebook):
 
     def _load_failure_definitions(self, path=None):
         """
-        Loads the Failure Definitions gkt.TreeView().
+        Method to load the Failure Definitions gkt.TreeView().
 
         :keyword str path: the path in the gtk.TreeView() to select as active
                            after loading the Usage Profile.
@@ -510,8 +524,8 @@ class ListView(gtk.Notebook):
 
     def _on_button_clicked(self, button, index):    # pylint: disable=R0914
         """
-        Responds to gtk.Button() clicked signals and calls the correct function
-        or method, passing any parameters as needed.
+        Method to respond to gtk.Button() clicked signals and calls the correct
+        function or method, passing any parameters as needed.
 
         :param gtk.Button button: the gtk.Button() that called this method.
         :param int index: the index in the handler ID list of the callback
@@ -531,14 +545,18 @@ class ListView(gtk.Notebook):
             self._request_delete_from_profile()
         elif index == 3:                    # Save profile.
             self._dtc_profile.save_profile(self._revision_id)
-        elif index in [5, 6, 7]:
-            self._manage_failure_definitions(index)
+        elif index == 5:
+            self._request_add_definition()
+        elif index == 6:
+            self._request_delete_definition()
+        elif index == 7:
+            self._request_save_definitions()
 
         button.handler_unblock(self._lst_handler_id[index])
 
         return False
 
-    def _request_add_sibling(self):
+    def _request_add_sibling(self):         # pylint: disable=R0914
         """
         Method to add a sibling item to the selected Mission, Phase, or
         Environment.
@@ -559,17 +577,23 @@ class ListView(gtk.Notebook):
 
         if _level == 1:                     # id = Mission ID
             _piter = _model.iter_parent(_row)
-            (__, __,
+            (__, _error_code,
              _mission_id) = self._dtc_profile.add_mission(self._revision_id)
             _attributes = _usage_model.dicMissions[_mission_id].get_attributes()
             _icon = Configuration.ICON_DIR + '32x32/mission.png'
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[0], _attributes[3], '', _attributes[2],
                      0.0, _attributes[1], 0.0, 0.0, 1, 0, 0)
+            if _error_code != 0:
+                _prompt = _(u"An error occurred when attempting to add a new "
+                            u"mission to the usage profile for Revision "
+                            u"{0:d}").format(self._revision_id)
+                _return = True
+
         elif _level == 2:                   # id = Phase ID
             _piter = _model.iter_parent(_row)
             _mission_id = _model.get_value(_piter, 1)
-            (__, __,
+            (__, _error_code,
              _phase_id) = self._dtc_profile.add_phase(self._revision_id,
                                                       _mission_id)
             _mission = _usage_model.dicMissions[_mission_id]
@@ -578,12 +602,17 @@ class ListView(gtk.Notebook):
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[2], _attributes[5], _attributes[6], '',
                      _attributes[3], _attributes[4], 0.0, 0.0, 2, 0, 1)
+            if _error_code != 0:
+                _prompt = _(u"An error occurred when attempting to add a new "
+                            u"phase to mission {0:d}").format(_mission_id)
+                _return = True
+
         elif _level == 3:                   # id = Environment ID
             _piter = _model.iter_parent(_row)
             _phase_id = _model.get_value(_piter, 1)
             _grand_piter = _model.iter_parent(_piter)
             _mission_id = _model.get_value(_grand_piter, 1)
-            (__, __,
+            (__, _error_code,
              _environment_id) = self._dtc_profile.add_environment(self._revision_id,
                                                                   _mission_id,
                                                                   _phase_id)
@@ -595,20 +624,28 @@ class ListView(gtk.Notebook):
             _data = (_icon, _attributes[4], _attributes[5], '', _attributes[6],
                      _attributes[7], _attributes[8], _attributes[9],
                      _attributes[10], 3, 1, 0)
+            if _error_code != 0:
+                _prompt = _(u"An error occurred when attempting to add a new "
+                            u"environment to mission phase "
+                            u"{0:d}").format(_phase_id)
+                _return = True
 
-        # Insert a new row with the new Usage Profile item and then select
-        # the newly inserted row for editing.
-        _row = _model.insert(_piter, -1, _data)
-        _path = _model.get_path(_row)
-        self.tvwUsageProfile.set_cursor(_path,
-                                        self.tvwUsageProfile.get_column(1),
-                                        True)
-        self.tvwUsageProfile.row_activated(_path,
-                                           self.tvwUsageProfile.get_column(0))
+        if not _return:
+            # Insert a new row with the new Usage Profile item and then select
+            # the newly inserted row for editing.
+            _row = _model.insert(_piter, -1, _data)
+            _path = _model.get_path(_row)
+            self.tvwUsageProfile.set_cursor(_path,
+                                            self.tvwUsageProfile.get_column(1),
+                                            True)
+            _column = self.tvwUsageProfile.get_column(0)
+            self.tvwUsageProfile.row_activated(_path, _column)
+        else:
+            Widgets.rtk_error(_prompt)
 
         return _return
 
-    def _request_add_child(self):
+    def _request_add_child(self):           # pylint: disable=R0914
         """
         Method to add a child item to the selected Mission, Phase, or
         Environment.
@@ -630,7 +667,7 @@ class ListView(gtk.Notebook):
 
         if _level == 1:                     # _id = Mission ID
             _piter = _row
-            (__, __,
+            (__, _error_code,
              _phase_id) = self._dtc_profile.add_phase(self._revision_id, _id)
             _mission = _usage_model.dicMissions[_id]
             _attributes = _mission.dicPhases[_phase_id].get_attributes()
@@ -638,11 +675,16 @@ class ListView(gtk.Notebook):
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             _data = (_icon, _attributes[2], _attributes[5], _attributes[6], '',
                      _attributes[3], _attributes[4], 0.0, 0.0, 2, 0, 1)
+            if _error_code != 0:
+                _prompt = _(u"An error occurred when attempting to add a new "
+                            u"phase to mission {0:d}").format(_id)
+                _return = True
+
         elif _level == 2:                   # _id = Phase ID
             _piter = _model.iter_parent(_row)
             _mission_id = _model.get_value(_piter, 1)
             _piter = _row
-            (__, __,
+            (__, _error_code,
              _environment_id) = self._dtc_profile.add_environment(self._revision_id,
                                                                   _mission_id,
                                                                   _id)
@@ -654,21 +696,30 @@ class ListView(gtk.Notebook):
             _data = (_icon, _attributes[4], _attributes[5], '', _attributes[6],
                      _attributes[7], _attributes[8], _attributes[9],
                      _attributes[10], 3, 1, 0)
+            if _error_code != 0:
+                _prompt = _(u"An error occurred when attempting to add a new "
+                            u"environment to mission phase {0:d} of mission "
+                            u"{1:d}").format(_id, _mission_id)
+                _return = True
+
         else:
             Widgets.rtk_information(_(u"You cannot add a child object to "
                                       u"an environmental condition in a "
                                       u"usage profile."))
             _return = True
 
-        # Insert a new row with the new Usage Profile item and then select the
-        # newly inserted row for editing.
-        _row = _model.insert(_piter, -1, _data)
-        _path = _model.get_path(_row)
-        self.tvwUsageProfile.set_cursor(_path,
-                                        self.tvwUsageProfile.get_column(1),
-                                        True)
-        self.tvwUsageProfile.row_activated(_path,
-                                           self.tvwUsageProfile.get_column(0))
+        if not _return:
+            # Insert a new row with the new Usage Profile item and then select
+            # the newly inserted row for editing.
+            _row = _model.insert(_piter, -1, _data)
+            _path = _model.get_path(_row)
+            self.tvwUsageProfile.set_cursor(_path,
+                                            self.tvwUsageProfile.get_column(1),
+                                            True)
+            _column = self.tvwUsageProfile.get_column(0)
+            self.tvwUsageProfile.row_activated(_path, _column)
+        else:
+            Widgets.rtk_error(_prompt)
 
         return _return
 
@@ -691,77 +742,134 @@ class ListView(gtk.Notebook):
 
         if _level == 1:                     # _id = Mission ID
             _piter = None
+            _prompt = _(u"An error occurred when attempting to delete mission "
+                        u"{0:d} from revision {1:d}").format(_id,
+                                                             self._revision_id)
             (_results,
              _error_code) = self._dtc_profile.delete_mission(self._revision_id,
                                                              _id)
+
         elif _level == 2:                   # _id = Phase ID
             _piter = _model.iter_parent(_row)
             _mission_id = _model.get_value(_piter, 1)
+            _prompt = _(u"An error occurred when attempting to delete phase "
+                        u"{0:d} from mission {1:d}").format(_id, _mission_id)
             (_results,
              _error_code) = self._dtc_profile.delete_phase(self._revision_id,
                                                            _mission_id, _id)
+
         elif _level == 3:                   # _id = Environment ID
             _piter = _model.iter_parent(_row)
             _phase_id = _model.get_value(_piter, 1)
             _grand_piter = _model.iter_parent(_piter)
             _mission_id = _model.get_value(_grand_piter, 1)
+            _prompt = _(u"An error occurred when attempting to delete "
+                        u"environment {0:d} from phase {1:d} of mission "
+                        u"{2:d}").format(_id, _phase_id, _mission_id)
             (_results,
              _error_code) = self._dtc_profile.delete_environment(self._revision_id,
                                                                  _mission_id,
                                                                  _phase_id,
                                                                  _id)
 
-        if _results:
+        if _error_code != 0:
             try:
                 _path = _model.get_path(_model.iter_next(_piter))
             except TypeError:
                 _path = None
             self._load_usage_profile(_path)
         else:
-            print _error_code
+            Widgets.rtk_error(_prompt)
+            _return = True
 
         return _return
 
-    def _manage_failure_definitions(self, index):
+    def _request_add_definition(self):
         """
-        Method to react to Failure Definition button clicks.  This is a helper
-        method to prevent the _on_button_click method from becoming too
-        complex.
+        Method to add a Failure Definition.
 
-        :param int index: the index in the handler ID list of the callback
-                          signal associated with the gtk.Button() that called
-                          this method.
-        :return: False on success or True if an error is encountered.
+        :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
-        # Get the Failure Definition ID for the selected Failure Definition.
+        (__,
+         _error_code,
+         __) = self._dtc_definitions.add_definition(self._revision_id)
+        if _error_code != 0:
+            _prompt = _(u"An error occurred when attempting to add a failure "
+                        u"definition to revision "
+                        u"{0:d}").format(self._revision_id)
+            _return = True
+        else:
+            self._load_failure_definitions(self._revision_id)
+
+        if _return:
+            Widgets.rtk_error(_prompt)
+
+        return _return
+
+    def _request_delete_definition(self):
+        """
+        Method to delete the selected Failure Definition.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
         (_model,
-         _row) = self.tvwFailureDefinitions.get_selection().get_selected()
+         _row) = self.tvwFailureDefinition.get_selection().get_selected()
         try:
-            _id = _model.get_value(_row, 0)
+            _id = _model.get_value(_row, 1)
         except TypeError:
             _return = True
 
-        # Perform the requested action.
-        if index == 5:                      # Add failure definition.
-            self._dtc_definitions.add_definition(self._revision_id)
+        (__,
+         _error_code,
+         __) = self._dtc_definitions.delete_definition(self._revision_id, _id)
+        if _error_code != 0:
+            _prompt = _(u"An error occurred when attempting to delete failure "
+                        u"definition {0:d}").format(_id)
+            _return = True
+        else:
             self._load_failure_definitions(self._revision_id)
-        elif index == 6:                    # Remove failure definition.
-            self._dtc_definitions.delete_definition(self._revision_id, _id)
-            self._load_failure_definitions(self._revision_id)
-        elif index == 7:                    # Save failure definition.
-            self._dtc_definitions.save_definitions(self._revision_id)
+
+        if _return:
+            Widgets.rtk_error(_prompt)
+
+        return _return
+
+    def _request_save_definitions(self):
+        """
+        Method to save the Failure Definitions.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        (__,
+         _error_code,
+         __) = self._dtc_definitions.save_definitions(self._revision_id)
+        if _error_code != 0:
+            _prompt = _(u"An error occurred when attempting to save the "
+                        u"failure definitions.")
+            _return = True
+
+        if _return:
+            Widgets.rtk_error(_prompt)
 
         return _return
 
     def _on_usage_row_changed(self, treeview):
         """
-        Callback function to handle events for the Revision package Work Book
-        Usage Profile gtk.TreeView().  It is called whenever a Work Book
-        Usage Profile gtk.TreeView() row is activated.
+        Method to handle events for the Revision package List Book Usage
+        Profile gtk.TreeView().  It is called whenever a List Book Usage
+        Profile gtk.TreeView() row is activated.
 
         :param gtk.TreeView treeview: the Revision classt gtk.TreeView().
         :return: False if successful or True if an error is encountered.
@@ -806,7 +914,7 @@ class ListView(gtk.Notebook):
 
     def _on_usage_cell_edited(self, __cell, path, new_text, position, model):
         """
-        Method to handle edits of the Revision package Work Book Usage Profile
+        Method to handle edits of the Revision package List Book Usage Profile
         gtk.Treeview()s.
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
@@ -858,7 +966,7 @@ class ListView(gtk.Notebook):
             _mission = _usage_model.dicMissions[_mission_id]
             _phase = _mission.dicPhases[_phase_id]
             _values = (self._revision_id, _mission_id, _phase_id, 0, _id) + \
-                      _values
+                _values
             _environment = _phase.dicEnvironments[_id]
             _environment.set_attributes(_values)
 
@@ -866,8 +974,8 @@ class ListView(gtk.Notebook):
 
     def _on_failure_cell_edited(self, __cell, path, new_text, position, model):
         """
-        Callback function to handle edits of the Revision package Work Book
-        Failure Definition gtk.Treeview()s.
+        Method to handle edits of the Revision package List Book Failure
+        Definition gtk.Treeview()s.
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()

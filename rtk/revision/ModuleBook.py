@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-############################
-Revision Package Module View
-############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.revision.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+############################
+Revision Package Module View
+############################
+"""
 
 import sys
 
@@ -49,7 +49,7 @@ from WorkBook import WorkView
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
@@ -60,6 +60,7 @@ _ = gettext.gettext
 
 
 class ModuleView(object):
+
     """
     The Module Book view displays all the Revisions associated with the RTK
     Project in a flat list.  The attributes of a Module Book view are:
@@ -77,8 +78,10 @@ class ModuleView(object):
     :ivar dmcRTK: the :py:class:`rtk.RTK.RTK` data controller instance.
     :ivar gtk.TreeView treeview: the gtk.TreeView() displaying the list of
                                  Revisions.
-    :ivar listbook:
-    :ivar workbook:
+    :ivar listbook: the :py:class:`rtk.revision.ListBook` associated with the
+                    Module Book.
+    :ivar workbook: the :py:class:`rtk.revision.WorkBook` associated with the
+                    Module Book.
     """
 
     def __init__(self, controller, rtk_view, position):
@@ -99,7 +102,6 @@ class ModuleView(object):
         self._dtc_matrices = controller.dtcMatrices
         self._dtc_profile = controller.dtcProfile
         self._dtc_definitions = controller.dtcDefinitions
-        self._dtc_hardware = controller.dtcHardwareBoM
         self._model = None
 
         # Initialize public scalar attributes.
@@ -164,21 +166,15 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_revisions,
-         __) = self._dtc_revision.request_revisions(self.mdcRTK.project_dao)
+        (_revisions, __) = self._dtc_revision.request_revisions()
 
         _model = self.treeview.get_model()
         _model.clear()
         for _revision in _revisions:
             _model.append(None, _revision)
-            self._dtc_profile.request_profile(_revision[0],
-                                              self.mdcRTK.project_dao)
-            self._dtc_definitions.request_definitions(_revision[0],
-                                                      self.mdcRTK.project_dao)
-# TODO: Remove the last two parameters after re-writing the method.
-            self._dtc_matrices.request_matrix(self.mdcRTK.project_dao,
-                                              _revision[0],
-                                              [0, 1, 2, 3, 4, 5, 6, 7])
+            self._dtc_profile.request_profile(_revision[0])
+            self._dtc_definitions.request_definitions(_revision[0])
+            self._dtc_matrices.request_matrix()
 
         _row = _model.get_iter_root()
         self.treeview.expand_all()
@@ -234,7 +230,8 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
-            print "Pop-up a menu!"
+            # FIXME: See bug
+            pass
 
         return False
 
@@ -250,6 +247,8 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+
+        _return = False
 
         (_model, _row) = treeview.get_selection().get_selected()
 
@@ -267,7 +266,16 @@ class ModuleView(object):
         (_results,
          _error_code,
          __) = self.mdcRTK.project_dao.execute(_query, commit=False)
-        Configuration.RTK_HARDWARE_LIST = [_assembly for _assembly in _results]
+
+        if _error_code != 0:
+            _prompt = _(u"There was an error retrieving the hardware assembly "
+                        u"list for Revision "
+                        u"{0:d}").format(self._model.revision_id)
+            Widgets.rtk_error(_prompt)
+            _return = True
+        else:
+            Configuration.RTK_HARDWARE_LIST = [_assembly for _assembly in
+                                               _results]
 
         # Load the software list for the selected revision.
         _query = "SELECT fld_description, fld_software_id, fld_description \
@@ -276,12 +284,19 @@ class ModuleView(object):
         (_results,
          _error_code,
          __) = self.mdcRTK.project_dao.execute(_query, commit=False)
-        Configuration.RTK_SOFTWARE_LIST = [_module for _module in _results]
+
+        if _error_code != 0:
+            _prompt = _(u"There was an error retrieving the software list for "
+                        u"Revision {0:d}").format(self._model.revision_id)
+            Widgets.rtk_error(_prompt)
+            _return = True
+        else:
+            Configuration.RTK_SOFTWARE_LIST = [_module for _module in _results]
 
         self.workbook.load(self._model)
         self.listbook.load(_revision_id)
 
-        return False
+        return _return
 
     def _on_cell_edited(self, __cell, path, new_text, position, model):
         """

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Revision Package Work Book View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.revision.WorkBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Revision Package Work Book View
+###############################
+"""
 
 import sys
 
@@ -37,8 +37,8 @@ try:
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as Configuration
-    import rtk.gui.gtk.Widgets as Widgets
+    import rtk.Configuration as Configuration   # pylint: disable=E0401
+    import rtk.gui.gtk.Widgets as Widgets       # pylint: disable=E0401
 from Assistants import AddRevision
 
 __author__ = 'Andrew Rowland'
@@ -55,6 +55,7 @@ _ = gettext.gettext
 
 
 class WorkView(gtk.VBox):
+
     """
     The Work Book view displays all the attributes for the selected Revision.
     The attributes of a Work Book view are:
@@ -643,6 +644,9 @@ class WorkView(gtk.VBox):
         Method to update the Work Book widgets with changes to the Revision
         data model attributes.  Called by other views when the Revision data
         model attributes are edited via their gtk.Widgets().
+
+        :return: False on success or True if an error is encountered.
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
@@ -735,10 +739,18 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
+        _return = False
+
         (_results,
          _error_code) = self._dtc_revision.save_revision(self.revision_id)
 
-        return False
+        if _error_code != 0:
+            _prompt = _(u"An error occurred while attempting to save "
+                        u"Revision {0:d}").format(self.revision_id)
+            Widgets.rtk_error(_prompt)
+            _return = True
+
+        return _return
 
     def _request_add_revision(self, __button):
         """
@@ -767,6 +779,8 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
+        _return = False
+
         (_model,
          _row) = self._modulebook.treeview.get_selection().get_selected()
         _path = _model.get_path(_row)
@@ -774,23 +788,29 @@ class WorkView(gtk.VBox):
         (_results,
          _error_code) = self._dtc_revision.delete_revision(self.revision_id)
 
-        self._dtc_profile.dicProfiles.pop(self.revision_id)
-        self._dtc_definiions.dicDefinitions.pop(self.revision_id)
+        if _error_code != 0:
+            _prompt = _(u"An error occurred when attempting to delete "
+                        u"Revision {0:d}").format(self.revision_id)
+            Widgets.rtk_error(_prompt)
+            _return = True
+        else:
+            self._dtc_profile.dicProfiles.pop(self.revision_id)
+            self._dtc_definiions.dicDefinitions.pop(self.revision_id)
 
-        # Remove the deleted Revision from the gtk.TreeView().
-        _next_row = _model.iter_next(_row)
+            # Remove the deleted Revision from the gtk.TreeView().
+            _next_row = _model.iter_next(_row)
 
-        _model.remove(_row)
-        _model.row_deleted(_path)
+            _model.remove(_row)
+            _model.row_deleted(_path)
 
-        if _next_row is None:
-            _next_row = _model.get_iter_root()
-        _path = _model.get_path(_next_row)
-        _column = self._modulebook.treeview.get_column(0)
-        self._modulebook.treeview.set_cursor(_path, None, False)
-        self._modulebook.treeview.row_activated(_path, _column)
+            if _next_row is None:
+                _next_row = _model.get_iter_root()
+            _path = _model.get_path(_next_row)
+            _column = self._modulebook.treeview.get_column(0)
+            self._modulebook.treeview.set_cursor(_path, None, False)
+            self._modulebook.treeview.row_activated(_path, _column)
 
-        return False
+        return _return
 
     def _request_calculate_revision(self, __button):
         """

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-############################
-Revision Package Data Module
-############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.revision.Revision.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+############################
+Revision Package Data Module
+############################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -20,8 +20,8 @@ try:
     import Configuration as Configuration
     import Utilities as Utilities
 except ImportError:
-    import rtk.Configuration as Configuration
-    import rtk.Utilities as Utilities
+    import rtk.Configuration as Configuration   # pylint: disable=E0401
+    import rtk.Utilities as Utilities           # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -37,38 +37,43 @@ _ = gettext.gettext
 
 
 class Model(object):
+
     """
     The Revision data model contains the attributes and methods of a revision.
     An RTK Project will consist of one or more Revisions.  The attributes of a
     Revision are:
 
-    :ivar revision_id: default value: 0
-    :ivar name: default value: ''
-    :ivar n_parts: default value: 0
-    :ivar cost: default value: 0
-    :ivar cost_per_failure: default value: 0.0
-    :ivar cost_per_hour: default value: 0.0
-    :ivar active_hazard_rate: default value: 0.0
-    :ivar dormant_hazard_rate: default value: 0.0
-    :ivar software_hazard_rate: default value: 0.0
-    :ivar hazard_rate: default value: 0.0
-    :ivar mission_hazard_rate: default value: 0.0
-    :ivar mtbf: default value: 0.0
-    :ivar mission_mtbf: default value: 0.0
-    :ivar reliability: default value: 0.0
-    :ivar mission_reliability: default value: 0.0
-    :ivar mpmt: default value: 0.0
-    :ivar mcmt: default value: 0.0
-    :ivar mttr: default value: 0.0
-    :ivar mmt: default value: 0.0
-    :ivar availability: default value: 0.0
-    :ivar mission_availability: default value: 0.0
-    :ivar remarks: default value: ''
-    :ivar code: default value: ''
-    :ivar program_time: default value: 0.0
-    :ivar program_time_se: default value: 0.0
-    :ivar program_cost: default value: 0.0
-    :ivar program_cost_se: default value: 0.0
+    :ivar int revision_id: the ID of the Revision.
+    :ivar str name: the noun name of the Revision.
+    :ivar int n_parts: the number of hardware components comprising the
+                       Revision.
+    :ivar float cost: the total cost of the Revision.
+    :ivar float cost_per_failure: the cost per failure of the Revision.
+    :ivar float cost_per_hour: the cost per mission hour of the Revision.
+    :ivar float active_hazard_rate: the active hazard rate of the Revision.
+    :ivar float dormant_hazard_rate: the dormant hazard rate of the Revision.
+    :ivar float software_hazard_rate: the software hazard rate of the Revision.
+    :ivar float hazard_rate: the logistics hazard rate of the Revision.
+    :ivar float mission_hazard_rate: the mission hazard rate of the Revision.
+    :ivar float mtbf: the logistics mean time between failure of the Revision.
+    :ivar float mission_mtbf: the mission mean time between failure of the
+                              Revision.
+    :ivar float reliability: the logistics reliability of the Revision.
+    :ivar float mission_reliability: the mission reliability of the Revision.
+    :ivar float mpmt: the mean preventive maintenance time of the Revision.
+    :ivar float mcmt: the mean corrective maintenance time of the Revision.
+    :ivar float mttr: the mean time to repair of the Revision.
+    :ivar float mmt: the mean maintenance time of the Revision.
+    :ivar float availability: the logistics availability of the Revision.
+    :ivar float mission_availability: the mission availability of the Revision.
+    :ivar str remarks: any user remarks related to the Revision.
+    :ivar str code: the alphanumeric code for the Revision.
+    :ivar float program_time: the program development time for the Revision.
+    :ivar float program_time_se: the standard error of the program development
+                                 time for the Revision.
+    :ivar float program_cost: the program development cost for the Revision.
+    :ivar float program_cost_se: the standard error of the program development
+                                 cost for the Revision.
     """
 
     def __init__(self):
@@ -76,7 +81,17 @@ class Model(object):
         Method to initialize a Revision data model instance.
         """
 
-        # Define public Revision class attributes.
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
         self.revision_id = 0
         self.name = ''
         self.n_parts = 0
@@ -338,17 +353,19 @@ class Model(object):
 
 
 class Revision(object):
+
     """
     The Revision data controller provides an interface between the Revision
     data model and an RTK view model.  A single Revision controller can manage
     one or more Revision data models.  The attributes of a Revision data
     controller are:
 
-    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
-                the RTK Project database.
+    :ivar int _last_id: the last Revision ID used in the RTK Project database.
     :ivar dict dicRevisions: Dictionary of the Revision data models controlled.
                              Key is the Revision ID; value is a pointer to the
                              Revision data model instance.
+    :ivar dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
+               the RTK Project database.
     """
 
     def __init__(self):
@@ -361,7 +378,6 @@ class Revision(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dao = None
         self._last_id = None
 
         # Initialize public dictionary attributes.
@@ -370,8 +386,9 @@ class Revision(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.dao = None
 
-    def request_revisions(self, dao):
+    def request_revisions(self):
         """
         Method to read the RTK Project database and loads all the Revisions.
         For each Revision returned:
@@ -383,18 +400,14 @@ class Revision(object):
         #. Add the instance to the dictionary of Revisions being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
-        self._dao = dao
-
-        self._last_id = self._dao.get_last_id('tbl_revisions')[0]
+        self._last_id = self.dao.get_last_id('tbl_revisions')[0]
 
         _query = "SELECT * FROM tbl_revisions ORDER BY fld_revision_id"
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_revisions = len(_results)
@@ -438,13 +451,13 @@ class Revision(object):
                                                              code)
         (_results,
          _error_code,
-         _revision_id) = self._dao.execute(_query, commit=True)
+         _revision_id) = self.dao.execute(_query, commit=True)
 
         # If the new revision was added successfully to the RTK Project
         # database, add a new Revision model to the controller, add a mission
         # to the new Revision and then refresh the Module View.
         if _results:
-            self._last_id = self._dao.get_last_id('tbl_revisions')[0]
+            self._last_id = self.dao.get_last_id('tbl_revisions')[0]
             _revision = Model()
             _revision.set_attributes((self._last_id, 1.0, 1.0, 0.0, 0.0, 0.0,
                                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -456,7 +469,7 @@ class Revision(object):
                       VALUES ({0:d})".format(_revision.revision_id)
             (_results,
              _error_code,
-             _mission_id) = self._dao.execute(_query, commit=True)
+             _mission_id) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code, _revision_id)
 
@@ -471,7 +484,7 @@ class Revision(object):
 
         _query = "DELETE FROM tbl_revisions \
                   WHERE fld_revision_id={0:d}".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         self.dicRevisions.pop(revision_id)
 
@@ -504,7 +517,7 @@ class Revision(object):
                   ON t2.fld_hardware_id=t1.fld_hardware_id \
                   WHERE t2.fld_revision_id={0:d} \
                   AND t2.fld_part=1".format(revision_id)
-# TODO: Update to the following query when maintainability analysis is added to RTK.
+        # FIXME: See bug 186.
         # _query = "SELECT SUM(t1.fld_hazard_rate_active), \
         #                  SUM(t1.fld_hazard_rate_dormant), \
         #                  SUM(t1.fld_hazard_rate_software), \
@@ -519,7 +532,7 @@ class Revision(object):
         #           ON t3.fld_hardware_id=t1.fld_hardware_id \
         #           WHERE t3.fld_revision_id={0:d} \
         #           AND t3.fld_part=1".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
         if _error_code != 0:
             return _error_code
         else:
@@ -538,7 +551,7 @@ class Revision(object):
                       ON t2.fld_hardware_id=t1.fld_hardware_id \
                       WHERE t2.fld_revision_id={0:d} \
                       AND t2.fld_level=1 AND t2.fld_part=0".format(revision_id)
-# TODO: Update to the following query when maintainability analysis is added to RTK.
+            # FIXME: See bug 186.
             # _query = "SELECT SUM(t1.fld_hazard_rate_active), \
             #                  SUM(t1.fld_hazard_rate_dormant), \
             #                  SUM(t1.fld_hazard_rate_software), \
@@ -553,8 +566,8 @@ class Revision(object):
             #           ON t3.fld_hardware_id=t1.fld_hardware_id \
             #           WHERE t3.fld_revision_id={0:d} \
             #           AND t3.fld_level=1 AND t3.fld_part=0".format(revision_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=False)
+            (_results, _error_code, __) = self.dao.execute(_query,
+                                                           commit=False)
             if _error_code != 0:
                 return _error_code
 
@@ -569,7 +582,7 @@ class Revision(object):
                       FROM rtk_hardware \
                       WHERE fld_revision_id={0:d} \
                       AND fld_level=0".format(revision_id)
-# TODO: Update to the following query when maintainability analysis is added to RTK.
+            # FIXME: See bug 186.
             # _query = "SELECT fld_failure_rate_active, \
             #                  fld_failure_rate_dormant, \
             #                  fld_failure_rate_software, \
@@ -579,14 +592,14 @@ class Revision(object):
             #           FROM rtk_hardware \
             #           WHERE fld_revision_id={0:d} \
             #           AND fld_level=0".format(revision_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=False)
+            (_results, _error_code, __) = self.dao.execute(_query,
+                                                           commit=False)
             if _error_code != 0:
                 return _error_code
 
         _revision.calculate_reliability(_results[0][0:4], mission_time,
                                         hr_multiplier)
-# TODO: Activate the availability calculations when maintainability analysis is added to RTK.
+        # FIXME: See bug 187.
         # _revision.calculate_availability(_results[0][4:8])
         _revision.calculate_costs(_results[0][4], mission_time)
 
@@ -636,7 +649,7 @@ class Revision(object):
                       _revision.n_parts, _revision.code,
                       _revision.program_time, _revision.program_time_se,
                       _revision.program_cost, _revision.program_cost_se)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
