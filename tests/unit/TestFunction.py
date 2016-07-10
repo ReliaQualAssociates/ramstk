@@ -1,13 +1,14 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Function module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestFunction.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Function module algorithms and models.
+"""
+
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
@@ -251,6 +252,6 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Function))
-        self.assertEqual(self.DUT._dao, None)       # pylint: disable=W0212
-        self.assertEqual(self.DUT._last_id, None)   # pylint: disable=W0212
+        self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicFunctions, {})
+        self.assertEqual(self.DUT.dao, None)

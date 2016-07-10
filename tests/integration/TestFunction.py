@@ -40,6 +40,7 @@ class TestFunctionController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Function()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test00_request_functions(self):
@@ -47,15 +48,15 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) request_functions should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
-# TODO: Test that method fails when no Functions exist in database.
+        self.assertEqual(self.DUT.request_functions(0)[1], 0)
+    # TODO: Test that method fails when no Functions exist in database.
     @attr(all=True, integration=True)
     def test01_add_function(self):
         """
         (TestFunction) add_function returns 0 on success and new Function data model added to dictionary
         """
 
-        self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_functions(0)[1], 0)
 
         (_results,
          _error_code,
@@ -74,7 +75,7 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) add_function uses default parent ID when none is passed
         """
 
-        self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_functions(0)[1], 0)
         (_results,
          _error_code,
          _function_id) = self.DUT.add_function(0, None, 'F-T', 'New Function',
@@ -89,7 +90,7 @@ class TestFunctionController(unittest.TestCase):
         """
         (TestFunction) add_function uses default code when none is passed
         """
-# TODO: This test requires the configuration values to be set.
+        # TODO: This test requires the configuration values to be set.
         #self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
         #(_results,
         # _error_code) = self.DUT.add_function(0, 0, None, 'New Function',
@@ -105,7 +106,7 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) add_function uses default name when none is passed
         """
 
-        self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_functions(0)[1], 0)
         (_results,
          _error_code,
          _function_id) = self.DUT.add_function(0, 0, 'F-T', None,
@@ -121,7 +122,7 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) add_function uses default remarks when none is passed
         """
 
-        self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_functions(0)[1], 0)
         (_results,
          _error_code,
          _function_id) = self.DUT.add_function(0, 0, 'F-T', 'New Function',
@@ -137,7 +138,7 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) delete_function should return (True, [0, 0]) on success
         """
 
-        self.assertEqual(self.DUT.request_functions(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_functions(0)[1], 0)
         (_results,
          _error_codes) = self.DUT.delete_function(self.DUT._last_id)
 
@@ -150,7 +151,7 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) save_function should return (True, 0) on success
         """
 
-        self.DUT.request_functions(self._dao, 0)
+        self.DUT.request_functions(0)
         (_results,
          _error_code) = self.DUT.save_function(0)
 
@@ -163,7 +164,7 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) save_all_functions should return a list of tuples
         """
 
-        self.DUT.request_functions(self._dao, 0)
+        self.DUT.request_functions(0)
         self.assertEqual(self.DUT.save_all_functions(),
                          [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0),
                           (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0),

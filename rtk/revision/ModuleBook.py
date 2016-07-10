@@ -230,7 +230,7 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
-            # FIXME: See bug
+            # FIXME: See bug 190.
             pass
 
         return False

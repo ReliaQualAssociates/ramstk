@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-##################################
-Function Package Assistants Module
-##################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.function.Assistants.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+##################################
+Function Package Assistants Module
+##################################
+"""
 
 import gettext
 import locale
@@ -33,17 +33,15 @@ except ImportError:
 # Import other RTK modules.
 try:
     import Configuration
-    import Utilities
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
-    import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
 
 # Add localization support.
 try:
@@ -62,7 +60,7 @@ class AddFunction(gtk.Assistant):
 
     def __init__(self, modulebook, level, revision_id, parent_id=None):
         """
-        Initialize on instance of the Add Function Assistant.
+        Method to initialize on instance of the Add Function Assistant.
 
         :param modulebook: the current instance of
                            :py:class:`rtk.function.ModuleBook`
@@ -196,7 +194,7 @@ class AddFunction(gtk.Assistant):
         :return: False
         :rtype: bool
         """
-# TODO: Re-write _add_function; current McCabe metric = 11
+        # WARNING: Refactor _add_function; current McCabe metric = 11
         # Find out how many Functions to add.  Defaults to one Function if the
         # user hasn't entered and value.
         try:

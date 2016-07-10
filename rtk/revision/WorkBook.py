@@ -648,17 +648,17 @@ class WorkView(gtk.VBox):
 
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
-        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.handler_block(self._lst_handler_id[2])
         self.txtCode.set_text(str(self._revision_model.code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
+        self.txtCode.handler_unblock(self._lst_handler_id[2])
 
-        self.txtName.handler_block(self._lst_handler_id[1])
+        self.txtName.handler_block(self._lst_handler_id[0])
         self.txtName.set_text(str(self._revision_model.name))
-        self.txtName.handler_unblock(self._lst_handler_id[1])
+        self.txtName.handler_unblock(self._lst_handler_id[0])
 
-        self.txtRemarks.handler_block(self._lst_handler_id[2])
+        self.txtRemarks.handler_block(self._lst_handler_id[1])
         self.txtRemarks.set_text(self._revision_model.remarks)
-        self.txtRemarks.handler_unblock(self._lst_handler_id[2])
+        self.txtRemarks.handler_unblock(self._lst_handler_id[1])
 
         self.txtTotalCost.set_text(
             str(locale.currency(self._revision_model.cost)))

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Function Package Work Book View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.function.WorkBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Function Package Work Book View
+###############################
+"""
 
 import sys
 
@@ -40,11 +40,9 @@ except ImportError:
 # Import other RTK modules.
 try:
     import Configuration
-    import Utilities
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.Configuration as Configuration
-    import rtk.Utilities as Utilities
     import rtk.gui.gtk.Widgets as Widgets
 from Assistants import AddFunction
 
@@ -558,7 +556,7 @@ class WorkView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Consider re-writing _create_fmea_page; current McCabe metric = 10
+        # WARNING: Consider refactoring _create_fmea_page; current McCabe metric = 10
         # Create the FMEA gtk.TreeView()
         self.tvwFMECA.set_tooltip_text(_(u"Displays the failure mode and "
                                          u"effects analysis for the currently "
@@ -779,7 +777,7 @@ class WorkView(gtk.VBox):
 
         # Load the editable gtk.Widgets().
         self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(self._function_model.code))
+        self.txtCode.set_text(str(self._function_model.function_code))
         self.txtCode.handler_unblock(self._lst_handler_id[0])
 
         _textview = self.txtName.get_child().get_child()
@@ -975,7 +973,7 @@ class WorkView(gtk.VBox):
 
         if index == 4:
             _text = entry.get_text()
-            self._function_model.code = _text
+            self._function_model.function_code = _text
         elif index == 14:
             _textbuffer = self.txtName.get_child().get_child().get_buffer()
             _text = _textbuffer.get_text(*_textbuffer.get_bounds())

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-############################
-Function Package Module View
-############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.function.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+############################
+Function Package Module View
+############################
+"""
 
 import sys
 
@@ -174,8 +174,7 @@ class ModuleView(object):
         """
 
         (_functions,
-         __) = self._dtc_function.request_functions(self.mdcRTK.project_dao,
-                                                    self.mdcRTK.revision_id)
+         __) = self._dtc_function.request_functions(self.mdcRTK.revision_id)
 
         # Find the list of top level Functions.
         _top_funcs = [_f for _f in _functions if _f[19] == -1]
@@ -272,7 +271,7 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
-            # TODO: See bug 177
+            # FIXME: See bug 177
             pass
 
         return False
@@ -336,7 +335,7 @@ class ModuleView(object):
 
         # Now update the Function data model.
         if self._lst_col_order[position] == 4:
-            self._model.code = str(new_text)
+            self._model.function_code = str(new_text)
         elif self._lst_col_order[position] == 14:
             self._model.name = str(new_text)
         elif self._lst_col_order[position] == 15:

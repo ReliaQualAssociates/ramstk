@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-############################
-Function Package Data Module
-############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.function.Function.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+############################
+Function Package Data Module
+############################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -54,6 +54,10 @@ class Model(object):
                     value = ''.
     :ivar float cost: the estimated O&M costs for this Function.  Default
                       value = 0.0.
+    :ivar float cost_per_failure: the estimated O&M costs for this Function per
+                                  failure.  Default value = 0.0.
+    :ivar float cost_per_hour: the estimated O&M costs for this Function per
+                               mission hour.  Default value = 0.0.
     :ivar float mission_hazard_rate: the estimated mission hazard rate for this
                                      Function.  Default value = 0.0.
     :ivar float hazard_rate: the estimated hazard rate for this Function.
@@ -76,7 +80,7 @@ class Model(object):
                        value = ''.
     :ivar int n_modes: the number of failure modes this Function is susceptible
                        to.  Default value = 0.
-    :ivar int n_parts: the number of hardware parts comprising this Funciton.
+    :ivar int n_parts: the number of hardware parts comprising this Function.
                        Default value = 0.
     :ivar int type: the type of function this Function is.  Default value = 0.
     :ivar int parent_id: the ID of this Function's parent Function.  Default
@@ -107,8 +111,10 @@ class Model(object):
         self.function_id = 0
         self.availability = 1.0
         self.mission_availability = 1.0
-        self.code = ''
+        self.function_code = ''
         self.cost = 0.0
+        self.cost_per_failure = 0.0
+        self.cost_per_hour = 0.0
         self.mission_hazard_rate = 0.0
         self.hazard_rate = 0.0
         self.mmt = 0.0
@@ -121,7 +127,7 @@ class Model(object):
         self.remarks = ''
         self.n_modes = 0
         self.n_parts = 0
-        self.type = 0
+        self.function_type = 0
         self.parent_id = -1
         self.level = 0
         self.safety_critical = 1
@@ -144,7 +150,7 @@ class Model(object):
             self.function_id = int(values[1])
             self.availability = float(values[2])
             self.mission_availability = float(values[3])
-            self.code = str(values[4])
+            self.function_code = str(values[4])
             self.cost = float(values[5])
             self.mission_hazard_rate = float(values[6])
             self.hazard_rate = float(values[7])
@@ -158,7 +164,7 @@ class Model(object):
             self.remarks = str(values[15])
             self.n_modes = int(values[16])
             self.n_parts = int(values[17])
-            self.type = int(values[18])
+            self.function_type = int(values[18])
             self.parent_id = int(values[19])
             self.level = int(values[20])
             self.safety_critical = int(values[21])
@@ -185,11 +191,11 @@ class Model(object):
         """
 
         _values = (self.revision_id, self.function_id, self.availability,
-                   self.mission_availability, self.code, self.cost,
+                   self.mission_availability, self.function_code, self.cost,
                    self.mission_hazard_rate, self.hazard_rate, self.mmt,
                    self.mcmt, self.mpmt, self.mission_mtbf, self.mtbf,
                    self.mttr, self.name, self.remarks, self.n_modes,
-                   self.n_parts, self.type, self.parent_id, self.level,
+                   self.n_parts, self.function_type, self.parent_id, self.level,
                    self.safety_critical)
 
         return _values
@@ -298,9 +304,9 @@ class Model(object):
             _code = Utilities.error_handler(_err.args)
             _msg = "FAIL: Convert one or more inputs to float."
         else:
-            _cost_per_failure = self.cost * self.hazard_rate
+            self.cost_per_failure = self.cost * self.hazard_rate
             try:
-                _cost_per_hour = self.cost / mission_time
+                self.cost_per_hour = self.cost / mission_time
             except ZeroDivisionError as _err:
                 _code = Utilities.error_handler(_err.args)
                 _msg = "FAIL: Calculate cost per failure or cost per hour."
@@ -315,17 +321,17 @@ class Function(object):
     one or more Function data models.  The attributes of a Function data
     controller are:
 
-    :ivar _dao: the :py:class:`rtk.dao.DAO` to use when communicating with the
-                RTK Project database.  Default value = None.
     :ivar _last_id: the last Function ID used.  Default value = None.
     :ivar dicFunctions: Dictionary of the Function data models controlled.  Key
                         is the Function ID; value is a pointer to the Function
                         data model instance.  Default value = {}.
+    :ivar dao: the :py:class:`rtk.dao.DAO` to use when communicating with the
+               RTK Project database.  Default value = None.
     """
 
     def __init__(self):
         """
-        Initializes a Function data controller instance.
+        Method to initialize a Function data controller instance.
         """
 
         # Define private dictionary attributes.
@@ -333,7 +339,6 @@ class Function(object):
         # Define private list attributes.
 
         # Define private scalar attributes.
-        self._dao = None
         self._last_id = None
 
         # Define public dictionary attributes.
@@ -342,8 +347,9 @@ class Function(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.dao = None
 
-    def request_functions(self, dao, revision_id):
+    def request_functions(self, revision_id):
         """
         Reads the RTK Project database and loads all the Functions associated
         with the selected Revision.  For each Function returned:
@@ -355,22 +361,18 @@ class Function(object):
         #. Add the instance to the dictionary of Functions being managed
            by this controller.
 
-        :param dao: the :py:class:`rtk.dao.DAO` to use for communicating with
-                    the RTK Project database.
         :param int revision_id: the Revision ID to select the Functions for.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
-        self._dao = dao
-
-        self._last_id = self._dao.get_last_id('tbl_functions')[0]
+        self._last_id = self.dao.get_last_id('tbl_functions')[0]
 
         # Select everything from the function table.
         _query = "SELECT * FROM tbl_functions \
                   WHERE fld_revision_id={0:d} \
                   ORDER BY fld_parent_id".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_functions = len(_results)
@@ -384,7 +386,7 @@ class Function(object):
 
         return(_results, _error_code)
 
-    def add_function(self, revision_id, parent_id=-1, code=None, name=None,
+    def add_function(self, revision_id, parent_id=-1, fcode=None, name=None,
                      remarks=''):
         """
         Adds a new Function to the RTK Project for the selected Revision.
@@ -400,8 +402,8 @@ class Function(object):
 
         if parent_id is None:
             parent_id = -1
-        if code is None:
-            code = 'FUNC'
+        if fcode is None:
+            fcode = 'FUNC'
         if name is None:
             name = 'New Function'
 
@@ -409,10 +411,10 @@ class Function(object):
                   (fld_revision_id, fld_name, fld_remarks, fld_code, \
                    fld_parent_id) \
                   VALUES ({0:d}, '{1:s}', '{2:s}', '{3:s}', {4:d})".format(
-                      revision_id, name, remarks, code, parent_id)
+                      revision_id, name, remarks, fcode, parent_id)
         (_results,
          _error_code,
-         _function_id) = self._dao.execute(_query, commit=True)
+         _function_id) = self.dao.execute(_query, commit=True)
 
         # If the new function was added successfully to the RTK Project
         # database:
@@ -421,11 +423,11 @@ class Function(object):
         #   3. Set the attributes of the new Function model instance.
         #   4. Add the new Function model to the controller dictionary.
         if _results:
-            self._last_id = self._dao.get_last_id('tbl_functions')[0]
+            self._last_id = self.dao.get_last_id('tbl_functions')[0]
             _function = Model()
             _function.set_attributes((revision_id, self._last_id, 1.0, 1.0,
-                                      code, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                      0.0, 0.0, name, remarks, 0, 0, 0,
+                                      fcode, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                                      0.0, 0.0, 0.0, name, remarks, 0, 0, 0,
                                       parent_id, 0, 1))
             self.dicFunctions[_function.function_id] = _function
 
@@ -447,14 +449,14 @@ class Function(object):
                   WHERE fld_parent_id={0:d}".format(function_id)
         (_results,
          _error_codes[0],
-         __) = self._dao.execute(_query, commit=True)
+         __) = self.dao.execute(_query, commit=True)
 
         # Then delete the parent Function.
         _query = "DELETE FROM tbl_functions \
                   WHERE fld_function_id={0:d}".format(function_id)
         (_results,
          _error_codes[1],
-         __) = self._dao.execute(_query, commit=True)
+         __) = self.dao.execute(_query, commit=True)
 
         self.dicFunctions.pop(function_id)
 
@@ -469,12 +471,13 @@ class Function(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Write one or more integration tests for this method.
+        # FIXME: See bug 184.
+        # FIXME: See bug 185.
         # Find the existing maximum Function ID already in the RTK Project
         # database and increment it by one.  If there are no existing Functions
         # set the first Function ID to zero.
         _query = "SELECT MAX(fld_function_id) FROM tbl_functions"
-        (_function_id, _error_code, __) = self._dao.execute(_query,
+        (_function_id, _error_code, __) = self.dao.execute(_query,
                                                             commit=False)
 
         if _function_id[0][0] is not None:
@@ -492,11 +495,12 @@ class Function(object):
                        fld_remarks) \
                       VALUES ({0:d}, {1:d}, '{2:s}', {3:d}, '{4:s}', {5:d}, \
                               '{6:s}')".format(revision_id, _function_id,
-                                               _function.code, _function.level,
+                                               _function.function_code,
+                                               _function.level,
                                                _function.name,
                                                _function.parent_id,
                                                _function.remarks)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             # Add an entry to the Function ID cross-reference dictionary for
@@ -514,7 +518,7 @@ class Function(object):
                       WHERE fld_parent_id={1:d} \
                       AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
                                                         _key, revision_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
         return False
@@ -541,19 +545,31 @@ class Function(object):
             _query = "SELECT SUM(t2.fld_hazard_rate_logistics), \
                              SUM(t2.fld_hazard_rate_mission), \
                              COUNT(t2.fld_hardware_id), \
-                             SUM(1.0 / t4.fld_mpmt), SUM(1.0 / t4.fld_mcmt), \
-                             SUM(1.0 / t4.fld_mttr), SUM(1.0 / t4.fld_mmt), \
                              SUM(t3.fld_cost) \
                       FROM rtk_reliability AS t2 \
                       INNER JOIN rtk_matrix AS t1 \
                       ON t2.fld_hardware_id = t1.fld_col_item_id \
                       INNER JOIN rtk_hardware AS t3 \
                       ON t3.fld_hardware_id = t1.fld_col_item_id \
-                      INNER JOIN rtk_maintainability AS t4 \
-                      ON t4.fld_hardware_id = t1.fld_col_item_id \
                       WHERE t1.fld_value='2' \
                       AND t1.fld_row_item_id={0:d}".format(_function_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            # FIXME: See bug 189.
+            # _query = "SELECT SUM(t2.fld_hazard_rate_logistics), \
+            #                  SUM(t2.fld_hazard_rate_mission), \
+            #                  COUNT(t2.fld_hardware_id), \
+            #                  SUM(1.0 / t4.fld_mpmt), SUM(1.0 / t4.fld_mcmt), \
+            #                  SUM(1.0 / t4.fld_mttr), SUM(1.0 / t4.fld_mmt), \
+            #                  SUM(t3.fld_cost) \
+            #           FROM rtk_reliability AS t2 \
+            #           INNER JOIN rtk_matrix AS t1 \
+            #           ON t2.fld_hardware_id = t1.fld_col_item_id \
+            #           INNER JOIN rtk_hardware AS t3 \
+            #           ON t3.fld_hardware_id = t1.fld_col_item_id \
+            #           INNER JOIN rtk_maintainability AS t4 \
+            #           ON t4.fld_hardware_id = t1.fld_col_item_id \
+            #           WHERE t1.fld_value='2' \
+            #           AND t1.fld_row_item_id={0:d}".format(_function_id)
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=False)
 
             _error_codes.append((_function.function_id, _error_code))
@@ -561,14 +577,15 @@ class Function(object):
             # Perform the calculations if the query returned the proper values.
             if _error_code == 0:
                 _function.calculate_reliability(_results[0][0:3])
-                _function.calculate_availability(_results[0][3:7])
-                _function.calculate_costs(_results[0][7], mission_time)
+                # FIXME: See bug 189.
+                # _function.calculate_availability(_results[0][3:7])
+                _function.calculate_costs(_results[0][3], mission_time)
 
         return _error_codes
 
     def save_function(self, function_id):
         """
-        Saves the Function attributes to the RTK Project database.
+        Method to save the Function attributes to the RTK Project database.
 
         :param int function_id: the ID of the Function to save.
         :return: (_results, _error_code)
@@ -591,21 +608,21 @@ class Function(object):
                       fld_level={19:d}, fld_safety_critical={20:d} \
                   WHERE fld_function_id={0:d}".format(
                       _function.function_id, _function.availability,
-                      _function.mission_availability, _function.code,
+                      _function.mission_availability, _function.function_code,
                       _function.cost, _function.mission_hazard_rate,
                       _function.hazard_rate, _function.mmt, _function.mcmt,
                       _function.mpmt, _function.mission_mtbf, _function.mtbf,
                       _function.mttr, _function.name, _function.remarks,
-                      _function.n_modes, _function.n_parts, _function.type,
-                      int(_function.parent_id), _function.level,
-                      _function.safety_critical)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+                      _function.n_modes, _function.n_parts,
+                      _function.function_type, int(_function.parent_id),
+                      _function.level, _function.safety_critical)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 
     def save_all_functions(self):
         """
-        Saves all Function data models managed by the controller.
+        Method to save all Function data models managed by the controller.
 
         :return: _error_codes; a list of tuples where each tuple is:
                  (Function ID, Error Code Returned from it's Save)

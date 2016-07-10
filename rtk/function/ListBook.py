@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Function Package List Book View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.function.ListBook.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Function Package List Book View
+###############################
+"""
 
 import sys
 
