@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-##################################
-Revision Package Assistants Module
-##################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.revision.Assistants.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+##################################
+Revision Package Assistants Module
+##################################
+"""
 
 import gettext
 import locale
@@ -32,20 +32,20 @@ except ImportError:
 
 # Import other RTK modules.
 try:
-    import Configuration as _conf
-    import gui.gtk.Widgets as _widg
+    import Configuration
+    import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as _conf
-    import rtk.gui.gtk.Widgets as _widg
+    import rtk.Configuration as Configuration   # pylint: disable=E0401
+    import rtk.gui.gtk.Widgets as Widgets       # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2014 Andrew "Weibullguy" Rowland'
 
 # Add localization support.
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -53,6 +53,7 @@ _ = gettext.gettext
 
 
 class AddRevision(object):
+
     """
     This is the assistant that walks the user through the process of adding
     a new Revision to the open RTK Project database.
@@ -60,7 +61,7 @@ class AddRevision(object):
 
     def __init__(self, modulebook):
         """
-        Initialize on instance of the Add Revision Assistant.
+        Method to initialize on instance of the Add Revision Assistant.
 
         :param modulebook: the current instance of
                            :py:class:`rtk.revision.ModuleBook`
@@ -82,7 +83,7 @@ class AddRevision(object):
         _text = _(u"This is the RTK Revision Addition Assistant.  It will "
                   u"help you add a new revision to the database.  Press "
                   u"'Forward' to continue or 'Cancel' to quit the assistant.")
-        _label = _widg.make_label(_text, width=500, height=-1, wrap=True)
+        _label = Widgets.make_label(_text, width=500, height=-1, wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -92,9 +93,9 @@ class AddRevision(object):
         # Create the page to select other information to add.
         y_pos = 5
         self.fxdPageOtherInfo = gtk.Fixed()
-        _label = _widg.make_label(_(u"Select additional information "
-                                    u"to copy from old revision..."),
-                                  width=300)
+        _label = Widgets.make_label(_(u"Select additional information "
+                                      u"to copy from old revision..."),
+                                    width=300)
         self.fxdPageOtherInfo.put(_label, 5, y_pos)
         y_pos += 30
 
@@ -132,8 +133,8 @@ class AddRevision(object):
 
         # Create the page for entering the new Revision information.
         self.fxdPageSetValues = gtk.Fixed()
-        _label = _widg.make_label(_(u"Revision Code:"))
-        self.txtRevisionCode = _widg.make_entry(width=100)
+        _label = Widgets.make_label(_(u"Revision Code:"))
+        self.txtRevisionCode = Widgets.make_entry(width=100)
         self.txtRevisionCode.set_tooltip_text(_(u"Enter a code for the new "
                                                 u"revision.  Leave blank to "
                                                 u"use the default revision "
@@ -141,8 +142,8 @@ class AddRevision(object):
         self.fxdPageSetValues.put(_label, 5, 5)
         self.fxdPageSetValues.put(self.txtRevisionCode, 200, 5)
 
-        _label = _widg.make_label(_(u"Revision Name:"))
-        self.txtRevisionName = _widg.make_entry()
+        _label = Widgets.make_label(_(u"Revision Name:"))
+        self.txtRevisionName = Widgets.make_entry()
         self.txtRevisionName.set_tooltip_text(_(u"Enter a name for the new "
                                                 u"revision.  Leave blank to "
                                                 u"use the default revision "
@@ -150,12 +151,12 @@ class AddRevision(object):
         self.fxdPageSetValues.put(_label, 5, 35)
         self.fxdPageSetValues.put(self.txtRevisionName, 200, 35)
 
-        _label = _widg.make_label(_(u"Remarks:"))
+        _label = Widgets.make_label(_(u"Remarks:"))
         self.txtRemarks = gtk.TextBuffer()
         self.fxdPageSetValues.put(_label, 5, 65)
-        _textview_ = _widg.make_text_view(txvbuffer=self.txtRemarks,
-                                          width=300, height=100)
-        self.fxdPageSetValues.put(_textview_, 200, 65)
+        _textview = Widgets.make_text_view(txvbuffer=self.txtRemarks,
+                                           width=300, height=100)
+        self.fxdPageSetValues.put(_textview, 200, 65)
 
         self.assistant.append_page(self.fxdPageSetValues)
         self.assistant.set_page_type(self.fxdPageSetValues,
@@ -178,17 +179,21 @@ class AddRevision(object):
         Method to add the new Revision to the open RTK Project database.
 
         :param gtk.Assistant __assistant: the current instance of the
-                                          assistant.
+                                          gtk.Assistant().
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
+        _return = False
 
         # Create the Revision code.
         _code = self.txtRevisionCode.get_text()
         if _code == '' or _code is None:
-            _code = '{0:s} {1:s}'.format(str(_conf.RTK_PREFIX[0]),
-                                         str(_conf.RTK_PREFIX[1]))
+            _code = '{0:s} {1:s}'.format(str(Configuration.RTK_PREFIX[0]),
+                                         str(Configuration.RTK_PREFIX[1]))
 
             # Increment the Revision index.
-            _conf.RTK_PREFIX[1] += 1
+            Configuration.RTK_PREFIX[1] += 1
 
         _name = self.txtRevisionName.get_text()
         if _name == '' or _name is None:
@@ -203,26 +208,32 @@ class AddRevision(object):
                                                                    _name,
                                                                    _remarks)
 
-# TODO: Copy FMEA for functions and hardware.
-        if self.chkFunction.get_active():
-            self._controller.dtcFunction.copy_function(_revision_id)
+        if _error_code != 0:
+            _prompt = _(u"An error occurred while attempting to add the new "
+                        u"revision.")
+            Widgets.rtk_error(_prompt)
+            _return = True
+        else:
+            # FIXME: See bug 184.
+            if self.chkFunction.get_active():
+                self._controller.dtcFunction.copy_function(_revision_id)
 
-        if self.chkRequirements.get_active():
-            self._controller.dtcRequirement.copy_requirements(_revision_id)
+            if self.chkRequirements.get_active():
+                self._controller.dtcRequirement.copy_requirements(_revision_id)
 
-        if self.chkHardware.get_active():
-            _failure_info = self.chkFailureInfo.get_active()
-            _matrices = self.chkFunctionMatrix.get_active()
-            self._controller.dtcHardwareBoM.copy_hardware(_revision_id,
-                                                          _failure_info,
-                                                          _matrices)
+            if self.chkHardware.get_active():
+                _failure_info = self.chkFailureInfo.get_active()
+                _matrices = self.chkFunctionMatrix.get_active()
+                self._controller.dtcHardwareBoM.copy_hardware(_revision_id,
+                                                              _failure_info,
+                                                              _matrices)
 
-        if self.chkSoftware.get_active():
-            self._controller.dtcSoftwareBoM.copy_software(_revision_id)
+            if self.chkSoftware.get_active():
+                self._controller.dtcSoftwareBoM.copy_software(_revision_id)
 
-        self._modulebook.request_load_data(self._controller.project_dao)
+            self._modulebook.request_load_data(self._controller.project_dao)
 
-        return False
+        return _return
 
     def _cancel(self, __button):
         """

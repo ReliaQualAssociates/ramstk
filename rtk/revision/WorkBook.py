@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Revision Package Work Book View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.revision.WorkBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Revision Package Work Book View
+###############################
+"""
 
 import sys
 
@@ -37,8 +37,8 @@ try:
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as Configuration
-    import rtk.gui.gtk.Widgets as Widgets
+    import rtk.Configuration as Configuration   # pylint: disable=E0401
+    import rtk.gui.gtk.Widgets as Widgets       # pylint: disable=E0401
 from Assistants import AddRevision
 
 __author__ = 'Andrew Rowland'
@@ -55,6 +55,7 @@ _ = gettext.gettext
 
 
 class WorkView(gtk.VBox):
+
     """
     The Work Book view displays all the attributes for the selected Revision.
     The attributes of a Work Book view are:
@@ -275,12 +276,13 @@ class WorkView(gtk.VBox):
                                              u"selected revision."))
 
         # Connect gtk.Widget() signals to callback methods.
-        self._lst_handler_id.append(self.txtCode.connect('focus-out-event',
-                                                         self._on_focus_out,
-                                                         22))
         self._lst_handler_id.append(self.txtName.connect('focus-out-event',
-                                                         self._on_focus_out,
-                                                         17))
+                                                         self._on_focus_out, 0))
+        self._lst_handler_id.append(self.txtRemarks.connect('changed',
+                                                            self._on_focus_out,
+                                                            None, 1))
+        self._lst_handler_id.append(self.txtCode.connect('focus-out-event',
+                                                         self._on_focus_out, 2))
 
         # Put it all together.
         _toolbar = self._create_toolbar()
@@ -454,10 +456,6 @@ class WorkView(gtk.VBox):
         _textview.set_tooltip_text(_(u"Enter any remarks associated with "
                                      u"the selected revision."))
         _fixed.put(_textview, _x_pos, _y_pos[6])
-
-        self._lst_handler_id.append(self.txtRemarks.connect('changed',
-                                                            self._on_focus_out,
-                                                            None, 20))
 
         _fixed.show_all()
 
@@ -643,6 +641,9 @@ class WorkView(gtk.VBox):
         Method to update the Work Book widgets with changes to the Revision
         data model attributes.  Called by other views when the Revision data
         model attributes are edited via their gtk.Widgets().
+
+        :return: False on success or True if an error is encountered.
+        :rtype: bool
         """
 
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
@@ -710,17 +711,24 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
-        if index == 17:
+        entry.handler_block(self._lst_handler_id[index])
+
+        if index == 0:
+            _index = 17
             _text = entry.get_text()
             self._revision_model.name = _text
-        elif index == 20:
+        elif index == 1:
+            _index = 20
             _text = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
             self._revision_model.remarks = _text
-        elif index == 22:
+        elif index == 2:
+            _index = 22
             _text = entry.get_text()
             self._revision_model.code = _text
 
-        self._modulebook.update(index, _text)
+        self._modulebook.update(_index, _text)
+
+        entry.handler_unblock(self._lst_handler_id[index])
 
         return False
 
@@ -735,10 +743,18 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
+        _return = False
+
         (_results,
          _error_code) = self._dtc_revision.save_revision(self.revision_id)
 
-        return False
+        if _error_code != 0:
+            _prompt = _(u"An error occurred while attempting to save "
+                        u"Revision {0:d}").format(self.revision_id)
+            Widgets.rtk_error(_prompt)
+            _return = True
+
+        return _return
 
     def _request_add_revision(self, __button):
         """
@@ -767,6 +783,8 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
+        _return = False
+
         (_model,
          _row) = self._modulebook.treeview.get_selection().get_selected()
         _path = _model.get_path(_row)
@@ -774,23 +792,29 @@ class WorkView(gtk.VBox):
         (_results,
          _error_code) = self._dtc_revision.delete_revision(self.revision_id)
 
-        self._dtc_profile.dicProfiles.pop(self.revision_id)
-        self._dtc_definiions.dicDefinitions.pop(self.revision_id)
+        if _error_code != 0:
+            _prompt = _(u"An error occurred when attempting to delete "
+                        u"Revision {0:d}").format(self.revision_id)
+            Widgets.rtk_error(_prompt)
+            _return = True
+        else:
+            self._dtc_profile.dicProfiles.pop(self.revision_id)
+            self._dtc_definiions.dicDefinitions.pop(self.revision_id)
 
-        # Remove the deleted Revision from the gtk.TreeView().
-        _next_row = _model.iter_next(_row)
+            # Remove the deleted Revision from the gtk.TreeView().
+            _next_row = _model.iter_next(_row)
 
-        _model.remove(_row)
-        _model.row_deleted(_path)
+            _model.remove(_row)
+            _model.row_deleted(_path)
 
-        if _next_row is None:
-            _next_row = _model.get_iter_root()
-        _path = _model.get_path(_next_row)
-        _column = self._modulebook.treeview.get_column(0)
-        self._modulebook.treeview.set_cursor(_path, None, False)
-        self._modulebook.treeview.row_activated(_path, _column)
+            if _next_row is None:
+                _next_row = _model.get_iter_root()
+            _path = _model.get_path(_next_row)
+            _column = self._modulebook.treeview.get_column(0)
+            self._modulebook.treeview.set_cursor(_path, None, False)
+            self._modulebook.treeview.row_activated(_path, _column)
 
-        return False
+        return _return
 
     def _request_calculate_revision(self, __button):
         """
