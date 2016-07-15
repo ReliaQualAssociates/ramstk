@@ -468,8 +468,10 @@ class Function(object):
         new Revision.
 
         :param int revision_id: the ID of the newly created Revision.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: _dic_index_xref; a dictionary cross-referencing the original
+                 Function ID's with the new Function ID's.  Key is the original
+                 Function ID, value is the new Function ID.
+        :rtype: dict
         """
         # FIXME: See bug 184.
         # FIXME: See bug 185.
@@ -505,9 +507,9 @@ class Function(object):
 
             # Add an entry to the Function ID cross-reference dictionary for
             # for the newly added Function.
-            _dic_index_xref[_function.function_id] = _function_id
-
-            _function_id += 1
+            if _error_code == 0:
+                _dic_index_xref[_function.function_id] = _function_id
+                _function_id += 1
 
         # Update the parent IDs for the new Functions using the index
         # cross-reference dictionary that was created when adding the new
@@ -521,12 +523,12 @@ class Function(object):
             (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
-        return False
+        return _dic_index_xref
 
     def calculate_function(self, mission_time):
         """
-        Calculates reliability, availability, and cost information for all
-        Functionl.
+        Method to clculate reliability, availability, and cost information for
+        all Functions.
 
         :param float mission_time: the time to use in the calculations.
         :return: _error_codes; a list of tuples where each tuple is:

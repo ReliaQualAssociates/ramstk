@@ -556,7 +556,7 @@ class WorkView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-        # WARNING: Consider refactoring _create_fmea_page; current McCabe metric = 10
+
         # Create the FMEA gtk.TreeView()
         self.tvwFMECA.set_tooltip_text(_(u"Displays the failure mode and "
                                          u"effects analysis for the currently "

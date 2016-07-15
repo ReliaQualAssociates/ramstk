@@ -17,6 +17,7 @@ from nose.plugins.attrib import attr
 
 import dao.DAO as _dao
 from function.Function import Model, Function
+from revision.Revision import Revision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -41,6 +42,9 @@ class TestFunctionController(unittest.TestCase):
 
         self.DUT = Function()
         self.DUT.dao = self._dao
+
+        self.dtcRevision = Revision()
+        self.dtcRevision.dao = self._dao
 
     @attr(all=True, integration=True)
     def test00_request_functions(self):
@@ -169,3 +173,30 @@ class TestFunctionController(unittest.TestCase):
                          [(0, 0), (1, 0), (2, 0), (3, 0), (4, 0), (5, 0),
                           (6, 0), (7, 0), (8, 0), (9, 0), (10, 0), (11, 0),
                           (12, 0), (13, 0)])
+
+    @attr(all=True, integration=True)
+    def test09_copy_function(self):
+        """
+        (TestFunction) copy_function should return a dict
+        """
+
+        (_results,
+         _error_code,
+         _revision_id) = self.dtcRevision.add_revision('01', 'New Revision', '')
+        self.DUT.request_functions(0)
+        _dic_f_xref = self.DUT.copy_function(_revision_id)
+
+        self.assertEqual(_dic_f_xref,
+                         {0: 14, 1: 15, 2: 16, 3: 17, 4: 18, 5: 19, 6: 20,
+                          7: 21, 8: 22, 9: 23, 10: 24, 11: 25, 12: 26,
+                          13: 27, -1: -1})
+
+    @attr(all=True, integration=True)
+    def test09a_copy_function_no_revision(self):
+        """
+        (TestFunction) copy_function should return an empty dict when attempting to copy to a non-existent Revision
+        """
+
+        _dic_f_xref = self.DUT.copy_function(2)
+
+        self.assertEqual(_dic_f_xref, {-1:-1})

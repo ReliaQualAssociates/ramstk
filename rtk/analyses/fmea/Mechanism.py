@@ -88,8 +88,6 @@ class Model(object):
 
         # Define public dictionary attributes.
         self.dicCauses = {}
-        self.dicControls = {}
-        self.dicActions = {}
 
         # Define public list attributes.
 

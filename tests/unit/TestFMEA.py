@@ -1,13 +1,13 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing the FMEA class.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.fmea.TestFMEA.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing the FMEA class.
+"""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -16,8 +16,6 @@ from nose.plugins.attrib import attr
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
-
-import dao.DAO as _dao
 
 from analyses.fmea.FMEA import Model, FMEA, ParentError
 

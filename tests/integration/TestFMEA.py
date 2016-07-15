@@ -37,7 +37,7 @@ class TestFMEAController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = FMEA()
-        self.DUT._dao = self._dao
+        self.DUT.dao = self._dao
 
         self._mode_id = None
         self._mechanism_id = None
@@ -49,7 +49,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) request_fmea for a Function should return False on success
         """
 
-        self.assertFalse(self.DUT.request_fmea(self._dao, None, 0))
+        self.assertFalse(self.DUT.request_fmea(None, 0))
 
     @attr(all=True, integration=True)
     def test1_request_hardware_fmea(self):
@@ -57,7 +57,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) request_fmea for a Hardware should return False on success
         """
 
-        self.assertFalse(self.DUT.request_fmea(self._dao, 0))
+        self.assertFalse(self.DUT.request_fmea(0))
 
     @attr(all=True, integration=True)
     def test2_request_fmea_parent_problem(self):
@@ -65,9 +65,8 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) __init__ raises ParentError for None, None or int, int input
         """
 
-        self.assertRaises(ParentError, self.DUT.request_fmea, self._dao,
-                          None, None)
-        self.assertRaises(ParentError, self.DUT.request_fmea, self._dao, 2, 10)
+        self.assertRaises(ParentError, self.DUT.request_fmea, None, None)
+        self.assertRaises(ParentError, self.DUT.request_fmea, 2, 10)
 
     @attr(all=True, integration=True)
     def test3_request_fmea_mode_no_mechanisms(self):
@@ -75,7 +74,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) __init__ raises ParentError for Mode with no mechanisms
         """
 
-        self.assertRaises(ParentError, self.DUT.request_fmea, self._dao, 3, 10)
+        self.assertRaises(ParentError, self.DUT.request_fmea, 3, 10)
 
     @attr(all=True, integration=True)
     def test4_add_function_mode(self):
@@ -83,7 +82,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) add_mode returns 0 on successful add to a function
         """
 
-        self.DUT.request_fmea(self._dao, None, 0)
+        self.DUT.request_fmea(None, 0)
         (_results, _error_code, _last_id) = self.DUT.add_mode(None, 0)
         self.assertEqual(_error_code, 0)
 
@@ -93,7 +92,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) add_mode returns 0 on successful add to a hardware item
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
         (_results, _error_code, _last_id) = self.DUT.add_mode(0, None)
         self.assertEqual(_error_code, 0)
 
@@ -103,7 +102,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) delete_mode returns 0 on successful delete from a function
         """
 
-        self.DUT.request_fmea(self._dao, None, 0)
+        self.DUT.request_fmea(None, 0)
         (_results, _error_code, _last_id) = self.DUT.add_mode(None, 0)
 
         self.assertEqual(self.DUT.delete_mode(_last_id, None, 0), (True, 0))
@@ -114,7 +113,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) delete_mode returns 0 on successful delete from a hardware item
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
         (_results, _error_code, _last_id) = self.DUT.add_mode(0, None)
 
         self.assertEqual(self.DUT.delete_mode(_last_id, 0), (True, 0))
@@ -125,7 +124,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) delete_mode returns 60 when trying to delete non-existant mode
         """
 
-        self.DUT.request_fmea(self._dao, None, 0)
+        self.DUT.request_fmea(None, 0)
         _n = len(self.DUT.dicFFMEA[0].dicModes)
         try:
             _n = self.DUT.dicFFMEA[0].dicModes.keys()[_n - 1]
@@ -136,7 +135,7 @@ class TestFMEAController(unittest.TestCase):
         self.assertEqual(self.DUT.delete_mode(_mode_id + 1, None, 0),
                          (True, 60))
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
         self.assertEqual(self.DUT.delete_mode(100, 0),
                          (True, 60))
 
@@ -146,7 +145,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) _save_mode should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0, None)
+        self.DUT.request_fmea(0, None)
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode = self.DUT.dicDFMEA[0].dicModes[_n]
         _values = (0, 0, 0, 'Test Mode', 'Mission', 'Mission Phase', 'Local',
@@ -164,7 +163,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) add_mechanism should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0, None)
+        self.DUT.request_fmea(0, None)
         (_results, _error_code, _mode_id) = self.DUT.add_mode(0, None)
 
         (_results,
@@ -178,7 +177,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) delete_mechanism returns (True, 0) on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
         (_results,
@@ -194,7 +193,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) _save_mechanism should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
 
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
@@ -212,7 +211,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) _calculate should return False on success and set rpn=100 and new rpn=80
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
 
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
@@ -232,7 +231,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) add_cause should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0, None)
+        self.DUT.request_fmea(0, None)
         (_results, _error_code, _mode_id) = self.DUT.add_mode(0, None)
 
         (_results, _error_code,
@@ -249,7 +248,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) delete_cause returns (True, 0) on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
         _n = max(self.DUT.dicDFMEA[0].dicModes[_n].dicMechanisms.keys())
@@ -267,7 +266,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) _save_cause should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
         _n = max(self.DUT.dicDFMEA[0].dicModes[_n].dicMechanisms.keys())
@@ -289,7 +288,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) add_control should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0, None)
+        self.DUT.request_fmea(0, None)
         (_results, _error_code, _mode_id) = self.DUT.add_mode(0, None)
 
         (_results, _error_code,
@@ -311,7 +310,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) delete_control returns (True, 0) on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
         _n = max(self.DUT.dicDFMEA[0].dicModes[_mode_id].dicMechanisms.keys())
@@ -333,7 +332,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) _save_control should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
 
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
@@ -355,7 +354,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) add_action should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0, None)
+        self.DUT.request_fmea(0, None)
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
         _n = max(self.DUT.dicDFMEA[0].dicModes[_mode_id].dicMechanisms.keys())
@@ -374,7 +373,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) delete_action returns (True, 0) on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
 
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
@@ -397,7 +396,7 @@ class TestFMEAController(unittest.TestCase):
         (TestFMEA) _save_action should return False on success
         """
 
-        self.DUT.request_fmea(self._dao, 0)
+        self.DUT.request_fmea(0)
 
         _n = max(self.DUT.dicDFMEA[0].dicModes.keys())
         _mode_id = self.DUT.dicDFMEA[0].dicModes[_n].mode_id
@@ -413,3 +412,20 @@ class TestFMEAController(unittest.TestCase):
         _action.set_attributes(_values)
 
         self.assertFalse(self.DUT._save_action(_action))
+
+    @attr(all=False, integration=True)
+    def test23_copy_control(self):
+        """
+        (TestFMEA) _copy_control should return False on success
+        """
+
+        self.DUT.request_fmea(0)
+
+        _ni = len(self.DUT.dicDFMEA.keys())
+
+        self.assertFalse(self.DUT.copy_fmea(2, 0))
+
+        _nf = len(self.DUT.dicDFMEA.keys())
+
+        self.assertEqual(_ni + 1, _nf)
+

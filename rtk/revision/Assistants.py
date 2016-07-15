@@ -122,6 +122,10 @@ class AddRevision(object):
         self.chkFailureInfo = gtk.CheckButton(_(u"Include reliability "
                                                 u"information"))
         self.fxdPageOtherInfo.put(self.chkFailureInfo, 5, y_pos)
+        y_pos += 30
+
+        self.chkFMEA = gtk.CheckButton(_(u"Include FMEA information"))
+        self.fxdPageOtherInfo.put(self.chkFailureInfo, 5, y_pos)
 
         self.assistant.append_page(self.fxdPageOtherInfo)
         self.assistant.set_page_type(self.fxdPageOtherInfo,
@@ -216,7 +220,12 @@ class AddRevision(object):
         else:
             # FIXME: See bug 184.
             if self.chkFunction.get_active():
-                self._controller.dtcFunction.copy_function(_revision_id)
+                _dic_f_xref = self._controller.dtcFunction.copy_function(
+                                _revision_id)
+                if self.chkFMEA.get_active():
+                    for _key in _dic_f_xref.keys():
+                        _new_id = _dic_f_xref[_key]
+                        self._controller.dtcFMEA.copy_fmea(_new_id, None, _key)
 
             if self.chkRequirements.get_active():
                 self._controller.dtcRequirement.copy_requirements(_revision_id)

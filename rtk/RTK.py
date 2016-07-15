@@ -927,6 +927,23 @@ class RTK(object):
         self.dtcRevision.dao = self.project_dao
         self.dtcProfile.dao = self.project_dao
         self.dtcDefinitions.dao = self.project_dao
+        self.dtcFunction.dao = self.project_dao
+        self.dtcFMEA.dao = self.project_dao
+        # self.dtcRequirement.dao = self.project_dao
+        # self.dtcStakeholder.dao = self.project_dao
+        # self.dtcHardwareBoM.dao = self.project_dao
+        # self.dtcAllocation.dao = self.project_dao
+        # self.dtcHazard.dao = self.project_dao
+        # self.dtcSimilarItem.dao = self.project_dao
+        # self.dtcPoF.dao = self.project_dao
+        # self.dtcSoftwareBoM.dao = self.project_dao
+        # self.dtcTesting.dao = self.project_dao
+        # self.dtcGrowth.dao = self.project_dao
+        # self.dtcValidation.dao = self.project_dao
+        # self.dtcIncident.dao = self.project_dao
+        # self.dtcAction.dao = self.project_dao
+        # self.dtcComponent.dao = self.project_dao
+        # self.dtcSurvival.dao = self.project_dao
 
         # Get a connection to the program database and then retrieve the
         # program information.

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-===========
-FMEA Module
-===========
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.fmea.FMEA.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+===========
+FMEA Module
+===========
+"""
 
 # Import modules for localization support.
 import gettext
@@ -29,7 +29,7 @@ from Action import Model as Action
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
@@ -129,7 +129,6 @@ class FMEA(object):
         # Define private list attributes.
 
         # Define private scalar attributes.
-        self._dao = None
 
         # Define public dictionary attributes.
         self.dicDFMEA = {}
@@ -140,9 +139,10 @@ class FMEA(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.dao = None
 
-    def request_fmea(self, dao, assembly_id=None,
-                     function_id=None, revision_id=None):
+    def request_fmea(self, assembly_id=None, function_id=None,
+                     revision_id=None):
         """
         Method to load the entire FMEA for a Function or Hardware item.
         Starting at the Mode level, the steps to create the FMEA are:
@@ -159,8 +159,6 @@ class FMEA(object):
         #. Add instance pointer to the Mode (Mechanism, Cause, Control, Action)
            dictionary.
 
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
-                    with the RTK Project database.
         :keyword int assembly_id: the Hardware item ID that the FMEA will be
                                   associated with.
         :keyword int assembly_id: the Function ID that the FMEA will be
@@ -170,7 +168,7 @@ class FMEA(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Refactor request_fmea; current McCabe Complexity metric = 13.
+
         # Controller must be associated with either a Function or Hardware
         # item.
         if assembly_id is None and function_id is None:
@@ -180,8 +178,6 @@ class FMEA(object):
         # item.
         if isinstance(assembly_id, int) and isinstance(function_id, int):
             raise ParentError
-
-        self._dao = dao
 
         _fmea = Model(assembly_id, function_id)
         if assembly_id is not None:
@@ -199,7 +195,7 @@ class FMEA(object):
                       AND fld_type=0 \
                       ORDER BY fld_mode_id ASC".format(function_id)
 
-        (_results, _error_code, __) = self._dao.execute(_query)
+        (_results, _error_code, __) = self.dao.execute(_query)
         try:
             _n_modes = len(_results)
         except TypeError:
@@ -210,68 +206,13 @@ class FMEA(object):
             _mode.set_attributes(_results[i])
             _fmea.dicModes[_mode.mode_id] = _mode
 
-            _query = "SELECT * FROM rtk_mechanisms \
-                      WHERE fld_mode_id={0:d}".format(_mode.mode_id)
-            (_mechanisms,
-             _error_code,
-             __) = self._dao.execute(_query, commit=False)
-            try:
-                _n_mechanisms = len(_mechanisms)
-            except TypeError:
-                _n_mechanisms = 0
-
-            for i in range(_n_mechanisms):
-                _mechanism = Mechanism()
-                _mechanism.set_attributes(_mechanisms[i][2:])
-                _mode.dicMechanisms[_mechanism.mechanism_id] = _mechanism
-
-                _query = "SELECT * FROM rtk_causes \
-                          WHERE fld_mechanism_id={0:d}".format(
-                              _mechanism.mechanism_id)
-                (_causes, _error_code, __) = self._dao.execute(_query)
-                try:
-                    _n_causes = len(_causes)
-                except TypeError:
-                    _n_causes = 0
-
-                for j in range(_n_causes):
-                    _cause = Cause()
-                    _cause.set_attributes(_causes[j])
-                    _mechanism.dicCauses[_cause.cause_id] = _cause
-
-                    _query = "SELECT * FROM rtk_controls \
-                              WHERE fld_cause_id={0:d}".format(_cause.cause_id)
-                    (_controls, _error_code, __) = self._dao.execute(_query)
-                    try:
-                        _n_controls = len(_controls)
-                    except TypeError:
-                        _n_controls = 0
-
-                    for k in range(_n_controls):
-                        _control = Control()
-                        _control.set_attributes(_controls[k])
-                        _mechanism.dicControls[_control.control_id] = _control
-                        _cause.dicControls[_control.control_id] = _control
-
-                    _query = "SELECT * FROM rtk_actions \
-                              WHERE fld_cause_id={0:d}".format(_cause.cause_id)
-                    (_actions, _error_code, __) = self._dao.execute(_query)
-                    try:
-                        _n_actions = len(_actions)
-                    except TypeError:
-                        _n_actions = 0
-
-                    for k in range(_n_actions):
-                        _action = Action()
-                        _action.set_attributes(_actions[k])
-                        _mechanism.dicActions[_action.action_id] = _action
-                        _cause.dicActions[_action.action_id] = _action
+            self._request_mechanisms(_mode)
 
         if revision_id is not None:
             _query = "SELECT * FROM tbl_missions \
                       WHERE fld_revision_id={0:d} \
                       ORDER BY fld_mission_id".format(revision_id)
-            (_results, _error_code, __) = self._dao.execute(_query)
+            (_results, _error_code, __) = self.dao.execute(_query)
             try:
                 _n_missions = len(_results)
             except TypeError:
@@ -285,13 +226,111 @@ class FMEA(object):
                           AND fld_mission_id={1:d} \
                           ORDER BY fld_phase_id".format(revision_id,
                                                         _results[i][1])
-                (_phases, _error_code, __) = self._dao.execute(_query)
+                (_phases, _error_code, __) = self.dao.execute(_query)
                 try:
                     _n_phases = len(_phases)
                 except TypeError:
                     _n_phases = 0
                 for j in range(_n_phases):
                     self.dicPhases[_results[i][0]] = _phases
+
+        return False
+
+    def _request_mechanisms(self, mode):
+        """
+        Method to request the failure Mechanisms for a failure Mode.
+
+        :param mode: the :py:class:`rtk.analyses.fmea.Mode.Mode` to retrieve the
+                     failure Mechanisms for.
+        """
+
+        _query = "SELECT * FROM rtk_mechanisms \
+                  WHERE fld_mode_id={0:d}".format(mode.mode_id)
+        (_mechanisms,
+         _error_code,
+         __) = self.dao.execute(_query, commit=False)
+        try:
+            _n_mechanisms = len(_mechanisms)
+        except TypeError:
+            _n_mechanisms = 0
+        for i in range(_n_mechanisms):
+            _mechanism = Mechanism()
+            _mechanism.set_attributes(_mechanisms[i][2:])
+            mode.dicMechanisms[_mechanism.mechanism_id] = _mechanism
+
+            self._request_causes(_mechanism)
+
+        return False
+
+    def _request_causes(self, mechanism):
+        """
+        Method to request the failure Causes for a failure Mechanism.
+
+        :param mechanism: the :py:class:`rtk.analyses.fmea.Mechanism.Mechanism`
+                          to retrieve the failure Causes for.
+        """
+
+        _query = "SELECT * FROM rtk_causes \
+                  WHERE fld_mechanism_id={0:d}".format(mechanism.mechanism_id)
+        (_causes, _error_code, __) = self.dao.execute(_query)
+        try:
+            _n_causes = len(_causes)
+        except TypeError:
+            _n_causes = 0
+
+        for j in range(_n_causes):
+            _cause = Cause()
+            _cause.set_attributes(_causes[j])
+            mechanism.dicCauses[_cause.cause_id] = _cause
+
+            self._request_controls(_cause)
+            self._request_actions(_cause)
+
+        return False
+
+    def _request_controls(self, cause):
+        """
+        Method to request the Controls for a failure Cause.
+
+        :param cause: the :py:class:`rtk.analyses.fmea.Cause.Cause` to retrieve
+                      the Controls for.
+        """
+
+        _query = "SELECT * FROM rtk_controls \
+                   WHERE fld_cause_id={0:d}".format(cause.cause_id)
+        (_controls, _error_code, __) = self.dao.execute(_query)
+        try:
+            _n_controls = len(_controls)
+        except TypeError:
+            _n_controls = 0
+
+        for k in range(_n_controls):
+            _control = Control()
+            _control.set_attributes(_controls[k])
+            cause.dicControls[_control.control_id] = _control
+
+        return False
+
+    def _request_actions(self, cause):
+        """
+        Method to request the Actions for a failure Cause.
+
+        :param cause: the :py:class:`rtk.analyses.fmea.Cause.Cause` to retrieve
+                      the Actions for.
+        """
+
+        _query = "SELECT * FROM rtk_actions \
+                  WHERE fld_cause_id={0:d}".format(cause.cause_id)
+        (_actions, _error_code, __) = self.dao.execute(_query)
+        try:
+            _n_actions = len(_actions)
+        except TypeError:
+            _n_actions = 0
+
+        for k in range(_n_actions):
+            _action = Action()
+            _action.set_attributes(_actions[k])
+            cause.dicActions[_action.action_id] = _action
 
         return False
 
@@ -306,7 +345,7 @@ class FMEA(object):
         :rtype: bool
         """
 
-        self.request_fmea(self._dao, assembly_id, function_id)
+        self.request_fmea(assembly_id, function_id)
 
         return False
 
@@ -338,7 +377,7 @@ class FMEA(object):
 
         (_results,
          _error_code,
-         _last_id) = self._dao.execute(_query, commit=True)
+         _last_id) = self.dao.execute(_query, commit=True)
 
         _mode = Mode()
         _mode.set_attributes((_a_id, _f_id, _last_id, '', '', '', '', '', '',
@@ -371,7 +410,7 @@ class FMEA(object):
                       AND fld_mode_id={1:d}".format(function_id, mode_id)
             _fmea = self.dicFFMEA[function_id]
 
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
         try:
             _fmea.dicModes.pop(mode_id)
         except KeyError:
@@ -395,7 +434,7 @@ class FMEA(object):
         _query = "INSERT INTO rtk_mechanisms \
                   (fld_assembly_id, fld_mode_id) \
                   VALUES ({0:d}, {1:d})".format(hardware_id, mode_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
                                                               commit=True)
 
         _mechanism = Mechanism()
@@ -421,7 +460,7 @@ class FMEA(object):
 
         _query = "DELETE FROM rtk_mechanisms \
                   WHERE fld_mechanism_id={0:d}".format(mechanism_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
                                                               commit=True)
 
         try:
@@ -449,7 +488,7 @@ class FMEA(object):
         _query = "INSERT INTO rtk_causes \
                   (fld_mode_id, fld_mechanism_id) \
                   VALUES ({0:d}, {1:d})".format(mode_id, mechanism_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
                                                               commit=True)
 
         _cause = Cause()
@@ -477,7 +516,7 @@ class FMEA(object):
 
         _query = "DELETE FROM rtk_causes \
                   WHERE fld_cause_id={0:d}".format(cause_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         try:
             _mechanism.dicCauses.pop(cause_id)
@@ -507,13 +546,12 @@ class FMEA(object):
                   (fld_mode_id, fld_mechanism_id, fld_cause_id) \
                   VALUES ({0:d}, {1:d}, {2:d})".format(mode_id, mechanism_id,
                                                        cause_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
                                                               commit=True)
 
         _control = Control()
         _control.set_attributes((mode_id, mechanism_id, cause_id, _last_id, '',
                                  0))
-        _mechanism.dicControls[_last_id] = _control
         _cause.dicControls[_last_id] = _control
 
         return(_results, _error_code, _last_id)
@@ -539,7 +577,7 @@ class FMEA(object):
 
         _query = "DELETE FROM rtk_controls \
                   WHERE fld_control_id={0:d}".format(control_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         try:
             _mechanism.dicControls.pop(control_id)
@@ -570,13 +608,12 @@ class FMEA(object):
                   (fld_mode_id, fld_mechanism_id, fld_cause_id) \
                   VALUES ({0:d}, {1:d}, {2:d})".format(mode_id, mechanism_id,
                                                        cause_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
                                                               commit=True)
 
         _action = Action()
         _action.set_attributes((mode_id, mechanism_id, cause_id, _last_id, '',
                                 0, 0, 0, 0, '', 0, 0, 0, 0))
-        _mechanism.dicActions[_last_id] = _action
         _cause.dicActions[_last_id] = _action
 
         return(_results, _error_code, _last_id)
@@ -602,7 +639,7 @@ class FMEA(object):
 
         _query = "DELETE FROM rtk_actions \
                   WHERE fld_action_id={0:d}".format(action_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         try:
             _mechanism.dicActions.pop(action_id)
@@ -611,6 +648,245 @@ class FMEA(object):
             _error_code = 60
 
         return(_results, _error_code)
+
+    def copy_fmea(self, new_id, assembly_id=None, function_id=None):
+        """
+        Method to copy a FMEA from the currently selected Revision to a newly
+        created Revision.
+
+        :param int new_id: the ID of the new Hardware item or Function to copy
+                           the FMEA information to.
+        :keyword int assembly_id: the ID of Hardware item to copy the FMEA
+                                  information from.
+        :keyword int function_id: the ID of the Function to copy the FMEA
+                                  information from.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _new_fmea = Model(assembly_id, function_id)
+
+        if assembly_id is not None:
+            _fmea = self.dicDFMEA[assembly_id]
+            self.dicDFMEA[new_id] = _new_fmea
+            for _mode in _fmea.dicModes.values():
+                self._copy_mode(_mode, new_id)
+        elif function_id is not None:
+            _fmea = self.dicFFMEA[function_id]
+            self.dicFFMEA[new_id] = _new_fmea
+            for _mode in _fmea.dicModes.values():
+                self._copy_mode(_mode, new_id, function=True)
+
+        return _return
+
+    def _copy_mode(self, mode, new_id, function=False):
+        """
+        Method to copy a failure Mode from the currently selected Revision to a
+        newly created Revsion.
+
+        :param mode: the :py:class:`rtk.analyses.fmea.Mode.Model` to copy.
+        :param int new_id: the ID of the new Hardware item or Function to copy
+                           the Mode information to.
+        :keyword bool function: indicates whether or not the mode is associated
+                                with a Functional FMEA.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if not function:
+            _fmea = self.dicDFMEA[new_id]
+            _assembly_id = new_id
+            _function_id = 0
+        else:
+            _fmea = self.dicFFMEA[new_id]
+            _assembly_id = 0
+            _function_id = new_id
+
+        _query = "INSERT INTO rtk_modes \
+                  (fld_hardware_id, fld_function_id, fld_description, \
+                   fld_mission, fld_mission_phase, fld_local_effect, \
+                   fld_next_effect, fld_end_effect, fld_detection_method, \
+                   fld_other_indications, fld_isolation_method, \
+                   fld_design_provisions, fld_operator_actions, \
+                   fld_severity_class, fld_hazard_rate_source, \
+                   fld_mode_probability, fld_effect_probability, \
+                   fld_mode_ratio, fld_mode_hazard_rate, fld_mode_op_time, \
+                   fld_mode_criticality, fld_rpn_severity, \
+                   fld_rpn_severity_new, fld_critical_item, fld_single_point, \
+                   fld_remarks) \
+                  VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', '{4:s}', '{5:s}', \
+                          '{6:s}', '{7:s}', '{8:s}', '{9:s}', '{10:s}', \
+                          '{11:s}', '{12:s}', '{13:s}', '{14:s}', '{15:s}', \
+                          {16:f}, {17:f}, {18:g}, {19:f}, {20:g}, {21:d}, \
+                          {22:d}, {23:d}, {24:d}, \
+                          '{25:s}')".format(_assembly_id, _function_id,
+                                            mode.description, mode.mission,
+                                            mode.mission_phase,
+                                            mode.local_effect, mode.next_effect,
+                                            mode.end_effect,
+                                            mode.detection_method,
+                                            mode.other_indications,
+                                            mode.isolation_method,
+                                            mode.design_provisions,
+                                            mode.operator_actions,
+                                            mode.severity_class,
+                                            mode.hazard_rate_source,
+                                            mode.mode_probability,
+                                            mode.effect_probability,
+                                            mode.mode_ratio,
+                                            mode.mode_hazard_rate,
+                                            mode.mode_op_time,
+                                            mode.mode_criticality,
+                                            mode.rpn_severity,
+                                            mode.rpn_severity_new,
+                                            mode.critical_item,
+                                            mode.single_point, mode.remarks)
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
+                                                             commit=True)
+
+        if _error_code == 0:
+            _mode = Mode()
+            _mode.set_attributes((_assembly_id, _function_id, _last_id, '', '',
+                                  '', '', '', '', '', '', '', '', '', '', 1.0,
+                                  0.0, 0.0, 0.0, 0.0, 10, 10, 0, 0, ''))
+            _fmea.dicModes[_last_id] = _mode
+            if not function:
+                for _mechanism in mode.dicMechanisms.values():
+                    self._copy_mechanism(_mode, _mechanism)
+        else:
+            _return = True
+
+        return _return
+
+    def _copy_mechanism(self, mode, mechanism):
+        """
+        Method to copy a failure Mechanism from the currently selected Revision
+        to a newly created Revision.
+
+        :param mode: the newly added :py:class:`rtk.analyses.fmea.Mode.Model`.
+        :param mechanism: the :py:class:`rtk.analyses.fmea.Mechanism.Model` to
+                          copy.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _query = "INSERT INTO rtk_mechanisms \
+                  (fld_mode_id, fld_description, fld_rpn_occurrence, \
+                   fld_rpn_detection, fld_rpn, fld_rpn_occurrence_new, \
+                   fld_rpn_detection_new, fld_rpn_new, fld_include_pof) \
+                  VALUES({0:d}, '{1:s}', {2:d}, {3:d}, {4:d}, {5:d}, {6:d}, \
+                         {7:d}, {8:d})".format(mode.mode_id,
+                                               mechanism.description,
+                                               mechanism.rpn_occurrence,
+                                               mechanism.rpn_detection,
+                                               mechanism.rpn,
+                                               mechanism.rpn_occurrence_new,
+                                               mechanism.rpn_detection_new,
+                                               mechanism.rpn_new,
+                                               mechanism.include_pof)
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
+                                                             commit=True)
+
+        if _error_code == 0:
+            _mechanism = Mechanism()
+            _mechanism.set_attributes((mode.mode_id, _last_id, '', 9, 9, 1000,
+                                       9, 9, 1000, 0))
+            mode.dicMechanisms[_last_id] = _mechanism
+            for _cause in mechanism.dicCauses.values():
+                self._copy_cause(_mechanism, _cause, mode.mode_id)
+        else:
+            _return = True
+
+        return _return
+
+    def _copy_cause(self, mechanism, cause, mode_id):
+        """
+        Method to copy a failure Cause from the currently selected Revision to
+        a newly created Revision.
+
+        :param mechanism: the new :py:class:`rtk.analyses.fmea.Mechanism.Model`.
+        :param cause: the :py:class:`rtk.analyses.fmea.Cause.Model` to copy.
+        :param int mode_id: the failure Mode ID of the newly copied failure
+                            Mode.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _query = "INSERT INTO rtk_causes \
+                  (fld_mode_id, fld_mechanism_id, fld_description, \
+                   fld_rpn_occurrence, fld_rpn_detection, fld_rpn, \
+                   fld_rpn_occurrence_new, fld_rpn_detection_new, fld_rpn_new) \
+                  VALUES({0:d}, {1:d}, '{2:s}', {3:d}, {4:d}, {5:d}, \
+                         {6:d}, {7:d}, {8:d})".format(mode_id,
+                                                      mechanism.mechanism_id,
+                                                      cause.description,
+                                                      cause.rpn_occurrence,
+                                                      cause.rpn_detection,
+                                                      cause.rpn,
+                                                      cause.rpn_occurrence_new,
+                                                      cause.rpn_detection_new,
+                                                      cause.rpn_new)
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
+                                                             commit=True)
+
+        if _error_code == 0:
+            _cause = Cause()
+            _cause.set_attributes((mode_id, mechanism.mechanism_id, _last_id,
+                                   '', 9, 9, 1000, 9, 9, 1000))
+            mechanism.dicCauses[_last_id] = _cause
+            for _control in cause.dicControls.values():
+                self._copy_control(_cause, _control, mode_id,
+                                   mechanism.mechanism_id)
+        else:
+            _return = True
+
+        return _return
+
+    def _copy_control(self, cause, control, mode_id, mechanism_id):
+        """
+        Method to copy a failure cause Control from the currently selected
+        Revision to a newly created Revision.
+
+        :param cause: the newly added :py:class:`rtk.analyses.fmea.Cause.Model`.
+        :param control: the :py:class:`rtk.analyses.fmea.Control.Model` to
+                        copy.
+        :param int mode_id: the failure Mode ID of the newly copied failure
+                            Mode.
+        :param int mechanism_id: the failure Mechanism ID of the newly copied
+                                 failure Mechanism.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _query = "INSERT INTO rtk_controls \
+                  (fld_mode_id, fld_mechanism_id, fld_cause_id, \
+                   fld_control_description, fld_control_type) \
+                  VALUES({0:d}, {1:d}, {2:d}, '{3:s}', \
+                         {4:d})".format(mode_id, mechanism_id, cause.cause_id,
+                                        control.description,
+                                        control.control_type)
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
+                                                             commit=True)
+
+        if _error_code == 0:
+            _control = Control()
+            _control.set_attributes((mode_id, mechanism_id, cause.cause_id,
+                                     _last_id, '', 0))
+            cause.dicControls[_last_id] = _control
+        else:
+            _return = True
+
+        return _return
 
     def save_fmea(self, assembly_id=None, function_id=None):
         """
@@ -622,7 +898,7 @@ class FMEA(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Consider refactoring save_fmea; current McCabe Complexity metric = 10.
+
         # Controller must be associated with either a Function or Hardware
         # item.
         if assembly_id is None and function_id is None:
@@ -644,10 +920,10 @@ class FMEA(object):
                 self._save_mechanism(_mechanism)
                 for _cause in _mechanism.dicCauses.values():
                     self._save_cause(_cause)
-                for _control in _mechanism.dicControls.values():
-                    self._save_control(_control)
-                for _action in _mechanism.dicActions.values():
-                    self._save_action(_action)
+                    for _control in _cause.dicControls.values():
+                        self._save_control(_control)
+                    for _action in _cause.dicActions.values():
+                        self._save_action(_action)
 
         return False
 
@@ -692,7 +968,7 @@ class FMEA(object):
                       mode.rpn_severity_new, mode.critical_item,
                       mode.single_point, mode.remarks, mode.assembly_id,
                       mode.function_id, mode.mode_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return _error_code
 
@@ -718,7 +994,7 @@ class FMEA(object):
                       mechanism.rpn_occurrence_new,
                       mechanism.rpn_detection_new, mechanism.rpn_new,
                       mechanism.include_pof, mechanism.mechanism_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return _error_code
 
@@ -740,7 +1016,7 @@ class FMEA(object):
                       cause.description, cause.rpn_occurrence,
                       cause.rpn_detection, cause.rpn, cause.rpn_occurrence_new,
                       cause.rpn_detection_new, cause.rpn_new, cause.cause_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return _error_code
 
@@ -759,7 +1035,7 @@ class FMEA(object):
                   WHERE fld_control_id={2:d}".format(control.description,
                                                      control.control_type,
                                                      control.control_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return _error_code
 
@@ -790,6 +1066,6 @@ class FMEA(object):
                       action.action_approved, action.action_approved_date,
                       action.action_closed, action.action_closed_date,
                       action.action_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return _error_code

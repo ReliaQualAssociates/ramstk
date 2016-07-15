@@ -217,8 +217,7 @@ class ModuleView(object):
             _piter = model.append(row, _function)
             _parent_id = _function[1]
 
-            self._dtc_fmea.request_fmea(self.mdcRTK.project_dao, None,
-                                        _function[0])
+            self._dtc_fmea.request_fmea(None, _function[0])
 
             # Find the child functions of the current parent function.  These
             # will be the new parent functions to pass to this method.
