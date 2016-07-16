@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Requirement Package Data Module
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.requirement.Requirement.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Requirement Package Data Module
+###############################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -228,7 +228,6 @@ class Requirement(object):
         # Define private list attributes.
 
         # Define private scalar attributes.
-        self._dao = None
         self._last_id = None
 
         # Define public dictionary attributes.
@@ -237,8 +236,9 @@ class Requirement(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.dao = None
 
-    def request_requirements(self, dao, revision_id):
+    def request_requirements(self, revision_id):
         """
         Method to reads the RTK Project database and loads all the requirements
         associated with the selected Revision.  For each requirement returned:
@@ -250,22 +250,18 @@ class Requirement(object):
         #. Add the instance to the dictionary of Requirements being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
         :param int revision_id: the Revision ID to select the requirements for.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
-        self._dao = dao
-
-        self._last_id = self._dao.get_last_id('tbl_requirements')[0]
+        self._last_id = self.dao.get_last_id('tbl_requirements')[0]
 
         # Select everything from the function table.
         _query = "SELECT * FROM tbl_requirements \
                   WHERE fld_revision_id={0:d} \
                   ORDER BY fld_parent_id".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_requirements = len(_results)
@@ -315,7 +311,7 @@ class Requirement(object):
 
         (_results,
          _error_code,
-         _requirement_id) = self._dao.execute(_query, commit=True)
+         _requirement_id) = self.dao.execute(_query, commit=True)
 
         # If the new requirement was added successfully to the RTK Project
         # database:
@@ -324,7 +320,7 @@ class Requirement(object):
         #   3. Set the attributes of the new Requirement model instance.
         #   4. Add the new Requirement model to the controller dictionary.
         if _results:
-            self._last_id = self._dao.get_last_id('tbl_requirements')[0]
+            self._last_id = self.dao.get_last_id('tbl_requirements')[0]
             _requirement = Model()
             _requirement.set_attributes((revision_id, self._last_id, '', '',
                                          '', 1, '', '', '', 0, '', 0, 719163,
@@ -348,13 +344,13 @@ class Requirement(object):
         # Delete all the child requirements, if any.
         _query = "DELETE FROM tbl_requirements \
                   WHERE fld_parent_id={0:d}".format(requirement_id)
-        (_results, _error_codes[0], __) = self._dao.execute(_query,
+        (_results, _error_codes[0], __) = self.dao.execute(_query,
                                                             commit=True)
 
         # Then delete the parent requirement.
         _query = "DELETE FROM tbl_requirements \
                   WHERE fld_requirement_id={0:d}".format(requirement_id)
-        (_results, _error_codes[1], __) = self._dao.execute(_query,
+        (_results, _error_codes[1], __) = self.dao.execute(_query,
                                                             commit=True)
         self.dicRequirements.pop(requirement_id)
 
@@ -375,7 +371,7 @@ class Requirement(object):
         # Requirements set the first Requirement ID to zero.
         _query = "SELECT MAX(fld_requirement_id) FROM tbl_requirements"
         (_requirement_id,
-         _error_code, __) = self._dao.execute(_query, commit=False)
+         _error_code, __) = self.dao.execute(_query, commit=False)
 
         if _requirement_id[0][0] is not None:
             _requirement_id = _requirement_id[0][0] + 1
@@ -402,7 +398,7 @@ class Requirement(object):
                                                _requirement.specification,
                                                _requirement.page_number,
                                                _requirement.figure_number)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             # Add an entry to the Requirement ID cross-reference dictionary for
@@ -419,7 +415,7 @@ class Requirement(object):
                       WHERE fld_parent_id={1:d} \
                       AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
                                                         _key, revision_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
         return False
@@ -459,7 +455,7 @@ class Requirement(object):
                       _requirement.owner, _requirement.validated,
                       _requirement.validated_date, _requirement.parent_id,
                       _clear, _complete, _consistent, _verifiable)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 

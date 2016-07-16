@@ -1,13 +1,13 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Stakeholder module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestStakeholder.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Stakeholder module algorithms and models.
+"""
 
 import sys
 from os.path import dirname
@@ -150,6 +150,6 @@ class TestStakeholderController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Stakeholder))
-        self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicStakeholders, {})
+        self.assertEqual(self.DUT.dao, None)

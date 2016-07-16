@@ -303,7 +303,7 @@ class WorkView(gtk.VBox):
         _position += 1
 
         # Create report buttons.
-        # TODO: See bug 183.
+        # FIXME: See bug 183.
         _button = gtk.MenuToolButton(None, label="")
         _button.set_tooltip_text(_(u"Create Requirement reports."))
         _image = gtk.Image()

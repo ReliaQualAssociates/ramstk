@@ -1,13 +1,13 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Requirement module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.integration.TestRequirement.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Requirement module algorithms and models.
+"""
 
 import sys
 from os.path import dirname
@@ -41,6 +41,7 @@ class TestRequirementController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Requirement()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test00_request_requirements(self):
@@ -48,15 +49,15 @@ class TestRequirementController(unittest.TestCase):
         (TestRequirement) request_requirements should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
-# TODO: Test that method fails when no Requirements exist in database.
+        self.assertEqual(self.DUT.request_requirements(0)[1], 0)
+    # TODO: Test that method fails when no Requirements exist in database.
     @attr(all=True, integration=True)
     def test01_add_requirement(self):
         """
         (TestRequirement) add_requirement returns 0 on success and new Requirement data model added to dictionary
         """
 
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_requirements(0)[1], 0)
         (_results,
          _error_code,
          _requirement_id) = self.DUT.add_requirement(0, 0)
@@ -72,7 +73,7 @@ class TestRequirementController(unittest.TestCase):
         (TestRequirement) add_requirement uses default parent ID when none is passed
         """
 
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_requirements(0)[1], 0)
         (_results,
          _error_code,
          _requirement_id) = self.DUT.add_requirement(0)
@@ -87,7 +88,7 @@ class TestRequirementController(unittest.TestCase):
         (TestRequirement) delete_requirement returns 0 on success
         """
 
-        self.assertEqual(self.DUT.request_requirements(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_requirements(0)[1], 0)
         (_results,
          _error_code) = self.DUT.delete_requirement(self.DUT._last_id)
 
@@ -100,7 +101,7 @@ class TestRequirementController(unittest.TestCase):
         (TestRequirement) save_requirement returns (True, 0) on success
         """
 
-        self.DUT.request_requirements(self._dao, 0)
+        self.DUT.request_requirements(0)
         self.assertEqual(self.DUT.save_requirement(1), (True, 0))
 
     @attr(all=True, integration=True)
@@ -109,7 +110,7 @@ class TestRequirementController(unittest.TestCase):
         (TestRequirement) save_all_requirements returns False on success
         """
 
-        self.DUT.request_requirements(self._dao, 0)
+        self.DUT.request_requirements(0)
         self.assertEqual(self.DUT.save_all_requirements(),
                          [(1, 0), (2, 0), (3, 0), (4, 0), (5, 0), (6, 0)])
 
@@ -119,5 +120,5 @@ class TestRequirementController(unittest.TestCase):
         (TestRequirement) save_all_requirements returns False on success
         """
 
-        self.DUT.request_requirements(self._dao, 0)
+        self.DUT.request_requirements(0)
         self.assertFalse(self.DUT.copy_requirements(0))

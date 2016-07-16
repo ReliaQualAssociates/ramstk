@@ -40,6 +40,7 @@ class TestStakeholderController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Stakeholder()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test00_request_inputs(self):
@@ -47,7 +48,7 @@ class TestStakeholderController(unittest.TestCase):
         (TestStakeholder) request_inputs should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_inputs(0)[1], 0)
 # TODO: Test that method fails when no Stakeholder inputs exist in database.
     @attr(all=True, integration=True)
     def test01_add_input(self):
@@ -55,7 +56,7 @@ class TestStakeholderController(unittest.TestCase):
         (TestStakeholder) add_input returns 0 on success and new Stakeholder data model added to dictionary
         """
 
-        self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_inputs(0)[1], 0)
         (_results,
          _error_code) = self.DUT.add_input(0)
 
@@ -70,7 +71,7 @@ class TestStakeholderController(unittest.TestCase):
         (TestStakeholder) delete_input returns 0 on success
         """
 
-        self.assertEqual(self.DUT.request_inputs(self._dao, 0)[1], 0)
+        self.assertEqual(self.DUT.request_inputs(0)[1], 0)
         (_results,
          _error_code) = self.DUT.delete_input(self.DUT._last_id)
 
@@ -83,7 +84,7 @@ class TestStakeholderController(unittest.TestCase):
         (TestStakeholder) save_input returns (True, 0) on success
         """
 
-        self.DUT.request_inputs(self._dao, 0)
+        self.DUT.request_inputs(0)
         self.assertEqual(self.DUT.save_input(1), (True, 0))
 
     @attr(all=True, integration=True)
@@ -92,7 +93,7 @@ class TestStakeholderController(unittest.TestCase):
         (TestStakeholder) save_all_inputs returns False on success
         """
 
-        self.DUT.request_inputs(self._dao, 0)
+        self.DUT.request_inputs(0)
         self.assertFalse(self.DUT.save_all_inputs())
 
     @attr(all=True, integration=True)
@@ -101,5 +102,5 @@ class TestStakeholderController(unittest.TestCase):
         (TestStakeholder) calculate_stakeholder returns 0 on success
         """
 
-        self.DUT.request_inputs(self._dao, 0)
+        self.DUT.request_inputs(0)
         self.assertEqual(self.DUT.calculate_stakeholder(1), (0.8, 0.8))

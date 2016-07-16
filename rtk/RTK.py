@@ -929,8 +929,8 @@ class RTK(object):
         self.dtcDefinitions.dao = self.project_dao
         self.dtcFunction.dao = self.project_dao
         self.dtcFMEA.dao = self.project_dao
-        # self.dtcRequirement.dao = self.project_dao
-        # self.dtcStakeholder.dao = self.project_dao
+        self.dtcRequirement.dao = self.project_dao
+        self.dtcStakeholder.dao = self.project_dao
         # self.dtcHardwareBoM.dao = self.project_dao
         # self.dtcAllocation.dao = self.project_dao
         # self.dtcHazard.dao = self.project_dao

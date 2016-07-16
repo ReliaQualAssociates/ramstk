@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Requirement Package Module View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.requirement.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Requirement Package Module View
+###############################
+"""
 
 import sys
 
@@ -207,7 +207,7 @@ class ModuleView(object):
         """
 
         (_requirements, __) = self._dtc_requirements.request_requirements(
-            self.mdcRTK.project_dao, self.mdcRTK.revision_id)
+            self.mdcRTK.revision_id)
 
         # Only load the requirements associated with the selected Revision.
         _requirements = [_r for _r in _requirements
@@ -254,8 +254,7 @@ class ModuleView(object):
             _piter = model.append(row, _requirement)
             _parent_id = _requirement[1]
 
-            self._dtc_stakeholder.request_inputs(self.mdcRTK.project_dao,
-                                                 _requirement[0])
+            self._dtc_stakeholder.request_inputs(_requirement[0])
 
             # Find the child requirements of the current parent requirement.
             # These # will be the new parent requirements to pass to this
@@ -306,7 +305,7 @@ class ModuleView(object):
         if event.button == 1:
             self._on_row_changed(treeview, None, 0)
         elif event.button == 3:
-# TODO: See bug 178
+            # FIXME: See bug 178
             pass
 
         return False
@@ -349,7 +348,7 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-        # TODO: Refactor _on_cell_edited; current McCabe Complexity Metric = 11.
+        # WARNING: Refactor _on_cell_edited; current McCabe Complexity Metric = 11.
         cell.handler_block(self._dic_handler_id[position])
 
         # Update the gtk.TreeModel() with the new value.

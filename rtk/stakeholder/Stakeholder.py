@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Stakeholder Package Data Module
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.stakeholder.Stakeholder.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Stakeholder Package Data Module
+###############################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -201,8 +201,6 @@ class Stakeholder(object):
         # Define private list attributes.
 
         # Define private scalar attributes.
-
-        self._dao = None
         self._last_id = None
 
         # Initialize public dictionary attributes.
@@ -211,8 +209,9 @@ class Stakeholder(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.dao = None
 
-    def request_inputs(self, dao, revision_id):
+    def request_inputs(self, revision_id):
         """
         Method to read the RTK Project database and load all the stakeholder
         inputs associated with the selected Revision.  For each stakeholder
@@ -225,22 +224,17 @@ class Stakeholder(object):
         #. Add the instance to the dictionary of Stakeholders being managed
            by this controller.
 
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` object to use for
-                    communicating with the RTK Project database.
-
         :param int revision_id: the Revision ID to select the stakeholders for.
         :return: (_results, _error_code)
         :rtype: tuple
         """
 
-        self._dao = dao
-
-        self._last_id = self._dao.get_last_id('tbl_stakeholder_input')[0]
+        self._last_id = self.dao.get_last_id('tbl_stakeholder_input')[0]
 
         # Select everything from the function table.
         _query = "SELECT * FROM tbl_stakeholder_input \
                   WHERE fld_revision_id={0:d}".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_stakeholders = len(_results)
@@ -269,7 +263,7 @@ class Stakeholder(object):
                   VALUES ({0:d})".format(revision_id)
         (_results,
          _error_code,
-         _stakeholder_id) = self._dao.execute(_query, commit=True)
+         _stakeholder_id) = self.dao.execute(_query, commit=True)
 
         # If the new stakeholder was added successfully to the RTK Project
         # database:
@@ -278,7 +272,7 @@ class Stakeholder(object):
         #   3. Set the attributes of the new Stakeholder model instance.
         #   4. Add the new Stakeholder model to the controller dictionary.
         if _results:
-            self._last_id = self._dao.get_last_id('tbl_stakeholder_input')[0]
+            self._last_id = self.dao.get_last_id('tbl_stakeholder_input')[0]
             _stakeholder = Model()
             _stakeholder.set_attributes((revision_id, self._last_id, '', '',
                                          '', 1, 1, 3, 1.0, 0.0))
@@ -298,7 +292,7 @@ class Stakeholder(object):
         # Then delete the parent stakeholder.
         _query = "DELETE FROM tbl_stakeholder_input \
                   WHERE fld_input_id={0:d}".format(input_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         self.dicStakeholders.pop(input_id)
 
@@ -332,7 +326,7 @@ class Stakeholder(object):
                       _input.requirement, _input.lst_user_floats[0],
                       _input.lst_user_floats[1], _input.lst_user_floats[2],
                       _input.lst_user_floats[3], _input.lst_user_floats[4])
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 

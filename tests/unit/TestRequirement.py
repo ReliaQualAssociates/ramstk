@@ -1,13 +1,13 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Requirement module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestRequirement.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Requirement module algorithms and models.
+"""
 
 import sys
 from os.path import dirname
@@ -176,6 +176,6 @@ class TestRequirementController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Requirement))
-        self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicRequirements, {})
+        self.assertEqual(self.DUT.dao, None)
