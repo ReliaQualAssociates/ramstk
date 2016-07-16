@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-#############################
-Multiline CellRenderer Module
-#############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       gui.gtk.CellRendererML.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+#############################
+Multiline CellRenderer Module
+#############################
+"""
 
 import gettext
 import sys

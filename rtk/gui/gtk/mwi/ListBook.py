@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-===========================================
-PyGTK Multi-Window Interface List Book View
-===========================================
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.mwi.ListBook.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+===========================================
+PyGTK Multi-Window Interface List Book View
+===========================================
+"""
 
 import sys
 
@@ -41,7 +41,7 @@ except ImportError:
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, _conf.LOCALE)

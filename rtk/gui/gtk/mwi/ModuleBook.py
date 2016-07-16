@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-=============================================
-PyGTK Multi-Window Interface Module Book View
-=============================================
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.mwi.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+=============================================
+PyGTK Multi-Window Interface Module Book View
+=============================================
+"""
 
 import sys
 

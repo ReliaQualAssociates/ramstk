@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-#####################
-RTK Assistants Module
-#####################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.Assistants.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+#####################
+RTK Assistants Module
+#####################
+"""
 
 import gettext
 import locale
@@ -106,7 +106,7 @@ class CreateProject(object):
         """
         Method to create a RTK Project database using MySQL/MariaDB.
         """
-# TODO: Update MySQL/MariaDB code.
+        # TODO: Update MySQL/MariaDB code.
         _login = Login.Login(_(u"Create a new RTK Program Database"))
         if _login.answer != gtk.RESPONSE_ACCEPT:
             return True

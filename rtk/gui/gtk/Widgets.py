@@ -1,4 +1,10 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#       rtk.gui.gtk.widgets.py is part of The RTK Project
+#
+# All rights reserved.
+
 """
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
@@ -6,14 +12,9 @@ create, populate, destroy, or interact with pyGTK widgets in the RTK
 application.
 """
 
-# -*- coding: utf-8 -*-
-#
-#       rtk.gui.gtk.widgets.py is part of The RTK Project
-#
-# All rights reserved.
-
 import gettext
 import sys
+import os
 
 import pango
 
@@ -43,7 +44,6 @@ try:
 except ImportError:
     import rtk.Configuration as Configuration
     import rtk.gui.gtk.CellRendererML as CellRendererML
-
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -422,7 +422,7 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
              gtk.TreeView() columns.
     :rtype: gtk.TreeView, list
     """
-# TODO: Re-write make_treeview; current McCabe Complexity metric=21.
+    # WARNING: Refactor make_treeview; current McCabe Complexity metric=21.
     from lxml import etree
 
     # Retrieve the column heading text from the format file.
@@ -529,9 +529,9 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
 
         column = gtk.TreeViewColumn("")
 
-# If this is the Hardware, Software, FMECA, or Testing tree, add a column for a
-# pixbuf.
-# If this is the FMECA tree, add a column for an integer and a pixbuf
+        # If this is the Hardware, Software, FMECA, or Testing tree, add a
+        # column for a pixbuf.  If this is the FMECA tree, add a column for an
+        # integer and a pixbuf
         if i == 1 and fmt_idx == 3:
             column.set_visible(1)
             cellpb = gtk.CellRendererPixbuf()
@@ -749,7 +749,7 @@ def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-# TODO: Re-write load_plot; current McCabe Complexity metric=23.
+    # WARNING: Refactor load_plot; current McCabe Complexity metric=23.
     axis.cla()
 
     axis.grid(True, which='both')

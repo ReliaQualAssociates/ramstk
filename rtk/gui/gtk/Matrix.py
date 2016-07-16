@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-#############
-Matrix Module
-#############
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       gui.gtk.Matrix.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+#############
+Matrix Module
+#############
+"""
 
 import sys
 
