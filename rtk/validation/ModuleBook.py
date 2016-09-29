@@ -328,7 +328,7 @@ class ModuleView(object):
         :return: False if successful and True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_cell_edited; current McCabe Complexity metric = 17.
+# WARNING: Refactor _on_cell_edited; current McCabe Complexity metric = 17.
         if self._lst_col_order[index] == 2:
             self._model.task_description = new_text
         elif self._lst_col_order[index] == 3:

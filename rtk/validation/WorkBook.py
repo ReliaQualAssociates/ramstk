@@ -758,7 +758,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Re-write _load_progress_plot; McCabe Complexity metric = 15.
+# WARNING: Refactor _load_progress_plot; McCabe Complexity metric = 15.
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         _assess_dates = []
@@ -945,7 +945,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_focus_out; McCabe Complexity metric = 15.
+# WARNING: Refactor _on_focus_out; McCabe Complexity metric = 15.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:

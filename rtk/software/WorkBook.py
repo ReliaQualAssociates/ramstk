@@ -1180,7 +1180,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Re-write _load_risk_analysis_page; current McCabe Complexity metric = 21.
+# WARNING: Refactor _load_risk_analysis_page; current McCabe Complexity metric = 21.
         if self._software_model.level_id == 1:             # System
             _lst_show = [0]
             _lst_hide = [1, 2, 3, 4, 5, 6]
@@ -1345,7 +1345,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 17.
+# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 17.
         _return = False
 
         if index == 0:
@@ -1565,7 +1565,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_focus_out; current McCabe Complexity metric = 22.
+# WARNING: Refactor _on_focus_out; current McCabe Complexity metric = 22.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:

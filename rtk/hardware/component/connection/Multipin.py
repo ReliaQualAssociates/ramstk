@@ -125,8 +125,7 @@ class Multipin(Connection):
             self.configuration = int(values[119])
             self.contact_gauge = int(values[120])
             self.n_active_contacts = int(values[121])
-# TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -165,7 +164,7 @@ class Multipin(Connection):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write calculate_part; current McCabe Complexity metric = 41.
+# WARNING: Refactor calculate_part; current McCabe Complexity metric = 41.
         from math import exp
 
         self.hazard_rate_model = {}

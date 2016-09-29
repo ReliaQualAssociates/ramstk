@@ -148,7 +148,7 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
                     [MLE, AIC, BIC], correlation coeff.]
     :rtype: list
     """
-# TODO: Re-write regression; current McCabe Complexity metric=15.
+# WARNING: Refactor regression; current McCabe Complexity metric=15.
     # Initialize lists to hold results.
     _parameters = [0.0, 0.0, 0.0]           # Scale, shape, location.
     _variance = [0.0, 0.0, 0.0]             # Scale variance, covariance,

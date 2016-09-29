@@ -229,7 +229,7 @@ class WorkView(gtk.HBox):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Re-write create_page; current McCabe Complexity metric = 17.
+# WARNING: Refactor create_page; current McCabe Complexity metric = 17.
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the PoF gtk.TreeView().                                #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -841,7 +841,7 @@ class WorkView(gtk.HBox):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_cell_edit; current McCabe Complexity metric = 28.
+# WARNING: Refactor _on_cell_edit; current McCabe Complexity metric = 28.
         _pof = self.dtcPoF.dicPoF[self._hardware_id]
 
         (_model, _row) = self.tvwPoF.get_selection().get_selected()

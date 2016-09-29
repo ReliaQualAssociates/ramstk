@@ -713,7 +713,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write Planning._load_plot; current McCabe Complexity metric=12.
+# WARNING: Refactor Planning._load_plot; current McCabe Complexity metric=12.
         _log = False
 
         if(self._testing_model.ttt <= 0.0 and
@@ -783,7 +783,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write Planning._on_button_clicked; current McCabe Complexity metric=23.
+# WARNING: Refactor Planning._on_button_clicked; current McCabe Complexity metric=23.
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         button.handler_block(self._lst_handler_id[index])
@@ -975,7 +975,7 @@ class Planning(gtk.HPaned):                 # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write Planning._on_focus_out; current McCabe Complexity metric=12.
+# WARNING: Refactor Planning._on_focus_out; current McCabe Complexity metric=12.
         entry.handler_block(self._lst_handler_id[index])
 
         # Get the gtk.TreeModel() of the RG plan details and the root (first
@@ -1335,7 +1335,7 @@ class Feasibility(gtk.HPaned):              # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Re-write Feasibility._load_page; current McCabe Complexity metric=21.
+# WARNING: Refactor Feasibility._load_page; current McCabe Complexity metric=21.
         self._testing_model = model
 
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
@@ -1991,7 +1991,7 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write Assessment._load_plot; current McCabe Complexity metric=13.
+# WARNING: Refactor Assessment._load_plot; current McCabe Complexity metric=13.
         _log = False
 
         if(self._testing_model.ttt <= 0.0 and
@@ -2089,7 +2089,7 @@ class Assessment(gtk.HPaned):               # pylint: disable=R0902, R0904
         :return: (_obs_times, _obsll, _obspt, _obsul)
         :rtype: tuple of lists of floats
         """
-# TODO: Re-write Assessment._get_observed_values; current McCabe Complexity metric=12.
+# WARNING: Refactor Assessment._get_observed_values; current McCabe Complexity metric=12.
         _obs_times = []
 
         # First update the left interval time using the previous record's right

@@ -410,7 +410,7 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :return: _ideal
         :rtype: list of floats
         """
-# TODO: Re-write calculate_idealized_growth_curve; current McCabe Complexity metric=17.
+# WARNING: Refactor calculate_idealized_growth_curve; current McCabe Complexity metric=17.
         _ideal = []
 
         # Verify the first phase average MTBF is greater than zero.  If not,

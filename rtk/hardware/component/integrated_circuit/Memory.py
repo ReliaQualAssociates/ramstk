@@ -120,8 +120,7 @@ class Memory(IntegratedCircuit):
             self.C2 = float(values[104])
             self.piL = float(values[105])
             self.lambda_cyc = float(values[106])
-            # TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -244,7 +243,7 @@ class DRAM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write DRAM.calculate_part; current McCabe Complexity metric = 11.
+# WARNING: Refactor DRAM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
@@ -322,7 +321,7 @@ class EEPROM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write EEPROM.calculate_part; current McCabe Complexity metric = 23.
+# WARNING: Refactor EEPROM.calculate_part; current McCabe Complexity metric = 23.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -446,7 +445,7 @@ class ROM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write ROM.calculate_part; current McCabe Complexity metric = 11.
+# WARNING: Refactor ROM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
@@ -521,7 +520,7 @@ class SRAM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write SRAM.calculate_part; current McCabe Complexity metric = 11.
+# WARNING: Refactor SRAM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:

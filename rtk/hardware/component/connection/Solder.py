@@ -114,8 +114,7 @@ class PTH(Connection):
             self.n_wave_soldered = int(values[118])
             self.n_hand_soldered = int(values[119])
             self.n_circuit_planes = int(values[120])
-            # TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -269,8 +268,7 @@ class NonPTH(Connection):
         try:
             self.piQ = float(values[98])
             self.connection_type = int(values[117])
-# TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

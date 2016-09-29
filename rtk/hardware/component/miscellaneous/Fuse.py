@@ -104,8 +104,7 @@ class Fuse(Component):
 
         try:
             self.piE = float(values[96])
-# TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

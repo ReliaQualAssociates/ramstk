@@ -129,8 +129,7 @@ class VLSI(IntegratedCircuit):
             self.piCD = float(values[108])
             self.piPT = float(values[109])
             self.die_area = float(values[110])
-            # TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -169,7 +168,7 @@ class VLSI(IntegratedCircuit):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write calculate_part; current McCabe Complexity metric = 13.
+# WARNING: Refactor calculate_part; current McCabe Complexity metric = 13.
         from math import exp, log
 
         self.hazard_rate_model = {}

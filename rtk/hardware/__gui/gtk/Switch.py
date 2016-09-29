@@ -101,7 +101,7 @@ class Inputs(gtk.Frame):
         :param model: the :py:class:`rtk.hardware.switch.Switch.Model` whose
                       attributes will be displayed.
         """
-# TODO: Re-write __init__; current McCabe Complexity metric = 17.
+# WARNING: Refactor __init__; current McCabe Complexity metric = 17.
         gtk.Frame.__init__(self)
 
         self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)

@@ -74,7 +74,7 @@ class Inputs(gtk.Frame):
         :param model: the :py:class:`rtk.hardware.component.resistor.Resistor.Model`
                       whose attributes will be displayed.
         """
-# TODO: Re-write __init__; current McCabe Complexity metrix = 24.
+# WARNING: Refactor __init__; current McCabe Complexity metrix = 24.
         gtk.Frame.__init__(self)
 
         self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
@@ -410,7 +410,7 @@ class Inputs(gtk.Frame):
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
         """
-# TODO: Re-write create_217_stress_inputs; current McCabe Complexity metrix = 13.
+# WARNING: Refactor create_217_stress_inputs; current McCabe Complexity metrix = 13.
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _(u"MIL-HDBK-217FN2 Part Stress Inputs") +

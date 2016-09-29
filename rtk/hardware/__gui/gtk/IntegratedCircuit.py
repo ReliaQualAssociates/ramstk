@@ -264,7 +264,7 @@ class Inputs(gtk.Frame):
         :keyword int x_pos: the x position of the display widgets.
         :return: False if successful or True if an error is encountered.
         """
-# TODO: Re-write create_217_stress_inputs; current McCabe Complexity metric = 24.
+# WARNING: Refactor create_217_stress_inputs; current McCabe Complexity metric = 24.
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
                           _(u"MIL-HDBK-217FN2 Part Stress Inputs") +
@@ -679,7 +679,7 @@ class Inputs(gtk.Frame):
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_focus_out; current McCabe Complexity metric = 14.
+# WARNING: Refactor _on_focus_out; current McCabe Complexity metric = 14.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 1:

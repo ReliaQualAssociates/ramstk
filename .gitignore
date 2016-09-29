@@ -41,3 +41,6 @@ RTKUML.xmi
 code.counts
 geany_run_script.sh
 pylintout
+/.eric6project/RTK.e4q
+/.eric6project/RTK.e6t
+/RTK.e4p

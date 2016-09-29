@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-################################
-Hardware Package Hardware Module
-################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.Hardware.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+################################
+Hardware Package Hardware Module
+################################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -184,7 +184,6 @@ class Model(object):                        # pylint: disable=R0902
         # Define public list attributes.
 
         # Define public scalar attributes.
-
         self.revision_id = None
         self.hardware_id = None
         self.alt_part_number = ''
@@ -622,7 +621,7 @@ class Model(object):                        # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Consider re-writing calculate; current McCabe Complexity metric = 9.
+        # TODO: Consider re-writing calculate; current McCabe Complexity metric = 9.
         assembly.hazard_rate_active = 0.0
         assembly.hazard_rate_dormant = 0.0
         assembly.hazard_rate_software = 0.0
@@ -645,7 +644,7 @@ class Model(object):                        # pylint: disable=R0902
                 try:
                     _component.calculate_part()
                 except AttributeError:
-# TODO: Handle AttributeError in calculate.
+                    # FIXME: Handle AttributeError in calculate.
                     print "Could not calculate {0:s}".format(_component.name)
 
             elif _component.hazard_rate_method == 2:    # Specified, h(t)
@@ -746,7 +745,7 @@ class Model(object):                        # pylint: disable=R0902
         #                                  (hardware.hazard_rate_specified**2.0)
 
         # Calculate the mission hazard rate.
-# TODO: Add attributes to allow mission (redundancy) calculations.
+        # FIXME: Add attributes to allow mission (redundancy) calculations.
         hardware.hazard_rate_mission = hardware.hazard_rate_logistics
         hardware.reliability_mission = hardware.reliability_logistics
 
@@ -768,13 +767,13 @@ class Model(object):                        # pylint: disable=R0902
             hardware.cost_failure = hardware.cost / \
                 (hardware.hazard_rate_logistics * hardware.mission_time)
         except ZeroDivisionError:
-            # TODO: Handle errors.
+            # FIXME: Handle errors.
             pass
 
         try:
             hardware.cost_hour = hardware.cost / hardware.mission_time
         except ZeroDivisionError:
-            # TODO: Handle errors.
+            # FIXME: Handle errors.
             pass
 
         return False

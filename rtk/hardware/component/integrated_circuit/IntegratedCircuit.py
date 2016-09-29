@@ -104,8 +104,7 @@ class Model(Component):
             self.piE = float(values[99])
             self.piT = float(values[100])
             self.quality = int(values[116])
-            # TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -197,7 +196,7 @@ class Model(Component):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _overstressed; current McCabe Complexity metric = 11.
+# WARNING: Refactor _overstressed; current McCabe Complexity metric = 11.
         _reason_num = 1
         _reason = ''
         _harsh = True

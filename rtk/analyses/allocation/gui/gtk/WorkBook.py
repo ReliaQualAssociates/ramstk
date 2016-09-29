@@ -412,7 +412,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _format; current McCabe Complexity metrix = 21.
+# WARNING: Refactor _format; current McCabe Complexity metrix = 21.
         _allocation = self.dtcAllocation.dicAllocation[hardware_id]
 
         if _allocation.method == 1:         # Equal apportionment selected.
@@ -487,7 +487,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 11.
+# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 11.
         _return = False
 
         if index == 0:                      # Perform allocation

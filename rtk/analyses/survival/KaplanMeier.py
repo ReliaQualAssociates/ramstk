@@ -104,7 +104,7 @@ def kaplan_meier(data, start, end, conf=0.75, conftype=3):  # pylint: disable=W0
              _r; the array of observations during which an event occurred.
     :rtype: ndarray, ndarray
     """
-# TODO: Re-write kaplan_meier; current McCabe Complexity metric=12.
+# WARNING: Refactor kaplan_meier; current McCabe Complexity metric=12.
     _kmf = nonpar.KaplanMeierFitter(alpha=conf)
 
     # Sort data by the right of the interval.  Remove records occurring before

@@ -127,8 +127,7 @@ class Linear(IntegratedCircuit):
             self.C1 = float(values[103])
             self.C2 = float(values[104])
             self.piL = float(values[105])
-            # TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -163,7 +162,7 @@ class Linear(IntegratedCircuit):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write calculate; current McCabe Complexity metrix = 16.
+# WARNING: Refactor calculate; current McCabe Complexity metrix = 16.
         from math import exp
 
         self.hazard_rate_model = {}

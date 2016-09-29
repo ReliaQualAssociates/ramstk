@@ -275,7 +275,7 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _load_cdr_questions; current McCabe Complexity metric = 16.
+# WARNING: Refactor _load_cdr_questions; current McCabe Complexity metric = 16.
         _query = "SELECT fld_y, fld_value FROM rtk_cdr \
                   WHERE fld_software_id={0:d}".format(software.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
@@ -416,7 +416,7 @@ class BoM(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
-# TODO: Re-write add_software; current McCabe Complexity metric = 19.
+# WARNING: Refactor add_software; current McCabe Complexity metric = 19.
         # By default we add the new Software item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
@@ -558,7 +558,7 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write copy_software; current McCabe Complexity metric = 11.
+# WARNING: Refactor copy_software; current McCabe Complexity metric = 11.
         _query = "SELECT MAX(fld_software_id) FROM rtk_software"
         (_software_id, _error_code, __) = self._dao.execute(_query,
                                                             commit=False)

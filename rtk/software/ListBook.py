@@ -649,7 +649,7 @@ class ListView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 14.
+# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 14.
         _return = False
 
         button.handler_block(self._lst_handler_id[index])

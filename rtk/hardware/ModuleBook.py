@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-############################
-Hardware Package Module View
-############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+############################
+Hardware Package Module View
+############################
+"""
 
 import sys
 
@@ -79,7 +79,7 @@ class ModuleView(object):
 
     def __init__(self, controller, rtk_view, position):
         """
-        Initializes the Module Book view for the Hardware package.
+        Method to initialize the Module Book view for the Hardware package.
 
         :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
                            data controller to use with this view.
@@ -107,7 +107,7 @@ class ModuleView(object):
         self.mdcRTK = controller
 
         # Create the main Hardware class treeview.
-# TODO: Update the hardware.xml file to accomodate the prediction stuff.
+        # FIXME: Update the hardware.xml file to accomodate the prediction stuff.
         (self.treeview,
          self._lst_col_order) = Widgets.make_treeview('Hardware', 3,
                                                       Configuration.RTK_COLORS[4],
@@ -177,8 +177,7 @@ class ModuleView(object):
         """
 
         (_hardware,
-         __) = self.mdcRTK.dtcHardwareBoM.request_bom(self.mdcRTK.project_dao,
-                                                      self.mdcRTK.revision_id)
+         __) = self.mdcRTK.dtcHardwareBoM.request_bom(self.mdcRTK.revision_id)
         self.mdcRTK.dtcAllocation.request_allocation(self.mdcRTK.project_dao)
         self.mdcRTK.dtcHazard.request_hazard(self.mdcRTK.project_dao)
         self.mdcRTK.dtcSimilarItem.request_similar_item(self.mdcRTK.project_dao)
@@ -190,8 +189,8 @@ class ModuleView(object):
 
         # Load all the FMECA and PoF analyses.
         for _h in _hardware:
-            self.mdcRTK.dtcFMEA.request_fmea(self.mdcRTK.project_dao, _h[1],
-                                             None, self.mdcRTK.revision_id)
+            self.mdcRTK.dtcFMEA.request_fmea(_h[1], None,
+                                             self.mdcRTK.revision_id)
             self.mdcRTK.dtcPoF.request_pof(self.mdcRTK.project_dao, _h[1])
 
         # Clear the Hardware Module View gtk.TreeModel().
@@ -429,7 +428,7 @@ class ModuleView(object):
         :return: false if successful and True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_cell_edited; current McCabe Complexity metric = 24.
+        # WARNING: Refactor _on_cell_edited; current McCabe Complexity metric = 24.
         if index == 2:
             self._model.alt_part_number = new_text
         elif index == 3:

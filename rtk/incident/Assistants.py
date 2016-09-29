@@ -322,7 +322,7 @@ class AddIncident(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Re-write _check_ready; current McCabe Complexity metric = 12.
+# WARNING: Refactor _check_ready; current McCabe Complexity metric = 12.
         if self.cmbSoftware.get_active() > 0:
             self.cmbDetectMethod.set_sensitive(True)
             self.txtTestProcedure.set_sensitive(True)
@@ -642,7 +642,7 @@ class FilterIncident(object):
         :param modulebook: the :py:class:`rtk.Incident.ModuleBook` to add the
                            the new incident to.
         """
-# TODO: Re-write __init__; current McCabe Complexity metric = 13.
+# WARNING: Refactor __init__; current McCabe Complexity metric = 13.
         self._revision_id = revision_id
         self._modulebook = modulebook
 
@@ -1094,7 +1094,7 @@ class FilterIncident(object):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         """
-# TODO: Re-write _filter; current McCabe Complexity metric = 54.
+# WARNING: Refactor _filter; current McCabe Complexity metric = 54.
         _criteria = []
         _inputs = []
         _compound = []
@@ -1367,7 +1367,13 @@ class ImportIncident(gtk.Assistant):
 
     def __init__(self, revision_id, dao, modulebook):
         """
-        Initialize an instance of the Import Incident Assistant.
+        Method to initialize an instance of the Import Incident Assistant.
+
+        :param int revision_id: the ID of the revision to add the incident to.
+        :param dao: the :py:class:`rtk.dao.DAO` used to communicate with the
+                    RTK Project database.
+        :param modulebook: the :py:class:`rtk.Incident.ModuleBook` to add the
+                           the new incident to.
         """
 
         self._dao = dao
@@ -1570,7 +1576,7 @@ class ImportIncident(gtk.Assistant):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Re-write _import; current McCabe Complexity metric = 18.
+# WARNING: Refactor _import; current McCabe Complexity metric = 18.
         Widgets.set_cursor(self.modulebook.mdcRTK, gtk.gdk.WATCH)
 
         _import_errors = 0

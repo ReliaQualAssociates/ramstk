@@ -661,7 +661,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 11.
+# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 11.
         if index == 0:
             if self._testing_model.test_type == 4:
                 self._mdcRTK.dtcGrowth.add_test(self._testing_model.test_id)

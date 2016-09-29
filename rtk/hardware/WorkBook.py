@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Hardware Package Work Book View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.WorkBook.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Hardware Package Work Book View
+###############################
+"""
 
 import sys
 
@@ -1998,7 +1998,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _create_component_inputs; current McCabe Complexity metric = 19.
+        # WARNING: Refactor _create_component_inputs; current McCabe Complexity metric = 19.
         if self.vpnReliabilityInputs.get_child2() is not None:
             self.vpnReliabilityInputs.remove(
                 self.vpnReliabilityInputs.get_child2())
@@ -2056,7 +2056,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _create_component_results; current McCabe Complexity metric = 19.
+        # WARNING: Refactor _create_component_results; current McCabe Complexity metric = 19.
         if self._hardware_model.category_id == 1:
             self._obj_results = gCapacitor.Results(self._hardware_model)
         elif self._hardware_model.category_id == 2:
@@ -2310,7 +2310,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_combo_changed; current McCabe Complexity metric = 12.
+        # WARNING: Refactor _on_combo_changed; current McCabe Complexity metric = 12.
         combo.handler_block(self._lst_handler_id[index])
 
         if index == 3:                      # Component category.
@@ -2399,8 +2399,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_focus_out; current McCabe Complexity metric = 45.
-
+        # WARNING: Refactor _on_focus_out; current McCabe Complexity metric = 45.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:

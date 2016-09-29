@@ -153,7 +153,7 @@ def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
     :return: _crow_l, _crow_u; the lower and upper bound on the metric.
     :rtype: tuple of floats
     """
-# TODO: Re-write calculate_crow_bounds; current McCabe Complexity metric=11.
+# WARNING: Refactor calculate_crow_bounds; current McCabe Complexity metric=11.
     # Set default values so a value is returned in case something goes wrong.
     _crow_l = 1.0
     _crow_u = 1.0

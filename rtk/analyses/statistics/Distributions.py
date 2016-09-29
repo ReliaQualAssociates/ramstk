@@ -27,7 +27,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
-# TODO: Re-write all distributions to accept Survival data model dicRecords as data input.
+# WARNING: Refactor all distributions to accept Survival data model dicRecords as data input.
 def fisher_information(model, p0, X, noise=1.0):    # pylint: disable=C0103
     """
     Function to calculate the Fisher information matrix for model sampled on
@@ -122,7 +122,7 @@ def format_data_set(data, start, end):
              number of records in the data set.
     :rtype: tuple
     """
-# TODO: Re-write format_data_set; current McCabe Complexity metric=12.
+# WARNING: Refactor format_data_set; current McCabe Complexity metric=12.
     # Sort data by the right of the interval.  Remove records occurring before
     # the start time and after the end time.
     _data = sorted(data, key=lambda x: float(x[2]))

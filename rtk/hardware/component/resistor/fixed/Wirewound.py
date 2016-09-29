@@ -267,7 +267,7 @@ class WirewoundPower(Resistor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write calculate_part; current McCabe Complexity metric = 19.
+# WARNING: Refactor calculate_part; current McCabe Complexity metric = 19.
         from math import exp
 
         self.hazard_rate_model = {}

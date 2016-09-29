@@ -125,8 +125,7 @@ class Transformer(Inductor):
             self.weight = float(values[103])
             self.input_power = float(values[104])
             self.family = int(values[119])
-            # TODO: Add field to rtk_stress to hold overstress reason.
-            self.reason = ''
+            self.reason = ''               # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -160,7 +159,7 @@ class Transformer(Inductor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write calculate_part; current McCabe Complexity metric = 12.
+# WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
         from math import exp
 
         self.hazard_rate_model = {}

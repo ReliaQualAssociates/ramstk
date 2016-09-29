@@ -506,7 +506,7 @@ class ModuleView(object):
         :return: False if successful and True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_cell_edited; current McCabe Complexity metric = 12.
+# WARNING: Refactor _on_cell_edited; current McCabe Complexity metric = 12.
         if self._lst_col_order[index] == 2:
             try:
                 _category = Configuration.RTK_INCIDENT_CATEGORY.index(new_text) + 1

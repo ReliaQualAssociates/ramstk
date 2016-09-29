@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################
-Hardware Package List Book View
-###############################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.ListBook.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+###############################
+Hardware Package List Book View
+###############################
+"""
 
 import sys
 

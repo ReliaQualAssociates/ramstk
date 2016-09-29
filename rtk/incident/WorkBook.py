@@ -1367,7 +1367,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: _visible
         :rtype: list
         """
-# TODO: Re-write _determine_relevancy; current McCabe Complexity metric = 53.
+# WARNING: Refactor _determine_relevancy; current McCabe Complexity metric = 53.
         _visible = [True, False, False, False, False, False, False, False,
                     False, False, False, False, False, False, False, False,
                     False, False]
@@ -1575,7 +1575,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: _visible
         :rtype: list
         """
-# TODO: Re-write _determine_chargeability; current McCabe Complexity metric = 19.
+# WARNING: Refactor _determine_chargeability; current McCabe Complexity metric = 19.
         _visible = [False, False, False, False, False]
 
         if self._model.relevant == 1:
@@ -1895,7 +1895,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_combo_changed; current McCabe Complexity metric = 17.
+# WARNING: Refactor _on_combo_changed; current McCabe Complexity metric = 17.
         _selection = self._modulebook.listbook.tvwActionList.get_selection()
 
         combo.handler_block(self._lst_handler_id[index])
@@ -2001,7 +2001,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_focus_out; current McCabe Complexity metric = 17.
+# WARNING: Refactor _on_focus_out; current McCabe Complexity metric = 17.
         entry.handler_block(self._lst_handler_id[index])
 
         _selection = self._modulebook.listbook.tvwActionList.get_selection()

@@ -385,7 +385,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_button_clicked; current McCabe Complexity metric = 14.
+# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 14.
         _return = False
 
         if index == 0:                      # Add hazard to analysis.
@@ -510,7 +510,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write _on_cell_edit; current McCabe Complexity metric = 40.
+# WARNING: Refactor _on_cell_edit; current McCabe Complexity metric = 40.
         _model = self.tvwHazard.get_model()
 
         _hardware_id = self._hardware_model.hardware_id

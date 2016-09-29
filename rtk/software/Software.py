@@ -249,7 +249,7 @@ def _calculate_quality_risk(module):
     :return: _error_code
     :rtype: int
     """
-# TODO: Re-write _calculate_quality_risk; current McCabe Complexity metric = 12.
+# WARNING: Refactor _calculate_quality_risk; current McCabe Complexity metric = 12.
     _error_code = 0
 
     if module.phase_id == 2:                # Requirements review
@@ -359,7 +359,7 @@ def _calculate_risk_reduction(module):
     :return: _error_code
     :rtype: int
     """
-# TODO: Re-write _calculate_risk_reduction; current McCabe Complexity metric = 13.
+# WARNING: Refactor _calculate_risk_reduction; current McCabe Complexity metric = 13.
     _error_code = 0
 
     # Calculate the risk reduction due to the test effort.

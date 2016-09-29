@@ -778,7 +778,7 @@ class ListView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Re-write _on_cellrenderer_edited; current McCabe Complexity metric=13.
+# WARNING: Refactor _on_cellrenderer_edited; current McCabe Complexity metric=13.
         _record_id = model[path][0]
 
         _record = self._survival_model.dicRecords[_record_id]
