@@ -102,10 +102,9 @@ class ModuleView(object):
 
         # Create the main Software class treeview.
         (self.treeview,
-         self._lst_col_order) = Widgets.make_treeview('Software', 15,
+         self._lst_col_order) = Widgets.make_treeview('Software', 12,
                                                       Configuration.RTK_COLORS[21],
                                                       Configuration.RTK_COLORS[22])
-
         _selection = self.treeview.get_selection()
 
         self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "

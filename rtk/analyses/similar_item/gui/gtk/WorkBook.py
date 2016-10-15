@@ -217,22 +217,22 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         # Create the Similar Item Analysis gtk.TreeView().              #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _path = "/root/tree[@name='SIA']/column/usertitle"
-        _heading = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
+        _heading = etree.parse(Configuration.RTK_FORMAT_FILE[6]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/datatype"
-        _datatype = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
+        _datatype = etree.parse(Configuration.RTK_FORMAT_FILE[6]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/widget"
-        _widget = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
+        _widget = etree.parse(Configuration.RTK_FORMAT_FILE[6]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/position"
-        _position = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
+        _position = etree.parse(Configuration.RTK_FORMAT_FILE[6]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/editable"
-        _editable = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
+        _editable = etree.parse(Configuration.RTK_FORMAT_FILE[6]).xpath(_path)
 
         _path = "/root/tree[@name='SIA']/column/visible"
-        _visible = etree.parse(Configuration.RTK_FORMAT_FILE[8]).xpath(_path)
+        _visible = etree.parse(Configuration.RTK_FORMAT_FILE[6]).xpath(_path)
 
         # Create a list of GObject datatypes to pass to the model.
         _types = []

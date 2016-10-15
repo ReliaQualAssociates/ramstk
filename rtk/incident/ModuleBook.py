@@ -118,7 +118,7 @@ class ModuleView(object):
         _fg_color = Configuration.RTK_COLORS[12]
         _bg_color = Configuration.RTK_COLORS[13]
         (self.treeview,
-         self._lst_col_order) = Widgets.make_treeview('Incidents', 14,
+         self._lst_col_order) = Widgets.make_treeview('Incidents', 11,
                                                       _fg_color, _bg_color)
 
         # Populate the incident category gtk.CellRendererCombo().

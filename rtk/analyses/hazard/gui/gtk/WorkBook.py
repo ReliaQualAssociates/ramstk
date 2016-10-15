@@ -135,22 +135,22 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         """
 # TODO: Consider re-writing create_page; current McCabe Complexity metric = 16.
         _path = "/root/tree[@name='Risk']/column/usertitle"
-        _heading = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
+        _heading = etree.parse(Configuration.RTK_FORMAT_FILE[14]).xpath(_path)
 
         _path = "/root/tree[@name='Risk']/column/datatype"
-        _datatype = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
+        _datatype = etree.parse(Configuration.RTK_FORMAT_FILE[14]).xpath(_path)
 
         _path = "/root/tree[@name='Risk']/column/widget"
-        _widget = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
+        _widget = etree.parse(Configuration.RTK_FORMAT_FILE[14]).xpath(_path)
 
         _path = "/root/tree[@name='Risk']/column/position"
-        _position = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
+        _position = etree.parse(Configuration.RTK_FORMAT_FILE[14]).xpath(_path)
 
         _path = "/root/tree[@name='Risk']/column/editable"
-        _editable = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
+        _editable = etree.parse(Configuration.RTK_FORMAT_FILE[14]).xpath(_path)
 
         _path = "/root/tree[@name='Risk']/column/visible"
-        _visible = etree.parse(Configuration.RTK_FORMAT_FILE[17]).xpath(_path)
+        _visible = etree.parse(Configuration.RTK_FORMAT_FILE[14]).xpath(_path)
 
         # Create a list of GObject datatypes to pass to the model.
         _types = []

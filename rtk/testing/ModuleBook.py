@@ -104,7 +104,7 @@ class ModuleView(object):
         _bg_color = Configuration.RTK_COLORS[10]
         _fg_color = Configuration.RTK_COLORS[11]
         (self.treeview,
-         self._lst_col_order) = Widgets.make_treeview('Testing', 11,
+         self._lst_col_order) = Widgets.make_treeview('Testing', 8,
                                                       _bg_color, _fg_color)
 
         i = 0

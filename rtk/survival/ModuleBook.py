@@ -110,7 +110,7 @@ class ModuleView(object):
         _fg_color = Configuration.RTK_COLORS[12]
         _bg_color = Configuration.RTK_COLORS[13]
         (self.treeview,
-         self._lst_col_order) = Widgets.make_treeview('Dataset', 16,
+         self._lst_col_order) = Widgets.make_treeview('Dataset', 13,
                                                       _fg_color, _bg_color)
 
         self.treeview.set_tooltip_text(_(u"Displays the list of survival "

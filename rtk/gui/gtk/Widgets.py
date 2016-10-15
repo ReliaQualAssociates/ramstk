@@ -460,9 +460,9 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
 # If this is the Hardware, Software, or Testing tree, add a column for a
 # pixbuf.
 # If this is the FMECA tree, add an integer column and a column for a pixbuf.
-    if fmt_idx in [3, 11, 15]:
+    if fmt_idx in [3, 8, 12]:
         gobject_types.append(gtk.gdk.Pixbuf)
-    elif fmt_idx in [9, 18]:
+    elif fmt_idx in [15, 16]:
         gobject_types.append(gobject.TYPE_INT)
         gobject_types.append(gobject.TYPE_STRING)
         gobject_types.append(gobject.TYPE_BOOLEAN)

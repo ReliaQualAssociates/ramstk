@@ -270,24 +270,17 @@ def _read_program_configuration():
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'validationformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-    _formatfile = _config.read_configuration().get('Files', 'rgformat')
-    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-    _formatfile = _config.read_configuration().get('Files', 'fracaformat')
-    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'partformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'siaformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'fmecaformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-    _formatfile = _config.read_configuration().get('Files',
-                                                   'stakeholderformat')
-    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'testformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-    _formatfile = _config.read_configuration().get('Files', 'mechanismformat')
-    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'rgincidentformat')
+    Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
+    _formatfile = _config.read_configuration().get('Files', 'stakeholderformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'incidentformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
@@ -301,7 +294,7 @@ def _read_program_configuration():
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'sfmecaformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-
+    print Configuration.RTK_FORMAT_FILE
     # Get color information.
     Configuration.RTK_COLORS.append(
         _config.read_configuration().get('Colors', 'revisionbg'))
@@ -523,7 +516,7 @@ class RTK(object):
 
         # Connect to the site database.
         _database = Configuration.SITE_DIR + '/' + \
-                    Configuration.RTK_COM_INFO[2] + '.rfb'
+                    Configuration.RTK_COM_INFO[2] + '.rtk'
         self.site_dao = DAO(_database)
 
         # Create RTK views.  These need to be initialized after reading the
@@ -662,6 +655,27 @@ class RTK(object):
             Configuration.RTK_CATEGORIES[i + 1] = [_cats[i][1], _cats[i][0]]
             Configuration.RTK_SUBCATEGORIES[i + 1] = [x[1:] for x in _subcats
                                                       if x[0] == i + 1]
+
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        # Load the default failure modes dictionary.                        #
+        # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
+        _query = "SELECT fld_category_id, fld_subcategory_id, fld_mode_id, \
+                         fld_mode_description, fld_mode_ratio \
+                  FROM tbl_failure_modes \
+                  WHERE fld_source={0:d}".format(
+                    int(Configuration.RTK_MODE_SOURCE))
+        _modes = self.site_dao.execute(_query, commit=False)
+
+        Configuration.RTK_FAILURE_MODES = {}
+        _uniq_cats = set([_mode[0] for _mode in _modes[0]])
+        for _cat in _uniq_cats:
+            Configuration.RTK_FAILURE_MODES[_cat] = {}
+            _uniq_subcats = set([_mode[1] for _mode in _modes[0]
+                                 if _mode[0] == _cat])
+            for _subcat in _uniq_subcats:
+                _lstModes = [_mode[2:] for _mode in _modes[0]
+                             if _mode[0] == _cat and _mode[1] == _subcat]
+                Configuration.RTK_FAILURE_MODES[_cat][_subcat] = _lstModes
 
         # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- #
         # Load the Requirements lists.                                      #
@@ -931,10 +945,10 @@ class RTK(object):
         self.dtcFMEA.dao = self.project_dao
         self.dtcRequirement.dao = self.project_dao
         self.dtcStakeholder.dao = self.project_dao
-        # self.dtcHardwareBoM.dao = self.project_dao
-        # self.dtcAllocation.dao = self.project_dao
-        # self.dtcHazard.dao = self.project_dao
-        # self.dtcSimilarItem.dao = self.project_dao
+        self.dtcHardwareBoM.dao = self.project_dao
+        self.dtcAllocation.dao = self.project_dao
+        self.dtcHazard.dao = self.project_dao
+        self.dtcSimilarItem.dao = self.project_dao
         # self.dtcPoF.dao = self.project_dao
         # self.dtcSoftwareBoM.dao = self.project_dao
         # self.dtcTesting.dao = self.project_dao

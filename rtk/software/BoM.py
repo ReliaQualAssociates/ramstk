@@ -119,7 +119,7 @@ class BoM(object):
                          t1.fld_branches_test, t1.fld_inputs, \
                          t1.fld_inputs_test, t1.fld_nm_test, \
                          t1.fld_interfaces, t1.fld_interfaces_test, \
-                         t1.fld_te, t1.fld_tm, t1.fld_tc, t1.fld_t, \
+                         t1.fld_te, t1.fld_tc, t1.fld_tm, t1.fld_t, \
                          t1.fld_ft1, t1.fld_ft2, t1.fld_ren_avg, \
                          t1.fld_ren_eot, t1.fld_ec, t1.fld_ev, t1.fld_et, \
                          t1.fld_os, t1.fld_ew, t1.fld_e, t1.fld_f, t1.fld_cb, \
