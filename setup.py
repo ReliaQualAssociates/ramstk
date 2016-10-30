@@ -23,7 +23,7 @@ if __name__ == '__main__':
         version = '2016.1',
         description = '''RAMS analysis tool''',
         long_description = '''RTK is a suite of tools for performing and documenting RAMS                analyses.''',
-        author = "Andrew "weibullguy" Rowland",
+        author = "Andrew 'weibullguy' Rowland",
         author_email = "andrew.rowland@reliaqual.com",
         license = 'Proprietary',
         url = 'http://www.reliaqual.com/rtk',

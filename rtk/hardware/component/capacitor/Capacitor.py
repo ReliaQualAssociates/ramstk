@@ -156,7 +156,7 @@ class Model(Component):
         try:
             self.piQ = self._piQ[self.quality - 1]
         except AttributeError:
-# TODO: Handle attribute error.
+            # TODO: Handle attribute error.
             return True
         self.hazard_rate_model['piQ'] = self.piQ
 
@@ -173,7 +173,7 @@ class Model(Component):
             try:
                 self.piE = self._piE[self.environment_active - 1]
             except AttributeError:
-# TODO: Handle attribute error.
+                # TODO: Handle attribute error.
                 return True
             self.hazard_rate_model['piE'] = self.piE
 

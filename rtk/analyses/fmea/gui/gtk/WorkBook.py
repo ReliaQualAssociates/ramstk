@@ -107,7 +107,7 @@ def request_calculate_rpn(model, row, mode):
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-# WARNING: Refactor request_calculate_rpn; current McCabe Complexity metric = 15.
+    # TODO: Consider refactoring request_calculate_rpn; current McCabe Complexity metric = 15.
     _return = False
 
     _severity = int([x[0] for x in Configuration.RTK_RPN_SEVERITY
@@ -262,7 +262,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# WARNING: Refactor create_page; current McCabe Complexity metric = 38.
+        # FIXME: Refactor create_page; current McCabe Complexity metric = 38.
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the FMEA/FMECA gtk.TreeView().                         #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -650,7 +650,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
-# WARNING: Refactor load_page; current McCabe Complexity metric = 12.
+        # TODO: Consider refactoring load_page; current McCabe Complexity metric = 12.
         self._hardware_id = hardware_id
         self._item_hr = item_hr
 
@@ -840,7 +840,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _request_add_sibling_item; current McCabe Complexity metric = 12.
+        # TODO: Consider refactoring _request_add_sibling_item; current McCabe Complexity metric = 12.
         _return = False
 
         if level == 1:                      # Failure Mode
@@ -956,7 +956,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _request_add_child_item; current McCabe Complexity metric = 12.
+        # TODO: Consider refactoring _request_add_child_item; current McCabe Complexity metric = 12.
         _return = False
 
         if level == 1:                      # Failure Mode
@@ -1051,7 +1051,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _request_delete_item; current McCabe Complexity metric = 12.
+        # TODO: Consider refactoring _request_delete_item; current McCabe Complexity metric = 12.
         _return = False
 
         if level == 1:                      # Failure Mode
@@ -1156,7 +1156,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 14.
+        # TODO: Consider refactoring _on_button_clicked; current McCabe Complexity metric = 14.
         _fmeca = self.dtcFMECA.dicDFMEA[self._hardware_id]
 
         (_model, _row) = self.tvwFMECA.get_selection().get_selected()
@@ -1232,7 +1232,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_cell_edit; current McCabe Complexity metric = 83.
+        # FIXME: Refactor _on_cell_edit; current McCabe Complexity metric = 83.
         _fmeca = self.dtcFMECA.dicDFMEA[self._hardware_id]
 
         (_model, _row) = self.tvwFMECA.get_selection().get_selected()

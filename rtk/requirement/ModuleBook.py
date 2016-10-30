@@ -348,7 +348,7 @@ class ModuleView(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-        # WARNING: Refactor _on_cell_edited; current McCabe Complexity Metric = 11.
+        # TODO: Consider refactoring _on_cell_edited; current McCabe Complexity Metric = 11.
         cell.handler_block(self._dic_handler_id[position])
 
         # Update the gtk.TreeModel() with the new value.

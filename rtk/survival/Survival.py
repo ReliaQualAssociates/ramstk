@@ -339,7 +339,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_parameter_bounds; current McCabe Complexity metric=15.
+        # TODO: Consider refactoring calculate_parameter_bounds; current McCabe Complexity metric=15.
         if self.confidence_method == 3:     # Fisher
             (self.scale[0],
              self.scale[2]) = calculate_fisher_bounds(self.scale[1],
@@ -591,7 +591,7 @@ class Model(object):                       # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor estimate_nhpp_power_law; current McCabe Complexity metric=11.
+        # TODO: Consider refactoring estimate_nhpp_power_law; current McCabe Complexity metric=11.
         self.nhpp = []
 
         _meanc = [0.0, 0.0, 0.0]

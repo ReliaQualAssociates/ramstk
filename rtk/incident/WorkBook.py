@@ -1367,7 +1367,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: _visible
         :rtype: list
         """
-# WARNING: Refactor _determine_relevancy; current McCabe Complexity metric = 53.
+        # FIXME: Refactor _determine_relevancy; current McCabe Complexity metric = 53.
         _visible = [True, False, False, False, False, False, False, False,
                     False, False, False, False, False, False, False, False,
                     False, False]

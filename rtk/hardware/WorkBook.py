@@ -2310,7 +2310,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-        # WARNING: Refactor _on_combo_changed; current McCabe Complexity metric = 12.
+        # TODO: Consider refactoring _on_combo_changed; current McCabe Complexity metric = 12.
         combo.handler_block(self._lst_handler_id[index])
 
         if index == 3:                      # Component category.
@@ -2363,7 +2363,6 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                 self._load_assessment_inputs_page()
                 self._load_assessment_results_page()
 
-
         elif index == 9:                    # Manufacturer.
             self._hardware_model.manufacturer = combo.get_active()
         elif index == 22:                   # Active environment.
@@ -2399,7 +2398,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-        # WARNING: Refactor _on_focus_out; current McCabe Complexity metric = 45.
+        # FIXME: Refactor _on_focus_out; current McCabe Complexity metric = 45.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:

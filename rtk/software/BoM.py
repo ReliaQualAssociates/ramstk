@@ -558,7 +558,7 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor copy_software; current McCabe Complexity metric = 11.
+        # TODO: Consider refactoring copy_software; current McCabe Complexity metric = 11.
         _query = "SELECT MAX(fld_software_id) FROM rtk_software"
         (_software_id, _error_code, __) = self._dao.execute(_query,
                                                             commit=False)

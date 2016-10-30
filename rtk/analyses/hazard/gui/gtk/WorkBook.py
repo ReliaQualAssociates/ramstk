@@ -133,7 +133,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# TODO: Consider re-writing create_page; current McCabe Complexity metric = 16.
+        # WARNING: Refactor create_page; current McCabe Complexity metric = 16.
         _path = "/root/tree[@name='Risk']/column/usertitle"
         _heading = etree.parse(Configuration.RTK_FORMAT_FILE[14]).xpath(_path)
 
@@ -385,7 +385,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 14.
+        # TODO: Consider refactoring _on_button_clicked; current McCabe Complexity metric = 14.
         _return = False
 
         if index == 0:                      # Add hazard to analysis.
@@ -510,7 +510,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_cell_edit; current McCabe Complexity metric = 40.
+        # FIXME: Refactor _on_cell_edit; current McCabe Complexity metric = 40.
         _model = self.tvwHazard.get_model()
 
         _hardware_id = self._hardware_model.hardware_id

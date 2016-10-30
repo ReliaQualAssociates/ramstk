@@ -684,7 +684,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_cell_edit; current McCabe Complexity metric = 40.
+        # FIXME: Refactor _on_cell_edit; current McCabe Complexity metric = 40.
         (_model, _row) = self.tvwSimilarItem.get_selection().get_selected()
         _hardware_id = _model.get_value(_row, 0)
         _similar_item = self.dtcSimilarItem.dicSimilarItem[_hardware_id]

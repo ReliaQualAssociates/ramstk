@@ -194,7 +194,7 @@ class AddFunction(gtk.Assistant):
         :return: False
         :rtype: bool
         """
-        # WARNING: Refactor _add_function; current McCabe metric = 11
+        # TODO: Consider refactoring _add_function; current McCabe metric = 11
         # Find out how many Functions to add.  Defaults to one Function if the
         # user hasn't entered and value.
         try:
