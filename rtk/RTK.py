@@ -294,7 +294,7 @@ def _read_program_configuration():
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'sfmecaformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-    print Configuration.RTK_FORMAT_FILE
+    
     # Get color information.
     Configuration.RTK_COLORS.append(
         _config.read_configuration().get('Colors', 'revisionbg'))

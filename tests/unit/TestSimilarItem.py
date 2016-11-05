@@ -251,5 +251,5 @@ class TestSimilarItemController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, SimilarItem))
-        self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT.dicSimilarItem, {})
+        self.assertEqual(self.DUT.dao, None)

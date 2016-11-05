@@ -39,6 +39,7 @@ class TestAllocationController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Allocation()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test_request_allocation(self):
@@ -46,7 +47,7 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) request_allocation should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_allocation(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_allocation()[1], 0)
 
     @attr(all=True, integration=True)
     def test_allocate_equal(self):
@@ -54,7 +55,7 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) allocate should return False on success when using equal allocation
         """
 
-        self.DUT.request_allocation(self._dao)
+        self.DUT.request_allocation()
         self.DUT.dicAllocation[0].reliability_goal = 0.975
         self.DUT.dicAllocation[0].method = 1
         self.assertFalse(self.DUT.allocate(0))
@@ -65,7 +66,7 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) allocate should return False on success when using AGREE allocation
         """
 
-        self.DUT.request_allocation(self._dao)
+        self.DUT.request_allocation()
         self.DUT.dicAllocation[0].reliability_goal = 0.975
         self.DUT.dicAllocation[0].method = 2
         self.assertFalse(self.DUT.allocate(0))
@@ -76,7 +77,7 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) allocate should return False on success when using ARINC allocation
         """
 
-        self.DUT.request_allocation(self._dao)
+        self.DUT.request_allocation()
         self.DUT.dicAllocation[2]._hazard_rate = 0.0005
         self.DUT.dicAllocation[7]._hazard_rate = 0.0002
         self.DUT.dicAllocation[8]._hazard_rate = 0.0003
@@ -90,7 +91,7 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) allocate should return False on success when using FOO allocation
         """
 
-        self.DUT.request_allocation(self._dao)
+        self.DUT.request_allocation()
         self.DUT.dicAllocation[2]._hazard_rate = 0.0005
         self.DUT.dicAllocation[7]._hazard_rate = 0.0002
         self.DUT.dicAllocation[8]._hazard_rate = 0.0003
@@ -108,7 +109,7 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) save_allocation returns (True, 0) on success
         """
 
-        self.DUT.request_allocation(self._dao)
+        self.DUT.request_allocation()
         self.assertEqual(self.DUT.save_allocation(0), (True, 0))
 
     @attr(all=True, integration=True)
@@ -117,7 +118,7 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) save_all_allocation returns False on success
         """
 
-        self.DUT.request_allocation(self._dao)
+        self.DUT.request_allocation()
         self.assertEqual(self.DUT.save_all_allocation(),
                          [(0, 0), (2, 0), (3, 0), (5, 0), (6, 0), (7, 0),
                           (8, 0), (105, 0), (115, 0), (88, 0), (102, 0)])
@@ -128,5 +129,5 @@ class TestAllocationController(unittest.TestCase):
         (TestAllocation) trickle_down should return False on sucess
         """
 
-        self.DUT.request_allocation(self._dao)
+        self.DUT.request_allocation()
         self.assertFalse(self.DUT.trickle_down(0))

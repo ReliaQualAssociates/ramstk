@@ -44,3 +44,6 @@ pylintout
 /.eric6project/RTK.e4q
 /.eric6project/RTK.e6t
 /RTK.e4p
+/rtk/hardware/BoM.coverage
+/rtk/hardware/BoM.profile
+/rtk/hardware/BoM.timings

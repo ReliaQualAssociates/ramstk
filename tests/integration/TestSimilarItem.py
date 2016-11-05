@@ -40,6 +40,7 @@ class TestSimilarItemController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = SimilarItem()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test0_request_similar_item(self):
@@ -47,7 +48,7 @@ class TestSimilarItemController(unittest.TestCase):
         (TestSimilarItem) request_similar_item should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_similar_item(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_similar_item()[1], 0)
 
     @attr(all=True, integration=True)
     def test1_add_similar_item(self):
@@ -55,7 +56,7 @@ class TestSimilarItemController(unittest.TestCase):
         (TestSimilarItem) add_similar_item should return (True, 0) on success
         """
 
-        self.assertEqual(self.DUT.request_similar_item(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_similar_item()[1], 0)
         (_results,
          _error_code) = self.DUT.add_similar_item(8, 0)
 
@@ -69,7 +70,7 @@ class TestSimilarItemController(unittest.TestCase):
         (TestSimilarItem) calculate should return 0 on success when performing a Topic 6.3.3 analysis
         """
 
-        self.DUT.request_similar_item(self._dao)
+        self.DUT.request_similar_item()
         self.DUT.dicSimilarItem[2].from_environment = 1
         self.DUT.dicSimilarItem[2].to_environment = 3
         self.DUT.dicSimilarItem[2].from_quality = 4
@@ -91,7 +92,7 @@ class TestSimilarItemController(unittest.TestCase):
         (TestSimilarItem) calculate should return 0 on success when performing a user-defined analysis
         """
 
-        self.DUT.request_similar_item(self._dao)
+        self.DUT.request_similar_item()
 
         self.DUT.dicSimilarItem[2].function_1 = 'hr * pi1 * pi2 * pi3 * pi4 * pi5 * pi6'
         self.DUT.dicSimilarItem[2].function_2 = 'hr * pi4 * pi5 * pi6 * (uf1 / uf2)'
@@ -116,7 +117,7 @@ class TestSimilarItemController(unittest.TestCase):
         (TestSimilarItem) save_similar_item returns (True, 0) on success
         """
 
-        self.DUT.request_similar_item(self._dao)
+        self.DUT.request_similar_item()
         self.assertEqual(self.DUT.save_similar_item(2), (True, 0))
 
     @attr(all=True, integration=True)
@@ -125,7 +126,7 @@ class TestSimilarItemController(unittest.TestCase):
         (TestSimilarItem) save_all_similar_item returns False on success
         """
 
-        self.DUT.request_similar_item(self._dao)
+        self.DUT.request_similar_item()
         self.assertEqual(self.DUT.save_all_similar_item(),
                          [(2, 0), (102, 0), (8, 0), (105, 0), (115, 0),
                           (88, 0)])

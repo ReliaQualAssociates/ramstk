@@ -40,6 +40,7 @@ class TestHazardController(unittest.TestCase):
         self._dao.execute("PRAGMA foreign_keys = ON", commit=False)
 
         self.DUT = Hazard()
+        self.DUT.dao = self._dao
 
     @attr(all=True, integration=True)
     def test_request_hazard(self):
@@ -47,7 +48,7 @@ class TestHazardController(unittest.TestCase):
         (TestHazard) request_hazard should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_hazard()[1], 0)
 
     @attr(all=True, integration=True)
     def test_add_hazard(self):
@@ -55,7 +56,7 @@ class TestHazardController(unittest.TestCase):
         (TestHazard) add_hazard should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_hazard()[1], 0)
         self.assertEqual(self.DUT.add_hazard(0)[1], 0)
 
     @attr(all=True, integration=True)
@@ -64,7 +65,7 @@ class TestHazardController(unittest.TestCase):
         (TestHazard) delete_hazard should return 0 on success
         """
 
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_hazard()[1], 0)
         (_results,
          _error_code) = self.DUT.delete_hazard(0, 1)
 
@@ -77,7 +78,7 @@ class TestHazardController(unittest.TestCase):
         (TestHazard) calculate_hazard should return False on success
         """
 
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_hazard()[1], 0)
         self.assertFalse(self.DUT.calculate_hazard(0, 2))
 
     @attr(all=True, integration=True)
@@ -86,7 +87,7 @@ class TestHazardController(unittest.TestCase):
         (TestHazard) save_hazard returns (True, 0) on success
         """
 
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_hazard()[1], 0)
         self.assertEqual(self.DUT.save_hazard(0, 2), (True, 0))
 
     @attr(all=True, integration=True)
@@ -95,6 +96,6 @@ class TestHazardController(unittest.TestCase):
         (TestHazard) save_all_hazards returns False on success
         """
 
-        self.assertEqual(self.DUT.request_hazard(self._dao)[1], 0)
+        self.assertEqual(self.DUT.request_hazard()[1], 0)
         self.assertEqual(self.DUT.save_all_hazards(),
                          [(0, 3, 0), (0, 0, 0), (0, 2, 0)])

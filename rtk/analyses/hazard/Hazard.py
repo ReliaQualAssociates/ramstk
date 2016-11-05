@@ -349,8 +349,8 @@ class Hazard(object):
     model and an RTK view model.  A single Hazard controller can manage one or
     more Hazard data models.  The attributes of an Hazard data controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-                Project database.
+    :ivar dao: the Data Access Object to use when communicating with the RTK
+               Project database.
     :ivar dicHazard: Dictionary of the Hazard data models managed.  Key is a
                      tuple of the Hardware ID and Hazard ID; value is a pointer
                      to the Hazard data model instance.
@@ -361,13 +361,21 @@ class Hazard(object):
         Method to initialize a Hazard data controller instance.
         """
 
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
         # Initialize private scalar attributes.
-        self._dao = None
 
         # Initialize public dictionary attributes.
         self.dicHazard = {}
 
-    def request_hazard(self, dao):
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.dao = None
+
+    def request_hazard(self):
         """
         Method to read the RTK Project database and load all the Hazards.  For
         each Hazard returned:
@@ -379,13 +387,9 @@ class Hazard(object):
         #. Add the instance to the dictionary of Hardware being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
         :return: (_results, _error_code)
         :rtype: tuple
         """
-
-        self._dao = dao
 
         _query = "SELECT t1.fld_hardware_id, t1.fld_hazard_id, \
                          t1.fld_potential_hazard, t1.fld_potential_cause, \
@@ -416,7 +420,7 @@ class Hazard(object):
                   INNER JOIN rtk_reliability AS t3 \
                   ON t3.fld_hardware_id=t1.fld_hardware_id \
                   ORDER BY t1.fld_hazard_id"
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_hazards = len(_results)
@@ -442,8 +446,8 @@ class Hazard(object):
         _query = "INSERT INTO rtk_hazard \
                   (fld_hardware_id) \
                   VALUES({0:d})".format(hardware_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
-                                                              commit=True)
+        (_results, _error_code, _last_id) = self.dao.execute(_query,
+                                                             commit=True)
 
         _hazard = Model()
         _hazard.set_attributes((hardware_id, _last_id, '', '', '', 0, 0, 0,
@@ -466,7 +470,7 @@ class Hazard(object):
 
         _query = "DELETE FROM rtk_hazard \
                   WHERE fld_hazard_id={0:d}".format(hazard_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
         try:
             self.dicHazard.pop((hardware_id, hazard_id))
         except KeyError:
@@ -556,7 +560,7 @@ class Hazard(object):
                       _hazard.user_float_3, _hazard.user_int_1,
                       _hazard.user_int_2, _hazard.user_int_3,
                       _hazard.hazard_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return(_results, _error_code)
 

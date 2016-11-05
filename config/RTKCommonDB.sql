@@ -5,6 +5,7 @@ BEGIN TRANSACTION;
 --
 -- Active environments.
 --
+DROP TABLE IF EXISTS "tbl_active_environs";
 CREATE TABLE "tbl_active_environs" (
   "fld_subcategory_id" INTEGER NOT NULL,                            -- Component sub-category ID.
   "fld_calculation_model_id" INTEGER NOT NULL,                      -- Calculation model ID.
@@ -33,6 +34,7 @@ INSERT INTO "tbl_active_environs" VALUES(1,1,13,'ML','Missile, Launch',12.0);
 --
 -- Dormant environments.
 --
+DROP TABLE IF EXISTS "tbl_dormant_environs";
 CREATE TABLE "tbl_dormant_environs" (
   "fld_model_id" INTEGER NOT NULL,                                  -- Reliability model ID.
   "fld_dormant_environ_id" INTEGER NOT NULL,                        -- ID of the dormant environment.
@@ -47,6 +49,7 @@ INSERT INTO "tbl_dormant_environs" VALUES(1,3,'Airborne');
 --
 -- Available reliability allocation models.
 --
+DROP TABLE IF EXISTS "tbl_allocation_models";
 CREATE TABLE "tbl_allocation_models" (
   "fld_allocation_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,   -- Allocation model ID.
   "fld_allocation_noun" VARCHAR(64) NOT NULL                        -- Allocation model name.
@@ -60,6 +63,7 @@ INSERT INTO "tbl_allocation_models" VALUES(5,'Repairable Systems Apportionment')
 --
 -- Available reliability calculation models.
 --
+DROP TABLE IF EXISTS "tbl_calculation_model";
 CREATE TABLE "tbl_calculation_model" (
   "fld_model_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,        -- Reliability calculation model ID.
   "fld_model_noun" VARCHAR(50) DEFAULT NULL                         -- Reliability calculation model name.
@@ -75,6 +79,7 @@ INSERT INTO "tbl_calculation_model" VALUES(7,'Mechanical');
 --
 -- Component categories.
 --
+DROP TABLE IF EXISTS "tbl_category";
 CREATE TABLE "tbl_category" (
   "fld_category_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,     -- Component category ID.
   "fld_category_noun" VARCHAR(64) DEFAULT NULL                      -- Component category name.
@@ -93,6 +98,7 @@ INSERT INTO "tbl_category" VALUES(10,'Miscellaneous');
 --
 -- Component sub-categories.
 --
+DROP TABLE IF EXISTS "tbl_subcategory";
 CREATE TABLE "tbl_subcategory" (
   "fld_category_id" INTEGER NOT NULL,
   "fld_subcategory_id" INTEGER NOT NULL,
@@ -181,6 +187,7 @@ INSERT INTO "tbl_subcategory" VALUES(10,83,'Lamp');
 --
 -- Program cost estimation methods.
 --
+DROP TABLE IF EXISTS "tbl_cost_type";
 CREATE TABLE "tbl_cost_type" (
   "fld_cost_type_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,    -- Cost calculation method ID.
   "fld_cost_type_noun" VARCHAR(64) NOT NULL                         -- Cost calculation name.
@@ -191,6 +198,7 @@ INSERT INTO "tbl_cost_type" VALUES(2,'Specified');
 --
 -- Software development environments.
 --
+DROP TABLE IF EXISTS "tbl_development_environment";
 CREATE TABLE "tbl_development_environment" (
   "fld_development_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,  -- Software development environment ID.
   "fld_development_desc" VARCHAR(32) DEFAULT NULL,                  -- Software development environment name.
@@ -200,6 +208,7 @@ INSERT INTO "tbl_development_environment" VALUES(0,'Organic',0.76);
 INSERT INTO "tbl_development_environment" VALUES(1,'Semi-Detached',1.0);
 INSERT INTO "tbl_development_environment" VALUES(2,'Embedded',1.3);
 
+DROP TABLE IF EXISTS "tbl_development_phase";
 CREATE TABLE "tbl_development_phase" (
   "fld_phase_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_phase_desc" VARCHAR(64) DEFAULT NULL
@@ -214,6 +223,7 @@ INSERT INTO "tbl_development_phase" VALUES(5,'Released');
 --
 -- Statistical distributions.
 --
+DROP TABLE IF EXISTS "tbl_distributions";
 CREATE TABLE "tbl_distributions" (
   "fld_distribution_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_distribution_noun" VARCHAR(64) NOT NULL
@@ -224,6 +234,7 @@ INSERT INTO "tbl_distributions" VALUES(3,'LogNormal');
 INSERT INTO "tbl_distributions" VALUES(4,'Uniform');
 INSERT INTO "tbl_distributions" VALUES(5,'Weibull');
 
+DROP TABLE IF EXISTS "tbl_hr_type";
 CREATE TABLE "tbl_hr_type" (
   "fld_hr_type_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_hr_type_noun" VARCHAR(64) NOT NULL
@@ -232,6 +243,7 @@ INSERT INTO "tbl_hr_type" VALUES(1,'Assessed');
 INSERT INTO "tbl_hr_type" VALUES(2,'Specified, Hazard Rate');
 INSERT INTO "tbl_hr_type" VALUES(3,'Specified, MTBF');
 
+DROP TABLE IF EXISTS "tbl_manufacturers";
 CREATE TABLE "tbl_manufacturers" (
   "fld_manufacturers_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,    -- Manufacturer ID.
   "fld_manufacturers_noun" VARCHAR(128) DEFAULT '',                 -- Manufacturer name.
@@ -242,6 +254,7 @@ INSERT INTO "tbl_manufacturers" VALUES(1,'Sprague','New Hampshire','13606');
 INSERT INTO "tbl_manufacturers" VALUES(2,'Xilinx','','');
 INSERT INTO "tbl_manufacturers" VALUES(3,'National Semiconductor','California','27014');
 
+DROP TABLE IF EXISTS "tbl_measurement_units";
 CREATE TABLE "tbl_measurement_units" (
   "fld_measurement_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_measurement_code" varchar(64) DEFAULT NULL
@@ -256,6 +269,7 @@ INSERT INTO "tbl_measurement_units" VALUES(7,'oz');
 INSERT INTO "tbl_measurement_units" VALUES(8,'Amperes');
 INSERT INTO "tbl_measurement_units" VALUES(9,'Volts');
 
+DROP TABLE IF EXISTS "tbl_mttr_type";
 CREATE TABLE "tbl_mttr_type" (
   "fld_mttr_type_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_mttr_type_noun" varchar(64) NOT NULL
@@ -263,6 +277,7 @@ CREATE TABLE "tbl_mttr_type" (
 INSERT INTO "tbl_mttr_type" VALUES(1,'Assessed');
 INSERT INTO "tbl_mttr_type" VALUES(2,'Specified');
 
+DROP TABLE IF EXISTS "tbl_risk_category";
 CREATE TABLE "tbl_risk_category" (
   "fld_category_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_category_noun" VARCHAR(64) NOT NULL,
@@ -275,6 +290,7 @@ INSERT INTO "tbl_risk_category" VALUES(3,'Medium',4);
 INSERT INTO "tbl_risk_category" VALUES(4,'High',5);
 INSERT INTO "tbl_risk_category" VALUES(5,'Major',6);
 
+DROP TABLE IF EXISTS "tbl_software_application";
 CREATE TABLE "tbl_software_application" (
   "fld_application_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_application_desc" VARCHAR(32) DEFAULT NULL,
@@ -288,6 +304,7 @@ INSERT INTO "tbl_software_application" VALUES(3,'Process Control',0.0018,3.8);
 INSERT INTO "tbl_software_application" VALUES(4,'Production Center',0.0085,23.0);
 INSERT INTO "tbl_software_application" VALUES(5,'Developmental',0.0123,132.6);
 
+DROP TABLE IF EXISTS "tbl_software_level";
 CREATE TABLE "tbl_software_level" (
   "fld_level_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_level_desc" VARCHAR(64) DEFAULT NULL
@@ -299,6 +316,7 @@ INSERT INTO "tbl_software_level" VALUES(2,'Software Unit');
 --
 -- Software application categories.
 --
+DROP TABLE IF EXISTS "tbl_software_category";
 CREATE TABLE "tbl_software_category"(
     "fld_category_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_category_name" VARCHAR(128),
@@ -326,6 +344,7 @@ INSERT INTO "tbl_software_category" VALUES(17,'Software Development Tools','Prov
 --
 -- Software test techniques.
 --
+DROP TABLE IF EXISTS "tbl_test_techniques";
 CREATE TABLE "tbl_test_techniques" (
     "fld_technique_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_technique_name" VARCHAR(64),
@@ -342,6 +361,7 @@ INSERT INTO "tbl_test_techniques" VALUES(5,'Branch Testing',0,'');
 --
 -- List of RTK users.
 --
+DROP TABLE IF EXISTS "tbl_users";
 CREATE TABLE "tbl_users" (
     "fld_user_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_user_lname" VARCHAR(256),
@@ -351,6 +371,7 @@ CREATE TABLE "tbl_users" (
     "fld_user_group" VARCHAR(256)
 );
 
+DROP TABLE IF EXISTS "tbl_lifecycles";
 CREATE TABLE "tbl_lifecycles" (
   "fld_lifecycle_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_lifecycle_name" VARCHAR(128)
@@ -363,6 +384,7 @@ INSERT INTO "tbl_lifecycles" VALUES(5,'Storage');
 INSERT INTO "tbl_lifecycles" VALUES(6,'Operation');
 INSERT INTO "tbl_lifecycles" VALUES(7,'Disposal');
 
+DROP TABLE IF EXISTS "tbl_incident_category";
 CREATE TABLE "tbl_incident_category" (
   "fld_incident_cat_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_incident_cat_name" VARCHAR(256)
@@ -371,6 +393,7 @@ INSERT INTO "tbl_incident_category" VALUES(1,'Hardware');
 INSERT INTO "tbl_incident_category" VALUES(2,'Software');
 INSERT INTO "tbl_incident_category" VALUES(3,'Process');
 
+DROP TABLE IF EXISTS "tbl_incident_type";
 CREATE TABLE "tbl_incident_type" (
   "fld_incident_type_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_incident_type_name" VARCHAR(256)
@@ -386,6 +409,7 @@ INSERT INTO "tbl_incident_type" VALUES(8,'Manuals');
 INSERT INTO "tbl_incident_type" VALUES(9,'Other');
 
 DROP TABLE IF EXISTS "tbl_criticality";
+DROP TABLE IF EXISTS "tbl_criticality";
 CREATE TABLE "tbl_criticality" (
     "fld_criticality_id" INTEGER NOT NULL,
     "fld_criticality_name" VARCHAR(256),
@@ -398,6 +422,7 @@ INSERT INTO "tbl_criticality" VALUES(3,'Marginal','III','Could result in injury 
 INSERT INTO "tbl_criticality" VALUES(4,'Negligble','IV','Could result in injury or illness not resulting in a lost work day, loss exceeding $2K but less than $10K, or minimal environmental damage not violating law or regulation.',1);
 
 DROP TABLE IF EXISTS "rtk_detection_methods";
+DROP TABLE IF EXISTS "rtk_detection_methods";
 CREATE TABLE "rtk_detection_methods" (
     "fld_detection_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_detection_method" VARCHAGE(256) DEFAULT('')
@@ -409,6 +434,7 @@ INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Random Testi
 INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Functional Testing");
 INSERT INTO "rtk_detection_methods" (fld_detection_method) VALUES ("Branch Testing");
 
+DROP TABLE IF EXISTS "tbl_incident_relevency";
 CREATE TABLE "tbl_incident_relevency" (
   "fld_relevency_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_relevency_q" VARCHAR(512),
@@ -431,6 +457,7 @@ INSERT INTO "tbl_incident_relevency" VALUES(14,'This failure is the second or su
 INSERT INTO "tbl_incident_relevency" VALUES(15,'This failure occurred during burn-in, troubleshooting, repair verification, or setup.',0);
 INSERT INTO "tbl_incident_relevency" VALUES(16,'This failure is clearly attributable to an overstress condition in excess of the design requirements.',0);
 
+DROP TABLE IF EXISTS "tbl_rpn_severity";
 CREATE TABLE "tbl_rpn_severity" (
     "fld_severity_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_severity_name" VARCHAR(512),
@@ -448,6 +475,7 @@ INSERT INTO "tbl_rpn_severity" VALUES(8,'Very High','System inoperable with dest
 INSERT INTO "tbl_rpn_severity" VALUES(9,'Hazardous, with warning','Failure effects safe system operation with warning.',0);
 INSERT INTO "tbl_rpn_severity" VALUES(10,'Hazardous, without warning','Failure effects safe system operation without warning.',0);
 
+DROP TABLE IF EXISTS "tbl_rpn_occurrence";
 CREATE TABLE "tbl_rpn_occurrence" (
     "fld_occurrence_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_occurrence_name" VARCHAR(512),
@@ -465,6 +493,7 @@ INSERT INTO "tbl_rpn_occurrence" VALUES(8,'Very High','Failure rate is 1 in 8.',
 INSERT INTO "tbl_rpn_occurrence" VALUES(9,'Extremely High','Failure rate is 1 in 3.',0);
 INSERT INTO "tbl_rpn_occurrence" VALUES(10,'Dangerously High','Failure rate is > 1 in 2.',0);
 
+DROP TABLE IF EXISTS "tbl_rpn_detection";
 CREATE TABLE "tbl_rpn_detection" (
     "fld_detection_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_detection_name" VARCHAR(512),
@@ -482,6 +511,7 @@ INSERT INTO "tbl_rpn_detection" VALUES(8,'Remote','Remote chance the existing de
 INSERT INTO "tbl_rpn_detection" VALUES(9,'Very Remote','Very remote chance the existing design controls will or can detect a potential mechanism/cause and subsequent failure mode.',0);
 INSERT INTO "tbl_rpn_detection" VALUES(10,'Absolute Uncertainty','Existing design controls will not or cannot detect a potential mechanism/cause and subsequent failure mode; there is no design control.',0);
 
+DROP TABLE IF EXISTS "tbl_action_category";
 CREATE TABLE "tbl_action_category" (
     "fld_action_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_action_name" VARCHAR(128)
@@ -493,12 +523,14 @@ INSERT INTO "tbl_action_category" VALUES(3,'Manufacturing');
 INSERT INTO "tbl_action_category" VALUES(4,'Test');
 INSERT INTO "tbl_action_category" VALUES(5,'Verification & Validation');
 
+DROP TABLE IF EXISTS "tbl_site_info";
 CREATE TABLE "tbl_site_info" (
     "fld_product_key" VARCHAR(64) NOT NULL,
     "fld_expire_date" INTEGER NOT NULL DEFAULT (719163)
 );
 INSERT INTO "tbl_site_info" VALUES('9490059723f3a743fb961d092d3283422f4f2d13',735599);
 
+DROP TABLE IF EXISTS "tbl_hazards";
 CREATE TABLE "tbl_hazards" (
     "fld_hazard_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_category" VARCHAR(256),
@@ -691,16 +723,18 @@ INSERT INTO "tbl_hazards" VALUES(184,'Unannunciated Utility Outages','Lubricatio
 INSERT INTO "tbl_hazards" VALUES(185,'Unannunciated Utility Outages','Steam');
 INSERT INTO "tbl_hazards" VALUES(186,'Unannunciated Utility Outages','Ventilation');
 
+DROP TABLE IF EXISTS "tbl_failure_probability";
 CREATE TABLE "tbl_failure_probability" (
     "fld_probability_id" INTEGER PRIMARY KEY AUTOINCREMENT,
     "fld_name" VARCHAR(256),
     "fld_value" INTEGER);
-INSERT INTO "tbl_failure_probability" VALUES('Level A - Frequent', 5);
-INSERT INTO "tbl_failure_probability" VALUES('Level B - Reasonably Probable', 4);
-INSERT INTO "tbl_failure_probability" VALUES('Level C - Occasional', 3);
-INSERT INTO "tbl_failure_probability" VALUES('Level D - Remote', 2);
-INSERT INTO "tbl_failure_probability" VALUES('Level E - Extremely Unlikely', 1);
+INSERT INTO "tbl_failure_probability" VALUES(0, 'Level A - Frequent', 5);
+INSERT INTO "tbl_failure_probability" VALUES(1, 'Level B - Reasonably Probable', 4);
+INSERT INTO "tbl_failure_probability" VALUES(2, 'Level C - Occasional', 3);
+INSERT INTO "tbl_failure_probability" VALUES(3, 'Level D - Remote', 2);
+INSERT INTO "tbl_failure_probability" VALUES(4, 'Level E - Extremely Unlikely', 1);
 
+DROP TABLE IF EXISTS "tbl_severity";
 DROP TABLE IF EXISTS "tbl_severity";
 CREATE TABLE "tbl_severity" (
     "fld_severity_id" INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -708,11 +742,12 @@ CREATE TABLE "tbl_severity" (
     "fld_category" VARCHAR(218),
     "fld_description" BLOB,
     "fld_value" INTEGER);
-INSERT INTO "tbl_severity" VALUES('Catastrophic','I','Could result in death, permanent total disability, loss exceeding $1M, or irreversible severe environmental damage that violates law or regulation.', 4);
-INSERT INTO "tbl_severity" VALUES('Critical','II','Could result in permanent partial disability, injuries or occupational illness that may result in hospitalization of at least three personnel, loss exceeding $200K but less than $1M, or reversible environmental damage causing a violation of law or regulation.', 3);
-INSERT INTO "tbl_severity" VALUES('Marginal','III','Could result in injury or occupational illness resulting in one or more lost work days(s), loss exceeding $10K but less than $200K, or mitigatible environmental damage without violation of law or regulation where restoration activities can be accomplished.', 2);
-INSERT INTO "tbl_severity" VALUES('Negligble','IV','Could result in injury or illness not resulting in a lost work day, loss exceeding $2K but less than $10K, or minimal environmental damage not violating law or regulation.', 1);
+INSERT INTO "tbl_severity" VALUES(0, 'Catastrophic','I','Could result in death, permanent total disability, loss exceeding $1M, or irreversible severe environmental damage that violates law or regulation.', 4);
+INSERT INTO "tbl_severity" VALUES(1, 'Critical','II','Could result in permanent partial disability, injuries or occupational illness that may result in hospitalization of at least three personnel, loss exceeding $200K but less than $1M, or reversible environmental damage causing a violation of law or regulation.', 3);
+INSERT INTO "tbl_severity" VALUES(2, 'Marginal','III','Could result in injury or occupational illness resulting in one or more lost work days(s), loss exceeding $10K but less than $200K, or mitigatible environmental damage without violation of law or regulation where restoration activities can be accomplished.', 2);
+INSERT INTO "tbl_severity" VALUES(3, 'Negligble','IV','Could result in injury or illness not resulting in a lost work day, loss exceeding $2K but less than $10K, or minimal environmental damage not violating law or regulation.', 1);
 
+DROP TABLE IF EXISTS "tbl_environmental_conditions";
 CREATE TABLE "tbl_environmental_conditions" (
     "fld_condition_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_condition_name" VARCHAR(128)
@@ -752,6 +787,7 @@ INSERT INTO "tbl_environmental_conditions" VALUES(31,'Weather, Sleet');
 INSERT INTO "tbl_environmental_conditions" VALUES(32,'Weather, Snow');
 INSERT INTO "tbl_environmental_conditions" VALUES(33,'Weather, Wind');
 
+DROP TABLE IF EXISTS "tbl_requirement_type";
 CREATE TABLE "tbl_requirement_type" (
   "fld_requirement_type_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_requirement_type_desc" VARCHAR(32) DEFAULT NULL,
@@ -765,12 +801,14 @@ INSERT INTO "tbl_requirement_type" VALUES(5,'Safety','SAF');
 INSERT INTO "tbl_requirement_type" VALUES(6,'Serviceability','SVC');
 INSERT INTO "tbl_requirement_type" VALUES(7,'Usability','USE');
 
+DROP TABLE IF EXISTS "tbl_stakeholders";
 CREATE TABLE "tbl_stakeholders" (
     "fld_stakeholder_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     "fld_stakeholder" VARCHAR(128)
 );
 INSERT INTO "tbl_stakeholders" VALUES(1,'Customer');
 
+DROP TABLE IF EXISTS "tbl_status";
 CREATE TABLE "tbl_status" (
   "fld_status_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_status_name" VARCHAR(256),
@@ -787,6 +825,7 @@ INSERT INTO "tbl_status" VALUES(8,'Approved','Incident or action has been approv
 INSERT INTO "tbl_status" VALUES(9,'Ready for Closure','Incident or action is ready to be closed.');
 INSERT INTO "tbl_status" VALUES(10,'Closed','Incident or action has been closed.');
 
+DROP TABLE IF EXISTS "tbl_groups";
 CREATE TABLE "tbl_groups" (
     "fld_group_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,  -- Identifier for the group.
     "fld_group_name" VARCHAR (256)
@@ -798,6 +837,7 @@ INSERT INTO "tbl_groups" VALUES(4,'Engineering, Reliability');
 INSERT INTO "tbl_groups" VALUES(5,'Engineering, Safety');
 INSERT INTO "tbl_groups" VALUES(6,'Engineering, Software');
 
+DROP TABLE IF EXISTS "tbl_validation_type";
 CREATE TABLE "tbl_validation_type" (
   "fld_validation_type_id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   "fld_validation_type_desc" VARCHAR(128) DEFAULT NULL,
@@ -829,6 +869,7 @@ INSERT INTO "tbl_validation_type" VALUES(23,'System Engineering, Thermal Analysi
 INSERT INTO "tbl_validation_type" VALUES(24,'System Engineering, Tolerance Analysis','TOL');
 INSERT INTO "tbl_validation_type" VALUES(25,'System Engineering, Worst Case Analysis','WCA');
 
+DROP TABLE IF EXISTS "tbl_gateways";
 CREATE TABLE "tbl_gateways" (
     "fld_gateway_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
     "fld_gateway_name" VARCHAR(256),
@@ -840,6 +881,7 @@ INSERT INTO "tbl_gateways" VALUES(3,'Critical Design Review','Critical design re
 INSERT INTO "tbl_gateways" VALUES(4,'Test Readiness Review',NULL);
 INSERT INTO "tbl_gateways" VALUES(5,'Manufacturing Review',NULL);
 
+DROP TABLE IF EXISTS "tbl_reviews";
 CREATE TABLE "tbl_reviews" (
     "fld_gateway_id" INTEGER DEFAULT (1),
     "fld_concern_id" INTEGER NOT NULL,
@@ -911,6 +953,7 @@ INSERT INTO "tbl_reviews" VALUES(2,19,'All modes of operation are considered in 
 INSERT INTO "tbl_reviews" VALUES(2,22,'Reliability assessment procedures are in accordance with requirements.','','fld_action',NULL,'3');
 INSERT INTO "tbl_reviews" VALUES(2,23,'The sum of the part failure rates equals the module or assembly failure intensity.','Assessments may neglect to include all the parts, producing optimistic results.  Check for solder connections, connectors, circuit boards, fittings, gaskets, etc.','fld_action',NULL,'4');
 
+DROP TABLE IF EXISTS "tbl_failure_modes";
 CREATE TABLE "tbl_failure_modes" (
     "fld_category_id" INTEGER NOT NULL DEFAULT(0),                  -- The component the failure mode belongs to category ID.
     "fld_subcategory_id" INTEGER NOT NULL DEFAULT(0),               -- The component the failure mode belongs to subcategory ID.
@@ -1133,6 +1176,7 @@ INSERT INTO "tbl_failure_modes" VALUES(10,82,3,'Premature Open',0.08,2);
 --
 -- Damaging operating conditions.
 --
+DROP TABLE IF EXISTS "tbl_op_condition";
 CREATE TABLE "tbl_op_condition" (
     "fld_condition_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,  -- The operationg condition ID.
     "fld_condition_name" VARCHAR(256)                               -- The operating condition name.
@@ -1163,6 +1207,7 @@ INSERT INTO "tbl_op_condition" VALUES(21, "Vibration");
 --
 -- Operating conditions that are measureable.
 --
+DROP TABLE IF EXISTS "tbl_measurements";
 CREATE TABLE "tbl_measurements" (
     "fld_measurement_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,    -- Measurement parameter ID.
     "fld_measurement_name" VARCHAR(256)                             -- Parameter measurement name.
@@ -1191,6 +1236,7 @@ INSERT INTO "tbl_measurements" VALUES(19, "Torque");
 --
 -- Methods of summarizing load histories.
 --
+DROP TABLE IF EXISTS "tbl_load_history";
 CREATE TABLE "tbl_load_history" (
     "fld_history_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,    -- Load history ID.
     "fld_history_name" VARCHAR(256)                                 -- Load history name.
@@ -1208,6 +1254,7 @@ INSERT INTO "tbl_load_history" VALUES(8, "Time at Minimum");
 --
 -- Affinity groups
 --
+DROP TABLE IF EXISTS "rtk_affinity_groups";
 CREATE TABLE "rtk_affinity_groups" (
     "fld_group_id" INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,      -- Affinity group ID
     "fld_group" VARCHAR(256)

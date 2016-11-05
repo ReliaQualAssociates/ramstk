@@ -342,8 +342,8 @@ class Allocation(object):
     manage one or more Allocation data models.  The attributes of an Allocation
     data controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-                Project database.
+    :ivar dao: the Data Access Object to use when communicating with the RTK
+               Project database.
     :ivar dict dicAllocation: Dictionary of the Allocation data models managed.
                               Key is the Hardware ID; value is a pointer to the
                               Allocation data model instance.
@@ -354,13 +354,21 @@ class Allocation(object):
         Method to initialize an Allocation data controller instance.
         """
 
-        # Initialize private scalar attributes.
-        self._dao = None
+        # Initialize private dictionary attributes.
 
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        
         # Initialize public dictionary attributes.
         self.dicAllocation = {}
 
-    def request_allocation(self, dao):
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.dao = None
+        
+    def request_allocation(self):
         """
         Method to read the RTK Project database and loads all the Allocation.
         For each Allocation returned:
@@ -372,13 +380,9 @@ class Allocation(object):
         #. Add the instance to the dictionary of Hardware being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
         :return: (_results, _error_code)
         :rtype: tuple
         """
-
-        self._dao = dao
 
         _query = "SELECT t1.fld_hardware_id, t1.fld_reliability_goal, \
                          t1.fld_hazard_rate_goal, t1.fld_mtbf_goal, \
@@ -400,7 +404,7 @@ class Allocation(object):
                   ON t2.fld_hardware_id=t1.fld_hardware_id \
                   INNER JOIN rtk_reliability AS t3 \
                   ON t3.fld_hardware_id=t1.fld_hardware_id"
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_allocations = len(_results)
@@ -428,7 +432,7 @@ class Allocation(object):
         # Add a new Allocation model to the open RTK Project database.
         _query = "INSERT INTO rtk_allocation (fld_hardware_id, fld_parent_id) \
                   VALUES ({0:d}, {1:d})".format(hardware_id, parent_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         # If the new Allocation was successfully added to the database, create
         # and a new Allocation model to the dictionary.
@@ -525,7 +529,7 @@ class Allocation(object):
                       _allocation.hazard_rate_alloc, _allocation.mtbf_alloc,
                       _allocation.parent_id, _allocation.method,
                       _allocation.goal_measure, hardware_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return (_results, _error_code)
 

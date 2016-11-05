@@ -330,7 +330,7 @@ CREATE TABLE "rtk_stress" (
     "fld_thermal_resistance" REAL DEFAULT(0),                       -- Thermal resistance of the hardware item.
     "fld_tref" REAL DEFAULT(0),                                     -- Reference temperature of the hardware item.
     "fld_voltage_ratio" REAL DEFAULT(1),                            -- Ratio of operating to rated voltage.
-    "fld_reason" BLOB,                                              -- The reason(s) the component is over-stressed.
+    "fld_reason" BLOB,                                            -- The reason(s) the component is over-stressed.
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
 INSERT INTO "rtk_stress" VALUES(0, 1, 30, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 1);

@@ -416,5 +416,5 @@ class TestAllocationController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Allocation))
-        self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT.dicAllocation, {})
+        self.assertEqual(self.DUT.dao, None)

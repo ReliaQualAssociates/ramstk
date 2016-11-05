@@ -517,8 +517,8 @@ class SimilarItem(object):
     controller can manage one or more SimilarItem data models.  The attributes
     of a SimilarItem data controller are:
 
-    :ivar _dao: the Data Access Object to use when communicating with the RTK
-                Project database.
+    :ivar dao: the Data Access Object to use when communicating with the RTK
+               Project database.
     :ivar dicSimilarItem: Dictionary of the SimilarItem data models managed.
                           Key is the Hardware ID; value is a pointer to the
                           SimilarItem data model instance.
@@ -534,7 +534,6 @@ class SimilarItem(object):
         # Define private list attributes.
 
         # Define private scalar attributes.
-        self._dao = None
         self._last_id = 0
 
         # Define public dictionary attributes.
@@ -543,8 +542,9 @@ class SimilarItem(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.dao = None
 
-    def request_similar_item(self, dao):
+    def request_similar_item(self):
         """
         Method to read the RTK Project database and loads all the SimilarItems.
         For each SimilarItem returned:
@@ -556,13 +556,9 @@ class SimilarItem(object):
         #. Add the instance to the dictionary of SimilarItem being managed
            by this controller.
 
-        :param rtk.DAO dao: the Data Access object to use for communicating
-                            with the RTK Project database.
         :return: (_results, _error_code)
         :rtype: tuple
         """
-
-        self._dao = dao
 
         _query = "SELECT fld_hardware_id, fld_sia_id, fld_from_quality, \
                          fld_to_quality, fld_from_environment, \
@@ -588,7 +584,7 @@ class SimilarItem(object):
                          fld_user_int_2, fld_user_int_3, fld_user_int_4, \
                          fld_user_int_5, fld_parent_id, fld_method \
                   FROM rtk_similar_item"
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_similar_item = len(_results)
@@ -617,8 +613,8 @@ class SimilarItem(object):
         _query = "INSERT INTO rtk_similar_item \
                   (fld_hardware_id, fld_parent_id) \
                   VALUES ({0:d}, {1:d})".format(hardware_id, parent_id)
-        (_results, _error_code, _sia_id) = self._dao.execute(_query,
-                                                             commit=True)
+        (_results, _error_code, _sia_id) = self.dao.execute(_query,
+                                                            commit=True)
 
         # If the new record was added successfully to the RTK Project database:
         #   1. Retrieve the ID of the newly inserted similar item record.
@@ -766,7 +762,7 @@ class SimilarItem(object):
                       _similar_item.user_int_4, _similar_item.user_int_5,
                       _similar_item.parent_id, _similar_item.method,
                       hardware_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return (_results, _error_code)
 
