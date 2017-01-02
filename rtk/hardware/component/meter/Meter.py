@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-#############################################
-Hardware.Component.Meter Package Meter Module
-#############################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.meter.Meter.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+#############################################
+Hardware.Component.Meter Package Meter Module
+#############################################
+"""
 
 import gettext
 import locale
@@ -76,8 +76,8 @@ class Model(Component):
         # Define public scalar attributes.
         self.application = 0                # Application index.
         self.base_hr = 0.0                  # Base hazard rate.
-        self.reason = ""                    # Overstress reason.
         self.piE = 0.0                      # Environment pi factor.
+        self.reason = ""                    # Overstress reason.
 
     def set_attributes(self, values):
         """
@@ -92,13 +92,13 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
-            self.base_hr = float(values[96])
-            self.piE = float(values[97])
-            self.application = int(values[116])
-            self.reason = ''               # FIXME: See bug 181.
+            self.base_hr = float(values[127])
+            self.piE = float(values[128])
+            self.application = int(values[129])
+            self.reason = str(values[130])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -234,10 +234,10 @@ class ElapsedTime(Model):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Model.set_attributes(self, values)
+        (_code, _msg) = Model.set_attributes(self, values[:131])
 
         try:
-            self.piT = float(values[98])
+            self.piT = float(values[131])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -380,15 +380,15 @@ class Panel(Model):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Model.set_attributes(self, values)
+        (_code, _msg) = Model.set_attributes(self, values[:131])
 
         try:
-            self.q_override = float(values[98])
-            self.piA = float(values[99])
-            self.piF = float(values[100])
-            self.piQ = float(values[101])
-            self.quality = int(values[117])
-            self.function = int(values[118])
+            self.q_override = float(values[131])
+            self.piA = float(values[132])
+            self.piF = float(values[133])
+            self.piQ = float(values[134])
+            self.quality = int(values[135])
+            self.function = int(values[136])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

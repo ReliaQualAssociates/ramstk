@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###################################################
-Hardware.Component.Resistor Package Resistor Module
-###################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.resistor.Resistor.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+###################################################
+Hardware.Component.Resistor Package Resistor Module
+###################################################
+"""
 
 import gettext
 import locale
@@ -100,7 +100,7 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
             self.quality = int(values[116])
@@ -110,7 +110,7 @@ class Model(Component):
             self.piQ = float(values[99])
             self.piE = float(values[100])
             self.piR = float(values[101])
-            self.reason = ''               # FIXME: See bug 181. 
+            self.reason = str(values[133])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

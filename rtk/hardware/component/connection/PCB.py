@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-################################################
-Hardware.Component.Connection Package PCB Module
-################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.connection.PCB.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+################################################
+Hardware.Component.Connection Package PCB Module
+################################################
+"""
 
 import gettext
 import locale
@@ -87,14 +87,14 @@ class PCB(Connection):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.n_active_contacts = 0
-        self.contact_gauge = 26
         self.amps_per_contact = 0.0
         self.mate_unmate_cycles = 0.0
         self.piK = 0.0
         self.piP = 0.0
         self.contact_temperature = 0.0
-
+        self.n_active_contacts = 0
+        self.contact_gauge = 26
+        
     def set_attributes(self, values):
         """
         Method to set the PCB Connection data model attributes.
@@ -108,17 +108,16 @@ class PCB(Connection):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Connection.set_attributes(self, values)
+        (_code, _msg) = Connection.set_attributes(self, values[:133])
 
         try:
-            self.amps_per_contact = float(values[100])
-            self.mate_unmate_cycles = float(values[101])
-            self.piK = float(values[102])
-            self.piP = float(values[103])
-            self.contact_temperature = float(values[104])
-            self.n_active_contacts = int(values[117])
-            self.contact_gauge = int(values[118])
-            self.reason = ''               # FIXME: See bug 181.
+            self.amps_per_contact = float(values[133])
+            self.mate_unmate_cycles = float(values[134])
+            self.piK = float(values[135])
+            self.piP = float(values[136])
+            self.contact_temperature = float(values[137])
+            self.n_active_contacts = int(values[138])
+            self.contact_gauge = int(values[139])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -133,16 +132,16 @@ class PCB(Connection):
         Method to retrieve the current values of the PCB Connection data model
         attributes.
 
-        :return: (n_active_contacts, contact_gauge, mate_unmate_cycles,
-                  amps_per_contact, piK, piP, contact_temperature)
+        :return: (amps_per_contact, mate_unmate_cycles, piK, piP, 
+                  contact_temperature, n_active_contacts, contact_gauge)
         :rtype: tuple
         """
 
         _values = Connection.get_attributes(self)
 
-        _values = _values + (self.n_active_contacts, self.contact_gauge,
-                             self.amps_per_contact, self.mate_unmate_cycles,
-                             self.piK, self.piP, self.contact_temperature)
+        _values = _values + (self.amps_per_contact, self.mate_unmate_cycles,
+                             self.piK, self.piP, self.contact_temperature, 
+                             self.n_active_contacts, self.contact_gauge)
 
         return _values
 
@@ -153,7 +152,7 @@ class PCB(Connection):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 13.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 13.
         from math import exp
 
         self.hazard_rate_model = {}

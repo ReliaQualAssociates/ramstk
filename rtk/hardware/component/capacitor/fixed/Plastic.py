@@ -110,7 +110,7 @@ class Film(Capacitor):
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow error.
+                # TODO: Handle overflow error.
                 return True
 
             # Capacitance correction factor.
@@ -196,7 +196,7 @@ class Plastic(Capacitor):
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow error.
+                # TODO: Handle overflow error.
                 return True
 
             # Capacitance correction factor.

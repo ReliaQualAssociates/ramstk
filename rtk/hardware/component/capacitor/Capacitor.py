@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-#################################
-Hardware Package Capacitor Module
-#################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.capacitor.Capacitor.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+#################################
+Hardware Package Capacitor Module
+#################################
+"""
 
 import gettext
 import locale
@@ -102,20 +102,20 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
-
+        (_code, _msg) = Component.set_attributes(self, values[:127])
+        
         try:
-            self.q_override = float(values[96])
-            self.acvapplied = float(values[97])
-            self.capacitance = float(values[98])
-            self.base_hr = float(values[99])
-            self.piQ = float(values[100])
-            self.piE = float(values[101])
-            self.piCV = float(values[102])
-            self.quality = int(values[116])
-            self.specification = int(values[117])
-            self.spec_sheet = int(values[118])
-            self.reason = ''               # FIXME: See bug 181.
+            self.q_override = float(values[127])
+            self.acvapplied = float(values[128])
+            self.capacitance = float(values[129])
+            self.base_hr = float(values[130])
+            self.piQ = float(values[131])
+            self.piE = float(values[132])
+            self.piCV = float(values[133])
+            self.quality = int(values[134])
+            self.specification = int(values[135])
+            self.spec_sheet = int(values[136])
+            self.reason = str(values[137])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -130,17 +130,17 @@ class Model(Component):
         Method to retrieve the current values of the Capacitor data model
         attributes.
 
-        :return: (quality, q_override, specification, spec_sheet,
-                  acvapplied, capacitance, base_hr, reason, piQ, piE, piCV)
+        :return: (q_override, acvapplied, capacitance, base_hr, piQ, piE, piCV,
+                  quality, specification, spec_sheet, reason)
         :rtype: tuple
         """
 
         _values = Component.get_attributes(self)
 
-        _values = _values + (self.q_override, self.acvapplied,
-                             self.capacitance, self.base_hr, self.piQ,
-                             self.piE, self.piCV, self.quality,
-                             self.specification, self.spec_sheet, self.reason)
+        _values = _values + (self.q_override, self.acvapplied, self.capacitance, 
+                             self.base_hr, self.piQ, self.piE, self.piCV, 
+                             self.quality, self.specification, self.spec_sheet, 
+                             self.reason)
 
         return _values
 

@@ -45,6 +45,12 @@ class TestHardwareModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Model))
 
+        self.assertEqual(self.DUT.user_float, 
+                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        self.assertEqual(self.DUT.user_int, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
+        self.assertEqual(self.DUT.user_varchar, ['', '', '', '', ''])
+        
         self.assertEqual(self.DUT.revision_id, None)
         self.assertEqual(self.DUT.hardware_id, None)
         self.assertEqual(self.DUT.alt_part_number, '')
@@ -266,6 +272,51 @@ class TestHardwareModel(unittest.TestCase):
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
+    def test_set_user_attributes(self):
+        """
+        (TestHardware) _set_user_attributes should return a 0 error code on success
+        """
+
+        _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
+                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
+                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two', 
+                        'Three', '4')
+        
+        (_error_code,
+         _error_msg) = self.DUT._set_user_attributes(_user_values)
+        self.assertEqual(_error_code, 0)
+
+    @attr(all=True, unit=True)
+    def test_set_user_attributes_wrong_type(self):
+        """
+        (TestHardware) _set_user_attributes should return a 10 error code when passed a wrong data type
+        """
+
+        _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
+                        11, 12, None, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
+                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two', 
+                        'Three', '4')
+
+        (_error_code,
+         _error_msg) = self.DUT._set_user_attributes(_user_values)
+        self.assertEqual(_error_code, 10)
+
+    @attr(all=True, unit=True)
+    def test_set_user_attributes_missing_index(self):
+        """
+        (TestHardware) _set_user_attributes should return a 40 error code when too few items are passed
+        """
+
+        _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
+                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
+                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two', 
+                        'Three')
+
+        (_error_code,
+         _error_msg) = self.DUT._set_user_attributes(_user_values)
+        self.assertEqual(_error_code, 40)
+        
+    @attr(all=True, unit=True)
     def test_set_attributes(self):
         """
         (TestHardware) _set_attributes should return a 0 error code on success
@@ -280,7 +331,10 @@ class TestHardwareModel(unittest.TestCase):
                        1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0,
                        0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
                        0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0)
+                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 1.0, 2.0, 30.0, 
+                       440.0, 5, 6, 7.0, 8.0, 99.0, 10.0, 11, 12, 13.0, 14, 15.0, 
+                       16.0, 17.0, 18, 19.0, 0.0, 1.0, 2, 3, 440.0, 50, 60, 7.0, 
+                       80.0, 90, 'Zero', 'One', 'Two', 'Three', '4') 
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_all_values)
@@ -324,6 +378,18 @@ class TestHardwareModel(unittest.TestCase):
         self.assertEqual(self.DUT._get_reliability_attributes(), _rel_values)
 
     @attr(all=True, unit=True)
+    def test_get_user_attributes(self):
+        """
+        (TestHardware) _get_user_attributes should return a tuple of attribute values
+        """
+
+        _user_values = ([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0, 
+                         0, 0, 0, 0], ['', '', '', '', ''])
+
+        self.assertEqual(self.DUT._get_user_attributes(), _user_values)
+        
+    @attr(all=True, unit=True)
     def test_get_attributes(self):
         """
         (TestHardware) get_attributes should return a tuple of attribute values
@@ -336,7 +402,9 @@ class TestHardwareModel(unittest.TestCase):
                        0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
                        0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                       0.0, 0)
+                       0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 
+                       0, 0, 0, 0, 0, 0, 0], ['', '', '', '', ''])
 
         self.assertEqual(self.DUT.get_attributes(), _all_values)
 
@@ -355,7 +423,10 @@ class TestHardwareModel(unittest.TestCase):
                        1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0,
                        0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
                        0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0)
+                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, [0.0, 0.0, 0.0, 0.0, 
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                       0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ['', '', 
+                       '', '', ''])
 
         self.DUT.set_attributes(_all_values)
         _result = self.DUT.get_attributes()

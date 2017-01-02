@@ -86,7 +86,7 @@ class Bypass(Capacitor):
         if self.hazard_rate_type < 3:       # MIL-HDBK-217
             self.reference_temperature = 358.0
 
-    def set_attributes(self, values):
+#    def set_attributes(self, values):
         """
         Method to set the Capacitor data model attributes.
 
@@ -96,12 +96,12 @@ class Bypass(Capacitor):
         :rtype: tuple
         """
 
-        _code = 0
-        _msg = ''
+ #       _code = 0
+  #      _msg = ''
 
-        (_code, _msg) = Capacitor.set_attributes(self, values[:119])
+   #     (_code, _msg) = Capacitor.set_attributes(self, values[:119])
 
-        return(_code, _msg)
+    #    return(_code, _msg)
 
     def calculate_part(self):
         """
@@ -133,7 +133,7 @@ class Bypass(Capacitor):
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow and zero division errors.
+                # TODO: Handle overflow and zero division errors.
                 return True
 
             # Capacitance correction factor.
@@ -217,7 +217,7 @@ class Feedthrough(Capacitor):
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
             except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow error.
+                # TODO: Handle overflow error.
                 return True
 
             # Capacitance correction factor.

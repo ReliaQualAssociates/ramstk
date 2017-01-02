@@ -182,7 +182,11 @@ class Model(object):                        # pylint: disable=R0902
         # Define public dictionary attributes.
 
         # Define public list attributes.
-
+        self.user_float = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                           0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.user_int = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+        self.user_varchar = ['', '', '', '', '']
+        
         # Define public scalar attributes.
         self.revision_id = None
         self.hardware_id = None
@@ -314,6 +318,7 @@ class Model(object):                        # pylint: disable=R0902
         (_code, _msg) = self._set_base_attributes(values[:38])
         (_code, _msg) = self._set_stress_attributes(values[38:50])
         (_code, _msg) = self._set_reliability_attributes(values[50:86])
+        (_code, _msg) = self._set_user_attributes(values[86:])
 
         return(_code, _msg)
 
@@ -472,6 +477,64 @@ class Model(object):                        # pylint: disable=R0902
 
         return(_code, _msg)
 
+    def _set_user_attributes(self,  values):
+        """
+        Method to set the user-defined Hardware attributes.
+
+        :param tuple values: tuple of values to assign to the instance
+                             attributes.
+        :return: (_code, _msg); the error code and error message.
+        :rtype: tuple
+        """
+
+        _code = 0
+        _msg = ''
+        
+        try:
+            self.user_float[0] = float(values[0])
+            self.user_float[1] = float(values[1])
+            self.user_float[2] = float(values[2])
+            self.user_float[3] = float(values[3])
+            self.user_float[4] = float(values[4])
+            self.user_float[5] = float(values[5])
+            self.user_float[6] = float(values[6])
+            self.user_float[7] = float(values[7])
+            self.user_float[8] = float(values[8])
+            self.user_float[9] = float(values[9])
+            self.user_float[10] = float(values[10])
+            self.user_float[11] = float(values[11])
+            self.user_float[12] = float(values[12])
+            self.user_float[13] = float(values[13])
+            self.user_float[14] = float(values[14])
+            self.user_float[15] = float(values[15])
+            self.user_float[16] = float(values[16])
+            self.user_float[17] = float(values[17])
+            self.user_float[18] = float(values[18])
+            self.user_float[19] = float(values[19])
+            self.user_int[0] = int(values[20])
+            self.user_int[1] = int(values[21])
+            self.user_int[2] = int(values[22])
+            self.user_int[3] = int(values[23])
+            self.user_int[4] = int(values[24])
+            self.user_int[5] = int(values[25])
+            self.user_int[6] = int(values[26])
+            self.user_int[7] = int(values[27])
+            self.user_int[8] = int(values[28])
+            self.user_int[9] = int(values[29])
+            self.user_varchar[0] = str(values[30])
+            self.user_varchar[1] = str(values[31])
+            self.user_varchar[2] = str(values[32])
+            self.user_varchar[3] = str(values[33])
+            self.user_varchar[4] = str(values[34])
+        except IndexError as _err:
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Insufficient input values."
+        except TypeError as _err:
+            _code = Utilities.error_handler(_err.args)
+            _msg = "ERROR: Converting one or more inputs to correct data type."
+
+        return(_code, _msg)
+
     def get_attributes(self):
         """
         Method to retrieve the current values of the Hardware data model
@@ -510,9 +573,10 @@ class Model(object):                        # pylint: disable=R0902
         _base_values = self._get_base_attributes()
         _stress_values = self._get_stress_attributes()
         _rel_values = self._get_reliability_attributes()
+        _user_values = self._get_user_attributes()
 
-        _values = _base_values + _stress_values + _rel_values
-
+        _values = _base_values + _stress_values + _rel_values + _user_values
+        
         return _values
 
     def _get_base_attributes(self):
@@ -612,6 +676,19 @@ class Model(object):                        # pylint: disable=R0902
 
         return _values
 
+    def _get_user_attributes(self):
+        """
+        Method to retrieve the current values of the Hardware data model user-defined
+        attributes.
+
+        :return: (user_float, user_int, user_varchar)
+        :rtype: tuple
+        """
+
+        _values = (self.user_float, self.user_int, self.user_varchar)
+
+        return _values
+
     def calculate(self, assembly):
         """
         Method to iterively calculate various hardware attributes.
@@ -621,7 +698,7 @@ class Model(object):                        # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # TODO: Consider re-writing calculate; current McCabe Complexity metric = 9.
+        
         assembly.hazard_rate_active = 0.0
         assembly.hazard_rate_dormant = 0.0
         assembly.hazard_rate_software = 0.0
@@ -767,17 +844,16 @@ class Model(object):                        # pylint: disable=R0902
             hardware.cost_failure = hardware.cost / \
                 (hardware.hazard_rate_logistics * hardware.mission_time)
         except ZeroDivisionError:
-            # FIXME: Handle errors.
+            # TODO: Handle errors.
             pass
 
         try:
             hardware.cost_hour = hardware.cost / hardware.mission_time
         except ZeroDivisionError:
-            # FIXME: Handle errors.
+            # TODO: Handle errors.
             pass
 
         return False
-
 
     def _dormant_hazard_rate(self, component):
         """

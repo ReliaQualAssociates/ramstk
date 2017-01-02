@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-#######################################################
-Hardware.Component.Miscellaneous Package Crystal Module
-#######################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.miscellaneous.Crystal.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+#######################################################
+Hardware.Component.Miscellaneous Package Crystal Module
+#######################################################
+"""
 
 import gettext
 import locale
@@ -109,16 +109,16 @@ class Crystal(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
-            self.q_override = float(values[96])
-            self.frequency = float(values[97])
-            self.base_hr = float(values[98])
-            self.piQ = float(values[99])
-            self.piE = float(values[100])
-            self.quality = int(values[116])
-            self.reason = ''               # FIXME: See bug 181.
+            self.q_override = float(values[127])
+            self.frequency = float(values[128])
+            self.base_hr = float(values[129])
+            self.piQ = float(values[130])
+            self.piE = float(values[131])
+            self.quality = int(values[132])
+            self.reason = str(values[133])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -139,8 +139,8 @@ class Crystal(Component):
 
         _values = Component.get_attributes(self)
 
-        _values = _values + (self.quality, self.q_override, self.frequency,
-                             self.base_hr, self.piQ, self.piE, self.reason)
+        _values = _values + (self.q_override, self.frequency, self.base_hr, self.piQ, 
+                             self.piE, self.quality, self.reason)
 
         return _values
 

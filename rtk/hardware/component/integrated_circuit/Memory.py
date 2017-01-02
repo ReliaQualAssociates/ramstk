@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-##########################################################
-Hardware.Component.IntegratedCircuit Package Memory Module
-##########################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.integrated_circuit.Memory.py is part of
 #       the RTK Project
 #
 # All rights reserved.
+
+"""
+##########################################################
+Hardware.Component.IntegratedCircuit Package Memory Module
+##########################################################
+"""
 
 import gettext
 import locale
@@ -102,25 +102,24 @@ class Memory(IntegratedCircuit):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = IntegratedCircuit.set_attributes(self, values)
+        (_code, _msg) = IntegratedCircuit.set_attributes(self, values[:134])
 
         try:
-            self.part_type = int(values[117])
-            self.technology = int(values[118])
-            self.package = int(values[119])
-            self.ecc = int(values[120])
-            self.memory_size = int(values[121])
-            self.n_cycles = int(values[122])
-            self.n_pins = int(values[123])
-            self.manufacturing = int(values[124])
-            self.years_production = float(values[100])
-            self.case_temperature = float(values[101])
-            self.life_op_hours = float(values[102])
-            self.C1 = float(values[103])
-            self.C2 = float(values[104])
-            self.piL = float(values[105])
-            self.lambda_cyc = float(values[106])
-            self.reason = ''               # FIXME: See bug 181.
+            self.part_type = int(values[134])
+            self.technology = int(values[135])
+            self.package = int(values[136])
+            self.ecc = int(values[137])
+            self.memory_size = int(values[138])
+            self.n_cycles = int(values[139])
+            self.n_pins = int(values[140])
+            self.manufacturing = int(values[141])
+            self.years_production = float(values[142])
+            self.case_temperature = float(values[143])
+            self.life_op_hours = float(values[144])
+            self.C1 = float(values[145])
+            self.C2 = float(values[146])
+            self.piL = float(values[147])
+            self.lambda_cyc = float(values[148])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -145,10 +144,9 @@ class Memory(IntegratedCircuit):
 
         _values = _values + (self.part_type, self.technology, self.package,
                              self.ecc, self.memory_size, self.n_cycles,
-                             self.n_pins, self.years_production,
+                             self.n_pins, self.manufacturing, self.years_production,
                              self.case_temperature, self.life_op_hours,
-                             self.C1, self.C2, self.piL, self.lambda_cyc,
-                             self.manufacturing)
+                             self.C1, self.C2, self.piL, self.lambda_cyc)
 
         return _values
 
@@ -243,7 +241,7 @@ class DRAM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor DRAM.calculate_part; current McCabe Complexity metric = 11.
+        # WARNING: Refactor DRAM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
@@ -321,7 +319,7 @@ class EEPROM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor EEPROM.calculate_part; current McCabe Complexity metric = 23.
+        # WARNING: Refactor EEPROM.calculate_part; current McCabe Complexity metric = 23.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -445,7 +443,7 @@ class ROM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor ROM.calculate_part; current McCabe Complexity metric = 11.
+        # WARNING: Refactor ROM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
@@ -520,7 +518,7 @@ class SRAM(Memory):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor SRAM.calculate_part; current McCabe Complexity metric = 11.
+        # WARNING: Refactor SRAM.calculate_part; current McCabe Complexity metric = 11.
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:

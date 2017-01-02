@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-##########################################################
-Hardware.Component.IntegratedCircuit Package Linear Module
-##########################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.integrated_circuit.Linear.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+##########################################################
+Hardware.Component.IntegratedCircuit Package Linear Module
+##########################################################
+"""
 
 import gettext
 import locale
@@ -115,19 +115,18 @@ class Linear(IntegratedCircuit):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = IntegratedCircuit.set_attributes(self, values)
+        (_code, _msg) = IntegratedCircuit.set_attributes(self, values[:134])
 
         try:
-            self.technology = int(values[117])
-            self.package = int(values[118])
-            self.n_transistors = int(values[119])
-            self.n_pins = int(values[120])
-            self.years_production = float(values[101])
-            self.case_temperature = float(values[102])
-            self.C1 = float(values[103])
-            self.C2 = float(values[104])
-            self.piL = float(values[105])
-            self.reason = ''               # FIXME: See bug 181.
+            self.technology = int(values[134])
+            self.package = int(values[135])
+            self.n_transistors = int(values[136])
+            self.n_pins = int(values[137])
+            self.years_production = float(values[138])
+            self.case_temperature = float(values[139])
+            self.C1 = float(values[140])
+            self.C2 = float(values[141])
+            self.piL = float(values[142])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

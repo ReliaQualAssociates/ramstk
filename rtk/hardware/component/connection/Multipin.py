@@ -88,16 +88,16 @@ class Multipin(Connection):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.insert = 0                     # Insert material.
-        self.specification = 0
-        self.configuration = 0
-        self.contact_gauge = 22
-        self.n_active_contacts = 0
         self.piK = 0.0
         self.piP = 0.0
         self.amps_per_contact = 0.0
         self.mate_unmate_cycles = 0.0
         self.contact_temperature = 30.0
+        self.insert = 0                     # Insert material.
+        self.specification = 0
+        self.configuration = 0
+        self.contact_gauge = 22
+        self.n_active_contacts = 0
 
     def set_attributes(self, values):
         """
@@ -112,20 +112,19 @@ class Multipin(Connection):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Connection.set_attributes(self, values)
+        (_code, _msg) = Connection.set_attributes(self, values[:133])
 
         try:
-            self.piK = float(values[100])
-            self.piP = float(values[101])
-            self.amps_per_contact = float(values[102])
-            self.mate_unmate_cycles = float(values[103])
-            self.contact_temperature = float(values[104])
-            self.insert = int(values[117])
-            self.specification = int(values[118])
-            self.configuration = int(values[119])
-            self.contact_gauge = int(values[120])
-            self.n_active_contacts = int(values[121])
-            self.reason = ''               # FIXME: See bug 181.
+            self.piK = float(values[133])
+            self.piP = float(values[134])
+            self.amps_per_contact = float(values[135])
+            self.mate_unmate_cycles = float(values[136])
+            self.contact_temperature = float(values[137])
+            self.insert = int(values[138])
+            self.specification = int(values[139])
+            self.configuration = int(values[140])
+            self.contact_gauge = int(values[141])
+            self.n_active_contacts = int(values[142])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -148,11 +147,10 @@ class Multipin(Connection):
 
         _values = Connection.get_attributes(self)
 
-        _values = _values + (self.insert, self.specification,
-                             self.configuration, self.contact_gauge,
-                             self.n_active_contacts, self.piK, self.piP,
-                             self.amps_per_contact, self.mate_unmate_cycles,
-                             self.contact_temperature)
+        _values = _values + (self.piK, self.piP, self.amps_per_contact, 
+                             self.mate_unmate_cycles, self.contact_temperature, 
+                             self.insert, self.specification, self.configuration, 
+                             self.contact_gauge, self.n_active_contacts)
 
         return _values
 

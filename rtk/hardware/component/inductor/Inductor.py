@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-###################################################
-Hardware.Component.Inductor Package Inductor Module
-###################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.inductor.Inductor.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+###################################################
+Hardware.Component.Inductor Package Inductor Module
+###################################################
+"""
 
 import gettext
 import locale
@@ -97,18 +97,18 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
-            self.q_override = float(values[96])
-            self.base_hr = float(values[97])
-            self.piQ = float(values[98])
-            self.piE = float(values[99])
-            self.hot_spot_temperature = float(values[100])
-            self.quality = int(values[116])
-            self.specification = int(values[117])
-            self.insulation_class = int(values[118])
-            self.reason = ''               # FIXME: See bug 181.
+            self.q_override = float(values[127])
+            self.base_hr = float(values[128])
+            self.piQ = float(values[129])
+            self.piE = float(values[130])
+            self.hot_spot_temperature = float(values[131])
+            self.quality = int(values[132])
+            self.specification = int(values[133])
+            self.insulation_class = int(values[134])
+            self.reason = str(values[135])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -131,8 +131,8 @@ class Model(Component):
         _values = Component.get_attributes(self)
 
         _values = _values + (self.q_override, self.base_hr, self.piQ, self.piE,
-                             self.quality, self.reason, self.specification,
-                             self.insulation_class, self.hot_spot_temperature)
+                             self.hot_spot_temperature,  self.quality, 
+                             self.specification, self.insulation_class, self.reason)
 
         return _values
 

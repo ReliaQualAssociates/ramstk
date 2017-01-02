@@ -85,12 +85,11 @@ class PTH(Connection):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.piC = 0.0
         self.technology = 0
         self.n_wave_soldered = 0
         self.n_hand_soldered = 0
         self.n_circuit_planes = 0
-        self.piQ = 0.0
-        self.piC = 0.0
 
     def set_attributes(self, values):
         """
@@ -105,16 +104,14 @@ class PTH(Connection):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Connection.set_attributes(self, values)
+        (_code, _msg) = Connection.set_attributes(self, values[:133])
 
         try:
-            self.piQ = float(values[98])
-            self.piC = float(values[100])
-            self.technology = int(values[117])
-            self.n_wave_soldered = int(values[118])
-            self.n_hand_soldered = int(values[119])
-            self.n_circuit_planes = int(values[120])
-            self.reason = ''               # FIXME: See bug 181.
+            self.piC = float(values[133])
+            self.technology = int(values[134])
+            self.n_wave_soldered = int(values[135])
+            self.n_hand_soldered = int(values[136])
+            self.n_circuit_planes = int(values[137])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -129,16 +126,15 @@ class PTH(Connection):
         Method to retrieve the current values of the PCB Connection data model
         attributes.
 
-        :return: (technology, n_wave_soldered, n_hand_soldered,
-                  n_circuit_planes, piC)
+        :return: (piC, technology, n_wave_soldered, n_hand_soldered,
+                  n_circuit_planes)
         :rtype: tuple
         """
 
         _values = Connection.get_attributes(self)
 
-        _values = _values + (self.technology, self.n_wave_soldered,
-                             self.n_hand_soldered, self.n_circuit_planes,
-                             self.piC)
+        _values = _values + (self.piC, self.technology, self.n_wave_soldered,
+                             self.n_hand_soldered, self.n_circuit_planes)
 
         return _values
 
@@ -248,7 +244,6 @@ class NonPTH(Connection):
 
         # Define public scalar attributes.
         self.connection_type = 0
-        self.piQ = 0.0
 
     def set_attributes(self, values):
         """
@@ -263,12 +258,10 @@ class NonPTH(Connection):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Connection.set_attributes(self, values)
+        (_code, _msg) = Connection.set_attributes(self, values[:133])
 
         try:
-            self.piQ = float(values[98])
-            self.connection_type = int(values[117])
-            self.reason = ''               # FIXME: See bug 181.
+            self.connection_type = int(values[133])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -289,7 +282,7 @@ class NonPTH(Connection):
 
         _values = Connection.get_attributes(self)
 
-        _values = _values + (self.connection_type, 0)
+        _values = _values + (self.connection_type, )
 
         return _values
 

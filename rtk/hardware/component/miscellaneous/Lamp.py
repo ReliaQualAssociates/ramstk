@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-####################################################
-Hardware.Component.Miscellaneous Package Lamp Module
-####################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.miscellaneous.Lamp.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+####################################################
+Hardware.Component.Miscellaneous Package Lamp Module
+####################################################
+"""
 
 import gettext
 import locale
@@ -115,17 +115,17 @@ class Lamp(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
             self.application = int(values[116])
-            self.illuminate_hours = float(values[96])
-            self.operate_hours = float(values[97])
-            self.base_hr = float(values[98])
-            self.piU = float(values[99])
-            self.piA = float(values[100])
-            self.piE = float(values[101])
-            self.reason = ''               # FIXME: See bug 181.
+            self.illuminate_hours = float(values[127])
+            self.operate_hours = float(values[128])
+            self.base_hr = float(values[129])
+            self.piU = float(values[130])
+            self.piA = float(values[131])
+            self.piE = float(values[132])
+            self.reason = str(values[133])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-##################################################
-Hardware.Component.Relay Package Mechanical Module
-##################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.relay.Mechanical.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+##################################################
+Hardware.Component.Relay Package Mechanical Module
+##################################################
+"""
 
 import gettext
 import locale
@@ -144,7 +144,7 @@ class Mechanical(Relay):
         _msg = ''
 
         (_code, _msg) = Relay.set_attributes(self, values)
-
+        
         try:
             self.temperature_rating = int(values[118])
             self.load_type = int(values[119])

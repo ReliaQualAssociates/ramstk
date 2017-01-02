@@ -91,11 +91,11 @@ class Solid(Capacitor):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Capacitor.set_attributes(self, values)
+        (_code, _msg) = Capacitor.set_attributes(self, values[:138])
 
         try:
-            self.effective_resistance = float(values[103])
-            self.piSR = float(values[104])
+            self.effective_resistance = float(values[138])
+            self.piSR = float(values[139])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -128,7 +128,7 @@ class Solid(Capacitor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Consider re-writing calculate; current McCabe Complexity metrix = 10.
+        # TODO: Consider re-writing calculate; current McCabe Complexity metrix = 10.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -230,11 +230,11 @@ class NonSolid(Capacitor):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Capacitor.set_attributes(self, values)
+        (_code, _msg) = Capacitor.set_attributes(self, values[:138])
 
         try:
-            self.construction = int(values[119])
-            self.piC = float(values[104])
+            self.construction = int(values[138])
+            self.piC = float(values[139])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

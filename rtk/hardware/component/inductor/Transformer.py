@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-######################################################
-Hardware.Component.Inductor Package Transformer Module
-######################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.inductor.Transformer.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+######################################################
+Hardware.Component.Inductor Package Transformer Module
+######################################################
+"""
 
 import gettext
 import locale
@@ -117,15 +117,14 @@ class Transformer(Inductor):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Inductor.set_attributes(self, values)
+        (_code, _msg) = Inductor.set_attributes(self, values[:136])
 
         try:
-            self.power_loss = float(values[101])
-            self.case_area = float(values[102])
-            self.weight = float(values[103])
-            self.input_power = float(values[104])
-            self.family = int(values[119])
-            self.reason = ''               # FIXME: See bug 181.
+            self.power_loss = float(values[136])
+            self.case_area = float(values[137])
+            self.weight = float(values[138])
+            self.input_power = float(values[139])
+            self.family = int(values[140])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -146,8 +145,8 @@ class Transformer(Inductor):
 
         _values = Inductor.get_attributes(self)
 
-        _values = _values + (self.family, self.power_loss, self.case_area,
-                             self.weight, self.input_power)
+        _values = _values + (self.power_loss, self.case_area, self.weight, 
+                             self.input_power, self.family)
 
         return _values
 

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################################
-Hardware Package Bill of Materials (BoM) Module
-###############################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.BoM.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+###############################################
+Hardware Package Bill of Materials (BoM) Module
+###############################################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -137,7 +137,7 @@ except ImportError:                         # pragma: no cover
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
@@ -151,8 +151,7 @@ def load_capacitor(subcategory):
     """
     Function to load the capacitor data model.
 
-    :param int subcategory: the subcategory of the capacitor data model to
-                            load.
+    :param int subcategory: the subcategory of the capacitor data model to load.
     :return: _component
     :rtype: an instance of the appropriate capacitor data model.
     """
@@ -175,8 +174,7 @@ def load_connection(subcategory):
     """
     Function to load the connection data model.
 
-    :param int subcategory: the subcategory of the connection data model to
-                            load.
+    :param int subcategory: the subcategory of the connection data model to load.
     :return: _component
     :rtype: an instance of the appropriate connection data model.
     """
@@ -207,8 +205,8 @@ def load_integrated_circuit(subcategory):
     """
     Function to load the integrated circuit data model.
 
-    :param int subcategory: the subcategory of the integrated circuit data
-                            model to load.
+    :param int subcategory: the subcategory of the integrated circuit data model to 
+                            load.
     :return: _component
     :rtype: an instance of the appropriate integrated circuit data model.
     """
@@ -241,8 +239,7 @@ def load_miscellaneous(subcategory):
     """
     Function to load the miscellaneous data model.
 
-    :param int subcategory: the subcategory of the miscellaneous data model to
-                            load.
+    :param int subcategory: the subcategory of the miscellaneous data model to load.
     :return: _component
     :rtype: an instance of the appropriate miscellaneous data model.
     """
@@ -297,8 +294,7 @@ def load_semiconductor(subcategory):
     """
     Function to load the semiconductor data model.
 
-    :param int subcategory: the subcategory of the semiconductor data model to
-                            load.
+    :param int subcategory: the subcategory of the semiconductor data model to load.
     :return: _component
     :rtype: an instance of the appropriate semiconductor data model.
     """
@@ -342,10 +338,11 @@ class ParentError(Exception):
 
 
 class BoM(object):
+    
     """
-    The BoM data controller provides an interface between the BoM data model
-    and an RTK view model.  A single BoM data controller can manage one or more
-    BoM data models.  The attributes of a BoM data controller are:
+    The BoM data controller provides an interface between the BoM data model and an 
+    RTK view model.  A single BoM data controller can manage one or more BoM data 
+    models.  The attributes of a BoM data controller are:
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
                 Project database.
@@ -356,23 +353,27 @@ class BoM(object):
     """
 
     def __init__(self):
-        """
-        Method to initialize a BoM data controller instance.
-        """
+        """ Method to initialize a BoM data controller instance. """
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
 
         # Define private scalar attributes.
-        self._dao = None
         self._last_id = None
 
         # Define public dictionary attributes.
-
         self.dicHardware = {}
 
-    def request_bom(self, dao, revision_id):
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.dao = None
+
+    def request_bom(self, revision_id):
         """
-        Method to read the RTK Project database and load all the Hardware
-        associated with the selected Revision.  For each hardware item
-        returned:
+        Method to read the RTK Project database and load all the Hardware associated 
+        with the selected Revision.  For each hardware item returned:
 
         #. Retrieve the hardware assemblies and components from the RTK Project
            database.
@@ -382,17 +383,12 @@ class BoM(object):
         #. Add the instance to the dictionary of hardware being managed
            by this controller.
 
-        :param dao: the :py:class:`rtk.dao.DAO.DAO` to use for communicating
-                    with the RTK Project database.
-
         :param int revision_id: the Revision ID to select the requirements for.
         :return: (_results, _error_code)
         :rtype: tuple
         """
-
-        self._dao = dao
-
-        self._last_id = self._dao.get_last_id('rtk_hardware')[0]
+        # TODO: Consider refactoring request_bom; current McCabe Complexity metric = 14.
+        self._last_id = self.dao.get_last_id('rtk_hardware')[0]
 
         # Select everything from the hardware, stress, reliability, and
         # maintainability tables.
@@ -456,7 +452,7 @@ class BoM(object):
                          t1.fld_category_id, t1.fld_subcategory_id, \
                          t2.fld_junction_temperature, \
                          t2.fld_knee_temperature, t2.fld_thermal_resistance, \
-                         t2.fld_tref, t3.fld_float1, t3.fld_float2, \
+                         t2.fld_tref, t2.fld_reason, t3.fld_float1, t3.fld_float2, \
                          t3.fld_float3, t3.fld_float4, t3.fld_float5, \
                          t3.fld_float6, t3.fld_float7, t3.fld_float8, \
                          t3.fld_float9, t3.fld_float10, t3.fld_float11, \
@@ -468,13 +464,13 @@ class BoM(object):
                          t3.fld_int9, t3.fld_int10, t3.fld_varchar1, \
                          t3.fld_varchar2, t3.fld_varchar3, t3.fld_varchar4, \
                          t3.fld_varchar5 \
-                  FROM rtk_hardware AS t1 \
-                  INNER JOIN rtk_stress AS t2 \
-                  ON t2.fld_hardware_id=t1.fld_hardware_id \
-                  INNER JOIN rtk_reliability AS t3 \
-                  ON t3.fld_hardware_id=t1.fld_hardware_id \
-                  WHERE t1.fld_revision_id={0:d}".format(revision_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=False)
+            FROM rtk_hardware AS t1 \
+            INNER JOIN rtk_stress AS t2 \
+            ON t2.fld_hardware_id=t1.fld_hardware_id \
+            INNER JOIN rtk_reliability AS t3 \
+            ON t3.fld_hardware_id=t1.fld_hardware_id \
+            WHERE t1.fld_revision_id={0:d}".format(revision_id)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
             _n_assemblies = len(_results)
@@ -517,7 +513,7 @@ class BoM(object):
         :return: an instance of the appropriate Component class.
         :rtype: object
         """
-# TODO: Re-write load_component; current McCabe Complexity metric = 12.
+        # TODO: Consider refactoring load_component; current McCabe Complexity metric = 12.
         # Select the correct component type and create an instance of it's
         # data model.
         if attributes[90] < 1 or attributes[91] < 1:
@@ -571,32 +567,30 @@ class BoM(object):
         # By default we add the new Hardware item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
-# TODO: Replace this with an RTK error or warning dialog and then return.
+            # FIXME: See bug 191.
             parent_id = 0
 
         _query = "INSERT INTO rtk_hardware \
                   (fld_revision_id, fld_parent_id, fld_part) \
-                  VALUES({0:d}, {1:d}, {2:d})".format(revision_id, parent_id,
-                                                      hardware_type)
-        (_results, _error_code, _hardware_id) = self._dao.execute(_query,
+            VALUES({0:d}, {1:d}, {2:d})".format(revision_id, parent_id, 
+                                                hardware_type)
+        (_results, _error_code, _hardware_id) = self.dao.execute(_query,
                                                                   commit=True)
 
         # If the new hardware item was added successfully to the RTK Project
         # database, add a record to the stress table in the RTK Project
         # database.
         if _results:
-            _query = "INSERT INTO rtk_stress \
-                      (fld_hardware_id) \
-                      VALUES({0:d})".format(_hardware_id)
-        (_results, _error_code, _) = self._dao.execute(_query, commit=True)
+            _query = "INSERT INTO rtk_stress (fld_hardware_id) \
+                VALUES({0:d})".format(_hardware_id)
+            (_results, _error_code, _) = self.dao.execute(_query, commit=True)
 
         # If the record was successfully added to the stress table, add a
         # record to the reliability table.
         if _results:
-            _query = "INSERT INTO rtk_reliability \
-                      (fld_hardware_id) \
-                      VALUES({0:d})".format(_hardware_id)
-        (_results, _error_code, _) = self._dao.execute(_query, commit=True)
+            _query = "INSERT INTO rtk_reliability (fld_hardware_id) \
+                VALUES({0:d})".format(_hardware_id)
+            (_results, _error_code, _) = self.dao.execute(_query, commit=True)
 
         # If the new hardware item was added successfully to all the tables in
         # the RTK Project database:
@@ -607,7 +601,7 @@ class BoM(object):
         #   4. Add the new Assembly or Component model to the controller
         #      dictionary.
         if _results:
-            self._last_id = self._dao.get_last_id('rtk_hardware')[0]
+            self._last_id = self.dao.get_last_id('rtk_hardware')[0]
             if hardware_type == 0:
                 _hardware = Assembly()
             elif hardware_type == 1:
@@ -641,12 +635,12 @@ class BoM(object):
         # Delete all the child hardware, if any.
         _query = "DELETE FROM rtk_hardware \
                   WHERE fld_parent_id={0:d}".format(hardware_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         # Then delete the parent hardware.
         _query = "DELETE FROM rtk_hardware \
                   WHERE fld_hardware_id={0:d}".format(hardware_id)
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         self.dicHardware.pop(hardware_id)
 
@@ -667,13 +661,13 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Re-write copy_hardware; current McCabe Complexity index = 14.
-# TODO: Write one or more integration tests for copy_hardware.
+        # TODO: Consider refactoring copy_hardware; current McCabe Complexity index = 14.
+        # FIXME: Write one or more integration tests for copy_hardware.
         # Find the existing maximum Hardware ID already in the RTK Program
         # database and increment it by one.  If there are no existing
         # Hardware items set the first Hardware ID to zero.
         _query = "SELECT MAX(fld_hardware_id) FROM rtk_hardware"
-        (_hardware_id, _error_code, __) = self._dao.execute(_query,
+        (_hardware_id, _error_code, __) = self.dao.execute(_query,
                                                             commit=False)
 
         if _hardware_id[0][0] is not None:
@@ -723,27 +717,49 @@ class BoM(object):
                                               _hardware.remarks,
                                               _hardware.specification_number,
                                               _subcategory_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             if failure_info:
-                # TODO: Add all reliability information.
+                # FIXME: See bug 192.
                 _query = "INSERT INTO rtk_reliability \
-                          (fld_hardware_id, fld_hazard_rate_active, \
-                           fld_hazard_rate_dormant, fld_hazard_rate_software, \
-                           fld_hazard_rate_specified, fld_hazard_rate_type, \
-                           fld_mtbf_logistics, fld_mtbf_specified) \
-                          VALUES ({0:d}, {1:f}, {2:f}, \
-                                  {3:f}, {4:f}, {5:d}, {6:f}, \
-                                  {7:f})".format(_hardware_id,
-                                                 _hardware.hazard_rate_active,
-                                                 _hardware.hazard_rate_dormant,
-                                                 _hardware.hazard_rate_software,
-                                                 _hardware.hazard_rate_specified,
-                                                 _hardware.hazard_rate_type,
-                                                 _hardware.mtbf_logistics,
-                                                 _hardware.mtbf_specified)
-                (_results, _error_code, __) = self._dao.execute(_query,
+                    (fld_hardware_id, fld_hazard_rate_active, \
+                     fld_hazard_rate_dormant, fld_hazard_rate_software, \
+                     fld_hazard_rate_specified, fld_hazard_rate_type, \
+                     fld_mtbf_logistics, fld_mtbf_specified, \
+                     fld_add_adj_factor, fld_failure_dist, \
+                     fld_failure_parameter_1, fld_failure_parameter_2, \
+                     fld_failure_parameter_3, fld_hazard_rate_method, \
+                     fld_hazard_rate_model, fld_mult_adj_factor, \
+                     fld_survival_analysis, fld_float_1, fld_float_2, \
+                     fld_float_3, fld_float_4, fld_float_5, fld_float_6, \
+                     fld_float_7, fld_float_8, fld_float_9, fld_float_10, \
+                     fld_float_11, fld_float_12, fld_float_13, fld_float_14, \
+                     fld_float_15, fld_float_16, fld_float_17, fld_float_18, \
+                     fld_float_19, fld_float_20, fld_int_1, fld_int_2, fld_int_3, \
+                     fld_int_4, fld_int_5, fld_int_6, fld_int_7, fld_int_8, \
+                     fld_int_9, fld_int_10, fld_varchar_1, fld_varchar_2, \
+                     fld_varchar_3, fld_varchar_4, fld_varchar_5) \
+                    VALUES ({0:d}, {1:f}, {2:f}, {3:f}, {4:f}, {5:d}, {6:f}, \
+                    {7:f}, {8:f}, {9:d}, {10:f}, {11:f}, {12:f}, {13:d}, '{14:s}', \
+                    {15:f}, {16:d})".format(_hardware_id, 
+                                           _hardware.hazard_rate_active,
+                                           _hardware.hazard_rate_dormant,
+                                           _hardware.hazard_rate_software,
+                                           _hardware.hazard_rate_specified,
+                                           _hardware.hazard_rate_type,
+                                           _hardware.mtbf_logistics,
+                                           _hardware.mtbf_specified, 
+                                           _hardware.add_adj_factor, 
+                                           _hardware.failure_dist, 
+                                           _hardware.failure_parameter_1, 
+                                           _hardware.failure_parameter_2, 
+                                           _hardware.failure_parameter_3, 
+                                           _hardware.hazard_rate_method, 
+                                           _hardware.hazard_rate_model, 
+                                           _hardware.mult_adj_factor, 
+                                           _hardware.survival_analysis)
+                (_results, _error_code, __) = self.dao.execute(_query,
                                                                 commit=True)
 
             # Add the Hardware item to the prediction table if it's a part.
@@ -756,30 +772,30 @@ class BoM(object):
                 _query = "INSERT INTO rtk_similar_item \
                           (fld_hardware_id) \
                           VALUES ({0:d})".format(_hardware_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             _query = "INSERT INTO rtk_allocation \
                       (fld_hardware_id) \
                       VALUES ({0:d})".format(_hardware_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             _query = "INSERT INTO rtk_hazard \
                       (fld_hardware_id) \
                       VALUES ({0:d})".format(_hardware_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             _query = "INSERT INTO rtk_stress \
                       (fld_hardware_id) \
                       VALUES ({0:d})".format(_hardware_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
             if matrix:
                 _query = "SELECT MAX(fld_matrix_id) FROM rtk_matrices"
-                (_matrix_id, _error_code, __) = self._dao.execute(_query,
+                (_matrix_id, _error_code, __) = self.dao.execute(_query,
                                                                   commit=False)
 
                 if _matrix_id[0][0] is not None:
@@ -792,7 +808,7 @@ class BoM(object):
                           WHERE fld_revision_id=%d" % revision_id
                 (_function_ids,
                  _error_code,
-                 __) = self._dao.execute(_query, commit=False)
+                 __) = self.dao.execute(_query, commit=False)
 
                 for __, _function_id in enumerate(_function_ids):
                     _query = "INSERT INTO rtk_matrices \
@@ -805,7 +821,7 @@ class BoM(object):
                                                            _function_id[0])
                     (_results,
                      _error_code,
-                     __) = self._dao.execute(_query, commit=True)
+                     __) = self.dao.execute(_query, commit=True)
 
             # Add an entry to the Hardware ID cross-reference dictionary for
             # for the newly added Hardware item.
@@ -822,59 +838,40 @@ class BoM(object):
                       WHERE fld_parent_id={1:d} \
                       AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
                                                         _key, revision_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
+            (_results, _error_code, __) = self.dao.execute(_query,
                                                             commit=True)
 
         return False
 
-
-    def add_failure_modes(app, revision_id, assembly_id, category_id,
-                          subcategory_id):
+    def add_failure_modes(self, hardware_id):
         """
         Method to add default failure modes to the selected component.
 
-        :param rtk app: the running instance of the RTK application.
-        :param int revision_id: the component revision ID.
-        :param int assembly_id: the component assembly ID.
-        :param int category_id: the component category ID.
-        :param int subcategory_id: the component subcategory ID.
+        :param int hardware_id: the component Hardware ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        _err = False
+        _return = False
+
+        _category_id = self.dicHardware[hardware_id].category_id
+        _subcategory_id = self.dicHardware[hardware_id].subcategory_id
 
         # Retrieve the default failure modes for the component from the common
         # database.
-        _query = "SELECT fld_mode_id, fld_mode_description, fld_mode_ratio \
-                  FROM tbl_failure_modes \
-                  WHERE fld_category_id=%d \
-                  AND fld_subcategory_id=%d \
-                  AND fld_source=%d" % (category_id, subcategory_id,
-                                        int(Configuration.RTK_MODE_SOURCE))
-        _modes = app.COMDB.execute_query(_query, None, app.ComCnx)
-        try:
-            _n_modes = len(_modes)
-        except TypeError:
-            _n_modes = 0
+        _modes = Configuration.RTK_FAILURE_MODES[_category_id][_subcategory_id]
 
         # Add the default failure modes to the open RTK Program database.
-        _base_query = "INSERT INTO tbl_fmeca \
-                       (fld_revision_id, fld_assembly_id, \
-                        fld_mode_description, fld_mode_ratio) \
-                       VALUES (%d, %d, '%s', %f)"
-        for i in range(_n_modes):
-            _query = _base_query % (revision_id, assembly_id, _modes[i][1],
-                                    _modes[i][2])
-            if not app.DB.execute_query(_query, None, app.ProgCnx, commit=True):
-                _err = True
+        _base_query = "INSERT INTO rtk_modes \
+                       (fld_hardware_id, fld_mode_id\
+                        fld_description, fld_mode_ratio) \
+                       VALUES ({0:d}, {1:d}, '{2:s}', {3:f})"
+        for __, _mode in enumerate(_modes):
+            _query = _base_query.format(hardware_id, _mode[0], _mode[1],
+                                        _mode[2])
+            (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
-        if _err:
-            rtk_error(_(u"Problem adding one or more failure modes to the open "
-                        u"RTK Program database."))
-            return True
-
-        return False
+        return _return
 
     def save_hardware_item(self, hardware_id):
         """
@@ -885,7 +882,7 @@ class BoM(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
-# TODO: Re-write save_hardware_item; current McCabe Complexity index = 11.
+        # TODO: Consider refactoring save_hardware_item; current McCabe Complexity index = 11.
         _hardware = self.dicHardware[hardware_id]
 
         # Save the base attributes.
@@ -948,7 +945,7 @@ class BoM(object):
                             AND fld_hardware_id={1:d}".format(
                                 _hardware.revision_id, hardware_id)
 
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         # Save the stress attributes.
         _query = "UPDATE rtk_stress \
@@ -982,7 +979,7 @@ class BoM(object):
 
         _query = _query + " WHERE fld_hardware_id={0:d}".format(hardware_id)
 
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         # Save the reliability attributes.
         # If the hardware item is a part, create a list of float, integer, and
@@ -1089,8 +1086,8 @@ class BoM(object):
                       _float[18], _float[19], _int[0], _int[1], _int[2],
                       _int[3], _int[4], _int[5], _int[6], _int[7], _int[8],
                       _int[9], _str[0], _str[1], _str[2], _str[3], _str[4])
-        (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-# TODO: Handle errors.
+        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
+
         return (_results, _error_code)
 
     def save_bom(self):

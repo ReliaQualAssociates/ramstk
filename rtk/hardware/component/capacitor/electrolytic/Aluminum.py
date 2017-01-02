@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-#############################################
-Hardware Package Electrolytic Aluminum Module
-#############################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.capacitor.electrolytic.Aluminum.py is part of
 #       the RTK Project
 #
 # All rights reserved.
+
+"""
+#############################################
+Hardware Package Electrolytic Aluminum Module
+#############################################
+"""
 
 import gettext
 import locale
@@ -101,7 +101,7 @@ class Dry(Capacitor):
                     exp(4.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5.9)
             except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow and zero division errors.
+                # TODO: Handle overflow and zero division errors.
                 return True
 
             # Capacitance correction factor.
@@ -179,7 +179,7 @@ class Wet(Capacitor):
                     exp(5.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5)
             except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow and zero division errors.
+                # TODO: Handle overflow and zero division errors.
                 return True
 
             # Capacitance correction factor.

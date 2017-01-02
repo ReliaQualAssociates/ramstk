@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-#######################################################
-Hardware.Component.Connection Package Connection Module
-#######################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.connection.Connection.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+#######################################################
+Hardware.Component.Connection Package Connection Module
+#######################################################
+"""
 
 import gettext
 import locale
@@ -94,15 +94,15 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
-            self.q_override = float(values[96])
-            self.base_hr = float(values[97])
-            self.piQ = float(values[98])
-            self.piE = float(values[99])
-            self.quality = int(values[116])
-            self.reason = ''               # FIXME: See bug 181. 
+            self.q_override = float(values[127])
+            self.base_hr = float(values[128])
+            self.piQ = float(values[129])
+            self.piE = float(values[130])
+            self.quality = int(values[131])
+            self.reason = str(values[132])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

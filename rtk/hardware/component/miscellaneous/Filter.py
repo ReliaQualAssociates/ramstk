@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-######################################################
-Hardware.Component.Miscellaneous Package Filter Module
-######################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.miscellaneous.Filter.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+######################################################
+Hardware.Component.Miscellaneous Package Filter Module
+######################################################
+"""
 
 import gettext
 import locale
@@ -117,17 +117,17 @@ class Filter(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
-            self.q_override = float(values[96])
-            self.base_hr = float(values[97])
-            self.piQ = float(values[98])
-            self.piE = float(values[99])
-            self.quality = int(values[116])
-            self.specification = int(values[117])
-            self.style = int(values[118])
-            self.reason = ''               # FIXME: See bug 181
+            self.q_override = float(values[127])
+            self.base_hr = float(values[128])
+            self.piQ = float(values[129])
+            self.piE = float(values[130])
+            self.quality = int(values[131])
+            self.specification = int(values[132])
+            self.style = int(values[133])
+            self.reason = str(values[134])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -149,8 +149,8 @@ class Filter(Component):
 
         _values = Component.get_attributes(self)
 
-        _values = _values + (self.quality, self.specification, self.style,
-                             self.q_override, self.base_hr, self.piQ, self.piE,
+        _values = _values + (self.q_override, self.base_hr, self.piQ, self.piE,
+                             self.quality, self.specification, self.style, 
                              self.reason)
 
         return _values

@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-#############################################
-Hardware.Component.Relay Package Relay Module
-#############################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.relay.Relay.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+#############################################
+Hardware.Component.Relay Package Relay Module
+#############################################
+"""
 
 import gettext
 import locale
@@ -98,16 +98,16 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
             self.quality = int(values[116])
             self.construction = int(values[117])
-            self.q_override = float(values[96])
-            self.base_hr = float(values[97])
-            self.piQ = float(values[98])
-            self.piE = float(values[99])
-            self.reason = ''               # FIXME: See bug 181.
+            self.q_override = float(values[127])
+            self.base_hr = float(values[128])
+            self.piQ = float(values[129])
+            self.piE = float(values[130])
+            self.reason = str(values[131])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -186,7 +186,7 @@ class Model(Component):
         # Sheltered Naval, or Space Flight it is NOT harsh.
         if self.environment_active in [1, 2, 4, 11]:
             _harsh = False
-# TODO: Update this after unpacking the book at the new house.
+        # TODO: Update this after unpacking the book at the new house.
         if _harsh:
             if self.operating_current > 0.75 * self.rated_current:
                 self.overstress = True

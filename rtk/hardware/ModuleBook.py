@@ -178,9 +178,9 @@ class ModuleView(object):
 
         (_hardware,
          __) = self.mdcRTK.dtcHardwareBoM.request_bom(self.mdcRTK.revision_id)
-        self.mdcRTK.dtcAllocation.request_allocation(self.mdcRTK.project_dao)
-        self.mdcRTK.dtcHazard.request_hazard(self.mdcRTK.project_dao)
-        self.mdcRTK.dtcSimilarItem.request_similar_item(self.mdcRTK.project_dao)
+        self.mdcRTK.dtcAllocation.request_allocation()
+        self.mdcRTK.dtcHazard.request_hazard()
+        self.mdcRTK.dtcSimilarItem.request_similar_item()
 
         # Only load the hardware associated with the selected Revision.
         _hardware = [_h for _h in _hardware

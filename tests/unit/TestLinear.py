@@ -1,13 +1,13 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Linear IC module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestLinear.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Linear IC module algorithms and models.
+"""
 
 import sys
 from os.path import dirname
@@ -35,7 +35,25 @@ class TestLinearModel(unittest.TestCase):
         """
 
         self.DUT = Linear()
-
+        
+        self._base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
+                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                             0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                             0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                             'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
+        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
+                               0.0, 1.0)
+        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                            0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                            0.0, 0)
+        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
+                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 
+                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 
+                             'Two', 'Three', '4')
+        self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
+        self._ic_values = (1.0, 0.05, 3.0, 4.0, 5.0, 1, "")
+        
     @attr(all=True, unit=True)
     def test_create(self):
         """
@@ -73,21 +91,10 @@ class TestLinearModel(unittest.TestCase):
         (TestLinear) set_attributes should return a 0 error code on success
         """
 
-        _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   0.0, 0.0, 1.0, 0.0, 0.0, 1.5, 75.0, 0.0025, 0.0097, 1.2,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 3, 206, 8)
+        _my_values = (1, 3, 206, 8, 1.5, 75.0, 0.0025, 0.0097, 1.2)
+        _values = self._base_values + self._stress_values + self._rel_values + \
+                  self._user_values + self._comp_values + self._ic_values + \
+                  _my_values
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -108,21 +115,10 @@ class TestLinearModel(unittest.TestCase):
         (TestLinear) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   0.0, 0.0, 1.0, 0.0, 0.0, 1.5, 75.0, 0.0025, 0.0097, 1.2,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 3, 8)
+        _my_values = (1, 3, 206, 8, 1.5, 0.0025, 0.0097, 1.2)
+        _values = self._base_values + self._stress_values + self._rel_values + \
+                  self._user_values + self._comp_values + self._ic_values + \
+                  _my_values
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -134,21 +130,10 @@ class TestLinearModel(unittest.TestCase):
         (TestLinear) set_attributes should return a 10 error code when the wrong type is passed
         """
 
-        _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   0.0, 0.0, 1.0, 0.0, 0.0, 1.5, 75.0, 0.0025, 0.0097, 1.2,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 3, '', 8)
+        _my_values = (1, 3, 206, 8, 1.5, 75.0, 0.0025, None, 1.2)
+        _values = self._base_values + self._stress_values + self._rel_values + \
+                  self._user_values + self._comp_values + self._ic_values + \
+                  _my_values
 
         (_error_code,
          _error_msg) = self.DUT.set_attributes(_values)
@@ -159,18 +144,18 @@ class TestLinearModel(unittest.TestCase):
         """
         (TestLinear) get_attributes should return a tuple of attribute values
         """
-
-        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
-                   '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
-                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1,
-                   0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0,
-                   0.0, 30.0, 0.0, 30.0,
-                   0.0, 0.0, 1.0, 0.0, 0.0, 0, '',
-                   0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        
+        _my_values = (0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '', 
+                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '', 
+                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 
+                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 
+                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0, 
+                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0, 
+                   0.0, 0.0, 1.0, 0.0, 0.0, 0, "") + _my_values
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 
@@ -180,41 +165,25 @@ class TestLinearModel(unittest.TestCase):
         (TestLinear) get_attributes(set_attributes(values)) == values
         """
 
-        _in_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                      'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                      0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                      'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                      'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                      1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                      0.0, 1.0,
-                      0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                      1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                      0, 0, 1, 0.0,
-                      0, 0, 0.0, 30.0, 0.0, 358.0,
-                      0.0, 0.0, 1.0, 0.0, 0.0, 1.5, 75.0, 0.0025, 0.0097, 1.2,
-                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                      1, 3, 206, 8)
-        _out_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                       'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                       0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                       0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                       'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                       1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                       0.0, 1.0,
-                       0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
-                       1.0, 0.0, 0.0, 0,
-                       0, 0,
-                       0.0, 30.0, 0.0, 358.0,
-                       0.0, 0.0, 1.0, 0.0, 0.0, 0, '',
-                       1, 3, 206, 8, 1.5, 75.0, 0.0025, 0.0097, 1.2)
-
-        self.DUT.set_attributes(_in_values)
+        _my_values = (0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0)
+        _values = self._base_values + self._stress_values + self._rel_values + \
+                  self._user_values + self._comp_values + self._ic_values + \
+                  _my_values
+                  
+        self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
-        self.assertEqual(_result, _out_values)
 
+        self.assertEqual(_result[:38], self._base_values)
+        self.assertEqual(_result[38:50], self._stress_values)
+        self.assertEqual(_result[50:86], self._rel_values)
+        self.assertEqual(_result[86], list(self._user_values[:20]))
+        self.assertEqual(_result[87], list(self._user_values[20:30]))
+        self.assertEqual(_result[88], list(self._user_values[30:35]))
+        self.assertEqual(_result[89:95], self._comp_values)
+        self.assertEqual(_result[95:102], self._ic_values)
+        
+        self.assertEqual(_result[102:], _my_values)
+        
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """

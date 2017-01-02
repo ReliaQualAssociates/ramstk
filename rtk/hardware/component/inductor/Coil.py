@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-###############################################
-Hardware.Component.Inductor Package Coil Module
-###############################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.inductor.Coil.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+###############################################
+Hardware.Component.Inductor Package Coil Module
+###############################################
+"""
 
 import gettext
 import locale
@@ -100,12 +100,11 @@ class Coil(Inductor):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Inductor.set_attributes(self, values)
+        (_code, _msg) = Inductor.set_attributes(self, values[:136])
 
         try:
-            self.piC = float(values[101])
-            self.construction = int(values[119])
-            self.reason = ''               # FIXME: See bug 181.
+            self.piC = float(values[136])
+            self.construction = int(values[137])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -127,7 +126,7 @@ class Coil(Inductor):
 
         _values = Inductor.get_attributes(self)
 
-        _values = _values + (self.construction, self.piC)
+        _values = _values + (self.piC, self.construction)
 
         return _values
 
@@ -138,7 +137,7 @@ class Coil(Inductor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metrix = 11.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 11.
         from math import exp
 
         self.hazard_rate_model = {}

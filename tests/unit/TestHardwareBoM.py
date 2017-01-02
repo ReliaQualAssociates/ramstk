@@ -1,14 +1,14 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Hardware BoM module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestBoM.py is part of The RTK Project
 
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Hardware BoM module algorithms and models.
+"""
 
 import sys
 from os.path import dirname
@@ -18,7 +18,6 @@ import unittest
 from nose.plugins.attrib import attr
 
 from hardware.BoM import BoM
-
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -45,6 +44,6 @@ class TestBoMController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, BoM))
-        self.assertEqual(self.DUT._dao, None)
         self.assertEqual(self.DUT._last_id, None)
         self.assertEqual(self.DUT.dicHardware, {})
+        self.assertEqual(self.DUT.dao, None)

@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-#######################################################################
-Hardware.Component.IntegratedCircuit Package Integrated Circtuit Module
-#######################################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.integrated_circuit.IntegratedCircuit.py is part
 #       of the RTK Project
 #
 # All rights reserved.
+
+"""
+#######################################################################
+Hardware.Component.IntegratedCircuit Package Integrated Circtuit Module
+#######################################################################
+"""
 
 import gettext
 import locale
@@ -43,7 +43,7 @@ class Model(Component):
     The Integrated Circuit data model contains the attributes and methods of an
     integrated Circuit component.  The attributes of an Integrated Circuit are:
 
-    :cvar category: default value: 5
+    :cvar category: default value: 1
 
     :ivar base_hr: default value: 0.0
     :ivar reason: default value: ""
@@ -95,16 +95,16 @@ class Model(Component):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Component.set_attributes(self, values[:96])
+        (_code, _msg) = Component.set_attributes(self, values[:127])
 
         try:
-            self.q_override = float(values[96])
-            self.base_hr = float(values[97])
-            self.piQ = float(values[98])
-            self.piE = float(values[99])
-            self.piT = float(values[100])
-            self.quality = int(values[116])
-            self.reason = ''               # FIXME: See bug 181.
+            self.q_override = float(values[127])
+            self.base_hr = float(values[128])
+            self.piQ = float(values[129])
+            self.piE = float(values[130])
+            self.piT = float(values[131])
+            self.quality = int(values[132])
+            self.reason = str(values[133])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

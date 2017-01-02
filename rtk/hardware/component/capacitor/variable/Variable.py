@@ -386,11 +386,11 @@ class Vacuum(Capacitor):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Capacitor.set_attributes(self, values)
+        (_code, _msg) = Capacitor.set_attributes(self, values[:138])
 
         try:
-            self.configuration = int(values[119])
-            self.piCF = float(values[104])
+            self.configuration = int(values[138])
+            self.piCF = float(values[139])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."

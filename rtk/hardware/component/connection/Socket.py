@@ -102,13 +102,12 @@ class Socket(Connection):
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Connection.set_attributes(self, values)
+        (_code, _msg) = Connection.set_attributes(self, values[:133])
 
         try:
             self.base_hr = 0.00042
-            self.piP = float(values[100])
-            self.n_active_contacts = int(values[117])
-            self.reason = ''               # FIXME: See bug 181.
+            self.piP = float(values[133])
+            self.n_active_contacts = int(values[134])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -129,7 +128,7 @@ class Socket(Connection):
 
         _values = Connection.get_attributes(self)
 
-        _values = _values + (self.n_active_contacts, self.piP)
+        _values = _values + (self.piP, self.n_active_contacts)
 
         return _values
 

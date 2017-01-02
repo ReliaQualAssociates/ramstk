@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-#################################
-Hardware Package Component Module
-#################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.Component.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+#################################
+Hardware Package Component Module
+#################################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -93,16 +93,16 @@ class Model(Hardware):                        # pylint: disable=R0902
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Hardware.set_attributes(self, values[:86])
+        (_code, _msg) = Hardware.set_attributes(self, values[:121])
 
         if _code == 0:
             try:
-                self.category_id = int(values[90])
-                self.subcategory_id = int(values[91])
-                self.junction_temperature = int(values[92])
-                self.knee_temperature = float(values[93])
-                self.thermal_resistance = float(values[94])
-                self.reference_temperature = float(values[95])
+                self.category_id = int(values[121])
+                self.subcategory_id = int(values[122])
+                self.junction_temperature = float(values[123])
+                self.knee_temperature = float(values[124])
+                self.thermal_resistance = float(values[125])
+                self.reference_temperature = float(values[126])
             except IndexError as _err:
                 _code = Utilities.error_handler(_err.args)
                 _msg = _(u"ERROR: Insufficient input values.")
@@ -129,7 +129,7 @@ class Model(Hardware):                        # pylint: disable=R0902
                              self.junction_temperature,
                              self.knee_temperature, self.thermal_resistance,
                              self.reference_temperature)
-
+        
         return _values
 
 
