@@ -1,0 +1,261 @@
+<!--
+-*- coding: utf-8 -*-
+
+      revision_format.xml is part of The RTK Project
+
+      Copyright (C) 2007-2014 Andrew "Weibullguy" Rowland <darowland@ieee.org>
+
+All rights reserved.
+-->
+
+<!-- This file contains information used by the RTK application to draw
+various widgets.  These values can be changed by the user to personalize their
+experience. -->
+
+<root>
+    <tree name="Revision">
+        <column>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Availability, Predicted</defaulttitle>
+            <usertitle>Availability, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Availability, Mission</defaulttitle>
+            <usertitle>Availability, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>2</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost</defaulttitle>
+            <usertitle>Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>3</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost/Failure</defaulttitle>
+            <usertitle>Cost/Failure</usertitle>
+            <datatype>gfloat</datatype>
+            <position>4</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Cost/Hour</defaulttitle>
+            <usertitle>Cost/Hour</usertitle>
+            <datatype>gfloat</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Active</defaulttitle>
+            <usertitle>Failure Rate, Active</usertitle>
+            <datatype>gfloat</datatype>
+            <position>6</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Dormant</defaulttitle>
+            <usertitle>Failure Rate, Dormant</usertitle>
+            <datatype>gfloat</datatype>
+            <position>7</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Mission</defaulttitle>
+            <usertitle>Failure Rate, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Predicted</defaulttitle>
+            <usertitle>Failure Rate, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>9</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Software</defaulttitle>
+            <usertitle>Failure Rate, Software</usertitle>
+            <datatype>gfloat</datatype>
+            <position>10</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mean Maintenance Time (MMT)</defaulttitle>
+            <usertitle>Mean Maintenance Time (MMT)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>11</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mean Corrective Maintenance Time (MCMT)</defaulttitle>
+            <usertitle>Mean Corrective Maintenance Time (MCMT)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>12</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Mean Preventive Maintenance Time (MPMT)</defaulttitle>
+            <usertitle>Mean Preventive Maintenance Time (MPMT)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTBF, Mission</defaulttitle>
+            <usertitle>MTBF, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>14</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTBF, Predicted</defaulttitle>
+            <usertitle>MTBF, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>15</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mean Time To Repair (MTTR)</defaulttitle>
+            <usertitle>Mean Time To Repair (MTTR)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Revision Name</defaulttitle>
+            <usertitle>Revision Name</usertitle>
+            <datatype>gchararray</datatype>
+            <position>17</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability, Mission</defaulttitle>
+            <usertitle>Reliability, Mission</usertitle>
+            <datatype>gfloat</datatype>
+            <position>18</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Reliability, Predicted</defaulttitle>
+            <usertitle>Reliability, Predicted</usertitle>
+            <datatype>gfloat</datatype>
+            <position>19</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Remarks</defaulttitle>
+            <usertitle>Remarks</usertitle>
+            <datatype>gchararray</datatype>
+            <position>20</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Total Part Count</defaulttitle>
+            <usertitle>Total Part Count</usertitle>
+            <datatype>gint</datatype>
+            <position>21</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Revision</defaulttitle>
+            <usertitle>Revision</usertitle>
+            <datatype>gchararray</datatype>
+            <position>22</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Time</defaulttitle>
+            <usertitle>Program Time</usertitle>
+            <datatype>gfloat</datatype>
+            <position>23</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Time SE</defaulttitle>
+            <usertitle>Program Time SE</usertitle>
+            <datatype>gfloat</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Cost</defaulttitle>
+            <usertitle>Program Cost</usertitle>
+            <datatype>gfloat</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Program Cost SE</defaulttitle>
+            <usertitle>Program Cost SE</usertitle>
+            <datatype>gfloat</datatype>
+            <position>26</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+    </tree>
+</root>
