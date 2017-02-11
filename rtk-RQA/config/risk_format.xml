@@ -1,0 +1,383 @@
+<!--
+-*- coding: utf-8 -*-
+
+      risk_format.xml is part of The RTK Project
+
+      Copyright (C) 2013 - 2014 Andrew "Weibullguy" Rowland
+      <andrew.rowland@reliaqual.com>
+
+All rights reserved. -->
+
+<root>
+    <tree name="Risk">
+        <column>
+            <defaulttitle>Risk ID</defaulttitle>
+            <usertitle>Risk ID</usertitle>
+            <datatype>gint</datatype>
+            <position>0</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly</defaulttitle>
+            <usertitle>Assembly</usertitle>
+            <datatype>gchararray</datatype>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Intensity</defaulttitle>
+            <usertitle>Failure Intensity</usertitle>
+            <datatype>gfloat</datatype>
+            <position>2</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Potential Hazard</defaulttitle>
+            <usertitle>Potential Hazard</usertitle>
+            <datatype>gchararray</datatype>
+            <widget>combo</widget>
+            <position>3</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Potential Cause</defaulttitle>
+            <usertitle>Potential Cause</usertitle>
+            <datatype>gchararray</datatype>
+            <widget>text</widget>
+            <position>4</position>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Effect on Assembly</defaulttitle>
+            <usertitle>Effect on Assembly</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity of Assembly Effect</defaulttitle>
+            <usertitle>Severity of  Assembly Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>6</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Probability of Assembly Effect</defaulttitle>
+            <usertitle>Probability of  Assembly Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>7</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly HRI</defaulttitle>
+            <usertitle>Assembly HRI</usertitle>
+            <datatype>gint</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mitigation Strategies</defaulttitle>
+            <usertitle>Mitigation  Strategies</usertitle>
+            <datatype>gchararray</datatype>
+            <position>9</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity After Mitigation</defaulttitle>
+            <usertitle>Severity  After Mitigation</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Probability After Mitigation</defaulttitle>
+            <usertitle>Probability  After Mitigation</usertitle>
+            <datatype>gchararray</datatype>
+            <position>11</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Assembly HRI After Mitigation</defaulttitle>
+            <usertitle>Assembly HRI  After Mitigation</usertitle>
+            <datatype>gint</datatype>
+            <position>12</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Effect on System</defaulttitle>
+            <usertitle>Effect on System</usertitle>
+            <datatype>gchararray</datatype>
+            <position>13</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity of System Effect</defaulttitle>
+            <usertitle>Severity of  System Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>14</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Probability of System Effect</defaulttitle>
+            <usertitle>Probability of  System Effect</usertitle>
+            <datatype>gchararray</datatype>
+            <position>15</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>System HRI</defaulttitle>
+            <usertitle>System HRI</usertitle>
+            <datatype>gint</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Mitigation Strategies</defaulttitle>
+            <usertitle>Mitigation  Strategies</usertitle>
+            <datatype>gchararray</datatype>
+            <position>17</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Severity After Mitigation</defaulttitle>
+            <usertitle>Severity  After Mitigation</usertitle>
+            <datatype>gchararray</datatype>
+            <position>18</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Probability After Mitigation</defaulttitle>
+            <usertitle>Probability  After Mitigation</usertitle>
+            <datatype>gchararray</datatype>
+            <position>19</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>System HRI After Mitigation</defaulttitle>
+            <usertitle>System HRI  After Mitigation</usertitle>
+            <datatype>gint</datatype>
+            <position>20</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Remarks</defaulttitle>
+            <usertitle>Remarks</usertitle>
+            <datatype>gchararray</datatype>
+            <position>21</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Function 1</defaulttitle>
+            <usertitle>Function 1</usertitle>
+            <datatype>gchararray</datatype>
+            <position>22</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Function 2</defaulttitle>
+            <usertitle>Function 2</usertitle>
+            <datatype>gchararray</datatype>
+            <position>23</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Function 3</defaulttitle>
+            <usertitle>Function 3</usertitle>
+            <datatype>gchararray</datatype>
+            <position>24</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Function 4</defaulttitle>
+            <usertitle>Function 4</usertitle>
+            <datatype>gchararray</datatype>
+            <position>25</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Function 5</defaulttitle>
+            <usertitle>Function 5</usertitle>
+            <datatype>gchararray</datatype>
+            <position>26</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Result 1</defaulttitle>
+            <usertitle>Result 1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>27</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Result 2</defaulttitle>
+            <usertitle>Result 2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>28</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Result 3</defaulttitle>
+            <usertitle>Result 3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>29</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Result 4</defaulttitle>
+            <usertitle>Result 4</usertitle>
+            <datatype>gfloat</datatype>
+            <position>30</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Result 5</defaulttitle>
+            <usertitle>Result 5</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Memo 1</defaulttitle>
+            <usertitle>User Memo 1</usertitle>
+            <datatype>gchararray</datatype>
+            <position>32</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Memo 2</defaulttitle>
+            <usertitle>User Memo 2</usertitle>
+            <datatype>gchararray</datatype>
+            <position>33</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Memo 3</defaulttitle>
+            <usertitle>User Memo 3</usertitle>
+            <datatype>gchararray</datatype>
+            <position>34</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Float 1</defaulttitle>
+            <usertitle>User Float 1</usertitle>
+            <datatype>gfloat</datatype>
+            <position>35</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Float 2</defaulttitle>
+            <usertitle>User Float 2</usertitle>
+            <datatype>gfloat</datatype>
+            <position>36</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Float 3</defaulttitle>
+            <usertitle>User Float 3</usertitle>
+            <datatype>gfloat</datatype>
+            <position>37</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Integer 1</defaulttitle>
+            <usertitle>User Integer 1</usertitle>
+            <datatype>gint</datatype>
+            <position>38</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Integer 2</defaulttitle>
+            <usertitle>User Integer 2</usertitle>
+            <datatype>gint</datatype>
+            <position>39</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>User Integer 3</defaulttitle>
+            <usertitle>User Integer 3</usertitle>
+            <datatype>gint</datatype>
+            <position>40</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+    </tree>
+</root>
