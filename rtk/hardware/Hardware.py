@@ -182,11 +182,11 @@ class Model(object):                        # pylint: disable=R0902
         # Define public dictionary attributes.
 
         # Define public list attributes.
-        self.user_float = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                           0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+        self.user_float = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                           0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
         self.user_int = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
         self.user_varchar = ['', '', '', '', '']
-        
+
         # Define public scalar attributes.
         self.revision_id = None
         self.hardware_id = None
@@ -489,7 +489,7 @@ class Model(object):                        # pylint: disable=R0902
 
         _code = 0
         _msg = ''
-        
+
         try:
             self.user_float[0] = float(values[0])
             self.user_float[1] = float(values[1])
@@ -576,7 +576,7 @@ class Model(object):                        # pylint: disable=R0902
         _user_values = self._get_user_attributes()
 
         _values = _base_values + _stress_values + _rel_values + _user_values
-        
+
         return _values
 
     def _get_base_attributes(self):
@@ -678,8 +678,8 @@ class Model(object):                        # pylint: disable=R0902
 
     def _get_user_attributes(self):
         """
-        Method to retrieve the current values of the Hardware data model user-defined
-        attributes.
+        Method to retrieve the current values of the Hardware data model
+        user-defined attributes.
 
         :return: (user_float, user_int, user_varchar)
         :rtype: tuple
@@ -698,7 +698,7 @@ class Model(object):                        # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        
+
         assembly.hazard_rate_active = 0.0
         assembly.hazard_rate_dormant = 0.0
         assembly.hazard_rate_software = 0.0
@@ -764,8 +764,7 @@ class Model(object):                        # pylint: disable=R0902
             _assembly.hazard_rate_active = (_assembly.hazard_rate_active +
                                             _assembly.add_adj_factor) * \
                                            (_assembly.duty_cycle / 100.0) * \
-                                           _assembly.mult_adj_factor * \
-                                           _assembly.quantity
+                _assembly.mult_adj_factor * _assembly.quantity
 
             # Calculate assembly derived results.
             self._calculate_reliability(_assembly)
@@ -777,7 +776,8 @@ class Model(object):                        # pylint: disable=R0902
             assembly.hazard_rate_software += _assembly.hazard_rate_software
             assembly.cost += _assembly.cost
             assembly.total_part_quantity += _assembly.total_part_quantity
-            assembly.total_power_dissipation += _assembly.total_power_dissipation
+            assembly.total_power_dissipation += \
+                _assembly.total_power_dissipation
 
         # Calculate parent assembly derived results.
         self._calculate_reliability(assembly)
@@ -801,8 +801,7 @@ class Model(object):                        # pylint: disable=R0902
 
         # Calculate the logistics hazard rate.
         hardware.hazard_rate_logistics = hardware.hazard_rate_active + \
-                                         hardware.hazard_rate_dormant + \
-                                         hardware.hazard_rate_software
+            hardware.hazard_rate_dormant + hardware.hazard_rate_software
 
         try:
             hardware.mtbf_logistics = 1.0 / hardware.hazard_rate_logistics
@@ -863,41 +862,44 @@ class Model(object):                        # pylint: disable=R0902
         All conversion factors come from Reliability Toolkit: Commercial
         Practices Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below).
 
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Component   |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-        | Category    |Active |Active  |Active  |Active |Active |Active |Active |
-        |             |to     |to      |to      |to     |to     |to     |to     |
-        |             |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-        |             |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-        +=============+=======+========+========+=======+=======+=======+=======+
-        | Integrated  | 0.08  |  0.06  |  0.04  | 0.06  | 0.05  | 0.10  | 0.30  |
-        | Circuits    |       |        |        |       |       |       |       |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Diodes      | 0.04  |  0.05  |  0.01  | 0.04  | 0.03  | 0.20  | 0.80  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Transistors | 0.05  |  0.06  |  0.02  | 0.05  | 0.03  | 0.20  | 1.00  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Capacitors  | 0.10  |  0.10  |  0.03  | 0.10  | 0.04  | 0.20  | 0.40  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Resistors   | 0.20  |  0.06  |  0.03  | 0.10  | 0.06  | 0.50  | 1.00  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Switches    | 0.40  |  0.20  |  0.10  | 0.40  | 0.20  | 0.80  | 1.00  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Relays      | 0.20  |  0.20  |  0.04  | 0.30  | 0.08  | 0.40  | 0.90  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Connectors  | 0.005 |  0.005 |  0.003 | 0.008 | 0.003 | 0.02  | 0.03  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Circuit     | 0.04  |  0.02  |  0.01  | 0.03  | 0.01  | 0.08  | 0.20  |
-        | Boards      |       |        |        |       |       |       |       |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
-        | Transformers| 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
-        +-------------+-------+--------+--------+-------+-------+-------+-------+
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Component |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
+        | Category  |Active |Active  |Active  |Active |Active |Active |Active |
+        |           |to     |to      |to      |to     |to     |to     |to     |
+        |           |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
+        |           |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
+        +===========+=======+========+========+=======+=======+=======+=======+
+        | Integrated| 0.08  |  0.06  |  0.04  | 0.06  | 0.05  | 0.10  | 0.30  |
+        | Circuits  |       |        |        |       |       |       |       |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Diodes    | 0.04  |  0.05  |  0.01  | 0.04  | 0.03  | 0.20  | 0.80  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Transistor| 0.05  |  0.06  |  0.02  | 0.05  | 0.03  | 0.20  | 1.00  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Capacitors| 0.10  |  0.10  |  0.03  | 0.10  | 0.04  | 0.20  | 0.40  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Resistors | 0.20  |  0.06  |  0.03  | 0.10  | 0.06  | 0.50  | 1.00  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Switches  | 0.40  |  0.20  |  0.10  | 0.40  | 0.20  | 0.80  | 1.00  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Relays    | 0.20  |  0.20  |  0.04  | 0.30  | 0.08  | 0.40  | 0.90  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Connectors| 0.005 |  0.005 |  0.003 | 0.008 | 0.003 | 0.02  | 0.03  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Circuit   | 0.04  |  0.02  |  0.01  | 0.03  | 0.01  | 0.08  | 0.20  |
+        | Boards    |       |        |        |       |       |       |       |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
+        | Xformers  | 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
+        +-----------+-------+--------+--------+-------+-------+-------+-------+
 
-        :param :class: `rtk.hardware.Component` component: the rtk.Component() data
-                                                           model to calculate.
+        :param :class: `rtk.hardware.Component` component: the rtk.Component()
+                                                           data model to
+                                                           calculate.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
+
+        _status = False
 
         factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
                   [0.04, 0.05, 0.01, 0.04, 0.03, 0.20, 0.80, 0.00],
@@ -911,70 +913,87 @@ class Model(object):                        # pylint: disable=R0902
                   [0.20, 0.20, 0.20, 0.30, 0.30, 0.50, 1.00, 0.00]]
 
         # First find the component category/subcategory index.
-        if component.category_id == 1:                       # Capacitor
-            c_index = 3
-        elif component.category_id == 2:                     # Connection
-            c_index = 7
-        elif component.category_id == 3:                     # Inductive Device.
-            if component.subcategory_id > 1:                 # Transformer
-                c_index = 9
-        elif component.category_id == 4:                     # Integrated Circuit
-            c_index = 0
-        elif component.category_id == 7:                     # Relay
-            c_index = 6
-        elif component.category_id == 8:                     # Resistor
-            c_index = 4
-        elif component.category_id == 9:                     # Semiconductor
-            if component.subcategory_id > 0 and \
-               component.subcategory_id < 7:                 # Diode
-                c_index = 1
-            elif component.subcategory_id > 6 and \
-                 component.subcategory_id < 14:     # Transistor
-                c_index = 2
-        elif component.category_id == 10:           # Switching Device
-            c_index = 5
+        c_index = self._get_component_index(component.category_id,
+                                            component.subcategory_id)
 
         # Now find the appropriate active to passive environment index.
-        if component.environment_active > 0 and \
-           component.environment_active < 4:        # Ground
-            if component.environment_dormant == 1:  # Ground
-                e_index = 0
-            else:
-                e_index = 7
-        elif component.environment_active > 3 and \
-             component.environment_active < 6:      # Naval
-            if component.environment_dormant == 1:  # Ground
-                e_index = 4
-            elif component.environment_dormant == 2:    # Naval
-                e_index = 3
-            else:
-                e_index = 7
-        elif component.environment_active > 5 and \
-             component.environment_active < 11:     # Airborne
-            if component.environment_dormant == 1:  # Ground
-                e_index = 2
-            elif component.environment_dormant == 3:    # Airborne
-                e_index = 1
-            else:
-                e_index = 7
-        elif component.environment_active == 11:    # Space
-            if component.environment_dormant == 1:  # Ground
-                e_index = 6
-            elif component.environment_dormant == 4:    # Space
-                e_index = 5
-            else:
-                e_index = 7
+        e_index = self._get_environment_index(component.environment_active,
+                                              component.environment_dormant)
 
         try:
             component.hazard_rate_dormant = component.hazard_rate_active * \
                                             factor[c_index - 1][e_index]
-            return False
         except IndexError:
             component.hazard_rate_dormant = 0.0
-            return True
+            _status = True
         except UnboundLocalError:
             component.hazard_rate_dormant = 0.0
-            return True
+            _status = True
+
+        return _status
+
+    def _get_component_index(category, subcategory):
+        """
+        Helper method to find the correct component index.
+
+        """
+        if category == 1:                       # Capacitor
+            _c_index = 3
+        elif category == 2:                     # Connection
+            _c_index = 7
+        elif category == 3:                     # Inductive Device.
+            if subcategory > 1:                 # Transformer
+                _c_index = 9
+        elif category == 4:                     # IC
+            _c_index = 0
+        elif category == 7:                     # Relay
+            _c_index = 6
+        elif category == 8:                     # Resistor
+            _c_index = 4
+        elif category == 9:                     # Semiconductor
+            if subcategory in [1, 2, 3, 4, 5, 6]:
+                _c_index = 1
+            elif subcategory in [7, 8, 9, 10, 11, 12, 13]:
+                _c_index = 2
+        elif category == 10:                    # Switching Device
+            _c_index = 5
+
+        return _c_index
+
+    def _get_environment_index(active, dormant):
+        """
+        Helper method to find the correct environment index.
+
+        """
+
+        if active in [1, 2, 3]:           # Ground
+            if dormant == 1:              # Ground
+                _e_index = 0
+            else:
+                _e_index = 7
+        elif active in [4, 5]:            # Naval
+            if dormant == 1:              # Ground
+                _e_index = 4
+            elif dormant == 2:            # Naval
+                _e_index = 3
+            else:
+                _e_index = 7
+        elif active in [6, 7, 8, 9, 10]:  # Airborne
+            if dormant == 1:           # Ground
+                _e_index = 2
+            elif dormant == 3:         # Airborne
+                _e_index = 1
+            else:
+                _e_index = 7
+        elif active == 11:    # Space
+            if dormant == 1:  # Ground
+                _e_index = 6
+            elif dormant == 4:    # Space
+                _e_index = 5
+            else:
+                _e_index = 7
+
+        return _e_index
 
 
 class Hardware(object):

@@ -129,7 +129,7 @@ class Model(Hardware):                        # pylint: disable=R0902
                              self.junction_temperature,
                              self.knee_temperature, self.thermal_resistance,
                              self.reference_temperature)
-        
+
         return _values
 
 
