@@ -5,3 +5,4 @@ xlwt
 numpy
 scipy
 pandas
+coverage
