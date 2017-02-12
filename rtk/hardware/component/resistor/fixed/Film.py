@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-#####################################################
-Hardware.Component.Resistor.Fixed Package Film Module
-#####################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.resistor.fixed.Film.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+#####################################################
+Hardware.Component.Resistor.Fixed Package Film Module
+#####################################################
+"""
 
 import gettext
 import locale
@@ -148,7 +148,8 @@ class Film(Resistor):
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
-            self._lst_lambdab_count = self._lambdab_count[self.specification - 1]
+            self._lst_lambdab_count = \
+                self._lambdab_count[self.specification - 1]
         elif self.hazard_rate_type == 2:
             self.hazard_rate_model['equation'] = 'lambdab * piR * piQ * piE'
 
@@ -378,17 +379,14 @@ class FilmNetwork(Resistor):
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piT * piNR * piQ * piE'
+            self.hazard_rate_model['equation'] = \
+                'lambdab * piT * piNR * piQ * piE'
 
             # Base hazard rate.
             self.base_hr = 0.00006
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Temperature factor.
-            if self.junction_temperature <= 0.0:
-                _stress = self.operating_power / self.rated_power
-                self.junction_temperature = self.temperature_active + \
-                                            55.0 * _stress
             self.piT = exp(-4056.0 * ((1.0 / (self.junction_temperature +
                                               273.0)) - (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT

@@ -1,16 +1,16 @@
 #!/usr/bin/env python
-"""
-############################################################
-Hardware.Component.Resistor.Fixed Package Composition Module
-############################################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.component.resistor.fixed.Composition.py is part of the RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+############################################################
+Hardware.Component.Resistor.Fixed Package Composition Module
+############################################################
+"""
 
 import gettext
 import locale
