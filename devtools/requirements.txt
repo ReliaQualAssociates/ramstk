@@ -1,0 +1,7 @@
+matplotlib==1.4.3
+lxml
+xlrd
+xlwt
+numpy
+scipy
+pandas
