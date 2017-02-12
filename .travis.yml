@@ -10,6 +10,4 @@ install:
     - "pip install --only-binary=numpy,scipy -r devtools/requirements.txt"
 
 # Command to run tests.
-script: 
-    - nosetests -v --attr=unit=True --with-coverage --cover-branches tests/unit/Test*
-      #    - nosetests -v --attr=integration=True --with-coverage --cover-branches
+script: devtools/RunTests.py
