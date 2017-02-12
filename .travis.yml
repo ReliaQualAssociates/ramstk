@@ -2,10 +2,13 @@ language: python
 python:
     - "2.6"
     - "2.7"
+
 # Command to install dependencies.
 install: 
     - "pip install ."
-    - "pip install -r devtools/requirements.txt"
+    - "pip install --only-binary=numpy,scipy -r devtools/requirements.txt"
 
 # Command to run tests.
-# script: devtools/py.test
+#script: 
+    #    - nosetests -v --attr=unit=True --with-coverage --cover-branches
+      #    - nosetests -v --attr=integration=True --with-coverage --cover-branches
