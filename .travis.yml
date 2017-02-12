@@ -11,5 +11,5 @@ install:
 
 # Command to run tests.
 #script: 
-    #    - nosetests -v --attr=unit=True --with-coverage --cover-branches
+    - nosetests -v --attr=unit=True --with-coverage --cover-branches tests/unit/Test*
       #    - nosetests -v --attr=integration=True --with-coverage --cover-branches
