@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE Session SYSTEM "Session-5.0.dtd">
+<!-- eric6 session file for project RTK -->
+<!-- This file was generated automatically, do not edit. -->
+<!-- Saved: 2017-02-12, 22:06:58 -->
+<Session version="5.0">
+  <Filenames/>
+  <Breakpoints/>
+  <Watchexpressions/>
+  <DebugInfo>
+    <CommandLine></CommandLine>
+    <WorkingDirectory></WorkingDirectory>
+    <Environment></Environment>
+    <ReportExceptions value="True"/>
+    <Exceptions/>
+    <IgnoredExceptions/>
+    <AutoClearShell value="True"/>
+    <TracePython value="False"/>
+    <AutoContinue value="True"/>
+    <CovexcPattern/>
+  </DebugInfo>
+  <Bookmarks/>
+  <ProjectBrowserStates>
+    <ProjectBrowserState name="sources">
+      <ExpandedItemName>/home/arowland/drive_D/projects/RTK/rtk</ExpandedItemName>
+    </ProjectBrowserState>
+    <ProjectBrowserState name="forms"/>
+    <ProjectBrowserState name="resources"/>
+    <ProjectBrowserState name="translations"/>
+    <ProjectBrowserState name="interfaces"/>
+    <ProjectBrowserState name="others"/>
+  </ProjectBrowserStates>
+</Session>
