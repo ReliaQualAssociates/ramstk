@@ -26,7 +26,7 @@ except ImportError:                         # pragma: no cover
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
@@ -180,6 +180,7 @@ class Model(object):                        # pylint: disable=R0902
         # Define private scalar attributes.
 
         # Define public dictionary attributes.
+        self.hazard_rate_model = {}
 
         # Define public list attributes.
         self.user_float = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -242,6 +243,7 @@ class Model(object):                        # pylint: disable=R0902
         self.rated_voltage = 1.0
         self.temperature_rise = 0.0
         self.voltage_ratio = 1.0
+        self.reason = ""                    # Overstress reason.
 
         # Reliability attributes.
         self.add_adj_factor = 0.0
@@ -258,7 +260,6 @@ class Model(object):                        # pylint: disable=R0902
         self.hazard_rate_logistics = 0.0
         self.hazard_rate_method = 1
         self.hazard_rate_mission = 0.0
-        self.hazard_rate_model = {}
         self.hazard_rate_percent = 0.0
         self.hazard_rate_software = 0.0
         self.hazard_rate_specified = 0.0
@@ -315,10 +316,12 @@ class Model(object):                        # pylint: disable=R0902
         :rtype: tuple
         """
 
-        (_code, _msg) = self._set_base_attributes(values[:38])
-        (_code, _msg) = self._set_stress_attributes(values[38:50])
-        (_code, _msg) = self._set_reliability_attributes(values[50:86])
-        (_code, _msg) = self._set_user_attributes(values[86:])
+        _code = [0, 0, 0]
+        _msg = ['', '', '']
+
+        (_code[0], _msg[0]) = self._set_base_attributes(values[:38])
+        (_code[1], _msg[1]) = self._set_stress_attributes(values[44:61])
+        (_code[2], _msg[2]) = self._set_reliability_attributes(values[61:])
 
         return(_code, _msg)
 
@@ -395,7 +398,7 @@ class Model(object):                        # pylint: disable=R0902
 
         _code = 0
         _msg = ''
-
+        print values
         try:
             self.current_ratio = float(values[0])
             self.max_rated_temperature = float(values[1])
@@ -409,6 +412,8 @@ class Model(object):                        # pylint: disable=R0902
             self.rated_voltage = float(values[9])
             self.temperature_rise = float(values[10])
             self.voltage_ratio = float(values[11])
+            # Indices 12 - 15 are applicable to components only.
+            self.reason = str(values[16])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
@@ -446,7 +451,7 @@ class Model(object):                        # pylint: disable=R0902
             self.hazard_rate_logistics = float(values[11])
             self.hazard_rate_method = int(values[12])
             self.hazard_rate_mission = float(values[13])
-            self.hazard_rate_model = str(values[14])
+            self.hazard_rate_model = {}
             self.hazard_rate_percent = float(values[15])
             self.hazard_rate_software = float(values[16])
             self.hazard_rate_specified = float(values[17])
@@ -552,7 +557,7 @@ class Model(object):                        # pylint: disable=R0902
                   current_ratio, max_rated_temperature, min_rated_temperature,
                   operating_current, operating_power, operating_voltage,
                   power_ratio, rated_current, rated_power, rated_voltage,
-                  temperature_rise, voltage_ratio, add_adj_factor,
+                  temperature_rise, voltage_ratio, reason, add_adj_factor,
                   availability_logistics, availability_mission,
                   avail_log_variance, avail_mis_variance, failure_dist,
                   failure_parameter_1, failure_parameter_2,
@@ -573,9 +578,9 @@ class Model(object):                        # pylint: disable=R0902
         _base_values = self._get_base_attributes()
         _stress_values = self._get_stress_attributes()
         _rel_values = self._get_reliability_attributes()
-        _user_values = self._get_user_attributes()
+        #_user_values = self._get_user_attributes()
 
-        _values = _base_values + _stress_values + _rel_values + _user_values
+        _values = _base_values + _stress_values + _rel_values # + _user_values
 
         return _values
 
@@ -629,7 +634,7 @@ class Model(object):                        # pylint: disable=R0902
                    self.operating_power, self.operating_voltage,
                    self.power_ratio, self.rated_current, self.rated_power,
                    self.rated_voltage, self.temperature_rise,
-                   self.voltage_ratio)
+                   self.voltage_ratio, self.reason)
 
         return _values
 

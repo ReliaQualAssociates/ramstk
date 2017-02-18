@@ -28,7 +28,7 @@ except ImportError:                         # pragma: no cover
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
@@ -73,12 +73,10 @@ class Model(Hardware):                        # pylint: disable=R0902
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.category_id = 0
-        self.subcategory_id = 0
-        self.junction_temperature = 0.0
-        self.knee_temperature = 30.0
+        self.junction_temperature = 30.0
+        self.knee_temperature = 25.0
         self.thermal_resistance = 0.0
-        self.reference_temperature = 30.0
+        self.reference_temperature = 25.0
 
     def set_attributes(self, values):
         """
@@ -93,23 +91,24 @@ class Model(Hardware):                        # pylint: disable=R0902
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Hardware.set_attributes(self, values[:121])
+        (_code, _msg) = Hardware.set_attributes(self, values)
 
-        if _code == 0:
+        _code.append(0)
+        _msg.append('')
+
+        if sum(_code) == 0:
             try:
-                self.category_id = int(values[121])
-                self.subcategory_id = int(values[122])
-                self.junction_temperature = float(values[123])
-                self.knee_temperature = float(values[124])
-                self.thermal_resistance = float(values[125])
-                self.reference_temperature = float(values[126])
+                self.junction_temperature = float(values[56])
+                self.knee_temperature = float(values[57])
+                self.thermal_resistance = float(values[58])
+                self.reference_temperature = float(values[59])
             except IndexError as _err:
-                _code = Utilities.error_handler(_err.args)
-                _msg = _(u"ERROR: Insufficient input values.")
+                _code[3] = Utilities.error_handler(_err.args)
+                _msg[3] = _(u"ERROR: Insufficient input values.")
             except TypeError as _err:
-                _code = Utilities.error_handler(_err.args)
-                _msg = _(u"ERROR: Converting one or more inputs to correct "
-                         u"data type.")
+                _code[3] = Utilities.error_handler(_err.args)
+                _msg[3] = _(u"ERROR: Converting one or more inputs to correct "
+                            u"data type.")
 
         return(_code, _msg)
 
@@ -125,9 +124,8 @@ class Model(Hardware):                        # pylint: disable=R0902
 
         _values = Hardware.get_attributes(self)
 
-        _values = _values + (self.category_id, self.subcategory_id,
-                             self.junction_temperature,
-                             self.knee_temperature, self.thermal_resistance,
+        _values = _values + (self.junction_temperature, self.knee_temperature,
+                             self.thermal_resistance,
                              self.reference_temperature)
 
         return _values

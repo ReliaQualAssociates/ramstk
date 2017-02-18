@@ -1,15 +1,15 @@
 #!/usr/bin/env python
-"""
-################################
-Hardware Package Assembly Module
-################################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.hardware.assembly.Assembly.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+################################
+Hardware Package Assembly Module
+################################
+"""
 
 # Import modules for localization support.
 import gettext
@@ -28,7 +28,7 @@ except ImportError:                         # pragma: no cover
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
@@ -119,21 +119,24 @@ class Model(Hardware):                        # pylint: disable=R0902
         _code = 0
         _msg = ''
 
-        (_code, _msg) = Hardware.set_attributes(self, values[:86])
+        (_code, _msg) = Hardware.set_attributes(self, values)
 
-        if _code == 0:
+        _code.append(0)
+        _msg.append('')
+
+        if sum(_code) == 0:
             try:
-                self.cost_type = int(values[86])
-                self.repairable = int(values[87])
-                self.total_part_quantity = int(values[88])
-                self.total_power_dissipation = float(values[89])
+                self.cost_type = int(values[38])
+                self.repairable = int(values[39])
+                self.total_part_quantity = int(values[40])
+                self.total_power_dissipation = float(values[41])
             except IndexError as _err:
-                _code = Utilities.error_handler(_err.args)
-                _msg = _(u"ERROR: Insufficient input values.")
+                _code[3] = Utilities.error_handler(_err.args)
+                _msg[3] = _(u"ERROR: Insufficient input values.")
             except TypeError as _err:
-                _code = Utilities.error_handler(_err.args)
-                _msg = _(u"ERROR: Converting one or more inputs to correct "
-                         u"data type.")
+                _code[3] = Utilities.error_handler(_err.args)
+                _msg[3] = _(u"ERROR: Converting one or more inputs to correct "
+                            u"data type.")
 
         return(_code, _msg)
 

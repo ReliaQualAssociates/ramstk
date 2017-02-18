@@ -6,3 +6,5 @@ numpy
 scipy
 pandas
 coverage
+lifelines
+statsmodels
