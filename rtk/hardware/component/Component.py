@@ -73,6 +73,8 @@ class Model(Hardware):                        # pylint: disable=R0902
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.category_id = 0
+        self.subcategory_id = 0
         self.junction_temperature = 30.0
         self.knee_temperature = 25.0
         self.thermal_resistance = 0.0
@@ -98,17 +100,20 @@ class Model(Hardware):                        # pylint: disable=R0902
 
         if sum(_code) == 0:
             try:
+                self.category_id = int(values[42])
+                self.subcategory_id = int(values[43])
                 self.junction_temperature = float(values[56])
                 self.knee_temperature = float(values[57])
                 self.thermal_resistance = float(values[58])
                 self.reference_temperature = float(values[59])
             except IndexError as _err:
                 _code[3] = Utilities.error_handler(_err.args)
-                _msg[3] = _(u"ERROR: Insufficient input values.")
+                _msg[3] = _(u"ERROR: Insufficient input values to Component "
+                            u"model.")
             except TypeError as _err:
                 _code[3] = Utilities.error_handler(_err.args)
-                _msg[3] = _(u"ERROR: Converting one or more inputs to correct "
-                            u"data type.")
+                _msg[3] = _(u"ERROR: Converting one or more Component model "
+                            u"inputs to correct data type.")
 
         return(_code, _msg)
 
