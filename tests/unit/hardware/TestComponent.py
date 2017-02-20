@@ -132,7 +132,7 @@ class TestComponentModel(unittest.TestCase):
                        '', 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
                        0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                       0.0, 0, 30.0, 25.0, 0.0, 25.0)
+                       0.0, 0, 0, 0, 30.0, 25.0, 0.0, 25.0)
 
         self.assertEqual(self.DUT.get_attributes(), _all_values)
 
@@ -154,7 +154,8 @@ class TestComponentModel(unittest.TestCase):
         self.assertEqual(_result[51:87], self._rel_values)
 
         # Verify the Component specific attributes.
-        self.assertEqual(_result[87:], self._stress_values[12:16])
+        self.assertEqual(_result[87:89], self._base_values[42:44])
+        self.assertEqual(_result[89:], self._stress_values[12:16])
 
 
 class TestComponentController(unittest.TestCase):

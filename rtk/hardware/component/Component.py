@@ -129,7 +129,8 @@ class Model(Hardware):                        # pylint: disable=R0902
 
         _values = Hardware.get_attributes(self)
 
-        _values = _values + (self.junction_temperature, self.knee_temperature,
+        _values = _values + (self.category_id, self.subcategory_id,
+                             self.junction_temperature, self.knee_temperature,
                              self.thermal_resistance,
                              self.reference_temperature)
 
