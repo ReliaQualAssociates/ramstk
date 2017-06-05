@@ -1,9 +1,0 @@
-recursive-include config *.conf *.png *.sql *.xml
-recursive-include docs *.html *.tar.xz
-recursive-exclude rtk *.pyo
-recursive-exclude docs/build *
-recursive-exclude docs/_temp *
-recursive-exclude docs/source *
-
-include tox.ini
-recursive-include test *
