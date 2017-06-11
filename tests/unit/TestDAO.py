@@ -1,79 +1,26 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestBoM.py is part of The RTK Project
+#       tests.unit.TestDAO.py is part of The RTK Project
 
 #
 # All rights reserved.
 
 """
-This is the test class for testing Hardware BoM module algorithms and models.
+This is the test class for testing Data Access Object (DAO) module algorithms
+and models.
 """
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk")
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 from datetime import date, timedelta
 
 import unittest
 from nose.plugins.attrib import attr
 
-from sqlalchemy import create_engine
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import scoped_session, sessionmaker
-
 from dao.DAO import *
-
-Base = declarative_base()
-engine = create_engine('sqlite:///:memory:', echo=False)
-
-Session = sessionmaker()
-session = Session(bind=engine)
-
-# Create all the tables in the test database.
-RTKRevision.__table__.create(bind=engine)
-RTKMission.__table__.create(bind=engine)
-RTKMissionPhase.__table__.create(bind=engine)
-RTKEnvironment.__table__.create(bind=engine)
-RTKFailureDefinition.__table__.create(bind=engine)
-RTKFunction.__table__.create(bind=engine)
-RTKRequirement.__table__.create(bind=engine)
-RTKStakeholderInput.__table__.create(bind=engine)
-RTKMatrix.__table__.create(bind=engine)
-RTKHardware.__table__.create(bind=engine)
-RTKAllocation.__table__.create(bind=engine)
-RTKHazard.__table__.create(bind=engine)
-RTKSimilarItem.__table__.create(bind=engine)
-RTKReliability.__table__.create(bind=engine)
-RTKMilHdbkF.__table__.create(bind=engine)
-RTKNSWC.__table__.create(bind=engine)
-RTKDesignElectric.__table__.create(bind=engine)
-RTKDesignMechanic.__table__.create(bind=engine)
-RTKMode.__table__.create(bind=engine)
-RTKMechanism.__table__.create(bind=engine)
-RTKCause.__table__.create(bind=engine)
-RTKControl.__table__.create(bind=engine)
-RTKAction.__table__.create(bind=engine)
-RTKOpLoad.__table__.create(bind=engine)
-RTKOpStress.__table__.create(bind=engine)
-RTKTestMethod.__table__.create(bind=engine)
-RTKSoftware.__table__.create(bind=engine)
-RTKSoftwareDevelopment.__table__.create(bind=engine)
-RTKSRRSSR.__table__.create(bind=engine)
-RTKPDR.__table__.create(bind=engine)
-RTKCDR.__table__.create(bind=engine)
-RTKTRR.__table__.create(bind=engine)
-RTKSoftwareTest.__table__.create(bind=engine)
-RTKValidation.__table__.create(bind=engine)
-RTKIncident.__table__.create(bind=engine)
-RTKIncidentDetail.__table__.create(bind=engine)
-RTKIncidentAction.__table__.create(bind=engine)
-RTKTest.__table__.create(bind=engine)
-RTKGrowthTest.__table__.create(bind=engine)
-RTKSurvival.__table__.create(bind=engine)
-RTKSurvivalData.__table__.create(bind=engine)
-
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -91,13 +38,14 @@ class Test00RTKRevision(unittest.TestCase):
         Sets up the test fixture for the RTKRevision class.
         """
 
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+
         self.DUT = RTKRevision()
-        self.DUT.revision_id = 0
 
-        session.add(self.DUT)
-        session.commit()
+        self.dao.db_add(self.DUT)
 
-    @attr(all=True, dynamic=True)
+    @attr(all=True, unit=True)
     def test00_rtkrevision_create(self):
         """
         (TestDAO) DUT should be an RTKRevision model
@@ -107,13 +55,13 @@ class Test00RTKRevision(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_revision')
-        self.assertEqual(self.DUT.revision_id, 0)
+        self.assertEqual(self.DUT.revision_id, 1)
         self.assertEqual(self.DUT.availability_logistics, 1.0)
         self.assertEqual(self.DUT.availability_mission, 1.0)
         self.assertEqual(self.DUT.cost, 0.0)
         self.assertEqual(self.DUT.cost_failure, 0.0)
         self.assertEqual(self.DUT.cost_hour, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_actibe, 0.0)
+        self.assertEqual(self.DUT.hazard_rate_active, 0.0)
         self.assertEqual(self.DUT.hazard_rate_dormant, 0.0)
         self.assertEqual(self.DUT.hazard_rate_logistics, 0.0)
         self.assertEqual(self.DUT.hazard_rate_mission, 0.0)
@@ -134,6 +82,87 @@ class Test00RTKRevision(unittest.TestCase):
         self.assertEqual(self.DUT.program_time_sd, 0.0)
         self.assertEqual(self.DUT.program_cost, 0.0)
         self.assertEqual(self.DUT.program_cost_sd, 0.0)
+
+    @attr(all=True, unit=True)
+    def test01a_calculate_reliability(self):
+        """
+        (TestDAO) calculate_reliability should return False on success.
+        """
+
+        self.DUT.hazard_rate_active = 0.00000151
+        self.DUT.hazard_rate_dormant = 0.0000000152
+        self.DUT.hazard_rate_software = 0.0000003
+        self.DUT.hazard_rate_mission = 0.000002
+
+        self.assertFalse(self.DUT.calculate_reliability(100.0))
+        self.assertAlmostEqual(self.DUT.hazard_rate_logistics, 1.8252e-06)
+        self.assertAlmostEqual(self.DUT.mtbf_logistics, 547885.1632698)
+        self.assertAlmostEqual(self.DUT.mtbf_mission, 500000.0)
+        self.assertAlmostEqual(self.DUT.reliability_logistics, 0.9998175)
+        self.assertAlmostEqual(self.DUT.reliability_mission, 0.9998000)
+
+    @attr(all=True, unit=True)
+    def test01b_calculate_reliability_divide_by_zero(self):
+        """
+        (TestDAO) calculate_reliability should return True when attempting to divide by zero.
+        """
+
+        self.DUT.hazard_rate_mission = 0.0
+
+        self.assertTrue(self.DUT.calculate_reliability(100.0))
+
+    @attr(all=True, unit=True)
+    def test02a_calculate_availability(self):
+        """
+        (TestDAO) calculate_availability should return False on success.
+        """
+
+        self.DUT.mpmt = 0.5
+        self.DUT.mcmt = 1.2
+        self.DUT.mttr = 5.8
+        self.DUT.mmt = 0.85
+        self.DUT.mtbf_logistics = 547885.1632698
+        self.DUT.mtbf_mission = 500000.0
+
+        self.assertFalse(self.DUT.calculate_availability())
+        self.assertAlmostEqual(self.DUT.availability_logistics, 0.9999894)
+        self.assertAlmostEqual(self.DUT.availability_mission, 0.9999884)
+
+    @attr(all=True, unit=True)
+    def test02b_calculate_availability_divide_by_zero(self):
+        """
+        (TestDAO) calculate_availability should return True when attempting to divide by zero.
+        """
+
+        self.DUT.mttr = 0.0
+        self.DUT.mtbf_logistics = 547885.1632698
+        self.DUT.mtbf_mission = 0.0
+
+        self.assertTrue(self.DUT.calculate_availability())
+
+    @attr(all=True, unit=True)
+    def test03a_calculate_costs(self):
+        """
+        (TestDAO) calculate_costs should return False on success.
+        """
+
+        self.DUT.cost = 1252.78
+        self.DUT.hazard_rate_logistics = 1.0 / 547885.1632698
+
+        self.assertFalse(self.DUT.calculate_costs(100.0))
+        self.assertAlmostEqual(self.DUT.cost_per_failure, 0.002286574)
+        self.assertAlmostEqual(self.DUT.cost_per_hour, 12.5278)
+
+    @attr(all=True, unit=True)
+    def test03b_calculate_costs_divide_by_zero(self):
+        """
+        (TestDAO) calculate_costs should return True when attempting to divide by zero.
+        """
+
+        self.DUT.cost = 1252.78
+        self.DUT.hazard_rate_logistics = 1.0 / 547885.1632698
+
+        self.assertTrue(self.DUT.calculate_costs(0.0))
 
 
 class Test01RTKMission(unittest.TestCase):
@@ -2148,7 +2177,15 @@ class Test40DAO(unittest.TestCase):
 
         self.DUT = DAO('')
 
-    @attr(all=True, static=True)
+        self._revision = RTKRevision()
+        self._mission = RTKMission()
+        self._mission.revision_id = 1
+        self._phase = RTKMissionPhase()
+        self._phase.mission_id = 1
+        self._environment = RTKEnvironment()
+        self._environment.phase_id = 1
+
+    @attr(all=True, unit=True)
     def test00_dao_create(self):
         """
         (TestDAO) __init__ should create a DAO class instance.
@@ -2158,17 +2195,17 @@ class Test40DAO(unittest.TestCase):
         self.assertEqual(self.DUT.engine, None)
         self.assertEqual(self.DUT.metadata, None)
 
-    @attr(all=True, static=True)
+    @attr(all=True, unit=True)
     def test01_dao_db_connect(self):
         """
-        (TestDAO) db_connect should return False on success.
+        (TestDAO) db_connect should return False on success connecting to an SQLite database.
         """
 
         _database = 'sqlite:////tmp/TestDB.rtk'
 
         self.assertFalse(self.DUT.db_connect(_database))
 
-    @attr(all=True, static=False)
+    @attr(all=True, unit=False)
     def test02_dao_db_create(self):
         """
         (TestDAO) db_create should return False on success.
@@ -2176,25 +2213,86 @@ class Test40DAO(unittest.TestCase):
 
         self.assertFalse(self.DUT.db_create())
 
-    @attr(all=True, static=True)
-    def test03_dao_db_add(self):
+    @attr(all=True, unit=True)
+    def test03a_dao_db_add(self):
         """
-        (TestDAO) db_add should return False on success when adding a single record to the database.
+        (TestDAO) db_add should return a zero error code on success when adding a single record to the database.
         """
 
-        self.assertFalse(self.DUT.db_add(RTKRevision()))
+        (_error_code, _msg) = self.DUT.db_add(self._revision)
 
-    @attr(all=True, static=True)
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Adding an item to the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test03b_dao_db_add_no_item(self):
+        """
+        (TestDAO) db_add should return a 1003 error code on failure.
+        """
+
+        (_error_code, _msg) = self.DUT.db_add(None)
+
+        self.assertEqual(_error_code, 1003)
+        self.assertEqual(_msg,
+                         "ERROR: Adding an item to the RTK Program database.")
+
+    @attr(all=True, unit=True)
     def test04_dao_db_add_many(self):
         """
-        (TestDAO) db_add should return False on success when adding multiple records to the database.
+        (TestDAO) db_add should return a zero error code on success when adding multiple records to the database.
         """
 
-        _mission = RTKMission()
-        _mission.revision_id = 1
-        _phase = RTKMissionPhase()
-        _phase.mission_id = 1
-        _environment = RTKEnvironment()
-        _environment.phase_id = 1
+        (_error_code, _msg) = self.DUT.db_add([self._mission, self._phase,
+                                               self._environment])
 
-        self.assertFalse(self.DUT.db_add([_mission, _phase, _environment]))
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Adding an item to the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test05_dao_db_update(self):
+        """
+        (TestDAO) db_update should return a zero error code on success.
+        """
+
+        self._revision = self.DUT.session.query(RTKRevision).filter(
+            RTKRevision.revision_id == 1).all()[0]
+        self._mission = self.DUT.session.query(RTKMission).filter(
+            RTKMission.revision_id == 1).all()[0]
+
+        self._revision.availability_logistics = 0.9959
+        self._revision.availability_mission = 0.9999
+        self._mission.description = 'Big mission'
+
+        (_error_code, _msg) = self.DUT.db_update()
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Updating the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test06a_dao_db_delete(self):
+        """
+        (TestDAO) db_delete should return a zer error code on success.
+        """
+
+        self._phase = self.DUT.session.query(RTKMissionPhase).filter(
+            RTKMissionPhase.mission_id == 1).all()[0]
+        (_error_code, _msg) = self.DUT.db_delete(self._phase)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Deleting an item from the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test06b_dao_db_delete_no_item(self):
+        """
+        (TestDAO) db_delete should return a 1005 error code on failure.
+        """
+
+        (_error_code, _msg) = self.DUT.db_delete(None)
+
+        self.assertEqual(_error_code, 1005)
+        self.assertEqual(_msg,
+                         "ERROR: Deleting an item from the RTK Program database.")

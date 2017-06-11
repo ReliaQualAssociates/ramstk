@@ -67,7 +67,7 @@ class Model(object):
 
         :param str database: the full path to the database to connect to.
         """
-        
+
         self.connection = sqlite3.connect(database, isolation_level=None)
 
     def execute(self, query, commit=False):

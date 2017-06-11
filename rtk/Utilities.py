@@ -43,6 +43,11 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     _logger = logging.getLogger(log_name)
     _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
+    if log_level == 'DEBUG':
+        log_level = logging.ERROR
+    elif log_level == 'INFO':
+        _log_level = logging.INFO
+
     if not to_tty:
         _fh = logging.FileHandler(log_file)
         _fh.setLevel(log_level)

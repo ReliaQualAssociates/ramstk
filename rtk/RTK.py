@@ -1,13 +1,13 @@
 #!/usr/bin/env python
-"""
-This is the main program for the RTK application.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.RTK.py is part of the RTK Project
 #
 # All rights reserved.
+
+"""
+This is the main program for the RTK application.
+"""
 
 import datetime
 import gettext
@@ -294,7 +294,7 @@ def _read_program_configuration():
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
     _formatfile = _config.read_configuration().get('Files', 'sfmecaformat')
     Configuration.RTK_FORMAT_FILE.append(Configuration.CONF_DIR + _formatfile)
-    
+
     # Get color information.
     Configuration.RTK_COLORS.append(
         _config.read_configuration().get('Colors', 'revisionbg'))

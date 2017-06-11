@@ -1,6 +1,7 @@
 #!/usr/bin/env python -O
 """
-This is the test class for testing Revision module algorithms and models.
+This is the test class for testing Revision Data Model and Revision Data
+Controller algorithms and models.
 """
 
 # -*- coding: utf-8 -*-
@@ -16,15 +17,18 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-from revision.Revision import Model
+import Configuration as Configuration
+import Utilities as Utilities
+from revision.Revision import Model, Revision
+from dao.DAO import DAO, RTKRevision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 
-class TestRevisionModel(unittest.TestCase):
+class Test00RevisionModel(unittest.TestCase):
     """
     Class for testing the Revision model class.
     """
@@ -34,16 +38,20 @@ class TestRevisionModel(unittest.TestCase):
         Method to setup the test fixture for the Revision class.
         """
 
-        self.DUT = Model()
+        # Create a data access object and connect to a test database.
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+        self.dao.db_add(RTKRevision())
+        self.dao.db_add(RTKRevision())
 
-        self.good_values = (0, 1, 50.0, 'days', 'Test Mission')
-        self.bad_values = (0, 'days', 'Test Mission', 1, 50.0)
+        self.DUT = Model(self.dao)
 
-        self._reliability_inputs = (0.005, 0.0000065, 0.0000065, 0.0045)
-        self._availability_inputs = (1.25, 2.86, 3.18, 2.06)
-        self._cost_inputs = 100.00
-        self._mission_time = 10.0
-        self._hr_multiplier = [1.0, 1000000]
+        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
+                                                          'DEBUG',
+                                                          '/tmp/rtk_debug.log')
+        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
+                                                         'INFO',
+                                                        '/tmp/rtk_user.log')
 
     @attr(all=True, unit=True)
     def test00_revision_create(self):
@@ -52,166 +60,286 @@ class TestRevisionModel(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
-
-        self.assertEqual(self.DUT.revision_id, 0)
-        self.assertEqual(self.DUT.name, '')
-        self.assertEqual(self.DUT.n_parts, 0)
-        self.assertEqual(self.DUT.cost, 0.0)
-        self.assertEqual(self.DUT.cost_per_failure, 0.0)
-        self.assertEqual(self.DUT.cost_per_hour, 0.0)
-        self.assertEqual(self.DUT.active_hazard_rate, 0.0)
-        self.assertEqual(self.DUT.dormant_hazard_rate, 0.0)
-        self.assertEqual(self.DUT.software_hazard_rate, 0.0)
-        self.assertEqual(self.DUT.hazard_rate, 0.0)
-        self.assertEqual(self.DUT.mission_hazard_rate, 0.0)
-        self.assertEqual(self.DUT.mtbf, 0.0)
-        self.assertEqual(self.DUT.mission_mtbf, 0.0)
-        self.assertEqual(self.DUT.reliability, 0.0)
-        self.assertEqual(self.DUT.mission_reliability, 0.0)
-        self.assertEqual(self.DUT.mpmt, 0.0)
-        self.assertEqual(self.DUT.mcmt, 0.0)
-        self.assertEqual(self.DUT.mttr, 0.0)
-        self.assertEqual(self.DUT.mmt, 0.0)
-        self.assertEqual(self.DUT.availability, 0.0)
-        self.assertEqual(self.DUT.mission_availability, 0.0)
-        self.assertEqual(self.DUT.remarks, '')
-        self.assertEqual(self.DUT.code, '')
-        self.assertEqual(self.DUT.program_time, 0.0)
-        self.assertEqual(self.DUT.program_time_se, 0.0)
-        self.assertEqual(self.DUT.program_cost, 0.0)
-        self.assertEqual(self.DUT.program_cost_se, 0.0)
+        self.assertEqual(self.DUT.dicRevision, {})
 
     @attr(all=True, unit=True)
-    def test01_set_attributes(self):
+    def test01_retrieve_all_revisions(self):
         """
-        (TestRevision) set_attributes should return a 0 error code on success
+        (TestRevision): retrieve_all should return False on success.
         """
 
-        _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 'Revision', 1.0, 1.0, 'Remarks',
-                   0, 'Rev Dash', 150.0, 5.2, 156832.49, 56.2)
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 0)
+        _dic_revisions = self.DUT.retrieve_all()
+
+        self.assertTrue(isinstance(_dic_revisions, dict))
+        self.assertTrue(isinstance(_dic_revisions[1], RTKRevision))
 
     @attr(all=True, unit=True)
-    def test01a_requirement_set_attributes_wrong_type(self):
+    def test02a_retrieve_single_revision(self):
         """
-        (TestRevision) set_attributes should return a 10 error code when passed a wrong data type
+        (TestRevision): retrieve should return an instance of the RTKRevision data model on success.
         """
 
-        _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, None, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 'Revision', 1.0, 1.0, 'Remarks',
-                   0, 'Rev Dash', 150.0, 5.2, 156832.49, 56.2)
+        _revision = self.DUT.retrieve(1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 10)
+        self.assertTrue(isinstance(_revision, RTKRevision))
+        self.assertEqual(_revision.revision_id, 1)
+        self.assertEqual(_revision.availability_logistics, 1.0)
 
     @attr(all=True, unit=True)
-    def test01b_requirement_set_attributes_missing_index(self):
+    def test02b_retrieve_missing_revision(self):
         """
-        (TestRevision) set_attributes should return a 40 error code when too few items are passed
+        (TestRevision): retrieve should return an instance of the RTKRevision data model on success.
         """
 
-        _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 'Revision', 1.0, 1.0, 'Remarks',
-                   0, 'Rev Dash', 150.0, 5.2, 156832.49)
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 40)
+        _revision = self.DUT.retrieve(100)
+
+        self.assertEqual(_revision, None)
 
     @attr(all=True, unit=True)
-    def test02_requirement_get_attributes(self):
+    def test03a_add_revision(self):
         """
-        (TestRevision) get_attributes should return a tuple of attribute values
+        (TestRevision): add_revision should return False on success.
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 0.0, 0.0, '', 0,
+        self.assertFalse(self.DUT.add_revision())
+
+    @attr(all=True, unit=True)
+    def test04a_delete_revision(self):
+        """
+        (TestRevision): delete_revision should return False on success.
+        """
+
+        self.assertFalse(self.DUT.delete_revision(3))
+
+    @attr(all=True, unit=True)
+    def test04b_delete_non_existent_revision_id(self):
+        """
+        (TestRevision): delete_revision should return True when passed a Revision ID that doesn't exist.
+        """
+
+        self.assertTrue(self.DUT.delete_revision(100))
+
+    @attr(all=True, unit=True)
+    def test_05a_save_revision(self):
+        """
+        (TestRevision): save_revision should return False on success.
+        """
+
+        _revision = self.DUT.dicRevision[1]
+        _revision.availability_logistics = 0.9832
+
+        self.assertFalse(self.DUT.save_revision(1))
+
+    @attr(all=True, unit=True)
+    def test_05b_save_non_existent_revision(self):
+        """
+        (TestRevision): save_revision should return True when passed a Revision ID that doesn't exist.
+        """
+
+        self.assertTrue(self.DUT.save_revision(100))
+
+    @attr(all=True, unit=True)
+    def test_06a_save_all_revisions(self):
+        """
+        (TestRevision): save_all_revisions should return False on success.
+        """
+
+        self.assertFalse(self.DUT.save_all_revisions())
+
+    @attr(all=True, unit=True)
+    def test07_revision_get_attributes(self):
+        """
+        (TestRevision) get_attributes should return a tuple of attribute values.
+        """
+
+        self.assertEqual(self.DUT.get_attributes(1),
+                         (1, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 1.0, 1.0, '', 1,
                           '', 0.0, 0.0, 0.0, 0.0))
 
     @attr(all=True, unit=True)
-    def test03_sanity(self):
+    def test08a_calculate(self):
         """
-        (TestRevision) get_attributes(set_attributes(values)) == values
+        (TestRevision) calculate should return False on success
         """
 
-        _values = (0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 'Revision', 1.0, 1.0, 'Remarks',
-                   0, 'Rev Dash', 150.0, 5.2, 156832.49, 56.2)
+        _revision = self.DUT.dicRevision[1]
+        _revision.hazard_rate_active = 0.00000151
+        _revision.hazard_rate_dormant = 0.0000000152
+        _revision.hazard_rate_software = 0.0000003
+        _revision.hazard_rate_mission = 0.000002
+        _revision.mpmt = 0.5
+        _revision.mcmt = 1.2
+        _revision.mttr = 5.8
+        _revision.mmt = 0.85
+        _revision.mtbf_logistics = 547885.1632698
+        _revision.mtbf_mission = 500000.0
+        _revision.cost = 1252.78
 
-        self.DUT.set_attributes(_values)
-        _result = self.DUT.get_attributes()
-        self.assertEqual(_result, _values)
+        self.assertFalse(self.DUT.calculate(1, 100.0))
 
     @attr(all=True, unit=True)
-    def test04_calculate_reliability(self):
+    def test08b_calculate_with_bad_inputs(self):
         """
-        (TestRevision) calculate_reliability should return False on success
+        (TestRevision) calculate should return True with one or more bad input.
         """
 
-        self.assertFalse(self.DUT.calculate_reliability(
-            self._reliability_inputs, self._mission_time,
-            self._hr_multiplier[0]))
-        self.assertAlmostEqual(self.DUT.hazard_rate, 0.005013)
-        self.assertAlmostEqual(self.DUT.mtbf, 199.4813485)
-        self.assertAlmostEqual(self.DUT.mission_mtbf, 222.2222222)
-        self.assertAlmostEqual(self.DUT.reliability, 0.9511058)
-        self.assertAlmostEqual(self.DUT.mission_reliability, 0.9559975)
+        _revision = self.DUT.dicRevision[1]
+        _revision.hazard_rate_active = 0.00000151
+        _revision.hazard_rate_dormant = 0.0000000152
+        _revision.hazard_rate_software = 0.0000003
+        _revision.hazard_rate_mission = 0.0
+        _revision.mpmt = 0.5
+        _revision.mcmt = 1.2
+        _revision.mttr = 5.8
+        _revision.mmt = 0.85
+        _revision.mtbf_logistics = 547885.1632698
+        _revision.mtbf_mission = 500000.0
+        _revision.cost = 1252.78
+
+        self.assertTrue(self.DUT.calculate(1, 100.0))
+
+
+class Test01RevisionController(unittest.TestCase):
+    """
+    Class for testing the Revision Data Controller class.
+    """
+
+    def setUp(self):
+        """
+        Method to setup the test fixture for the Revision Data Controller.
+        """
+
+        # Create a data access object and connect to a test database.
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+        self.dao.db_add(RTKRevision())
+        self.dao.db_add(RTKRevision())
+
+        self.DUT = Revision(self.dao)
+
+        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
+                                                          'DEBUG',
+                                                          '/tmp/rtk_debug.log')
+        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
+                                                         'INFO',
+                                                        '/tmp/rtk_user.log')
 
     @attr(all=True, unit=True)
-    def test04a_calculate_reliability_bad_inputs(self):
+    def test00_controller_create(self):
         """
-        (TestRevision) calculate_reliability should set hazard rates and MTBF to 0.0 with a bad inputs
+        (TestRevision) __init__ should return a Revision Data Controller
         """
 
-        self.assertFalse(self.DUT.calculate_reliability(
-            (None, None, None, None), self._mission_time,
-            self._hr_multiplier[0]))
-        self.assertAlmostEqual(self.DUT.hazard_rate, 0.0)
-        self.assertAlmostEqual(self.DUT.mtbf, 0.0)
-        self.assertAlmostEqual(self.DUT.reliability, 1.0)
+        self.assertTrue(isinstance(self.DUT, Revision))
+        self.assertTrue(isinstance(self.DUT.revision_model, Model))
 
     @attr(all=True, unit=True)
-    def test05_calculate_availability(self):
+    def test01_request_revision_tree(self):
         """
-        (TestRevision) calculate_availability should return False on success
+        (TestRevision) request_revision_tree should return a dictionary of RTKRevision models.
         """
 
-        self.DUT.mtbf = 199.4813485
-        self.DUT.mission_mtbf = 222.2222222
+        _dic_revisions = self.DUT.request_revision_tree()
 
-        self.assertFalse(self.DUT.calculate_availability(
-            self._availability_inputs))
-        self.assertAlmostEqual(self.DUT.availability, 0.9984261)
-        self.assertAlmostEqual(self.DUT.mission_availability, 0.9985869)
+        self.assertTrue(isinstance(_dic_revisions[1], RTKRevision))
 
     @attr(all=True, unit=True)
-    def test05a_calculate_availability_bad_inputs(self):
+    def test02a_request_revision(self):
         """
-        (TestRevision) calculate_availability should set MTXX to 0.0 with bad inputs
+        (TestRevision) request_revision should return an RTKRevision model.
         """
 
-        self.DUT.mtbf = 0.0
-        self.DUT.mission_mtbf = 0.0
+        _revision = self.DUT.request_revision(1)
 
-        self.assertFalse(self.DUT.calculate_availability(
-            (None, None, None, None)))
-        self.assertAlmostEqual(self.DUT.availability, 1.0)
-        self.assertAlmostEqual(self.DUT.mission_availability, 1.0)
+        self.assertTrue(isinstance(_revision, RTKRevision))
 
     @attr(all=True, unit=True)
-    def test06_calculate_costs(self):
+    def test02b_request_non_existent_revision(self):
         """
-        (TestRevision) calculate_costs should return False on success
+        (TestRevision) request_revision should return None when requesting a Revision that doesn't exist.
         """
 
-        self.DUT.hazard_rate = 0.005013
+        _revision = self.DUT.request_revision(100)
 
-        self.assertFalse(self.DUT.calculate_costs(self._cost_inputs,
-                                                  self._mission_time))
-        self.assertEqual(self.DUT.cost, 100.0)
-        self.assertAlmostEqual(self.DUT.cost_per_failure, 0.5013)
-        self.assertAlmostEqual(self.DUT.cost_per_hour, 10.0)
+        self.assertEqual(_revision, None)
+
+    @attr(all=True, unit=True)
+    def test03a_request_add_revision(self):
+        """
+        (TestRevision) request_add_revision should return False on success.
+        """
+
+        self.assertFalse(self.DUT.request_add_revision())
+
+    @attr(all=True, unit=True)
+    def test04a_request_delete_revision(self):
+        """
+        (TestRevision) request_delete_revision should return False on success.
+        """
+
+        self.assertFalse(self.DUT.request_delete_revision(1))
+
+    @attr(all=True, unit=True)
+    def test04a_request_delete_non_existent_revision(self):
+        """
+        (TestRevision) request_delete_revision should return True when attempting to delete a non-existent Revision.
+        """
+
+        self.assertTrue(self.DUT.request_delete_revision(3))
+
+    @attr(all=True, unit=True)
+    def test05a_request_save_revision(self):
+        """
+        (TestRevision) request_save_revision should return False on success.
+        """
+
+        self.assertFalse(self.DUT.request_save_revision(2))
+
+    @attr(all=True, unit=True)
+    def test05b_request_save_non_existent_revision(self):
+        """
+        (TestRevision) request_save_revision should return True when attempting to save a non-existent Revision.
+        """
+
+        self.assertTrue(self.DUT.request_save_revision(100))
+
+    @attr(all=True, unit=True)
+    def test06a_request_save_all_revisions(self):
+        """
+        (TestRevision) request_save_all_revisions should return False on success.
+        """
+
+        self.assertFalse(self.DUT.request_save_all_revisions())
+
+    @attr(all=True, unit=True)
+    def test07a_request_calculate_revision(self):
+        """
+        (TestRevision) request_calculate_revision should return False on success.
+        """
+
+        _revision = self.DUT.revision_model.dicRevision[2]
+
+        _revision.hazard_rate_active = 0.00000151
+        _revision.hazard_rate_dormant = 0.0000000152
+        _revision.hazard_rate_software = 0.0000003
+        _revision.hazard_rate_mission = 0.000002
+        _revision.mpmt = 0.5
+        _revision.mcmt = 1.2
+        _revision.mttr = 5.8
+        _revision.mmt = 0.85
+        _revision.mtbf_logistics = 547885.1632698
+        _revision.mtbf_mission = 500000.0
+        _revision.cost = 1252.78
+
+        self.assertFalse(self.DUT.request_calculate_revision(2, 100.0))
+
+        self.assertAlmostEqual(_revision.hazard_rate_logistics, 1.8252e-06)
+        self.assertAlmostEqual(_revision.mtbf_logistics, 547885.1632698)
+        self.assertAlmostEqual(_revision.mtbf_mission, 500000.0)
+        self.assertAlmostEqual(_revision.reliability_logistics, 0.9998175)
+        self.assertAlmostEqual(_revision.reliability_mission, 0.9998000)
+        self.assertAlmostEqual(_revision.availability_logistics, 0.9999894)
+        self.assertAlmostEqual(_revision.availability_mission, 0.9999884)
+        self.assertAlmostEqual(_revision.cost_per_failure, 0.002286574)
+        self.assertAlmostEqual(_revision.cost_per_hour, 12.5278)
