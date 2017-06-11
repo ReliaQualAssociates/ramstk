@@ -44,7 +44,8 @@ class Test00RevisionModel(unittest.TestCase):
         self.dao.db_add(RTKRevision())
         self.dao.db_add(RTKRevision())
 
-        self.DUT = Model(self.dao)
+        self.DUT = Model()
+        self.DUT.dao = self.dao
 
         Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
@@ -61,6 +62,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Model))
         self.assertEqual(self.DUT.dicRevision, {})
+        self.assertTrue(isinstance(self.DUT.dao, DAO))
 
     @attr(all=True, unit=True)
     def test01_retrieve_all_revisions(self):
@@ -68,7 +70,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevision): retrieve_all should return False on success.
         """
 
-        _dic_revisions = self.DUT.retrieve_all()
+        _dic_revisions = self.DUT.retrieve_all(self.dao)
 
         self.assertTrue(isinstance(_dic_revisions, dict))
         self.assertTrue(isinstance(_dic_revisions[1], RTKRevision))
@@ -216,7 +218,8 @@ class Test01RevisionController(unittest.TestCase):
         self.dao.db_add(RTKRevision())
         self.dao.db_add(RTKRevision())
 
-        self.DUT = Revision(self.dao)
+        self.DUT = Revision()
+        self.DUT.revision_model.dao = self.dao
 
         Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
@@ -240,7 +243,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevision) request_revision_tree should return a dictionary of RTKRevision models.
         """
 
-        _dic_revisions = self.DUT.request_revision_tree()
+        _dic_revisions = self.DUT.request_revision_tree(self.dao)
 
         self.assertTrue(isinstance(_dic_revisions[1], RTKRevision))
 
@@ -286,7 +289,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevision) request_delete_revision should return True when attempting to delete a non-existent Revision.
         """
 
-        self.assertTrue(self.DUT.request_delete_revision(3))
+        self.assertTrue(self.DUT.request_delete_revision(100))
 
     @attr(all=True, unit=True)
     def test05a_request_save_revision(self):

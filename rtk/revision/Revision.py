@@ -58,7 +58,7 @@ class Model(object):
     # Define public class dictionary attributes.
     dicRevision = {}
 
-    def __init__(self, dao):
+    def __init__(self):
         """
         Method to initialize a Revision data model instance.
 
@@ -77,7 +77,7 @@ class Model(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
+        self.dao = None
 
     def retrieve(self, revision_id):
         """
@@ -97,7 +97,7 @@ class Model(object):
 
         return _revision
 
-    def retrieve_all(self):
+    def retrieve_all(self, dao):
         """
         Method to retrieve all the Revisions from the RTK Program database.
 
@@ -105,6 +105,8 @@ class Model(object):
                  comprise the Revision tree.
         :rtype: dict
         """
+
+        self.dao = dao
 
         for _revision in self.dao.session.query(RTKRevision).all():
             self.dicRevision[_revision.revision_id] = _revision
@@ -306,12 +308,9 @@ class Revision(object):
                           the Revision Data Controller.
     """
 
-    def __init__(self, dao):
+    def __init__(self):
         """
         Method to initialize a Revision data controller instance.
-
-        :param dao: the `:py:class:rtk.dao.DAO` instance to pass to the
-                    Revision Data Model.
         """
 
         # Initialize private dictionary attributes.
@@ -325,7 +324,7 @@ class Revision(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.revision_model = Model(dao)
+        self.revision_model = Model()
 
     def request_revision(self, revision_id):
         """
@@ -339,16 +338,18 @@ class Revision(object):
 
         return self.revision_model.retrieve(revision_id)
 
-    def request_revision_tree(self):
+    def request_revision_tree(self, dao):
         """
         Method to retrieve the Revision tree from the Revision Data Model.
 
+        :param dao: the `:py:class:rtk.dao.DAO` instance to pass to the
+                    Revision Data Model.
         :return: dicRevision; the dictinary of RTKRevision models in the
                  Revision tree.
         :rtype: dict
         """
 
-        return self.revision_model.retrieve_all()
+        return self.revision_model.retrieve_all(dao)
 
     def request_add_revision(self):
         """
