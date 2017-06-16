@@ -354,14 +354,21 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
-MODE = ''
+RTK_MODE = ''
+MODE = ''                               # TODO: Retire this variable.
 
-SITE_DIR = ''
-ICON_DIR = ''
-DATA_DIR = ''
-CONF_DIR = ''
-LOG_DIR = ''
-PROG_DIR = ''
+RTK_SITE_DIR = ''
+SITE_DIR = ''                           # TODO: Retire this variable.
+RTK_ICON_DIR = ''
+ICON_DIR = ''                           # TODO: Retire this variable.
+RTK_DATA_DIR = ''
+DATA_DIR = ''                           # TODO: Retire this variable.
+RTK_CONF_DIR = ''
+CONF_DIR = ''                           # TODO: Retire this variable.
+RTK_LOG_DIR = ''
+LOG_DIR = ''                            # TODO: Retire this variable.
+RTK_PROG_DIR = ''
+PROG_DIR = ''                           # TODO: Retire this variable.
 
 # --------------------------------------------------------------------- #
 # Log files.                                                            #
@@ -453,21 +460,27 @@ RTK_INCIDENT_CRITICALITY = []
 RTK_LIFECYCLE = []
 RTK_DETECTION_METHODS = []
 
-COM_BACKEND = ''
-BACKEND = ''
-
-LOCALE = 'en_US'
-OS = ''
+RTK_COM_BACKEND = ''
+COM_BACKEND = ''                        # TODO: Retire this variable.
+RTK_BACKEND = ''
+BACKEND = ''                            # TODO: Retire this variable.
 
 RTK_HR_MULTIPLIER = 1000000.0
-PLACES = 6
+FRMULT = 1000000.0                      # TODO: Retire this variable.
+RTK_DEC_PLACES = 6
+PLACES = 6                              # TODO: Retire this variable.
 RTK_MTIME = 10.0
 
-TABPOS = ['top', 'bottom', 'bottom']
+RTK_TABPOS = ['top', 'bottom', 'bottom']
+TABPOS = ['top', 'bottom', 'bottom']    # TODO: Retire this variable.
 
 RTK_GUI_LAYOUT = 'basic'
 
-METHOD = 'STANDARD'                     # STANDARD or LRM
+METHOD = 'STANDARD'                     # TODO: Retire this variable.
+RTK_METHOD = 'STANDARD'                 # STANDARD or LRM
+
+LOCALE = 'en_US'
+OS = ''
 
 
 class RTKConf(object):
