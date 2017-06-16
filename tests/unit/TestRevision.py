@@ -149,18 +149,7 @@ class Test00RevisionModel(unittest.TestCase):
         self.assertFalse(self.DUT.save_all_revisions())
 
     @attr(all=True, unit=True)
-    def test07_revision_get_attributes(self):
-        """
-        (TestRevision) get_attributes should return a tuple of attribute values.
-        """
-
-        self.assertEqual(self.DUT.get_attributes(1),
-                         (1, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 1.0, 1.0, '', 1,
-                          '', 0.0, 0.0, 0.0, 0.0))
-
-    @attr(all=True, unit=True)
-    def test08a_calculate(self):
+    def test07a_calculate(self):
         """
         (TestRevision) calculate should return False on success
         """
@@ -181,7 +170,7 @@ class Test00RevisionModel(unittest.TestCase):
         self.assertFalse(self.DUT.calculate(1, 100.0))
 
     @attr(all=True, unit=True)
-    def test08b_calculate_with_bad_inputs(self):
+    def test07b_calculate_with_bad_inputs(self):
         """
         (TestRevision) calculate should return True with one or more bad input.
         """

@@ -238,41 +238,6 @@ class Model(object):
 
         return _return
 
-    def get_attributes(self, revision_id):
-        """
-        Method to retrieve the current values of the Revision data model
-        attributes.
-
-        :param int revision_id: the Revision ID to get attributes for.
-        :return: (revision_id, availability, mission_availability, cost,
-                  cost_per_failure, cost_per_hour, active_hazard_rate,
-                  dormant_hazard_rate, mission_hazard_rate, hazard_rate,
-                  software_hazard_rate, mmt, mcmt, mpmt, mission_mtbf, mtbf,
-                  mttr, name, mission_reliability, reliability, remarks,
-                  n_parts, code, program_time, program_time_se, program_cost,
-                  program_cost_se)
-        :rtype: tuple
-        """
-
-        _revision = self.dicRevision[revision_id]
-        
-        _values = (_revision.revision_id, _revision.availability_logistics,
-                   _revision.availability_mission, _revision.cost,
-                   _revision.cost_failure, _revision.cost_hour,
-                   _revision.hazard_rate_active, _revision.hazard_rate_dormant,
-                   _revision.hazard_rate_logistics,
-                   _revision.hazard_rate_mission,
-                   _revision.hazard_rate_software, _revision.mmt,
-                   _revision.mcmt, _revision.mpmt, _revision.mtbf_logistics,
-                   _revision.mtbf_mission, _revision.mttr, _revision.name,
-                   _revision.reliability_logistics,
-                   _revision.reliability_mission, _revision.remarks,
-                   _revision.total_part_count, _revision.revision_code,
-                   _revision.program_time, _revision.program_time_sd,
-                   _revision.program_cost, _revision.program_cost_sd)
-
-        return _values
-
     def calculate(self, revision_id, mission_time):
         """
         Method to calculate various attributes for the requested Revision.

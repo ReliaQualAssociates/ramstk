@@ -302,7 +302,7 @@ class RTKRevision(Base):
     mmt = Column('fld_mmt', Float, nullable=False, default=0.0)
     mcmt = Column('fld_mcmt', Float, nullable=False, default=0.0)
     mpmt = Column('fld_mpmt', Float, nullable=False, default=0.0)
-    mtbf_logistics = Column('fld_mtbf_predicted', Float, nullable=False,
+    mtbf_logistics = Column('fld_mtbf_logistics', Float, nullable=False,
                             default=0.0)
     mtbf_mission = Column('fld_mtbf_mission', Float, nullable=False,
                           default=0.0)
@@ -342,6 +342,35 @@ class RTKRevision(Base):
     test = relationship('RTKTest', back_populates='revision')
     survival = relationship('RTKSurvival', back_populates='revision')
     matrix = relationship('RTKMatrix', back_populates='revision')
+
+    def get_attributes(self):
+        """
+        Method to retrieve the current values of the RTKRevision data model
+        attributes.
+
+        :return: (revision_id, availability, mission_availability, cost,
+                  cost_per_failure, cost_per_hour, active_hazard_rate,
+                  dormant_hazard_rate, mission_hazard_rate, hazard_rate,
+                  software_hazard_rate, mmt, mcmt, mpmt, mission_mtbf, mtbf,
+                  mttr, name, mission_reliability, reliability, remarks,
+                  n_parts, code, program_time, program_time_se, program_cost,
+                  program_cost_se)
+        :rtype: tuple
+        """
+
+        _values = (self.revision_id, self.availability_logistics,
+                   self.availability_mission, self.cost, self.cost_failure,
+                   self.cost_hour, self.hazard_rate_active,
+                   self.hazard_rate_dormant, self.hazard_rate_logistics,
+                   self.hazard_rate_mission, self.hazard_rate_software,
+                   self.mmt, self.mcmt, self.mpmt, self.mtbf_logistics,
+                   self.mtbf_mission, self.mttr, self.name,
+                   self.reliability_logistics, self.reliability_mission,
+                   self.remarks, self.total_part_count, self.revision_code,
+                   self.program_time, self.program_time_sd, self.program_cost,
+                   self.program_cost_sd)
+
+        return _values
 
     def calculate_reliability(self, mission_time):
         """

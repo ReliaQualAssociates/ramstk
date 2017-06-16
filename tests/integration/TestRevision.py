@@ -1,13 +1,13 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Revision module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.integration.TestRevision.py is part of The RTK Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Revision module algorithms and models.
+"""
 
 import sys
 from os.path import dirname
@@ -22,7 +22,7 @@ from revision.Revision import Model, Revision
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 
 class TestRevisionController(unittest.TestCase):

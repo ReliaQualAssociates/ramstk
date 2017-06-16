@@ -164,6 +164,17 @@ class Test00RTKRevision(unittest.TestCase):
 
         self.assertTrue(self.DUT.calculate_costs(0.0))
 
+    @attr(all=True, unit=True)
+    def test04_get_attributes(self):
+        """
+        (TestRevision) get_attributes should return a tuple of attribute values.
+        """
+
+        self.assertEqual(self.DUT.get_attributes(),
+                         (8, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 1.0, 1.0, '', 1,
+                          '', 0.0, 0.0, 0.0, 0.0))
+
 
 class Test01RTKMission(unittest.TestCase):
     """
