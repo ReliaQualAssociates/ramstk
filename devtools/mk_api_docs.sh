@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/bash
 
 TYPE=$1
 BASEDIR='/home/andrew/projects/RTK'

@@ -468,53 +468,43 @@ CREATE TABLE "rtk_hardware" (
     "fld_cost" REAL DEFAULT(0),                                     -- Cost each.
     "fld_cost_failure" REAL DEFAULT(0),                             -- Cost per failure.
     "fld_cost_hour" REAL DEFAULT(0),                                -- Cost per mission hour.
-    "fld_cost_type" INTEGER DEFAULT(1),                             -- How to calculate the cost (1=Assessed, 2=Specified).
+    "fld_cost_type_id" INTEGER DEFAULT(1),                          -- How to calculate the cost (1=Assessed, 2=Specified).
     "fld_description" VARCHAR(256) DEFAULT(''),                     -- Description of the hardware.
     "fld_duty_cycle" REAL DEFAULT(100),                             -- Duty cycle in the field.
-    "fld_environment_active" INTEGER DEFAULT(0),                    -- Active environment of the hardware.
-    "fld_environment_dormant" INTEGER DEFAULT(0),                   -- Dormant environment of the hardware.
     "fld_figure_number" VARCHAR(32) DEFAULT(''),                    -- Specification figure number fo the hardware item.
-    "fld_humidity" REAL DEFAULT(50),                                -- Humidity of the operating environment.
     "fld_lcn" VARCHAR(128) DEFAULT(''),                             -- Logistics control number of the hardware item.
     "fld_level" INTEGER DEFAULT(1),                                 -- Level in the system structure.
-    "fld_manufacturer" INTEGER DEFAULT(0),                          -- Manufacturer of the hardware item.
+    "fld_manufacturer_id" INTEGER DEFAULT(0),                       -- Manufacturer of the hardware item.
     "fld_mission_time" REAL DEFAULT(100),                           -- Mission time of the hardware item.
     "fld_name" VARCHAR(256) DEFAULT(''),                            -- Name of the hardware item.
     "fld_nsn" VARCHAR(32) DEFAULT(''),                              -- National stock number of the hardware item.
-    "fld_overstress" TINYINT NOT NULL DEFAULT(0),                   -- Whether hardware item is overstressed.
     "fld_page_number" VARCHAR(32) DEFAULT(''),                      -- Specification page number for the hardware item.
     "fld_parent_id" INTEGER DEFAULT(0),                             -- Hardware ID of the parent assembly.
     "fld_part" INTEGER DEFAULT(0),                                  -- Whether the hardware item is an assembly or a component.
     "fld_part_number" VARCHAR(128) DEFAULT(''),                     -- Part number of the hardware item.
     "fld_quantity" INTEGER DEFAULT(1),                              -- Quantity of the hardware item used in the system.
     "fld_ref_des" VARCHAR(128) DEFAULT(''),                         -- Reference designator of the hardware item.
-    "fld_reliability_goal" REAL DEFAULT(1),                         -- Numerical valure of the reliability goal.
-    "fld_reliability_goal_measure" INTEGER DEFAULT(0),              -- Reliability goal measure (1=Reliability, 2=Hazard Rate, 3=MTBF)
     "fld_remarks" BLOB,                                             -- Remarks associated with the hardware item.
     "fld_repairable" TINYINT DEFAULT(0),                            -- Whether the hardware item is repairable.
-    "fld_rpm" REAL DEFAULT(0),                                      -- Revolutions per minute of the hardware item.
     "fld_specification_number" VARCHAR(64) DEFAULT(''),             -- Governing specification of the hardware item.
     "fld_subcategory_id" INTEGER DEFAULT(0),                        -- Component sub-category ID.
     "fld_tagged_part" TINYINT DEFAULT (0),                          --
-    "fld_temperature_active" REAL DEFAULT(30),                      -- Active operating temperature.
-    "fld_temperature_dormant" REAL DEFAULT(30),                     -- Dormant (storage) temperature.
-    "fld_total_part_quantity" INTEGER DEFAULT(0),                   -- Total number of components comprising the assembly.
+    "fld_total_part_count" INTEGER DEFAULT(0),                      -- Total number of components comprising the assembly.
     "fld_total_power_dissipation" REAL DEFAULT(0),                  -- Total power dissipation of the assembly.
-    "fld_vibration" REAL DEFAULT(0),                                -- Vibration the hardware item is exposed to in the operating environment.
     "fld_year_of_manufacture" INTEGER DEFAULT(2014),                -- Year the hardware item was manufactured.
     FOREIGN KEY("fld_revision_id") REFERENCES "tbl_revisions"("fld_revision_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_hardware" VALUES(0,0,'','','',0,'S1',1.68,86.860837,0.168,1,'',100.0,1,1,'',50.0,'',1,0,10.0,'System','',0,'',-1,0,'',1,'S1',1.0,0,'',0,0.0,'',0,0,30.0,30.0,3,0.75,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,2,'','','',0,'',0.0,0.0,0.0,2,'',100.0,0,0,'',50.0,'',1,0,10.0,'Sub-System 1','',0,'',0,0,'',1,'SS1',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,3,'','','',0,'',0.0,0.0,0.0,1,'',100.0,0,0,'',50.0,'',1,0,10.0,'Sub-System 2','',0,'',0,0,'',1,'SS2',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,5,'','','',0,'',0.0,0.0,0.0,1,'',100.0,0,0,'',50.0,'',1,0,10.0,'Sub-System 3','',0,'',0,0,'',1,'SS3',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,6,'','','',1,'',1.68,9848098.205226,0.168,1,'',100.0,2,1,'',50.0,'',1,0,10.0,'Switch','',0,'',0,1,'',3,'SW1',1.0,0,'',0,0.0,'',1,0,38.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,7,'','','',0,'',0.0,0.0,0.0,2,'',100.0,0,0,'',50.0,'',1,0,10.0,'Assembly 11','',0,'',2,0,'',1,'A11',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,8,'','','',0,'',0.0,0.0,0.0,1,'',100.0,0,0,'',50.0,'',1,0,10.0,'Assembly 12','',0,'',2,0,'',1,'A12',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,88,'','','',0,'',0.0,0.0,0.0,1,'',100.0,0,0,'',50.0,'',1,0,100.0,'Sub-System 4','',0,'',0,0,'',1,'SS4',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,102,'','','',0,'',0.0,0.0,0.0,1,'',100.0,0,0,'',50.0,'',1,0,100.0,'Sub-Assembly 121','',0,'',8,0,'',1,'SA121',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,105,'','','',0,'',0.0,0.0,0.0,1,'',85.0,0,0,'',50.0,'',1,0,100.0,'Sub-Assembly 111','',0,'',7,0,'',1,'SA111',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
-INSERT INTO "rtk_hardware" VALUES(0,115,'','','',0,'',0.0,0.0,0.0,1,'',100.0,0,0,'',50.0,'',1,0,100.0,'Sub-Assembly 122','',0,'',8,0,'XA4320195J6',1,'SA122',1.0,0,'None',0,0.0,'',0,0,30.0,30.0,0,0.0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,1,'','','',0,'S1',1.68,86.860837,0.168,1,'',100.0,'','',1,0,10.0,'System','NSN','Page Number',0,0,'',1,'S1','Remarks',0,'Specification',0,0,3,0.75,2014);
+INSERT INTO "rtk_hardware" VALUES(0,2,'','','',0,'',0.0,0.0,0.0,2,'',100.0,'','',1,0,10.0,'Sub-System 1','','',1,0,'',1,'SS1','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,3,'','','',0,'',0.0,0.0,0.0,1,'',100.0,'','',1,0,10.0,'Sub-System 2','','',1,0,'',1,'SS2','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,5,'','','',0,'',0.0,0.0,0.0,1,'',100.0,'','',1,0,10.0,'Sub-System 3','','',1,0,'',1,'SS3','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,6,'','','',0,'',1.68,9848098.205226,0.168,1,'',100.0,'','',1,0,10.0,'Switch','','',3,1,'',3,'SW1','',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,7,'','','',0,'',0.0,0.0,0.0,2,'',100.0,'','',1,0,10.0,'Assembly 11','','',2,0,'',1,'A11','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,8,'','','',0,'',0.0,0.0,0.0,1,'',100.0,'','',1,0,10.0,'Assembly 12','','',2,0,'',1,'A12','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,88,'','','',0,'',0.0,0.0,0.0,1,'',100.0,'','',1,0,100.0,'Sub-System 4','','',1,0,'',1,'SS4','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,102,'','','',0,'',0.0,0.0,0.0,1,'',100.0,'','',1,0,100.0,'Sub-Assembly 121','','',8,0,'',1,'SA121','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,105,'','','',0,'',0.0,0.0,0.0,1,'',85.0,'','',1,0,100.0,'Sub-Assembly 111','','',7,0,'',1,'SA111','None',0,'Specification',0,0,0,0.0,2014);
+INSERT INTO "rtk_hardware" VALUES(0,115,'','','',0,'',0.0,0.0,0.0,1,'',100.0,'','',1,0,100.0,'Sub-Assembly 122','','',8,0,'XA4320195J6',1,'SA122','None',0,'Specification',0,0,0,0.0,2014);
 
 DROP TABLE IF EXISTS "rtk_allocation";
 CREATE TABLE "rtk_allocation" (
@@ -540,7 +530,7 @@ CREATE TABLE "rtk_allocation" (
     "fld_goal_measure" INTEGER DEFAULT(0),                          -- The goal measure to use (R(t), h(t), or MTBF).
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_allocation" VALUES(0,0.975,0.002532,394.978902,1,1,1,1960.0,1.0,1,1,1,1,0.0,0.0,0.0,0.0,-1,4,1);
+INSERT INTO "rtk_allocation" VALUES(1,0.975,0.002532,394.978902,1,1,1,1960.0,1.0,1,1,1,1,0.0,0.0,0.0,0.0,-1,4,1);
 INSERT INTO "rtk_allocation" VALUES(2,0.99228,0.000775,1290.330329,1,1,1,600.0,0.306122,3,5,10,4,0.0,0.99228,0.000775,1290.264413,0,4,1);
 INSERT INTO "rtk_allocation" VALUES(3,0.989592,0.0,0.0,1,1,1,810.0,0.413265,5,3,9,6,0.0,0.989592,0.001046,955.751417,0,0,0);
 INSERT INTO "rtk_allocation" VALUES(5,0.99639,0.000362,2764.852314,1,1,1,280.0,0.142857,2,2,10,7,0.0,0.99639,0.000362,2764.852314,0,4,1);
@@ -596,9 +586,9 @@ CREATE TABLE "rtk_hazard" (
     "fld_user_int_3" INTEGER DEFAULT(0),                            -- User-defined integer value 3.
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_hazard" VALUES(0,0,'Electrical, Burns','','',3,2,6,'',4,5,20,'',4,5,20,'',4,5,20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
-INSERT INTO "rtk_hazard" VALUES(0,1,'','','',4,5,20,'',4,5,20,'',4,5,20,'',4,5,20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
-INSERT INTO "rtk_hazard" VALUES(0,2,'','','',4,5,20,'',4,5,20,'',4,5,20,'',4,5,20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
+INSERT INTO "rtk_hazard" VALUES(1,0,'Electrical, Burns','','',3,2,6,'',4,5,20,'',4,5,20,'',4,5,20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
+INSERT INTO "rtk_hazard" VALUES(1,1,'','','',4,5,20,'',4,5,20,'',4,5,20,'',4,5,20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
+INSERT INTO "rtk_hazard" VALUES(1,2,'','','',4,5,20,'',4,5,20,'',4,5,20,'',4,5,20,'','','','','','',0.0,0.0,0.0,0.0,0.0,'','','',0.0,0.0,0.0,0,0,0);
 
 DROP TABLE IF EXISTS "rtk_similar_item";
 CREATE TABLE "rtk_similar_item" (
@@ -670,6 +660,9 @@ DROP TABLE IF EXISTS "rtk_stress";
 CREATE TABLE "rtk_stress" (
     "fld_hardware_id" INTEGER NOT NULL DEFAULT(0),                  -- Hardware ID.
     "fld_current_ratio" REAL DEFAULT(1),                            -- Ratio of operating to rated current.
+    "fld_environment_active_id" INTEGER DEFAULT(0),                 -- ID of the operating environment.
+    "fld_environment_dormant_id" INTEGER DEFAULT(0),                -- ID of the storage environment.
+    "fld_humidity" REAL DEFAULT(50),                                -- Humidity of the operating environment.
     "fld_junction_temperature" REAL DEFAULT(30),                    -- Junction temperature of the hardware.
     "fld_knee_temperature" REAL DEFAULT(0),                         -- Derating knee temperature.
     "fld_max_rated_temperature" REAL DEFAULT(0),                    -- Derating maximum operating temperature.
@@ -677,28 +670,26 @@ CREATE TABLE "rtk_stress" (
     "fld_operating_current" REAL DEFAULT(0),                        -- Operating current.
     "fld_operating_power" REAL DEFAULT(0),                          -- Operating power.
     "fld_operating_voltage" REAL DEFAULT(0),                        -- Operating voltage.
+    "fld_overstress" TINYINT NOT NULL DEFAULT(0),                   -- Whether hardware item is overstressed.
     "fld_power_ratio" REAL DEFAULT(1),                              -- Ratio of operating to rated power.
     "fld_rated_current" REAL DEFAULT(1),                            -- Rated current of the hardware item.
     "fld_rated_power" REAL DEFAULT(1),                              -- Rated power of the hardware item.
     "fld_rated_voltage" REAL DEFAULT(1),                            -- Rated voltage of the hardware item.
+    "fld_rpm" REAL DEFAULT(0),                                      -- Revolutions per minute of the hardware item.
+    "fld_temperature_active" REAL DEFAULT(30.0),                    -- Operating temperature in Centigrade.
+    "fld_temperature_dormant" REAL DEFAULT(25.0),                   -- Storage temperature in Centigrade.
     "fld_temperature_rise" REAL DEFAULT(0),                         -- Temperature rise of the hardware item.
+    "fld_reason" BLOB,                                              -- The reason(s) the component is over-stressed.
     "fld_thermal_resistance" REAL DEFAULT(0),                       -- Thermal resistance of the hardware item.
     "fld_tref" REAL DEFAULT(0),                                     -- Reference temperature of the hardware item.
+    "fld_vibration" REAL DEFAULT(0),                                -- Vibration the hardware item is exposed to in the operating environment.
     "fld_voltage_ratio" REAL DEFAULT(1),                            -- Ratio of operating to rated voltage.
-    "fld_reason" BLOB,                                              -- The reason(s) the component is over-stressed.
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_stress" VALUES(0,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(2,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(3,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(5,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(6,0.6,15.0,30.0,105.0,0.0,0.003,0.25,3.25,0.5,0.005,0.5,12.0,0.0,60.0,398.0,0.270833,"");
-INSERT INTO "rtk_stress" VALUES(7,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(8,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(88,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(102,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(105,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
-INSERT INTO "rtk_stress" VALUES(115,1.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,1.0,0.0,0.0,0.0,1.0,"");
+INSERT INTO "rtk_stress" VALUES(1,1.0,0,0,50.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,0,1.0,1.0,1.0,1.0,0.0,30.0,25.0,0.0,'Reason',0.0,0.0,0.0,1.0);
+INSERT INTO "rtk_stress" VALUES(2,1.0,0,0,50.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,0,1.0,1.0,1.0,1.0,0.0,30.0,25.0,0.0,'Reason',0.0,0.0,0.0,1.0);
+INSERT INTO "rtk_stress" VALUES(3,1.0,0,0,50.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,0,1.0,1.0,1.0,1.0,0.0,30.0,25.0,0.0,'Reason',0.0,0.0,0.0,1.0);
+INSERT INTO "rtk_stress" VALUES(5,1.0,0,0,50.0,30.0,0.0,0.0,0.0,0.0,0.0,0.0,0,1.0,1.0,1.0,1.0,0.0,30.0,25.0,0.0,'Reason',0.0,0.0,0.0,1.0);
 
 DROP TABLE IF EXISTS "rtk_reliability";
 CREATE TABLE "rtk_reliability" (
@@ -708,20 +699,20 @@ CREATE TABLE "rtk_reliability" (
     "fld_availability_mission" REAL DEFAULT(1),                     -- Mission availability.
     "fld_avail_log_variance" REAL DEFAULT(0),                       -- Variance of the logistics availability estimate.
     "fld_avail_mis_variance" REAL DEFAULT(0),                       -- Variance of the mission availability estimate.
-    "fld_failure_dist" INTEGER DEFAULT(0),                          -- Failure distribution.
-    "fld_failure_parameter_1" REAL DEFAULT(0),                      -- Scale parameter.
-    "fld_failure_parameter_2" REAL DEFAULT(0),                      -- Shape parameter.
-    "fld_failure_parameter_3" REAL DEFAULT(0),                      -- Location parameter.
+    "fld_failure_distribution_id" INTEGER DEFAULT(0),               -- Failure distribution.
+    "fld_scale_parameter" REAL DEFAULT(0),                          -- Scale parameter.
+    "fld_shape_parameter" REAL DEFAULT(0),                          -- Shape parameter.
+    "fld_location_parameter" REAL DEFAULT(0),                       -- Location parameter.
     "fld_hazard_rate_active" REAL DEFAULT(0),                       -- Active hazard rate.
     "fld_hazard_rate_dormant" REAL DEFAULT(0),                      -- Dormant hazard rate.
     "fld_hazard_rate_logistics" REAL DEFAULT(0),                    -- Logistics hazard rate.
-    "fld_hazard_rate_method" INTEGER DEFAULT(1),                    -- Hazard rate calculation method to use (1=217FN2 Parts Count, 2=217FN2 Parts Stress, 3=NSWC-07).
+    "fld_hazard_rate_method_id" INTEGER DEFAULT(1),                 -- Hazard rate calculation method to use (1=217FN2 Parts Count, 2=217FN2 Parts Stress, 3=NSWC-07).
     "fld_hazard_rate_mission" REAL DEFAULT(0),                      -- Mission hazard rate.
     "fld_hazard_rate_model" VARCHAR(512) DEFAULT(''),               -- Hazard rate mathematical model.
     "fld_hazard_rate_percent" REAL DEFAULT(0),                      -- Percent of system hazard rate attributable to this hardware item.
     "fld_hazard_rate_software" REAL DEFAULT(0),                     -- Software hazard rate.
     "fld_hazard_rate_specified" REAL DEFAULT(0),                    -- Specified hazard rate.
-    "fld_hazard_rate_type" INTEGER DEFAULT(1),                      -- How the hazard rate is determined (1=Assessed, 2=Specified, Failure Rate, 3=Specified, MTBF)
+    "fld_hazard_rate_type_id" INTEGER DEFAULT(1),                   -- How the hazard rate is determined (1=Assessed, 2=Specified, Failure Rate, 3=Specified, MTBF)
     "fld_hr_active_variance" REAL DEFAULT(0),                       -- Variance of the active hazard rate estimate.
     "fld_hr_dormant_variance" REAL DEFAULT(0),                      -- Variance of the dormant hazard rate estimate.
     "fld_hr_logistics_variance" REAL DEFAULT(0),                    -- Variance of the logistics hazard rate estimate.
@@ -734,11 +725,15 @@ CREATE TABLE "rtk_reliability" (
     "fld_mtbf_miss_variance" REAL DEFAULT(0),                       -- Varianec of the mission MTBF estimate.
     "fld_mtbf_spec_variance" REAL DEFAULT(0),                       -- Variance of the specified MTBF estimate.
     "fld_mult_adj_factor" REAL DEFAULT(1),                          -- Hazard rate multiplicative adjustment factor.
+    "fld_quality_id" INTEGER DEFAULT(0),                            -- ID of the quality level.
+    "fld_reliability_goal" REAL DEFAULT(1.0),                       -- Reliability goal.
+    "fld_reliability_goal_measure_id" INTEGER DEFAULT(0),           -- ID of the reliability goal measurement.
     "fld_reliability_logistics" REAL DEFAULT(1),                    -- Logistics reliability of the hardware item.
     "fld_reliability_mission" REAL DEFAULT(1),                      -- Mission reliability of the hardware item.
     "fld_rel_log_variance" REAL DEFAULT(0),                         -- Variance of the logistics reliability estimate.
     "fld_rel_miss_variance" REAL DEFAULT(0),                        -- Variance of the mission reliability estiamte.
-    "fld_survival_analysis" INTEGER DEFAULT(0),                     -- Survival data analysis to use.
+    "fld_survival_analysis_id" INTEGER DEFAULT(0),                  -- ID of the survival data analysis to use.
+    "fld_lambda_b" REAL DEFAULT(0.0),                               -- Base hazard rate of hardware item.
     "fld_float1" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
     "fld_float2" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
     "fld_float3" REAL NOT NULL DEFAULT(0),                          -- Float value to use as input to R(t) predictions.
@@ -776,17 +771,11 @@ CREATE TABLE "rtk_reliability" (
     "fld_varchar5" VARCHAR(512) NOT NULL DEFAULT(''),               -- String value to use as input to R(t) predictions.
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_reliability" VALUES(0,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.00193413,2.84319e-09,0.00193413,1,0.0,'',0.0,0.0,0.0,2,0.0,0.0,0.0,0.0,0.0,517.028792,0.0,0.0,0.0,0.0,0.0,1.0,0.980845,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(2,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.00193411,0.0,0.00193411,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,517.033352,0.0,0.0,0.0,0.0,0.0,1.0,0.980845,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(3,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(5,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(6,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,1.42159e-08,2.84319e-09,1.70591e-08,1,0.0,'',0.0,0.0,0.0,2,0.0,0.0,0.0,0.0,0.0,58619632.173963,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,0.0,0.0,0,0.0,0.00045,3.0,0.055,1.0,1.75505,2.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1,1,4,1,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(7,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.000647866,0.0,0.000647866,1,0.0,'',0.0,0.0,0.0052536,2,0.0,0.0,0.0,0.0,0.0,1543.529412,0.0,0.0,0.0,0.0,0.0,1.0,0.993542,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(8,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.00128625,0.0,0.00128625,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,777.456647,0.0,0.0,0.0,0.0,0.0,1.0,0.98722,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(88,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(102,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.000619579,0.0,0.000619579,3,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,1614.0,0.0,1614.0,0.0,0.0,0.0,1.0,0.939922,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(105,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.000647866,0.0,0.000647866,3,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,1543.529412,0.0,1312.0,0.0,0.0,0.0,1.0,0.937267,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
-INSERT INTO "rtk_reliability" VALUES(115,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.000666667,0.0,0.000666667,3,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,1500.0,0.0,1500.0,0.0,0.0,0.0,1.0,0.935507,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
+INSERT INTO "rtk_reliability" VALUES(1,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.00193413,2.84319e-09,0.00193413,1,0.0,'',0.0,0.0,0.0,2,0.0,0.0,0.0,0.0,0.0,517.028792,0.0,0.0,0.0,0.0,0.0,1.0,0,1.0,0,0.980845,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
+INSERT INTO "rtk_reliability" VALUES(2,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.00193411,0.0,0.00193411,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,517.033352,0.0,0.0,0.0,0.0,0.0,1.0,0,1.0,0,0.980845,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
+INSERT INTO "rtk_reliability" VALUES(3,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0,0.0,1.0,0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
+INSERT INTO "rtk_reliability" VALUES(5,0.0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,1,0.0,'',0.0,0.0,0.0,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,1.0,0,0.0,1.0,0,1.0,1.0,0.0,0.0,0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0,0,0,0,0,0,0,0,0,0,'','','','','');
+
 
 DROP TABLE IF EXISTS "rtk_maintainability";
 CREATE TABLE "rtk_maintainability" (
@@ -849,11 +838,11 @@ CREATE TABLE "rtk_modes" (
     FOREIGN KEY("fld_hardware_id") REFERENCES "rtk_hardware"("fld_hardware_id") ON DELETE CASCADE,
     FOREIGN KEY("fld_function_id") REFERENCES "tbl_functions"("fld_function_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_modes" VALUES(0,0,1,NULL,'Default Mission',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1.0,0.0,0.0,0.0,0.0,'','',0,0,NULL,1);
-INSERT INTO "rtk_modes" VALUES(0,0,2,NULL,'Default Mission',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1.0,0.0,0.0,0.0,0.0,'','',0,0,NULL,1);
-INSERT INTO "rtk_modes" VALUES(0,0,3,'Pressure is too high.','Default mission','Phase I','Bad things happen','More bad things happen','The worst things happen','','','','Not much we can do, just deal with it.','Scream and yell','II - Critical','','',1.0,0.0,0.0,0.0,0.0,'10','10',0,0,'This shit is bad.',0);
-INSERT INTO "rtk_modes" VALUES(0,0,4,'Pressure is too low.','','','','','','','','','','','','','',1.0,0.0,0.0,0.0,0.0,'10','10',0,0,'',0);
-INSERT INTO "rtk_modes" VALUES(0,0,5,'Pressure is erratic.','','','','','','','','','','','','','',1.0,0.0,0.0,0.0,0.0,'10','10',0,0,'',0);
+INSERT INTO "rtk_modes" VALUES(1,0,1,NULL,'Default Mission',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1.0,0.0,0.0,0.0,0.0,'','',0,0,NULL,1);
+INSERT INTO "rtk_modes" VALUES(1,0,2,NULL,'Default Mission',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,1.0,0.0,0.0,0.0,0.0,'','',0,0,NULL,1);
+INSERT INTO "rtk_modes" VALUES(1,0,3,'Pressure is too high.','Default mission','Phase I','Bad things happen','More bad things happen','The worst things happen','','','','Not much we can do, just deal with it.','Scream and yell','II - Critical','','',1.0,0.0,0.0,0.0,0.0,'10','10',0,0,'This shit is bad.',0);
+INSERT INTO "rtk_modes" VALUES(1,0,4,'Pressure is too low.','','','','','','','','','','','','','',1.0,0.0,0.0,0.0,0.0,'10','10',0,0,'',0);
+INSERT INTO "rtk_modes" VALUES(1,0,5,'Pressure is erratic.','','','','','','','','','','','','','',1.0,0.0,0.0,0.0,0.0,'10','10',0,0,'',0);
 
 DROP TABLE IF EXISTS "rtk_mechanisms";
 CREATE TABLE "rtk_mechanisms" (
@@ -871,10 +860,10 @@ CREATE TABLE "rtk_mechanisms" (
     "fld_include_pof" INTEGER DEFAULT(0),                           -- Indicates whether or not to include the failure mechanism in the physics of failure analysis.
     FOREIGN KEY("fld_mode_id") REFERENCES "rtk_modes"("fld_mode_id") ON DELETE CASCADE
 );
-INSERT INTO "rtk_mechanisms" VALUES(0,0,1,1,NULL,0,0,0,0,0,0,1);
-INSERT INTO "rtk_mechanisms" VALUES(0,0,1,2,NULL,0,0,0,0,0,0,1);
-INSERT INTO "rtk_mechanisms" VALUES(0,0,2,3,NULL,0,0,0,0,0,0,1);
-INSERT INTO "rtk_mechanisms" VALUES(0,0,2,4,NULL,0,0,0,0,0,0,1);
+INSERT INTO "rtk_mechanisms" VALUES(1,0,1,1,NULL,0,0,0,0,0,0,1);
+INSERT INTO "rtk_mechanisms" VALUES(1,0,1,2,NULL,0,0,0,0,0,0,1);
+INSERT INTO "rtk_mechanisms" VALUES(1,0,2,3,NULL,0,0,0,0,0,0,1);
+INSERT INTO "rtk_mechanisms" VALUES(1,0,2,4,NULL,0,0,0,0,0,0,1);
 
 DROP TABLE IF EXISTS "rtk_causes";
 CREATE TABLE "rtk_causes" (
