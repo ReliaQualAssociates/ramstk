@@ -61,8 +61,6 @@ class Model(object):
     def __init__(self):
         """
         Method to initialize a Revision data model instance.
-
-        :param dao:
         """
 
         # Initialize private dictionary attributes.
@@ -262,7 +260,6 @@ class Model(object):
 
 
 class Revision(object):
-
     """
     The Revision data controller provides an interface between the Revision
     data model and an RTK view model.  A single Revision controller can manage

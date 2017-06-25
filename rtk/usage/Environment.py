@@ -1,15 +1,25 @@
 #!/usr/bin/env python
+# -*- coding: utf-8 -*-
+#
+#       rtk.usage.Environment.py is part of The RTK Project
+#
+# All rights reserved.
+
 """
 ##################
 Environment Module
 ##################
 """
 
-# -*- coding: utf-8 -*-
-#
-#       rtk.usage.Environment.py is part of The RTK Project
-#
-# All rights reserved.
+# Import other RTK modules.
+try:
+    import Configuration as Configuration
+    import Utilities as Utilities
+    from dao.DAO import RTKEnvironment
+except ImportError:
+    import rtk.Configuration as Configuration   # pylint: disable=E0401
+    import rtk.Utilities as Utilities           # pylint: disable=E0401
+    from rtk.dao.DAO import RTKEnvironment      # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -23,81 +33,209 @@ class Model(object):
     phase environment.  A Phase will consist of zero or more environments.  The
     attributes of an Environment are:
 
-    :ivar int revision_id: the ID of the Revision the Environment is associated
-                           with.
-    :ivar int mission_id: the ID of the Mission the Environment is associated
-                          with.
-    :ivar int phase_id: the ID of the Phase the Environment is associated with.
-    :ivar int test_id:
-    :ivar int environment_id: the ID of the Environment.
-    :ivar str name: the name of the Environment parameter.
-    :ivar str units: the measurement units for the Environment parameter.
-    :ivar float minimum: the expected maximum value of the Envionment
-                         parameter.
-    :ivar float maximum: the expected minimum value of the Envionment
-                         parameter.
-    :ivar float mean: the expected average of the Environment parameter.
-    :ivar float variance: the expected variance on the Environment parameter.
+    :cvar dict dicEnvironment: dictionary containing all the RTKEnvironment
+                               data models that are part of the Environment
+                               tree.  Key is the Environment ID; value is a
+                               pointer to the instance of the RTKEnvironment
+                               data model.
+
+    :ivar int last_id: the last Environment ID used in the RTK Program
+                       database.
+    :ivar dao: the `:py:class:rtk.dao.DAO.DAO` object used to communicate with
+               the RTK Program database.
+
     """
+
+    # Define public class dictionary attributes.
+    dicEnvironment = {}
 
     def __init__(self):
         """
         Method to initialize an Environment data model instance.
         """
 
-        self.revision_id = 0
-        self.mission_id = 0
-        self.phase_id = 0
-        self.test_id = 0
-        self.environment_id = 0
-        self.name = ''
-        self.units = ''
-        self.minimum = 0.0
-        self.maximum = 0.0
-        self.mean = 0.0
-        self.variance = 0.0
+        # Initialize private dictionary attributes.
 
-    def set_attributes(self, values):
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self.last_id = None
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.dao = None
+
+    def retrieve(self, environment_id):
         """
-        Method to set the Environment data model attributes.
+        Method to retrieve the instance of the RTKEnvironment data model for
+        the Environment ID passed.
 
-        :param tuple values: values to assign to instance attributes.
+        :param int environment_id: the ID Of the RTKEnvironment to retrieve.
+        :return: the instance of the RTKEnvironment class that was requested
+                 or None if the requested Environment ID does not exist.
+        :rtype: :py:class:`rtk.dao.DAO.RTKEnvironment.Model`
+        """
+
+        try:
+            _environment = self.dicEnvironment[environment_id]
+        except KeyError:
+            _environment = None
+
+        return _environment
+
+    def retrieve_all(self, dao, phase_id):
+        """
+        Method to retrieve all the Environments from the RTK Program database.
+
+        :return: dicEnvironment; the dictionary of RTKEnvironment data models
+                 that comprise the Environment tree.
+        :rtype: dict
+        """
+
+        self.dao = dao
+
+        # Clear the Environment dictionary of previous Phases's Environments.
+        self.dicEnvironment = {}
+        for _environment in self.dao.session.query(RTKEnvironment). \
+                filter(RTKEnvironment.phase_id == phase_id).all():
+            self.dicEnvironment[_environment.environment_id] = _environment
+
+        return self.dicEnvironment
+
+    def add_environment(self, phase_id):
+        """
+        Method to add an Evnironmental condition to the RTK Program database
+        for Environment ID.
+
+        :param int phase_id: the Mission Phase ID to add the Environment to.
+        :return: _environment
+        :rtype: `:py:test:rtk.dao.DAO.RTKEnvironment`
+        """
+
+        _environment = RTKEnvironment()
+        _environment.phase_id = phase_id
+        (_error_code, _msg) = self.dao.db_add(_environment)
+
+        self.last_id = _environment.environment_id
+
+        # If the add was successful add the new RTKEnvironment data model
+        # instance to dicEnvironment and log the success message to the user
+        # log.  Otherwise, update the error message and write it to the error
+        # log.
+        if _error_code == 0:
+            self.dicEnvironment[_environment.environment_id] = _environment
+            Configuration.RTK_USER_LOG.info(_msg)
+        else:
+            _msg = _msg + "  Failed to add a new Environment to the RTK \
+                             Program database."
+            Configuration.RTK_DEBUG_LOG.error(_msg)
+            _environment = None
+
+        return _environment
+
+    def delete_environment(self, environment_id):
+        """
+        Method to remove the phase associated with Environment ID.
+
+        :param int environment_id: the ID of the Environment to be removed.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        _error = False
+        _return = False
 
         try:
-            self.revision_id = int(values[0])
-            self.mission_id = int(values[1])
-            self.phase_id = int(values[2])
-            self.test_id = int(values[3])
-            self.environment_id = int(values[4])
-            self.name = str(values[5])
-            self.units = str(values[6])
-            self.minimum = float(values[7])
-            self.maximum = float(values[8])
-            self.mean = float(values[9])
-            self.variance = float(values[10])
-        except(IndexError, ValueError):
-            _error = True
+            _environment = self.dicEnvironment[environment_id]
 
-        return _error
+            (_error_code, _msg) = self.dao.db_delete(_environment)
 
-    def get_attributes(self):
+            if _error_code == 0:
+                self.dicEnvironment.pop(environment_id)
+                Configuration.RTK_USER_LOG.info(_msg)
+            else:
+                try:
+                    _msg = _msg + "  Failed to delete Environment ID {0:d} " \
+                                  "from the RTK Program database.". \
+                        format(environment_id)
+                except ValueError:  # Environment ID is None.
+                    _msg = _msg + "  Failed to delete Environment ID {0:s} " \
+                                  "from the RTK Program database.". \
+                        format(environment_id)
+                Configuration.RTK_DEBUG_LOG.error(_msg)
+                _return = True
+        except KeyError:
+            try:
+                _msg = "Attempted to delete non-existent Environment ID " \
+                       "{0:d}.".format(environment_id)
+            except ValueError:  # Environment ID is None.
+                _msg = "Attempted to delete non-existent Environment ID " \
+                       "{0:s}.".format(environment_id)
+            Configuration.RTK_DEBUG_LOG.error(_msg)
+            _return = True
+
+        return _return
+
+    def save_environment(self, environment_id):
         """
-        Method to retrieve the current values of the Environment data model
-        attributes.
+        Method to update the environment associated with Phase ID to the RTK
+        Program database.
 
-        :return: (revision_id, mission_id, phase_id, test_id, environment_id,
-                  name, units, minimum, maximum, mean, variance)
-        :rtype: tuple
+        :param int environment_id: the Environment ID to save to the RTK
+                                   Program database.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        return(self.revision_id, self.mission_id, self.phase_id, self.test_id,
-               self.environment_id, self.name, self.units, self.minimum,
-               self.maximum, self.mean, self.variance)
+        _return = False
+
+        try:
+            _environment = self.dicEnvironment[environment_id]
+
+            (_error_code, _msg) = self.dao.db_update()
+
+            if _error_code == 0:
+                Configuration.RTK_USER_LOG.info(_msg)
+            else:
+                try:
+                    _msg = _msg + "  Failed to save Environment ID {0:d} to " \
+                                  "the RTK Program database".\
+                        format(environment_id)
+                except ValueError:  # If the environment_id = None.
+                    _msg = _msg + "  Failed to save Environment ID {0:s} to " \
+                                  "the RTK Program database".\
+                        format(environment_id)
+                Configuration.RTK_DEBUG_LOG.error(_msg)
+                _return = True
+        except KeyError:
+            try:
+                _msg = "Attempted to save non-existent Environment ID {0:d}.".\
+                    format(environment_id)
+            except ValueError:  # If the environment_id = None.
+                _msg = "Attempted to save non-existent Environment ID {0:s}.".\
+                    format(environment_id)
+            Configuration.RTK_DEBUG_LOG.error(_msg)
+            _return = True
+
+        return _return
+
+    def save_all_environments(self):
+        """
+        Method to save all Environments to the RTK Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        for _environment_id in self.dicEnvironment.keys():
+            if self.save_environment(_environment_id):
+                _return = True
+
+        return _return
 
 
 class Environment(object):

@@ -17,7 +17,11 @@ import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
-from usage.Environment import Model
+import Configuration as Configuration
+import Utilities as Utilities
+from usage.Environment import Model, Environment
+from dao.DAO import DAO, RTKRevision, RTKMission, RTKMissionPhase, \
+    RTKEnvironment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,48 +39,152 @@ class TestEnvironmentModel(unittest.TestCase):
         Method to setup the test fixture for the Environment model class.
         """
 
-        self.DUT = Model()
+        # Create a data access object and connect to a test database.
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
 
-        self.good_values = (0, 0, 0, 0, 1, 'Test Environment', 'units',
-                            0.0, 0.0, 0.0, 0.0)
-        self.bad_values = (0, 0, 0, 0, 'units', 'Test Environment', 1, 50.0,
-                           0.0, 0.0, 0.0)
+        _revision = RTKRevision()
+        self.dao.db_add(_revision)
+
+        _mission = RTKMission()
+        _mission.revision_id = _revision.revision_id
+        self.dao.db_add(_mission)
+
+        _phase = RTKMissionPhase()
+        _phase.mission_id = _mission.mission_id
+        self.dao.db_add(_phase)
+
+        _environment = RTKEnvironment()
+        _environment.phase_id = _phase.phase_id
+        self.dao.db_add(_environment)
+
+        self.DUT = Model()
+        self.DUT.dao = self.dao
+
+        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
+                                                          'DEBUG',
+                                                          '/tmp/rtk_debug.log')
+        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
+                                                         'INFO',
+                                                        '/tmp/rtk_user.log')
 
     @attr(all=True, unit=True)
-    def test_environment_create(self):
+    def test00_environment_create(self):
         """
-        Method to test the creation of an Environment class instance and
-        default values for public attributes are correct.
+        (TestEnvironment) __init__ should create an Environment data model.
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
+        self.assertEqual(self.DUT.dicEnvironment, {})
+        self.assertTrue(isinstance(self.DUT.dao, DAO))
 
-        self.assertEqual(self.DUT.revision_id, 0)
-        self.assertEqual(self.DUT.mission_id, 0)
-        self.assertEqual(self.DUT.phase_id, 0)
-        self.assertEqual(self.DUT.test_id, 0)
-        self.assertEqual(self.DUT.environment_id, 0)
-        self.assertEqual(self.DUT.name, '')
-        self.assertEqual(self.DUT.units, '')
-        self.assertEqual(self.DUT.minimum, 0.0)
-        self.assertEqual(self.DUT.maximum, 0.0)
-        self.assertEqual(self.DUT.mean, 0.0)
-        self.assertEqual(self.DUT.variance, 0.0)
+        self.assertEqual(self.DUT.last_id, None)
 
     @attr(all=True, unit=True)
-    def test_set_attributes(self):
+    def test01a_retrieve_all_environments(self):
         """
-        Test that Environment instance attributes can be set.
+        (TestEnvironment): retrieve_all should return False on success.
         """
 
-        self.assertFalse(self.DUT.set_attributes(self.good_values))
-        self.assertTrue(self.DUT.set_attributes(self.bad_values))
+        _dic_environments = self.DUT.retrieve_all(self.dao, 1)
+
+        self.assertTrue(isinstance(_dic_environments, dict))
+        self.assertTrue(isinstance(_dic_environments[1], RTKEnvironment))
 
     @attr(all=True, unit=True)
-    def test_get_attributes(self):
+    def test01b_retrieve_all_environments_nonexistent_phase(self):
         """
-        Test that attributes can be retrieved.
+        (TestEnvironment): retrieve_all should return an empty dictionary when passed a Pase ID that doesn't exist.
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (0, 0, 0, 0, 0, '', '', 0.0, 0.0, 0.0, 0.0))
+        self.DUT.retrieve_all(self.dao, 1)
+
+        _dic_environments = self.DUT.retrieve_all(self.dao, 100)
+
+        self.assertEqual(_dic_environments, {})
+
+    @attr(all=True, unit=True)
+    def test02a_retrieve_single_environment(self):
+        """
+        (TestEnvironment): retrieve should return an instance of the RTKEnvironment data model on success.
+        """
+
+        self.DUT.retrieve_all(self.dao, 1)
+
+        _environment = self.DUT.retrieve(1)
+
+        self.assertTrue(isinstance(_environment, RTKEnvironment))
+        self.assertEqual(_environment.environment_id, 1)
+        self.assertEqual(_environment.phase_id, 1)
+
+    @attr(all=True, unit=True)
+    def test02b_retrieve_missing_environment(self):
+        """
+        (TestEnvironment): retrieve should return None when passed an Environment ID that doesn't exist.
+        """
+
+        _environment = self.DUT.retrieve(100)
+
+        self.assertEqual(_environment, None)
+
+    @attr(all=True, unit=True)
+    def test03a_add_environment(self):
+        """
+        (TestEnvironment): add_environment should return False on success.
+        """
+
+        _environment = self.DUT.add_environment(1)
+
+        self.assertTrue(isinstance(_environment, RTKEnvironment))
+        self.assertEqual(_environment.phase_id, 1)
+
+    @attr(all=True, unit=True)
+    def test04a_delete_environment(self):
+        """
+        (TestEnvironment): delete_environment should return False on success.
+        """
+
+        self.DUT.retrieve_all(self.dao, 1)
+
+        self.assertFalse(self.DUT.delete_environment(7))
+
+    @attr(all=True, unit=True)
+    def test04b_delete_non_existent_environment_id(self):
+        """
+        (TestEnvironment): delete_environment should return True when passed a Environment ID that doesn't exist.
+        """
+
+        self.DUT.retrieve_all(self.dao, 1)
+
+        self.assertTrue(self.DUT.delete_environment(100))
+
+    @attr(all=True, unit=True)
+    def test_05a_save_environment(self):
+        """
+        (TestEnvironment): save_environment should return False on success.
+        """
+
+        self.DUT.retrieve_all(self.dao, 1)
+
+        _environment = self.DUT.dicEnvironment[1]
+        _environment.description = 'Environment to save'
+
+        self.assertFalse(self.DUT.save_environment(1))
+
+    @attr(all=True, unit=True)
+    def test_05b_save_non_existent_environment(self):
+        """
+        (TestEnvironment): save_phase should return True when passed a Environment ID that doesn't exist.
+        """
+
+        self.DUT.retrieve_all(self.dao, 1)
+
+        self.assertTrue(self.DUT.save_environment(100))
+
+    @attr(all=True, unit=True)
+    def test_06a_save_all_environments(self):
+        """
+        (TestEnvironment): save_all_environments should return False on success.
+        """
+
+        self.assertFalse(self.DUT.save_all_environments())

@@ -90,4 +90,4 @@ def tearDown():
 
     if os.path.isfile('/tmp/TestDB.rtk'):
         os.remove('/tmp/TestDB.rtk')
-
+    #pass
