@@ -20,6 +20,8 @@ from datetime import date, timedelta
 import unittest
 from nose.plugins.attrib import attr
 
+import Configuration as Configuration
+import Utilities as Utilities
 from dao.DAO import *
 
 __author__ = 'Andrew Rowland'
@@ -28,7 +30,145 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
-class Test00RTKRevision(unittest.TestCase):
+class Test00DAO(unittest.TestCase):
+    """
+    Class for testing the DAO class.
+    """
+
+    def setUp(self):
+        """
+        Sets up the test fixture for the DAO class.
+        """
+
+        self.DUT = DAO('')
+
+        self._revision = RTKRevision()
+        self._mission = RTKMission()
+        self._mission.revision_id = 1
+        self._phase = RTKMissionPhase()
+        self._phase.mission_id = 1
+        self._environment = RTKEnvironment()
+        self._environment.phase_id = 1
+
+        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
+                                                          'DEBUG',
+                                                          '/tmp/rtk_debug.log')
+        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
+                                                         'INFO',
+                                                        '/tmp/rtk_user.log')
+
+    @attr(all=True, unit=True)
+    def test00_dao_create(self):
+        """
+        (TestDAO) __init__ should create a DAO class instance.
+        """
+
+        self.assertTrue(isinstance(self.DUT, DAO))
+        self.assertEqual(self.DUT.engine, None)
+        self.assertEqual(self.DUT.metadata, None)
+
+    @attr(all=True, unit=True)
+    def test01_dao_db_connect(self):
+        """
+        (TestDAO) db_connect should return False on success connecting to an SQLite database.
+        """
+
+        _database = 'sqlite:////tmp/TestDB.rtk'
+
+        self.assertFalse(self.DUT.db_connect(_database))
+
+    @attr(all=True, unit=False)
+    def test02_dao_db_create(self):
+        """
+        (TestDAO) db_create should return False on success.
+        """
+
+        self.assertFalse(self.DUT.db_create())
+
+    @attr(all=True, unit=True)
+    def test03a_dao_db_add(self):
+        """
+        (TestDAO) db_add should return a zero error code on success when adding a single record to the database.
+        """
+
+        (_error_code, _msg) = self.DUT.db_add(self._revision)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Adding an item to the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test03b_dao_db_add_no_item(self):
+        """
+        (TestDAO) db_add should return a 1003 error code on failure.
+        """
+
+        (_error_code, _msg) = self.DUT.db_add(None)
+
+        self.assertEqual(_error_code, 1003)
+        self.assertEqual(_msg,
+                         "ERROR: Adding an item to the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test04_dao_db_add_many(self):
+        """
+        (TestDAO) db_add should return a zero error code on success when adding multiple records to the database.
+        """
+
+        (_error_code, _msg) = self.DUT.db_add([self._mission, self._phase,
+                                               self._environment])
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Adding an item to the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test05_dao_db_update(self):
+        """
+        (TestDAO) db_update should return a zero error code on success.
+        """
+
+        self._revision.availability_logistics = 0.9959
+        self._revision.availability_mission = 0.9999
+        self._mission.description = 'Big mission'
+
+        (_error_code, _msg) = self.DUT.db_update()
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Updating the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test06a_dao_db_delete(self):
+        """
+        (TestDAO) db_delete should return a zero error code on success.
+        """
+
+        _phase = RTKMissionPhase()
+        _phase.mission_id = 1
+
+        self.DUT.db_add(_phase)
+
+        (_error_code, _msg) = self.DUT.db_delete(_phase)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         "SUCCESS: Deleting an item from the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test06b_dao_db_delete_no_item(self):
+        """
+        (TestDAO) db_delete should return a 1005 error code on failure.
+        """
+
+        (_error_code, _msg) = self.DUT.db_delete(None)
+
+        self.assertEqual(_error_code, 1005)
+        self.assertEqual(_msg,
+                         "ERROR: Deleting an item from the RTK Program database.")
+
+
+class Test01RTKRevision(unittest.TestCase):
     """
     Class for testing the RTKRevision class.
     """
@@ -48,14 +188,14 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test00_rtkrevision_create(self):
         """
-        (TestDAO) DUT should be an RTKRevision model
+        (TestRTKRevision) DUT should be an RTKRevision model
         """
 
         self.assertTrue(isinstance(self.DUT, RTKRevision))
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_revision')
-        self.assertEqual(self.DUT.revision_id, 1)
+        self.assertEqual(self.DUT.revision_id, 2)
         self.assertEqual(self.DUT.availability_logistics, 1.0)
         self.assertEqual(self.DUT.availability_mission, 1.0)
         self.assertEqual(self.DUT.cost, 0.0)
@@ -86,7 +226,7 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01a_calculate_reliability(self):
         """
-        (TestDAO) calculate_reliability should return False on success.
+        (TestRTKRevision) calculate_reliability should return False on success.
         """
 
         self.DUT.hazard_rate_active = 0.00000151
@@ -104,7 +244,7 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01b_calculate_reliability_divide_by_zero(self):
         """
-        (TestDAO) calculate_reliability should return True when attempting to divide by zero.
+        (TestRTKRevision) calculate_reliability should return True when attempting to divide by zero.
         """
 
         self.DUT.hazard_rate_mission = 0.0
@@ -114,7 +254,7 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02a_calculate_availability(self):
         """
-        (TestDAO) calculate_availability should return False on success.
+        (TestRTKRevision) calculate_availability should return False on success.
         """
 
         self.DUT.mpmt = 0.5
@@ -131,7 +271,7 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02b_calculate_availability_divide_by_zero(self):
         """
-        (TestDAO) calculate_availability should return True when attempting to divide by zero.
+        (TestRTKRevision) calculate_availability should return True when attempting to divide by zero.
         """
 
         self.DUT.mttr = 0.0
@@ -143,7 +283,7 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03a_calculate_costs(self):
         """
-        (TestDAO) calculate_costs should return False on success.
+        (TestRTKRevision) calculate_costs should return False on success.
         """
 
         self.DUT.cost = 1252.78
@@ -156,7 +296,7 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03b_calculate_costs_divide_by_zero(self):
         """
-        (TestDAO) calculate_costs should return True when attempting to divide by zero.
+        (TestRTKRevision) calculate_costs should return True when attempting to divide by zero.
         """
 
         self.DUT.cost = 1252.78
@@ -167,16 +307,71 @@ class Test00RTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04_get_attributes(self):
         """
-        (TestRevision) get_attributes should return a tuple of attribute values.
+        (TestRTKRevision) get_attributes should return a tuple of attribute values.
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (8, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                         (9, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                           0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 1.0, 1.0, '', 1,
                           '', 0.0, 0.0, 0.0, 0.0))
 
+    @attr(all=True, unit=True)
+    def test05a_set_attributes(self):
+        """
+        (TestRTKRevision) set_attributes should return a zero error code on success
+        """
 
-class Test01RTKMission(unittest.TestCase):
+        _attributes = (0.986, 0.999, 113.25, 1.38, 0.15, 0.000001523,
+                       0.0000001523, 0.0000016753, 0.000001018, 0.00000852,
+                       32.8, 2.3, 1.8, 59690.8, 982318.3, 12.6,
+                       'Revision Name', 0.988, 0.9999, 'Remarks', 12, '-',
+                       5688.6, 26812.0, 186238, 255487369.5)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKRevision {0:d} " \
+                               "attributes.".format(    self.DUT.revision_id))
+
+    @attr(all=True, unit=True)
+    def test05b_set_attributes_wrong_type(self):
+        """
+        (TestRTKRevision) set_attributes should return a 10 error code when passed the wrong type
+        """
+
+        _attributes = (0.986, 0.999, 113.25, None, 0.15, 0.000001523,
+                       0.0000001523, None, 0.000001018, 0.00000852,
+                       32.8, 2.3, 1.8, 59690.8, 982318.3, 12.6,
+                       'Revision Name', 0.988, 0.9999, 'Remarks', 12, '-',
+                       5688.6, 26812.0, 186238, 255487369.5)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 10)
+        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
+                               "converting one or more RTKRevision " \
+                               "attributes.")
+
+    @attr(all=True, unit=True)
+    def test05c_set_attributes_too_few_passed(self):
+        """
+        (TestRTKRevision) set_attributes should return a 40 error code when passed too few attributes
+        """
+
+        _attributes = (0.986, 0.999, 113.25, 1.38, 0.15, 0.000001523,
+                       0.0000001523, 0.0000016753, 0.000001018, 0.00000852,
+                       32.8, 2.3, 1.8, 59690.8, 982318.3, 12.6,
+                       'Revision Name', 0.988, 0.9999, 'Remarks', 12, '-',
+                       5688.6, 26812.0, 186238)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 40)
+        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
+                               "values to RTKRevision.set_attributes().")
+
+
+class Test02RTKMission(unittest.TestCase):
     """
     Class for testing the RTKMission class.
     """
@@ -186,29 +381,85 @@ class Test01RTKMission(unittest.TestCase):
         Sets up the test fixture for the RTKMission class.
         """
 
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+
         self.DUT = RTKMission()
-        self.DUT.revision_id = 0
+        self.DUT.revision_id = 1
 
-        session.add(self.DUT)
-        session.commit()
+        self.dao.db_add(self.DUT)
 
-    @attr(all=True, dynamic=True)
+    @attr(all=True, unit=True)
     def test00_rtkmission_create(self):
         """
-        (TestDAO) DUT should create an RTKMission model
+        (TestMission) DUT should create an RTKMission model
         """
 
         self.assertTrue(isinstance(self.DUT, RTKMission))
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_mission')
-        self.assertEqual(self.DUT.revision_id, 0)
-        self.assertEqual(self.DUT.mission_id, 1)
-        self.assertEqual(self.DUT.description, '')
+        self.assertEqual(self.DUT.revision_id, 1)
+        self.assertEqual(self.DUT.mission_id, 2)
+        self.assertEqual(self.DUT.description, 'Description')
         self.assertEqual(self.DUT.mission_time, 0.0)
+        self.assertEqual(self.DUT.time_units, 'hours')
+
+    @attr(all=True, unit=True)
+    def test01_get_attributes(self):
+        """
+        (TestRTKMission) get_attributes should return a tuple of attribute values.
+        """
+
+        self.assertEqual(self.DUT.get_attributes(),
+                         (1, 3, 'Description', 0.0, 'hours'))
+
+    @attr(all=True, unit=True)
+    def test02a_set_attributes(self):
+        """
+        (TestRTKMission) set_attributes should return a zero error code on success
+        """
+
+        _attributes = ('Mission Description', 216.0, 'hours')
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKMission {0:d} " \
+                               "attributes.".format(self.DUT.mission_id))
+
+    @attr(all=True, unit=True)
+    def test02b_set_attributes_wrong_type(self):
+        """
+        (TestRTKMission) set_attributes should return a 10 error code when passed the wrong type
+        """
+
+        _attributes = ('Mission Description', None, 'hours')
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 10)
+        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
+                               "converting one or more RTKMission " \
+                               "attributes.")
+
+    @attr(all=True, unit=True)
+    def test02c_set_attributes_too_few_passed(self):
+        """
+        (TestRTKMission) set_attributes should return a zero error code when passed too few attributes
+        """
+
+        _attributes = ('Mission Description', 216.0)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 40)
+        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
+                               "values to " \
+                               "RTKMission.set_attributes().")
 
 
-class Test02RTKMissionPhase(unittest.TestCase):
+class Test03RTKMissionPhase(unittest.TestCase):
     """
     Class for testing the RTKMissionPhase class.
     """
@@ -218,16 +469,18 @@ class Test02RTKMissionPhase(unittest.TestCase):
         Sets up the test fixture for the RTKMissionPhase class.
         """
 
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+
         self.DUT = RTKMissionPhase()
         self.DUT.mission_id = 1
 
-        session.add(self.DUT)
-        session.commit()
+        self.dao.db_add(self.DUT)
 
-    @attr(all=True, dynamic=True)
+    @attr(all=True, unit=True)
     def test00_rtkmissionphase_create(self):
         """
-        (TestDAO) DUT should create an RTKMissionPhase model.
+        (TestRTKMissionPhase) DUT should create an RTKMissionPhase model.
         """
 
         self.assertTrue(isinstance(self.DUT, RTKMissionPhase))
@@ -235,15 +488,67 @@ class Test02RTKMissionPhase(unittest.TestCase):
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_mission_phase')
         self.assertEqual(self.DUT.mission_id, 1)
-        self.assertEqual(self.DUT.phase_id, 1)
-
+        self.assertEqual(self.DUT.phase_id, 2)
         self.assertEqual(self.DUT.description, '')
-        self.assertEqual(self.DUT.name, 'Phase Name')
+        self.assertEqual(self.DUT.name, '')
         self.assertEqual(self.DUT.phase_start, 0.0)
         self.assertEqual(self.DUT.phase_end, 0.0)
 
+    @attr(all=True, unit=True)
+    def test01_get_attributes(self):
+        """
+        (TestRTKMissionPhase) get_attributes should return a tuple of attribute values.
+        """
 
-class Test03RTKEnvironment(unittest.TestCase):
+        self.assertEqual(self.DUT.get_attributes(),
+                         (1, 3, '', '', 0.0, 0.0))
+
+    @attr(all=True, unit=True)
+    def test02a_set_attributes(self):
+        """
+        (TestRTKMissionPhase) set_attributes should return a zero error code on success
+        """
+
+        _attributes = ('Mission Phase', 'Name', 0.0, 216.0)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKMissionPhase {0:d} " \
+                               "attributes.".format(self.DUT.phase_id))
+
+    @attr(all=True, unit=True)
+    def test02b_set_attributes_wrong_type(self):
+        """
+        (TestRTKEnvironment) set_attributes should return a 10 error code when passed the wrong type
+        """
+
+        _attributes = ('Mission Phase', 'Name', None, 216.0)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 10)
+        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
+                               "converting one or more RTKMissionPhase " \
+                               "attributes.")
+
+    @attr(all=True, unit=True)
+    def test02c_set_attributes_too_few_passed(self):
+        """
+        (TestRTKMissionPhase) set_attributes should return a zero error code when passed too few attributes
+        """
+
+        _attributes = ('Mission Phase', 'Name', 85.0)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 40)
+        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
+                               "values to " \
+                               "RTKMissionPhase.set_attributes().")
+
+
+class Test04RTKEnvironment(unittest.TestCase):
     """
     Class for testing the RTKEnvironment class.
     """
@@ -253,16 +558,18 @@ class Test03RTKEnvironment(unittest.TestCase):
         Sets up the test fixture for the RTKEnvironment class.
         """
 
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+
         self.DUT = RTKEnvironment()
         self.DUT.phase_id = 1
 
-        session.add(self.DUT)
-        session.commit()
+        self.dao.db_add(self.DUT)
 
-    @attr(all=True, dynamic=True)
+    @attr(all=True, unit=True)
     def test00_rtkenvironment_create(self):
         """
-        (TestDAO) DUT should create an RTKEnvironment model.
+        (TestRTKEnvironment) DUT should create an RTKEnvironment model.
         """
 
         self.assertTrue(isinstance(self.DUT, RTKEnvironment))
@@ -270,7 +577,7 @@ class Test03RTKEnvironment(unittest.TestCase):
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_environment')
         self.assertEqual(self.DUT.phase_id, 1)
-        self.assertEqual(self.DUT.environment_id, 1)
+        self.assertEqual(self.DUT.environment_id, 2)
         self.assertEqual(self.DUT.name, 'Condition Name')
         self.assertEqual(self.DUT.units, 'Units')
         self.assertEqual(self.DUT.minimum, 0.0)
@@ -281,8 +588,65 @@ class Test03RTKEnvironment(unittest.TestCase):
         self.assertEqual(self.DUT.low_dwell_time, 0.0)
         self.assertEqual(self.DUT.high_dwell_time, 0.0)
 
+    @attr(all=True, unit=True)
+    def test01_get_attributes(self):
+        """
+        (TestRTKEnvironment) get_attributes should return a tuple of attribute values.
+        """
 
-class Test04RTKFailureDefinition(unittest.TestCase):
+        self.assertEqual(self.DUT.get_attributes(),
+                         (1, 3, 'Condition Name', 'Units', 0.0, 0.0, 0.0,
+                          0.0, 0.0, 0.0, 0.0))
+
+    @attr(all=True, unit=True)
+    def test02a_set_attributes(self):
+        """
+        (TestRTKEnvironment) set_attributes should return a zero error code on success
+        """
+
+        _attributes = ('Failure Def.', 'hours', 4.5, 58.6, 31.4, 544.0, 15.3,
+                       25.0, 85.0)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKEnvironment {0:d} " \
+                               "attributes.".format(self.DUT.environment_id))
+
+    @attr(all=True, unit=True)
+    def test02b_set_attributes_wrong_type(self):
+        """
+        (TestRTKEnvironment) set_attributes should return a 10 error code when passed the wrong type
+        """
+
+        _attributes = ('Condition Name', 'hours', 4.5, None, 31.4, 544.0, 15.3,
+                       25.0, 85.0)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 10)
+        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
+                               "converting one or more RTKEnvironment " \
+                               "attributes.")
+
+    @attr(all=True, unit=True)
+    def test02c_set_attributes_too_few_passed(self):
+        """
+        (TestRTKEnvironment) set_attributes should return a zero error code when passed too few attributes
+        """
+
+        _attributes = ('Condition Name', 'hours', 4.5, 31.4, 544.0, 15.3, 25.0,
+                       85.0)
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 40)
+        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
+                               "values to " \
+                               "RTKEnvironment.set_attributes().")
+
+
+class Test05RTKFailureDefinition(unittest.TestCase):
     """
     Class for testing the RTKFailureDefinition class.
     """
@@ -292,27 +656,84 @@ class Test04RTKFailureDefinition(unittest.TestCase):
         Sets up the test fixture for the RTKFailureDefinition class.
         """
 
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+
         self.DUT = RTKFailureDefinition()
-        self.DUT.revision_id = 0
+        self.DUT.revision_id = 1
 
-        session.add(self.DUT)
-        session.commit()
+        self.dao.db_add(self.DUT)
 
-    @attr(all=True, dynamic=True)
+    @attr(all=True, unit=True)
     def test00_rtkfailuredefinition_create(self):
         """
-        (TestDAO) DUT should create an RTKFailureDefinition model.
+        (TestRTKFailureDefinition) DUT should create an RTKFailureDefinition model.
         """
 
         self.assertTrue(isinstance(self.DUT, RTKFailureDefinition))
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_failure_definition')
+        self.assertEqual(self.DUT.revision_id, 1)
         self.assertEqual(self.DUT.definition_id, 1)
-        self.assertEqual(self.DUT.definition, '')
+        self.assertEqual(self.DUT.definition, 'Failure Definition')
+
+    @attr(all=True, unit=True)
+    def test01_get_attributes(self):
+        """
+        (TestRTKFailureDefinition) get_attributes should return a tuple of attribute values.
+        """
+
+        self.assertEqual(self.DUT.get_attributes(),
+                         (1, 2, 'Failure Definition'))
+
+    @attr(all=True, unit=True)
+    def test02a_set_attributes(self):
+        """
+        (TestRTKFailureDefinition) set_attributes should return a zero error code on success
+        """
+
+        _attributes = ('Failure Def.')
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKFailureDefinition " \
+                               "{0:d} attributes.".\
+                               format(self.DUT.definition_id))
+
+    @attr(all=True, unit=False)
+    def test02b_set_attributes_wrong_type(self):
+        """
+        (TestRTKFailureDefinition) set_attributes should return a 10 error code when passed the wrong type
+        """
+
+        _attributes = [None]
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 10)
+        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
+                               "converting one or more RTKEFailureDefinition " \
+                               "attributes.")
+
+    @attr(all=True, unit=True)
+    def test02c_set_attributes_too_few_passed(self):
+        """
+        (TestRTKFailureDefinition) set_attributes should return a 40 error code when passed too few attributes
+        """
+
+        _attributes = ()
+
+        _error_code, _msg = self.DUT.set_attributes(_attributes)
+
+        self.assertEqual(_error_code, 40)
+        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
+                               "values to " \
+                               "RTKFailureDefinition.set_attributes().")
 
 
-class Test05RTKFunction(unittest.TestCase):
+class Test055RTKFunction(unittest.TestCase):
     """
     Class for testing the RTKFunction class.
     """
@@ -2174,136 +2595,3 @@ class Test39RTKSurvivalData(unittest.TestCase):
         self.assertEqual(self.DUT.user_string_1, '')
         self.assertEqual(self.DUT.user_string_2, '')
         self.assertEqual(self.DUT.user_string_3, '')
-
-
-class Test40DAO(unittest.TestCase):
-    """
-    Class for testing the DAO class.
-    """
-
-    def setUp(self):
-        """
-        Sets up the test fixture for the DAO class.
-        """
-
-        self.DUT = DAO('')
-
-        self._revision = RTKRevision()
-        self._mission = RTKMission()
-        self._mission.revision_id = 1
-        self._phase = RTKMissionPhase()
-        self._phase.mission_id = 1
-        self._environment = RTKEnvironment()
-        self._environment.phase_id = 1
-
-    @attr(all=True, unit=True)
-    def test00_dao_create(self):
-        """
-        (TestDAO) __init__ should create a DAO class instance.
-        """
-
-        self.assertTrue(isinstance(self.DUT, DAO))
-        self.assertEqual(self.DUT.engine, None)
-        self.assertEqual(self.DUT.metadata, None)
-
-    @attr(all=True, unit=True)
-    def test01_dao_db_connect(self):
-        """
-        (TestDAO) db_connect should return False on success connecting to an SQLite database.
-        """
-
-        _database = 'sqlite:////tmp/TestDB.rtk'
-
-        self.assertFalse(self.DUT.db_connect(_database))
-
-    @attr(all=True, unit=False)
-    def test02_dao_db_create(self):
-        """
-        (TestDAO) db_create should return False on success.
-        """
-
-        self.assertFalse(self.DUT.db_create())
-
-    @attr(all=True, unit=True)
-    def test03a_dao_db_add(self):
-        """
-        (TestDAO) db_add should return a zero error code on success when adding a single record to the database.
-        """
-
-        (_error_code, _msg) = self.DUT.db_add(self._revision)
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         "SUCCESS: Adding an item to the RTK Program database.")
-
-    @attr(all=True, unit=True)
-    def test03b_dao_db_add_no_item(self):
-        """
-        (TestDAO) db_add should return a 1003 error code on failure.
-        """
-
-        (_error_code, _msg) = self.DUT.db_add(None)
-
-        self.assertEqual(_error_code, 1003)
-        self.assertEqual(_msg,
-                         "ERROR: Adding an item to the RTK Program database.")
-
-    @attr(all=True, unit=True)
-    def test04_dao_db_add_many(self):
-        """
-        (TestDAO) db_add should return a zero error code on success when adding multiple records to the database.
-        """
-
-        (_error_code, _msg) = self.DUT.db_add([self._mission, self._phase,
-                                               self._environment])
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         "SUCCESS: Adding an item to the RTK Program database.")
-
-    @attr(all=True, unit=True)
-    def test05_dao_db_update(self):
-        """
-        (TestDAO) db_update should return a zero error code on success.
-        """
-
-        self._revision = self.DUT.session.query(RTKRevision).filter(
-            RTKRevision.revision_id == 1).all()[0]
-        self._mission = self.DUT.session.query(RTKMission).filter(
-            RTKMission.revision_id == 1).all()[0]
-
-        self._revision.availability_logistics = 0.9959
-        self._revision.availability_mission = 0.9999
-        self._mission.description = 'Big mission'
-
-        (_error_code, _msg) = self.DUT.db_update()
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         "SUCCESS: Updating the RTK Program database.")
-
-    @attr(all=True, unit=True)
-    def test06a_dao_db_delete(self):
-        """
-        (TestDAO) db_delete should return a zer error code on success.
-        """
-
-        self._phase = self.DUT.session.query(RTKMissionPhase).filter(
-            RTKMissionPhase.mission_id == 1).all()[0]
-        (_error_code, _msg) = self.DUT.db_delete(self._phase)
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         "SUCCESS: Deleting an item from the RTK Program database.")
-
-    @attr(all=True, unit=True)
-    def test06b_dao_db_delete_no_item(self):
-        """
-        (TestDAO) db_delete should return a 1005 error code on failure.
-        """
-
-        (_error_code, _msg) = self.DUT.db_delete(None)
-
-        self.assertEqual(_error_code, 1005)
-        self.assertEqual(_msg,
-                         "ERROR: Deleting an item from the RTK Program database.")

@@ -1,10 +1,4 @@
 #!/usr/bin/env python
-"""
-####################
-Usage Profile Module
-####################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.usage.UsageProfile.py is part of The RTK Project
@@ -12,14 +6,23 @@ Usage Profile Module
 # All rights reserved.
 
 # Import modules for localization support.
+
+"""
+####################
+Usage Profile Module
+####################
+"""
+
 import gettext
 import locale
 
+from treelib import Node, Tree
+
 # Import other RTK modules.
 try:
-    import Configuration as _conf
+    import Configuration as Configuration
 except ImportError:
-    import rtk.Configuration as _conf
+    import rtk.Configuration as Configuration
 from Mission import Model as Mission
 from Phase import Model as Phase
 from Environment import Model as Environment
@@ -30,7 +33,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
-    locale.setlocale(locale.LC_ALL, _conf.LOCALE)
+    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
 except locale.Error:
     locale.setlocale(locale.LC_ALL, '')
 
@@ -39,406 +42,409 @@ _ = gettext.gettext
 
 class Model(object):
     """
-    The Usage Profile data model aggregates the Mission, Phase, and Environment
-    data models to produce an overall usage profile.  A Revision will consist
-    of one Usage Profile.  The attributes of a Usage Profile are:
+    Class for Usage Profile data model.  This model builds a Usage Profile from
+    the Mission, Phase, and Environment data models.  This is a hierarchical
+    relationship, such as:
 
-    :ivar dict dicMissions: Dictionary of the Missions associated with the
-                            Usage Profile.  Key is the Mission ID; value is a
-                            pointer to the instance of the Mission data model.
-    :ivar int revision_id: the ID of the Revision the Usage Profile is
-                           associated with.
+          Mission 1
+          |
+          |_Mission Phase 11
+          |   |
+          |   |_Environment 111
+          |   |_Environment 112
+          |   |_Environment 113
+          |
+          |_Mission Phase 12
+          |   |
+          |   |_Environment 121
+          |   |_Environment 122
+          |
+          |_Mission Phase 13
+              |
+              |_Environment 131
+              |_Environment 132
+
+    Attributes of the Usage Profile data model are:
+
+    :cvar int _MISSION: flow control variable equal to 0.
+    :cvar int _PHASE: flow control variable equal to 1.
+    :cvar int _ENVIRONMENT: flow control variable equal to 2.
+    :cvar Tree treUsageProfile: the Tree() containing the hierarchical Usage
+                                Profile.  Node ID is comprised of the Mission
+                                ID, Phase ID, and Environement ID; data is the
+                                instance of the Mission, Phase, or Environment
+                                data model object associated with the Node().
+
+    :ivar dao: the `:py:class:dao.DAO.DAO` that is connected to the RTK Program
+               database.
+    :ivar mission: the `:py:class:rtk.usage.Mission.Model` associated with this
+                   Usage Profile.
+    :ivar phase: the `:py:class:rtk.usage.Phase.Model` associated with this
+                 Usage Profile.
+    :ivar environment: the `:py:class:rtk.usage.Environment.Model` associated
+                       with this Usage Profile.
     """
 
-    def __init__(self, revision_id):
+    # Define private class scalar attributes.
+    _MISSION = 0
+    _PHASE = 1
+    _ENVIRONMENT = 2
+
+    # Define public class scalar attributes.
+    treUsageProfile = Tree()
+
+    def __init__(self):
         """
         Method to initialize a Usage Profile data model instance.
-
-        :param int revision_id: the Revision ID that the Usage Profile will be
-                                associated with.
         """
 
-        # Define private dictionary attributes.
+        # Initialize private dictionary attributes.
 
-        # Define private list attributes.
+        # Initialize private list attributes.
 
-        # Define private scalar attributes.
+        # Initialize private scalar attributes.
 
-        # Define public dictionary attributes.
-        self.dicMissions = {}
+        # Initialize public dictionary attributes.
 
-        # Define public list attributes.
+        # Initialize public list attributes.
 
-        # Define public scalar attributes.
-        self.revision_id = revision_id
+        # Initialize public scalar attributes.
+        self.dao = None
+        self.last_id = None
+
+        self.mission = Mission()
+        self.phase = Phase()
+        self.environment = Environment()
+
+        # Add the root to the Usage Profile Tree().  This is neccessary to
+        # to allow multiple missions for each Usage Profile (Revision) as
+        # there can only be one root node in a Tree().
+        try:
+            self.treUsageProfile.create_node(tag='Usage Profiles',
+                                             identifier=0, parent=None)
+        # TODO: Create exception class to capture here.
+        except:
+            pass
+
+    def retrieve_profile(self, dao, revision_id):
+        """
+        Method to retrieve and build the Usage Profile tree for Revision ID.
+
+        :param dao: the `:py:class:rtk.dao.DAO.DAO` object connected to the RTK
+                    Program database.
+        :param int revision_id: the Revision ID to retrieve the Usage Profile
+                                and build trees for.
+        :return: treUsageProfile; the Usage Profile Tree().
+        :rtype: Tree()
+        """
+
+        _phase_id = None
+
+        self.dao = dao
+
+        _root = self.treUsageProfile.root
+        for _node in self.treUsageProfile.children(_root):
+            self.treUsageProfile.remove_node(_node.identifier)
+
+        # Build the tree.  We concatenate the Mission ID and the Phase ID to
+        # create the Node() identifier for Mission Phases.  This prevents the
+        # likely case when the first Mission and Phase have the same ID (1) in
+        # the database from causing problems when building the tree.  Do the
+        # same for the environment by concatenating the Environment ID with the
+        # Mission ID and Phase ID.
+        _dic_missions = self.mission.retrieve_all(self.dao, revision_id)
+        for _mission in _dic_missions.values():
+            _mnode = self.treUsageProfile.create_node(
+                tag=_mission.description, identifier=_mission.mission_id,
+                parent=0, data=_mission)
+
+            if not isinstance(_mnode, Node):
+                _msg = "ERROR: Failed to create a Node() for Mission ID " \
+                       "{0:d}".format(_mission.mission_id)
+                Configuration.RTK_DEBUG_LOG.error(_msg)
+                break
+            else:
+                _dic_phases = self.phase.retrieve_all(self.dao,
+                                                      _mission.mission_id)
+                for _phase in _dic_phases.values():
+                    _phase_id = int(str(_mission.mission_id) +
+                                    str(_phase.phase_id))
+                    _pnode = self.treUsageProfile.create_node(
+                        tag=_phase.description, identifier=_phase_id,
+                        parent=_mission.mission_id, data=_phase)
+
+                    if not isinstance(_pnode, Node):
+                        _msg = "RTK ERROR: Failed to create a Node() for " \
+                               "Mission ID {0:d} and Phase ID {1:d}.".\
+                            format(_mission.mission_id, _phase.phase_id)
+                        Configuration.RTK_DEBUG_LOG.error(_msg)
+                        break
+                else:
+                    _dic_environments = self.environment.retrieve_all(
+                        self.dao, _phase.phase_id)
+                    for _environment in _dic_environments.values():
+                        _env_id = int(str(_mission.mission_id) +
+                                      str(_phase.phase_id) +
+                                      str(_environment.environment_id))
+                        # The parent must be the concatenated phase ID used in
+                        # the tree above, not the Phase ID attribute of the
+                        # RTKPhase object.
+                        _enode = self.treUsageProfile.create_node(
+                            tag=_environment.name, identifier=_env_id,
+                            parent=_phase_id, data=_environment)
+
+                        if not isinstance(_enode, Node):
+                            _msg = "RTK ERROR: Failed to create a Node() " \
+                                   "for Mission ID {0:d}, Phase ID {1:d}, " \
+                                   "and Environment ID {2:d}.".\
+                                format(_mission.mission_id, _phase.phase_id,
+                                       _environment.environment_id)
+                            Configuration.RTK_DEBUG_LOG.error(_msg)
+                            break
+
+        return self.treUsageProfile
+
+    def add_profile(self, pos, pid, cid):
+        """
+        Method to add a Mission, Mission Phase, or Environment into the Usage
+        Profile.
+
+        :param int pos: the position in the treUsageProfile to add the new
+                        item; 0 = Mission, 1 = Mission Phase, 2 = Environment.
+        :param int pid: the treUsageProfile identifier that will be the parent
+                        of the newly added item.
+        :param int cid: the Revision ID, Mission ID, or Phase ID the newly
+                        added item is associated with in the RTK Program
+                        database.
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
+        """
+
+        _nid = None
+        _item = None
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Adding a new item to the Usage Profile."
+
+        if pos == self._MISSION:
+            _item = self.mission.add_mission(cid)
+            _nid = _item.mission_id
+
+        elif pos == self._PHASE:
+            _item = self.phase.add_phase(cid)
+            _nid = int(str(pid) + str(_item.phase_id))
+
+        elif pos == self._ENVIRONMENT:
+            _item = self.environment.add_environment(cid)
+            _nid = int(str(pid) + str(_item.environment_id))
+
+        else:
+            _error_code = 3001
+            _msg = "RTK ERROR: Attempted to add an item to the Usage " \
+                   "Profile with an undefined indenture level.  Level " \
+                   "{0:d} was requested.  Must be one of 0 = Mission, " \
+                   "1 = Mission Phase, and 2 = Environment.".format(pos)
+
+        if _error_code == 0:
+            try:
+                self.treUsageProfile.create_node(tag='', identifier=_nid,
+                                                 parent=pid, data=_item)
+            # TODO: Create exception class to capture here.
+            except:
+                _error_code = 3002
+                _msg = "RTK ERROR: Creating a new node in the Usage Profile " \
+                       "Tree."
+
+        return _error_code, _msg
+
+    def delete_profile(self, pos, nid):
+        """
+        Method to remove an item (Mission, Mission Phase, Environment) and all
+        it's children from a Usage Profile.
+
+        :param int pos: the position in the treUsageProfile to add the new
+                        item; 0 = Mission, 1 = Mission Phase, 2 = Environment.
+        :param int nid: the Node() identifier and item ID (mission_id,
+                        phase_id, environment_id) to delete.
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Deleting an item from the Usage Profile."
+
+        if pos == self._MISSION:
+            self.mission.delete_mission(nid)
+        elif pos == self._PHASE:
+            self.phase.delete_phase(nid)
+        elif pos == self._ENVIRONMENT:
+            self.environment.delete_environment(nid)
+        else:
+            _error_code = 3003
+            _msg = "RTK ERROR: Attempted to delete an item from the Usage " \
+                   "Profile with an undefined indenture level.  Level " \
+                   "{0:d} was requested.  Must be one of 0 = Mission, " \
+                   "1 = Mission Phase, and 2 = Environment.".format(pos)
+
+        try:
+            self.treUsageProfile.remove_node(nid)
+        # TODO: Create exception class to capture here.
+        except:
+            _error_code = 3004
+            _msg = "RTK ERROR: Failed to delete Node {0:d} from the " \
+                   "Usage Profile.".format(nid)
+
+        return _error_code, _msg
+
+    def save_profile(self):
+        """
+        Method to save changes to the Usage Profile to the RTK Program
+        database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _error_code, _msg = self.dao.db_update()
+
+        return _error_code, _msg
 
 
 class UsageProfile(object):
     """
     The Usage Profile controller provides an interface between the Usage
     Profile data model and an RTK view model.  A single Usage Profile
-    controller can control one or more Usage Profile data models.
+    controller can control one or more Usage Profile data models.  Attributes
+    of the Usage Profile data controller are:
 
-    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` used to communicate with the
-                RTK Project database.
-    :ivar dict dicProfiles: Dictionary of the Usage Profile data models
-                            controlled.  Key is the Revision ID; value is a
-                            pointer to the instance of the Usage Profile data
-                            model.
+    :ivar usage_model: the `:py:class:rtk.usage.UsageProfile.Model`
+                       associated with the data controller instance.
     """
 
     def __init__(self):
         """
-        Method to initialize a Usage Profile controller instance.
+        Method to initialize a Usage Profile data controller instance.
         """
 
-        # Define private dictionary attributes.
+        # Initialize private dictionary attributes.
 
-        # Define private list attributes.
+        # Initialize private list attributes.
 
-        # Define private scalar attributes.
+        # Initialize private scalar attributes.
 
-        # Define public dictionary attributes.
-        self.dicProfiles = {}
+        # Initialize public dictionary attributes.
 
-        # Define public list attributes.
+        # Initialize public list attributes.
 
-        # Define public scalar attributes.
-        self.dao = None
+        # Initialize public scalar attributes.
+        self.usage_model = Model()
 
-    def request_profile(self, revision_id):
+    def request_usage_profile(self, dao, revision_id):
         """
-        Method to load the entire mission profile for a Revision.  Starting at
-        the Mission level, the steps to create the Usage Profile are:
+        Method to request the Usage Profile tree from the Usage Profile data
+        model.
 
-        #. Create an instance of the Usage Profile (Mission, Phase,
-           Environment) data model.
-        #. Add instance pointer to the Profile dictionary for the passed
-           Revision.
-        #. Retrieve the missions (phases, environments) from the RTK Project
-           database.
-        #. Create an instance of the data model.
-        #. Set the attributes of the data model instance from the returned
-           results.
-        #. Add instance pointer to the Mission (Phase, Environment)
-           dictionary.
+        :param dao: the `:py:class:rtk.dao.DAO.DAO` object connected to the RTK
+                    Program database.
+        :param int revision_id: the Revision ID to retrieve the Usage Profile
+                                and build trees for.
+        :return: the Usage Profile Tree().
+        :rtype: Tree()
+        """
 
-        :param int revision_id: the Revision ID that the Usage Profile will be
+        return self.usage_model.retrieve_profile(dao, revision_id)
+
+    def request_add_mission(self, revision_id):
+        """
+        Method to request a Mission be added to Revision ID.
+
+        :param int revision_id: the Revision ID this Mission will be
                                 associated with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _profile = Model(revision_id)
-        self.dicProfiles[revision_id] = _profile
+        return self.usage_model.add_profile(0, 0, revision_id)
 
-        _query = "SELECT * FROM tbl_missions \
-                  WHERE fld_revision_id={0:d} \
-                  ORDER BY fld_mission_id".format(revision_id)
-        (_results, _error_code, __) = self.dao.execute(_query)
-        try:
-            _n_missions = len(_results)
-        except TypeError:
-            _n_missions = 0
-
-        for i in range(_n_missions):
-            _mission = Mission()
-            _mission.set_attributes(_results[i])
-            _profile.dicMissions[_mission.mission_id] = _mission
-
-            _query = "SELECT * FROM tbl_mission_phase \
-                      WHERE fld_mission_id={0:d}".format(_mission.mission_id)
-            (_phases,
-             _error_code,
-             __) = self.dao.execute(_query, commit=False)
-            try:
-                _n_phases = len(_phases)
-            except TypeError:
-                _n_phases = 0
-
-            for i in range(_n_phases):
-                _phase = Phase()
-                _phase.set_attributes(_phases[i])
-                _mission.dicPhases[_phase.phase_id] = _phase
-
-                _query = "SELECT * FROM tbl_environments \
-                          WHERE fld_phase_id={0:d}".format(_phase.phase_id)
-                (_environments, _error_code, __) = self.dao.execute(_query)
-                try:
-                    _n_environments = len(_environments)
-                except TypeError:
-                    _n_environments = 0
-
-                for i in range(_n_environments):
-                    _environment = Environment()
-                    _environment.set_attributes(_environments[i])
-                    _phase.dicEnvironments[_environment.environment_id] = _environment
-
-        return False
-
-    def add_profile(self, revision_id):
+    def request_add_phase(self, pid, mission_id):
         """
-        Method to add a new Usage Profile to the dictionary of profiles managed
-        by this controller.
+        Method to request a Mission Phase be added to Mission ID.
 
-        :param int revision_id: the Revision ID to add the Usage Profile.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param int pid: the parent identifer in treUsageProfile for the new
+                        Mission Phase.
+        :param int mission_id: the Mission ID this Phase will be associated
+                               with.
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        self.request_profile(revision_id)
+        return self.usage_model.add_profile(1, pid, mission_id)
 
-        return False
-
-    def add_mission(self, revision_id):
+    def request_add_environment(self, pid, phase_id):
         """
-        Method to add a new Mission to the Usage Profile.
+        Method to request an Environment be added to Phase ID.
 
-        :param int revision_id: the Revision ID of the Usage Profile to add the
-                                new mission.
-        :return: (_results, _error_code, _last_id)
-        :rtype: tuple
+        :param int pid: the parent identifer in treUsageProfile for the new
+                        Environment.
+        :param int phase_id: the Phase ID this Environment will be associated
+                             with.
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _query = "INSERT INTO tbl_missions \
-                  (fld_revision_id, fld_mission_description) \
-                  VALUES ({0:d}, '{1:s}')".format(revision_id,
-                                                  "New Mission")
-        (_results,
-         _error_code,
-         _last_id) = self.dao.execute(_query, commit=True)
+        return self.usage_model.add_profile(2, pid, phase_id)
 
-        _mission = Mission()
-        _mission.set_attributes((revision_id, _last_id, 0.0, 0.0, '', ''))
-        _profile = self.dicProfiles[revision_id]
-        _profile.dicMissions[_last_id] = _mission
-
-        return(_results, _error_code, _last_id)
-
-    def delete_mission(self, revision_id, mission_id):
+    def request_delete_mission(self, mission_id):
         """
-        Method to delete a Mission from the Usage Profile.
+        Method to request Mission ID and it's children be deleted from the
+        Usage Profile.
 
-        :param int revision_id: the Revision ID the Mission is associated with.
         :param int mission_id: the Mission ID to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _query = "DELETE FROM tbl_missions \
-                  WHERE fld_mission_id={0:d}".format(mission_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
+        return self.usage_model.delete_profile(0, mission_id)
 
-        _profile = self.dicProfiles[revision_id]
-        _profile.dicMissions.pop(mission_id)
-
-        return(_results, _error_code)
-
-    def add_phase(self, revision_id, mission_id):
+    def request_delete_phase(self, phase_id):
         """
-        Method to add a new Phase to the Usage Profile.
+        Method to request Phase ID and it's children be deleted from the
+        Usage Profile.
 
-        :param int revision_id: the Revision ID of the Usage Profile to add the
-                                new Phase.
-        :param int mission_id: the Mission ID of the Mission to add the new
-                               Phase.
-        :return: (_results, _error_code, _last_id)
-        :rtype: tuple
-        """
-
-        _profile = self.dicProfiles[revision_id]
-        _mission = _profile.dicMissions[mission_id]
-
-        _query = "INSERT INTO tbl_mission_phase \
-                  (fld_revision_id, fld_mission_id, fld_phase_start, \
-                   fld_phase_end, fld_phase_name, \
-                   fld_phase_description) \
-                  VALUES ({0:d}, {1:d}, 0.0, 0.0, '', '')".format(revision_id,
-                                                                  mission_id)
-
-        (_results,
-         _error_code,
-         _last_id) = self.dao.execute(_query, commit=True)
-
-        _phase = Phase()
-        _phase.set_attributes((revision_id, mission_id, _last_id,
-                               0.0, 0.0, '', ''))
-        _mission.dicPhases[_phase.phase_id] = _phase
-
-        return(_results, _error_code, _last_id)
-
-    def delete_phase(self, revision_id, mission_id, phase_id):
-        """
-        Method to delete a Phase from the Usage Profile.
-
-        :param int revision_id: the Revision ID from which to delete.
-        :param int mission_id: the Mission ID from which to delete.
         :param int phase_id: the Phase ID to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _profile = self.dicProfiles[revision_id]
-        _mission = _profile.dicMissions[mission_id]
-        try:
-            _mission.dicPhases.pop(phase_id)
-        except KeyError:
-            return(True, 10)
+        return self.usage_model.delete_profile(1, phase_id)
 
-        _query = "DELETE FROM tbl_mission_phase \
-                  WHERE fld_phase_id={0:d}".format(phase_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        return(_results, _error_code)
-
-    def add_environment(self, revision_id, mission_id, phase_id):
+    def request_delete_environment(self, environment_id):
         """
-        Method to add an Environment to the Usage Profile.
+        Method to request Environment ID be deleted from the Usage Profile.
 
-        :param int revision_id: the Revision ID of the Usage Profile to add the
-                                new Environment.
-        :param int mission_id: the Mission ID of the Mission to add the new
-                               Environment.
-        :param int phase_id: the Phase ID of the Phase to add the new
-                             Environment.
-        :return: (_results, _error_code, _last_id)
-        :rtype: tuple
-        """
-
-        _profile = self.dicProfiles[revision_id]
-        _mission = _profile.dicMissions[mission_id]
-        _phase = _mission.dicPhases[phase_id]
-
-        _query = "INSERT INTO tbl_environments \
-                  (fld_revision_id, fld_mission_id, fld_phase_id, \
-                   fld_test_id, fld_condition_name, fld_units, fld_minimum, \
-                   fld_maximum, fld_mean, fld_variance) \
-                  VALUES ({0:d}, {1:d}, {2:d}, {3:d}, '{4:s}', '{5:s}', \
-                          {6:f}, {7:f}, {8:f}, {9:f})".format(revision_id,
-                                                              mission_id,
-                                                              phase_id, 0, '',
-                                                              '', 0.0, 0.0,
-                                                              0.0, 0.0)
-        (_results,
-         _error_code,
-         _last_id) = self.dao.execute(_query, commit=True)
-
-        _environment = Environment()
-        _environment.set_attributes((revision_id, mission_id, phase_id, 0,
-                                     _last_id, '', '', 0.0, 0.0, 0.0, 0.0))
-        _phase.dicEnvironments[_environment.environment_id] = _environment
-
-        return(_results, _error_code, _last_id)
-
-    def delete_environment(self, revision_id, mission_id, phase_id,
-                           environment_id):
-        """
-        Method to delete an Environment from the Usage Profile.
-
-        :param int revision_id: the Revision ID from which to delete.
-        :param int mission_id: the Mission ID from which to delete.
-        :param int phase_id: the Phase ID from which to delete.
         :param int environment_id: the Environment ID to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _profile = self.dicProfiles[revision_id]
-        _mission = _profile.dicMissions[mission_id]
-        _phase = _mission.dicPhases[phase_id]
-        try:
-            _phase.dicEnvironments.pop(environment_id)
-        except KeyError:
-            return(True, 10)
+        return self.usage_model.delete_profile(2, environment_id)
 
-        _query = "DELETE FROM tbl_environments \
-                  WHERE fld_condition_id={0:d}".format(environment_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        return(_results, _error_code)
-
-    def save_profile(self, revision_id):
+    def request_save_profile(self):
         """
-        Method to save the Usage Profile.  Wrapper for the _save_mission,
-        _save_phase, and _save_environment methods.
+        Method to request the Usage Profile be saved to the RTK Program
+        database.
 
-        :param int revision_id: the Revision ID of the Usage Profile to save.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _profile = self.dicProfiles[revision_id]
-
-        for _mission in _profile.dicMissions.values():
-            self._save_mission(_mission)
-
-            for _phase in _mission.dicPhases.values():
-                self._save_phase(_phase)
-
-                for _environment in _phase.dicEnvironments.values():
-                    self._save_environment(_environment)
-
-    def _save_mission(self, mission):
-        """
-        Method to save the Mission attributes to the RTK Project database.
-
-        :param mission: the :py:class:`rtk.usage.Mission.Model` to save.
-        :return: _error_code
-        :rtype: int
-        """
-
-        _query = "UPDATE tbl_missions \
-                  SET fld_mission_time={0:f}, fld_mission_units='{1:s}', \
-                      fld_mission_description='{2:s}' \
-                  WHERE fld_mission_id={3:d}".format(mission.time,
-                                                     mission.time_units,
-                                                     mission.description,
-                                                     mission.mission_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        return _error_code
-
-    def _save_phase(self, phase):
-        """
-        Method to save the Phase attributes to the RTK Project database.
-
-        :param phase: the :py:class:`rtk.usage.Phase.Model` to save.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _query = "UPDATE tbl_mission_phase \
-                  SET fld_phase_start={1:f}, fld_phase_end={2:f}, \
-                      fld_phase_name='{3:s}', fld_phase_description='{4:s}' \
-                  WHERE fld_phase_id={0:d}".format(phase.phase_id,
-                                                   phase.start_time,
-                                                   phase.end_time,
-                                                   phase.code,
-                                                   phase.description)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        return(_results, _error_code)
-
-    def _save_environment(self, environment):
-        """
-        Method to save the Environment attributes to the RTK Project database.
-
-        :param environment: the :py:class:`rtk.usage.Environment.Model` to
-                            save.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _query = "UPDATE tbl_environments \
-                  SET fld_condition_name='{1:s}', \
-                      fld_units='{2:s}', fld_minimum={3:f}, \
-                      fld_maximum={4:f}, fld_mean={5:f}, \
-                      fld_variance={6:f} \
-                  WHERE fld_condition_id={0:d}".format(
-                      environment.environment_id, environment.name,
-                      environment.units, environment.minimum,
-                      environment.maximum, environment.mean,
-                      environment.variance)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        return(_results, _error_code)
+        return self.usage_model.save_profile()
