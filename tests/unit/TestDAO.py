@@ -77,8 +77,19 @@ class Test00DAO(unittest.TestCase):
 
         self.assertFalse(self.DUT.db_connect(_database))
 
+    @attr(all=True, unit=True)
+    def test02a_dao_db_create_common(self):
+        """
+        (TestDAO) db_create_common should return False on success.
+        """
+
+        _database = 'sqlite:////tmp/_rtk_common_db.rtk'
+        self.DUT.db_connect(_database)
+
+        self.assertFalse(self.DUT.db_create_common(_database))
+
     @attr(all=True, unit=False)
-    def test02_dao_db_create(self):
+    def test02b_dao_db_create(self):
         """
         (TestDAO) db_create should return False on success.
         """

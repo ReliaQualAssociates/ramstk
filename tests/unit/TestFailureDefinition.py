@@ -1,15 +1,15 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Failure Definition module algorithms and
-models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.failure_definition.TestFailureDefinition.py is part of The RTK
 #       Project
 #
 # All rights reserved.
+
+"""
+This is the test class for testing Failure Definition module algorithms and
+models.
+"""
 
 import sys
 from os.path import dirname
@@ -18,8 +18,10 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao
+import Configuration as Configuration
+import Utilities as Utilities
 from failure_definition.FailureDefinition import Model, FailureDefinition
+from dao.DAO import DAO, RTKRevision, RTKFailureDefinition
 
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
@@ -36,78 +38,141 @@ class TestFailureDefinitionModel(unittest.TestCase):
 
     def setUp(self):
         """
-        (TestFailureDefinition) Method to setup the test fixture for the Failure Definition class.
+        (TestFailureDefinition): Method to setup the test fixture for the Failure Definition class.
         """
+
+        # Create a data access object and connect to a test database.
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+
+        _revision = RTKRevision()
+        self.dao.db_add(_revision)
+
+        _definition = RTKFailureDefinition()
+        _definition.revision_id = _revision.revision_id
+        _definition.definition = 'Test Failure Definition 1'
+        self.dao.db_add(_definition)
+
+        _definition = RTKFailureDefinition()
+        _definition.revision_id = _revision.revision_id
+        _definition.definition = 'Test Failure Definition 2'
+        self.dao.db_add(_definition)
 
         self.DUT = Model()
 
-        self._good_values = (0, 1, 'Test Definition')
-        self._bad_values = (0, 'Test Definition', 1)
+        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
+                                                          'DEBUG',
+                                                          '/tmp/rtk_debug.log')
+        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
+                                                         'INFO',
+                                                        '/tmp/rtk_user.log')
 
     @attr(all=True, unit=True)
-    def test_definition_create(self):
+    def test01_definition_create(self):
         """
-        (TestFailureDefinition) __init__ should return instance of a FailureDefition data model
+        (TestFailureDefinition): __init__ should return instance of a FailureDefition data model
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
 
-        self.assertEqual(self.DUT.revision_id, 0)
-        self.assertEqual(self.DUT.definition_id, 0)
-        self.assertEqual(self.DUT.definition, '')
+        self.assertEqual(self.DUT.last_id, None)
+        self.assertEqual(self.DUT.dao, None)
 
     @attr(all=True, unit=True)
-    def test_set_good_attributes(self):
+    def test02a_retrieve_all_definitions(self):
         """
-        (TestFailureDefinition) set_attributes should return 0 with good inputs
+        (TestFailureDefinition): retrieve_all should return an instance of RTKFailureDefinition on success
         """
 
-        _values = (0, 1, 'Definition')
+        _dic_definitions = self.DUT.retrieve_all(self.dao, 1)
 
-        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 0)
+        self.assertTrue(isinstance(_dic_definitions, dict))
+        self.assertTrue(isinstance(_dic_definitions[1], RTKFailureDefinition))
 
     @attr(all=True, unit=True)
-    def test_set_attributes_missing_index(self):
+    def test02a_retrieve_single_definition(self):
         """
-        (TestFailureDefinition) set_attributes should return 40 with missing input(s)
+        (TestFailureDefinition): retrieve should return an instance of the RTKFailureDefinition data model on success.
         """
 
-        _values = (0, 1)
+        self.DUT.retrieve_all(self.dao, 1)
 
-        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 40)
+        _definition = self.DUT.retrieve(1)
+
+        self.assertTrue(isinstance(_definition, RTKFailureDefinition))
+        self.assertEqual(_definition.revision_id, 1)
+        self.assertEqual(_definition.definition_id, 1)
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_type(self):
+    def test02b_retrieve_missing_definition(self):
         """
-        (TestFailureDefinition) set_attributes should return 10 with wrong data type
+        (TestFailureDefinition): retrieve should return None when passes a Definition ID that doesn't exist.
         """
 
-        _values = (0, None, 'Definition')
+        _definition = self.DUT.retrieve(100)
 
-        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 10)
+        self.assertEqual(_definition, None)
 
     @attr(all=True, unit=True)
-    def test_get_attributes(self):
+    def test03a_add_definition(self):
         """
-        (TestFailureDefinition) get_attributes should return good values
+        (TestFailureDefinition): add_definition should return an RTKFailureDefinition object on success.
         """
 
-        self.assertEqual(self.DUT.get_attributes(), (0, 0, ''))
+        self.DUT.retrieve_all(self.dao, 1)
+        _definition = self.DUT.add_definition(1)
+
+        self.assertTrue(isinstance(_definition, RTKFailureDefinition))
+        self.assertEqual(_definition.revision_id, 1)
 
     @attr(all=True, unit=True)
-    def test_sanity(self):
+    def test04a_delete_definition(self):
         """
-        (TestFailureDefinition) get_attributes(set_attributes(values)) == values
+        (TestFailureDefinition): delete_definition should return False on success.
         """
 
-        _values = (0, 1, 'Definition')
+        self.DUT.retrieve_all(self.dao, 1)
 
-        self.DUT.set_attributes(_values)
-        _result = self.DUT.get_attributes()
-        self.assertEqual(_result, _values)
+        self.assertFalse(self.DUT.delete_definition(2))
+
+    @attr(all=True, unit=True)
+    def test04b_delete_non_existent_definition_id(self):
+        """
+        (TestFailureDefinition): delete_definition should return True when passed a Definition ID that doesn't exist.
+        """
+
+        self.assertTrue(self.DUT.delete_definition(100))
+
+    @attr(all=True, unit=True)
+    def test_05a_save_definition(self):
+        """
+        (TestFailureDefinition): save_definition should return False on success.
+        """
+
+        self.DUT.retrieve_all(self.dao, 1)
+
+        _definition = self.DUT.dicDefinition[1]
+        _definition.definition = 'Definition to save'
+
+        self.assertFalse(self.DUT.save_definition(1))
+
+    @attr(all=True, unit=True)
+    def test_05b_save_non_existent_definition(self):
+        """
+        (TestFailureDefinition): save_definition should return True when passed a Definition ID that doesn't exist.
+        """
+
+        self.DUT.retrieve_all(self.dao, 1)
+
+        self.assertTrue(self.DUT.save_definition(100))
+
+    @attr(all=True, unit=True)
+    def test_06a_save_all_missions(self):
+        """
+        (TestFailureDefinition): save_all_definitions should return False on success.
+        """
+
+        self.assertFalse(self.DUT.save_all_definitions())
 
 
 class TestUsageProfileController(unittest.TestCase):
@@ -117,18 +182,37 @@ class TestUsageProfileController(unittest.TestCase):
 
     def setUp(self):
 
-        _database = '/tmp/tempdb.rtk'
-        self._dao = _dao(_database)
+        # Create a data access object and connect to a test database.
+        self.dao = DAO('')
+        self.dao.db_connect('sqlite:////tmp/TestDB.rtk')
+        self.dao.db_add(RTKFailureDefinition())
+        self.dao.db_add(RTKFailureDefinition())
 
         self.DUT = FailureDefinition()
-        self.DUT._dao = self._dao
+
+        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
+                                                          'DEBUG',
+                                                          '/tmp/rtk_debug.log')
+        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
+                                                         'INFO',
+                                                        '/tmp/rtk_user.log')
 
     @attr(all=True, unit=True)
-    def test_create_controller(self):
+    def test01_create_controller(self):
         """
-        (TestFailureDefinition) Test the creation of a Failure Definition data controller instance.
+        (TestFailureDefinition): Test the creation of a Failure Definition data controller instance.
         """
 
         self.assertTrue(isinstance(self.DUT, FailureDefinition))
+        self.assertTrue(isinstance(self.DUT.failure_model, Model))
 
-        self.assertEqual(self.DUT.dicDefinitions, {})
+    @attr(all=True, unit=True)
+    def test02a_request_failure_definitions(self):
+        """
+        (TestFailureDefinition): request_failure_definitions should return a dictionary on success
+        """
+
+        _dic_definitions = self.DUT.request_failure_definitions(self.dao, 1)
+
+        self.assertTrue(isinstance(_dic_definitions, dict))
+        self.assertTrue(isinstance(_dic_definitions[1], RTKFailureDefinition))

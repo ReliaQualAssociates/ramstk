@@ -6,7 +6,7 @@
 # All rights reserved.
 
 """
-The Data Acces Object (DAO) Package.
+The Data Access Object (DAO) Package.
 """
 
 from datetime import date, timedelta
@@ -23,9 +23,111 @@ from sqlalchemy.engine.url import URL
 
 # Import other RTK modules.
 try:
-    import Configuration
+    import Configuration as Configuration
 except ImportError:
-    import rtk.Configuration
+    import rtk.Configuration as Configuration
+try:
+    import Utilities as Utilities
+except ImportError:
+    import rtk.Utilities as Utilities
+
+try:
+    import RTKCommonDB
+except ImportError:
+    import dao.RTKCommonDB
+
+try:
+    from dao.RTKUser import RTKUser
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKUser"
+try:
+    from dao.RTKGroup import RTKGroup
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKGroup"
+try:
+    from dao.RTKEnviron import RTKEnviron
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKEnviron"
+try:
+    from dao.RTKModel import RTKModel
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKModel"
+try:
+    from dao.RTKType import RTKType
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKType"
+try:
+    from dao.RTKCategory import RTKCategory
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKCategory"
+try:
+    from dao.RTKSubCategory import RTKSubCategory
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKSubCategory"
+try:
+    from dao.RTKPhase import RTKPhase
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKPhase"
+try:
+    from dao.RTKDistribution import RTKDistribution
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKDistribution"
+try:
+    from dao.RTKManufacturer import RTKManufacturer
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKManufacturer"
+try:
+    from dao.RTKUnit import RTKUnit
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKUnit"
+try:
+    from dao.RTKMethod import RTKMethod
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKMethod"
+try:
+    from dao.RTKCriticality import RTKCriticality
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKCriticality"
+try:
+    from dao.RTKRPN import RTKRPN
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKRPN"
+try:
+    from dao.RTKLevel import RTKLevel
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKLevel"
+try:
+    from dao.RTKApplication import RTKApplication
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKApplication"
+try:
+    from dao.RTKHazards import RTKHazards
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKHazards"
+try:
+    from dao.RTKStakeholders import RTKStakeholders
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKStakeholders"
+try:
+    from dao.RTKStatus import RTKStatus
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKStatus"
+try:
+    from dao.RTKCondition import RTKCondition
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKCondition"
+try:
+    from dao.RTKFailureMode import RTKFailureMode
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKFailureMode"
+try:
+    from dao.RTKMeasurement import RTKMeasurement
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKMeasurement"
+try:
+    from dao.RTKLoadHistory import RTKLoadHistory
+except ImportError:
+    print "RTK ERROR: No module named dao.RTKLoadHistory"
 
 Base = declarative_base()
 
@@ -100,7 +202,6 @@ class DAO(object):
 
         self.model.connection.close()
 
-
     def db_connect(self, database):
         """
         Method to perform database connection using database settings from
@@ -120,6 +221,183 @@ class DAO(object):
 
         if not database_exists(database):
             self.db_create(database)
+
+        return False
+
+    def db_create_common(self, database):
+        """
+        Method to create a new RTK Program database.
+
+        :param str database: the absolute path to the database to create.
+        :return: False if successful or True if an error occurs.
+        :rtype: bool
+        """
+
+        create_database(database)
+
+        RTKUser.__table__.create(bind=self.engine)
+        RTKGroup.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.groups.keys():
+            _group = RTKGroup()
+            self.db_add(_group)
+            self.session.commit()
+            _group.set_attributes(RTKCommonDB.groups[_key])
+            self.session.commit()
+
+        RTKEnviron.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.environs.keys():
+            _environ = RTKEnviron()
+            self.db_add(_environ)
+            self.session.commit()
+            _environ.set_attributes(RTKCommonDB.environs[_key])
+            self.session.commit()
+
+        RTKModel.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.models.keys():
+            _model = RTKModel()
+            self.db_add(_model)
+            self.session.commit()
+            _model.set_attributes(RTKCommonDB.models[_key])
+            self.session.commit()
+
+        RTKType.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.types.keys():
+            _type = RTKType()
+            self.db_add(_type)
+            self.session.commit()
+            _type.set_attributes(RTKCommonDB.types[_key])
+            self.session.commit()
+
+        RTKCategory.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.categories.keys():
+            _category = RTKCategory()
+            self.db_add(_category)
+            self.session.commit()
+            _category.set_attributes(RTKCommonDB.categories[_key])
+            self.session.commit()
+
+        RTKSubCategory.__table__.create(bind=self.engine)
+        RTKFailureMode.__table__.create(bind=self.engine)
+
+        RTKPhase.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.phases.keys():
+            _phase = RTKPhase()
+            self.db_add(_phase)
+            self.session.commit()
+            _phase.set_attributes(RTKCommonDB.phases[_key])
+            self.session.commit()
+
+        RTKDistribution.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.distributions.keys():
+            _distribution = RTKDistribution()
+            self.db_add(_distribution)
+            self.session.commit()
+            _distribution.set_attributes(RTKCommonDB.distributions[_key])
+            self.session.commit()
+
+        RTKManufacturer.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.manufacturers.keys():
+            _manufacturer = RTKManufacturer()
+            self.db_add(_manufacturer)
+            self.session.commit()
+            _manufacturer.set_attributes(RTKCommonDB.manufacturers[_key])
+            self.session.commit()
+
+        RTKUnit.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.units.keys():
+            _unit = RTKUnit()
+            self.db_add(_unit)
+            self.session.commit()
+            _unit.set_attributes(RTKCommonDB.units[_key])
+            self.session.commit()
+
+        RTKMethod.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.methods.keys():
+            _method = RTKMethod()
+            self.db_add(_method)
+            self.session.commit()
+            _method.set_attributes(RTKCommonDB.methods[_key])
+            self.session.commit()
+
+        RTKCriticality.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.criticalitys.keys():
+            _criticality = RTKCriticality()
+            self.db_add(_criticality)
+            self.session.commit()
+            _criticality.set_attributes(RTKCommonDB.criticalitys[_key])
+            self.session.commit()
+
+        RTKRPN.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.rpns.keys():
+            _rpn = RTKRPN()
+            self.db_add(_rpn)
+            self.session.commit()
+            _rpn.set_attributes(RTKCommonDB.rpns[_key])
+            self.session.commit()
+
+        RTKLevel.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.levels.keys():
+            _level = RTKLevel()
+            self.db_add(_level)
+            self.session.commit()
+            _level.set_attributes(RTKCommonDB.levels[_key])
+            self.session.commit()
+
+        RTKApplication.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.applications.keys():
+            _application = RTKApplication()
+            self.db_add(_application)
+            self.session.commit()
+            _application.set_attributes(RTKCommonDB.applications[_key])
+            self.session.commit()
+
+        RTKHazards.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.hazards.keys():
+            _hazard = RTKHazards()
+            self.db_add(_hazard)
+            self.session.commit()
+            _hazard.set_attributes(RTKCommonDB.hazards[_key])
+            self.session.commit()
+
+        RTKStakeholders.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.stakeholders.keys():
+            _stakeholder = RTKStakeholders()
+            self.db_add(_stakeholder)
+            self.session.commit()
+            _stakeholder.set_attributes(RTKCommonDB.stakeholders[_key])
+            self.session.commit()
+
+        RTKStatus.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.statuses.keys():
+            _status = RTKStatus()
+            self.db_add(_status)
+            self.session.commit()
+            _status.set_attributes(RTKCommonDB.statuses[_key])
+            self.session.commit()
+
+        RTKCondition.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.conditions.keys():
+            _condition = RTKCondition()
+            self.db_add(_condition)
+            self.session.commit()
+            _condition.set_attributes(RTKCommonDB.conditions[_key])
+            self.session.commit()
+
+        RTKMeasurement.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.measurements.keys():
+            _measurement = RTKMeasurement()
+            self.db_add(_measurement)
+            self.session.commit()
+            _measurement.set_attributes(RTKCommonDB.measurements[_key])
+            self.session.commit()
+
+        RTKLoadHistory.__table__.create(bind=self.engine)
+        for _key in RTKCommonDB.historys.keys():
+            _history = RTKLoadHistory()
+            self.db_add(_history)
+            self.session.commit()
+            _history.set_attributes(RTKCommonDB.historys[_key])
+            self.session.commit()
 
         return False
 
@@ -247,6 +525,17 @@ class DAO(object):
 
         return _error_code, _msg
 
+    def db_query(self, query):
+        """
+        Method to exceute an SQL query against the connected database.
+
+        :param str query: the SQL query to execute
+        :return:
+        :rtype: str
+        """
+
+        return self.session.execute(query)
+
     def db_last_id(self):
         """
         Method to retrieve the value of the last ID column from a table in the
@@ -371,6 +660,58 @@ class RTKRevision(Base):
                    self.program_cost_sd)
 
         return _values
+
+    def set_attributes(self, attributes):
+        """
+        Method to set the current values of the Failure Definition data model
+        attributes.
+
+        :param tuple attributes: tuple containing the values to set.
+        :return: (_error_code, _msg)
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Updating RTKRevision {0:d} attributes.".\
+            format(self.revision_id)
+
+        try:
+            self.availability_logistics = float(attributes[0])
+            self.availability_mission = float(attributes[1])
+            self.cost = float(attributes[2])
+            self.cost_failure = float(attributes[3])
+            self.cost_hour = float(attributes[4])
+            self.hazard_rate_active = float(attributes[5])
+            self.hazard_rate_dormant = float(attributes[6])
+            self.hazard_rate_logistics = float(attributes[7])
+            self.hazard_rate_mission = float(attributes[8])
+            self.hazard_rate_software = float(attributes[9])
+            self.mmt = float(attributes[10])
+            self.mcmt = float(attributes[11])
+            self.mpmt = float(attributes[12])
+            self.mtbf_logistics = float(attributes[13])
+            self.mtbf_mission = float(attributes[14])
+            self.mttr = float(attributes[15])
+            self.name = str(attributes[16])
+            self.reliability_logistics = float(attributes[17])
+            self.reliability_mission = float(attributes[18])
+            self.remarks = str(attributes[19])
+            self.total_part_count = int(attributes[20])
+            self.revision_code = str(attributes[21])
+            self.program_time = float(attributes[22])
+            self.program_time_sd = float(attributes[23])
+            self.program_cost = float(attributes[24])
+            self.program_cost_sd = float(attributes[25])
+        except IndexError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Insufficient number of input values to " \
+                   "RTKRevision.set_attributes()."
+        except TypeError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Incorrect data type when converting one or " \
+                   "more RTKRevision attributes."
+
+        return _error_code, _msg
 
     def calculate_reliability(self, mission_time):
         """
@@ -505,12 +846,56 @@ class RTKMission(Base):
                          nullable=False)
     mission_id = Column('fld_mission_id', Integer, primary_key=True,
                         autoincrement=True, nullable=False)
-    description = Column('fld_description', BLOB, default='')
+    description = Column('fld_description', BLOB, default='Description')
     mission_time = Column('fld_mission_time', Float, default=0.0)
+    time_units = Column('fld_time_units', String(256), default='hours')
 
     # Define the relationships to other tables in the RTK Program database.
     revision = relationship('RTKRevision', back_populates='mission')
     phase = relationship('RTKMissionPhase', back_populates='mission')
+
+    def get_attributes(self):
+        """
+        Method to retrieve the current values of the RTKMission data model
+        attributes.
+
+        :return: (revision_id, mission_id, description, mission_time,
+                  time_units)
+        :rtype: tuple
+        """
+
+        _values = (self.revision_id, self.mission_id, self.description,
+                   self.mission_time, self.time_units)
+
+        return _values
+
+    def set_attributes(self, attributes):
+        """
+        Method to set the current values of the RTKMission data model
+        attributes.
+
+        :param tuple attributes: tuple containing the values to set.
+        :return:
+        """
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Updating RTKMission {0:d} attributes.".\
+            format(self.mission_id)
+
+        try:
+            self.description = str(attributes[0])
+            self.mission_time = float(attributes[1])
+            self.time_units = str(attributes[2])
+        except IndexError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Insufficient number of input values to " \
+                   "RTKMission.set_attributes()."
+        except TypeError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Incorrect data type when converting one or " \
+                   "more RTKMission attributes."
+
+        return _error_code, _msg
 
 
 class RTKMissionPhase(Base):
@@ -530,7 +915,7 @@ class RTKMissionPhase(Base):
                       autoincrement=True, nullable=False)
 
     description = Column('fld_description', BLOB, default='')
-    name = Column('fld_name', String(256), default='Phase Name')
+    name = Column('fld_name', String(256), default='')
     phase_start = Column('fld_phase_start', Float, default=0.0)
     phase_end = Column('fld_phase_end', Float, default=0.0)
 
@@ -538,6 +923,49 @@ class RTKMissionPhase(Base):
     mission = relationship('RTKMission', back_populates='phase')
     environment = relationship('RTKEnvironment', back_populates='phase',
                                cascade='delete')
+
+    def get_attributes(self):
+        """
+        Method to retrieve the current values of the Phase data model
+        attributes.
+
+        :return: value of instance attributes
+        :rtype: tuple
+        """
+
+        _values = (self.mission_id, self.phase_id, self.description, self.name,
+                   self.phase_start, self.phase_end)
+
+        return _values
+
+    def set_attributes(self, attributes):
+        """
+        Method to set the current values of the RTKMissionPhase data model
+        attributes.
+
+        :param tuple attributes: tuple containing the values to set.
+        :return:
+        """
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Updating RTKMissionPhase {0:d} attributes.".\
+            format(self.phase_id)
+
+        try:
+            self.description = str(attributes[0])
+            self.name = str(attributes[1])
+            self.phase_start = float(attributes[2])
+            self.phase_end = float(attributes[3])
+        except IndexError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Insufficient number of input values to " \
+                   "RTKMissionPhase.set_attributes()."
+        except TypeError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Incorrect data type when converting one or " \
+                   "more RTKMissionPhase attributes."
+
+        return _error_code, _msg
 
 
 class RTKEnvironment(Base):
@@ -553,8 +981,8 @@ class RTKEnvironment(Base):
                       ForeignKey('rtk_mission_phase.fld_phase_id'),
                       nullable=False)
     # test_id = Column('fld_test_id', Integer,
-    #                   ForeignKey('rtk_test.fld_test_id'),
-    #                   nullable=False)
+    #                  ForeignKey('rtk_test.fld_test_id'),
+    #                  nullable=False)
     environment_id = Column('fld_environment_id', Integer, primary_key=True,
                             autoincrement=True, nullable=False)
 
@@ -570,6 +998,57 @@ class RTKEnvironment(Base):
 
     # Define the relationships to other tables in the RTK Program database.
     phase = relationship('RTKMissionPhase', back_populates='environment')
+
+    def get_attributes(self):
+        """
+        Method to retrieve the current values of the RTKEnvironment data model
+        attributes.
+
+        :return: (phase_id, environment_id, name, units, minimum,
+                  maximum, mean, variance, ramp_rate, low_dwell_time,
+                  high_dwell_time)
+        :rtype: tuple
+        """
+
+        _values = (self.phase_id, self.environment_id, self.name, self.units,
+                   self.minimum, self.maximum, self.mean, self.variance,
+                   self.ramp_rate, self.low_dwell_time, self.high_dwell_time)
+
+        return _values
+
+    def set_attributes(self, attributes):
+        """
+        Method to set the current values of the RTKEnvironment data model
+        attributes.
+
+        :param tuple attributes: tuple containing the values to set.
+        :return:
+        """
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Updating RTKEnvironment {0:d} attributes.".\
+            format(self.environment_id)
+
+        try:
+            self.name = str(attributes[0])
+            self.units = str(attributes[1])
+            self.minimum = float(attributes[2])
+            self.maximum = float(attributes[3])
+            self.mean = float(attributes[4])
+            self.variance = float(attributes[5])
+            self.ramp_rate = float(attributes[6])
+            self.low_dwell_time = float(attributes[7])
+            self.high_dwell_time = float(attributes[8])
+        except IndexError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Insufficient number of input values to " \
+                   "RTKEnvironment.set_attributes()."
+        except TypeError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Incorrect data type when converting one or " \
+                   "more RTKEnvironment attributes."
+
+        return _error_code, _msg
 
 
 class RTKFailureDefinition(Base):
@@ -588,10 +1067,49 @@ class RTKFailureDefinition(Base):
     definition_id = Column('fld_definition_id', Integer, primary_key=True,
                            autoincrement=True, nullable=False)
 
-    definition = Column('fld_definition', BLOB, default='')
+    definition = Column('fld_definition', BLOB, default='Failure Definition')
 
     # Define the relationships to other tables in the RTK Program database.
     revision = relationship('RTKRevision', back_populates='failures')
+
+    def get_attributes(self):
+        """
+        Method to retrieve the current values of the Failure Definition data
+        model attributes.
+
+        :return: (revision_id, definition_id, definition)
+        :rtype: (int, int, str)
+        """
+
+        _values = (self.revision_id, self.definition_id, self.definition)
+
+        return _values
+
+    def set_attributes(self, attributes):
+        """
+        Method to set the current values of the Failure Definition data model
+        attributes.
+
+        :param tuple attributes: tuple containing the values to set.
+        :return:
+        """
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Updating RTKFailureDefinition {0:d} attributes.".\
+            format(self.definition_id)
+
+        try:
+            self.definition = str(attributes[0])
+        except IndexError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Insufficient number of input values to " \
+                   "RTKFailureDefinition.set_attributes()."
+        except TypeError as _err:
+            _error_code = Utilities.error_handler(_err.args)
+            _msg = "RTK ERROR: Incorrect data type when converting one or " \
+                   "more RTKFailureDefinition attributes."
+
+        return _error_code, _msg
 
 
 class RTKFunction(Base):

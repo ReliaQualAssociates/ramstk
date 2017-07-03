@@ -414,8 +414,8 @@ CREATE TABLE "tbl_criticality" (
     "fld_criticality_id" INTEGER NOT NULL,
     "fld_criticality_name" VARCHAR(256),
     "fld_criticality_cat" VARCHAR(218),
-    "fld_criticality_description" BLOB
-, "fld_criticality_value" INTEGER);
+    "fld_criticality_description" BLOB,
+    "fld_criticality_value" INTEGER);
 INSERT INTO "tbl_criticality" VALUES(1,'Catastrophic','I','Could result in death, permanent total disability, loss exceeding $1M, or irreversible severe environmental damage that violates law or regulation.',4);
 INSERT INTO "tbl_criticality" VALUES(2,'Critical','II','Could result in permanent partial disability, injuries or occupational illness that may result in hospitalization of at least three personnel, loss exceeding $200K but less than $1M, or reversible environmental damage causing a violation of law or regulation.',3);
 INSERT INTO "tbl_criticality" VALUES(3,'Marginal','III','Could result in injury or occupational illness resulting in one or more lost work days(s), loss exceeding $10K but less than $200K, or mitigatible environmental damage without violation of law or regulation where restoration activities can be accomplished.',2);
@@ -734,7 +734,6 @@ INSERT INTO "tbl_failure_probability" VALUES(2, 'Level C - Occasional', 3);
 INSERT INTO "tbl_failure_probability" VALUES(3, 'Level D - Remote', 2);
 INSERT INTO "tbl_failure_probability" VALUES(4, 'Level E - Extremely Unlikely', 1);
 
-DROP TABLE IF EXISTS "tbl_severity";
 DROP TABLE IF EXISTS "tbl_severity";
 CREATE TABLE "tbl_severity" (
     "fld_severity_id" INTEGER PRIMARY KEY AUTOINCREMENT,
