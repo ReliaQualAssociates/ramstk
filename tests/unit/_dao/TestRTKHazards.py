@@ -15,6 +15,9 @@ import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk")
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 import unittest
 from nose.plugins.attrib import attr
 
@@ -39,14 +42,17 @@ class TestRTKHazards(unittest.TestCase):
         Sets up the test fixture for the RTKHazard class.
         """
 
-        self.dao = DAO('')
-        self.dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
+        engine = create_engine('sqlite:////tmp/TestCommonDB.rtk', echo=False)
+        session = scoped_session(sessionmaker())
 
-        self.DUT = self.dao.session.query(RTKHazards).first()
+        session.remove()
+        session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+
+        self.DUT = session.query(RTKHazards).first()
         self.DUT.category = self.attributes[1]
         self.DUT.subcategory = self.attributes[2]
 
-        self.dao.db_update()
+        session.commit()
 
     @attr(all=True, unit=True)
     def test00_RTKHazards_create(self):

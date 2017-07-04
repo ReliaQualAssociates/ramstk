@@ -15,10 +15,12 @@ import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk")
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import scoped_session, sessionmaker
+
 import unittest
 from nose.plugins.attrib import attr
 
-from dao.DAO import DAO
 from dao.RTKPhase import RTKPhase
 
 __author__ = 'Andrew Rowland'
@@ -39,14 +41,17 @@ class TestRTKPhase(unittest.TestCase):
         Sets up the test fixture for the RTKPhase class.
         """
 
-        self.dao = DAO('')
-        self.dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
+        engine = create_engine('sqlite:////tmp/TestCommonDB.rtk', echo=False)
+        session = scoped_session(sessionmaker())
 
-        self.DUT = self.dao.session.query(RTKPhase).first()
+        session.remove()
+        session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+
+        self.DUT = session.query(RTKPhase).first()
         self.DUT.description = self.attributes[1]
         self.DUT.type = self.attributes[2]
 
-        self.dao.db_update()
+        session.commit()
 
     @attr(all=True, unit=True)
     def test00_RTKPhase_create(self):

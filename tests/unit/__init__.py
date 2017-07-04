@@ -15,11 +15,12 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
+from sqlalchemy_utils import create_database
 
 import Configuration as Configuration
 import Utilities as Utilities
-from dao.DAO import *
 
+# Import the RTK Common database table objects.
 from dao.RTKUser import RTKUser
 from dao.RTKGroup import RTKGroup
 from dao.RTKEnviron import RTKEnviron
@@ -44,6 +45,46 @@ from dao.RTKFailureMode import RTKFailureMode
 from dao.RTKMeasurement import RTKMeasurement
 from dao.RTKLoadHistory import RTKLoadHistory
 
+# Import the RTK Program database table objects.
+from dao.RTKAction import RTKAction
+from dao.RTKAllocation import RTKAllocation
+from dao.RTKCause import RTKCause
+from dao.RTKControl import RTKControl
+from dao.RTKDesignElectric import RTKDesignElectric
+from dao.RTKDesignMechanic import RTKDesignMechanic
+from dao.RTKEnvironment import RTKEnvironment
+from dao.RTKFailureDefinition import RTKFailureDefinition
+from dao.RTKFunction import RTKFunction
+from dao.RTKGrowthTest import RTKGrowthTest
+from dao.RTKHardware import RTKHardware
+from dao.RTKHazardAnalysis import RTKHazardAnalysis
+from dao.RTKIncident import RTKIncident
+from dao.RTKIncidentAction import RTKIncidentAction
+from dao.RTKIncidentDetail import RTKIncidentDetail
+from dao.RTKMatrix import RTKMatrix
+from dao.RTKMechanism import RTKMechanism
+from dao.RTKMilHdbkF import RTKMilHdbkF
+from dao.RTKMission import RTKMission
+from dao.RTKMissionPhase import RTKMissionPhase
+from dao.RTKMode import RTKMode
+from dao.RTKNSWC import RTKNSWC
+from dao.RTKOpLoad import RTKOpLoad
+from dao.RTKOpStress import RTKOpStress
+from dao.RTKReliability import RTKReliability
+from dao.RTKRequirement import RTKRequirement
+from dao.RTKRevision import RTKRevision
+from dao.RTKSimilarItem import RTKSimilarItem
+from dao.RTKSoftware import RTKSoftware
+from dao.RTKSoftwareDevelopment import RTKSoftwareDevelopment
+from dao.RTKSoftwareReview import RTKSoftwareReview
+from dao.RTKSoftwareTest import RTKSoftwareTest
+from dao.RTKStakeholder import RTKStakeholder
+from dao.RTKSurvival import RTKSurvival
+from dao.RTKSurvivalData import RTKSurvivalData
+from dao.RTKTest import RTKTest
+from dao.RTKTestMethod import RTKTestMethod
+from dao.RTKValidation import RTKValidation
+
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
@@ -52,64 +93,26 @@ __copyright__ = 'Copyright 2014 - 2016 Andrew "weibullguy" Rowland'
 
 def setUp():
 
+    # Clean up from previous runs.
     if os.path.isfile('/tmp/rtk_debug.log'):
         os.remove('/tmp/rtk_debug.log')
 
     if os.path.isfile('/tmp/rtk_user.log'):
         os.remove('/tmp/rtk_user.log')
 
-    engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
+    if os.path.isfile('/tmp/TestDB.rtk'):
+        os.remove('/tmp/TestDB.rtk')
 
-    # Create all the tables in the test program database.
-    RTKRevision.__table__.create(bind=engine)
-    RTKMission.__table__.create(bind=engine)
-    RTKMissionPhase.__table__.create(bind=engine)
-    RTKEnvironment.__table__.create(bind=engine)
-    RTKFailureDefinition.__table__.create(bind=engine)
-    RTKFunction.__table__.create(bind=engine)
-    RTKRequirement.__table__.create(bind=engine)
-    RTKStakeholderInput.__table__.create(bind=engine)
-    RTKMatrix.__table__.create(bind=engine)
-    RTKHardware.__table__.create(bind=engine)
-    RTKAllocation.__table__.create(bind=engine)
-    RTKHazard.__table__.create(bind=engine)
-    RTKSimilarItem.__table__.create(bind=engine)
-    RTKReliability.__table__.create(bind=engine)
-    RTKMilHdbkF.__table__.create(bind=engine)
-    RTKNSWC.__table__.create(bind=engine)
-    RTKDesignElectric.__table__.create(bind=engine)
-    RTKDesignMechanic.__table__.create(bind=engine)
-    RTKMode.__table__.create(bind=engine)
-    RTKMechanism.__table__.create(bind=engine)
-    RTKCause.__table__.create(bind=engine)
-    RTKControl.__table__.create(bind=engine)
-    RTKAction.__table__.create(bind=engine)
-    RTKOpLoad.__table__.create(bind=engine)
-    RTKOpStress.__table__.create(bind=engine)
-    RTKTestMethod.__table__.create(bind=engine)
-    RTKSoftware.__table__.create(bind=engine)
-    RTKSoftwareDevelopment.__table__.create(bind=engine)
-    RTKSRRSSR.__table__.create(bind=engine)
-    RTKPDR.__table__.create(bind=engine)
-    RTKCDR.__table__.create(bind=engine)
-    RTKTRR.__table__.create(bind=engine)
-    RTKSoftwareTest.__table__.create(bind=engine)
-    RTKValidation.__table__.create(bind=engine)
-    RTKIncident.__table__.create(bind=engine)
-    RTKIncidentDetail.__table__.create(bind=engine)
-    RTKIncidentAction.__table__.create(bind=engine)
-    RTKTest.__table__.create(bind=engine)
-    RTKGrowthTest.__table__.create(bind=engine)
-    RTKSurvival.__table__.create(bind=engine)
-    RTKSurvivalData.__table__.create(bind=engine)
+    if os.path.isfile('/tmp/TestCommonDB.rtk'):
+        os.remove('/tmp/TestCommonDB.rtk')
 
+    # Create and populate the RTK Common test database.
     engine = create_engine('sqlite:////tmp/TestCommonDB.rtk', echo=False)
     session = scoped_session(sessionmaker())
 
     session.remove()
     session.configure(bind=engine, autoflush=False, expire_on_commit=False)
 
-    # Create all the tables in the test common database.
     RTKUser.__table__.create(bind=engine)
     RTKGroup.__table__.create(bind=engine)
     RTKEnviron.__table__.create(bind=engine)
@@ -169,6 +172,59 @@ def setUp():
     _failuremode.category_id = _category.category_id
     _failuremode.subcategory_id = _subcategory.subcategory_id
     session.add(_failuremode)
+    session.commit()
+
+    # Create the RTK Program test database.
+    create_database('sqlite:////tmp/TestDB.rtk')
+
+    engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
+    session = scoped_session(sessionmaker())
+
+    session.remove()
+    session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+
+    # Create all the tables in the RTK Program test database.
+    RTKRevision.__table__.create(bind=engine)
+    RTKMission.__table__.create(bind=engine)
+    RTKMissionPhase.__table__.create(bind=engine)
+    RTKEnvironment.__table__.create(bind=engine)
+    RTKFailureDefinition.__table__.create(bind=engine)
+    RTKFunction.__table__.create(bind=engine)
+    RTKRequirement.__table__.create(bind=engine)
+    RTKStakeholder.__table__.create(bind=engine)
+    RTKMatrix.__table__.create(bind=engine)
+    RTKHardware.__table__.create(bind=engine)
+    RTKAllocation.__table__.create(bind=engine)
+    RTKHazardAnalysis.__table__.create(bind=engine)
+    RTKSimilarItem.__table__.create(bind=engine)
+    RTKReliability.__table__.create(bind=engine)
+    RTKMilHdbkF.__table__.create(bind=engine)
+    RTKNSWC.__table__.create(bind=engine)
+    RTKDesignElectric.__table__.create(bind=engine)
+    RTKDesignMechanic.__table__.create(bind=engine)
+    RTKMode.__table__.create(bind=engine)
+    RTKMechanism.__table__.create(bind=engine)
+    RTKCause.__table__.create(bind=engine)
+    RTKControl.__table__.create(bind=engine)
+    RTKAction.__table__.create(bind=engine)
+    RTKOpLoad.__table__.create(bind=engine)
+    RTKOpStress.__table__.create(bind=engine)
+    RTKTestMethod.__table__.create(bind=engine)
+    RTKSoftware.__table__.create(bind=engine)
+    RTKSoftwareDevelopment.__table__.create(bind=engine)
+    RTKSoftwareReview.__table__.create(bind=engine)
+    RTKSoftwareTest.__table__.create(bind=engine)
+    RTKValidation.__table__.create(bind=engine)
+    RTKIncident.__table__.create(bind=engine)
+    RTKIncidentDetail.__table__.create(bind=engine)
+    RTKIncidentAction.__table__.create(bind=engine)
+    RTKTest.__table__.create(bind=engine)
+    RTKGrowthTest.__table__.create(bind=engine)
+    RTKSurvival.__table__.create(bind=engine)
+    RTKSurvivalData.__table__.create(bind=engine)
+
+    _revision = RTKRevision()
+    session.add(_revision)
     session.commit()
 
     Configuration.RTK_HR_MULTIPLIER = 1.0
