@@ -73,61 +73,6 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.ttf = 0.0
         self.mode_type = 0
 
-    def set_attributes(self, values):
-        """
-        Method to set the Incident Component data model attributes.
-
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.incident_id = int(values[0])
-            self.component_id = int(values[1])
-            self.age_at_incident = float(values[2])
-            self.failure = values[3]
-            self.suspension = values[4]
-            self.cnd_nff = values[5]
-            self.occ_fault = values[6]
-            self.initial_installation = values[7]
-            self.interval_censored = values[8]
-            self.use_op_time = values[9]
-            self.use_cal_time = values[10]
-            self.ttf = float(values[11])
-            self.mode_type = int(values[12])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Incident Component data
-        model attributes.
-
-        :return: (incident_id, component_id, age_at_incident, failure,
-                  suspension, cnd_nff, occ_fault, initial_installation,
-                  interval_censored, use_op_time, use_cal_time, ttf, mode_type)
-        :rtype: tuple
-        """
-
-        _values = (self.incident_id, self.component_id, self.age_at_incident,
-                   self.failure, self.suspension, self.cnd_nff, self.occ_fault,
-                   self.initial_installation, self.interval_censored,
-                   self.use_op_time, self.use_cal_time, self.ttf,
-                   self.mode_type)
-
-        return _values
-
 
 class Component(object):
     """

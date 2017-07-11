@@ -87,59 +87,6 @@ class Model(object):
         self.producer_risk = 0.0
         self.test_termination_time = 0.0
 
-    def set_attributes(self, values):
-        """
-        Method to set the Testing data model attributes.
-
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.revision_id = int(values[0])
-            self.assembly_id = int(values[1])
-            self.test_id = int(values[2])
-            self.name = str(values[3])
-            self.description = str(values[4])
-            self.test_type = int(values[5])
-            self.attachment = str(values[6])
-            self.cum_time = float(values[7])
-            self.cum_failures = int(values[8])
-            self.confidence = float(values[9])
-            self.consumer_risk = float(values[10])
-            self.producer_risk = float(values[11])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Testing data model
-        attributes.
-
-        :return: (revision_id, assembly_id, test_id, name, description,
-                  attachment, test_type, cum_time, cum_failures, confidence,
-                  consumer_risk, producer_risk)
-        :rtype: tuple
-        """
-
-        _values = (self.revision_id, self.assembly_id, self.test_id,
-                   self.name, self.description, self.test_type,
-                   self.attachment, self.cum_time, self.cum_failures,
-                   self.confidence, self.consumer_risk, self.producer_risk)
-
-        return _values
-
 
 class Testing(object):
     """

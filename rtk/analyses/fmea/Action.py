@@ -69,65 +69,6 @@ class Model(object):
         self.action_closed = 0
         self.action_closed_date = 0
 
-    def set_attributes(self, values):
-        """
-        Method to set the Actopm data model attributes.
-
-        :param tuple values: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.mode_id = int(values[0])
-            self.mechanism_id = int(values[1])
-            self.cause_id = int(values[2])
-            self.action_id = int(values[3])
-            self.action_recommended = str(values[4])
-            self.action_category = int(values[5])
-            self.action_owner = int(values[6])
-            self.action_due_date = int(values[7])
-            self.action_status = int(values[8])
-            self.action_taken = str(values[9])
-            self.action_approved = int(values[10])
-            self.action_approved_date = int(values[11])
-            self.action_closed = int(values[12])
-            self.action_closed_date = int(values[13])
-        except IndexError as _err:
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-        except ValueError as _err:
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Wrong input data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Action data model
-        attributes.
-
-        :return: (mode_id, mechanism_id, cause_id, action_id,
-                  action_recommended, action_category, action_owner,
-                  action_due_date, action_status, action_taken,
-                  action_approved, action_approved_date, action_closed,
-                  action_closed_date)
-        :rtype: tuple
-        """
-
-        return(self.mode_id, self.mechanism_id, self.cause_id, self.action_id,
-               self.action_recommended, self.action_category,
-               self.action_owner, self.action_due_date, self.action_status,
-               self.action_taken, self.action_approved,
-               self.action_approved_date, self.action_closed,
-               self.action_closed_date)
-
 
 class Action(object):
     """

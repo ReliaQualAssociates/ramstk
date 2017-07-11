@@ -19,7 +19,7 @@ try:
 except ImportError:
     import rtk.Configuration as Configuration   # pylint: disable=E0401
     import rtk.Utilities as Utilities           # pylint: disable=E0401
-    from rtk.dao.DAO import RTKMissionPhase     # pylint: disable=E0401
+    from rtk.dao.RTKMissionPhase import RTKMissionPhase     # pylint: disable=E0401
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'

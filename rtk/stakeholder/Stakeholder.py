@@ -93,69 +93,6 @@ class Model(object):
         self.overall_weight = 0.0
         self.requirement = ''
 
-    def set_attributes(self, values):
-        """
-        Method to set the Stakeholder data model attributes.
-
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.revision_id = int(values[0])
-            self.input_id = int(values[1])
-            self.stakeholder = str(values[2])
-            self.description = str(values[3])
-            self.group = str(values[4])
-            self.priority = int(values[5])
-            self.customer_rank = int(values[6])
-            self.planned_rank = int(values[7])
-            self.improvement = float(values[8])
-            self.overall_weight = float(values[9])
-            self.requirement = str(values[10])
-            self.lst_user_floats[0] = float(values[11])
-            self.lst_user_floats[1] = float(values[12])
-            self.lst_user_floats[2] = float(values[13])
-            self.lst_user_floats[3] = float(values[14])
-            self.lst_user_floats[4] = float(values[15])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Stakeholder data model
-        attributes.
-
-
-        :return: (revision_id, input_id, stakeholder, description, group,
-                  priority, customer_rank, planned_rank, improvement,
-                  overall_weight, requirement, lst_user_floats[0],
-                  lst_user_floats[1], lst_user_floats[2], lst_user_floats[3],
-                  lst_user_floats[4])
-        :rtype: tuple
-        """
-
-        _values = (self.revision_id, self.input_id, self.stakeholder,
-                   self.description, self.group, self.priority,
-                   self.customer_rank, self.planned_rank, self.improvement,
-                   self.overall_weight, self.requirement,
-                   self.lst_user_floats[0], self.lst_user_floats[1],
-                   self.lst_user_floats[2], self.lst_user_floats[3],
-                   self.lst_user_floats[4])
-
-        return _values
-
     def calculate_weight(self):
         """
         Method to calculate the improvement factor and overall weighting of a

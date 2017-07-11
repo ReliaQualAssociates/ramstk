@@ -105,67 +105,6 @@ class Model(object):
         self.validated_date = 719163
         self.parent_id = -1
 
-    def set_attributes(self, values):
-        """
-        Method to set the Requirement data model attributes.
-
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.revision_id = int(values[0])
-            self.requirement_id = int(values[1])
-            self.description = str(values[2])
-            self.requirement_code = str(values[3])
-            self.requirement_type = str(values[4])
-            self.priority = int(values[5])
-            self.specification = str(values[6])
-            self.page_number = str(values[7])
-            self.figure_number = str(values[8])
-            self.derived = int(values[9])
-            self.owner = str(values[10])
-            self.validated = int(values[11])
-            self.validated_date = int(values[12])
-            self.parent_id = int(values[13])
-            self.lst_clear = self.unpack_values(values[14])
-            self.lst_complete = self.unpack_values(values[15])
-            self.lst_consistent = self.unpack_values(values[16])
-            self.lst_verifiable = self.unpack_values(values[17])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Requirement data model
-        attributes.
-
-        :return: (revsion_id, requirement_id, description, requirement_code,
-                  requirement_type, priority, specification, page_number,
-                  figure_number, derived, owner, validated, validated_date,
-                  parent_id)
-        :rtype: tuple
-        """
-
-        _values = (self.revision_id, self.requirement_id, self.description,
-                   self.requirement_code, self.requirement_type, self.priority,
-                   self.specification, self.page_number, self.figure_number,
-                   self.derived, self.owner, self.validated,
-                   self.validated_date, self.parent_id)
-
-        return _values
-
     def pack_values(self, lstvalues):       # pylint: disable=R0201
         """
         Method to pack the clear, complete, consistent, and verifiable answers

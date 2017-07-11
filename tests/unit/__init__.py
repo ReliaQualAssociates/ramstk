@@ -227,6 +227,172 @@ def setUp():
     session.add(_revision)
     session.commit()
 
+    # Create tables that have Revision ID as a Foreign Key.
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    session.add(_matrix)
+
+    _mission = RTKMission()
+    _mission.revision_id = _revision.revision_id
+    session.add(_mission)
+
+    _failure_definition = RTKFailureDefinition()
+    _failure_definition.revision_id = _revision.revision_id
+    session.add(_failure_definition)
+
+    _function = RTKFunction()
+    _function.revision_id = _revision.revision_id
+    session.add(_function)
+
+    _requirement = RTKRequirement()
+    _requirement.revision_id = _revision.revision_id
+    session.add(_requirement)
+
+    _stakeholder = RTKStakeholder()
+    _stakeholder.revision_id = _revision.revision_id
+    session.add(_stakeholder)
+
+    _hardware = RTKHardware()
+    _hardware.revision_id = _revision.revision_id
+    session.add(_hardware)
+
+    _incident = RTKIncident()
+    _incident.revision_id = _revision.revision_id
+    session.add(_incident)
+
+    _software = RTKSoftware()
+    _software.revision_id = _revision.revision_id
+    session.add(_software)
+
+    _test = RTKTest()
+    _test.revision_id = _revision.revision_id
+    session.add(_test)
+
+    _survival = RTKSurvival()
+    _survival.revision_id = _revision.revision_id
+    session.add(_survival)
+
+    _validation = RTKValidation()
+    _validation.revision_id = _revision.revision_id
+    session.add(_validation)
+
+    session.commit()
+
+    # Create tables that have Hardware ID as a Foreign Key.
+    _allocation = RTKAllocation()
+    _allocation.hardware_id = _hardware.hardware_id
+    session.add(_allocation)
+
+    _hazard_analysis = RTKHazardAnalysis()
+    _hazard_analysis.hardware_id = _hardware.hardware_id
+    session.add(_hazard_analysis)
+
+    _similar_item = RTKSimilarItem()
+    _similar_item.hardware_id = _hardware.hardware_id
+    session.add(_similar_item)
+
+    _mil_hdbk_f = RTKMilHdbkF()
+    _mil_hdbk_f.hardware_id = _hardware.hardware_id
+    session.add(_mil_hdbk_f)
+
+    _nswc = RTKNSWC()
+    _nswc.hardware_id = _hardware.hardware_id
+    session.add(_nswc)
+
+    _design_electric = RTKDesignElectric()
+    _design_electric.hardware_id = _hardware.hardware_id
+    session.add(_design_electric)
+
+    _design_mechanic = RTKDesignMechanic()
+    _design_mechanic.hardware_id = _hardware.hardware_id
+    session.add(_design_mechanic)
+
+    _reliability = RTKReliability()
+    _reliability.hardware_id = _hardware.hardware_id
+    session.add(_reliability)
+
+    _mode = RTKMode()
+    _mode.function_id = _function.function_id
+    _mode.hardware_id = _hardware.hardware_id
+    session.add(_mode)
+    session.commit()
+
+    # Create tables that have other than Revision ID or Hardware ID as a
+    # Foreign Key or have o Foreign Key.
+    _phase = RTKMissionPhase()
+    _phase.mission_id = _mission.mission_id
+    session.add(_phase)
+    session.commit()
+
+    _environment = RTKEnvironment()
+    _environment.phase_id = _phase.phase_id
+    session.add(_environment)
+    session.commit()
+
+    _mechanism = RTKMechanism()
+    _mechanism.mode_id = _mode.mode_id
+    session.add(_mechanism)
+    session.commit()
+
+    _cause = RTKCause()
+    _cause.mechanism_id = _mechanism.mechanism_id
+    session.add(_cause)
+    session.commit()
+
+    _control = RTKControl()
+    _control.cause_id = _cause.cause_id
+    session.add(_control)
+
+    _action = RTKAction()
+    _action.cause_id = _cause.cause_id
+    session.add(_action)
+
+    _op_load = RTKOpLoad()
+    _op_load.mechanism_id = _mechanism.mechanism_id
+    session.add(_op_load)
+
+    _software_development = RTKSoftwareDevelopment()
+    _software_development.software_id = _software.software_id
+    session.add(_software_development)
+
+    _software_review = RTKSoftwareReview()
+    _software_review.software_id = _software.software_id
+    session.add(_software_review)
+
+    _software_test = RTKSoftwareTest()
+    _software_test.software_id = _software.software_id
+    session.add(_software_test)
+
+    _incident_action = RTKIncidentAction()
+    _incident_action.incident_id = _incident.incident_id
+    session.add(_incident_action)
+
+    _incident_detail = RTKIncidentDetail()
+    _incident_detail.incident_id = _incident.incident_id
+    session.add(_incident_detail)
+
+    _growth_test = RTKGrowthTest()
+    _growth_test.test_id = _test.test_id
+    session.add(_growth_test)
+
+    _survival_data = RTKSurvivalData()
+    _survival_data.survival_id = _survival.survival_id
+    session.add(_survival_data)
+
+    session.commit()
+
+    _op_stress = RTKOpStress()
+    _op_stress.load_id = _op_load.load_id
+    session.add(_op_stress)
+
+    session.commit()
+
+    _test_method = RTKTestMethod()
+    _test_method.stress_id = _op_stress.stress_id
+    session.add(_test_method)
+
+    session.commit()
+
     Configuration.RTK_HR_MULTIPLIER = 1.0
     Configuration.RTK_DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
@@ -237,10 +403,10 @@ def setUp():
 
 def tearDown():
 
-    if os.path.isfile('/tmp/TestDB.rtk'):
-        os.remove('/tmp/TestDB.rtk')
+    #if os.path.isfile('/tmp/TestDB.rtk'):
+    #    os.remove('/tmp/TestDB.rtk')
 
-    if os.path.isfile('/tmp/TestCommonDB.rtk'):
-        os.remove('/tmp/TestCommonDB.rtk')
+    #if os.path.isfile('/tmp/TestCommonDB.rtk'):
+    #    os.remove('/tmp/TestCommonDB.rtk')
 
-    #pass
+    pass

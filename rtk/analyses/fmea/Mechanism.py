@@ -103,58 +103,6 @@ class Model(object):
         self.rpn_new = 1000
         self.include_pof = 0
 
-    def set_attributes(self, values):
-        """
-        Method to set the Mechanism data model attributes.
-
-        :param tuple values: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.mode_id = int(values[0])
-            self.mechanism_id = int(values[1])
-            self.description = str(values[2])
-            self.rpn_occurrence = int(values[3])
-            self.rpn_detection = int(values[4])
-            self.rpn = int(values[5])
-            self.rpn_occurrence_new = int(values[6])
-            self.rpn_detection_new = int(values[7])
-            self.rpn_new = int(values[8])
-            self.include_pof = int(values[9])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-        except ValueError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Wrong input data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Mechanism data model
-        attributes.
-
-        :return: (self.mode_id, self.mechanism_id, self.description,
-                  self.rpn_occurrence, self.rpn_detection, self.rpn,
-                  self.rpn_occurrence_new, self.rpn_detection_new,
-                  self.rpn_new, self.include_pof)
-        :rtype: tuple
-        """
-
-        return(self.mode_id, self.mechanism_id, self.description,
-               self.rpn_occurrence, self.rpn_detection, self.rpn,
-               self.rpn_occurrence_new, self.rpn_detection_new, self.rpn_new,
-               self.include_pof)
-
     def calculate(self, severity, severity_new):
         """
         Method to calculate the Risk Priority Number (RPN) for the Mechanism.

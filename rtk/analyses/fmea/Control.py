@@ -53,50 +53,6 @@ class Model(object):
         self.description = ''
         self.control_type = 0
 
-    def set_attributes(self, values):
-        """
-        Method to set the Control data model attributes.
-
-        :param tuple values: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.mode_id = int(values[0])
-            self.mechanism_id = int(values[1])
-            self.cause_id = int(values[2])
-            self.control_id = int(values[3])
-            self.description = str(values[4])
-            self.control_type = int(values[5])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-        except ValueError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Wrong input data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Control data model
-        attributes.
-
-        :return: (self.mode_id, self.mechanism_id, self.cause_id,
-                  self.control_id, self.description, self.control_type)
-        :rtype: tuple
-        """
-
-        return(self.mode_id, self.mechanism_id, self.cause_id, self.control_id,
-               self.description, self.control_type)
-
 
 class Control(object):
     """

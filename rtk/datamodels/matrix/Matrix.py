@@ -110,53 +110,6 @@ class Model(object):
         self.n_row = 1
         self.n_col = 1
 
-    def set_attributes(self, values):
-        """
-        Method to set the Matrix data model attributes.
-
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.revision_id = int(values[0])
-            self.matrix_id = int(values[1])
-            self.matrix_type = int(values[2])
-            self.n_row = int(values[3])
-            self.n_col = int(values[4])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Matrix Model - Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Matrix Model - Converting one or more inputs " \
-                   "to the correct data type."
-        except ValueError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Matrix Model - Converting one or more inputs " \
-                   "to the correct data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Matrix data model
-        attributes.
-
-        :return: (revision_id, matrix_id, matrix_type, n_row, n_col)
-        :rtype: tuple
-        """
-
-        _values = (self.revision_id, self.matrix_id, self.matrix_type,
-                   self.n_row, self.n_col)
-
-        return _values
-
 
 class Matrix(object):
     """

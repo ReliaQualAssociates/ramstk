@@ -1,20 +1,25 @@
 #!/usr/bin/env python
-"""
-#########################
-Failure Definition Module
-#########################
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.failure_definition.FailureDefinition.py is part of The RTK Project
 #
 # All rights reserved.
 
+"""
+#########################
+Failure Definition Module
+#########################
+"""
+
+# Import other RTK modules.
 try:
-    import Utilities
+    import Configuration as Configuration
+    import Utilities as Utilities
+    from dao.DAO import RTKFailureDefinition
 except ImportError:
-    import rtk.Utilities as Utilities
+    import rtk.Configuration as Configuration       # pylint: disable=E0401
+    import rtk.Utilities as Utilities               # pylint: disable=E0401
+    from rtk.dao.DAO import RTKFailureDefinition    # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -28,80 +33,24 @@ class Model(object):
     failure definition.  A Revision will contain zero or more definitions.  The
     attributes of a Failure Definition are:
 
-    :ivar revision_id: the ID of the Revision the definition is associated
-                       with.
-    :ivar definition_id: the ID of the Failure Definition.
-    :ivar definition: the definition.
+    :cvar dict dicDefinition: dictionary containing all the
+                              RTKFailureDefintion models that are part of the
+                              Failure Definition tree.  Key is the Definition
+                              ID; value is a pointer to the instance of the
+                              RTKFailureDefinition model.
+
+    :ivar int last_id: the last Failure Definition ID used in the RTK Program
+                       database.
+    :ivar dao: the `:py:class:rtk.dao.DAO` object used to communicate with the
+               RTK Program database.
     """
+
+    # Define public class dictionary attributes.
+    dicDefinition = {}
 
     def __init__(self):
         """
         Method to initialize a Failure Definition data model instance.
-        """
-
-        # Set public scalar attribute default values.
-        self.revision_id = 0
-        self.definition_id = 0
-        self.definition = ''
-
-    def set_attributes(self, values):
-        """
-        Method to set the Failure Definition data model attributes.
-
-        :param tuple values: values to assign to the attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.revision_id = int(values[0])
-            self.definition_id = int(values[1])
-            self.definition = str(values[2])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-        except ValueError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Wrong input data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Failure Definition data
-        model attributes.
-
-        :return: values; the values of the attributes.
-        :rtype: tuple
-        """
-
-        return(self.revision_id, self.definition_id, self.definition)
-
-
-class FailureDefinition(object):
-    """
-    The Failure Definition data controller provides an interface between the
-    Failure Definition data model and an RTK view model.  A single Failure
-    Definition data controller can manage one or more Failure Definition data
-    models.
-
-    :ivar _dao: default value: None
-
-    :ivar dicDefinitions: Dictionary of the Failure Definition data models
-    managed by this data controller.  Key is the Revision ID; value is a list
-    of pointers to the Failure Definition data model instances for the
-    Revision.
-    """
-
-    def __init__(self):
-        """
-        Initialize a Failure Definition data controller instance.
         """
 
         # Initialize private dictionary attributes.
@@ -111,106 +60,272 @@ class FailureDefinition(object):
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dicDefinitions = {}
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
         self.dao = None
+        self.last_id = None
 
-    def request_definitions(self, revision_id):
+    def retrieve(self, definition_id):
         """
-        Method to load all of the failure definitions for a Revision.
+        Method to retrieve the instance of the RTKFailureDefinition data model
+        for the Definition ID passed.
 
-        :param int revision_id: the Revision ID that the Failure Definition
-                                will be associated with.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int definition_id: the ID Of the RTKFailureDefinition to
+                                  retrieve.
+        :return: the instance of the RTKFailureDefinition class that was
+                 requested or None if the requested Definition ID does not
+                 exist.
+        :rtype: :py:class:`rtk.dao.DAO.RTKFailureDefinition`
         """
-
-        _query = "SELECT * FROM tbl_failure_definitions \
-                  WHERE fld_revision_id={0:d}".format(revision_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=None)
 
         try:
-            _n_definitions = len(_results)
-        except TypeError:
-            _n_definitions = 0
+            _definition = self.dicDefinition[definition_id]
+        except KeyError:
+            _definition = None
 
-        # Create a list of Failure Definition data models for the Revision.
-        _temp = {}
-        for i in range(_n_definitions):
-            _definition = Model()
-            _definition.set_attributes(_results[i])
-            _temp[_definition.definition_id] = _definition
+        return _definition
 
-        self.dicDefinitions[revision_id] = _temp
+    def retrieve_all(self, dao, revision_id):
+        """
+        Method to retrieve all the RTKMissions from the RTK Program database.
 
-        return(_results, _error_code)
+        :param dao: the `:py:class:dao.DAO.DAO` instance connected to the RTK
+                    Program database.
+        :param int revision_id: the ID of the Revision to retrieve the Failure
+                                definitions.
+        :return: dicDefinition; the dictionary of RTKFailureDefinition data
+                 models that comprise the Failure Definition tree.
+        :rtype: dict
+        """
+
+        self.dao = dao
+
+        # Clear the Failure Defintion dictionary of previous Revision's
+        # Failure Defintions.
+        self.dicDefinition = {}
+        for _definition in self.dao.session.query(RTKFailureDefinition).\
+                filter(RTKFailureDefinition.revision_id == revision_id).all():
+            self.dicDefinition[_definition.definition_id] = _definition
+
+        return self.dicDefinition
 
     def add_definition(self, revision_id):
         """
-        Adds a new Failure Definition to a Revision.
+        Method to add a Failure Definition to the RTK Program database for
+        Revision ID.
 
-        :param gtk.Button __button: the gtk.Button() that called this method.
-        :param int revision_id: the Revision ID to add the new Failure
-                                Definition.
-        :return: (_results, _error_code, _last_id)
-        :rtype: tuple
+        :param int revision_id: the Revision ID to add the Failure Definition
+                                to.
+        :return: _definition
+        :rtype: `:py:test:rtk.dao.DAO.RTKFailureDefinition`
         """
 
-        _query = "INSERT INTO tbl_failure_definitions \
-                              (fld_revision_id, fld_definition) \
-                  VALUES ({0:d}, '')".format(revision_id)
-        (_results,
-         _error_code,
-         _last_id) = self.dao.execute(_query, commit=True)
+        _definition = RTKFailureDefinition()
+        _definition.revision_id = revision_id
 
-        _definition = Model()
-        _definition.set_attributes((revision_id, _last_id, ''))
-        self.dicDefinitions[revision_id][_last_id] = _definition
+        (_error_code, _msg) = self.dao.db_add(_definition)
 
-        return(_results, _error_code, _last_id)
+        # If the add was successful add the new RTKFailureDefinition data model
+        # instance to dicDefinition and log the success message to the user
+        # log.  Otherwise, update the error message and write it to the error
+        # log.
+        if _error_code == 0:
+            self.last_id = _definition.definition_id
+            self.dicDefinition[_definition.definition_id] = _definition
+            Configuration.RTK_USER_LOG.info(_msg)
+        else:
+            _msg = _msg + "  Failed to add a new Failure Definition to the " \
+                          "RTK Program database."
+            Configuration.RTK_DEBUG_LOG.error(_msg)
+            _definition = None
 
-    def delete_definition(self, revision_id, definition_id):
+        return _definition
+
+    def delete_definition(self, definition_id):
         """
-        Deletes a Failure Definition from the RTK Project.
+        Method to remove the Failure Definition associated with Definition ID.
 
-        :param int revision_id: the Revision ID from which to delete.
+        :param int definition_id: the ID of the Failure Definition to be
+                                  removed.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        try:
+            _definition = self.dicDefinition[definition_id]
+
+            (_error_code, _msg) = self.dao.db_delete(_definition)
+
+            if _error_code == 0:
+                self.dicDefinition.pop(definition_id)
+                Configuration.RTK_USER_LOG.info(_msg)
+            else:
+                try:
+                    _msg = _msg + "  Failed to delete Failure Definition " \
+                                  "ID {0:d} from the RTK Program "\
+                                  "database.".format(definition_id)
+                except ValueError:      # Mission ID is None.
+                    _msg = _msg + "  Failed to delete Failure Definition " \
+                            "ID {0:s} from the RTK Program " \
+                            "database.".format(definition_id)
+                Configuration.RTK_DEBUG_LOG.error(_msg)
+                _return = True
+        except KeyError:
+            try:
+                _msg = "Attempted to delete non-existent Failure Definition " \
+                       "ID {0:d}.".format(definition_id)
+            except ValueError:      # Mission ID is None.
+                _msg = "Attempted to delete non-existent Failure Definition " \
+                        "ID {0:s}.".format(definition_id)
+            Configuration.RTK_DEBUG_LOG.error(_msg)
+            _return = True
+
+        return _return
+
+    def save_definition(self, definition_id):
+        """
+        Method to update the Failure Definition associated with Definition ID
+        to the RTK Program database.
+
+        :param int definition_id: the Failure Definition ID to save to the RTK
+                                  Program database.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        try:
+            _definition = self.dicDefinition[definition_id]
+
+            (_error_code, _msg) = self.dao.db_update()
+
+            if _error_code == 0:
+                Configuration.RTK_USER_LOG.info(_msg)
+            else:
+                try:
+                    _msg = _msg + "  Failed to save Failure Definition ID " \
+                            "{0:d} to the RTK Program database".\
+                        format(definition_id)
+                except ValueError:      # If the revision_id = None.
+                    _msg = _msg + "  Failed to save Failure Definition ID " \
+                            "{0:s} to the RTK Program database".\
+                        format(definition_id)
+                Configuration.RTK_DEBUG_LOG.error(_msg)
+                _return = True
+        except KeyError:
+            try:
+                _msg = "Attempted to save non-existent Failure Definition " \
+                        "ID {0:d}.".format(definition_id)
+            except ValueError:          # If the revision_id = None.
+                _msg = "Attempted to save non-existent Failure Definition " \
+                        "ID {0:s}.".format(definition_id)
+            Configuration.RTK_DEBUG_LOG.error(_msg)
+            _return = True
+
+        return _return
+
+    def save_all_definitions(self):
+        """
+        Method to save all Failure Definitions to the RTK Program database.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        for _definition_id in self.dicDefinition.keys():
+            if self.save_definition(_definition_id):
+                _return = True
+
+        return _return
+
+
+
+class FailureDefinition(object):
+    """
+    The Failure Definition data controller provides an interface between the
+    Failure Definition data model and an RTK view model.  A single Failure
+    Definition data controller can manage one or more Failure Definition data
+    models.
+
+    :ivar definition_model: the
+    `:py:class:rtk.failure_definition.FailureDefinition.Model` associated with
+    the data controller instance.
+    """
+
+    def __init__(self):
+        """
+        Method to initialize a Failure Definition data controller instance.
+        """
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.failure_model = Model()
+
+    def request_failure_definitions(self, dao, revision_id):
+        """
+        Method to request the Failure Definition tree from the Failure
+        Definition data model.
+
+        :param dao: the `:py:class:rtk.dao.DAO.DAO` object connected to the RTK
+                    Program database.
+        :param int revision_id: the Revision ID to retrieve the Failure
+                                Definitions for.
+        :return: dicDefinition
+        :rtype: dict
+        """
+
+        return self.failure_model.retrieve_all(dao, revision_id)
+
+    def request_add_definition(self, revision_id):
+        """
+        Method to request a Failure Definition be added to Revision ID.
+
+        :param int revision_id: the Revision ID this Mission will be
+                                associated with.
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
+        """
+
+        return self.failure_model.add_definition(revision_id)
+
+    def request_delete_definition(self, definition_id):
+        """
+        Method to request Failure Definition ID and it's children be deleted
+        from the Failure Definition list.
+
         :param int definition_id: the Failure Definition ID to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _query = "DELETE FROM tbl_failure_definitions \
-                  WHERE fld_definition_id={0:d}".format(definition_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
+        return self.failure_model.delete_definition(definition_id)
 
-        self.dicDefinitions[revision_id].pop(definition_id)
-
-        return(_results, _error_code)
-
-    def save_definitions(self, revision_id):
+    def request_save_definitions(self):
         """
-        Saves the Failure Definition attributes to the RTK Project database.
+        Method to request the Failure Definitions be saved to the RTK Program
+        database.
 
-        :param int revision_id: the Revision ID for which to save the Failure
-                                Definitions.
-        :return: (_results, _error_codes)
-        :rtype: tuple
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
         """
 
-        _results = []
-        _error_codes = []
-
-        for _definition in self.dicDefinitions[revision_id].values():
-            _query = "UPDATE tbl_failure_definitions \
-                      SET fld_definition='{0:s}' \
-                      WHERE fld_definition_id={1:d}".format(
-                          _definition.definition, _definition.definition_id)
-            (_result, _error_code, __) = self.dao.execute(_query, commit=True)
-
-            _results.append(_result)
-            _error_codes.append(_error_code)
-
-        return(_results, _error_codes)
+        return self.failure_model.save_all_definitions()

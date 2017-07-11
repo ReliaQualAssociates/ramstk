@@ -73,60 +73,6 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.closed_date = 0
         self.closed = False
 
-    def set_attributes(self, values):
-        """
-        Method to set the Incident data model attributes.
-
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.incident_id = int(values[0])
-            self.action_id = int(values[1])
-            self.prescribed_action = str(values[2])
-            self.action_taken = str(values[3])
-            self.action_owner = int(values[4])
-            self.due_date = int(values[5])
-            self.status = int(values[6])
-            self.approved_by = int(values[7])
-            self.approved_date = int(values[8])
-            self.approved = values[9]
-            self.closed_by = int(values[10])
-            self.closed_date = int(values[11])
-            self.closed = values[12]
-        except IndexError as _err:
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
-            _code = _util.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Retrieves the current values of the Verificaiton data model attributes.
-
-        :return: (incident_id, action_id, prescribed_action, action_taken,
-                  action_owner, due_date, status, approved_by, approved_date,
-                  approved, closed_by, closed_date, closed)
-        :rtype: tuple
-        """
-
-        _values = (self.incident_id, self.action_id, self.prescribed_action,
-                   self.action_taken, self.action_owner, self.due_date,
-                   self.status, self.approved_by, self.approved_date,
-                   self.approved, self.closed_by, self.closed_date,
-                   self.closed)
-
-        return _values
-
 
 class Action(object):
     """

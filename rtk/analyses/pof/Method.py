@@ -72,49 +72,6 @@ class Model(object):
         self.boundary_conditions = ''
         self.remarks = ''
 
-    def set_attributes(self, values):
-        """
-        Method to set the Method data model attributes.
-
-        :param tuple values: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.stress_id = int(values[0])
-            self.method_id = int(values[1])
-            self.description = str(values[2])
-            self.boundary_conditions = str(values[3])
-            self.remarks = str(values[4])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-        except ValueError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Wrong input data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Mode data model
-        attributes.
-
-        :return: (stress_id, method_id, description, boundary_conditions,
-                  remarks)
-        :rtype: tuple
-        """
-
-        return(self.stress_id, self.method_id, self.description,
-               self.boundary_conditions, self.remarks)
-
 
 class Method(object):
     """

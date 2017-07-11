@@ -58,7 +58,7 @@ class Model(object):
     # Define public class dictionary attributes.
     dicRevision = {}
 
-    def __init__(self):
+    def __init__(self, dao):
         """
         Method to initialize a Revision data model instance.
         """
@@ -75,7 +75,7 @@ class Model(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = None
+        self.dao = dao
 
     def retrieve(self, revision_id):
         """
@@ -270,9 +270,14 @@ class Revision(object):
                           the Revision Data Controller.
     """
 
-    def __init__(self):
+    def __init__(self, dao, page=-1, **kwargs):
         """
         Method to initialize a Revision data controller instance.
+
+        :param dao: the `:py:class:rtk.dao.DAO` instance to pass to the
+                    Revision Data Model.
+        :keyword int page: the position in the ModuleBook to place the Revision
+                           ModuleView page.  Defaults to -1 (the end).
         """
 
         # Initialize private dictionary attributes.
@@ -286,7 +291,9 @@ class Revision(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.revision_model = Model()
+        self.moduleview = ModuleView(page, kwargs['modulebook'])
+        self.revision_model = Model(dao)
+        self.workview = WorkView(kwargs['workbook'])
 
     def request_revision(self, revision_id):
         """
@@ -300,18 +307,16 @@ class Revision(object):
 
         return self.revision_model.retrieve(revision_id)
 
-    def request_revision_tree(self, dao):
+    def request_revision_tree(self):
         """
         Method to retrieve the Revision tree from the Revision Data Model.
 
-        :param dao: the `:py:class:rtk.dao.DAO` instance to pass to the
-                    Revision Data Model.
         :return: dicRevision; the dictinary of RTKRevision models in the
                  Revision tree.
         :rtype: dict
         """
 
-        return self.revision_model.retrieve_all(dao)
+        return self.revision_model.retrieve_all()
 
     def request_add_revision(self):
         """

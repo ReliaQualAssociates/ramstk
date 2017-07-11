@@ -81,50 +81,6 @@ class Model(object):
         self.load_history = 0
         self.remarks = ''
 
-    def set_attributes(self, values):
-        """
-        Method to set the Stress data model attributes.
-
-        :param tuple values: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.load_id = int(values[0])
-            self.stress_id = int(values[1])
-            self.description = str(values[2])
-            self.measurable_parameter = int(values[3])
-            self.load_history = int(values[4])
-            self.remarks = str(values[5])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-        except ValueError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Wrong input data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Mode data model
-        attributes.
-
-        :return: (load_id, stress_id, description, measurable_parameter,
-                  load_history, remarks)
-        :rtype: tuple
-        """
-
-        return(self.load_id, self.stress_id, self.description,
-               self.measurable_parameter, self.load_history, self.remarks)
-
 
 class Stress(object):
     """

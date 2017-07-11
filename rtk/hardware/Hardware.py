@@ -19,7 +19,7 @@ import locale
 try:
     import Configuration
     import Utilities
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
 
@@ -30,19 +30,110 @@ __copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
-class Model(object):                        # pylint: disable=R0902
+def _get_component_index(category, subcategory):
+    """
+    Helper method to find the correct component index.
+
+    """
+
+    if category == 1:  # Capacitor
+        _c_index = 3
+    elif category == 2:  # Connection
+        _c_index = 7
+    elif category == 3:  # Inductive Device.
+        if subcategory > 1:  # Transformer
+            _c_index = 9
+    elif category == 4:  # IC
+        _c_index = 0
+    elif category == 7:  # Relay
+        _c_index = 6
+    elif category == 8:  # Resistor
+        _c_index = 4
+    elif category == 9:  # Semiconductor
+        if subcategory in [1, 2, 3, 4, 5, 6]:
+            _c_index = 1
+        elif subcategory in [7, 8, 9, 10, 11, 12, 13]:
+            _c_index = 2
+    elif category == 10:  # Switching Device
+        _c_index = 5
+
+    return _c_index
+
+
+def _get_environment_index(active, dormant):
+    """
+    Helper method to find the correct environment index.
+
+    """
+
+    if active in [1, 2, 3]:  # Ground
+        if dormant == 1:  # Ground
+            _e_index = 0
+        else:
+            _e_index = 7
+    elif active in [4, 5]:  # Naval
+        if dormant == 1:  # Ground
+            _e_index = 4
+        elif dormant == 2:  # Naval
+            _e_index = 3
+        else:
+            _e_index = 7
+    elif active in [6, 7, 8, 9, 10]:  # Airborne
+        if dormant == 1:  # Ground
+            _e_index = 2
+        elif dormant == 3:  # Airborne
+            _e_index = 1
+        else:
+            _e_index = 7
+    elif active == 11:  # Space
+        if dormant == 1:  # Ground
+            _e_index = 6
+        elif dormant == 4:  # Space
+            _e_index = 5
+        else:
+            _e_index = 7
+
+    return _e_index
+
+
+class Model(object):  # pylint: disable=R0902
     """
     The Hardware data model contains the attributes and methods of a Hardware
     item.  The Hardware class is a meta-class for the Assembly and Component
     classes.  A :py:class:`rtk.hardware.BoM.BoM` will consist of one or more
-    Hardware items.  The attributes of a Hardware item are:
-
+    Hardware items.  
+    
+    The class attributes of a Hardware item are:
+    :cvar str _qry_get_general: the SQL query used to retrieve general Hardware
+                                information from the RTK Program database.
+    :cvar str _qry_get_stress: the SQL query used to retrieve operating stree
+                               information from the RTK Program database.
+    :cvar str _qry_get_reliability: the SQL query used to retrieve the
+                                    reliability information from the RTK
+                                    Program database.
+    :cvar str _qry_add_stress: the SQL query used to add a new record to the 
+                               table rk_stress in the RTK Program database.
+    :cvar str _qry_add_reliability: the SQL query used to add a new record to
+                                    the table rtk_reliability in the RTK 
+                                    Program database.
+    :cvar str _qry_save_general: the SQL query used to save the Hardware item's
+                                 general attributes to the RTK Program 
+                                 database.
+    :cvar str _qry_save_stress: the SQL query used to save the Hardware item's
+                                stress attributes to the RTK Program database.
+    :cvar str _qry_save_reliability: the SQL query used to save the Hardware
+                                     item's reliability attributes to the RTK
+                                     Program database.
+    
+    The instance attributes of a Hardware item are:
+    :ivar dao: the `rtk.DAO.DAO` providing the connection to the RTK Program
+               database.
     :ivar int revision_id: the Revision ID the Hardware item is associated
                            with.
     :ivar int hardware_id: the ID in the RTK Project database of the Hardware
@@ -54,19 +145,18 @@ class Model(object):                        # pylint: disable=R0902
     :ivar float cost: the cost of the Hardware item.
     :ivar float cost_failure: the operating cost per failure.
     :ivar float cost_hour: the operating cost per mission hour.
+    :ivar int cost_type_id: the type of cost analysis to perform.  Options are:
+                            * 1 = Assessed
+                            * 2 = Specified
     :ivar str description: the noun description of the Hardware item.
     :ivar float duty_cycle: the duty cycle.
-    :ivar int environment_active: the index of the active ambient environment.
-    :ivar int environment_dormant: the index of the dormant ambient evironment.
     :ivar str figure_number: the figure number in the applicable specification.
-    :ivar float humidity: the operating ambient humidity.
     :ivar str lcn: the Logistics Control Number of the Hardware item.
     :ivar int level: the indenture level of the Hardware item.
-    :ivar int manufacturer: the index of the manufacturer.
+    :ivar int manufacturer_id: the index of the manufacturer.
     :ivar float mission_time: the mission time of the Hardware item.
     :ivar str name: the noun name of the Hardware item.
     :ivar str nsn: the National Stock Number of the Hardware item.
-    :ivar int overstress: indicates whether the Hardware item is overstressed.
     :ivar str page_number: the page number in the applicable specification.
     :ivar int parent_id: the Hardware ID of the parent Hardware item.
     :ivar int part: indicates whether the Hardware item is an Assembly (0) or
@@ -74,36 +164,27 @@ class Model(object):                        # pylint: disable=R0902
     :ivar str part_number: the part number of the Hardware item.
     :ivar int quantity: the quantity of the Hardware item in the design.
     :ivar str ref_des: the reference designator of the Hardware item.
-    :ivar float reliability_goal: the reliability goal for the Hardware item.
-    :ivar int reliability_goal_measure: the measurement method of the
-                                        reliability goal.
     :ivar str remarks: any associated user remarks.
-    :ivar float rpm: the operating revolutions per minute.
     :ivar str specification_number: the applicable specification.
     :ivar int tagged_part: indicator for user-defined use.
+    :ivar int year_of_manufacture: the year the Hardware item was manufactured.
+
+    :ivar int environment_active_id: the index of the active ambient 
+                                     environment.
+    :ivar int environment_dormant_id: the index of the dormant ambient 
+                                      evironment.
+    :ivar int overstress: indicates whether the Hardware item is overstressed.
+    :ivar str reason: the reason(s) the Hardware item is overstressed.
     :ivar float temperature_active: the active operating ambient temperature.
     :ivar float temperature_dormant: the dormant ambient temperature.
-    :ivar float vibration: the operating vibration level.
-    :ivar int year_of_manufacture: the year the Hardware item was manufactured.
-    :ivar float current_ratio: the ratio of operating current to rated current.
-    :ivar float max_rated_temperature: the maximum rated temperature.
-    :ivar float min_rated_temperature: the minimum rated temperature.
-    :ivar float operating_current: the operating current.
-    :ivar float operating_power: the operating power.
-    :ivar float operating_voltage: the operating voltage.
-    :ivar float power_ratio: the ratio of opertaing power to rated power.
-    :ivar float rated_current: the rated current.
-    :ivar float rated_power: the rated power.
-    :ivar float rated_voltage: the rated voltage.
-    :ivar float temperature_rise: the temperature rise of the Hardware item.
-    :ivar float voltage_ratio: the ratio of operating voltage to rated voltage.
+    
     :ivar float add_adj_factor: the hazard rate additive adjustment factor.
     :ivar float availability_logistics: the logistics availability.
     :ivar float availability_mission: the mission availability.
     :ivar float avail_log_variance: the variance of the logistics availability.
     :ivar float avail_mis_variance: the variance of the mission availability.
-    :ivar int failure_dist: the index of the statistical distribution for the
-                            hazard rate.
+    :ivar int failure_distribution_id: the index of the statistical 
+                                       distribution for the hazard rate.
     :ivar float failure_parameter_1: the hazard rate distribution scale
                                      parameter.
     :ivar float failure_parameter_2: the hazard rate distribution shape
@@ -113,7 +194,12 @@ class Model(object):                        # pylint: disable=R0902
     :ivar float hazard_rate_active: the active hazard rate.
     :ivar float hazard_rate_dormant: the dormant hazard rate.
     :ivar float hazard_rate_logistics: the logistics hazard rate.
-    :ivar int hazard_rate_method: the method of assessing the hazard rate.
+    :ivar int hazard_rate_method_id: the method of assessing the hazard rate.
+                                     Values are:
+                                     * 1 = Assessed
+                                     * 2 = Specified, Hazard Rate
+                                     * 3 = Specified, MTBF
+                                     * 4 = Specified, Distribution
     :ivar float hazard_rate_mission: the mission hazard rate.
     :ivar int hazard_rate_model: the statistical hazard rate model.
     :ivar float hazard_rate_percent: the percent of the system hazard rate
@@ -121,7 +207,11 @@ class Model(object):                        # pylint: disable=R0902
     :ivar float hazard_rate_software: the hazard rate of any software
                                       associated with the Hardware.
     :ivar float hazard_rate_specified: the specified hazard rate.
-    :ivar int hazard_rate_type: the type of hazard rate assessment.
+    :ivar int hazard_rate_type_id: the type of hazard rate assessment.  Values
+                                   are:
+                                   * 1 = MIL-HDBK-217FN2, Parts Count
+                                   * 2 = MIL-HDBK-217FN2, Part Stress
+                                   * 3 = NSWC-11
     :ivar float hr_active_variance: the variance of the active hazard rate.
     :ivar float hr_dormant_variance: the variance of the dormant hazard rate.
     :ivar float hr_logistics_variance: the variance of the logistics hazard
@@ -137,6 +227,9 @@ class Model(object):                        # pylint: disable=R0902
     :ivar float mtbf_spec_variance: the variance of the specified MTBF.
     :ivar float mult_adj_factor: the hazard rate multiplicative adjustment
                                  factor.
+    :ivar float reliability_goal: the reliability goal for the Hardware item.
+    :ivar int reliability_goal_measure_id: the measurement method of the
+                                           reliability goal.
     :ivar float reliability_logistics: the calculated logistics reliability.
     :ivar float reliability_mission: the calculated mission reliability.
     :ivar float rel_log_variance: the variance of the logistics reliability.
@@ -168,9 +261,145 @@ class Model(object):                        # pylint: disable=R0902
     :ivar float repair_parameter_2: the repair distribution shape parameter.
     """
 
-    def __init__(self):
+    _qry_get_general_attributes = "SELECT * FROM rtk_hardware \
+                                   WHERE fld_hardware_id={0:d}"
+
+    _qry_get_stress_attributes = "SELECT fld_environment_active_id, \
+                                         fld_environment_dormant_id, \
+                                         fld_overstress, \
+                                         fld_reason, \
+                                         fld_temperature_active, \
+                                         fld_temperature_dormant \
+                                  FROM rtk_stress \
+                                  WHERE fld_hardware_id={0:d}"
+
+    _qry_get_reliability_attributes = "SELECT fld_add_adj_factor, \
+                                              fld_availability_logistics, \
+                                              fld_availability_mission, \
+                                              fld_avail_log_variance, \
+                                              fld_avail_mis_variance, \
+                                              fld_failure_distribution_id, \
+                                              fld_scale_parameter, \
+                                              fld_shape_parameter, \
+                                              fld_location_parameter, \
+                                              fld_hazard_rate_active, \
+                                              fld_hazard_rate_dormant, \
+                                              fld_hazard_rate_logistics, \
+                                              fld_hazard_rate_method_id, \
+                                              fld_hazard_rate_mission, \
+                                              fld_hazard_rate_percent, \
+                                              fld_hazard_rate_software, \
+                                              fld_hazard_rate_specified, \
+                                              fld_hazard_rate_type_id, \
+                                              fld_hr_active_variance, \
+                                              fld_hr_dormant_variance, \
+                                              fld_hr_logistics_variance, \
+                                              fld_hr_mission_variance, \
+                                              fld_hr_specified_variance, \
+                                              fld_mtbf_logistics, \
+                                              fld_mtbf_mission, \
+                                              fld_mtbf_specified, \
+                                              fld_mtbf_log_variance, \
+                                              fld_mtbf_miss_variance, \
+                                              fld_mtbf_spec_variance, \
+                                              fld_mult_adj_factor, \
+                                              fld_quality_id, \
+                                              fld_reliability_goal, \
+                                              fld_reliability_goal_measure_id, \
+                                              fld_reliability_logistics, \
+                                              fld_reliability_mission, \
+                                              fld_rel_log_variance, \
+                                              fld_rel_miss_variance, \
+                                              fld_survival_analysis_id, \
+                                              fld_lambda_b \
+                                       FROM rtk_reliability \
+                                       WHERE fld_hardware_id={0:d}"
+
+    _qry_add_stress = "INSERT INTO rtk_stress (fld_hardware_id) \
+                       VALUES({0:d})"
+
+    _qry_add_reliability = "INSERT INTO rtk_reliability (fld_hardware_id) \
+                            VALUES({0:d})"
+
+    _qry_save_general = "UPDATE rtk_hardware \
+                         SET fld_alt_part_number='{0:s}', \
+                             fld_attachments='{1:s}', fld_cage_code='{2:s}', \
+                             fld_comp_ref_des='{3:s}', fld_cost={4:f}, \
+                             fld_cost_failure={5:f}, fld_cost_hour={6:f}, \
+                             fld_cost_type_id={7:d}, fld_description='{8:s}', \
+                             fld_duty_cycle={9:f}, \
+                             fld_figure_number='{10:s}', \
+                             fld_lcn='{11:s}', fld_level={12:d}, \
+                             fld_manufacturer_id={13:d}, \
+                             fld_mission_time={14:f}, fld_name='{15:s}', \
+                             fld_nsn='{16:s}', fld_page_number='{17:s}', \
+                             fld_parent_id={18:d}, fld_part={19:d}, \
+                             fld_part_number='{20:s}', fld_quantity={21:d}, \
+                             fld_ref_des='{22:s}', fld_remarks='{23:s}', \
+                             fld_repairable={24:d}, \
+                             fld_specification_number='{25:s}', \
+                             fld_tagged_part={26:d}, \
+                             fld_total_part_count={27:d}, \
+                             fld_total_power_dissipation={28:f}, \
+                             fld_year_of_manufacture={29:d} \
+                         WHERE fld_hardware_id={30:d}"
+
+    _qry_save_stress = "UPDATE rtk_stress \
+                        SET fld_environment_active_id={0:d}, \
+                            fld_environment_dormant_id={1:d}, \
+                            fld_overstress={2:d}, fld_reason='{3:s}', \
+                            fld_temperature_active={4:f}, \
+                            fld_temperature_dormant={5:f} \
+                        WHERE fld_hardware_id={6:d}"
+
+    _qry_save_reliability = "UPDATE rtk_reliability \
+                             SET fld_add_adj_factor={0:f}, \
+                                 fld_availability_logistics={1:f}, \
+                                 fld_availability_mission={2:f}, \
+                                 fld_avail_log_variance={3:f}, \
+                                 fld_avail_mis_variance={4:f}, \
+                                 fld_failure_distribution_id={5:d}, \
+                                 fld_scale_parameter={6:f}, \
+                                 fld_shape_parameter={7:f}, \
+                                 fld_location_parameter={8:f}, \
+                                 fld_hazard_rate_active={9:f}, \
+                                 fld_hazard_rate_dormant={10:f}, \
+                                 fld_hazard_rate_logistics={11:f}, \
+                                 fld_hazard_rate_method_id={12:d}, \
+                                 fld_hazard_rate_mission={13:f}, \
+                                 fld_hazard_rate_percent={14:f}, \
+                                 fld_hazard_rate_software={15:f}, \
+                                 fld_hazard_rate_specified={16:f}, \
+                                 fld_hazard_rate_type_id={17:d}, \
+                                 fld_hr_active_variance={18:f}, \
+                                 fld_hr_dormant_variance={19:f}, \
+                                 fld_hr_logistics_variance={20:f}, \
+                                 fld_hr_mission_variance={21:f}, \
+                                 fld_hr_specified_variance={22:f}, \
+                                 fld_mtbf_logistics={23:f}, \
+                                 fld_mtbf_mission={24:f}, \
+                                 fld_mtbf_specified={25:f}, \
+                                 fld_mtbf_log_variance={26:f}, \
+                                 fld_mtbf_miss_variance={27:f}, \
+                                 fld_mtbf_spec_variance={28:f}, \
+                                 fld_mult_adj_factor={29:f}, \
+                                 fld_quality_id={30:d}, \
+                                 fld_reliability_goal={31:f}, \
+                                 fld_reliability_goal_measure_id={32:d}, \
+                                 fld_reliability_logistics={33:f}, \
+                                 fld_reliability_mission={34:f}, \
+                                 fld_rel_log_variance={35:f}, \
+                                 fld_rel_miss_variance={36:f}, \
+                                 fld_survival_analysis_id={37:d}, \
+                                 fld_lambda_b={38:f} \
+                             WHERE fld_hardware_id={39:d}"
+
+    def __init__(self, dao=None):
         """
         Method to initialize a Hardware data model instance.
+        
+        :param dao: the `rtk.DAO.DAO` object connected to the RTK Program
+                    database.
         """
 
         # Define private dictionary attributes.
@@ -189,6 +418,9 @@ class Model(object):                        # pylint: disable=R0902
         self.user_varchar = ['', '', '', '', '']
 
         # Define public scalar attributes.
+        self.dao = dao
+
+        # General attributes.
         self.revision_id = None
         self.hardware_id = None
         self.alt_part_number = ''
@@ -198,52 +430,37 @@ class Model(object):                        # pylint: disable=R0902
         self.cost = 0.0
         self.cost_failure = 0.0
         self.cost_hour = 0.0
+        self.cost_type_id = 0
         self.description = ''
         self.duty_cycle = 100.0
-        self.environment_active = 0
-        self.environment_dormant = 0
         self.figure_number = ''
-        self.humidity = 50.0
         self.lcn = ''
-        self.level = 1
-        self.manufacturer = 0
-        self.mission_time = 10.0
+        self.level = 0
+        self.manufacturer_id = 0
+        self.mission_time = 100.0
         self.name = ''
         self.nsn = ''
-        self.overstress = 0
         self.page_number = ''
-        self.parent_id = 0
+        self.parent_id = None
         self.part = 0
         self.part_number = ''
         self.quantity = 1
-        self.reason = ''
-
         self.ref_des = ''
-        self.reliability_goal = 1.0
-        self.reliability_goal_measure = 0
         self.remarks = ''
-        self.rpm = 0.0
+        self.repairable = 0
         self.specification_number = ''
         self.tagged_part = 0
-        self.temperature_active = 30.0
-        self.temperature_dormant = 30.0
-        self.vibration = 0.0
-        self.year_of_manufacture = 2014
+        self.total_part_count = 0
+        self.total_power_dissipation = 0.0
+        self.year_of_manufacture = 2017
 
         # Stress attributes.
-        self.current_ratio = 1.0
-        self.max_rated_temperature = 0.0
-        self.min_rated_temperature = 0.0
-        self.operating_current = 0.0
-        self.operating_power = 0.0
-        self.operating_voltage = 0.0
-        self.power_ratio = 1.0
-        self.rated_current = 1.0
-        self.rated_power = 1.0
-        self.rated_voltage = 1.0
-        self.temperature_rise = 0.0
-        self.voltage_ratio = 1.0
-        self.reason = ""                    # Overstress reason.
+        self.environment_active_id = 0
+        self.environment_dormant_id = 0
+        self.overstress = 0
+        self.reason = ''
+        self.temperature_active = 30.0
+        self.temperature_dormant = 25.0
 
         # Reliability attributes.
         self.add_adj_factor = 0.0
@@ -251,19 +468,19 @@ class Model(object):                        # pylint: disable=R0902
         self.availability_mission = 1.0
         self.avail_log_variance = 0.0
         self.avail_mis_variance = 0.0
-        self.failure_dist = 0
-        self.failure_parameter_1 = 0.0
-        self.failure_parameter_2 = 0.0
-        self.failure_parameter_3 = 0.0
+        self.failure_distribution_id = 0
+        self.scale_parameter = 0.0
+        self.shape_parameter = 0.0
+        self.location_parameter = 0.0
         self.hazard_rate_active = 0.0
         self.hazard_rate_dormant = 0.0
         self.hazard_rate_logistics = 0.0
-        self.hazard_rate_method = 1
+        self.hazard_rate_method_id = 0
         self.hazard_rate_mission = 0.0
         self.hazard_rate_percent = 0.0
         self.hazard_rate_software = 0.0
         self.hazard_rate_specified = 0.0
-        self.hazard_rate_type = 1
+        self.hazard_rate_type_id = 0
         self.hr_active_variance = 0.0
         self.hr_dormant_variance = 0.0
         self.hr_logistics_variance = 0.0
@@ -276,11 +493,15 @@ class Model(object):                        # pylint: disable=R0902
         self.mtbf_miss_variance = 0.0
         self.mtbf_spec_variance = 0.0
         self.mult_adj_factor = 1.0
+        self.quality_id = 0
+        self.reliability_goal = 1.0
+        self.reliability_goal_measure_id = 0
         self.reliability_logistics = 1.0
         self.reliability_mission = 1.0
         self.rel_log_variance = 0.0
         self.rel_miss_variance = 0.0
-        self.survival_analysis = 0
+        self.survival_analysis_id = 0
+        self.lambda_b = 0.0
 
         # Maintainability attributes.
         self.detection_fr = 0.0
@@ -306,129 +527,90 @@ class Model(object):                        # pylint: disable=R0902
         self.repair_parameter_1 = 0.0
         self.repair_parameter_2 = 0.0
 
-    def set_attributes(self, values):
+    def _get_general_attributes(self):
+        """
+        Method to retrieve the general attributes from the RTK Program database.
+        
+        :return: _records
+        :rtype: tuple
+        """
+
+        _query = self._qry_get_general_attributes.format(self.hardware_id)
+
+        (_records, _error_code, __) = self.dao.execute(_query, commit=False)
+
+        try:
+            _records = _records[0]
+        except IndexError:
+            _records = (self.revision_id, self.hardware_id, u'', u'', u'', 0,
+                        u'', 0.0, 0.0, 0.0, 2, u'', 100.0, u'', u'', 1, 0,
+                        10.0, u'Name', u'', u'', 1, 0, u'', 1, u'Ref Des', 1.0,
+                        0, u'None', 0, u'Specification', 0, 0, 0, 0.0, 2014)
+
+        return _records
+
+    def _get_stress_attributes(self):
+        """
+        Method to retrieve the stress attributes from the RTK Program database.
+        
+        :return: _records; the stress attributes for the selected Hardware.
+        :rtype: tuple
+        """
+
+        _query = self._qry_get_stress_attributes.format(self.hardware_id)
+
+        (_records, _error_code, __) = self.dao.execute(_query, commit=False)
+
+        # We don't need to return the hardware_id (first) field.
+        try:
+            _records = _records[0]
+        except IndexError:
+            _records = (0, 0, 0, u'Reason', 30.0, 25.0)
+
+        return _records
+
+    def set_attributes(self, attributes):
         """
         Method to set the Hardware data model attributes.
 
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
+        :param tuple attributes: tuple of attribute values to assign to the 
+                                 instance attributes.
+        :return: (_code, _msg); the error codes and error messages.
+        :rtype: (list, list)
         """
 
-        _code = [0, 0, 0]
-        _msg = ['', '', '']
+        _code = [0, 0, 0, 0]
+        _msg = ['', '', '', '']
 
-        (_code[0], _msg[0]) = self._set_base_attributes(values[:38])
-        (_code[1], _msg[1]) = self._set_stress_attributes(values[44:61])
-        (_code[2], _msg[2]) = self._set_reliability_attributes(values[61:])
+        # Set the general attributes for the Hardware item.
+        (_code[0], _msg[0]) = self._set_general_attributes(attributes[:34])
 
-        return(_code, _msg)
+        # If that was successful, set the stress-specific attributes
+        # for the Hardware item.
+        if _code[0] == 0:
+            (_code[1], _msg[1]) = self._set_stress_attributes(
+                attributes[34:40])
 
-    def _set_base_attributes(self, values):
-        """
-        Method to set the base Hardware attributes.
+        # If that was successful, set the reliability-specific
+        # attributes for the Hardware item.
+        if _code[1] == 0:
+            (_code[2],
+             _msg[2]) = self._set_reliability_attributes(attributes[40:])
 
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
+        # If that was successful, set the maintainability-specific
+        # attributes for the Hardware item.
+        # if _code[2] == 0:
+        #     (_code[3],
+        #      _msg[3]) = self._set_maintainability_attributes(attributes[79:])
 
-        _code = 0
-        _msg = ''
+        return _code, _msg
 
-        try:
-            self.revision_id = int(values[0])
-            self.hardware_id = int(values[1])
-            self.alt_part_number = str(values[2])
-            self.attachments = str(values[3])
-            self.cage_code = str(values[4])
-            self.comp_ref_des = str(values[5])
-            self.cost = float(values[6])
-            self.cost_failure = float(values[7])
-            self.cost_hour = float(values[8])
-            self.description = str(values[9])
-            self.duty_cycle = float(values[10])
-            self.environment_active = int(values[11])
-            self.environment_dormant = int(values[12])
-            self.figure_number = str(values[13])
-            self.humidity = float(values[14])
-            self.lcn = str(values[15])
-            self.level = int(values[16])
-            self.manufacturer = int(values[17])
-            self.mission_time = float(values[18])
-            self.name = str(values[19])
-            self.nsn = str(values[20])
-            self.overstress = int(values[21])
-            self.page_number = str(values[22])
-            self.parent_id = int(values[23])
-            self.part = int(values[24])
-            self.part_number = str(values[25])
-            self.quantity = int(values[26])
-            self.ref_des = str(values[27])
-            self.reliability_goal = float(values[28])
-            self.reliability_goal_measure = int(values[29])
-            self.remarks = str(values[30])
-            self.rpm = float(values[31])
-            self.specification_number = str(values[32])
-            self.tagged_part = int(values[33])
-            self.temperature_active = float(values[34])
-            self.temperature_dormant = float(values[35])
-            self.vibration = float(values[36])
-            self.year_of_manufacture = int(values[37])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-
-        return(_code, _msg)
-
-    def _set_stress_attributes(self, values):
+    def _set_stress_attributes(self, attributes):
         """
         Method to set the stress-specific Hardware attributes.
 
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-        print values
-        try:
-            self.current_ratio = float(values[0])
-            self.max_rated_temperature = float(values[1])
-            self.min_rated_temperature = float(values[2])
-            self.operating_current = float(values[3])
-            self.operating_power = float(values[4])
-            self.operating_voltage = float(values[5])
-            self.power_ratio = float(values[6])
-            self.rated_current = float(values[7])
-            self.rated_power = float(values[8])
-            self.rated_voltage = float(values[9])
-            self.temperature_rise = float(values[10])
-            self.voltage_ratio = float(values[11])
-            # Indices 12 - 15 are applicable to components only.
-            self.reason = str(values[16])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-
-        return(_code, _msg)
-
-    def _set_reliability_attributes(self, values):
-        """
-        Method to set the reliability-specific Hardware attributes.
-
-        :param tuple values: tuple of values to assign to the instance
-                             attributes.
+        :param tuple attributes: tuple of attribute values to assign to the
+                                 instance attributes.
         :return: (_code, _msg); the error code and error message.
         :rtype: tuple
         """
@@ -437,52 +619,25 @@ class Model(object):                        # pylint: disable=R0902
         _msg = ''
 
         try:
-            self.add_adj_factor = float(values[0])
-            self.availability_logistics = float(values[1])
-            self.availability_mission = float(values[2])
-            self.avail_log_variance = float(values[3])
-            self.avail_mis_variance = float(values[4])
-            self.failure_dist = int(values[5])
-            self.failure_parameter_1 = float(values[6])
-            self.failure_parameter_2 = float(values[7])
-            self.failure_parameter_3 = float(values[8])
-            self.hazard_rate_active = float(values[9])
-            self.hazard_rate_dormant = float(values[10])
-            self.hazard_rate_logistics = float(values[11])
-            self.hazard_rate_method = int(values[12])
-            self.hazard_rate_mission = float(values[13])
-            self.hazard_rate_model = {}
-            self.hazard_rate_percent = float(values[15])
-            self.hazard_rate_software = float(values[16])
-            self.hazard_rate_specified = float(values[17])
-            self.hazard_rate_type = int(values[18])
-            self.hr_active_variance = float(values[19])
-            self.hr_dormant_variance = float(values[20])
-            self.hr_logistics_variance = float(values[21])
-            self.hr_mission_variance = float(values[22])
-            self.hr_specified_variance = float(values[23])
-            self.mtbf_logistics = float(values[24])
-            self.mtbf_mission = float(values[25])
-            self.mtbf_specified = float(values[26])
-            self.mtbf_log_variance = float(values[27])
-            self.mtbf_miss_variance = float(values[28])
-            self.mtbf_spec_variance = float(values[29])
-            self.mult_adj_factor = float(values[30])
-            self.reliability_logistics = float(values[31])
-            self.reliability_mission = float(values[32])
-            self.rel_log_variance = float(values[33])
-            self.rel_miss_variance = float(values[34])
-            self.survival_analysis = int(values[35])
+            self.environment_active_id = int(attributes[0])
+            self.environment_dormant_id = int(attributes[1])
+            self.overstress = int(attributes[2])
+            self.reason = str(attributes[3])
+            self.temperature_active = float(attributes[4])
+            self.temperature_dormant = float(attributes[5])
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
+            _msg = _(u"ERROR: Hardware._set_stress_attributes: "
+                     u"Insufficient stress input values.  Require six, only "
+                     u"{0:d} were passed.").format(len(attributes))
         except TypeError as _err:
             _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
+            _msg = _(u"ERROR: Hardware._set_stress_attributes: Converting one "
+                     u"or more stress inputs to the correct data type.")
 
-        return(_code, _msg)
+        return _code, _msg
 
-    def _set_user_attributes(self,  values):
+    def _set_user_attributes(self, values):
         """
         Method to set the user-defined Hardware attributes.
 
@@ -538,326 +693,245 @@ class Model(object):                        # pylint: disable=R0902
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return _code, _msg
 
-    def get_attributes(self):
+    def save_attributes(self):
         """
-        Method to retrieve the current values of the Hardware data model
-        attributes.
+        Method to save the attributes for a Hardware object to the RTK
+        Program database.
 
-        :return: (revision_id, hardware_id, alt_part_number, attachments,
-                  cage_code, comp_ref_des, cost, cost_failure, cost_hour,
-                  cost_type, description, duty_cycle, environment_active,
-                  environment_dormant, figure_number, humidity, lcn, level,
-                  manufacturer, mission_time, name, nsn, page_number,
-                  parent_id, part, part_number, quantity, ref_des,
-                  reliability_goal, reliability_goal_measure, remarks,
-                  repairable, rpm, specification_number, temperature_active,
-                  temperature_dormant, vibration, year_of_manufacture,
-                  current_ratio, max_rated_temperature, min_rated_temperature,
-                  operating_current, operating_power, operating_voltage,
-                  power_ratio, rated_current, rated_power, rated_voltage,
-                  temperature_rise, voltage_ratio, reason, add_adj_factor,
-                  availability_logistics, availability_mission,
-                  avail_log_variance, avail_mis_variance, failure_dist,
-                  failure_parameter_1, failure_parameter_2,
-                  failure_parameter_3, hazard_rate_active, hazard_rate_dormant,
-                  hazard_rate_logistics, hazard_rate_method,
-                  hazard_rate_mission, hazard_rate_model, hazard_rate_percent,
-                  hazard_rate_software, hazard_rate_specified,
-                  hazard_rate_type, hr_active_variance, hr_dormant_variance,
-                  hr_logistics_variance, hr_mission_variance,
-                  hr_specified_variance, mtbf_logistics, mtbf_mission,
-                  mtbf_specified, mtbf_log_variance, mtbf_miss_variance,
-                  mtbf_spec_variance, mult_adj_factor, reliability_logistics,
-                  reliability_mission, rel_log_variance, rel_miss_variance,
-                  survival_analysis)
-        :rtype: tuple
+        :return: _error_codes; list of error codes from each save 
+                               method.
+        :rtype: list
         """
 
-        _base_values = self._get_base_attributes()
-        _stress_values = self._get_stress_attributes()
-        _rel_values = self._get_reliability_attributes()
-        #_user_values = self._get_user_attributes()
+        _error_codes = [0, 0, 0, 0]
 
-        _values = _base_values + _stress_values + _rel_values # + _user_values
+        _error_codes[0] = self.save_general_attributes()
+        _error_codes[1] = self.save_stress_attributes()
+        _error_codes[2] = self.save_reliability_attributes()
+        # _error_codes[3] = self.save_maintainability_attributes()
 
-        return _values
+        return _error_codes
 
-    def _get_base_attributes(self):
+    def save_general_attributes(self):
         """
-        Method to retrieve the current values of the Hardware data model base
-        attributes.
-
-        :return: (revision_id, hardware_id, alt_part_number, attachments,
-                  cage_code, comp_ref_des, cost, cost_failure, cost_hour,
-                  description, duty_cycle, environment_active,
-                  environment_dormant, figure_number, humidity, lcn, level,
-                  manufacturer, mission_time, name, nsn, overstress,
-                  page_number, parent_id, part, part_number, quantity, ref_des,
-                  reliability_goal, reliability_goal_measure, remarks, rpm,
-                  specification_number, tagged_part, temperature_active,
-                  temperature_dormant, vibration, year_of_manufacture)
-        :rtype: tuple
+        Method to save the general attributes for a Hardware object to the RTK
+        Program database.
+        
+        :return: _error_code;  
+        :rtype: int
         """
 
-        _values = (self.revision_id, self.hardware_id, self.alt_part_number,
-                   self.attachments, self.cage_code, self.comp_ref_des,
-                   self.cost, self.cost_failure, self.cost_hour,
-                   self.description, self.duty_cycle, self.environment_active,
-                   self.environment_dormant, self.figure_number, self.humidity,
-                   self.lcn, self.level, self.manufacturer, self.mission_time,
-                   self.name, self.nsn, self.overstress, self.page_number,
-                   self.parent_id, self.part, self.part_number, self.quantity,
-                   self.ref_des, self.reliability_goal,
-                   self.reliability_goal_measure, self.remarks, self.rpm,
-                   self.specification_number, self.tagged_part,
-                   self.temperature_active, self.temperature_dormant,
-                   self.vibration, self.year_of_manufacture)
+        _query = self._qry_save_general.format(self.alt_part_number,
+                                               self.attachments,
+                                               self.cage_code,
+                                               self.comp_ref_des,
+                                               self.cost,
+                                               self.cost_failure,
+                                               self.cost_hour,
+                                               self.cost_type_id,
+                                               self.description,
+                                               self.duty_cycle,
+                                               self.figure_number,
+                                               self.lcn,
+                                               self.level,
+                                               self.manufacturer_id,
+                                               self.mission_time,
+                                               self.name,
+                                               self.nsn,
+                                               self.page_number,
+                                               self.parent_id,
+                                               self.part,
+                                               self.part_number,
+                                               self.quantity,
+                                               self.ref_des,
+                                               self.remarks,
+                                               self.repairable,
+                                               self.specification_number,
+                                               self.tagged_part,
+                                               self.total_part_count,
+                                               self.total_power_dissipation,
+                                               self.year_of_manufacture,
+                                               self.hardware_id)
 
-        return _values
+        (_result, _error_code, __) = self.dao.execute(_query, commit=True)
 
-    def _get_stress_attributes(self):
+        return _error_code
+
+    def save_stress_attributes(self):
         """
-        Method to retrieve the current values of the Hardware data model stress
-        attributes.
-
-        :return: (current_ratio, max_rated_temperature, min_rated_temperature,
-                  operating_current, operating_power, operating_voltage,
-                  power_ratio, rated_current, rated_power, rated_voltage,
-                  temperature_rise, voltage_ratio)
-        :rtype: tuple
+        Method to save the stress attributes for a Hardware object to the RTK 
+        Program database.
+        
+        :return: _error_code; 
+        :rtype: int
         """
+        _query = self._qry_save_stress.format(self.environment_active_id,
+                                              self.environment_dormant_id,
+                                              self.overstress, self.reason,
+                                              self.temperature_active,
+                                              self.temperature_dormant,
+                                              self.hardware_id)
 
-        _values = (self.current_ratio, self.max_rated_temperature,
-                   self.min_rated_temperature, self.operating_current,
-                   self.operating_power, self.operating_voltage,
-                   self.power_ratio, self.rated_current, self.rated_power,
-                   self.rated_voltage, self.temperature_rise,
-                   self.voltage_ratio, self.reason)
+        (_result, _error_code, __) = self.dao.execute(_query, commit=True)
 
-        return _values
+        return _error_code
 
-    def _get_reliability_attributes(self):
+    def save_reliability_attributes(self):
         """
-        Method to retrieves the current values of the Hardware data model
-        reliability attributes.
-
-        :return: (add_adj_factor, availability_logistics, availability_mission,
-                  avail_log_variance, avail_mis_variance, failure_dist,
-                  failure_parameter_1, failure_parameter_2,
-                  failure_parameter_3, hazard_rate_active, hazard_rate_dormant,
-                  hazard_rate_logistics, hazard_rate_method,
-                  hazard_rate_mission, hazard_rate_model, hazard_rate_percent,
-                  hazard_rate_software, hazard_rate_specified,
-                  hazard_rate_type, hr_active_variance, hr_dormant_variance,
-                  hr_logistics_variance, hr_mission_variance,
-                  hr_specified_variance, mtbf_logistics, mtbf_mission,
-                  mtbf_specified, mtbf_log_variance, mtbf_miss_variance,
-                  mtbf_spec_variance, mult_adj_factor, reliability_logistics,
-                  reliability_mission, rel_log_variance, rel_miss_variance,
-                  survival_analysis)
-        :rtype: tuple
-        """
-
-        _values = (self.add_adj_factor, self.availability_logistics,
-                   self.availability_mission, self.avail_log_variance,
-                   self.avail_mis_variance, self.failure_dist,
-                   self.failure_parameter_1, self.failure_parameter_2,
-                   self.failure_parameter_3, self.hazard_rate_active,
-                   self.hazard_rate_dormant, self.hazard_rate_logistics,
-                   self.hazard_rate_method, self.hazard_rate_mission,
-                   self.hazard_rate_model, self.hazard_rate_percent,
-                   self.hazard_rate_software, self.hazard_rate_specified,
-                   self.hazard_rate_type, self.hr_active_variance,
-                   self.hr_dormant_variance, self.hr_logistics_variance,
-                   self.hr_mission_variance, self.hr_specified_variance,
-                   self.mtbf_logistics, self.mtbf_mission, self.mtbf_specified,
-                   self.mtbf_log_variance, self.mtbf_miss_variance,
-                   self.mtbf_spec_variance, self.mult_adj_factor,
-                   self.reliability_logistics, self.reliability_mission,
-                   self.rel_log_variance, self.rel_miss_variance,
-                   self.survival_analysis)
-
-        return _values
-
-    def _get_user_attributes(self):
-        """
-        Method to retrieve the current values of the Hardware data model
-        user-defined attributes.
-
-        :return: (user_float, user_int, user_varchar)
-        :rtype: tuple
+        Method to save the reliability attributes for a Hardware object to the 
+        RTK Program database.
+        
+        :return: _error_code;
+        :rtype: int
         """
 
-        _values = (self.user_float, self.user_int, self.user_varchar)
+        _query = self._qry_save_reliability.format(self.add_adj_factor,
+                                                   self.availability_logistics,
+                                                   self.availability_mission,
+                                                   self.avail_log_variance,
+                                                   self.avail_mis_variance,
+                                                   self.failure_distribution_id,
+                                                   self.scale_parameter,
+                                                   self.shape_parameter,
+                                                   self.location_parameter,
+                                                   self.hazard_rate_active,
+                                                   self.hazard_rate_dormant,
+                                                   self.hazard_rate_logistics,
+                                                   self.hazard_rate_method_id,
+                                                   self.hazard_rate_mission,
+                                                   self.hazard_rate_percent,
+                                                   self.hazard_rate_software,
+                                                   self.hazard_rate_specified,
+                                                   self.hazard_rate_type_id,
+                                                   self.hr_active_variance,
+                                                   self.hr_dormant_variance,
+                                                   self.hr_logistics_variance,
+                                                   self.hr_mission_variance,
+                                                   self.hr_specified_variance,
+                                                   self.mtbf_logistics,
+                                                   self.mtbf_mission,
+                                                   self.mtbf_specified,
+                                                   self.mtbf_log_variance,
+                                                   self.mtbf_miss_variance,
+                                                   self.mtbf_spec_variance,
+                                                   self.mult_adj_factor,
+                                                   self.quality_id,
+                                                   self.reliability_goal,
+                                                   self.reliability_goal_measure_id,
+                                                   self.reliability_logistics,
+                                                   self.reliability_mission,
+                                                   self.rel_log_variance,
+                                                   self.rel_miss_variance,
+                                                   self.survival_analysis_id,
+                                                   self.lambda_b,
+                                                   self.hardware_id)
 
-        return _values
+        (_result, _error_code, __) = self.dao.execute(_query, commit=True)
 
-    def calculate(self, assembly):
+        return _error_code
+
+    def calculate(self):
         """
-        Method to iterively calculate various hardware attributes.
-
-        :param assembly: the :py:class:`rtk.hardware.Assembly.Model` data model
-                         to calculate.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        Method to calculate various Hardware attributes.
+        
+        :return: (_code, _msg); lists of error codes and error messages. 
+        :rtype: (list, list)
         """
 
-        assembly.hazard_rate_active = 0.0
-        assembly.hazard_rate_dormant = 0.0
-        assembly.hazard_rate_software = 0.0
-        assembly.cost = 0.0
-        assembly.total_part_quantity = 0
-        assembly.total_power_dissipation = 0.0
+        _code = [0, 0, 0]
+        _msg = ['', '', '']
 
-        # First we calculate all the components that are direct children of the
-        # current assembly.
-        if assembly.part == 0:
-            try:
-                _components = assembly.dicComponents[assembly.hardware_id]
-            except KeyError:
-                _components = []
-        elif assembly.part == 1:
-            _components = [assembly]
+        (_code[0], _msg[0]) = self.calculate_reliability()
+        # (_code[1], _msg[1]) = self.calculate_maintainability()
+        (_code[2], _msg[2]) = self.calculate_costs()
 
-        for _component in _components:
-            if _component.hazard_rate_method == 1:      # Assessed
-                try:
-                    _component.calculate_part()
-                except AttributeError:
-                    # FIXME: Handle AttributeError in calculate.
-                    print "Could not calculate {0:s}".format(_component.name)
+        return _code, _msg
 
-            elif _component.hazard_rate_method == 2:    # Specified, h(t)
-                _component.hazard_rate_active = assembly.hazard_rate_specified
-            elif _component.hazard_rate_method == 3:    # Specified, MTBF
-                _component.hazard_rate_active = 1.0 / _component.mtbf_specified
-
-            # Calculate the dormant hazard rate.
-            self._dormant_hazard_rate(_component)
-
-            # Calculate component derived results.
-            self._calculate_reliability(_component)
-            self._calculate_costs(_component)
-
-            # Update parent assembly hazard rates and costs.
-            assembly.hazard_rate_active += _component.hazard_rate_active
-            assembly.hazard_rate_dormant += _component.hazard_rate_dormant
-            assembly.hazard_rate_software += _component.hazard_rate_software
-            assembly.cost += _component.cost * _component.quantity
-            assembly.total_part_quantity += _component.quantity
-            assembly.total_power_dissipation += (_component.operating_power *
-                                                 _component.quantity)
-
-        # Then we calculate all the assemblies that are direct children of the
-        # current assembly.
-        try:
-            _assemblies = assembly.dicAssemblies[assembly.hardware_id]
-        except(KeyError, AttributeError):
-            _assemblies = []
-
-        for _assembly in _assemblies:
-            if _assembly.hazard_rate_method == 1:       # Assessed
-                self.calculate(_assembly)
-            elif _assembly.hazard_rate_method == 2:     # Specified, h(t)
-                _assembly.hazard_rate_active = _assembly.hazard_rate_specified
-            elif _assembly.hazard_rate_method == 3:     # Specified, MTBF
-                _assembly.hazard_rate_active = 1.0 / _assembly.mtbf_specified
-
-            # Adjust the active hazard rate.
-            _assembly.hazard_rate_active = (_assembly.hazard_rate_active +
-                                            _assembly.add_adj_factor) * \
-                                           (_assembly.duty_cycle / 100.0) * \
-                _assembly.mult_adj_factor * _assembly.quantity
-
-            # Calculate assembly derived results.
-            self._calculate_reliability(_assembly)
-            self._calculate_costs(_assembly)
-
-            # Update parent assembly hazard rates and costs.
-            assembly.hazard_rate_active += _assembly.hazard_rate_active
-            assembly.hazard_rate_dormant += _assembly.hazard_rate_dormant
-            assembly.hazard_rate_software += _assembly.hazard_rate_software
-            assembly.cost += _assembly.cost
-            assembly.total_part_quantity += _assembly.total_part_quantity
-            assembly.total_power_dissipation += \
-                _assembly.total_power_dissipation
-
-        # Calculate parent assembly derived results.
-        self._calculate_reliability(assembly)
-        self._calculate_costs(assembly)
-
-        return False
-
-    def _calculate_reliability(self, hardware):     # pylint: disable=R0201
+    def calculate_reliability(self):
         """
-        Method to calculate reliability metrics for a hardware item.
+        Method to calculate reliability metrics for a Hardware item.
 
-        :param :class: `rtk.hardware.Hardware` hardware: the rtk.Hardware()
-                                                         data model to
-                                                         calculate costs
-                                                         metrics for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_code, _msg); the error code and error message.
+        :rtype: (int, str)
         """
 
         from math import exp
 
+        _code = 0
+        _msg = ''
+
         # Calculate the logistics hazard rate.
-        hardware.hazard_rate_logistics = hardware.hazard_rate_active + \
-            hardware.hazard_rate_dormant + hardware.hazard_rate_software
+        self.hazard_rate_logistics = self.hazard_rate_active + \
+            self.hazard_rate_dormant + self.hazard_rate_software
 
         try:
-            hardware.mtbf_logistics = 1.0 / hardware.hazard_rate_logistics
+            self.mtbf_logistics = 1.0 / self.hazard_rate_logistics
         except ZeroDivisionError:
-            hardware.mtbf_logistics = 0.0
+            self.mtbf_logistics = 0.0
+            _code = 10
+            _msg = _(u"ERROR: Hardware._calculate_reliability(): Zero "
+                     u"division error when calculating logistics MTBF.  "
+                     u"Active hazard rate = {0:f}, dormant hazard rate = "
+                     u"{1:f}, software hazard rate = "
+                     u"{2:f}.").format(self.hazard_rate_active,
+                                       self.hazard_rate_dormant,
+                                       self.hazard_rate_software)
 
-        hardware.reliability_logistics = exp(-1.0 *
-                                             hardware.hazard_rate_logistics *
-                                             hardware.mission_time)
+        self.reliability_logistics = exp(-1.0 *
+                                         self.hazard_rate_logistics *
+                                         self.mission_time)
 
-        # Calculate logistics hazard rate variances.
-        # hardware.hr_active_variance = 1.0 / \
-        #                               (hardware.hazard_rate_active**2.0)
-        # hardware.hr_dormant_variance = 1.0 / \
-        #                                (hardware.hazard_rate_dormant**2.0)
-        # hardware.hr_specified_variance = 1.0 / \
-        #                                  (hardware.hazard_rate_specified**2.0)
+        # Calculate logistics hazard rate variances if using handbook methods.
+        if self.hazard_rate_method_id == 1:
+            self.hr_active_variance = self.hazard_rate_active ** 2.0
+            self.hr_dormant_variance = self.hazard_rate_dormant ** 2.0
+            # self.hr_specified_variance = 1.0 / \
+            #                              (self.hazard_rate_specified**2.0)
 
         # Calculate the mission hazard rate.
         # FIXME: Add attributes to allow mission (redundancy) calculations.
-        hardware.hazard_rate_mission = hardware.hazard_rate_logistics
-        hardware.reliability_mission = hardware.reliability_logistics
+        self.hazard_rate_mission = self.hazard_rate_logistics
+        self.reliability_mission = self.reliability_logistics
 
-        return False
+        return _code, _msg
 
-    def _calculate_costs(self, hardware):   # pylint: disable=R0201
+    def calculate_costs(self):
         """
         Method to calculate cost metrics for a hardware item.
 
-        :param `rtk.hardware.Hardware` hardware: the rtk.Hardware() data model
-                                                 to calculate costs metrics
-                                                 for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_code, _msg); the error code and error message.
+        :rtype: (int, str)
         """
+
+        _code = 0
+        _msg = ''
 
         # Calculate O & M cost metrics.
         try:
-            hardware.cost_failure = hardware.cost / \
-                (hardware.hazard_rate_logistics * hardware.mission_time)
+            self.cost_failure = self.cost / \
+                                (self.hazard_rate_logistics *
+                                 self.mission_time)
         except ZeroDivisionError:
-            # TODO: Handle errors.
-            pass
+            self.cost_failure = 0.0
+            _code = 10
+            _msg = _(u"ERROR: Hardware._calculate_cost(): Zero division error "
+                     u"when calculating cost per failure.  Logistics hazard "
+                     u"rate = {0:f}, mission "
+                     u"time = {1:f}.").format(self.hazard_rate_logistics,
+                                              self.mission_time)
 
         try:
-            hardware.cost_hour = hardware.cost / hardware.mission_time
+            self.cost_hour = self.cost / self.mission_time
         except ZeroDivisionError:
-            # TODO: Handle errors.
-            pass
+            self.cost_hour = 0.0
+            _code = 10
+            _msg = _(u"ERROR: Hardware._calculate_cost(): Zero division error "
+                     u"when calculating cost per hour.  Mission "
+                     u"time = {0:f}.").format(self.mission_time)
 
-        return False
+        return _code, _msg
 
     def _dormant_hazard_rate(self, component):
         """
@@ -903,7 +977,7 @@ class Model(object):                        # pylint: disable=R0902
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
+        # TODO: Move to each component type model.
         _status = False
 
         factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
@@ -918,12 +992,12 @@ class Model(object):                        # pylint: disable=R0902
                   [0.20, 0.20, 0.20, 0.30, 0.30, 0.50, 1.00, 0.00]]
 
         # First find the component category/subcategory index.
-        c_index = self._get_component_index(component.category_id,
-                                            component.subcategory_id)
+        c_index = _get_component_index(component.category_id,
+                                       component.subcategory_id)
 
         # Now find the appropriate active to passive environment index.
-        e_index = self._get_environment_index(component.environment_active,
-                                              component.environment_dormant)
+        e_index = _get_environment_index(component.environment_active,
+                                         component.environment_dormant)
 
         try:
             component.hazard_rate_dormant = component.hazard_rate_active * \
@@ -937,68 +1011,280 @@ class Model(object):                        # pylint: disable=R0902
 
         return _status
 
-    def _get_component_index(category, subcategory):
+    @classmethod
+    def add_hardware(cls, revision_id, dao, parent_id=0, part=0):
         """
-        Helper method to find the correct component index.
+        Method to add a Hardware record to the RTK Program database.
 
-        """
-        if category == 1:                       # Capacitor
-            _c_index = 3
-        elif category == 2:                     # Connection
-            _c_index = 7
-        elif category == 3:                     # Inductive Device.
-            if subcategory > 1:                 # Transformer
-                _c_index = 9
-        elif category == 4:                     # IC
-            _c_index = 0
-        elif category == 7:                     # Relay
-            _c_index = 6
-        elif category == 8:                     # Resistor
-            _c_index = 4
-        elif category == 9:                     # Semiconductor
-            if subcategory in [1, 2, 3, 4, 5, 6]:
-                _c_index = 1
-            elif subcategory in [7, 8, 9, 10, 11, 12, 13]:
-                _c_index = 2
-        elif category == 10:                    # Switching Device
-            _c_index = 5
-
-        return _c_index
-
-    def _get_environment_index(active, dormant):
-        """
-        Helper method to find the correct environment index.
-
+        :param int revision_id: the ID of the Revision to associate the 
+                                Hardware item with.
+        :param dao: the `rtk.DAO.DAO` object connected to the RTK Program
+                    database.
+        :param int parent_id: the ID of the parent item of the new node.  By
+                              default the new node is added to the top level
+                              item.
+        :param int part: variable indicating whether to add a new assembly
+                         (part=0, default) or component (part=1).
+        :return: (_error_code, _msg, _item_id); a tuple containing the code 
+                 and message for the error that occured, if any, and the ID of
+                 the newly added item.  Error codes are:
+                     * 0 = success
+                     * 100 = failed to add new record to the
+                             rtk_hardware table.
+                     * 200 = failed to add new record to the
+                             rtk_stress table.
+                     * 300 = failed to add new record to the
+                             rtk_reliability table.
+                 These values are added to the error code returned from the
+                 `rtk.DAO.DAO` object executing the query.
+        :rtype: (int, str, int)
         """
 
-        if active in [1, 2, 3]:           # Ground
-            if dormant == 1:              # Ground
-                _e_index = 0
-            else:
-                _e_index = 7
-        elif active in [4, 5]:            # Naval
-            if dormant == 1:              # Ground
-                _e_index = 4
-            elif dormant == 2:            # Naval
-                _e_index = 3
-            else:
-                _e_index = 7
-        elif active in [6, 7, 8, 9, 10]:  # Airborne
-            if dormant == 1:           # Ground
-                _e_index = 2
-            elif dormant == 3:         # Airborne
-                _e_index = 1
-            else:
-                _e_index = 7
-        elif active == 11:    # Space
-            if dormant == 1:  # Ground
-                _e_index = 6
-            elif dormant == 4:    # Space
-                _e_index = 5
-            else:
-                _e_index = 7
+        _msg = _(u"SUCCESS: Hardware.add_hardware: Succesfully added a "
+                 u"Hardware record to the RTK Program database.")
 
-        return _e_index
+        _lst_add_item_query = ["INSERT INTO rtk_hardware \
+                                (fld_revision_id, fld_parent_id, fld_part) \
+                                VALUES({0:d}, {1:d}, {2:d})",
+                               "INSERT INTO rtk_stress \
+                                (fld_hardware_id) \
+                                VALUES({0:d})",
+                               "INSERT INTO rtk_reliability \
+                                (fld_hardware_id) \
+                                VALUES({0:d})"]
+
+        # Add a new record to the rtk_hardware table.
+        _query = _lst_add_item_query[0].format(revision_id, parent_id, part)
+        (_results,
+         _error_code,
+         _item_id) = dao.execute(_query, commit=True)
+
+        # If record was successfully added to rtk_hardware, add a new
+        # record to the rtk_stress table.  If not, set the error
+        # message.
+        if _results:
+            _query = _lst_add_item_query[1].format(_item_id)
+            (_results,
+             _error_code,
+             __) = dao.execute(_query, commit=True)
+        else:
+            _msg = _(u"ERROR: Hardware.add_hardware(): Failed to add new "
+                     u"record to table rtk_hardware.  Database returned error "
+                     u"code: {0:d}").format(_error_code)
+
+        # If record was successfully added to rtk_stress, add a new record to
+        # the rtk_reliability table.  If not, set the error message.
+        if _results:
+            _query = _lst_add_item_query[2].format(_item_id)
+            (_results,
+             _error_code,
+             __) = dao.execute(_query, commit=True)
+
+            # If record was unsuccessfully added to rtk_reliability, set the
+            # error message.
+            if not _results:
+                _msg = _(u"ERROR: Hardware.add_hardware(): Failed to add new "
+                         u"record to table rtk_reliability.  Database "
+                         u"returned error code: {0:d}").format(_error_code)
+        else:
+            _msg = _(u"ERROR: Hardware.add_hardware(): Failed to add new "
+                     u"record to table rtk_stress.  Database returned error "
+                     u"code: {0:d}").format(_error_code)
+
+        return _error_code, _msg, _item_id
+
+    @classmethod
+    def remove_hardware(cls, hardware_id, dao, children=True):
+        """
+        Method to remove a hardware item from the RTK Program database.
+
+        :param int hardware_id: the ID of the Hardware item to remove.
+        :param dao: the `rtk.DAO.DAO` object connected to the RTK Program
+                    database.
+        :param bool children: variable indicating whether (default) or not to
+                              remove the children records too.
+        :return: (_error_code, _msg); a tuple containing the error
+                                      code and error message.
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = _(u"SUCCESS: Hardware.remove_hardware(): Succesfully removed "
+                 u"record hardware_id={0:d} and all child records from the "
+                 u"RTK Program database.").format(hardware_id)
+
+        _lst_remove_item_query = ["DELETE FROM rtk_hardware \
+                                   WHERE fld_parent_id={0:d}",
+                                  "DELETE FROM rtk_hardware \
+                                   WHERE fld_hardware_id={0:d}"]
+
+        # Remove all the children of the Hardware item to remove.
+        if children:
+            (_results,
+             _error_code,
+             __) = dao.execute(_lst_remove_item_query[0].format(hardware_id),
+                               commit=True)
+
+            # If all children were successfully removed from rtk_hardware,
+            # remove the Hardware item whose hardware ID was passed from
+            # rtk_hardware.  Otherwise set the error message.
+            if _results:
+                (_results, _error_code, __) = dao.execute(
+                    _lst_remove_item_query[1].format(hardware_id), commit=True)
+
+                # If the Hardware item whose hardware ID was passed was
+                # not removed from rtk_hardware, set the error message.
+                if not _results:
+                    _msg = _(u"ERROR: Hardware.remove_hardware(): Failed to "
+                             u"remove record whose hardware_id={0:d} from "
+                             u"table rtk_hardware.  Database returned error "
+                             u"code: {1:d}").format(hardware_id, _error_code)
+            else:
+                _msg = _(u"ERROR: Hardware.remove_hardware(): Failed to "
+                         u"remove one or more child records whose parent "
+                         u"record is hardware_id={0:d} from table "
+                         u"rtk_hardware.  Database returned error "
+                         u"code: {1:d}").format(hardware_id, _error_code)
+
+        return _error_code, _msg
+
+    def old_calculate(self, assembly):
+        """
+        Method to iterively calculate various hardware attributes.
+
+        :param assembly: the :py:class:`rtk.hardware.Assembly.Model` data model
+                         to calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        assembly.hazard_rate_active = 0.0
+        assembly.hazard_rate_dormant = 0.0
+        assembly.hazard_rate_software = 0.0
+        assembly.cost = 0.0
+        assembly.total_part_quantity = 0
+        assembly.total_power_dissipation = 0.0
+
+        # First we calculate all the components that are direct children of the
+        # current assembly.
+        if assembly.part == 0:
+            try:
+                _components = assembly.dicComponents[assembly.hardware_id]
+            except KeyError:
+                _components = []
+        elif assembly.part == 1:
+            _components = [assembly]
+
+        for _component in _components:
+            if _component.hazard_rate_method == 1:  # Assessed
+                try:
+                    _component.calculate_part()
+                except AttributeError:
+                    # FIXME: Handle AttributeError in calculate.
+                    print "Could not calculate {0:s}".format(_component.name)
+
+            elif _component.hazard_rate_method == 2:  # Specified, h(t)
+                _component.hazard_rate_active = assembly.hazard_rate_specified
+            elif _component.hazard_rate_method == 3:  # Specified, MTBF
+                _component.hazard_rate_active = 1.0 / _component.mtbf_specified
+
+            # Calculate the dormant hazard rate.
+            self._dormant_hazard_rate(_component)
+
+            # Calculate component derived results.
+            self._calculate_reliability(_component)
+            self._calculate_costs(_component)
+
+            # Update parent assembly hazard rates and costs.
+            assembly.hazard_rate_active += _component.hazard_rate_active
+            assembly.hazard_rate_dormant += _component.hazard_rate_dormant
+            assembly.hazard_rate_software += _component.hazard_rate_software
+            assembly.cost += _component.cost * _component.quantity
+            assembly.total_part_quantity += _component.quantity
+            assembly.total_power_dissipation += (_component.operating_power *
+                                                 _component.quantity)
+
+        # Then we calculate all the assemblies that are direct children of the
+        # current assembly.
+        try:
+            _assemblies = assembly.dicAssemblies[assembly.hardware_id]
+        except(KeyError, AttributeError):
+            _assemblies = []
+
+        for _assembly in _assemblies:
+            if _assembly.hazard_rate_method == 1:  # Assessed
+                self.calculate(_assembly)
+            elif _assembly.hazard_rate_method == 2:  # Specified, h(t)
+                _assembly.hazard_rate_active = _assembly.hazard_rate_specified
+            elif _assembly.hazard_rate_method == 3:  # Specified, MTBF
+                _assembly.hazard_rate_active = 1.0 / _assembly.mtbf_specified
+
+            # Adjust the active hazard rate.
+            _assembly.hazard_rate_active = (_assembly.hazard_rate_active +
+                                            _assembly.add_adj_factor) * \
+                                           (_assembly.duty_cycle / 100.0) * \
+                                           _assembly.mult_adj_factor * _assembly.quantity
+
+            # Calculate assembly derived results.
+            self._calculate_reliability(_assembly)
+            self._calculate_costs(_assembly)
+
+            # Update parent assembly hazard rates and costs.
+            assembly.hazard_rate_active += _assembly.hazard_rate_active
+            assembly.hazard_rate_dormant += _assembly.hazard_rate_dormant
+            assembly.hazard_rate_software += _assembly.hazard_rate_software
+            assembly.cost += _assembly.cost
+            assembly.total_part_quantity += _assembly.total_part_quantity
+            assembly.total_power_dissipation += \
+                _assembly.total_power_dissipation
+
+        # Calculate parent assembly derived results.
+        self._calculate_reliability(assembly)
+        self._calculate_costs(assembly)
+
+        return False
+
+    def _old_calculate_reliability(self, hardware):  # pylint: disable=R0201
+        """
+        Method to calculate reliability metrics for a hardware item.
+
+        :param :class: `rtk.hardware.Hardware` hardware: the rtk.Hardware()
+                                                         data model to
+                                                         calculate costs
+                                                         metrics for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        from math import exp
+
+        # Calculate the logistics hazard rate.
+        hardware.hazard_rate_logistics = hardware.hazard_rate_active + \
+                                         hardware.hazard_rate_dormant + hardware.hazard_rate_software
+
+        try:
+            hardware.mtbf_logistics = 1.0 / hardware.hazard_rate_logistics
+        except ZeroDivisionError:
+            hardware.mtbf_logistics = 0.0
+
+        hardware.reliability_logistics = exp(-1.0 *
+                                             hardware.hazard_rate_logistics *
+                                             hardware.mission_time)
+
+        # Calculate logistics hazard rate variances.
+        # hardware.hr_active_variance = 1.0 / \
+        #                               (hardware.hazard_rate_active**2.0)
+        # hardware.hr_dormant_variance = 1.0 / \
+        #                                (hardware.hazard_rate_dormant**2.0)
+        # hardware.hr_specified_variance = 1.0 / \
+        #                                  (hardware.hazard_rate_specified**2.0)
+
+        # Calculate the mission hazard rate.
+        # FIXME: Add attributes to allow mission (redundancy) calculations.
+        hardware.hazard_rate_mission = hardware.hazard_rate_logistics
+        hardware.reliability_mission = hardware.reliability_logistics
+
+        return False
 
 
 class Hardware(object):

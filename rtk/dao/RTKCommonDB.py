@@ -30,16 +30,16 @@ groups = {0: ('Engineering, Design', 'workgroup'),
           7: ('Durability', 'affinity'),
           8: ('Cost', 'affinity')}
 
-environs = {0 : ('GB', 'Ground, Benign', 'active', 0.5, 1.0),
-            1 : ('GF', 'Ground, Fixed', 'active', 2.0, 1.0),
-            2 : ('GM', 'Ground, Mobile', 'active', 4.0, 1.0),
-            3 : ('NS', 'Naval, Sheltered', 'active', 4.0, 1.0),
-            4 : ('NU', 'Naval, Unsheltered', 'active', 6.0, 1.0),
-            5 : ('AIC', 'Airborne, Inhabited, Cargo', 'active', 4.0, 1.0),
-            6 : ('AIF', 'Airborne, Inhabited, Fighter', 'active', 5.0, 1.0),
-            7 : ('AUC', 'Airborne, Uninhabited, Cargo', 'active', 5.0, 1.0),
-            8 : ('AUF', 'Airborne, Uninhabited, Fighter', 'active', 8.0, 1.0),
-            9 : ('ARW', 'Airborne, Rotary Wing', 'active', 8.0, 1.0),
+environs = {0: ('GB', 'Ground, Benign', 'active', 0.5, 1.0),
+            1: ('GF', 'Ground, Fixed', 'active', 2.0, 1.0),
+            2: ('GM', 'Ground, Mobile', 'active', 4.0, 1.0),
+            3: ('NS', 'Naval, Sheltered', 'active', 4.0, 1.0),
+            4: ('NU', 'Naval, Unsheltered', 'active', 6.0, 1.0),
+            5: ('AIC', 'Airborne, Inhabited, Cargo', 'active', 4.0, 1.0),
+            6: ('AIF', 'Airborne, Inhabited, Fighter', 'active', 5.0, 1.0),
+            7: ('AUC', 'Airborne, Uninhabited, Cargo', 'active', 5.0, 1.0),
+            8: ('AUF', 'Airborne, Uninhabited, Fighter', 'active', 8.0, 1.0),
+            9: ('ARW', 'Airborne, Rotary Wing', 'active', 8.0, 1.0),
             10: ('SF', 'Space, Flight', 'active', 0.5, 1.0),
             11: ('MF', 'Missile, Flight', 'active', 5.0, 1.0),
             12: ('ML', 'Missile, Launch', 'active', 12.0, 1.0),
@@ -59,16 +59,16 @@ models = {0: ('Equal Apportionment', 'allocation'),
           6: ('MIL-HDBK-217F Parts Stress', 'rprediction'),
           7: ('NSWC-11', 'rprediction')}
 
-types = {0 : ('CALC', 'Calculated', 'cost'),
-         1 : ('DEF', 'Defined', 'cost'),
-         2 : ('ASS', 'Assessed', 'mtbf'),
-         3 : ('DHR', 'Defined, Hazard Rate', 'mtbf'),
-         4 : ('DMT', 'Defined, MTBF', 'mtbf'),
-         5 : ('ASS', 'Assessed', 'mttr'),
-         6 : ('DEF', 'Defined', 'mttr'),
-         7 : ('PLN', 'Planning', 'incident'),
-         8 : ('CON', 'Concept', 'incident'),
-         9 : ('RQMT', 'Requirement', 'incident'),
+types = {0: ('CALC', 'Calculated', 'cost'),
+         1: ('DEF', 'Defined', 'cost'),
+         2: ('ASS', 'Assessed', 'mtbf'),
+         3: ('DHR', 'Defined, Hazard Rate', 'mtbf'),
+         4: ('DMT', 'Defined, MTBF', 'mtbf'),
+         5: ('ASS', 'Assessed', 'mttr'),
+         6: ('DEF', 'Defined', 'mttr'),
+         7: ('PLN', 'Planning', 'incident'),
+         8: ('CON', 'Concept', 'incident'),
+         9: ('RQMT', 'Requirement', 'incident'),
          10: ('DES', 'Design', 'incident'),
          11: ('COD', 'Coding', 'incident'),
          12: ('DB', 'Database', 'incident'),
@@ -110,16 +110,16 @@ types = {0 : ('CALC', 'Calculated', 'cost'),
          46: ('TOL', 'System Engineering, Tolerance Analysis', 'validation'),
          47: ('WCA', 'System Engineering, Worst Case Analysis', 'validation')}
 
-categories = {0 : ('IC', 'Integrated Circuit', 'hardware', 1),
-              1 : ('SEMI', 'Semiconductor', 'hardware', 1),
-              2 : ('RES', 'Resistor', 'hardware', 1),
-              3 : ('CAP', 'Capacitor', 'hardware', 1),
-              4 : ('IND', 'Inductive Device', 'hardware', 1),
-              5 : ('REL', 'Relay', 'hardware', 1),
-              6 : ('SW', 'Switching Device', 'hardware', 1),
-              7 : ('CONN', 'Connection', 'hardware', 1),
-              8 : ('MET', 'Meter', 'hardware', 1),
-              9 : ('MISC', 'Miscellaneous', 'hardware', 1),
+categories = {0: ('IC', 'Integrated Circuit', 'hardware', 1),
+              1: ('SEMI', 'Semiconductor', 'hardware', 1),
+              2: ('RES', 'Resistor', 'hardware', 1),
+              3: ('CAP', 'Capacitor', 'hardware', 1),
+              4: ('IND', 'Inductive Device', 'hardware', 1),
+              5: ('REL', 'Relay', 'hardware', 1),
+              6: ('SW', 'Switching Device', 'hardware', 1),
+              7: ('CONN', 'Connection', 'hardware', 1),
+              8: ('MET', 'Meter', 'hardware', 1),
+              9: ('MISC', 'Miscellaneous', 'hardware', 1),
               10: ('INS', 'Insignificant', 'risk', 1),
               11: ('SLT', 'Slight', 'risk', 2),
               12: ('LOW', 'Low', 'risk', 3),
@@ -137,118 +137,117 @@ categories = {0 : ('IC', 'Integrated Circuit', 'hardware', 1),
               17: ('Event Control',
                    'Does realtime processing of data resulting from ' \
                    'external events. An example might be a computer ' \
-                        'program that processes telemetry data.',
-                        'software', 1),
-                   18: ('Process Control',
-                        'Receives data from an external source and issues ' \
-                        'commands to that source to control its actions ' \
-                        'based on the received data.',
-                        'software', 1),
-                   19: ('Procedure Control',
-                        'Controls other software; for example, an operating ' \
-                        'system that controls execution of time-shared and ' \
-                        'batch computer programs.',
-                        'software', 1),
-                   20: ('Navigation',
-                        'Does computation and modeling to computer ' \
-                        'information required to guide an airplane from ' \
-                        'point of origin to destination.',
-                        'software', 1),
-                   21: ('Flight Dynamics',
-                        'Uses the functions computed by navigation software ' \
-                        'and augmented by control theory to control the ' \
-                        'entire flight of an aircraft.',
-                        'software', 1),
-                   22: ('Orbital Dynamics',
-                        'Resembles navigation and flight dynamics software, ' \
-                        'but has the additional complexity required by ' \
-                        'orbital navigation, such as a more complex ' \
-                        'reference system and the inclusion of ' \
-                        'gravitational effects of other heavenly bodies.',
-                        'software', 1),
-                   23: ('Message Processing',
-                        'Handles input and output mnessages. processing the ' \
-                        'text or information contained therein.',
-                        'software', 1),
-                   24: ('Diagnostic Software',
-                        'Used to detect and isolate hardware errors in the ' \
-                        'computer in which it resides or in other hardware ' \
-                        'that can communicate with the computer.',
-                        'software', 1),
-                   25: ('Sensor and Signal Processing',
-                        'Similar to that of message processing, except that ' \
-                        'it required greater processing, analyzing, and ' \
-                        'transforming the input into a usable data ' \
-                        'processing format.',
-                        'software', 1),
-                   26: ('Simulation',
-                        'Used to simulate and environment ieseion ' \
-                        'situation. other heavradlwuaatrieo,n aonfd a ' \
-                        'icnopmutps uftreo mpr otghreasme nt o enable a ' \
-                        'more realistic or a piece of hardware.',
-                        'software', 1),
-                   27: ('Database Management',
-                        'Manages the storage and access of (typically ' \
-                        'large) groups of data. Such software can also ' \
-                        'often prepare reports in user-defined formats, ' \
-                        'based on the contents of the database.',
-                        'software', 1),
-                   28: ('Data Acquisition',
-                        'Receives information in real-time and stores it in ' \
-                        'some form suitable format for later processing, ' \
-                        'for example, software that receives data from a ' \
-                        'space probe ,and files.',
-                        'software', 1),
-                   29: ('Data Presentation',
-                        'Formats and transforms data, as necessary, for ' \
-                        'convenient and understandable displays for ' \
-                        'humans.  Typically, such displays would be for ' \
-                        'some screen presentation.',
-                        'software', 1),
-                   30: ('Decision and Planning Aids',
-                        'Uses artificial intelligence techniques to provide ' \
-                        'an expert system to evaluate data and provide ' \
-                        'additional information and consideration for ' \
-                        'decision and policy makers.',
-                        'software', 1),
-                   31: ('Pattern and Image Processing',
-                        'Used for computer image generation and ' \
-                        'processing.  Such software may analyze terrain ' \
-                        'data and generate images based on stored data.',
-                        'software', 1),
-                   32: ('Computer System Software',
-                        'Provides services to operational computer ' \
-                        'programs (i.e., problem oriented).',
-                        'software', 1),
-                   33: ('Software Development Tools',
-                        'Provides services to aid in the development of ' \
-                        'software (e.g., compilers, assemblers, static and ' \
-                        'dynamic analyzers).',
-                        'software', 1),
-                   34: ('HW', 'Hardware', 'incident', 1),
-                   35: ('SW', 'Software', 'incident', 1),
-                   36: ('PROC', 'Process', 'incident', 1),
-                   37: ('ENGD', 'Engineering, Design', 'action', 1),
-                   38: ('ENGR', 'Engineering, Reliability', 'action', 1),
-                   39: ('ENGS', 'Engineering, Systems', 'action', 1),
-                   40: ('MAN', 'Manufacturing', 'action', 1),
-                   41: ('TEST', 'Test', 'action', 1),
-                   42: ('VANDV', 'Verification & Validation',
-                        'action', 1)}
+                   'program that processes telemetry data.',
+                   'software', 1),
+              18: ('Process Control',
+                   'Receives data from an external source and issues ' \
+                   'commands to that source to control its actions ' \
+                   'based on the received data.',
+                   'software', 1),
+              19: ('Procedure Control',
+                   'Controls other software; for example, an operating ' \
+                   'system that controls execution of time-shared and ' \
+                   'batch computer programs.',
+                   'software', 1),
+              20: ('Navigation',
+                   'Does computation and modeling to computer ' \
+                   'information required to guide an airplane from ' \
+                   'point of origin to destination.',
+                   'software', 1),
+              21: ('Flight Dynamics',
+                   'Uses the functions computed by navigation software ' \
+                   'and augmented by control theory to control the ' \
+                   'entire flight of an aircraft.',
+                   'software', 1),
+              22: ('Orbital Dynamics',
+                   'Resembles navigation and flight dynamics software, ' \
+                   'but has the additional complexity required by ' \
+                   'orbital navigation, such as a more complex ' \
+                   'reference system and the inclusion of ' \
+                   'gravitational effects of other heavenly bodies.',
+                   'software', 1),
+              23: ('Message Processing',
+                   'Handles input and output mnessages. processing the ' \
+                   'text or information contained therein.',
+                   'software', 1),
+              24: ('Diagnostic Software',
+                   'Used to detect and isolate hardware errors in the ' \
+                   'computer in which it resides or in other hardware ' \
+                   'that can communicate with the computer.',
+                   'software', 1),
+              25: ('Sensor and Signal Processing',
+                   'Similar to that of message processing, except that ' \
+                   'it required greater processing, analyzing, and ' \
+                   'transforming the input into a usable data ' \
+                   'processing format.',
+                   'software', 1),
+              26: ('Simulation',
+                   'Used to simulate and environment ieseion ' \
+                   'situation. other heavradlwuaatrieo,n aonfd a ' \
+                   'icnopmutps uftreo mpr otghreasme nt o enable a ' \
+                   'more realistic or a piece of hardware.',
+                   'software', 1),
+              27: ('Database Management',
+                   'Manages the storage and access of (typically ' \
+                   'large) groups of data. Such software can also ' \
+                   'often prepare reports in user-defined formats, ' \
+                   'based on the contents of the database.',
+                   'software', 1),
+              28: ('Data Acquisition',
+                   'Receives information in real-time and stores it in ' \
+                   'some form suitable format for later processing, ' \
+                   'for example, software that receives data from a ' \
+                   'space probe ,and files.',
+                   'software', 1),
+              29: ('Data Presentation',
+                   'Formats and transforms data, as necessary, for ' \
+                   'convenient and understandable displays for ' \
+                   'humans.  Typically, such displays would be for ' \
+                   'some screen presentation.',
+                   'software', 1),
+              30: ('Decision and Planning Aids',
+                   'Uses artificial intelligence techniques to provide ' \
+                   'an expert system to evaluate data and provide ' \
+                   'additional information and consideration for ' \
+                   'decision and policy makers.',
+                   'software', 1),
+              31: ('Pattern and Image Processing',
+                   'Used for computer image generation and ' \
+                   'processing.  Such software may analyze terrain ' \
+                   'data and generate images based on stored data.',
+                   'software', 1),
+              32: ('Computer System Software',
+                   'Provides services to operational computer ' \
+                   'programs (i.e., problem oriented).',
+                   'software', 1),
+              33: ('Software Development Tools',
+                   'Provides services to aid in the development of ' \
+                   'software (e.g., compilers, assemblers, static and ' \
+                   'dynamic analyzers).',
+                   'software', 1),
+              34: ('HW', 'Hardware', 'incident', 1),
+              35: ('SW', 'Software', 'incident', 1),
+              36: ('PROC', 'Process', 'incident', 1),
+              37: ('ENGD', 'Engineering, Design', 'action', 1),
+              38: ('ENGR', 'Engineering, Reliability', 'action', 1),
+              39: ('ENGS', 'Engineering, Systems', 'action', 1),
+              40: ('MAN', 'Manufacturing', 'action', 1),
+              41: ('TEST', 'Test', 'action', 1),
+              42: ('VANDV', 'Verification & Validation', 'action', 1)}
 
-phases = {0 : ('Concept/Planning (PCP)', 'development'),
-               1 : ('Requirements Analysis (SRA)', 'development'),
-               2 : ('Preliminary Design Review (PDR)', 'development'),
-               3 : ('Critical Design Review (CDR)', 'development'),
-               4 : ('Test Readiness Review (TRR)', 'development'),
-               5 : ('Released', 'development'),
-               6 : ('Design', 'lifecycle'),
-               7 : ('Reliability Growth', 'lifecycle'),
-               8 : ('Reliability Qualification', 'lifecycle'),
-               9 : ('Production', 'lifecycle'),
-               10: ('Storage', 'lifecycle'),
-               11: ('Operation', 'lifecycle'),
-               12: ('Disposal', 'lifecycle')}
+phases = {0: ('Concept/Planning (PCP)', 'development'),
+          1: ('Requirements Analysis (SRA)', 'development'),
+          2: ('Preliminary Design Review (PDR)', 'development'),
+          3: ('Critical Design Review (CDR)', 'development'),
+          4: ('Test Readiness Review (TRR)', 'development'),
+          5: ('Released', 'development'),
+          6: ('Design', 'lifecycle'),
+          7: ('Reliability Growth', 'lifecycle'),
+          8: ('Reliability Qualification', 'lifecycle'),
+          9: ('Production', 'lifecycle'),
+          10: ('Storage', 'lifecycle'),
+          11: ('Operation', 'lifecycle'),
+          12: ('Disposal', 'lifecycle')}
 
 distributions = {0: ('Constant Probability', 'statistical'),
                       1: ('Exponential', 'statistical'),

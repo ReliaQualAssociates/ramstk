@@ -21,7 +21,7 @@ from analyses.allocation.Allocation import Allocation
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 
 class TestAllocationController(unittest.TestCase):

@@ -76,48 +76,6 @@ class Model(object):
         self.damage_model = 0
         self.priority = 0
 
-    def set_attributes(self, values):
-        """
-        Method to set the Load data model attributes.
-
-        :param tuple values: values to assign to instance attributes.
-        :return: (_code, _msg); the error code and error message.
-        :rtype: tuple
-        """
-
-        _code = 0
-        _msg = ''
-
-        try:
-            self.mechanism_id = int(values[0])
-            self.load_id = int(values[1])
-            self.description = str(values[2])
-            self.damage_model = int(values[3])
-            self.priority = int(values[4])
-        except IndexError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Insufficient input values."
-        except TypeError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Converting one or more inputs to correct data type."
-        except ValueError as _err:
-            _code = Utilities.error_handler(_err.args)
-            _msg = "ERROR: Wrong input data type."
-
-        return(_code, _msg)
-
-    def get_attributes(self):
-        """
-        Method to retrieve the current values of the Mode data model
-        attributes.
-
-        :return: (mechanism_id, load_id, description, damage_model, priority)
-        :rtype: tuple
-        """
-
-        return(self.mechanism_id, self.load_id, self.description,
-               self.damage_model, self.priority)
-
 
 class Load(object):
     """
