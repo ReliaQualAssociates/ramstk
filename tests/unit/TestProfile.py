@@ -135,7 +135,7 @@ class TestUsageProfileModel(unittest.TestCase):
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding a new item to the Usage Profile.")
 
-        self.assertTrue(isinstance(_tre_profile.get_node(7).data, RTKMission))
+        self.assertTrue(isinstance(_tre_profile.get_node(5).data, RTKMission))
 
     @attr(all=True, unit=True)
     def test03b_add_phase_to_profile(self):
@@ -153,7 +153,7 @@ class TestUsageProfileModel(unittest.TestCase):
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding a new item to the Usage Profile.")
 
-        self.assertTrue(isinstance(_tre_profile.get_node(18).data,
+        self.assertTrue(isinstance(_tre_profile.get_node(16).data,
                                    RTKMissionPhase))
 
     @attr(all=True, unit=True)
@@ -164,15 +164,14 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.DUT.retrieve_profile(self.dao, 1)
 
-        _error_code, _msg = self.DUT.add_profile(2, 18, 8)
+        _error_code, _msg = self.DUT.add_profile(2, 16, 6)
 
         _tre_profile = self.DUT.retrieve_profile(self.dao, 1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding a new item to the Usage Profile.")
-
-        self.assertTrue(isinstance(_tre_profile.get_node(711).data,
+        self.assertTrue(isinstance(_tre_profile.get_node(167).data,
                                    RTKEnvironment))
 
     @attr(all=True, unit=True)
@@ -318,29 +317,8 @@ class TestUsageProfileController(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01_create_controller(self):
         """
-        (TestProfile): __init__ should create an instance of a USageProfile data controller.
+        (TestProfile) __init__ should create an instance of a UsageProfile data controller.
         """
 
         self.assertTrue(isinstance(self.DUT, UsageProfile))
         self.assertTrue(isinstance(self.DUT.usage_model, Model))
-
-    @attr(all=True, unit=True)
-    def test02_request_usage_profile(self):
-        """
-        (TestProfile): request_usage_profile should return a Tree() on success
-        """
-
-        _tre_profile = self.DUT.request_usage_profile(self.dao, 1)
-
-        self.assertTrue(isinstance(_tre_profile, Tree))
-        self.assertTrue(isinstance(_tre_profile.get_node(1).data, RTKMission))
-        self.assertEqual(_tre_profile.get_node(1).data.description,
-                         'Test Mission 1')
-        self.assertTrue(isinstance(_tre_profile.get_node(11).data,
-                                   RTKMissionPhase))
-        self.assertEqual(_tre_profile.get_node(11).data.description,
-                     'Test Phase 11')
-        self.assertTrue(isinstance(_tre_profile.get_node(111).data,
-                                   RTKEnvironment))
-        self.assertEqual(_tre_profile.get_node(111).data.name,
-                     'Test Environment 111')

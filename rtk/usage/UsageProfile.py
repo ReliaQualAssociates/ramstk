@@ -242,6 +242,122 @@ class Model(object):
         else:
             _error_code = 3001
             _msg = "RTK ERROR: Attempted to add an item to the Usage " \
+        except:
+            pass
+
+        return _error_code, _msg
+
+    def retrieve_profile(self, dao, revision_id):
+        """
+        Method to retrieve and build the Usage Profile tree for Revision ID.
+
+        :param dao: the `:py:class:rtk.dao.DAO.DAO` object connected to the RTK
+                    Program database.
+        :param int revision_id: the Revision ID to retrieve the Usage Profile
+                                and build trees for.
+        :return: treUsageProfile; the Usage Profile Tree().
+        :rtype: Tree()
+        """
+
+        self.dao = dao
+
+        _root = self.treUsageProfile.root
+        for _node in self.treUsageProfile.children(_root):
+            self.treUsageProfile.remove_node(_node.identifier)
+
+        # Build the tree.  We concatenate the Mission ID and the Phase ID to
+        # create the Node() identifier for Mission Phases.  This prevents the
+        # likely case when the first Mission and Phase have the same ID (1) in
+        # the database from causing problems when building the tree.  Do the
+        # same for the environment by concatenating the Environment ID with the
+        # Mission ID and Phase ID.
+        _dic_missions = self.mission.retrieve_all(self.dao, revision_id)
+        for _mission in _dic_missions.values():
+            _mnode = self.treUsageProfile.create_node(
+                tag=_mission.description, identifier=_mission.mission_id,
+                parent=0, data=_mission)
+
+            if not isinstance(_mnode, Node):
+                _msg = "ERROR: Failed to create a Node() for Mission ID " \
+                       "{0:d}".format(_mission.mission_id)
+                Configuration.RTK_DEBUG_LOG.error(_msg)
+                break
+            else:
+                _dic_phases = self.phase.retrieve_all(self.dao,
+                                                      _mission.mission_id)
+                for _phase in _dic_phases.values():
+                    _phase_id = int(str(_mission.mission_id) +
+                                    str(_phase.phase_id))
+                    _pnode = self.treUsageProfile.create_node(
+                        tag=_phase.description, identifier=_phase_id,
+                        parent=_mission.mission_id, data=_phase)
+
+                    if not isinstance(_pnode, Node):
+                        _msg = "RTK ERROR: Failed to create a Node() for " \
+                               "Mission ID {0:d} and Phase ID {1:d}.".\
+                            format(_mission.mission_id, _phase.phase_id)
+                        Configuration.RTK_DEBUG_LOG.error(_msg)
+                        break
+                else:
+                    _dic_environments = self.environment.retrieve_all(
+                        self.dao, _phase.phase_id)
+                    for _environment in _dic_environments.values():
+                        _env_id = int(str(_mission.mission_id) +
+                                      str(_phase.phase_id) +
+                                      str(_environment.environment_id))
+                        # The parent must be the concatenated phase ID used in
+                        # the tree above, not the Phase ID attribute of the
+                        # RTKPhase object.
+                        _enode = self.treUsageProfile.create_node(
+                            tag=_environment.name, identifier=_env_id,
+                            parent=_phase_id, data=_environment)
+
+                        if not isinstance(_enode, Node):
+                            _msg = "RTK ERROR: Failed to create a Node() " \
+                                   "for Mission ID {0:d}, Phase ID {1:d}, " \
+                                   "and Environment ID {2:d}.".\
+                                format(_mission.mission_id, _phase.phase_id,
+                                       _environment.environment_id)
+                            Configuration.RTK_DEBUG_LOG.error(_msg)
+                            break
+
+        return self.treUsageProfile
+
+    def add_profile(self, pos, pid, cid):
+        """
+        Method to add a Mission, Mission Phase, or Environment into the Usage
+        Profile.
+
+        :param int pos: the position in the treUsageProfile to add the new
+                        item; 0 = Mission, 1 = Mission Phase, 2 = Environment.
+        :param int pid: the treUsageProfile identifier that will be the parent
+                        of the newly added item.
+        :param int cid: the Revision ID, Mission ID, or Phase ID the newly
+                        added item is associated with in the RTK Program
+                        database.
+        :return: (_error_code, _msg); the error code and associated error
+                                      message.
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = "RTK SUCCESS: Adding a new item to the Usage Profile."
+
+        if pos == self._MISSION:
+            _item = self.mission.add_mission(cid)
+            _nid = _item.mission_id
+
+        elif pos == self._PHASE:
+            _item = self.phase.add_phase(cid)
+            _nid = int(str(pid) + str(_item.phase_id))
+
+        elif pos == self._ENVIRONMENT:
+            _item = self.environment.add_environment(cid)
+            _nid = int(str(pid) + str(_item.environment_id))
+
+        else:
+            _error_code = 3001
+            _msg = "RTK ERROR: Attempted to add an item to the Usage " \
                    "Profile with an undefined indenture level.  Level " \
                    "{0:d} was requested.  Must be one of 0 = Mission, " \
                    "1 = Mission Phase, and 2 = Environment.".format(pos)
@@ -250,7 +366,7 @@ class Model(object):
             try:
                 self.treUsageProfile.create_node(tag='', identifier=_nid,
                                                  parent=pid, data=_item)
-            # TODO: Create exception class to capture here.
+
             except:
                 _error_code = 3002
                 _msg = "RTK ERROR: Creating a new node in the Usage Profile " \
@@ -316,16 +432,28 @@ class UsageProfile(object):
     """
     The Usage Profile controller provides an interface between the Usage
     Profile data model and an RTK view model.  A single Usage Profile
-    controller can control one or more Usage Profile data models.  Attributes
-    of the Usage Profile data controller are:
+    controller can control one or more Usage Profile data models.
 
-    :ivar usage_model: the `:py:class:rtk.usage.UsageProfile.Model`
-                       associated with the data controller instance.
+    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` used to communicate with the
+                RTK Project database.
+    :ivar dict dicProfiles: Dictionary of the Usage Profile data models
+                            controlled.  Key is the Revision ID; value is a
+                            pointer to the instance of the Usage Profile data
+                            model.
     """
 
     def __init__(self):
         """
-        Method to initialize a Usage Profile data controller instance.
+        Class for Usage Profile data controller.  Attributes of the Usage Profile
+        data controller are:
+
+        :ivar usage_model: the `:py:test:rtk.usage.Usage.Model` associated with the
+                           data controller instance.
+        """
+
+    def __init__(self):
+        """
+        Method to initialize an instance of the Usage Profile data controller.
         """
 
         # Initialize private dictionary attributes.
@@ -399,11 +527,13 @@ class UsageProfile(object):
 
         return self.usage_model.add_profile(2, pid, phase_id)
 
-    def request_delete_mission(self, mission_id):
+    def request_delete_mission(self, nid, mission_id):
         """
         Method to request Mission ID and it's children be deleted from the
         Usage Profile.
 
+        :param int nid: the Node() identifer in treUsageProfile for the Mission
+                        to be deleted.
         :param int mission_id: the Mission ID to delete.
         :return: (_error_code, _msg); the error code and associated error
                                       message.
@@ -412,11 +542,13 @@ class UsageProfile(object):
 
         return self.usage_model.delete_profile(0, mission_id)
 
-    def request_delete_phase(self, phase_id):
+    def request_delete_phase(self, nid, phase_id):
         """
         Method to request Phase ID and it's children be deleted from the
         Usage Profile.
 
+        :param int nid: the Node() identifer in treUsageProfile for the Phase
+                        to be deleted.
         :param int phase_id: the Phase ID to delete.
         :return: (_error_code, _msg); the error code and associated error
                                       message.
@@ -429,6 +561,8 @@ class UsageProfile(object):
         """
         Method to request Environment ID be deleted from the Usage Profile.
 
+        :param int nid: the Node() identifer in treUsageProfile for the
+                        Environment to be deleted.
         :param int environment_id: the Environment ID to delete.
         :return: (_error_code, _msg); the error code and associated error
                                       message.

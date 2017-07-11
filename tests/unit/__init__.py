@@ -403,10 +403,8 @@ def setUp():
 
 def tearDown():
 
-    #if os.path.isfile('/tmp/TestDB.rtk'):
-    #    os.remove('/tmp/TestDB.rtk')
+    if os.path.isfile('/tmp/TestDB.rtk'):
+        os.remove('/tmp/TestDB.rtk')
 
-    #if os.path.isfile('/tmp/TestCommonDB.rtk'):
-    #    os.remove('/tmp/TestCommonDB.rtk')
-
-    pass
+    if os.path.isfile('/tmp/TestCommonDB.rtk'):
+        os.remove('/tmp/TestCommonDB.rtk')

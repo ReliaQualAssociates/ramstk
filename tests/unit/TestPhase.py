@@ -140,7 +140,7 @@ class TestPhaseModel(unittest.TestCase):
         """
 
         self.DUT.retrieve_all(self.dao, 1)
-        print self.DUT.last_id
+
         self.assertFalse(self.DUT.delete_phase(7))
 
     @attr(all=True, unit=True)

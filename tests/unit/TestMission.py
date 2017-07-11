@@ -154,7 +154,7 @@ class TestMissionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_05b_save_non_existent_mission(self):
         """
-        (TestMission): save_mission should return True when passed a Mission ID that doesn't exist.
+        (TestMission): save_mission should return True when passed a Revision ID that doesn't exist.
         """
 
         self.DUT.retrieve_all(self.dao, 1)
@@ -198,7 +198,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=True)
     def test00_controller_create(self):
         """
-        (TestMission): __init__ should return a Mission Data Controller
+        (TestMission) __init__ should return a Mission Data Controller
         """
 
         self.assertTrue(isinstance(self.DUT, Mission))
