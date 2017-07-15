@@ -1,4 +1,4 @@
-#!/usr/bin/env python -O
+1#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestDAO.py is part of The RTK Project
@@ -12,15 +12,23 @@ and models.
 """
 
 import sys
+import os
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
 
+from sqlalchemy.orm import scoped_session
+
 import Configuration as Configuration
 import Utilities as Utilities
-from dao.DAO import *
+from dao.RTKCommonDB import Session
+from dao.DAO import DAO
+from dao.RTKRevision import RTKRevision
+from dao.RTKMission import RTKMission
+from dao.RTKMissionPhase import RTKMissionPhase
+from dao.RTKEnvironment import RTKEnvironment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -39,14 +47,22 @@ class TestDAO(unittest.TestCase):
         """
 
         self.DUT = DAO('')
+        self.DUT.db_connect('sqlite:////tmp/TestDB.rtk')
 
-        self._revision = RTKRevision()
-        self._mission = RTKMission()
-        self._mission.revision_id = 1
-        self._phase = RTKMissionPhase()
-        self._phase.mission_id = 1
-        self._environment = RTKEnvironment()
-        self._environment.phase_id = 1
+        Session.configure(bind=self.DUT.engine, autoflush=False,
+                          expire_on_commit=False)
+        self.session = scoped_session(Session)
+
+        self._revision = self.session.query(RTKRevision).first()
+        self._mission = self.session.query(RTKMission).\
+            filter(RTKMission.revision_id ==
+                   self._revision.revision_id).first()
+        self._phase = self.session.query(RTKMissionPhase).\
+            filter(RTKMissionPhase.mission_id ==
+                   self._mission.mission_id).first()
+        self._environment = self.session.query(RTKEnvironment).\
+            filter(RTKEnvironment.phase_id ==
+                   self._phase.phase_id).first()
 
         Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
@@ -62,8 +78,6 @@ class TestDAO(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, DAO))
-        self.assertEqual(self.DUT.engine, None)
-        self.assertEqual(self.DUT.metadata, None)
 
     @attr(all=True, unit=True)
     def test01_dao_db_connect(self):
@@ -72,8 +86,9 @@ class TestDAO(unittest.TestCase):
         """
 
         _database = 'sqlite:////tmp/TestDB.rtk'
+        _dao = DAO('')
 
-        self.assertFalse(self.DUT.db_connect(_database))
+        self.assertFalse(_dao.db_connect(_database))
 
     @attr(all=True, unit=True)
     def test02a_dao_db_create_common(self):
@@ -82,17 +97,24 @@ class TestDAO(unittest.TestCase):
         """
 
         _database = 'sqlite:////tmp/_rtk_common_db.rtk'
-        self.DUT.db_connect(_database   )
+        self.DUT.db_connect(_database)
 
-        self.assertFalse(self.DUT.db_create_common(_database))
+        self.assertFalse(self.DUT.db_create_common(_database, self.session))
 
-    @attr(all=True, unit=False)
-    def test02b_dao_db_create(self):
+        os.remove('/tmp/_rtk_common_db.rtk')
+
+    @attr(all=True, unit=True)
+    def test02b_dao_db_create_program(self):
         """
-        (TestDAO) db_create should return False on success.
+        (TestDAO) db_create_program should return False on success.
         """
 
-        self.assertFalse(self.DUT.db_create())
+        _database = 'sqlite:////tmp/_rtk_program_db.rtk'
+        self.DUT.db_connect(_database)
+
+        self.assertFalse(self.DUT.db_create_program(_database, self.session))
+
+        os.remove('/tmp/_rtk_program_db.rtk')
 
     @attr(all=True, unit=True)
     def test03a_dao_db_add(self):
@@ -100,11 +122,11 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_add should return a zero error code on success when adding a single record to the database.
         """
 
-        (_error_code, _msg) = self.DUT.db_add(self._revision)
+        (_error_code, _msg) = self.DUT.db_add([RTKRevision(), ], self.session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "SUCCESS: Adding an item to the RTK Program database.")
+                         "RTK SUCCESS: Adding one or more items to the RTK Program database.")
 
     @attr(all=True, unit=True)
     def test03b_dao_db_add_no_item(self):
@@ -112,11 +134,11 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_add should return a 1003 error code on failure.
         """
 
-        (_error_code, _msg) = self.DUT.db_add(None)
+        (_error_code, _msg) = self.DUT.db_add([None, ], self.session)
 
         self.assertEqual(_error_code, 1003)
         self.assertEqual(_msg,
-                         "ERROR: Adding an item to the RTK Program database.")
+                         "RTK ERROR: Adding one or more items to the RTK Program database.")
 
     @attr(all=True, unit=True)
     def test04_dao_db_add_many(self):
@@ -124,12 +146,19 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_add should return a zero error code on success when adding multiple records to the database.
         """
 
-        (_error_code, _msg) = self.DUT.db_add([self._mission, self._phase,
-                                               self._environment])
+        _mission = RTKMission()
+        _mission.revision_id = self._revision.revision_id
+        _phase = RTKMissionPhase()
+        _phase.mission_id = self._mission.mission_id
+        _environment = RTKEnvironment()
+        _environment.phase_id = self._phase.phase_id
+
+        (_error_code, _msg) = self.DUT.db_add([_mission, _phase, _environment],
+                                              self.session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "SUCCESS: Adding an item to the RTK Program database.")
+                         "RTK SUCCESS: Adding one or more items to the RTK Program database.")
 
     @attr(all=True, unit=True)
     def test05_dao_db_update(self):
@@ -141,11 +170,11 @@ class TestDAO(unittest.TestCase):
         self._revision.availability_mission = 0.9999
         self._mission.description = 'Big mission'
 
-        (_error_code, _msg) = self.DUT.db_update()
+        (_error_code, _msg) = self.DUT.db_update(self.session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "SUCCESS: Updating the RTK Program database.")
+                         "RTK SUCCESS: Updating the RTK Program database.")
 
     @attr(all=True, unit=True)
     def test06a_dao_db_delete(self):
@@ -153,16 +182,12 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_delete should return a zero error code on success.
         """
 
-        _phase = RTKMissionPhase()
-        _phase.mission_id = 1
-
-        self.DUT.db_add(_phase)
-
-        (_error_code, _msg) = self.DUT.db_delete(_phase)
+        (_error_code, _msg) = self.DUT.db_delete(self._environment,
+                                                 self.session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "SUCCESS: Deleting an item from the RTK Program database.")
+                         "RTK SUCCESS: Deleting an item from the RTK Program database.")
 
     @attr(all=True, unit=True)
     def test06b_dao_db_delete_no_item(self):
@@ -170,8 +195,8 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_delete should return a 1005 error code on failure.
         """
 
-        (_error_code, _msg) = self.DUT.db_delete(None)
+        (_error_code, _msg) = self.DUT.db_delete(None, self.session)
 
         self.assertEqual(_error_code, 1005)
         self.assertEqual(_msg,
-                         "ERROR: Deleting an item from the RTK Program database.")
+                         "RTK ERROR: Deleting an item from the RTK Program database.")
