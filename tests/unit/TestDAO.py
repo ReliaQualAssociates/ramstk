@@ -21,9 +21,11 @@ from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 
+from treelib import Tree
+
 import Configuration as Configuration
 import Utilities as Utilities
-from dao.RTKCommonDB import Session
+from dao.RTKCommonDB import SiteSession, ProgSession
 from dao.DAO import DAO
 from dao.RTKRevision import RTKRevision
 from dao.RTKMission import RTKMission
@@ -46,21 +48,28 @@ class TestDAO(unittest.TestCase):
         Sets up the test fixture for the DAO class.
         """
 
+        self.site_dao = DAO('')
+        self.site_dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
+
+        SiteSession.configure(bind=self.site_dao.engine, autoflush=False,
+                          expire_on_commit=False)
+        self.site_session = scoped_session(SiteSession)
+
         self.DUT = DAO('')
         self.DUT.db_connect('sqlite:////tmp/TestDB.rtk')
 
-        Session.configure(bind=self.DUT.engine, autoflush=False,
+        ProgSession.configure(bind=self.DUT.engine, autoflush=False,
                           expire_on_commit=False)
-        self.session = scoped_session(Session)
+        self.program_session = scoped_session(ProgSession)
 
-        self._revision = self.session.query(RTKRevision).first()
-        self._mission = self.session.query(RTKMission).\
+        self._revision = self.program_session.query(RTKRevision).first()
+        self._mission = self.program_session.query(RTKMission).\
             filter(RTKMission.revision_id ==
                    self._revision.revision_id).first()
-        self._phase = self.session.query(RTKMissionPhase).\
+        self._phase = self.program_session.query(RTKMissionPhase).\
             filter(RTKMissionPhase.mission_id ==
                    self._mission.mission_id).first()
-        self._environment = self.session.query(RTKEnvironment).\
+        self._environment = self.program_session.query(RTKEnvironment).\
             filter(RTKEnvironment.phase_id ==
                    self._phase.phase_id).first()
 
@@ -99,7 +108,7 @@ class TestDAO(unittest.TestCase):
         _database = 'sqlite:////tmp/_rtk_common_db.rtk'
         self.DUT.db_connect(_database)
 
-        self.assertFalse(self.DUT.db_create_common(_database, self.session))
+        self.assertFalse(self.DUT.db_create_common(_database, self.program_session))
 
         os.remove('/tmp/_rtk_common_db.rtk')
 
@@ -112,7 +121,7 @@ class TestDAO(unittest.TestCase):
         _database = 'sqlite:////tmp/_rtk_program_db.rtk'
         self.DUT.db_connect(_database)
 
-        self.assertFalse(self.DUT.db_create_program(_database, self.session))
+        self.assertFalse(self.DUT.db_create_program(_database, self.program_session))
 
         os.remove('/tmp/_rtk_program_db.rtk')
 
@@ -122,7 +131,7 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_add should return a zero error code on success when adding a single record to the database.
         """
 
-        (_error_code, _msg) = self.DUT.db_add([RTKRevision(), ], self.session)
+        (_error_code, _msg) = self.DUT.db_add([RTKRevision(), ], self.program_session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -134,7 +143,7 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_add should return a 1003 error code on failure.
         """
 
-        (_error_code, _msg) = self.DUT.db_add([None, ], self.session)
+        (_error_code, _msg) = self.DUT.db_add([None, ], self.program_session)
 
         self.assertEqual(_error_code, 1003)
         self.assertEqual(_msg,
@@ -154,7 +163,7 @@ class TestDAO(unittest.TestCase):
         _environment.phase_id = self._phase.phase_id
 
         (_error_code, _msg) = self.DUT.db_add([_mission, _phase, _environment],
-                                              self.session)
+                                              self.program_session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -170,7 +179,7 @@ class TestDAO(unittest.TestCase):
         self._revision.availability_mission = 0.9999
         self._mission.description = 'Big mission'
 
-        (_error_code, _msg) = self.DUT.db_update(self.session)
+        (_error_code, _msg) = self.DUT.db_update(self.program_session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -183,7 +192,7 @@ class TestDAO(unittest.TestCase):
         """
 
         (_error_code, _msg) = self.DUT.db_delete(self._environment,
-                                                 self.session)
+                                                 self.program_session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -195,8 +204,93 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_delete should return a 1005 error code on failure.
         """
 
-        (_error_code, _msg) = self.DUT.db_delete(None, self.session)
+        (_error_code, _msg) = self.DUT.db_delete(None, self.program_session)
 
         self.assertEqual(_error_code, 1005)
         self.assertEqual(_msg,
                          "RTK ERROR: Deleting an item from the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test07a_dao_db_load_globals(self):
+        """
+        (TestDAO) db_load_globals returns False on success
+        """
+
+        self.assertFalse(self.DUT.db_load_globals(self.site_session))
+
+        self.assertTrue(isinstance(self.DUT.tree, Tree))
+
+        self.assertEqual(Configuration.RTK_ACTION_CATEGORY, {})
+        self.assertEqual(Configuration.RTK_INCIDENT_CATEGORY,
+                         {34: (u'HW', u'Hardware', u'incident', 1),
+                          35: (u'SW', u'Software', u'incident', 1),
+                          36: (u'PROC', u'Process', u'incident', 1)})
+        self.assertEqual(Configuration.RTK_SEVERITY,
+                         {10: (u'INS', u'Insignificant', u'risk', 1),
+                          11: (u'SLT', u'Slight', u'risk', 2),
+                          12: (u'LOW', u'Low', u'risk', 3),
+                          13: (u'MED', u'Medium', u'risk', 4),
+                          14: (u'HI', u'High', u'risk', 5),
+                          15: (u'MAJ', u'Major', u'risk', 6)})
+
+        self.assertEqual(Configuration.RTK_ACTIVE_ENVIRONMENTS, {})
+        self.assertEqual(Configuration.RTK_DORMANT_ENVIRONMENTS, {})
+        self.assertEqual(Configuration.RTK_SW_DEV_ENVIRONMENTS, {})
+
+        self.assertEqual(Configuration.RTK_AFFINITY_GROUPS, {})
+        self.assertEqual(Configuration.RTK_WORKGROUPS[1],
+                         (u'Engineering, Systems', u'workgroup'))
+
+        self.assertEqual(Configuration.RTK_FAILURE_PROBABILITY, {})
+        self.assertEqual(Configuration.RTK_SW_LEVELS, {})
+
+        self.assertEqual(Configuration.RTK_DETECTION_METHODS, {})
+        self.assertEqual(Configuration.RTK_SW_TEST_METHODS, {})
+
+        self.assertEqual(Configuration.RTK_ALLOCATION_MODELS, {})
+        self.assertEqual(Configuration.RTK_DAMAGE_MODELS, {})
+        self.assertEqual(Configuration.RTK_HR_MODEL, {})
+
+        self.assertEqual(Configuration.RTK_LIFECYCLE, {})
+        self.assertEqual(Configuration.RTK_SW_DEV_PHASES, {})
+
+        self.assertEqual(Configuration.RTK_RPN_DETECTION, {})
+        self.assertEqual(Configuration.RTK_RPN_SEVERITY, {})
+        self.assertEqual(Configuration.RTK_RPN_OCCURRENCE, {})
+
+        self.assertEqual(Configuration.RTK_ACTION_STATUS, {})
+        self.assertEqual(Configuration.RTK_INCIDENT_STATUS, {})
+
+        self.assertEqual(Configuration.RTK_CONTROL_TYPES,
+                         [u'Prevention', u'Detection'])
+        self.assertEqual(Configuration.RTK_COST_TYPE, {})
+        self.assertEqual(Configuration.RTK_HR_TYPE, {})
+        self.assertEqual(Configuration.RTK_INCIDENT_TYPE, {})
+        self.assertEqual(Configuration.RTK_MTTR_TYPE, {})
+        self.assertEqual(Configuration.RTK_REQUIREMENT_TYPE,
+                         {1: (u'Type Code', u'Test Type of Requirement',
+                              u'requirement')})
+        self.assertEqual(Configuration.RTK_VALIDATION_TYPE, {})
+
+        self.assertEqual(Configuration.RTK_SW_APPLICATION,
+                         {1: (u'Application Description', 1.0, 1.0)})
+        self.assertEqual(Configuration.RTK_CATEGORIES, {})
+        self.assertEqual(Configuration.RTK_CRITICALITY,
+                         {1: (u'Criticality Name', u'Criticality Description',
+                              u'', 0)})
+        self.assertEqual(Configuration.RTK_FAILURE_MODES, {})
+        self.assertEqual(Configuration.RTK_HAZARDS,
+                         {1: (u'Hazard Category', u'Hazard Subcategory')})
+        self.assertEqual(Configuration.RTK_MANUFACTURERS,
+                         {1: (u'Distribution Description', u'unknown',
+                              u'CAGE Code')})
+        self.assertEqual(Configuration.RTK_MEASUREMENT_UNITS, {})
+        self.assertEqual(Configuration.RTK_OPERATING_PARAMETERS, {})
+        self.assertEqual(Configuration.RTK_S_DIST,
+                         {1: (u'Distribution Description', u'unknown')})
+        self.assertEqual(Configuration.RTK_STAKEHOLDERS,
+                         {1: (u'Stakeholder',)})
+        self.assertEqual(Configuration.RTK_SUBCATEGORIES, {})
+        self.assertEqual(Configuration.RTK_USERS[1],
+                         (u'Last Name', u'First Name', u'EMail', u'867.5309',
+                          u'0'))

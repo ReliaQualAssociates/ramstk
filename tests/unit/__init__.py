@@ -21,6 +21,7 @@ import Configuration as Configuration
 import Utilities as Utilities
 
 # Import the RTK Common database table objects.
+import dao.RTKCommonDB
 from dao.RTKUser import RTKUser
 from dao.RTKGroup import RTKGroup
 from dao.RTKEnviron import RTKEnviron
@@ -140,10 +141,19 @@ def setUp():
     # Add an entry to each table.  These are used as the DUT in each test
     # file.
     session.add(RTKUser())
-    session.add(RTKGroup())
+
+    _group = RTKGroup()
+    _group.description = 'Engineering, Systems'
+    _group.type = 'workgroup'
+    session.add(_group)
+
     session.add(RTKEnviron())
     session.add(RTKModel())
-    session.add(RTKType())
+    _type = RTKType()
+    _type.description = 'Test Type of Requirement'
+    _type.type = 'requirement'
+    session.add(_type)
+
     session.add(RTKPhase())
     session.add(RTKDistribution())
     session.add(RTKManufacturer())
@@ -161,15 +171,19 @@ def setUp():
     session.add(RTKLoadHistory())
     session.commit()
 
-    _category = RTKCategory()
-    session.add(_category)
+    for _key in dao.RTKCommonDB.categories.keys():
+        _category = RTKCategory()
+        _category.category_id = _key
+        session.add(_category)
+        _category.set_attributes(dao.RTKCommonDB.categories[_key])
     session.commit()
+
     _subcategory = RTKSubCategory()
-    _subcategory.category_id = _category.category_id
+    _subcategory.category_id = 9
     session.add(_subcategory)
     session.commit()
     _failuremode = RTKFailureMode()
-    _failuremode.category_id = _category.category_id
+    _failuremode.category_id = 9
     _failuremode.subcategory_id = _subcategory.subcategory_id
     session.add(_failuremode)
     session.commit()
@@ -403,8 +417,9 @@ def setUp():
 
 def tearDown():
 
-    if os.path.isfile('/tmp/TestDB.rtk'):
-        os.remove('/tmp/TestDB.rtk')
+    #if os.path.isfile('/tmp/TestDB.rtk'):
+     #   os.remove('/tmp/TestDB.rtk')
 
-    if os.path.isfile('/tmp/TestCommonDB.rtk'):
-        os.remove('/tmp/TestCommonDB.rtk')
+    #if os.path.isfile('/tmp/TestCommonDB.rtk'):
+    #    os.remove('/tmp/TestCommonDB.rtk')
+    pass

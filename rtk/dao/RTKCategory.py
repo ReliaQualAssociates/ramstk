@@ -35,6 +35,10 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 class RTKCategory(Base):
     """
     Class to represent the table rtk_category in the RTK Common database.
+
+    Types of category are:
+        # 1 = Hardware Component
+        # 2 = Severity
     """
 
     __tablename__ = 'rtk_category'
@@ -44,7 +48,7 @@ class RTKCategory(Base):
     name = Column('fld_name', String(256), default='Category Code')
     description = Column('fld_description', String(512),
                          default='Category Description')
-    type = Column('fld_type', Integer, default='unknown')
+    type = Column('fld_type', String(256), default='unknown')
     value = Column('fld_value', Integer, default=1)
 
     # Define the relationships to other tables in the RTK Program database.

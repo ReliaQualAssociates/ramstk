@@ -380,34 +380,98 @@ RTK_IMPORT_LOG = ''
 # --------------------------------------------------------------------- #
 # Format files.                                                         #
 # --------------------------------------------------------------------- #
-RTK_FORMAT_FILE = []
-RTK_COLORS = []
-RTK_PREFIX = []
-
-RTK_MODULES = []
-RTK_PAGE_NUMBER = []
-
-RTK_COM_INFO = []
-RTK_PROG_INFO = []
-
-RTK_HARDWARE_LIST = []
-RTK_SOFTWARE_LIST = []
-
-RTK_MANUFACTURERS = []
+RTK_FORMAT_FILE = {}
+RTK_COLORS = {}
+RTK_PREFIX = {}
 
 # --------------------------------------------------------------------- #
-# Requirement analysis configuration options.                           #
+# Dictionaries filled by RTK Common DB table RTKCategory.               #
 # --------------------------------------------------------------------- #
-RTK_REQUIREMENT_TYPES = []
-RTK_STAKEHOLDERS = []
-RTK_AFFINITY_GROUPS = []
+RTK_ACTION_CATEGORY = {}
+RTK_INCIDENT_CATEGORY = {}
+RTK_SEVERITY = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKEnviron.                #
+# --------------------------------------------------------------------- #
+RTK_ACTIVE_ENVIRONMENTS = {}
+RTK_DORMANT_ENVIRONMENTS = {}
+RTK_SW_DEV_ENVIRONMENTS = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKGroup.                  #
+# --------------------------------------------------------------------- #
+RTK_AFFINITY_GROUPS = {}
+RTK_WORKGROUPS = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKLevel.                  #
+# --------------------------------------------------------------------- #
+RTK_FAILURE_PROBABILITY = {}
+RTK_SW_LEVELS = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKMethod.                 #
+# --------------------------------------------------------------------- #
+RTK_DETECTION_METHODS = {}
+RTK_SW_TEST_METHODS = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKModel.                  #
+# --------------------------------------------------------------------- #
+RTK_ALLOCATION_MODELS = {}
+RTK_DAMAGE_MODELS = {}
+RTK_HR_MODEL = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKPhase.                  #
+# --------------------------------------------------------------------- #
+RTK_LIFECYCLE = {}
+RTK_SW_DEV_PHASES = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKRPN.                    #
+# --------------------------------------------------------------------- #
+RTK_RPN_DETECTION = {}
+RTK_RPN_SEVERITY = {}
+RTK_RPN_OCCURRENCE = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKStatus.                 #
+# --------------------------------------------------------------------- #
+RTK_ACTION_STATUS = {}
+RTK_INCIDENT_STATUS = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled by RTK Common DB table RTKType.                   #
+# --------------------------------------------------------------------- #
+RTK_CONTROL_TYPES = []
+RTK_COST_TYPE = {}
+RTK_HR_TYPE = {}
+RTK_INCIDENT_TYPE = {}
+RTK_MTTR_TYPE = {}
+RTK_REQUIREMENT_TYPE = {}
+RTK_VALIDATION_TYPE = {}
+
+# --------------------------------------------------------------------- #
+# Dictionaries filled from RTK Common DB tables that require no filter. #
+# --------------------------------------------------------------------- #
+RTK_SW_APPLICATION = {}
+RTK_CATEGORIES = {}
+RTK_CRITICALITY = {}
+RTK_FAILURE_MODES = {}                  # Default failure modes.
+RTK_HAZARDS = {}
+RTK_MANUFACTURERS = {}
+RTK_MEASUREMENT_UNITS = {}
+RTK_OPERATING_PARAMETERS = {}           # TODO: Add table to common db for this.
+RTK_S_DIST = {}
+RTK_STAKEHOLDERS = {}
+RTK_SUBCATEGORIES = {}
+RTK_USERS = {}
 
 # --------------------------------------------------------------------- #
 # Risk analyses configuration options.                                  #
 # --------------------------------------------------------------------- #
-RTK_SEVERITY = []
-RTK_FAILURE_PROBABILITY = []
-RTK_HAZARDS = []
 RTK_RISK_POINTS = [4, 10]
 
 # --------------------------------------------------------------------- #
@@ -415,55 +479,25 @@ RTK_RISK_POINTS = [4, 10]
 # --------------------------------------------------------------------- #
 RTK_MODE_SOURCE = 1                     # 1=FMD-97
 RTK_FMECA_METHOD = 1                    # 1=Task 102, 2=RPN
-
 RTK_RPN_FORMAT = 0                      # RPN at mechanism level.
-RTK_RPN_SEVERITY = []
-RTK_RPN_OCCURRENCE = []
-RTK_RPN_DETECTION = []
-
-RTK_FAILURE_MODES = {}                  # Default failure modes.
 
 # --------------------------------------------------------------------- #
-# PoF configuration options.                                            #
+# RTK Database configuration options.                                   #
 # --------------------------------------------------------------------- #
-# TODO: Add tables to the common database for these.
-RTK_DAMAGE_MODELS = []
-RTK_OPERATING_PARAMETERS = []
-
-# --------------------------------------------------------------------- #
-# Hardware configuration options.                                       #
-# --------------------------------------------------------------------- #
-RTK_CATEGORIES = {}
-RTK_SUBCATEGORIES = {}
-
-# --------------------------------------------------------------------- #
-# Software configuration options.                                       #
-# --------------------------------------------------------------------- #
-RTK_SW_LEVELS = []
-RTK_SW_APPLICATION = []
-RTK_SW_DEV_PHASES = []
-
-# --------------------------------------------------------------------- #
-# Validation configuration options.                                     #
-# --------------------------------------------------------------------- #
-RTK_TASK_TYPE = []
-RTK_MEASUREMENT_UNITS = []
-
-# --------------------------------------------------------------------- #
-# Incident configuration options.                                       #
-# --------------------------------------------------------------------- #
-RTK_USERS = []
-RTK_INCIDENT_CATEGORY = []
-RTK_INCIDENT_TYPE = []
-RTK_INCIDENT_STATUS = []
-RTK_INCIDENT_CRITICALITY = []
-RTK_LIFECYCLE = []
-RTK_DETECTION_METHODS = []
-
 RTK_COM_BACKEND = ''
 COM_BACKEND = ''                        # TODO: Retire this variable.
 RTK_BACKEND = ''
 BACKEND = ''                            # TODO: Retire this variable.
+
+RTK_COM_INFO = {}
+RTK_PROG_INFO = {}
+
+# --------------------------------------------------------------------- #
+RTK_MODULES = []
+RTK_PAGE_NUMBER = []
+
+RTK_HARDWARE_LIST = []                  # TODO: Retire this variable.
+RTK_SOFTWARE_LIST = []                  # TODO: Retire this variable.
 
 RTK_HR_MULTIPLIER = 1000000.0
 FRMULT = 1000000.0                      # TODO: Retire this variable.
@@ -471,7 +505,8 @@ RTK_DEC_PLACES = 6
 PLACES = 6                              # TODO: Retire this variable.
 RTK_MTIME = 10.0
 
-RTK_TABPOS = ['top', 'bottom', 'bottom']
+RTK_TABPOS = {'listbook' : 'top', 'modulebook' : 'bottom',
+              'workbook' : 'bottom'}
 TABPOS = ['top', 'bottom', 'bottom']    # TODO: Retire this variable.
 
 RTK_GUI_LAYOUT = 'basic'
