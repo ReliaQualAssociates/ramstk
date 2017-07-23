@@ -51,3 +51,4 @@ pylintout
 /rtk/hardware/BoM.timings
 /.gtm/
 /tests/unit/_dao/Unit.tests
+!/requirements.txt
