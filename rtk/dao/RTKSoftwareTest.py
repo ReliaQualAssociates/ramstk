@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKSoftwareTest Package.
+==============================
+The RTKSoftwareTest Table
+==============================
 """
 
 # Import the database models.

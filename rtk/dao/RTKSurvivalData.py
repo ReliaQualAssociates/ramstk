@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKSurvivalData Package.
+==============================
+The RTKSurvivalData Table
+==============================
 """
 
 from datetime import date

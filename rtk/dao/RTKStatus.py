@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKStatus Package.
+==============================
+The RTKStatus Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

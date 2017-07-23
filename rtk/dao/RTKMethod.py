@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMethod Package.
+==============================
+The RTKMethod Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

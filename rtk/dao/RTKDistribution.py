@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKDistribution Package.
+==============================
+The RTKDistribution Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

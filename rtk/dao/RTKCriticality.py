@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKCriticality Package.
+==============================
+The RTKCriticality Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

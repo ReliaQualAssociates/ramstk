@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKControl Package.
+==============================
+The RTKControl Table
+==============================
 """
 
 # Import the database models.

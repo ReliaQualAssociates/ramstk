@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKFailureDefinition Package.
+==============================
+The RTKFailureDefinition Table
+==============================
 """
 
 # Import the database models.

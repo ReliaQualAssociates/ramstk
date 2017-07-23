@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKHazard Package.
+==============================
+The RTKHazard Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

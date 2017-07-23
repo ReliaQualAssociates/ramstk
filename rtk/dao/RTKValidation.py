@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTValidation Package.
+==============================
+The RTValidation Table
+==============================
 """
 
 from datetime import date, timedelta

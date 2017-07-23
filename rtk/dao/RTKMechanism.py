@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMechanism Package.
+==============================
+The RTKMechanism Table
+==============================
 """
 
 # Import the database models.

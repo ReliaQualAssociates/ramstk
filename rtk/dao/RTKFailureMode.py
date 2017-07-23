@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKFailureMode Package.
+==============================
+The RTKFailureMode Table
+==============================
 """
 
 from sqlalchemy import Column, Float, ForeignKey, Integer, String

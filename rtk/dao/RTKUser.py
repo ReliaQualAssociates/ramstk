@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKUser Package.
+==============================
+The RTKUser Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

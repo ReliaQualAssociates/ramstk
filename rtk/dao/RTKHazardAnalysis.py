@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKHazardAnalysis Package.
+==============================
+The RTKHazardAnalysis Table
+==============================
 """
 
 # Import the database models.

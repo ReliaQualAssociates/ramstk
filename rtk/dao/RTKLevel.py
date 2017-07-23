@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKLevel Package.
+==============================
+The RTKLevel Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

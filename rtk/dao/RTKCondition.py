@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKCondition Package.
+==============================
+The RTKCondition Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

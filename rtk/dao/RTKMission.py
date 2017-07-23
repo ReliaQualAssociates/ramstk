@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMission Package.
+==============================
+The RTKMission Table
+==============================
 """
 
 # Import the database models.

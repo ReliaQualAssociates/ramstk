@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMeasurement Package.
+==============================
+The RTKMeasurement Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

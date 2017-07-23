@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMissionPhase Package.
+==============================
+The RTKMissionPhase Table
+==============================
 """
 
 # Import the database models.

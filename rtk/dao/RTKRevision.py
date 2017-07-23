@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKRevision Package.
+==============================
+The RTKRevision Table
+==============================
 """
 
 # Import the database models.

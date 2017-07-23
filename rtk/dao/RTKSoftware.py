@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKSoftware Package.
+==============================
+The RTKSoftware Table
+==============================
 """
 
 # Import the database models.

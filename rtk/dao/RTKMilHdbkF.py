@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMilHdbkF Package.
+==============================
+The RTKMilHdbkF Table
+==============================
 """
 
 # Import the database models.

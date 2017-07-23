@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKUnit Package.
+==============================
+The RTKUnit Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

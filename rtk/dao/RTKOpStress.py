@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKOpStress Package.
+==============================
+The RTKOpStress Table
+==============================
 """
 
 # Import the database models.

@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKManufacturer Package.
+==============================
+The RTKManufacturer Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

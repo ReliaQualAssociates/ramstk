@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKRPN Package.
+==============================
+The RTKRPN Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

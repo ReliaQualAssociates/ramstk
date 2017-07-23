@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKDesignElectric Package.
+==============================
+The RTKDesignElectric Table
+==============================
 """
 
 # Import the database models.

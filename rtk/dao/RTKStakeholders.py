@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKStakeholders Package.
+==============================
+The RTKStakeholders Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMatrix Package.
+==============================
+The RTKMatrix Table
+==============================
 """
 
 # Import the database models.

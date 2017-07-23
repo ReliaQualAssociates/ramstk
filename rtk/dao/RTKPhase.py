@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKPhase Package.
+==============================
+The RTKPhase Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

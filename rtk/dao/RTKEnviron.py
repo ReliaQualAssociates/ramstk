@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKEnviron Package.
+==============================
+The RTKEnviron Table
+==============================
 """
 
 from sqlalchemy import Column, Float, Integer, String

@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKCause Package.
+==============================
+The RTKCause Table
+==============================
 """
 
 # Import the database models.

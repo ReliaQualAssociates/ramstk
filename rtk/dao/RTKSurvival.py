@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKSurvival Package.
+==============================
+The RTKSurvival Table
+==============================
 """
 
 from datetime import date, timedelta

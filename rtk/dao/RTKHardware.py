@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKHardware Package.
+==============================
+The RTKHardware Table
+==============================
 """
 
 from datetime import date

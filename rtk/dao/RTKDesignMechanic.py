@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKDesignMechanic Package.
+==============================
+The RTKDesignMechanic Table
+==============================
 """
 
 # Import the database models.

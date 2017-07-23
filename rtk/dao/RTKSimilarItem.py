@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKSimilarItem Package.
+==============================
+The RTKSimilarItem Table
+==============================
 """
 
 # Import the database models.

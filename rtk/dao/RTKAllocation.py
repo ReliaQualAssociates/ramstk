@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKAllocation Package.
+==============================
+The RTKAllocation Table
+==============================
 """
 
 # Import the database models.

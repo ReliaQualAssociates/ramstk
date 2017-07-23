@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKEnvironment Package.
+==============================
+The RTKEnvironment Table
+==============================
 """
 
 # Import the database models.

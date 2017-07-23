@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKTestMethod Package.
+==============================
+The RTKTestMethod Table
+==============================
 """
 
 # Import the database models.

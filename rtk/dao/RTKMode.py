@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKMode Package.
+==============================
+The RTKMode Table
+==============================
 """
 
 # Import the database models.

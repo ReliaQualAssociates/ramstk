@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKLoadHistory Package.
+==============================
+The RTKLoadHistory Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

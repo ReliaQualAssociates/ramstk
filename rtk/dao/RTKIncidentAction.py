@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKIncidentAction Package.
+==============================
+The RTKIncidentAction Table
+==============================
 """
 
 from datetime import date, timedelta

@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKIncidentDetail Package.
+==============================
+The RTKIncidentDetail Table
+==============================
 """
 
 # Import the database models.

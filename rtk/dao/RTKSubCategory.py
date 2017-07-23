@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKSubCategory Package.
+==============================
+The RTKSubCategory Table
+==============================
 """
 
 from sqlalchemy import Column, ForeignKey, Integer, String

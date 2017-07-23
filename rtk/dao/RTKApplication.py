@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKApplication Package.
+==============================
+The RTKApplication Table
+==============================
 """
 
 from sqlalchemy import Column, Float, Integer, String

@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKReliability Package.
+==============================
+The RTKReliability Table
+==============================
 """
 
 # Import the database models.

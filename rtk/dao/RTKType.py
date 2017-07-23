@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKType Package.
+==============================
+The RTKType Table
+==============================
 """
 
 from sqlalchemy import Column, Integer, String

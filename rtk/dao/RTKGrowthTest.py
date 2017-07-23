@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKGrowthTest Package.
+==============================
+The RTKGrowthTest Table
+==============================
 """
 
 from datetime import date

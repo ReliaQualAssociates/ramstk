@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKStakeholder Package.
+==============================
+The RTKStakeholder Table
+==============================
 """
 
 # Import the database models.

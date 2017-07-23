@@ -6,7 +6,9 @@
 # All rights reserved.
 
 """
-The RTKNSWC Package.
+==============================
+The RTKNSWC Table
+==============================
 """
 
 # Import the database models.
