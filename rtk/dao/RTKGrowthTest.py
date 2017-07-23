@@ -43,6 +43,7 @@ class RTKGrowthTest(Base):
     """
 
     __tablename__ = 'rtk_growth_test'
+    __table_args__ = {'extend_existing': True}
 
     test_id = Column('fld_test_id', Integer,
                      ForeignKey('rtk_test.fld_test_id'), nullable=False)

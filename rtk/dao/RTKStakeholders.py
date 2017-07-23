@@ -37,6 +37,7 @@ class RTKStakeholders(Base):
     """
 
     __tablename__ = 'rtk_stakeholders'
+    __table_args__ = {'extend_existing': True}
 
     stakeholders_id = Column('fld_stakeholders_id', Integer, primary_key=True,
                              autoincrement=True, nullable=False)

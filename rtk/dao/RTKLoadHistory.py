@@ -37,6 +37,7 @@ class RTKLoadHistory(Base):
     """
 
     __tablename__ = 'rtk_load_history'
+    __table_args__ = {'extend_existing': True}
 
     history_id = Column('fld_load_history_id', Integer, primary_key=True,
                         autoincrement=True, nullable=False)

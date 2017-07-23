@@ -50,6 +50,7 @@ class RTKRevision(Base):
     """
 
     __tablename__ = 'rtk_revision'
+    __table_args__ = {'extend_existing': True}
 
     revision_id = Column('fld_revision_id', Integer, primary_key=True,
                          autoincrement=True, nullable=False)

@@ -42,6 +42,7 @@ class RTKMission(Base):
     """
 
     __tablename__ = 'rtk_mission'
+    __table_args__ = {'extend_existing': True}
 
     revision_id = Column('fld_revision_id', Integer,
                          ForeignKey('rtk_revision.fld_revision_id'),

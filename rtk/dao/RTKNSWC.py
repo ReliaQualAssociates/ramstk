@@ -41,6 +41,7 @@ class RTKNSWC(Base):
     """
 
     __tablename__ = 'rtk_nswc'
+    __table_args__ = {'extend_existing': True}
 
     hardware_id = Column('fld_hardware_id', Integer,
                          ForeignKey('rtk_hardware.fld_hardware_id'),

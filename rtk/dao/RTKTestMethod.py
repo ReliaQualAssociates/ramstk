@@ -41,6 +41,7 @@ class RTKTestMethod(Base):
     """
 
     __tablename__ = 'rtk_test_method'
+    __table_args__ = {'extend_existing': True}
 
     stress_id = Column('fld_stress_id', Integer,
                        ForeignKey('rtk_op_stress.fld_stress_id'),

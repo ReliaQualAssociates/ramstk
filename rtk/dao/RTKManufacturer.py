@@ -37,6 +37,7 @@ class RTKManufacturer(Base):
     """
 
     __tablename__ = 'rtk_manufacturer'
+    __table_args__ = {'extend_existing': True}
 
     manufacturer_id = Column('fld_manufacturer_id', Integer, primary_key=True,
                              autoincrement=True, nullable=False)

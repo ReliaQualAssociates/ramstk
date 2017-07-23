@@ -37,6 +37,7 @@ class RTKMethod(Base):
     """
 
     __tablename__ = 'rtk_method'
+    __table_args__ = {'extend_existing': True}
 
     method_id = Column('fld_method_id', Integer, primary_key=True,
                        autoincrement=True, nullable=False)

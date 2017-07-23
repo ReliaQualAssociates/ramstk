@@ -37,6 +37,7 @@ class RTKEnviron(Base):
     """
 
     __tablename__ = 'rtk_environ'
+    __table_args__ = {'extend_existing': True}
 
     environ_id = Column('fld_environ_id', Integer, primary_key=True,
                         autoincrement=True, nullable=False)

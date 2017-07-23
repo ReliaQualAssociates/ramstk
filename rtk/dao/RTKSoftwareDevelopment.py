@@ -42,6 +42,7 @@ class RTKSoftwareDevelopment(Base):
     """
 
     __tablename__ = 'rtk_software_development'
+    __table_args__ = {'extend_existing': True}
 
     software_id = Column('fld_software_id', Integer,
                          ForeignKey('rtk_software.fld_software_id'),

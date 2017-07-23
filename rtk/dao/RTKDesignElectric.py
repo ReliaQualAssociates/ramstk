@@ -42,6 +42,7 @@ class RTKDesignElectric(Base):
     """
 
     __tablename__ = 'rtk_design_electric'
+    __table_args__ = {'extend_existing': True}
 
     hardware_id = Column('fld_hardware_id', Integer,
                          ForeignKey('rtk_hardware.fld_hardware_id'),

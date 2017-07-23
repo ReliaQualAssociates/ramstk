@@ -41,6 +41,7 @@ class RTKOpStress(Base):
     """
 
     __tablename__ = 'rtk_op_stress'
+    __table_args__ = {'extend_existing': True}
 
     load_id = Column('fld_load_id', Integer,
                      ForeignKey('rtk_op_load.fld_load_id'), nullable=False)

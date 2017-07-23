@@ -41,6 +41,7 @@ class RTKSimilarItem(Base):
     """
 
     __tablename__ = 'rtk_similar_item'
+    __table_args__ = {'extend_existing': True}
 
     hardware_id = Column('fld_hardware_id', Integer,
                          ForeignKey('rtk_hardware.fld_hardware_id'),

@@ -39,6 +39,7 @@ class RTKGroup(Base):
     """
 
     __tablename__ = 'rtk_group'
+    __table_args__ = {'extend_existing': True}
 
     group_id = Column('fld_group_id', Integer, primary_key=True,
                       autoincrement=True, nullable=False)

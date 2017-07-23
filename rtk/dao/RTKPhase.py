@@ -37,6 +37,7 @@ class RTKPhase(Base):
     """
 
     __tablename__ = 'rtk_phase'
+    __table_args__ = {'extend_existing': True}
 
     phase_id = Column('fld_phase_id', Integer, primary_key=True,
                       autoincrement=True, nullable=False)

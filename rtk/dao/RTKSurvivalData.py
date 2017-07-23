@@ -43,6 +43,7 @@ class RTKSurvivalData(Base):
     """
 
     __tablename__ = 'rtk_survival_data'
+    __table_args__ = {'extend_existing': True}
 
     survival_id = Column('fld_survival_id', Integer,
                          ForeignKey('rtk_survival.fld_survival_id'),

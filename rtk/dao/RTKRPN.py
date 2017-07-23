@@ -37,6 +37,7 @@ class RTKRPN(Base):
     """
 
     __tablename__ = 'rtk_rpn'
+    __table_args__ = {'extend_existing': True}
 
     rpn_id = Column('fld_rpn_id', Integer, primary_key=True,
                     autoincrement=True, nullable=False)

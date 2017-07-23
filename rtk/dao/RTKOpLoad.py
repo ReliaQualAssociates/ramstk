@@ -42,6 +42,7 @@ class RTKOpLoad(Base):
     """
 
     __tablename__ = 'rtk_op_load'
+    __table_args__ = {'extend_existing': True}
 
     mechanism_id = Column('fld_mechanism_id', Integer,
                           ForeignKey('rtk_mechanism.fld_mechanism_id'),

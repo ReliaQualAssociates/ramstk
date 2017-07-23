@@ -42,6 +42,7 @@ class RTKIncidentDetail(Base):
     """
 
     __tablename__ = 'rtk_incident_detail'
+    __table_args__ = {'extend_existing': True}
 
     incident_id = Column('fld_incident_id', Integer,
                          ForeignKey('rtk_incident.fld_incident_id'),

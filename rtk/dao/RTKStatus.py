@@ -37,6 +37,7 @@ class RTKStatus(Base):
     """
 
     __tablename__ = 'rtk_status'
+    __table_args__ = {'extend_existing': True}
 
     status_id = Column('fld_status_id', Integer, primary_key=True,
                        autoincrement=True, nullable=False)

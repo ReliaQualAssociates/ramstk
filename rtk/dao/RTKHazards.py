@@ -37,6 +37,7 @@ class RTKHazards(Base):
     """
 
     __tablename__ = 'rtk_hazards'
+    __table_args__ = {'extend_existing': True}
 
     hazard_id = Column('fld_hazard_id', Integer, primary_key=True,
                        autoincrement=True, nullable=False)

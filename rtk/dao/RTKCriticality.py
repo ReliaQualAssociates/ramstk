@@ -37,6 +37,7 @@ class RTKCriticality(Base):
     """
 
     __tablename__ = 'rtk_criticality'
+    __table_args__ = {'extend_existing': True}
 
     criticality_id = Column('fld_criticality_id', Integer, primary_key=True,
                        autoincrement=True, nullable=False)

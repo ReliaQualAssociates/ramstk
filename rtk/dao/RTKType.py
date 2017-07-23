@@ -37,6 +37,7 @@ class RTKType(Base):
     """
 
     __tablename__ = 'rtk_type'
+    __table_args__ = {'extend_existing': True}
 
     type_id = Column('fld_model_id', Integer, primary_key=True,
                       autoincrement=True, nullable=False)

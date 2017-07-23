@@ -37,6 +37,7 @@ class RTKMeasurement(Base):
     """
 
     __tablename__ = 'rtk_measurement'
+    __table_args__ = {'extend_existing': True}
 
     measurement_id = Column('fld_measurement_id', Integer, primary_key=True,
                             autoincrement=True, nullable=False)

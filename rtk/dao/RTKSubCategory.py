@@ -38,6 +38,7 @@ class RTKSubCategory(Base):
     """
 
     __tablename__ = 'rtk_subcategory'
+    __table_args__ = {'extend_existing': True}
 
     category_id = Column('fld_category_id', Integer,
                          ForeignKey('rtk_category.fld_category_id'),

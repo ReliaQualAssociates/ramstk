@@ -42,6 +42,7 @@ class RTKCategory(Base):
     """
 
     __tablename__ = 'rtk_category'
+    __table_args__ = {'extend_existing': True}
 
     category_id = Column('fld_category_id', Integer, primary_key=True,
                          autoincrement=True, nullable=False)

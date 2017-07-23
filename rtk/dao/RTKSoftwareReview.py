@@ -45,6 +45,7 @@ class RTKSoftwareReview(Base):
     """
 
     __tablename__ = 'rtk_software_review'
+    __table_args__ = {'extend_existing': True}
 
     software_id = Column('fld_software_id', Integer,
                          ForeignKey('rtk_software.fld_software_id'),

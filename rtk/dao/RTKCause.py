@@ -43,6 +43,7 @@ class RTKCause(Base):
     """
 
     __tablename__ = 'rtk_cause'
+    __table_args__ = {'extend_existing': True}
 
     mechanism_id = Column('fld_mechanism_id', Integer,
                           ForeignKey('rtk_mechanism.fld_mechanism_id'),

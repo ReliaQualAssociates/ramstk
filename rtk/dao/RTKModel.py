@@ -37,6 +37,7 @@ class RTKModel(Base):
     """
 
     __tablename__ = 'rtk_model'
+    __table_args__ = {'extend_existing': True}
 
     model_id = Column('fld_model_id', Integer, primary_key=True,
                       autoincrement=True, nullable=False)

@@ -37,6 +37,7 @@ class RTKDistribution(Base):
     """
 
     __tablename__ = 'rtk_distribution'
+    __table_args__ = {'extend_existing': True}
 
     distribution_id = Column('fld_distribution_id', Integer, primary_key=True,
                              autoincrement=True, nullable=False)

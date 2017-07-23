@@ -37,6 +37,7 @@ class RTKApplication(Base):
     """
 
     __tablename__ = 'rtk_application'
+    __table_args__ = {'extend_existing': True}
 
     application_id = Column('fld_application_id', Integer, primary_key=True,
                     autoincrement=True, nullable=False)

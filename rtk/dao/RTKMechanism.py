@@ -43,6 +43,7 @@ class RTKMechanism(Base):
     """
 
     __tablename__ = 'rtk_mechanism'
+    __table_args__ = {'extend_existing': True}
 
     mode_id = Column('fld_mode_id', Integer,
                      ForeignKey('rtk_mode.fld_mode_id'),

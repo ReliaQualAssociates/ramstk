@@ -37,6 +37,7 @@ class RTKLevel(Base):
     """
 
     __tablename__ = 'rtk_level'
+    __table_args__ = {'extend_existing': True}
 
     level_id = Column('fld_level_id', Integer, primary_key=True,
                     autoincrement=True, nullable=False)

@@ -41,6 +41,7 @@ class RTKEnvironment(Base):
     """
 
     __tablename__ = 'rtk_environment'
+    __table_args__ = {'extend_existing': True}
 
     phase_id = Column('fld_phase_id', Integer,
                       ForeignKey('rtk_mission_phase.fld_phase_id'),

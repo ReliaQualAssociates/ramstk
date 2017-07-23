@@ -43,6 +43,7 @@ class RTKMode(Base):
     """
 
     __tablename__ = 'rtk_mode'
+    __table_args__ = {'extend_existing': True}
 
     function_id = Column('fld_function_id', Integer,
                          ForeignKey('rtk_function.fld_function_id'),

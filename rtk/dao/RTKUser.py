@@ -39,6 +39,7 @@ class RTKUser(Base):
     """
 
     __tablename__ = 'rtk_user'
+    __table_args__ = {'extend_existing': True}
 
     user_id = Column('fld_user_id', Integer, primary_key=True,
                      autoincrement=True, nullable=False)

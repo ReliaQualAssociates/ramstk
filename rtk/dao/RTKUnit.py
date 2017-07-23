@@ -37,6 +37,7 @@ class RTKUnit(Base):
     """
 
     __tablename__ = 'rtk_unit'
+    __table_args__ = {'extend_existing': True}
 
     unit_id = Column('fld_unit_id', Integer, primary_key=True,
                      autoincrement=True, nullable=False)

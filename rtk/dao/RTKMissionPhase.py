@@ -42,6 +42,7 @@ class RTKMissionPhase(Base):
     """
 
     __tablename__ = 'rtk_mission_phase'
+    __table_args__ = {'extend_existing': True}
 
     mission_id = Column('fld_mission_id', Integer,
                         ForeignKey('rtk_mission.fld_mission_id'),

@@ -41,6 +41,7 @@ class RTKControl(Base):
     """
 
     __tablename__ = 'rtk_control'
+    __table_args__ = {'extend_existing': True}
 
     cause_id = Column('fld_cause_id', Integer,
                       ForeignKey('rtk_cause.fld_cause_id'), nullable=False)
