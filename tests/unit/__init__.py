@@ -95,11 +95,11 @@ __copyright__ = 'Copyright 2014 - 2016 Andrew "weibullguy" Rowland'
 def setUp():
 
     # Clean up from previous runs.
-    if os.path.isfile('/tmp/rtk_debug.log'):
-        os.remove('/tmp/rtk_debug.log')
+    if os.path.isfile('/tmp/RTK_debug.log'):
+        os.remove('/tmp/RTK_debug.log')
 
-    if os.path.isfile('/tmp/rtk_user.log'):
-        os.remove('/tmp/rtk_user.log')
+    if os.path.isfile('/tmp/RTK_user.log'):
+        os.remove('/tmp/RTK_user.log')
 
     if os.path.isfile('/tmp/TestDB.rtk'):
         os.remove('/tmp/TestDB.rtk')
@@ -410,10 +410,10 @@ def setUp():
     Configuration.RTK_HR_MULTIPLIER = 1.0
     Configuration.RTK_DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
-                                                          '/tmp/rtk_debug.log')
+                                                          '/tmp/RTK_debug.log')
     Configuration.RTK_USER_LOG = Utilities.create_logger("RTK.user",
                                                          'INFO',
-                                                         '/tmp/rtk_user.log')
+                                                         '/tmp/RTK_user.log')
 
 def tearDown():
 

@@ -374,8 +374,8 @@ PROG_DIR = ''                           # TODO: Retire this variable.
 # Log files.                                                            #
 # --------------------------------------------------------------------- #
 RTK_DEBUG_LOG = ''
-RTK_USER_LOG = ''
 RTK_IMPORT_LOG = ''
+RTK_USER_LOG = ''
 
 # --------------------------------------------------------------------- #
 # Format files.                                                         #
@@ -489,8 +489,8 @@ COM_BACKEND = ''                        # TODO: Retire this variable.
 RTK_BACKEND = ''
 BACKEND = ''                            # TODO: Retire this variable.
 
-RTK_COM_INFO = {}
-RTK_PROG_INFO = {}
+RTK_COM_INFO = {}                       # RTK Common database info.
+RTK_PROG_INFO = {}                      # RTK Program database info.
 
 # --------------------------------------------------------------------- #
 RTK_MODULES = []

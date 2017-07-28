@@ -241,9 +241,7 @@ class Model(object):
 
         else:
             _error_code = 3001
-            _msg = "RTK ERROR: Attempted to add an item to the Usage " \
-        except:
-            pass
+            _msg = "RTK ERROR: Adding an item to the Usage Profile."
 
         return _error_code, _msg
 

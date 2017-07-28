@@ -16,15 +16,17 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import logging
 
-
 import unittest
 from nose.plugins.attrib import attr
 
 import Configuration as Configuration
 import Utilities as Utilities
 from RTK import _read_site_configuration, _read_program_configuration, \
-                _initialize_loggers, Model
+                _initialize_loggers, Model, RTK
 from dao.DAO import DAO
+from gui.gtk.mwi.ListBook import ListView
+from gui.gtk.mwi.ModuleBook import ModuleView
+from gui.gtk.mwi.WorkBook import WorkView
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -44,10 +46,10 @@ class TestFunctions(unittest.TestCase):
 
         Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
-                                                          '/tmp/rtk_debug.log')
+                                                          '/tmp/RTK_debug.log')
         Configuration.USER_LOG = Utilities.create_logger("RTK.user",
                                                          'INFO',
-                                                        '/tmp/rtk_user.log')
+                                                        '/tmp/RTK_user.log')
 
     @attr(all=True, unit=True)
     def test00a_read_site_configuration(self):
@@ -72,7 +74,8 @@ class TestFunctions(unittest.TestCase):
         self.assertEqual(Configuration.RTK_COM_BACKEND, 'sqlite3')
         self.assertEqual(Configuration.RTK_COM_INFO['host'], '')
         self.assertEqual(Configuration.RTK_COM_INFO['socket'], '3306')
-        self.assertEqual(Configuration.RTK_COM_INFO['database'], 'rtkcom')
+        self.assertEqual(Configuration.RTK_COM_INFO['database'],
+                         '/tmp/TestCommonDB.rtk')
         self.assertEqual(Configuration.RTK_COM_INFO['user'], 'rtkcom')
         self.assertEqual(Configuration.RTK_COM_INFO['password'], 'rtkcom')
 
@@ -199,7 +202,7 @@ class TestFunctions(unittest.TestCase):
         self.assertTrue(isinstance(_debug_log, logging.Logger))
         self.assertTrue(isinstance(_user_log, logging.Logger))
         self.assertTrue(isinstance(_import_log, logging.Logger))
-        self.assertTrue(isfile('/tmp/RTK_error.log'))
+        self.assertTrue(isfile('/tmp/RTK_debug.log'))
         self.assertTrue(isfile('/tmp/RTK_user.log'))
         self.assertTrue(isfile('/tmp/RTK_import.log'))
 
@@ -215,37 +218,146 @@ class TestRTKModel(unittest.TestCase):
         """
 
         self.site_dao = DAO('')
-        self.site_dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
+        #self.site_dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
         self.program_dao = DAO('')
         self.program_dao.db_connect('sqlite:////tmp/TestDB.rtk')
 
+        Configuration.RTK_COM_INFO = {'host'    : 'localhost',
+                                      'socket'  : 3306,
+                                      'database': '/tmp/TestCommonDB.rtk',
+                                      'type'    : 'sqlite',
+                                      'user'    : '',
+                                      'password': ''}
+        Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
+                                       'socket'  : 3306,
+                                       'database': '/tmp/TestDB.rtk',
+                                       'type'    : 'sqlite',
+                                       'user'    : '',
+                                       'password': ''}
         self.DUT = Model(self.site_dao, self.program_dao)
 
-    @attr(all=True, unit=False)
+    @attr(all=True, unit=True)
     def test00_initialize_RTK(self):
         """
-        (TestRTKModel) __init__ should create an instance of the rtk.RTK object
+        (TestRTKModel) __init__ should create an instance of the rtk.Model object
+        """
+
+        self.assertTrue(isinstance(self.DUT, Model))
+
+    @attr(all=True, unit=True)
+    def test04a_create_new_program(self):
+        """
+        (TestRTKModel) create_program should return False on success
+        """
+
+        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
+                                       'socket' : 3306,
+                                       'database' : '/tmp/BigAssTestDB.rtk',
+                                       'type' : 'sqlite',
+                                       'user' : '',
+                                       'password' : ''}
+        self.assertFalse(self.DUT.create_program())
+
+        if os.path.isfile('/tmp/BigAssTestDB.rtk'):
+            os.remove('/tmp/BigAssTestDB.rtk')
+
+    @attr(all=True, unit=True)
+    def test04b_create_new_program_failed(self):
+        """
+        (TestRTKModel) create_program should return True on failure
+        """
+
+        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
+                                       'socket' : 3306,
+                                       'database' : 'tmp/BigAssTestDB.rtk',
+                                       'type' : 'sqlite',
+                                       'user' : '',
+                                       'password' : ''}
+        self.assertTrue(self.DUT.create_program())
+
+    @attr(all=True, unit=True)
+    def test05_open_project(self):
+        """
+        (TestRTKModel) open_program should return False on success
+        """
+
+        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
+                                       'socket' : 3306,
+                                       'database' : '/tmp/BigAssTestDB.rtk',
+                                       'type' : 'sqlite',
+                                       'user' : '',
+                                       'password' : ''}
+        self.assertFalse(self.DUT.open_program())
+
+
+class TestRTKController(unittest.TestCase):
+    """
+    Class for testing the RTK data controller.
+    """
+
+    def setUp(self):
+        """
+        Setup test fixture for the RTK data controller class.
+        """
+
+        Configuration.RTK_COM_INFO = {'host'    : 'localhost',
+                                      'socket'  : 3306,
+                                      'database': '/tmp/TestCommonDB.rtk',
+                                      'type'    : 'sqlite',
+                                      'user'    : '',
+                                      'password': ''}
+        Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
+                                       'socket'  : 3306,
+                                       'database': '/tmp/TestDB.rtk',
+                                       'type'    : 'sqlite',
+                                       'user'    : '',
+                                       'password': ''}
+        self.DUT = RTK()
+
+    @attr(all=True, unit=True)
+    def test00_initialize_RTK(self):
+        """
+        (TestRTKController) __init__ should create an instance of the rtk.RTK object
         """
 
         self.assertTrue(isinstance(self.DUT, RTK))
+        self.assertTrue(isinstance(self.DUT.rtk_model, Model))
+        self.assertTrue(isinstance(self.DUT.dic_books['listview'], ListView))
+        self.assertTrue(isinstance(self.DUT.dic_books['moduleview'],
+                                   ModuleView))
+        self.assertTrue(isinstance(self.DUT.dic_books['workview'], WorkView))
+        self.assertEqual(self.DUT.dic_controllers['revision'], None)
+        self.assertEqual(self.DUT.dic_controllers['function'], None)
+        self.assertEqual(self.DUT.dic_controllers['requirement'], None)
+        self.assertEqual(self.DUT.dic_controllers['hardware'], None)
+        self.assertEqual(self.DUT.dic_controllers['software'], None)
+        self.assertEqual(self.DUT.dic_controllers['test'], None)
+        self.assertEqual(self.DUT.dic_controllers['validation'], None)
+        self.assertEqual(self.DUT.dic_controllers['incident'], None)
+        self.assertEqual(self.DUT.dic_controllers['survival'], None)
+        self.assertEqual(self.DUT.dic_controllers['matrices'], None)
+        self.assertEqual(self.DUT.dic_controllers['profile'], None)
+        self.assertEqual(self.DUT.dic_controllers['definition'], None)
+        self.assertEqual(self.DUT.dic_controllers['fmea'], None)
+        self.assertEqual(self.DUT.dic_controllers['stakeholder'], None)
+        self.assertEqual(self.DUT.dic_controllers['allocation'], None)
+        self.assertEqual(self.DUT.dic_controllers['hazard'], None)
+        self.assertEqual(self.DUT.dic_controllers['similaritem'], None)
+        self.assertEqual(self.DUT.dic_controllers['pof'], None)
+        self.assertEqual(self.DUT.dic_controllers['growth'], None)
+        self.assertEqual(self.DUT.dic_controllers['action'], None)
+        self.assertEqual(self.DUT.dic_controllers['component'], None)
 
-    @attr(all=True, unit=False)
-    def test04_create_new_project(self):
+    @attr(all=True, unit=True)
+    def test01a_request_create_new_program(self):
         """
-        (TestRTKModel) create_project should return False on success
-        """
-
-        Configuration.RTK_PROG_INFO = ['localhost', 3306, 'BigAssTestDB.rtk',
-                                       '', '']
-        self.assertFalse(self.DUT.create_project())
-
-    @attr(all=True, unit=False)
-    def test05_open_project(self):
-        """
-        (TestRTKModel) open_project should return False on success
+        (TestRTKController) request_create_program should return False on success
         """
 
-        Configuration.RTK_PROG_INFO = ['localhost', 3306, 'BigAssTestDB.rtk',
-                                       '', '']
-        self.assertFalse(self.DUT.open_project())
+        _database = Configuration.RTK_PROG_INFO['type'] + ':///' + \
+                    Configuration.RTK_PROG_INFO['database']
+        self.DUT.rtk_model.program_dao.db_connect(_database)
+
+        self.assertFalse(self.DUT.request_create_program())
+
 

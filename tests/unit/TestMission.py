@@ -57,10 +57,10 @@ class TestMissionModel(unittest.TestCase):
 
         Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
-                                                          '/tmp/rtk_debug.log')
+                                                          '/tmp/RTK_debug.log')
         Configuration.USER_LOG = Utilities.create_logger("RTK.user",
                                                          'INFO',
-                                                        '/tmp/rtk_user.log')
+                                                        '/tmp/RTK_user.log')
 
     @attr(all=True, unit=True)
     def test00_mission_create(self):
@@ -190,10 +190,10 @@ class Test01MissionController(unittest.TestCase):
 
         Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
-                                                          '/tmp/rtk_debug.log')
+                                                          '/tmp/RTK_debug.log')
         Configuration.USER_LOG = Utilities.create_logger("RTK.user",
                                                          'INFO',
-                                                        '/tmp/rtk_user.log')
+                                                        '/tmp/RTK_user.log')
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):

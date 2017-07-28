@@ -18,9 +18,11 @@ import shutil
 import sys
 
 from sqlalchemy.orm import scoped_session
+from pubsub import pub
 
 try:
     import pygtk
+
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
@@ -54,10 +56,12 @@ from validation.Validation import Validation
 from incident.Incident import Incident
 from incident.action.Action import Action
 from incident.component.Component import Component
-#from survival.Survival import Survival
+# from survival.Survival import Survival
 
 import gui.gtk.Widgets as Widgets
+from gui.gtk.mwi.ListBook import ListView
 from gui.gtk.mwi.ModuleBook import ModuleView
+from gui.gtk.mwi.WorkBook import WorkView
 
 from revision.ModuleBook import ModuleView as mvwRevision
 from function.ModuleBook import ModuleView as mvwFunction
@@ -135,7 +139,8 @@ def _read_site_configuration():
         # These themes perform poorly.
         # Bluecurve-BerriesAndCream
         # MurrinaChrome
-        gtk.rc_parse("C:\\Program Files (x86)\\Common Files\\RTK\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
+        gtk.rc_parse(
+            "C:\\Program Files (x86)\\Common Files\\RTK\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
 
     # Get a config instance for the site configuration file.
     _config = Configuration.RTKConf('site')
@@ -176,6 +181,8 @@ def _read_program_configuration():
     _error_code = 0
     _msg = 'RTK SUCCESS: Parsing program configuration file.'
 
+    _homedir = None
+
     _lst_format_files = ['revision', 'function', 'requirement', 'hardware',
                          'software', 'incident', 'validation', 'test', 'part',
                          'sia', 'fmeca', 'rgincident', 'stakeholder',
@@ -211,7 +218,7 @@ def _read_program_configuration():
         _config.read_configuration().get('Backend', 'password')
 
     Configuration.RTK_HR_MULTIPLIER = float(
-        _config.read_configuration().get('General', 'frmultiplier'))
+            _config.read_configuration().get('General', 'frmultiplier'))
     Configuration.RTK_DEC_PLACES = _config.read_configuration().get('General',
                                                                     'decimal')
     Configuration.RTK_MODE_SOURCE = \
@@ -318,7 +325,7 @@ def _initialize_loggers():
     # user.  The user can use these errors to help find problems with their
     # inputs and sich.
     __user_log = Configuration.RTK_LOG_DIR + '/RTK_user.log'
-    __error_log = Configuration.RTK_LOG_DIR + '/RTK_error.log'
+    __error_log = Configuration.RTK_LOG_DIR + '/RTK_debug.log'
     __import_log = Configuration.RTK_LOG_DIR + '/RTK_import.log'
 
     if not Utilities.dir_exists(Configuration.RTK_LOG_DIR):
@@ -361,10 +368,10 @@ class Model(object):
         """
         Method to initialize an instance of the RTK data model.
 
-        :param site_dao: the `:py:class:rtk.dao.DAO.DAO` instance connected to
-                         the RTK Common database.
-        :param program_dao: the `:py:class:rtk.dao.DAO.DAO` instance connected
-                            to the RTK Program database.
+        :param sitedao: the `:py:class:rtk.dao.DAO.DAO` instance connected to
+                        the RTK Common database.
+        :param programdao: the `:py:class:rtk.dao.DAO.DAO` instance connected
+                           to the RTK Program database.
         """
 
         # Initialize private dictionary attributes.
@@ -380,6 +387,13 @@ class Model(object):
         # Initialize public scalar attributes.
         self.site_dao = sitedao
         self.program_dao = programdao
+
+        # Connect to the RTK Common database.
+        _database = None
+        if Configuration.RTK_COM_INFO['type'] == 'sqlite':
+            _database = Configuration.RTK_COM_INFO['type'] + ':///' + \
+                        Configuration.RTK_COM_INFO['database']
+        self.site_dao.db_connect(_database)
 
         site_session = SiteSession
         program_session = ProgSession
@@ -397,17 +411,70 @@ class Model(object):
         """
         Method to create a new RTK Program database.
 
-        :return:
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        return
+        _return = False
+
+        _session = scoped_session(ProgSession)
+        _session.configure(bind=self.program_dao.engine,
+                           autoflush=False, expire_on_commit=False)
+
+        if Configuration.RTK_PROG_INFO['type'] == 'sqlite':
+            _database = Configuration.RTK_PROG_INFO['type'] + ':///' + \
+                        Configuration.RTK_PROG_INFO['database']
+
+        if not self.program_dao.db_create_program(_session):
+            Configuration.RTK_USER_LOG.info('RTK SUCCESS: Creating RTK '
+                                            'Program database {0:s}.'. \
+                                            format(_database))
+            pub.sendMessage('createdProgram')
+        else:
+            _return = True
+            Configuration.RTK_DEBUG_LOG.error('RTK ERROR: Failed to create '
+                                              'RTK Program database {0:s}.'. \
+                                              format(_database))
+
+        _session.close()
+
+        return _return
 
     def open_program(self):
         """
-        Method to open an RTK Program database.
+        Method to open an RTK Program database for analyses.
 
-        :return:
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
+        _return = False
+
+        if Configuration.RTK_PROG_INFO['type'] == 'sqlite':
+            _database = Configuration.RTK_PROG_INFO['type'] + ':///' + \
+                        Configuration.RTK_PROG_INFO['database']
+
+        if not self.program_dao.db_connect(_database):
+            Configuration.RTK_USER_LOG.info('RTK SUCCESS: Opening RTK ' 
+                                            'Program database {0:s}.'. \
+                                            format(_database))
+            pub.sendMessage('openedProgram')
+        else:
+            _return = True
+            Configuration.RTK_DEBUG_LOG.error('RTK ERROR: Failed to open ' 
+                                              'RTK Program database {0:s}.'. \
+                                              format(_database))
+
+        return _return
+
+    def close_program(self):
+        """
+        Method to close the open RTK Program database.
+        """
+
+        self.program_dao.db_close()
+
+        pub.sendMessage('closedProgram')
 
         return
 
@@ -415,10 +482,16 @@ class Model(object):
         """
         Method to save the open RTK Program database.
 
-        :return:
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        return
+        _error_code, _msg = self.program_dao.db_update(self.program_session)
+
+        if _error_code == 0:
+            pub.sendMessage('savedProgram')
+
+        return _error_code, _msg
 
     def delete_program(self):
         """
@@ -427,209 +500,196 @@ class Model(object):
         :return:
         """
 
-        return
-
-    def close_program(self):
-        """
-        Method to close the open RTK Program database.
-
-        :return:
-        """
-
-        return
+        pass
 
 
-class rtk(object):
+class RTK(object):
     """
-    This is the RTK data controller class.  The attributes of RTK are:
+    Class representing the RTK data controller.  This is the master controller
+    for the entire RTK application.  Attributes of an RTK data controller are:
 
-    :ivar bool loaded:
-    :ivar site_dao: the :py:class:`rtk.DAO.DAO` used to communicate with the
-                    site database.
-    :ivar project_dao: the :py:class:`rtk.DAO.DAO` used to communicate with the
-                       open RTK Project database.
-    :ivar dtcMatrices: the :py:class:`rtk.datamodels.Matrix.Matrix` data
-                       controller.
-    :ivar dtcRevision: the :py:class:`rtk.revision.Revision.Revision` data
-                       controller.
-    :ivar dtcProfile: the :py:class:`rtk.usage.UsageProfile.UsageProfile` data
-                      controller.
-    :ivar dtcDefinitions: the :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
-                          data controller.
-    :ivar dtcFunction: the :py:class:`rtk.function.Function.Function` data
-                       controller.
-    :ivar dtcFMEA: the :py:class:`rtk.analyses.fmea.FMEA.FMEA` data
-                   controller.
-    :ivar dtcRequirement: the
-                          :py:class:`rtk.requirement.Requirement.Requirement`
-                          data controller.
-    :ivar dtcStakeholder: the
-                          :py:class:`rtk.stakeholder.Stakeholder.Stakeholder`
-                          data controller.
-    :ivar dtcHardwareBoM: the :py:class:`rtk.hardware.BoM.BoM` data controller.
-    :ivar dtcAllocation: the :py:class:`rtk.analyses.allocation.Allocation.Allocation`
-                         data controller.
-    :ivar dtcHazard: the :py:class:`rtk.analyses.hazard.Hazard.Hazard` data
-                     controller.
-    :ivar dtcSimilarItem: the :py:class:`rtk.analyses.similar_item.SimilarItem.SimilarItem`
-                          data controller.
-    :ivar dtcPoF: the :py:class:`rtk.analyses.pof.PoF.PoF` data controller.
-    :ivar dtcSoftwareBoM: the :py:class:`rtk.software.BoM.BoM` data controller.
-    :ivar dtcTesting: the :py:class:`rtk.testing.Testing.Testing` data
-                      controller.
-    :ivar dtcGrowth: the :py:class:`rtk.testing.growth.Growth.Growth` data
-                     controller.
-    :ivar dtcValidation: the :py:class:`rtk.validation.Validation.Validation`
-                         data controller.
-    :ivar dtcIncident: the :py:class:`rtk.incident.Incident.Incident` data
-                       controller.
-    :ivar dtcAction: the :py:class:`rtk.incident.action.Action.Action` data
-                     controller.
-    :ivar dtcComponent: the
-                        :py:class:`rtk.incident.component.Component.Component`
-                        data controller.
-    :ivar dtcSurvival: the :py:class:`rtk.survival.Survival.Survival` data
-                       controller.
-    :ivar gtk.StatusIcon() icoStatus: the WM bar status icon.
-    :ivar list_book: the :py:class:`rtk.gui.gtk.mwi.ListBook.ListView`
-                     for the current instance of RTK.
-    :ivar module_book: the :py:class:`rtk.gui.gtk.mwi.ModuleBook.ModuleView`
-                       for the current instance of RTK.
-    :ivar work_book: the :py:class:`rtk.gui.gtk.mwi.WorkBook.WorkView`
-                     for the current instance of RTK.
+    :ivar dict dic_controllers: dictionary of data controllers available in the
+                                running instance of RTK.
+
+                                Keys are:
+                                    'revision'
+                                    'function'
+                                    'requirement'
+                                    'hardware'
+                                    'software'
+                                    'test'
+                                    'validation'
+                                    'incident'
+                                    'survival'
+                                    'matrices'
+                                    'profile'
+                                    'definition'
+                                    'fmea'
+                                    'stakeholder'
+                                    'allocation'
+                                    'hazard'
+                                    'similaritem'
+                                    'pof'
+                                    'growth'
+                                    'action'
+                                    'component'
+                                Values are the instance of each RTK data
+                                controller.
+
+    :ivar dict dic_books: dictionary of GUI books used by the running instance
+                          of RTK.
+
+                          Keys are:
+                              'listbook'
+                              'modulebook'
+                              'workbook'
+                          Values are the instance of each RTK book.
+
+    :ivar rtk_model: the instance of `:py:class:rtk.RTK.Model` managed by this
+                     data controller.
     """
 
-    def __init__(self):                     # pylint: disable=R0914
+    def __init__(self):  # pylint: disable=R0914
         """
-        Method to initialize the RTK controller.
+        Method to initialize an instance of the RTK data controller.
         """
+
+        RTK_INTERFACE = 1
 
         # Read the site configuration file.
-        _read_site_configuration()
+        _error_code, _msg = _read_site_configuration()
+        # if _error_code != 0:
 
         # Read the program configuration file.
-        _read_program_configuration()
+        _error_code, _msg = _read_program_configuration()
+        # if _error_code != 0:
+
+        # Create loggers.
+        (Configuration.RTK_DEBUG_LOG,
+         Configuration.RTK_USER_LOG,
+         Configuration.RTK_IMPORT_LOG) = _initialize_loggers()
 
         # Validate the license.
         # if self._validate_license():
         #    sys.exit(2)
 
-        # Create loggers.
-        (self.debug_log,
-         self.user_log,
-         self.import_log) = _initialize_loggers()
+        # Initialize private dictionary instance attributes.
 
-        # Create a connection to the site database.
-        _database = Configuration.RTK_SITE_DIR + '/' + \
-                    Configuration.RTK_COM_INFO['database'] + '.rtk'
-        self.site_dao = DAO(_database)
+        # Initialize private list instance attributes.
 
-        # Create a DAO to use for the RTK Program database connection.
-        #self.program_dao =
+        # Initialize private scalar instance attributes.
 
-        RTK_INTERFACE = 1
-
-        # Define private dictionary attributes.
-
-        # Define private list attributes.
-
-        # Define private scalar attributes.
-
-        # Define public dictionary attributes.
+        # Initialize public dictionary instance attributes.
+        self.dic_controllers = {'revision'   : None,
+                                'function'   : None,
+                                'requirement': None,
+                                'hardware'   : None,
+                                'software'   : None,
+                                'test'       : None,
+                                'validation' : None,
+                                'incident'   : None,
+                                'survival'   : None,
+                                'matrices'   : None,
+                                'profile'    : None,
+                                'definition' : None,
+                                'fmea'       : None,
+                                'stakeholder': None,
+                                'allocation' : None,
+                                'hazard'     : None,
+                                'similaritem': None,
+                                'pof'        : None,
+                                'growth'     : None,
+                                'action'     : None,
+                                'component'  : None}
+        self.dic_books = {'listview'  : None,
+                          'moduleview': None,
+                          'workview'  : None}
 
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.rtk_model = Model(self.site_dao, self.program_dao)
+        _database = Configuration.RTK_COM_INFO['database']
+        self.rtk_model = Model(DAO(_database), DAO(None))
 
-        self.icoStatus = gtk.StatusIcon()
-
-        # Load common lists and variables.
-        self._load_commons()
-
-        # Create RTK views.  These need to be initialized after reading the
+        # Create RTK Books.  These need to be initialized after reading the
         # configuration.
-        if RTK_INTERFACE == 0:              # Single window.
+        if RTK_INTERFACE == 0:  # Single window.
             pass
-        else:                               # Multiple windows.
-            self.list_book = ListBook()
-            self.module_book = ModuleView()
-            self.work_book = WorkBook()
+        else:  # Multiple windows.
+            self.dic_books['listview'] = ListView()
+            self.dic_books['moduleview'] = ModuleView(self)
+            self.dic_books['workview'] = WorkView()
 
-        # Create all the slave data controllers.
-        kwargs = {'modulebook' : self.module_book,
-                  'workbook' : self.work_book,
-                  'listbook' : self.list_book}
+        # Subscribe this controller to RTK control messages.
+        pub.subscribe(self.request_open_program, 'createdProgram')
 
-        self.dtcRevision = Revision(self.project_dao, -1, kwargs)
-        self.dtcFunction = Function(self.project_dao, -1, kwargs)
-        self.dtcRequirement = Requirement(self.project_dao, -1, kwargs)
-        self.dtcHardwareBoM = HardwareBoM(self.project_dao, -1, kwargs)
-        self.dtcSoftwareBoM = SoftwareBoM(self.project_dao, -1, kwargs)
-        self.dtcIncident = Incident(self.project_dao, -1, kwargs)
-        self.dtcValidation = Validation(self.project_dao, -1, kwargs)
-        self.dtcTesting = Testing(self.project_dao, -1, kwargs)
-        self.dtcSurvival = Survival(self.project_dao, -1, kwargs)
+    def request_create_program(self):
+        """
+        Method to request a new RTK Program database be created.
 
-        self.dtcGrowth = Growth(self.project_dao, kwargs)
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
 
-        self.dtcMatrices = Matrix()
-        self.dtcProfile = UsageProfile()
-        self.dtcDefinitions = FailureDefinition()
-        self.dtcFMEA = FMEA()
-        self.dtcStakeholder = Stakeholder()
+        return self.rtk_model.create_program()
 
-        self.dtcAllocation = Allocation()
-        self.dtcHazard = Hazard()
-        self.dtcSimilarItem = SimilarItem()
-        self.dtcPoF = PoF()
+    def request_open_program(self):
+        """
+        Method to request an RTK Program database be opened for analyses.
 
-        self.dtcAction = Action()
-        self.dtcComponent = Component()
-        self.dtcRevision = Revision()
-        self.dtcUsage = Usage()
-        self.dtcFailureDefinition = FailureDefinition()
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
 
-        # Plug-in each of the RTK module views.
-        _icon = Configuration.ICON_DIR + '32x32/revision.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        _image = gtk.Image()
-        _image.set_from_pixbuf(_icon)
+        _return = False
 
-        Configuration.RTK_MODULES.append(
-            self.module_book.insert_module_page(self.mvwRevision, -1, _image,
-                                                _(u"Revisions"),
-                                                _(u"Displays the program "
-                                                  u"revisions.")))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwFunction, self, -1))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwRequirement, self, -1))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwHardware, self, -1))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwSoftware, self, -1))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwTesting, self, -1))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwValidation, self, -1))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwIncident, self, -1))
-        Configuration.RTK_MODULES.append(
-            self.module_book.create_module_page(mvwSurvival, self, -1))
+        # If the database was successfully opened, create an instance of each
+        # of the slave data controllers.
+        if not self.rtk_model.open_program():
+            # self.dic_controllers['revision'] = Revision()
+            # self.dic_controllers['function'] = Function()
+            # self.dic_controllers['requirement'] = Requirement()
+            # self.dic_controllers['hardware'] = HardwareBoM()
+            # self.dic_controllers['software'] = SoftwareBoM()
+            # self.dic_controllers['test'] = Test()
+            # self.dic_controllers['validation'] = Validation()
+            # self.dic_controllers['incident'] = Incident()
+            # self.dic_controllers['survival'] = Survival()
 
-        _icon = Configuration.ICON_DIR + '32x32/db-disconnected.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self.icoStatus.set_from_pixbuf(_icon)
-        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
-                                     u"program database."))
+            # self.dic_controllers['matrices'] = Matrix()
+            # self.dic_controllers['profile'] = UsageProfile()
+            # self.dic_controllers['definition'] = FailureDefinition()
+            # self.dic_controllers['fmea'] = FMEA()
+            # self.dic_controllers['stakeholder'] = Stakeholder()
+            # self.dic_controllers['allocation'] = Allocation()
+            # self.dic_controllers['hazard'] = Hazard()
+            # self.dic_controllers['similaritem'] = SimilarItem()
+            # self.dic_controllers['pof'] = PoF()
+            # self.dic_controllers['growth'] = Growth()
+            # self.dic_controllers['action'] = Action()
+            # self.dic_controllers['component'] = Component()
+            pass
+        else:
+            _return = True
 
-        self.module_book.present()
+        return _return
 
-        # This is a hack to get the List View to display for the Revision
-        # module when first launching RTK.
-        self.module_book.notebook.next_page()
-        self.module_book.notebook.prev_page()
+    def request_close_program(self):
+        """
+        Method to request the open RTK Program database be closed.
+        """
+
+        return self.rtk_model.close_program()
+
+    def request_save_program(self):
+        """
+        Method to request the open RTK Program database be saved.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        return self.rtk_model.save_program()
 
     def __del__(self):
         del self
@@ -651,7 +711,7 @@ class rtk(object):
             Widgets.rtk_warning(_(u"Cannot find license file {0:s}.  If your "
                                   u"license file is elsewhere, please place "
                                   u"it in {1:s}.").format(
-                                      _license_file, Configuration.DATA_DIR))
+                    _license_file, Configuration.DATA_DIR))
             return True
 
         _license_key = _license_file.readline().rstrip('\n')
@@ -669,43 +729,11 @@ class rtk(object):
 
         if datetime.datetime.today().toordinal() > _results[0][1]:
             _expire_date = str(datetime.datetime.fromordinal(int(
-                _results[0][1])).strftime('%Y-%m-%d'))
+                    _results[0][1])).strftime('%Y-%m-%d'))
             Widgets.rtk_error(_(u"Invalid license (Expired).  Your license "
                                 u"expired on {0:s}.  Closing the RTK "
                                 u"application.").format(_expire_date))
             return True
-
-        return False
-
-    def create_project(self):
-        """
-        Method to request a new RTK Project database be created.
-        """
-
-        if Configuration.BACKEND == 'mysql':
-
-            # Add all the tables to the new database.
-            _sqlfile = open(Configuration.DATA_DIR +
-                            'newprogram_mysql.sql', 'r')
-            for _query in _sqlfile.read().split(';'):
-                print _query
-
-        elif Configuration.BACKEND == 'sqlite3':
-            # Connect to the new database.
-            _database = Configuration.PROG_DIR + '/' + \
-                        Configuration.RTK_PROG_INFO[2]
-            _dao = DAO(_database)
-
-            # Add all the tables to the new database.
-            _sqlfile = open(Configuration.DATA_DIR +
-                            'newprogram_sqlite3.sql', 'r')
-            for _query in _sqlfile.read().split(';'):
-                _dao.execute(_query, commit=True)
-
-        # Close the connection.
-        _dao.close()
-
-        self.open_project()
 
         return False
 
@@ -714,15 +742,15 @@ class rtk(object):
         Method to open an RTK Project database and load it into the views.
         """
 
-        _message = _(u"Opening Program Database {0:s}").\
-                     format(Configuration.RTK_PROG_INFO[2])
+        _message = _(u"Opening Program Database {0:s}"). \
+            format(Configuration.RTK_PROG_INFO[2])
         self.module_book.statusbar.push(2, _message)
 
         # Connect to the project database.
         self.project_dao = DAO('')
         self.project_dao.db_connect('sqlite:///' +
                                     Configuration.RTK_PROG_INFO[2])
-        #self.project_dao.execute("PRAGMA foreign_keys=ON", commit=False)
+        # self.project_dao.execute("PRAGMA foreign_keys=ON", commit=False)
 
         # Set the data access object for each data controller.
         self.mvwRevision.load_revision_tree(self.project_dao)
@@ -770,9 +798,9 @@ class rtk(object):
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is connected to program database "
                                      u"{0:s}.".format(
-                                         Configuration.RTK_PROG_INFO[2])))
+                Configuration.RTK_PROG_INFO[2])))
         self.module_book.set_title(_(u"RTK - Analyzing {0:s}".format(
-            Configuration.RTK_PROG_INFO[2])))
+                Configuration.RTK_PROG_INFO[2])))
 
         # Find which modules are active in this project.
         _query = "SELECT fld_revision_active, fld_function_active, \
@@ -793,7 +821,8 @@ class rtk(object):
             if _module == 1 and i < len(Configuration.RTK_MODULES):
                 self.module_book.load_module_page(Configuration.RTK_MODULES[i])
                 if i == 0:
-                    self.revision_id = min(self.dtcRevision.dicRevisions.keys())
+                    self.revision_id = min(
+                        self.dtcRevision.dicRevisions.keys())
                 Configuration.RTK_PAGE_NUMBER.append(i)
             else:
                 self.module_book.notebook.remove_page(i)
@@ -845,13 +874,13 @@ class rtk(object):
                       fld_effect_next_id={6:d}, fld_cause_next_id={7:d}, \
                       fld_software_next_id={8:d} \
                   WHERE fld_program_id={9:d}".format(
-                      Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
-                      Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
-                      Configuration.RTK_PREFIX[9],
-                      Configuration.RTK_PREFIX[11],
-                      Configuration.RTK_PREFIX[13],
-                      Configuration.RTK_PREFIX[15],
-                      Configuration.RTK_PREFIX[17], 1)
+                Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
+                Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
+                Configuration.RTK_PREFIX[9],
+                Configuration.RTK_PREFIX[11],
+                Configuration.RTK_PREFIX[13],
+                Configuration.RTK_PREFIX[15],
+                Configuration.RTK_PREFIX[17], 1)
         self.project_dao.execute(_query, commit=True)
 
         _query = "VACUUM"
@@ -903,5 +932,4 @@ class rtk(object):
 
 
 if __name__ == '__main__':
-
     main()

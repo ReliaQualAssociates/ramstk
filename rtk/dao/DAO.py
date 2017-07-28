@@ -16,7 +16,7 @@ from treelib import Tree
 # Import the database models.
 from SQLite3 import Model as SQLite3
 
-from sqlalchemy import create_engine, MetaData
+from sqlalchemy import create_engine, exc, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import create_database
 
@@ -141,14 +141,17 @@ class DAO(object):
         # Initialize public list instance attributes.
 
         # Initialize public scalar instance attributes.
-        self.tree = Tree()          # TODO: Consider moving this to the Component class.
+        self.tree = Tree()
 
         if db_type == 0:
             self.model = SQLite3()
         elif db_type == 1:
             pass
 
-        self.model.connect(database)
+        try:
+            self.model.connect(database)
+        except ValueError:
+            pass
 
     def execute(self, query, commit=False):
         """
@@ -201,11 +204,27 @@ class DAO(object):
 
         return False
 
-    def db_create_common(self, database, session):
+    def _db_table_create(self, table):
+        """
+        Method to check if the passed table exists and create it if not.
+
+        :param table: the table to check for.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if not self.engine.dialect.has_table(self.engine.connect(),
+                                             str(table)):
+            table.create(bind=self.engine)
+
+        return _return
+
+    def db_create_common(self, session):
         """
         Method to create a new RTK Program database.
 
-        :param str database: the absolute path to the database to create.
         :param session: the SQLAlchemy scoped_session instance used to
                         communicate with the RTK Common database.
         :type session: :py:class:`sqlalchemy.orm.scoped_session`
@@ -213,10 +232,19 @@ class DAO(object):
         :rtype: bool
         """
 
-        create_database(database)
+        _database = None
 
-        RTKUser.__table__.create(bind=self.engine)
-        RTKGroup.__table__.create(bind=self.engine)
+        if Configuration.RTK_COM_INFO['type'] == 'sqlite':
+            _database = Configuration.RTK_COM_INFO['type'] + ':///' + \
+                        Configuration.RTK_COM_INFO['database']
+
+        try:
+            create_database(_database)
+        except IOError:
+            return True
+
+        self._db_table_create(RTKUser.__table__)
+        self._db_table_create(RTKGroup.__table__)
         for _key in RTKCommonDB.groups.keys():
             _group = RTKGroup()
             _group.group_id = _key
@@ -225,7 +253,7 @@ class DAO(object):
             _group.set_attributes(RTKCommonDB.groups[_key])
             session.commit()
 
-        RTKEnviron.__table__.create(bind=self.engine)
+        self._db_table_create(RTKEnviron.__table__)
         for _key in RTKCommonDB.environs.keys():
             _environ = RTKEnviron()
             _environ.environ_id = _key
@@ -234,7 +262,7 @@ class DAO(object):
             _environ.set_attributes(RTKCommonDB.environs[_key])
             session.commit()
 
-        RTKModel.__table__.create(bind=self.engine)
+        self._db_table_create(RTKModel.__table__)
         for _key in RTKCommonDB.models.keys():
             _model = RTKModel()
             _model.model_id = _key
@@ -243,7 +271,7 @@ class DAO(object):
             _model.set_attributes(RTKCommonDB.models[_key])
             session.commit()
 
-        RTKType.__table__.create(bind=self.engine)
+        self._db_table_create(RTKType.__table__)
         for _key in RTKCommonDB.types.keys():
             _type = RTKType()
             _type.type_id = _key
@@ -252,7 +280,7 @@ class DAO(object):
             _type.set_attributes(RTKCommonDB.types[_key])
             session.commit()
 
-        RTKCategory.__table__.create(bind=self.engine)
+        self._db_table_create(RTKCategory.__table__)
         for _key in RTKCommonDB.categories.keys():
             _category = RTKCategory()
             _category.category_id = _key
@@ -261,10 +289,10 @@ class DAO(object):
             _category.set_attributes(RTKCommonDB.categories[_key])
             session.commit()
 
-        RTKSubCategory.__table__.create(bind=self.engine)
-        RTKFailureMode.__table__.create(bind=self.engine)
+        self._db_table_create(RTKSubCategory.__table__)
+        self._db_table_create(RTKFailureMode.__table__)
 
-        RTKPhase.__table__.create(bind=self.engine)
+        self._db_table_create(RTKPhase.__table__)
         for _key in RTKCommonDB.phases.keys():
             _phase = RTKPhase()
             _phase.phase_id = _key
@@ -273,7 +301,7 @@ class DAO(object):
             _phase.set_attributes(RTKCommonDB.phases[_key])
             session.commit()
 
-        RTKDistribution.__table__.create(bind=self.engine)
+        self._db_table_create(RTKDistribution.__table__)
         for _key in RTKCommonDB.distributions.keys():
             _distribution = RTKDistribution()
             _distribution.distribution_id = _key
@@ -282,7 +310,7 @@ class DAO(object):
             _distribution.set_attributes(RTKCommonDB.distributions[_key])
             session.commit()
 
-        RTKManufacturer.__table__.create(bind=self.engine)
+        self._db_table_create(RTKManufacturer.__table__)
         for _key in RTKCommonDB.manufacturers.keys():
             _manufacturer = RTKManufacturer()
             _manufacturer.manufacturer_id = _key
@@ -291,7 +319,7 @@ class DAO(object):
             _manufacturer.set_attributes(RTKCommonDB.manufacturers[_key])
             session.commit()
 
-        RTKUnit.__table__.create(bind=self.engine)
+        self._db_table_create(RTKUnit.__table__)
         for _key in RTKCommonDB.units.keys():
             _unit = RTKUnit()
             _unit.unit_id = _key
@@ -300,7 +328,7 @@ class DAO(object):
             _unit.set_attributes(RTKCommonDB.units[_key])
             session.commit()
 
-        RTKMethod.__table__.create(bind=self.engine)
+        self._db_table_create(RTKMethod.__table__)
         for _key in RTKCommonDB.methods.keys():
             _method = RTKMethod()
             _method.method_id = _key
@@ -309,7 +337,7 @@ class DAO(object):
             _method.set_attributes(RTKCommonDB.methods[_key])
             session.commit()
 
-        RTKCriticality.__table__.create(bind=self.engine)
+        self._db_table_create(RTKCriticality.__table__)
         for _key in RTKCommonDB.criticalitys.keys():
             _criticality = RTKCriticality()
             _criticality.criticality_id = _key
@@ -318,7 +346,7 @@ class DAO(object):
             _criticality.set_attributes(RTKCommonDB.criticalitys[_key])
             session.commit()
 
-        RTKRPN.__table__.create(bind=self.engine)
+        self._db_table_create(RTKRPN.__table__)
         for _key in RTKCommonDB.rpns.keys():
             _rpn = RTKRPN()
             _rpn.rpn_id = _key
@@ -327,7 +355,7 @@ class DAO(object):
             _rpn.set_attributes(RTKCommonDB.rpns[_key])
             session.commit()
 
-        RTKLevel.__table__.create(bind=self.engine)
+        self._db_table_create(RTKLevel.__table__)
         for _key in RTKCommonDB.levels.keys():
             _level = RTKLevel()
             _level.level_id = _key
@@ -336,7 +364,7 @@ class DAO(object):
             _level.set_attributes(RTKCommonDB.levels[_key])
             session.commit()
 
-        RTKApplication.__table__.create(bind=self.engine)
+        self._db_table_create(RTKApplication.__table__)
         for _key in RTKCommonDB.applications.keys():
             _application = RTKApplication()
             _application.application_id = _key
@@ -345,7 +373,7 @@ class DAO(object):
             _application.set_attributes(RTKCommonDB.applications[_key])
             session.commit()
 
-        RTKHazards.__table__.create(bind=self.engine)
+        self._db_table_create(RTKHazards.__table__)
         for _key in RTKCommonDB.hazards.keys():
             _hazard = RTKHazards()
             _hazard.hazard_id = _key
@@ -354,7 +382,7 @@ class DAO(object):
             _hazard.set_attributes(RTKCommonDB.hazards[_key])
             session.commit()
 
-        RTKStakeholders.__table__.create(bind=self.engine)
+        self._db_table_create(RTKStakeholders.__table__)
         for _key in RTKCommonDB.stakeholders.keys():
             _stakeholder = RTKStakeholders()
             _stakeholder.stakeholders_id = _key
@@ -363,7 +391,7 @@ class DAO(object):
             _stakeholder.set_attributes(RTKCommonDB.stakeholders[_key])
             session.commit()
 
-        RTKStatus.__table__.create(bind=self.engine)
+        self._db_table_create(RTKStatus.__table__)
         for _key in RTKCommonDB.statuses.keys():
             _status = RTKStatus()
             _status.status_id = _key
@@ -372,7 +400,7 @@ class DAO(object):
             _status.set_attributes(RTKCommonDB.statuses[_key])
             session.commit()
 
-        RTKCondition.__table__.create(bind=self.engine)
+        self._db_table_create(RTKCondition.__table__)
         for _key in RTKCommonDB.conditions.keys():
             _condition = RTKCondition()
             _condition.condition_id = _key
@@ -381,7 +409,7 @@ class DAO(object):
             _condition.set_attributes(RTKCommonDB.conditions[_key])
             session.commit()
 
-        RTKMeasurement.__table__.create(bind=self.engine)
+        self._db_table_create(RTKMeasurement.__table__)
         for _key in RTKCommonDB.measurements.keys():
             _measurement = RTKMeasurement()
             _measurement.measurement_id = _key
@@ -390,7 +418,7 @@ class DAO(object):
             _measurement.set_attributes(RTKCommonDB.measurements[_key])
             session.commit()
 
-        RTKLoadHistory.__table__.create(bind=self.engine)
+        self._db_table_create(RTKLoadHistory.__table__)
         for _key in RTKCommonDB.historys.keys():
             _history = RTKLoadHistory()
             _history.history_id = _key
@@ -401,11 +429,10 @@ class DAO(object):
 
         return False
 
-    def db_create_program(self, database, session):
+    def db_create_program(self, session):
         """
         Method to create a new RTK Program database.
 
-        :param str database: the absolute path to the database to create.
         :param session: the SQLAlchemy scoped_session instance used to
                         communicate with the RTK Program database.
         :type session: :py:class:`sqlalchemy.orm.scoped_session`
@@ -413,16 +440,25 @@ class DAO(object):
         :rtype: bool
         """
 
-        create_database(database)
+        _database = None
 
-        RTKRevision.__table__.create(bind=self.engine)
+        if Configuration.RTK_PROG_INFO['type'] == 'sqlite':
+            _database = Configuration.RTK_PROG_INFO['type'] + ':///' + \
+                        Configuration.RTK_PROG_INFO['database']
+
+        try:
+            create_database(_database)
+        except IOError:
+            return True
+
+        self._db_table_create(RTKRevision.__table__)
         _revision = RTKRevision()
         _revision.revision_id = 1
         _revision.description = _(u"Initial Revision")
         self.db_add([_revision, ], session)
         session.commit()
 
-        RTKMission.__table__.create(bind=self.engine)
+        self._db_table_create(RTKMission.__table__)
         _mission = RTKMission()
         _mission.revision_id = _revision.revision_id
         _mission.mission_id = 1
@@ -430,7 +466,7 @@ class DAO(object):
         self.db_add([_mission, ], session)
         session.commit()
 
-        RTKMissionPhase.__table__.create(bind=self.engine)
+        self._db_table_create(RTKMissionPhase.__table__)
         _phase = RTKMissionPhase()
         _phase.mission_id = _mission.mission_id
         _phase.phase_id = 1
@@ -438,13 +474,14 @@ class DAO(object):
         self.db_add([_phase, ], session)
         session.commit()
 
-        RTKEnvironment.__table__.create(bind=self.engine)
-        RTKFailureDefinition.__table__.create(bind=self.engine)
-        RTKFunction.__table__.create(bind=self.engine)
-        RTKRequirement.__table__.create(bind=self.engine)
-        RTKStakeholder.__table__.create(bind=self.engine)
-        RTKMatrix.__table__.create(bind=self.engine)
-        RTKHardware.__table__.create(bind=self.engine)
+        self._db_table_create(RTKEnvironment.__table__)
+        self._db_table_create(RTKFailureDefinition.__table__)
+        self._db_table_create(RTKFunction.__table__)
+        self._db_table_create(RTKRequirement.__table__)
+        self._db_table_create(RTKStakeholder.__table__)
+        self._db_table_create(RTKMatrix.__table__)
+
+        self._db_table_create(RTKHardware.__table__)
         _hardware = RTKHardware()
         _hardware.revision_id = _revision.revision_id
         _hardware.hardware_id = 1
@@ -452,38 +489,39 @@ class DAO(object):
         self.db_add([_hardware, ], session)
         session.commit()
 
-        RTKAllocation.__table__.create(bind=self.engine)
+        self._db_table_create(RTKAllocation.__table__)
         _allocation = RTKAllocation()
         _allocation.hardware_id = _hardware.hardware_id
 
-        RTKHazardAnalysis.__table__.create(bind=self.engine)
+        self._db_table_create(RTKHazardAnalysis.__table__)
         _hazard = RTKHazardAnalysis()
         _hazard.hardware_id = _hardware.hardware_id
 
-        RTKSimilarItem.__table__.create(bind=self.engine)
+        self._db_table_create(RTKSimilarItem.__table__)
         _similar_item = RTKSimilarItem()
         _similar_item.hardware_id = _hardware.hardware_id
 
-        RTKReliability.__table__.create(bind=self.engine)
+        self._db_table_create(RTKReliability.__table__)
         _reliability = RTKReliability()
         _reliability.hardware_id = _hardware.hardware_id
         self.db_add([_allocation, _hazard, _similar_item, _reliability],
                     session)
         session.commit()
 
-        RTKMilHdbkF.__table__.create(bind=self.engine)
-        RTKNSWC.__table__.create(bind=self.engine)
-        RTKDesignElectric.__table__.create(bind=self.engine)
-        RTKDesignMechanic.__table__.create(bind=self.engine)
-        RTKMode.__table__.create(bind=self.engine)
-        RTKMechanism.__table__.create(bind=self.engine)
-        RTKCause.__table__.create(bind=self.engine)
-        RTKControl.__table__.create(bind=self.engine)
-        RTKAction.__table__.create(bind=self.engine)
-        RTKOpLoad.__table__.create(bind=self.engine)
-        RTKOpStress.__table__.create(bind=self.engine)
-        RTKTestMethod.__table__.create(bind=self.engine)
-        RTKSoftware.__table__.create(bind=self.engine)
+        self._db_table_create(RTKMilHdbkF.__table__)
+        self._db_table_create(RTKNSWC.__table__)
+        self._db_table_create(RTKDesignElectric.__table__)
+        self._db_table_create(RTKDesignMechanic.__table__)
+        self._db_table_create(RTKMode.__table__)
+        self._db_table_create(RTKMechanism.__table__)
+        self._db_table_create(RTKCause.__table__)
+        self._db_table_create(RTKControl.__table__)
+        self._db_table_create(RTKAction.__table__)
+        self._db_table_create(RTKOpLoad.__table__)
+        self._db_table_create(RTKOpStress.__table__)
+        self._db_table_create(RTKTestMethod.__table__)
+
+        self._db_table_create(RTKSoftware.__table__)
         _software = RTKSoftware()
         _software.revision_id = _revision.revision_id
         _software.software_id = 1
@@ -491,7 +529,7 @@ class DAO(object):
         self.db_add([_software, ], session)
         session.commit()
 
-        RTKSoftwareDevelopment.__table__.create(bind=self.engine)
+        self._db_table_create(RTKSoftwareDevelopment.__table__)
         for i in range(43):
             _sw_development = RTKSoftwareDevelopment()
             _sw_development.software_id = _software.software_id
@@ -499,7 +537,7 @@ class DAO(object):
             self.db_add([_sw_development, ], session)
         session.commit()
 
-        RTKSoftwareReview.__table__.create(bind=self.engine)
+        self._db_table_create(RTKSoftwareReview.__table__)
         for i in range(50):
             _sw_review = RTKSoftwareReview()
             _sw_review.software_id = _software.software_id
@@ -526,7 +564,7 @@ class DAO(object):
             self.db_add([_sw_review, ], session)
         session.commit()
 
-        RTKSoftwareTest.__table__.create(bind=self.engine)
+        self._db_table_create(RTKSoftwareTest.__table__)
         for i in range(21):
             _sw_test = RTKSoftwareTest()
             _sw_test.software_id = _software.software_id
@@ -534,18 +572,19 @@ class DAO(object):
             self.db_add([_sw_test, ], session)
         session.commit()
 
-        RTKValidation.__table__.create(bind=self.engine)
-        RTKIncident.__table__.create(bind=self.engine)
-        RTKIncidentDetail.__table__.create(bind=self.engine)
-        RTKIncidentAction.__table__.create(bind=self.engine)
-        RTKTest.__table__.create(bind=self.engine)
-        RTKGrowthTest.__table__.create(bind=self.engine)
-        RTKSurvival.__table__.create(bind=self.engine)
-        RTKSurvivalData.__table__.create(bind=self.engine)
+        self._db_table_create(RTKValidation.__table__)
+        self._db_table_create(RTKIncident.__table__)
+        self._db_table_create(RTKIncidentDetail.__table__)
+        self._db_table_create(RTKIncidentAction.__table__)
+        self._db_table_create(RTKTest.__table__)
+        self._db_table_create(RTKGrowthTest.__table__)
+        self._db_table_create(RTKSurvival.__table__)
+        self._db_table_create(RTKSurvivalData.__table__)
 
         return False
 
-    def db_add(self, item, session):
+    @staticmethod
+    def db_add(item, session):
         """
         Method to add a new item to the RTK Program database.
 
@@ -566,7 +605,7 @@ class DAO(object):
             try:
                 session.add(_item)
                 session.commit()
-            except:
+            except exc.SQLAlchemyError:
                 session.rollback()
                 _error_code = 1003
                 _msg = "RTK ERROR: Adding one or more items to the RTK " \
@@ -574,7 +613,8 @@ class DAO(object):
 
         return _error_code, _msg
 
-    def db_update(self, session):
+    @staticmethod
+    def db_update(session):
         """
         Method to update the RTK Program database with any pending changes.
 
@@ -591,14 +631,15 @@ class DAO(object):
 
         try:
             session.commit()
-        except:
+        except exc.SQLAlchemyError:
             session.rollback()
             _error_code = 1004
             _msg = "RTK ERROR: Updating the RTK Program database."
 
         return _error_code, _msg
 
-    def db_delete(self, item, session):
+    @staticmethod
+    def db_delete(item, session):
         """
         Method to delete a record from the RTK Program database.
 
@@ -618,14 +659,15 @@ class DAO(object):
         try:
             session.delete(item)
             session.commit()
-        except:
+        except exc.SQLAlchemyError:
             session.rollback()
             _error_code = 1005
             _msg = "RTK ERROR: Deleting an item from the RTK Program database."
 
         return _error_code, _msg
 
-    def db_query(self, query, session):
+    @staticmethod
+    def db_query(query, session):
         """
         Method to exceute an SQL query against the connected database.
 
@@ -639,6 +681,7 @@ class DAO(object):
 
         return session.execute(query)
 
+    @property
     def db_last_id(self):
         """
         Method to retrieve the value of the last ID column from a table in the
@@ -677,9 +720,7 @@ class DAO(object):
                                   parent=-1,
                                   data=_category.get_attributes()[1:])
 
-        for _subcategory in session.query(RTKSubCategory).\
-                filter(RTKSubCategory.category_id == _category.category_id).\
-                all():
+        for _subcategory in session.query(RTKSubCategory).all():
             # We need to create a unique identifer for each subcategory because
             # we can't have two nodes in the tree with the same ID, but we can
             # have a category and subcategory with the same ID in the database.
@@ -701,8 +742,7 @@ class DAO(object):
             _identifier = str(_mode.category_id) + \
                           str(_mode.subcategory_id) + \
                           str(_mode.mode_id)
-            _parent = str(_mode.category_id) + \
-                      str(_mode.subcategory_id)
+            _parent = str(_mode.category_id) + str(_mode.subcategory_id)
             self.tree.create_node(_mode.description, _identifier,
                                   parent=_parent,
                                   data=_mode.get_attributes()[3:])
@@ -726,8 +766,8 @@ class DAO(object):
 
         for _severity in session.query(RTKCategory).\
                 filter(RTKCategory.type == 'risk').all():
-             Configuration.RTK_SEVERITY[_severity.category_id] = \
-                 _severity.get_attributes()[1:]
+            Configuration.RTK_SEVERITY[_severity.category_id] = \
+                _severity.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKEnviron.                                  #
@@ -898,7 +938,7 @@ class DAO(object):
 
         for _manufacturer in session.query(RTKManufacturer).all():
             Configuration.RTK_MANUFACTURERS[_manufacturer.manufacturer_id] = \
-            _manufacturer.get_attributes()[1:]
+                _manufacturer.get_attributes()[1:]
 
         for _unit in session.query(RTKUnit).\
                 filter(RTKUnit.type == 'measurement').all():
