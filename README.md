@@ -1,3 +1,5 @@
+https://travis-ci.org/weibullguy/rtk.svg?branch=master
+https://travis-ci.org/weibullguy/rtk.svg?branch=develop
 # rtk
 Reliability, Availability, Maintainability, Safety (RAMS) analysis program.
 

@@ -47,5 +47,5 @@ pylintout
 /rtk/hardware/BoM.coverage
 /rtk/hardware/BoM.profile
 /rtk/hardware/BoM.timings
-!license.txt
-!requirements.txt
+!/license.txt
+!/requirements.txt
