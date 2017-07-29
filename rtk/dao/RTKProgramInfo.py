@@ -35,7 +35,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
-class RTKPhase(Base):
+class RTKProgramInfo(Base):
     """
     Class to represent the table rtk_program_info in the RTK Program database.
     """
@@ -79,10 +79,10 @@ class RTKPhase(Base):
     rcm_active = Column('fld_rcm_active', Integer, default=0)
     rbd_active = Column('fld_rbd_active', Integer, default=0)
     fta_active = Column('fld_fta_active', Integer, default=0)
-    created_on = Column('fld_create_on', Date, default=date.today())
+    created_on = Column('fld_created_on', Date, default=date.today())
     created_by = Column('fld_created_by', String(512), default='')
-    last_saved = Column('fld_last_saved', Date, default=date.today())
-    last_saved_by = Column('fld_created_by', String(512), default='')
+    last_saved = Column('fld_last_saved_on', Date, default=date.today())
+    last_saved_by = Column('fld_last_saved_by', String(512), default='')
     method = Column('fld_method', String(512), default='STANDARD')
 
     def get_attributes(self):

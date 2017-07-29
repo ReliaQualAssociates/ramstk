@@ -71,6 +71,7 @@ from dao.RTKMode import RTKMode
 from dao.RTKNSWC import RTKNSWC
 from dao.RTKOpLoad import RTKOpLoad
 from dao.RTKOpStress import RTKOpStress
+from dao.RTKProgramInfo import RTKProgramInfo
 from dao.RTKReliability import RTKReliability
 from dao.RTKRequirement import RTKRequirement
 from dao.RTKRevision import RTKRevision
@@ -223,6 +224,7 @@ def setUp():
     RTKAction.__table__.create(bind=engine)
     RTKOpLoad.__table__.create(bind=engine)
     RTKOpStress.__table__.create(bind=engine)
+    RTKProgramInfo.__table__.create(bind=engine)
     RTKTestMethod.__table__.create(bind=engine)
     RTKSoftware.__table__.create(bind=engine)
     RTKSoftwareDevelopment.__table__.create(bind=engine)
@@ -236,6 +238,11 @@ def setUp():
     RTKGrowthTest.__table__.create(bind=engine)
     RTKSurvival.__table__.create(bind=engine)
     RTKSurvivalData.__table__.create(bind=engine)
+
+    _program = RTKProgramInfo()
+    _program.revision_prefix = 'REV'
+    session.add(_program)
+    session.commit()
 
     _revision = RTKRevision()
     session.add(_revision)

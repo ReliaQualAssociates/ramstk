@@ -109,6 +109,7 @@ from RTKMode import RTKMode
 from RTKNSWC import RTKNSWC
 from RTKOpLoad import RTKOpLoad
 from RTKOpStress import RTKOpStress
+from RTKProgramInfo import RTKProgramInfo
 from RTKReliability import RTKReliability
 from RTKRequirement import RTKRequirement
 from RTKRevision import RTKRevision
@@ -477,6 +478,8 @@ class DAO(object):
             create_database(_database)
         except IOError:
             return True
+
+        self._db_table_create(RTKProgramInfo.__table__)
 
         self._db_table_create(RTKRevision.__table__)
         _revision = RTKRevision()
