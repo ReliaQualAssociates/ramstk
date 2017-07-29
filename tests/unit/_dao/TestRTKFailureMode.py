@@ -33,7 +33,7 @@ class TestRTKFailureMode(unittest.TestCase):
     Class for testing the RTKFailureMode class.
     """
 
-    attributes = (1, 1, 1, 'Improper Output', 0.77, 2)
+    attributes = (9, 1, 1, 'Improper Output', 0.77, 2)
 
     def setUp(self):
         """
@@ -63,7 +63,7 @@ class TestRTKFailureMode(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_failure_mode')
-        self.assertEqual(self.DUT.category_id, 1)
+        self.assertEqual(self.DUT.category_id, 9)
         self.assertEqual(self.DUT.subcategory_id, 1)
         self.assertEqual(self.DUT.mode_id, 1)
         self.assertEqual(self.DUT.description, 'Improper Output')

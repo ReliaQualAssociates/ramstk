@@ -172,11 +172,11 @@ def setUp():
     session.add(RTKLoadHistory())
     session.commit()
 
-    for _key in dao.RTKCommonDB.categories.keys():
+    for _key in dao.RTKCommonDB.RTK_CATEGORIES.keys():
         _category = RTKCategory()
         _category.category_id = _key
         session.add(_category)
-        _category.set_attributes(dao.RTKCommonDB.categories[_key])
+        _category.set_attributes(dao.RTKCommonDB.RTK_CATEGORIES[_key])
     session.commit()
 
     _subcategory = RTKSubCategory()

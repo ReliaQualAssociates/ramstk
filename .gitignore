@@ -33,6 +33,7 @@ docs/generated/
 docs/specs/
 docs/source/_static/
 docs/source/_templates/
+rtk-RQA/
 tests/_test_results/
 CodeCounts.sql
 FailureModes.sql

@@ -34,7 +34,7 @@ class TestRTKCategory(unittest.TestCase):
     Class for testing the RTKCategory class.
     """
 
-    attributes = (1, 'IC', 'Integrated Circuit', 'hardware', 1)
+    attributes = (0, 'IC', 'Integrated Circuit', 'hardware', 1)
 
     def setUp(self):
         """
@@ -65,7 +65,7 @@ class TestRTKCategory(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_category')
-        self.assertEqual(self.DUT.category_id, 1)
+        self.assertEqual(self.DUT.category_id, 0)
         self.assertEqual(self.DUT.name, 'IC')
         self.assertEqual(self.DUT.description, 'Integrated Circuit')
         self.assertEqual(self.DUT.type, 'hardware')

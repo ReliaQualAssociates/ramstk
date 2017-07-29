@@ -25,7 +25,7 @@ from treelib import Tree
 
 import Configuration as Configuration
 import Utilities as Utilities
-from dao.RTKCommonDB import SiteSession, ProgSession
+from dao.RTKCommonDB import RTK_SITE_SESSION, RTK_PROGRAM_SESSION
 from dao.DAO import DAO
 from dao.RTKRevision import RTKRevision
 from dao.RTKMission import RTKMission
@@ -51,16 +51,16 @@ class TestDAO(unittest.TestCase):
         self.site_dao = DAO('')
         self.site_dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
 
-        SiteSession.configure(bind=self.site_dao.engine, autoflush=False,
+        RTK_SITE_SESSION.configure(bind=self.site_dao.engine, autoflush=False,
                           expire_on_commit=False)
-        self.site_session = scoped_session(SiteSession)
+        self.site_session = scoped_session(RTK_SITE_SESSION)
 
         self.DUT = DAO('')
         self.DUT.db_connect('sqlite:////tmp/TestDB.rtk')
 
-        ProgSession.configure(bind=self.DUT.engine, autoflush=False,
+        RTK_PROGRAM_SESSION.configure(bind=self.DUT.engine, autoflush=False,
                           expire_on_commit=False)
-        self.program_session = scoped_session(ProgSession)
+        self.program_session = scoped_session(RTK_PROGRAM_SESSION)
 
         self._revision = self.program_session.query(RTKRevision).first()
         self._mission = self.program_session.query(RTKMission).\

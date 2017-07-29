@@ -6,30 +6,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
@@ -125,7 +125,7 @@ from RTKTest import RTKTest
 from RTKTestMethod import RTKTestMethod
 from RTKValidation import RTKValidation
 
-Base = declarative_base()
+RTK_BASE = declarative_base()
 
 # Add localization support.
 _ = gettext.gettext
@@ -273,21 +273,21 @@ class DAO(object):
 
         self._db_table_create(RTKUser.__table__)
         self._db_table_create(RTKGroup.__table__)
-        for _key in RTKCommonDB.groups.keys():
+        for _key in RTKCommonDB.RTK_GROUPS.keys():
             _group = RTKGroup()
             _group.group_id = _key
             self.db_add([_group, ], session)
             session.commit()
-            _group.set_attributes(RTKCommonDB.groups[_key])
+            _group.set_attributes(RTKCommonDB.RTK_GROUPS[_key])
             session.commit()
 
         self._db_table_create(RTKEnviron.__table__)
-        for _key in RTKCommonDB.environs.keys():
+        for _key in RTKCommonDB.RTK_ENVIRONS.keys():
             _environ = RTKEnviron()
             _environ.environ_id = _key
             self.db_add([_environ, ], session)
             session.commit()
-            _environ.set_attributes(RTKCommonDB.environs[_key])
+            _environ.set_attributes(RTKCommonDB.RTK_ENVIRONS[_key])
             session.commit()
 
         self._db_table_create(RTKModel.__table__)
@@ -300,159 +300,159 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKType.__table__)
-        for _key in RTKCommonDB.types.keys():
+        for _key in RTKCommonDB.RTK_TYPES.keys():
             _type = RTKType()
             _type.type_id = _key
             self.db_add([_type, ], session)
             session.commit()
-            _type.set_attributes(RTKCommonDB.types[_key])
+            _type.set_attributes(RTKCommonDB.RTK_TYPES[_key])
             session.commit()
 
         self._db_table_create(RTKCategory.__table__)
-        for _key in RTKCommonDB.categories.keys():
+        for _key in RTKCommonDB.RTK_CATEGORIES.keys():
             _category = RTKCategory()
             _category.category_id = _key
             self.db_add([_category, ], session)
             session.commit()
-            _category.set_attributes(RTKCommonDB.categories[_key])
+            _category.set_attributes(RTKCommonDB.RTK_CATEGORIES[_key])
             session.commit()
 
         self._db_table_create(RTKSubCategory.__table__)
         self._db_table_create(RTKFailureMode.__table__)
 
         self._db_table_create(RTKPhase.__table__)
-        for _key in RTKCommonDB.phases.keys():
+        for _key in RTKCommonDB.RTK_PHASES.keys():
             _phase = RTKPhase()
             _phase.phase_id = _key
             self.db_add([_phase, ], session)
             session.commit()
-            _phase.set_attributes(RTKCommonDB.phases[_key])
+            _phase.set_attributes(RTKCommonDB.RTK_PHASES[_key])
             session.commit()
 
         self._db_table_create(RTKDistribution.__table__)
-        for _key in RTKCommonDB.distributions.keys():
+        for _key in RTKCommonDB.RTK_DISTRIBUTIONS.keys():
             _distribution = RTKDistribution()
             _distribution.distribution_id = _key
             self.db_add([_distribution, ], session)
             session.commit()
-            _distribution.set_attributes(RTKCommonDB.distributions[_key])
+            _distribution.set_attributes(RTKCommonDB.RTK_DISTRIBUTIONS[_key])
             session.commit()
 
         self._db_table_create(RTKManufacturer.__table__)
-        for _key in RTKCommonDB.manufacturers.keys():
+        for _key in RTKCommonDB.RTK_MANUFACTURERS.keys():
             _manufacturer = RTKManufacturer()
             _manufacturer.manufacturer_id = _key
             self.db_add([_manufacturer, ], session)
             session.commit()
-            _manufacturer.set_attributes(RTKCommonDB.manufacturers[_key])
+            _manufacturer.set_attributes(RTKCommonDB.RTK_MANUFACTURERS[_key])
             session.commit()
 
         self._db_table_create(RTKUnit.__table__)
-        for _key in RTKCommonDB.units.keys():
+        for _key in RTKCommonDB.RTK_UNITS.keys():
             _unit = RTKUnit()
             _unit.unit_id = _key
             self.db_add([_unit, ], session)
             session.commit()
-            _unit.set_attributes(RTKCommonDB.units[_key])
+            _unit.set_attributes(RTKCommonDB.RTK_UNITS[_key])
             session.commit()
 
         self._db_table_create(RTKMethod.__table__)
-        for _key in RTKCommonDB.methods.keys():
+        for _key in RTKCommonDB.RTK_METHODS.keys():
             _method = RTKMethod()
             _method.method_id = _key
             self.db_add([_method, ], session)
             session.commit()
-            _method.set_attributes(RTKCommonDB.methods[_key])
+            _method.set_attributes(RTKCommonDB.RTK_METHODS[_key])
             session.commit()
 
         self._db_table_create(RTKCriticality.__table__)
-        for _key in RTKCommonDB.criticalitys.keys():
+        for _key in RTKCommonDB.RTK_CRITICALITIES.keys():
             _criticality = RTKCriticality()
             _criticality.criticality_id = _key
             self.db_add([_criticality, ], session)
             session.commit()
-            _criticality.set_attributes(RTKCommonDB.criticalitys[_key])
+            _criticality.set_attributes(RTKCommonDB.RTK_CRITICALITIES[_key])
             session.commit()
 
         self._db_table_create(RTKRPN.__table__)
-        for _key in RTKCommonDB.rpns.keys():
+        for _key in RTKCommonDB.RTK_RPNS.keys():
             _rpn = RTKRPN()
             _rpn.rpn_id = _key
             self.db_add([_rpn, ], session)
             session.commit()
-            _rpn.set_attributes(RTKCommonDB.rpns[_key])
+            _rpn.set_attributes(RTKCommonDB.RTK_RPNS[_key])
             session.commit()
 
         self._db_table_create(RTKLevel.__table__)
-        for _key in RTKCommonDB.levels.keys():
+        for _key in RTKCommonDB.RTK_LEVELS.keys():
             _level = RTKLevel()
             _level.level_id = _key
             self.db_add([_level, ], session)
             session.commit()
-            _level.set_attributes(RTKCommonDB.levels[_key])
+            _level.set_attributes(RTKCommonDB.RTK_LEVELS[_key])
             session.commit()
 
         self._db_table_create(RTKApplication.__table__)
-        for _key in RTKCommonDB.applications.keys():
+        for _key in RTKCommonDB.RTK_APPLICATIONS.keys():
             _application = RTKApplication()
             _application.application_id = _key
             self.db_add([_application, ], session)
             session.commit()
-            _application.set_attributes(RTKCommonDB.applications[_key])
+            _application.set_attributes(RTKCommonDB.RTK_APPLICATIONS[_key])
             session.commit()
 
         self._db_table_create(RTKHazards.__table__)
-        for _key in RTKCommonDB.hazards.keys():
+        for _key in RTKCommonDB.RTK_HAZARDS.keys():
             _hazard = RTKHazards()
             _hazard.hazard_id = _key
             self.db_add([_hazard, ], session)
             session.commit()
-            _hazard.set_attributes(RTKCommonDB.hazards[_key])
+            _hazard.set_attributes(RTKCommonDB.RTK_HAZARDS[_key])
             session.commit()
 
         self._db_table_create(RTKStakeholders.__table__)
-        for _key in RTKCommonDB.stakeholders.keys():
+        for _key in RTKCommonDB.RTK_STAKEHOLDERS.keys():
             _stakeholder = RTKStakeholders()
             _stakeholder.stakeholders_id = _key
             self.db_add([_stakeholder, ], session)
             session.commit()
-            _stakeholder.set_attributes(RTKCommonDB.stakeholders[_key])
+            _stakeholder.set_attributes(RTKCommonDB.RTK_STAKEHOLDERS[_key])
             session.commit()
 
         self._db_table_create(RTKStatus.__table__)
-        for _key in RTKCommonDB.statuses.keys():
+        for _key in RTKCommonDB.RTK_STATUSES.keys():
             _status = RTKStatus()
             _status.status_id = _key
             self.db_add([_status, ], session)
             session.commit()
-            _status.set_attributes(RTKCommonDB.statuses[_key])
+            _status.set_attributes(RTKCommonDB.RTK_STATUSES[_key])
             session.commit()
 
         self._db_table_create(RTKCondition.__table__)
-        for _key in RTKCommonDB.conditions.keys():
+        for _key in RTKCommonDB.RTK_CONDITIONS.keys():
             _condition = RTKCondition()
             _condition.condition_id = _key
             self.db_add([_condition, ], session)
             session.commit()
-            _condition.set_attributes(RTKCommonDB.conditions[_key])
+            _condition.set_attributes(RTKCommonDB.RTK_CONDITIONS[_key])
             session.commit()
 
         self._db_table_create(RTKMeasurement.__table__)
-        for _key in RTKCommonDB.measurements.keys():
+        for _key in RTKCommonDB.RTK_MEASUREMENTSs.keys():
             _measurement = RTKMeasurement()
             _measurement.measurement_id = _key
             self.db_add([_measurement, ], session)
             session.commit()
-            _measurement.set_attributes(RTKCommonDB.measurements[_key])
+            _measurement.set_attributes(RTKCommonDB.RTK_MEASUREMENTS[_key])
             session.commit()
 
         self._db_table_create(RTKLoadHistory.__table__)
-        for _key in RTKCommonDB.historys.keys():
+        for _key in RTKCommonDB.RTK_HISTORIES.keys():
             _history = RTKLoadHistory()
             _history.history_id = _key
             self.db_add([_history, ], session)
             session.commit()
-            _history.set_attributes(RTKCommonDB.historys[_key])
+            _history.set_attributes(RTKCommonDB.RTK_HISTORIES[_key])
             session.commit()
 
         return False

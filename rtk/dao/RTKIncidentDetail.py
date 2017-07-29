@@ -25,9 +25,9 @@ try:
 except ImportError:
     import rtk.Utilities as Utilities
 try:
-    from dao.RTKCommonDB import Base
+    from dao.RTKCommonDB import RTK_BASE
 except ImportError:
-    from rtk.dao.RTKCommonDB import Base
+    from rtk.dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -35,7 +35,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
-class RTKIncidentDetail(Base):
+class RTKIncidentDetail(RTK_BASE):
     """
     Class to represent the table rtk_incident_detail in the RTK Program
     database.
