@@ -10,36 +10,36 @@ This is the test class for testing the Configuration module algorithms and model
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import shutil
 import sys
 from os import environ, makedirs, name
-from os.path import dirname, isfile
+from os.path import dirname, isfile, realpath
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
@@ -47,7 +47,7 @@ from nose.plugins.attrib import attr
 
 import ConfigParser
 
-from Configuration import RTKConf
+from Configuration import Configuration
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -70,21 +70,7 @@ class TestConfiguration(unittest.TestCase):
         elif name == 'nt':
             self.HOMEDIR = environ['USERPROFILE']
 
-        self.siteDUT = RTKConf()
-        self.siteDUT.SITE_DIR = '/home/andrew/.config/RTK'
-        self.siteDUT.conf_dir = '/tmp/RTK'
-        self.siteDUT.data_dir = self.siteDUT.conf_dir + '/data/'
-        self.siteDUT.icon_dir = self.siteDUT.conf_dir + '/icons/'
-        self.siteDUT.log_dir = self.siteDUT.conf_dir + '/logs/'
-        self.siteDUT.conf_file = '/tmp/RTK/site.conf'
-
-        self.userDUT = RTKConf('user')
-        self.userDUT.SITE_DIR = '/home/andrew/.config/RTK'
-        self.userDUT.conf_dir = '/tmp/RTK'
-        self.userDUT.data_dir = self.userDUT.conf_dir + '/data/'
-        self.userDUT.icon_dir = self.userDUT.conf_dir + '/icons/'
-        self.userDUT.log_dir = self.userDUT.conf_dir + '/logs/'
-        self.userDUT.conf_file = '/tmp/RTK/RTK.conf'
+        self.DUT = Configuration()
 
         try:
             makedirs('/tmp/RTK/data')
@@ -100,120 +86,321 @@ class TestConfiguration(unittest.TestCase):
             pass
 
     @attr(all=True, unit=True)
-    def test00_initialize_site(self):
+    def test00_initialize_configuration(self):
         """
-        (TestConfiguration) __init__ should create an instance of the RTKConf object when initializing a site configuration
+        (TestConfiguration) __init__ should create an instance of the Configuration object when initializing
         """
 
-        self.assertTrue(isinstance(self.siteDUT, RTKConf))
+        self.assertTrue(isinstance(self.DUT, Configuration))
+
+        self.assertEqual(self.DUT.RTK_MODE, '')
+        self.assertEqual(self.DUT.RTK_SITE_CONF, '')
+        self.assertEqual(self.DUT.RTK_PROG_CONF, '')
+        self.assertEqual(self.DUT.RTK_DEBUG_LOG, '')
+        self.assertEqual(self.DUT.RTK_IMPORT_LOG, '')
+        self.assertEqual(self.DUT.RTK_USER_LOG, '')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE, {})
+        self.assertEqual(self.DUT.RTK_COLORS, {})
+        self.assertEqual(self.DUT.RTK_PREFIX, [])
+        self.assertEqual(self.DUT.RTK_ACTION_CATEGORY, {})
+        self.assertEqual(self.DUT.RTK_INCIDENT_CATEGORY, {})
+        self.assertEqual(self.DUT.RTK_SEVERITY, {})
+        self.assertEqual(self.DUT.RTK_ACTIVE_ENVIRONMENTS, {})
+        self.assertEqual(self.DUT.RTK_DORMANT_ENVIRONMENTS, {})
+        self.assertEqual(self.DUT.RTK_SW_DEV_ENVIRONMENTS, {})
+        self.assertEqual(self.DUT.RTK_AFFINITY_GROUPS, {})
+        self.assertEqual(self.DUT.RTK_WORKGROUPS, {})
+        self.assertEqual(self.DUT.RTK_FAILURE_PROBABILITY, {})
+        self.assertEqual(self.DUT.RTK_SW_LEVELS, {})
+        self.assertEqual(self.DUT.RTK_DETECTION_METHODS, {})
+        self.assertEqual(self.DUT.RTK_SW_TEST_METHODS, {})
+        self.assertEqual(self.DUT.RTK_ALLOCATION_MODELS, {})
+        self.assertEqual(self.DUT.RTK_DAMAGE_MODELS, {})
+        self.assertEqual(self.DUT.RTK_HR_MODEL, {})
+        self.assertEqual(self.DUT.RTK_LIFECYCLE, {})
+        self.assertEqual(self.DUT.RTK_SW_DEV_PHASES, {})
+        self.assertEqual(self.DUT.RTK_RPN_DETECTION, {})
+        self.assertEqual(self.DUT.RTK_RPN_SEVERITY, {})
+        self.assertEqual(self.DUT.RTK_RPN_OCCURRENCE, {})
+        self.assertEqual(self.DUT.RTK_ACTION_STATUS, {})
+        self.assertEqual(self.DUT.RTK_INCIDENT_STATUS, {})
+        self.assertEqual(self.DUT.RTK_CONTROL_TYPES, [])
+        self.assertEqual(self.DUT.RTK_COST_TYPE, {})
+        self.assertEqual(self.DUT.RTK_HR_TYPE, {})
+        self.assertEqual(self.DUT.RTK_INCIDENT_TYPE, {})
+        self.assertEqual(self.DUT.RTK_MTTR_TYPE, {})
+        self.assertEqual(self.DUT.RTK_REQUIREMENT_TYPE, {})
+        self.assertEqual(self.DUT.RTK_VALIDATION_TYPE, {})
+        self.assertEqual(self.DUT.RTK_SW_APPLICATION, {})
+        self.assertEqual(self.DUT.RTK_CATEGORIES, {})
+        self.assertEqual(self.DUT.RTK_CRITICALITY, {})
+        self.assertEqual(self.DUT.RTK_FAILURE_MODES, {})
+        self.assertEqual(self.DUT.RTK_HAZARDS, {})
+        self.assertEqual(self.DUT.RTK_MANUFACTURERS, {})
+        self.assertEqual(self.DUT.RTK_MEASUREMENT_UNITS, {})
+        self.assertEqual(self.DUT.RTK_OPERATING_PARAMETERS, {})
+        self.assertEqual(self.DUT.RTK_S_DIST, {})
+        self.assertEqual(self.DUT.RTK_STAKEHOLDERS, {})
+        self.assertEqual(self.DUT.RTK_SUBCATEGORIES, {})
+        self.assertEqual(self.DUT.RTK_USERS, {})
+        self.assertEqual(self.DUT.RTK_RISK_POINTS, [4, 10])
+        self.assertEqual(self.DUT.RTK_MODE_SOURCE, 1)
+        self.assertEqual(self.DUT.RTK_FMECA_METHOD, 1)
+        self.assertEqual(self.DUT.RTK_RPN_FORMAT, 0)
+        self.assertEqual(self.DUT.RTK_COM_BACKEND, '')
+        self.assertEqual(self.DUT.RTK_BACKEND, '')
+        self.assertEqual(self.DUT.RTK_COM_INFO, {})
+        self.assertEqual(self.DUT.RTK_PROG_INFO, {})
+        self.assertEqual(self.DUT.RTK_MODULES, [])
+        self.assertEqual(self.DUT.RTK_PAGE_NUMBER, [])
+        self.assertEqual(self.DUT.RTK_HR_MULTIPLIER, 1000000.0)
+        self.assertEqual(self.DUT.RTK_DEC_PLACES, 6)
+        self.assertEqual(self.DUT.RTK_MTIME, 10.0)
+        self.assertEqual(self.DUT.RTK_TABPOS,
+                         {'listbook': 'top', 'modulebook': 'bottom',
+                          'workbook': 'bottom'})
+        self.assertEqual(self.DUT.RTK_GUI_LAYOUT, 'basic')
+        self.assertEqual(self.DUT.RTK_METHOD, 'STANDARD')
 
         if name == 'posix':
-            self.assertEqual(self.siteDUT.OS, 'Linux')
-            self.assertEqual(self.siteDUT.SITE_DIR, '/home/andrew/.config/RTK')
-            self.assertEqual(self.siteDUT.conf_dir, '/tmp/RTK')
-            self.assertEqual(self.siteDUT.data_dir,
-                             self.siteDUT.conf_dir + '/data/')
-            self.assertEqual(self.siteDUT.icon_dir,
-                             self.siteDUT.conf_dir + '/icons/')
-            self.assertEqual(self.siteDUT.log_dir,
-                             self.siteDUT.conf_dir + '/logs/')
-            self.assertEqual(self.siteDUT.conf_file,
-                             self.siteDUT.conf_dir + '/site.conf')
-            self.assertEqual(self.siteDUT.OS, 'Linux')
+            self.assertEqual(self.DUT.RTK_OS, 'Linux')
+            self.assertEqual(self.DUT.RTK_LOCALE, 'en_US')
+            self.assertEqual(self.DUT.RTK_SITE_DIR, '/etc/RTK')
+            self.assertEqual(self.DUT.RTK_HOME_DIR, environ['HOME'])
+            self.assertEqual(self.DUT.RTK_DATA_DIR, '/usr/share/RTK')
+            self.assertEqual(self.DUT.RTK_ICON_DIR, '/usr/share/pixmaps/RTK')
+            self.assertEqual(self.DUT.RTK_LOG_DIR, '/var/log/RTK')
+            self.assertEqual(self.DUT.RTK_PROG_DIR,
+                             self.DUT.RTK_HOME_DIR + '/analyses/rtk')
+            self.assertEqual(self.DUT.RTK_CONF_DIR, '')
 
     @attr(all=True, unit=True)
-    def test01_initialize_user(self):
+    def test01a_set_site_variables(self):
         """
-        (TestConfiguration) __init__ should create an instance of the RTKConf object when initializing a user configuration
+        (TestConfiguration) set_site_variables should return False on success
         """
 
-        self.assertTrue(isinstance(self.userDUT, RTKConf))
+        self.assertFalse(self.DUT.set_site_variables())
 
         if name == 'posix':
-            self.assertEqual(self.userDUT.OS, 'Linux')
-            self.assertEqual(self.userDUT.SITE_DIR, '/home/andrew/.config/RTK')
-            self.assertEqual(self.userDUT.conf_dir, '/tmp/RTK')
-            self.assertEqual(self.userDUT.data_dir,
-                             self.userDUT.conf_dir + '/data/')
-            self.assertEqual(self.userDUT.icon_dir,
-                             self.userDUT.conf_dir + '/icons/')
-            self.assertEqual(self.userDUT.log_dir,
-                             self.userDUT.conf_dir + '/logs/')
-            self.assertEqual(self.userDUT.prog_dir,
-                             environ['HOME'] + '/analyses/rtk/')
-            self.assertEqual(self.userDUT.conf_file,
-                             self.userDUT.conf_dir + '/RTK.conf')
+            self.assertEqual(self.DUT.RTK_SITE_DIR,
+                             '/etc/RTK')
+            self.assertEqual(self.DUT.RTK_HOME_DIR, environ['HOME'])
+            self.assertEqual(self.DUT.RTK_CONF_DIR,
+                             self.DUT.RTK_HOME_DIR + '/.config/RTK')
+            self.assertEqual(self.DUT.RTK_DATA_DIR,
+                             self.DUT.RTK_HOME_DIR + '/.config/RTK/data')
+            self.assertEqual(self.DUT.RTK_ICON_DIR,
+                             self.DUT.RTK_HOME_DIR + '/.config/RTK/icons')
+            self.assertEqual(self.DUT.RTK_LOG_DIR,
+                             self.DUT.RTK_HOME_DIR + '/.config/RTK/logs')
+            self.assertEqual(self.DUT.RTK_PROG_DIR,
+                             self.DUT.RTK_HOME_DIR + '/analyses/rtk')
+            self.assertEqual(self.DUT.RTK_SITE_CONF,
+                             self.DUT.RTK_CONF_DIR + '/site.conf')
 
     @attr(all=True, unit=True)
-    def test02_create_site_configuration(self):
+    def test02a_set_user_variables(self):
+        """
+        (TestConfiguration) set_user_variables should return False on success
+        """
+
+        self.assertFalse(self.DUT.set_user_variables())
+
+        self.assertEqual(self.DUT.RTK_PROG_CONF,
+                         self.DUT.RTK_CONF_DIR + '/RTK.conf')
+
+    @attr(all=True, unit=True)
+    def test03a_create_site_configuration(self):
         """
         (TestConfiguration) _create_site_configuration should return False on success
         """
 
-        self.assertFalse(self.siteDUT._create_site_configuration())
+        self.DUT.RTK_SITE_DIR = '/tmp/RTK'
+        self.DUT.RTK_HOME_DIR = '/tmp/RTK'
+        self.DUT.RTK_SITE_CONF = self.DUT.RTK_SITE_DIR + '/site.conf'
+
+        self.assertFalse(self.DUT._create_site_configuration())
         self.assertTrue(isfile('/tmp/RTK/site.conf'))
 
     @attr(all=True, unit=True)
-    def test03_create_user_configuration(self):
+    def test04a_create_user_configuration(self):
         """
-        (TestConfiguration) _create_user_configuration should return False on success
+        (TestConfiguration) create_user_configuration should return False on success
         """
 
-        self.assertFalse(self.userDUT._create_user_configuration())
-        self.assertTrue(isfile('/tmp/RTK/RTK.conf'))
-        self.assertTrue(isfile('/tmp/RTK/data/newprogram_mysql.sql'))
-        self.assertTrue(isfile('/tmp/RTK/data/newprogram_sqlite3.sql'))
-        self.assertTrue(isfile('/tmp/RTK/data/rtkcommon_mysql.sql'))
-        self.assertTrue(isfile('/tmp/RTK/data/rtkcommon_sqlite3.sql'))
+        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_HOME_DIR = '/tmp/RTK'
+        self.DUT.set_site_variables()
+        self.DUT.set_user_variables()
+
+        self.assertFalse(self.DUT.create_user_configuration())
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/RTK.conf'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/alt_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/dataset_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/ffmeca_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/fmeca_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/fraca_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/function_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/hardware_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/incident_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
+                               '/mechanisms_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/modes_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/part_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
+                               '/requirement_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/revision_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
+                               '/rgincident_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/risk_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/sfmeca_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/sia_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/software_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
+                               '/stakeholder_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/testing_format.xml'))
+        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
+                               '/validation_format.xml'))
 
     @attr(all=True, unit=True)
-    def test04_create_default_configuration_site(self):
-        """
-        (TestConfiguration) create_default_configuration should return False on success when creating site configuration
-        """
-
-        self.assertFalse(self.siteDUT.create_default_configuration())
-        self.assertTrue(isfile('/tmp/RTK/site.conf'))
-
-    @attr(all=True, unit=True)
-    def test04a_create_default_configuration_user(self):
-        """
-        (TestConfiguration) create_default_configuration should return False on success when creating user configuration
-        """
-
-        self.assertFalse(self.userDUT.create_default_configuration())
-        self.assertTrue(isfile('/tmp/RTK/RTK.conf'))
-        self.assertTrue(isfile('/tmp/RTK/data/newprogram_mysql.sql'))
-        self.assertTrue(isfile('/tmp/RTK/data/newprogram_sqlite3.sql'))
-        self.assertTrue(isfile('/tmp/RTK/data/rtkcommon_mysql.sql'))
-        self.assertTrue(isfile('/tmp/RTK/data/rtkcommon_sqlite3.sql'))
-
-    @attr(all=True, unit=True)
-    def test05_read_configuration(self):
+    def test05a_read_configuration(self):
         """
         (TestConfiguration) read_configuration should return False on success
         """
 
-        _config = self.userDUT.read_configuration()
-        self.assertTrue(isinstance(_config, ConfigParser.ConfigParser))
+        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_HOME_DIR = '/tmp/RTK'
+        self.DUT.set_site_variables()
+        self.DUT.set_user_variables()
+        self.DUT.create_user_configuration()
+
+        self.assertFalse(self.DUT.read_configuration())
+        self.assertEqual(self.DUT.RTK_COLORS['revisionfg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['functionfg'], '#0000FF')
+        self.assertEqual(self.DUT.RTK_COLORS['requirementfg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['assemblyfg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['partfg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['overstressfg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['taggedfg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['nofrmodelfg'], '#A52A2A')
+        self.assertEqual(self.DUT.RTK_COLORS['softwarefg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['incidentfg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['validationfg'], '#00FF00')
+        self.assertEqual(self.DUT.RTK_COLORS['testfg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['survivalfg'], '#000000')
+        self.assertEqual(self.DUT.RTK_COLORS['revisionbg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['functionbg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['requirementbg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['assemblybg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['partbg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['overstressbg'], '#FF0000')
+        self.assertEqual(self.DUT.RTK_COLORS['taggedbg'], '#00FF00')
+        self.assertEqual(self.DUT.RTK_COLORS['softwarebg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['incidentbg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['validationbg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['testbg'], '#FFFFFF')
+        self.assertEqual(self.DUT.RTK_COLORS['survivalbg'], '#FFFFFF')
+
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['revision'],
+                         'revision_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['function'],
+                         'function_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['requirement'],
+                         'requirement_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['hardware'],
+                         'hardware_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['software'],
+                         'software_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['incident'],
+                         'incident_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['validation'],
+                         'validation_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['test'],
+                         'testing_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['part'], 'part_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['sia'], 'sia_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['fmeca'], 'fmeca_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['rgincident'],
+                         'rgincident_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['stakeholder'],
+                         'stakeholder_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['dataset'],
+                         'dataset_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['risk'], 'risk_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['ffmeca'],
+                         'ffmeca_format.xml')
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['sfmeca'],
+                         'sfmeca_format.xml')
+
+        self.assertEqual(self.DUT.RTK_DATA_DIR, '/tmp/RTK/.config/RTK/data')
+        self.assertEqual(self.DUT.RTK_ICON_DIR, '/tmp/RTK/.config/RTK/icons')
+        self.assertEqual(self.DUT.RTK_LOG_DIR, '/tmp/RTK/.config/RTK/logs')
+        self.assertEqual(self.DUT.RTK_PROG_DIR, '/home/arowland/analyses/rtk')
+
+        self.assertEqual(self.DUT.RTK_PROG_INFO['host'], 'localhost')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['socket'], '3306')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['database'], '')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['user'], '')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['password'], '')
+
+        self.assertEqual(self.DUT.RTK_BACKEND, 'sqlite3')
+
+        self.assertEqual(float(self.DUT.RTK_HR_MULTIPLIER), 1000000.0)
+        self.assertEqual(int(self.DUT.RTK_DEC_PLACES), 6)
+        self.assertEqual(float(self.DUT.RTK_MTIME), 100.0)
+        self.assertEqual(int(self.DUT.RTK_MODE_SOURCE), 1)
+        self.assertEqual(self.DUT.RTK_TABPOS['listbook'], 'bottom')
+        self.assertEqual(self.DUT.RTK_TABPOS['modulebook'], 'top')
+        self.assertEqual(self.DUT.RTK_TABPOS['workbook'], 'bottom')
 
     @attr(all=True, unit=True)
-    def test06_write_configuration(self):
+    def test06a_write_configuration(self):
         """
         (TestConfiguration) write_configuration should return False on success
         """
 
-        self.userDUT.FRMULT = 1000000.0
-        self.userDUT.RTK_MTIME = 100.0
-        self.userDUT.PLACES = 6
-        self.userDUT.RTK_MODE_SOURCE = 2
-        self.userDUT.TABPOS = ['top', 'top', 'top']
-        self.userDUT.BACKEND = 'mysql'
-        self.userDUT.RTK_PROG_INFO = ['localhost', 3306, '', '', '']
-        self.userDUT.RTK_FORMAT_FILE = ['', '', '', '', '', '', '', '', '', '',
-                                        '', '', '', '', '', '', '', '']
-        self.userDUT.RTK_COLORS = ['', '', '', '', '', '', '', '', '', '', '',
-                                   '', '', '', '', '', '', '', '', '', '', '',
-                                   '']
+        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_HOME_DIR = '/tmp/RTK'
+        self.DUT.set_site_variables()
+        self.DUT.set_user_variables()
+        self.DUT.create_user_configuration()
 
-        self.assertFalse(self.userDUT.write_configuration())
+        # First, make sure everything is set to it's default value.
+        self.assertEqual(self.DUT.RTK_PROG_INFO['host'], 'localhost')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['socket'], '3306')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['database'], '')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['user'], '')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['password'], '')
+        self.assertEqual(self.DUT.RTK_BACKEND, '')
+        self.assertEqual(float(self.DUT.RTK_HR_MULTIPLIER), 1000000.0)
+        self.assertEqual(int(self.DUT.RTK_DEC_PLACES), 6)
+        self.assertEqual(float(self.DUT.RTK_MTIME), 10.0)
+        self.assertEqual(int(self.DUT.RTK_MODE_SOURCE), 1)
+        self.assertEqual(self.DUT.RTK_TABPOS['listbook'], 'bottom')
+        self.assertEqual(self.DUT.RTK_TABPOS['modulebook'], 'top')
+        self.assertEqual(self.DUT.RTK_TABPOS['workbook'], 'bottom')
+
+        # Next, programatically set these program constants.
+        self.DUT.RTK_HR_MULTIPLIER = 1000.0
+        self.DUT.RTK_MODE_SOURCE = 2
+        self.DUT.RTK_TABPOS['listbook'] = 'top'
+        self.DUT.RTK_TABPOS['modulebook'] = 'top'
+        self.DUT.RTK_TABPOS['workbook'] = 'top'
+        self.DUT.RTK_BACKEND = 'mysql'
+        self.DUT.RTK_PROG_INFO['database'] = '/tmp/TestDB.rtk'
+        self.DUT.RTK_PROG_INFO['user'] = 'arowland'
+
+        # Write them to the RTK_PROG_CONF file and then re-read the file.
+        self.assertFalse(self.DUT.write_configuration())
+        self.assertFalse(self.DUT.read_configuration())
+
+        # Verify that the constants were written/read properly.
+        self.assertEqual(self.DUT.RTK_PROG_INFO['database'], '/tmp/TestDB.rtk')
+        self.assertEqual(self.DUT.RTK_PROG_INFO['user'], 'arowland')
+        self.assertEqual(self.DUT.RTK_BACKEND, 'mysql')
+        self.assertEqual(float(self.DUT.RTK_HR_MULTIPLIER), 1000.0)
+        self.assertEqual(int(self.DUT.RTK_MODE_SOURCE), 2)
+        self.assertEqual(self.DUT.RTK_TABPOS['listbook'], 'top')
+        self.assertEqual(self.DUT.RTK_TABPOS['modulebook'], 'top')
+        self.assertEqual(self.DUT.RTK_TABPOS['workbook'], 'top')

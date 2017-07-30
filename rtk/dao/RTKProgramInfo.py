@@ -50,7 +50,7 @@ class RTKProgramInfo(RTK_BASE):
     revision_next_id = Column('fld_revision_next_id', Integer, default=0)
     function_prefix = Column('fld_function_prefix', String(512),
                              default='FUNCTION')
-    function_next_id = Column('fld_funcion_next_id', Integer, default=0)
+    function_next_id = Column('fld_function_next_id', Integer, default=0)
     assembly_prefix = Column('fld_assembly_prefix', String(512),
                              default='ASSEMBLY')
     assembly_next_id = Column('fld_assembly_next_id', Integer, default=0)

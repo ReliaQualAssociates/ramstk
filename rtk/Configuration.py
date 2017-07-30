@@ -1,337 +1,7 @@
 #!/usr/bin/env python
 """
-This file contains configuration information and functions for RTK.
-
-:const ICON_DIR: Default value: ''
-Path to the directory containing icon files used by RTK. \n
-POSIX default: /usr/share/pixmaps/RTK \n
-Windows default: None
-
-:const DATA_DIR: Default value: ''
-Path to the directory containing data files used by RTK. \n
-POSIX default: /usr/share/RTK \n
-Windows default: None
-
-:const CONF_DIR: Default value: ''
-Path to the directory containing configuration files used by RTK.\n
-POSIX default: $HOME/.config/RTK \n
-Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK
-
-:const LOG_DIR: Default value: ''
-Path to the directory containing log files used by RTK. \n
-POSIX default: $HOME/.config/RTK/logs \n
-Windows default: C:\\\Users\\\<USER NAME>\\\config\\\RTK\\\logs
-
-:const PROG_DIR: Default value: ''
-Path to the base directory containing RTK Program database files.  This is only
-used when the backend is SQLite3. \n
-POSIX default: $HOME/analyses/rtk \n
-Windows default: C:\\\Users\\\<USER NAME>\\\analyses\\\rtk
-
-:const RTK_MODE_SOURCE: Default value: 1
-Indicator variable used to determine which failure mode source to use.
-
-:const RTK_FORMAT_FILE: Default value: []
-Global list containing the path to the format files to use for various widgets.
-
-+-------+----------------------------+
-| Index | Tree Format                |
-+=======+============================+
-|    0  | Revision Tree              |
-+-------+----------------------------+
-|    1  | Function Tree              |
-+-------+----------------------------+
-|    2  | Requirements Tree          |
-+-------+----------------------------+
-|    3  | Hardware Tree              |
-+-------+----------------------------+
-|    4  | Validation Tree            |
-+-------+----------------------------+
-|    5  | Reliability Growth Tree    |
-+-------+----------------------------+
-|    6  | Field Incidents List       |
-+-------+----------------------------+
-|    7  | Parts List                 |
-+-------+----------------------------+
-|    8  | Similar Item Analysis      |
-+-------+----------------------------+
-|    9  | Hardware FMECA             |
-+-------+----------------------------+
-|   10  | Stakeholder Input          |
-+-------+----------------------------+
-|   11  | Test Planning List         |
-+-------+----------------------------+
-|   12  | Future Use                 |
-+-------+----------------------------+
-|   13  | Future Use                 |
-+-------+----------------------------+
-|   14  | Future Use                 |
-+-------+----------------------------+
-|   15  | Software Tree              |
-+-------+----------------------------+
-|   16  | Dataset Tree               |
-+-------+----------------------------+
-|   17  | Risk Analysis              |
-+-------+----------------------------+
-|   18  | Functional FMECA           |
-+-------+----------------------------+
-|   19  | Software FMECA             |
-+-------+----------------------------+
-
-:const RTK_COLORS: Default value: []
-Global list containing the colors to use for various widgets.
-
-+-------+-----------------------------------------------+
-| Index | Tree Color                                    |
-+=======+===============================================+
-|   0   | Revision Tree background                      |
-+-------+-----------------------------------------------+
-|   1   | Revision Tree foreground                      |
-+-------+-----------------------------------------------+
-|   2   | Function Tree background                      |
-+-------+-----------------------------------------------+
-|   3   | Function Tree foreground                      |
-+-------+-----------------------------------------------+
-|   4   | Requirement Tree background                   |
-+-------+-----------------------------------------------+
-|   5   | Requirement Tree foreground                   |
-+-------+-----------------------------------------------+
-|   6   | Hardware Tree background                      |
-+-------+-----------------------------------------------+
-|   7   | Hardware Tree foreground                      |
-+-------+-----------------------------------------------+
-|   8   | Validation Tree background                    |
-+-------+-----------------------------------------------+
-|   9   | Validation Tree foreground                    |
-+-------+-----------------------------------------------+
-|  10   | Reliability Testing Tree background           |
-+-------+-----------------------------------------------+
-|  11   | Reliability Testing Tree foreground           |
-+-------+-----------------------------------------------+
-|  12   | Program Incident Tree background              |
-+-------+-----------------------------------------------+
-|  13   | Program Incident Tree foreground              |
-+-------+-----------------------------------------------+
-|  14   | Dataset Tree background color                 |
-+-------+-----------------------------------------------+
-|  15   | Dataset Tree foreground color                 |
-+-------+-----------------------------------------------+
-|  16   | Part List Tree background                     |
-+-------+-----------------------------------------------+
-|  17   | Part List Tree foreground                     |
-+-------+-----------------------------------------------+
-|  18   | Overstressed Part background                  |
-+-------+-----------------------------------------------+
-|  19   | Overstressed Part foreground                  |
-+-------+-----------------------------------------------+
-|  20   | Tagged Part background                        |
-+-------+-----------------------------------------------+
-|  21   | Tagged Part foreground                        |
-+-------+-----------------------------------------------+
-|  22   | Part with no failure rate model foreground    |
-+-------+-----------------------------------------------+
-|  23   | Software Tree background color                |
-+-------+-----------------------------------------------+
-|  24   | Software Tree foreground color                |
-+-------+-----------------------------------------------+
-
-:const RTK_PREFIX: Default value: []
-Global variable list to house information about the prefix and next index to
-use when adding new revisions, functions, assemblies, parts, FMECA items,
-FMECA modes, FMECA effects, and FMECA causes.
-
-+-------+---------------------------+
-| Index | Next Prefix/Index         |
-+=======+===========================+
-|   0   | Revision prefix           |
-+-------+---------------------------+
-|   1   | Next Revision index       |
-+-------+---------------------------+
-|   2   | Function prefix           |
-+-------+---------------------------+
-|   3   | Next Function index       |
-+-------+---------------------------+
-|   4   | Hardware prefix           |
-+-------+---------------------------+
-|   5   | Next Hardware index       |
-+-------+---------------------------+
-|   6   | Part prefix               |
-+-------+---------------------------+
-|   7   | Next Part index           |
-+-------+---------------------------+
-|   8   | FMECA item prefix         |
-+-------+---------------------------+
-|   9   | Next FMECA item index     |
-+-------+---------------------------+
-|  10   | FMECA mode prefix         |
-+-------+---------------------------+
-|  11   | Next FMECA mode index     |
-+-------+---------------------------+
-|  12   | FMECA effect prefix       |
-+-------+---------------------------+
-|  13   | Next FMECA effect index   |
-+-------+---------------------------+
-|  14   | FMECA cause prefix        |
-+-------+---------------------------+
-|  15   | Next FMECA cause index    |
-+-------+---------------------------+
-|  16   | Software prefix           |
-+-------+---------------------------+
-|  17   | Next Software index       |
-+-------+---------------------------+
-
-:const RTK_MODULES: Default value: []
-Global list to house information about the active modules.  Where 1 = active
-and 0 = inactive.
-
-+-------+---------------+
-| Index | Module        |
-+=======+===============+
-|   0   | Revision      |
-+-------+---------------+
-|   1   | Function      |
-+-------+---------------+
-|   2   | Requirements  |
-+-------+---------------+
-|   3   | Hardware      |
-+-------+---------------+
-|   4   | Software      |
-+-------+---------------+
-|   5   | Validation    |
-+-------+---------------+
-|   6   | Testing       |
-+-------+---------------+
-|   7   | Incidents     |
-+-------+---------------+
-|   8   | Dataset       |
-+-------+---------------+
-|   9   | FMECA         |
-+-------+---------------+
-|  10   | RCM           |
-+-------+---------------+
-|  11   | RBD           |
-+-------+---------------+
-|  12   | FTA           |
-+-------+---------------+
-
-:const RTK_PAGE_NUMBER: Default value: []
-
-:const RTK_COM_INFO: Default value: []
-Global list for the RTK common database connection information.
-
-+-------+-------------------------------+
-| Index | Information                   |
-+=======+===============================+
-|   0   | Host name (MySQL only)        |
-+-------+-------------------------------+
-|   1   | Host port (MySQL only)        |
-+-------+-------------------------------+
-|   2   | Database name                 |
-+-------+-------------------------------+
-|   3   | User name (MySQL only)        |
-+-------+-------------------------------+
-|   4   | User password (MySQL only)    |
-+-------+-------------------------------+
-
-:const RTK_PROG_INFO: Default value: []
-Global list for RTK Program database connectioninformation.
-
-+-------+-------------------------------+
-| Index | Information                   |
-+=======+===============================+
-|   0   | Host name (MySQL only)        |
-+-------+-------------------------------+
-|   1   | Host port (MySQL only)        |
-+-------+-------------------------------+
-|   2   | Database name                 |
-+-------+-------------------------------+
-|   3   | User name (MySQL only)        |
-+-------+-------------------------------+
-|   4   | User password (MySQL only)    |
-+-------+-------------------------------+
-
-:const RTK_FAILURE_PROBABILITY: default value: []
-Global list for qualitative failure probability categories.
-
-:const RTK_SEVERITY: default value: []
-Global list for failure severity categories.
-
-:const RTK_HAZARDS: default value: []
-Global list for potential hazards.
-
-:const RTK_RISK_POINTS: default value: [4, 10]
-Global list for risk level cutoffs.
-
-+-------+---------------------------+
-| Index | Risk Level Cutoff Value   |
-+=======+===========================+
-|   0   | Low to medium             |
-+-------+---------------------------+
-|   1   | Medium to high            |
-+-------+---------------------------+
-
-:const RTK_REQUIREMENT_TYPES: default value: []
-Global list of requirement types.
-
-:const RTK_FMECA_METHOD: default value: 1
-Global indicator variable for the criticality method used.  1=Task 102, 2=RPN.
-
-:const RTK_RPN_FORMAT: default value: 0
-Global indicator variable for the level that the RPN is calculated.  0=Mechanism, 1=Cause.
-
-:const RTK_RPN_SEVERITY: default value: []
-Global list for RPN Severity categories.
-
-:const RTK_RPN_OCCURRENCE: default value: []
-Global list for RPN Occurrence categories.
-
-:const RTK_RPN_DETECTION: default value: []
-Global list for RPN Detection categories.
-
-:const COM_BACKEND: Default value: ''
-RTK common database backend to use; mysql or sqlite3.
-
-:const BACKEND: Default value: ''
-RTK Program database backend to use; mysql or sqlite3.
-
-:const LOCALE: Default value: en_US
-The language locale to use with RTK.
-
-:const OS: Default value: ''
-The operating system RTK is currently running on.
-
-:const FRMULT: Default value: 1.0
-The failure rate multiplier.  All failure rates will be multiplied by this
-value for display.  This allows failure rates to display without using
-scientific notation.
-
-:const PLACES: Default value: 6
-Number of decimal places to show in numerical results.
-
-:const RTK_MTIME: Default value: 10.0
-The default mission time for new RTK Programs.
-
-:const TABPOS: Default value: ['Top', 'Bottom', 'Bottom']
-Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
-'Bottom', 'Left', or 'Right'.
-
-+-------+---------------+
-| Index | Notebook      |
-+=======+===============+
-|   0   | Module Book   |
-+-------+---------------+
-|   1   | Work Book     |
-+-------+---------------+
-|   2   | List Book     |
-+-------+---------------+
-
-:const RTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options are:
-    * basic: a single window embedded with the Module Book, Work Book, and List
-             Book.
-    * advanced: multiple windows; one each for the Module Book, Work Book, and
-                List Book.
+This file contains configuration information and methods for RTK.
 """
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.Configuration.py is part of The RTK Project
@@ -339,30 +9,30 @@ Location of tabs in the three main gtk.Notebook() widgets.  Can be 'Top',
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import ConfigParser
@@ -381,296 +51,423 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
-RTK_MODE = ''
-MODE = ''                               # TODO: Retire this variable.
 
-RTK_SITE_DIR = ''
-SITE_DIR = ''                           # TODO: Retire this variable.
-RTK_ICON_DIR = ''
-ICON_DIR = ''                           # TODO: Retire this variable.
-RTK_DATA_DIR = ''
-DATA_DIR = ''                           # TODO: Retire this variable.
-RTK_CONF_DIR = ''
-CONF_DIR = ''                           # TODO: Retire this variable.
-RTK_LOG_DIR = ''
-LOG_DIR = ''                            # TODO: Retire this variable.
-RTK_PROG_DIR = ''
-PROG_DIR = ''                           # TODO: Retire this variable.
-
-# --------------------------------------------------------------------- #
-# Log files.                                                            #
-# --------------------------------------------------------------------- #
-RTK_DEBUG_LOG = ''
-RTK_IMPORT_LOG = ''
-RTK_USER_LOG = ''
-
-# --------------------------------------------------------------------- #
-# Format files.                                                         #
-# --------------------------------------------------------------------- #
-RTK_FORMAT_FILE = {}
-RTK_COLORS = {}
-RTK_PREFIX = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKCategory.               #
-# --------------------------------------------------------------------- #
-RTK_ACTION_CATEGORY = {}
-RTK_INCIDENT_CATEGORY = {}
-RTK_SEVERITY = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKEnviron.                #
-# --------------------------------------------------------------------- #
-RTK_ACTIVE_ENVIRONMENTS = {}
-RTK_DORMANT_ENVIRONMENTS = {}
-RTK_SW_DEV_ENVIRONMENTS = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKGroup.                  #
-# --------------------------------------------------------------------- #
-RTK_AFFINITY_GROUPS = {}
-RTK_WORKGROUPS = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKLevel.                  #
-# --------------------------------------------------------------------- #
-RTK_FAILURE_PROBABILITY = {}
-RTK_SW_LEVELS = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKMethod.                 #
-# --------------------------------------------------------------------- #
-RTK_DETECTION_METHODS = {}
-RTK_SW_TEST_METHODS = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKModel.                  #
-# --------------------------------------------------------------------- #
-RTK_ALLOCATION_MODELS = {}
-RTK_DAMAGE_MODELS = {}
-RTK_HR_MODEL = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKPhase.                  #
-# --------------------------------------------------------------------- #
-RTK_LIFECYCLE = {}
-RTK_SW_DEV_PHASES = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKRPN.                    #
-# --------------------------------------------------------------------- #
-RTK_RPN_DETECTION = {}
-RTK_RPN_SEVERITY = {}
-RTK_RPN_OCCURRENCE = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKStatus.                 #
-# --------------------------------------------------------------------- #
-RTK_ACTION_STATUS = {}
-RTK_INCIDENT_STATUS = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled by RTK Common DB table RTKType.                   #
-# --------------------------------------------------------------------- #
-RTK_CONTROL_TYPES = []
-RTK_COST_TYPE = {}
-RTK_HR_TYPE = {}
-RTK_INCIDENT_TYPE = {}
-RTK_MTTR_TYPE = {}
-RTK_REQUIREMENT_TYPE = {}
-RTK_VALIDATION_TYPE = {}
-
-# --------------------------------------------------------------------- #
-# Dictionaries filled from RTK Common DB tables that require no filter. #
-# --------------------------------------------------------------------- #
-RTK_SW_APPLICATION = {}
-RTK_CATEGORIES = {}
-RTK_CRITICALITY = {}
-RTK_FAILURE_MODES = {}                  # Default failure modes.
-RTK_HAZARDS = {}
-RTK_MANUFACTURERS = {}
-RTK_MEASUREMENT_UNITS = {}
-RTK_OPERATING_PARAMETERS = {}           # TODO: Add table to common db for this.
-RTK_S_DIST = {}
-RTK_STAKEHOLDERS = {}
-RTK_SUBCATEGORIES = {}
-RTK_USERS = {}
-
-# --------------------------------------------------------------------- #
-# Risk analyses configuration options.                                  #
-# --------------------------------------------------------------------- #
-RTK_RISK_POINTS = [4, 10]
-
-# --------------------------------------------------------------------- #
-# FMEA configuration options.                                           #
-# --------------------------------------------------------------------- #
-RTK_MODE_SOURCE = 1                     # 1=FMD-97
-RTK_FMECA_METHOD = 1                    # 1=Task 102, 2=RPN
-RTK_RPN_FORMAT = 0                      # RPN at mechanism level.
-
-# --------------------------------------------------------------------- #
-# RTK Database configuration options.                                   #
-# --------------------------------------------------------------------- #
-RTK_COM_BACKEND = ''
-COM_BACKEND = ''                        # TODO: Retire this variable.
-RTK_BACKEND = ''
-BACKEND = ''                            # TODO: Retire this variable.
-
-RTK_COM_INFO = {}                       # RTK Common database info.
-RTK_PROG_INFO = {}                      # RTK Program database info.
-
-# --------------------------------------------------------------------- #
-RTK_MODULES = []
-RTK_PAGE_NUMBER = []
-
-RTK_HARDWARE_LIST = []                  # TODO: Retire this variable.
-RTK_SOFTWARE_LIST = []                  # TODO: Retire this variable.
-
-RTK_HR_MULTIPLIER = 1000000.0
-FRMULT = 1000000.0                      # TODO: Retire this variable.
-RTK_DEC_PLACES = 6
-PLACES = 6                              # TODO: Retire this variable.
-RTK_MTIME = 10.0
-
-RTK_TABPOS = {'listbook' : 'top', 'modulebook' : 'bottom',
-              'workbook' : 'bottom'}
-TABPOS = ['top', 'bottom', 'bottom']    # TODO: Retire this variable.
-
-RTK_GUI_LAYOUT = 'basic'
-
-METHOD = 'STANDARD'                     # TODO: Retire this variable.
-RTK_METHOD = 'STANDARD'                 # STANDARD or LRM
-
-LOCALE = 'en_US'
-OS = ''
-
-
-class RTKConf(object):
+class Configuration(object):
     """
-    The RTK configuration class.
+    The RTK configuration class.  Class attributes of the Configuration class
+    are:
+
+    :cvar dict RTK_FORMAT_FILE: Dictionary containing the path to the format
+                                files to use for various widgets.  Keys for
+                                this dictionary are:
+
+                                * revision
+                                * function
+                                * requirement
+                                * hardware
+                                * software
+                                * incident
+                                * validation
+                                * test
+                                * part
+                                * sia
+                                * fmeca
+                                * rgincident
+                                * stakeholder
+                                * dataset
+                                * risk
+                                * ffmeca
+                                * sfmeca
+    :cvar dict RTK_COLORS: Dictionary containing the colors to use for various
+                           widgets.  Keys for this dictionary are:
+
+                           * revisionbg - Revision Tree background
+                           * revisionfg - Revision Tree foreground
+                           * functionbg - Function Tree background
+                           * functionfg - Function Tree foreground
+                           * requirementbg - Requirement Tree background
+                           * requirementfg - Requirement Tree foreground
+                           * assemblybg - Hardware Tree background for
+                             assemblies
+                           * assemblyfg - Hardware Tree foreground for
+                             assemblies
+                           * partbg - Part List Tree background
+                           * partfg - Part List Tree foreground
+                           * overstressbg - Overstressed Part background
+                           * overstressfg - Overstressed Part foreground
+                           * taggedbg - Tagged Part background
+                           * taggedfg - Tagged Part foreground
+                           * nofrmodelfg - Part with no failure rate model
+                             foreground
+                           * softwarebg - Software Tree background color
+                           * softwarefg - Software Tree foreground color
+                           * validationbg - Validation Tree background
+                           * validationfg - Validation Tree foreground
+                           * testbg - Reliability Testing Tree background
+                           * testfg - Reliability Testing Tree foreground
+                           * incidentbg - Program Incident Tree background
+                           * incidentfg - Program Incident Tree foreground
+                           * survivalbg - Dataset Tree background color
+                           * survivalfg - Dataset Tree foreground color
+    :cvar dict RTK_COM_INFO: Dictionary for the RTK common database connection
+                             information.  The information contained is:
+
+                             +----------+-------------------------------+
+                             |   Key    | Information                   |
+                             +==========+===============================+
+                             |   host   | Host name (MySQL only)        |
+                             +----------+-------------------------------+
+                             |  socket  | Host port (MySQL only)        |
+                             +----------+-------------------------------+
+                             | database | Database name                 |
+                             +----------+-------------------------------+
+                             |   user   | User name (MySQL only)        |
+                             +----------+-------------------------------+
+                             | password | User password (MySQL only)    |
+                             +----------+-------------------------------+
+    :cvar dict RTK_PROG_INFO: Dictionary for RTK Program database connection
+                              information.  The information contained is:
+
+                              +----------+-------------------------------+
+                              |   Key    | Information                   |
+                              +==========+===============================+
+                              |   host   | Host name (MySQL only)        |
+                              +----------+-------------------------------+
+                              |  socket  | Host port (MySQL only)        |
+                              +----------+-------------------------------+
+                              | database | Database name                 |
+                              +----------+-------------------------------+
+                              |   user   | User name (MySQL only)        |
+                              +----------+-------------------------------+
+                              | password | User password (MySQL only)    |
+                              +----------+-------------------------------+
+    :cvar dict RTK_TABPOS: Dictionary containing the location of tabs in the
+                           three main gtk.Notebook() widgets.  Can be one of:
+
+                           * Top
+                           * Bottom
+                           * Left
+                           * Right
+
+                           +------------+---------------+----------+
+                           |    Key     | Notebook      | Default  |
+                           +============+===============+==========+
+                           |  listbook  | Module Book   |  *top*   |
+                           +------------+---------------+----------+
+                           | modulebook | Work Book     | *bottom* |
+                           +------------+---------------+----------+
+                           |  workbook  | List Book     | *bottom* |
+                           +------------+---------------+----------+
+    :cvar dict RTK_FAILURE_PROBABILITY: Dictionary for qualitative failure
+                                        probability categories.
+    :cvar dict RTK_SEVERITY: Dictionary for failure severity categories.
+    :cvar dict RTK_HAZARDS: Dictionary for potential hazards.
+    :cvar dict RTK_REQUIREMENT_TYPES: Dictionary of requirement types.
+    :cvar dict RTK_RPN_SEVERITY: Dictionary for RPN Severity categories.
+    :cvar dict RTK_RPN_OCCURRENCE: Dictionary for RPN Occurrence categories.
+    :cvar dict RTK_RPN_DETECTION: Dictionary for RPN Detection categories.
+
+    :cvar list RTK_PREFIX: List of prefixes to use for each RTK module.
+                           Prefixes in the list are:
+
+                           +-------+---------------------------+
+                           | Index | Next Prefix               |
+                           +=======+===========================+
+                           |   0   | Revision prefix           |
+                           +-------+---------------------------+
+                           |   1   | Function prefix           |
+                           +-------+---------------------------+
+                           |   2   | Hardware prefix           |
+                           +-------+---------------------------+
+                           |   3   | Part prefix               |
+                           +-------+---------------------------+
+                           |   4   | FMECA item prefix         |
+                           +-------+---------------------------+
+                           |   5   | FMECA mode prefix         |
+                           +-------+---------------------------+
+                           |   6   | FMECA effect prefix       |
+                           +-------+---------------------------+
+                           |   7   | FMECA cause prefix        |
+                           +-------+---------------------------+
+                           |   8   | Software prefix           |
+                           +-------+---------------------------+
+
+    :cvar list RTK_MODULES: List to of active modules in the open RTK Program
+                            database.  Where 1 = active and 0 = inactive.
+
+                            +-------+---------------+
+                            | Index | Module        |
+                            +=======+===============+
+                            |   0   | Revision      |
+                            +-------+---------------+
+                            |   1   | Function      |
+                            +-------+---------------+
+                            |   2   | Requirements  |
+                            +-------+---------------+
+                            |   3   | Hardware      |
+                            +-------+---------------+
+                            |   4   | Software      |
+                            +-------+---------------+
+                            |   5   | Validation    |
+                            +-------+---------------+
+                            |   6   | Testing       |
+                            +-------+---------------+
+                            |   7   | Incidents     |
+                            +-------+---------------+
+                            |   8   | Dataset       |
+                            +-------+---------------+
+                            |   9   | FMECA         |
+                            +-------+---------------+
+                            |  10   | RCM           |
+                            +-------+---------------+
+                            |  11   | RBD           |
+                            +-------+---------------+
+                            |  12   | FTA           |
+                            +-------+---------------+
+
+    :cvar list RTK_PAGE_NUMBER: List indicating which page each RTK module
+                                occupies in the ModuleBook.
+    :cvar list RTK_RISK_POINTS: List for risk level cutoffs.  Cutoffs are:
+
+                                +-------+---------------------------+
+                                | Index | Risk Level Cutoff Value   |
+                                +=======+===========================+
+                                |   0   | Low to medium             |
+                                +-------+---------------------------+
+                                |   1   | Medium to high            |
+                                +-------+---------------------------+
+
+    :cvar float RTK_HR_MULTIPLIER: The failure rate multiplier.  All failure
+                                   rates will be multiplied by this value for
+                                   display.  This allows failure rates to
+                                   display without using scientific notation.
+                                   Set to one to use scientific notation.
+                                   Default value is *1000000.0*.
+    :cvar float RTK_MTIME: The default mission time for new RTK Programs.
+    :cvar int RTK_DEC_PLACES: Number of decimal places to show in numerical
+                              results.  Default value is *6*.
+    :cvar int RTK_MODE_SOURCE: Indicator variable used to determine which
+                               failure mode source to use.  Sources are:
+
+                               1. FMD-97
+                               2. MIL-STD-338
+
+    :cvar int RTK_FMECA_METHOD: Indicator variable for the criticality method
+                                used.  Available methods are:
+
+                                1. MIL-STD-216A, Task 102
+                                2. Risk Priority Number (RPN)
+
+    :cvar int RTK_RPN_FORMAT: Indicator variable for the level that the RPN is
+                              calculated.  Available levels are:
+
+                              0. Mechanism
+                              1. Cause
+
+    :cvar str RTK_CONF_DIR: Path to the directory containing configuration
+                            files used by RTK.  Default values are:
+
+                            - POSIX default: *$HOME/.config/RTK*
+                            - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RTK*
+
+    :cvar str RTK_DATA_DIR: Path to the directory containing data files used by
+                            RTK.  Default values are:
+
+                            - POSIX default: */usr/share/RTK*
+                            - Windows default: *None*
+
+    :cvar str RTK_ICON_DIR: Path to the directory containing icon files used
+                            by RTK.  Default values are:
+
+                            - POSIX default: */usr/share/pixmaps/RTK*
+                            - Windows default: *None*
+
+    :cvar str RTK_LOG_DIR: Path to the directory containing log files used by
+                           RTK.  Default values are:
+
+                           - POSIX default: *$HOME/.config/RTK/logs*
+                           - Windows default: *C:\\\Users\\\<USER NAME>\\\config\\\RTK\\\logs*
+
+    :cvar str RTK_PROG_DIR: Path to the base directory containing RTK Program
+                            database files.  This is only used when the
+                            backend is SQLite3.  Default values are:
+
+                            - POSIX default: *$HOME/analyses/rtk*
+                            - Windows default: *C:\\\Users\\\<USER NAME>\\\analyses\\\rtk*
+
+    :cvar str RTK_GUI_LAYOUT: Layout of the GUI to use.  Possible options are:
+
+                              * basic - a single window embedded with the
+                                        Module Book, Work Book, and List Book.
+                              * advanced - multiple windows; one each for the
+                                           Module Book, Work Book, and List
+                                           Book.
+
+                              Default value is *basic*.
+    :cvar str RTK_COM_BACKEND: RTK common database backend to use.  Options
+                               are:
+
+                               * mysql
+                               * sqlite3
+
+    :cvar str RTK_BACKEND: RTK Program database backend to use.  Options are:
+
+                           * mysql
+                           * sqlite3
+
+    :cvar str RTK_LOCALE: The language locale to use with RTK.  Default value
+                          is *en_US*.
+    :cvar str RTK_OS: The operating system RTK is currently running on.
     """
 
-    def __init__(self, level='site'):
+    # Define public dictionary class attributes.
+    RTK_FORMAT_FILE = {}
+    RTK_COLORS = {}
+    RTK_COM_INFO = {}  # RTK Common database info.
+    RTK_PROG_INFO = {}  # RTK Program database info.
+    RTK_TABPOS = {'listbook': 'top', 'modulebook': 'bottom',
+                  'workbook': 'bottom'}
+
+    RTK_ACTION_CATEGORY = {}
+    RTK_INCIDENT_CATEGORY = {}
+    RTK_SEVERITY = {}
+    RTK_ACTIVE_ENVIRONMENTS = {}
+    RTK_DORMANT_ENVIRONMENTS = {}
+    RTK_SW_DEV_ENVIRONMENTS = {}
+    RTK_AFFINITY_GROUPS = {}
+    RTK_WORKGROUPS = {}
+    RTK_FAILURE_PROBABILITY = {}
+    RTK_SW_LEVELS = {}
+    RTK_DETECTION_METHODS = {}
+    RTK_SW_TEST_METHODS = {}
+    RTK_ALLOCATION_MODELS = {}
+    RTK_DAMAGE_MODELS = {}
+    RTK_HR_MODEL = {}
+    RTK_LIFECYCLE = {}
+    RTK_SW_DEV_PHASES = {}
+    RTK_RPN_DETECTION = {}
+    RTK_RPN_SEVERITY = {}
+    RTK_RPN_OCCURRENCE = {}
+    RTK_ACTION_STATUS = {}
+    RTK_INCIDENT_STATUS = {}
+    RTK_COST_TYPE = {}
+    RTK_HR_TYPE = {}
+    RTK_INCIDENT_TYPE = {}
+    RTK_MTTR_TYPE = {}
+    RTK_REQUIREMENT_TYPE = {}
+    RTK_VALIDATION_TYPE = {}
+    RTK_SW_APPLICATION = {}
+    RTK_CATEGORIES = {}
+    RTK_CRITICALITY = {}
+    RTK_FAILURE_MODES = {}  # Default failure modes.
+    RTK_HAZARDS = {}
+    RTK_MANUFACTURERS = {}
+    RTK_MEASUREMENT_UNITS = {}
+    RTK_OPERATING_PARAMETERS = {}  # TODO: Add table to common db for this.
+    RTK_S_DIST = {}
+    RTK_STAKEHOLDERS = {}
+    RTK_SUBCATEGORIES = {}
+    RTK_USERS = {}
+
+    # Define public list class attributes.
+    RTK_PREFIX = []
+    RTK_CONTROL_TYPES = []
+    RTK_RISK_POINTS = [4, 10]
+    RTK_MODULES = []
+    RTK_PAGE_NUMBER = []
+
+    # Define public scalare class attributes.
+    RTK_MODE = ''
+    RTK_SITE_CONF = ''
+    RTK_PROG_CONF = ''
+    RTK_HOME_DIR = ''
+    RTK_SITE_DIR = ''
+    RTK_ICON_DIR = ''
+    RTK_DATA_DIR = ''
+    RTK_CONF_DIR = ''
+    RTK_LOG_DIR = ''
+    RTK_PROG_DIR = ''
+    RTK_DEBUG_LOG = ''
+    RTK_IMPORT_LOG = ''
+    RTK_USER_LOG = ''
+    RTK_MODE_SOURCE = 1  # 1=FMD-97
+    RTK_FMECA_METHOD = 1  # 1=Task 102, 2=RPN
+    RTK_RPN_FORMAT = 0  # RPN at mechanism level.
+    RTK_COM_BACKEND = ''
+    RTK_BACKEND = ''
+    RTK_HR_MULTIPLIER = 1000000.0
+    RTK_DEC_PLACES = 6
+    RTK_MTIME = 10.0
+    RTK_GUI_LAYOUT = 'basic'
+    RTK_METHOD = 'STANDARD'  # STANDARD or LRM
+    RTK_LOCALE = 'en_US'
+    RTK_OS = ''
+
+    def __init__(self):
         """
         Method to initialize the RTK configuration parser.
-
-        :param str level: indicates which configuration file is to be read.
-                          One of 'site' or 'user'.
         """
 
-        _DIRS = {}
-
         if name == 'posix':
-            self.OS = 'Linux'
-            self.SITE_DIR = '/etc/RTK/'
-            _DIRS['HOME'] = environ['HOME']
-            _DIRS['DATA'] = '/usr/share/RTK/'
-            _DIRS['ICON'] = '/usr/share/pixmaps/RTK/'
-            _DIRS['LOG'] = '/var/log/RTK/'
-            _DIRS['PROG'] = _DIRS['HOME'] + '/analyses/rtk/'
+            self.RTK_OS = 'Linux'
+            self.RTK_SITE_DIR = '/etc/RTK'
+            self.RTK_HOME_DIR = environ['HOME']
+            self.RTK_DATA_DIR = '/usr/share/RTK'
+            self.RTK_ICON_DIR = '/usr/share/pixmaps/RTK'
+            self.RTK_LOG_DIR = '/var/log/RTK'
+            self.RTK_PROG_DIR = self.RTK_HOME_DIR + '/analyses/rtk'
+            self.RTK_CONF_DIR = ''
 
         elif name == 'nt':
-            self.OS = 'Windows'
-            self.SITE_DIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
-            _DIRS['HOME'] = environ['USERPROFILE']
-            _DIRS['DATA'] = self.SITE_DIR + 'data/'
-            _DIRS['ICON'] = self.SITE_DIR + 'icons/'
-            _DIRS['LOG'] = self.SITE_DIR + 'logs/'
-            _DIRS['PROG'] = _DIRS['HOME'] + '/analyses/rtk/'
+            self.RTK_OS = 'Windows'
+            self.RTK_SITE_DIR = environ['COMMONPROGRAMFILES(X86)'] + '/RTK/'
+            self.RTK_HOME_DIR = environ['USERPROFILE']
+            self.RTK_DATA_DIR = self.RTK_SITE_DIR + 'data/'
+            self.RTK_ICON_DIR = self.RTK_SITE_DIR + 'icons/'
+            self.RTK_LOG_DIR = self.RTK_SITE_DIR + 'logs/'
+            self.RTK_PROG_DIR = self.RTK_HOME_DIR + '/analyses/rtk/'
+            self.RTK_CONF_DIR = ''
 
-        if level == 'site':
-            self._set_site_variables(_DIRS)
-
-        elif level == 'user':
-            self._set_user_variables(_DIRS)
-
-    def _set_site_variables(self, directories):
+    def set_site_variables(self):
         """
         Method to set the site configuration variables.
 
-        :param dict directories: dictionary of directory paths.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        if Utilities.dir_exists(self.SITE_DIR):
-            self.conf_dir = self.SITE_DIR
+        # Prefer user-specific directories in their $HOME directory over the
+        # system-wide directories.
+        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK'):
+            self.RTK_CONF_DIR = self.RTK_HOME_DIR + '/.config/RTK'
         else:
-            self.conf_dir = directories['HOME'] + '/.config/RTK/'
+            self.RTK_CONF_DIR = self.RTK_SITE_DIR
 
-        if Utilities.dir_exists(directories['DATA']):
-            self.data_dir = directories['DATA']
-        else:
-            self.data_dir = directories['HOME'] + '/.config/RTK/data/'
+        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/data'):
+            self.RTK_DATA_DIR = self.RTK_HOME_DIR + '/.config/RTK/data'
 
-        if Utilities.dir_exists(directories['ICON']):
-            self.icon_dir = directories['ICON']
-        else:
-            self.icon_dir = directories['HOME'] + '/.config/RTK/icons'
+        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/icons'):
+            self.RTK_ICON_DIR = self.RTK_HOME_DIR + '/.config/RTK/icons'
 
-        if Utilities.dir_exists(directories['LOG']):
-            self.log_dir = directories['LOG']
-        else:
-            self.log_dir = directories['HOME'] + '/.config/RTK/logs/'
+        if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/logs'):
+            self.RTK_LOG_DIR = self.RTK_HOME_DIR + '/.config/RTK/logs'
 
-        self.conf_file = self.conf_dir + 'site.conf'
+        self.RTK_SITE_CONF = self.RTK_CONF_DIR + '/site.conf'
+
+        if not Utilities.file_exists(self.RTK_SITE_CONF):
+            self._create_site_configuration()
 
         return False
 
-    def _set_user_variables(self, directories):
+    def set_user_variables(self):
         """
         Method to set the user-specific configuration variables.
 
-        :param dict directories: dictionary of directory paths.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        self.conf_dir = directories['HOME'] + '/.config/RTK/'
-
-        if Utilities.dir_exists(directories['HOME'] + '/.config/RTK/data/'):
-            self.data_dir = directories['HOME'] + '/.config/RTK/data/'
-        else:
-            self.data_dir = directories['DATA']
-
-        if Utilities.dir_exists(directories['HOME'] + '/.config/RTK/icons'):
-            self.icon_dir = directories['HOME'] + '/.config/RTK/icons'
-        else:
-            self.icon_dir = directories['ICON']
-
-        if Utilities.dir_exists(directories['HOME'] + '/.config/RTK/logs/'):
-            self.log_dir = directories['HOME'] + '/.config/RTK/logs/'
-        else:
-            self.log_dir = directories['LOG']
-
-        if Utilities.dir_exists(directories['PROG']):
-            self.prog_dir = directories['PROG']
-        else:
-            self.prog_dir = directories['HOME']
-
-        self.conf_file = self.conf_dir + 'RTK.conf'
-
-        if not Utilities.file_exists(self.conf_file):
-            self.create_default_configuration()
-
-        return False
-
-    def create_default_configuration(self):     # pylint: disable=R0914
-        """
-        Method to create a default configuration file in the site or user's
-        configuration directory.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        from os.path import basename
-
-        if basename(self.conf_file) == 'site.conf':
-            self._create_site_configuration()
-
-        elif basename(self.conf_file) == 'RTK.conf':
-            self._create_user_configuration()
+        self.RTK_PROG_CONF = self.RTK_CONF_DIR + '/RTK.conf'
 
         return False
 
@@ -706,10 +503,10 @@ class RTKConf(object):
         _config.set('Backend', 'user', 'user')
         _config.set('Backend', 'password', 'password')
         _config.set('Backend', 'type', 'sqlite3')
-        _config.set('Backend', 'path', self.SITE_DIR)
+        _config.set('Backend', 'path', self.RTK_SITE_DIR)
 
         try:
-            _parser = open(self.conf_file, 'w')
+            _parser = open(self.RTK_SITE_CONF, 'w')
             _config.write(_parser)
             _parser.close()
 
@@ -718,7 +515,7 @@ class RTKConf(object):
 
         return _return
 
-    def _create_user_configuration(self):
+    def create_user_configuration(self):
         """
         Method to create the default user configuration file.
 
@@ -733,47 +530,59 @@ class RTKConf(object):
 
         _config = ConfigParser.ConfigParser()
 
-        if name == 'posix':
-            _HOMEDIR = environ['HOME']
-
-        elif name == 'nt':
-            _HOMEDIR = environ['USERPROFILE']
-
-        # Create the directories needed for the user.
-        if not Utilities.dir_exists(self.conf_dir):
+        # Create the directories needed for the user.  Always prefer the RTK
+        # directories in the user's $HOME over the system-wide directories.
+        # Configuration directory.
+        if not Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK'):
             try:
-                makedirs(self.conf_dir)
+                makedirs(self.RTK_HOME_DIR + '/.config/RTK')
+                self.RTK_CONF_DIR = self.RTK_HOME_DIR + '/.config/RTK'
             except OSError:
                 pass
 
-        if not Utilities.dir_exists(_HOMEDIR + '/.config/RTK/data/'):
+        # Data directory.
+        if not Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/data'):
             try:
-                makedirs(_HOMEDIR + '/.config/RTK/data/')
+                makedirs(self.RTK_HOME_DIR + '/.config/RTK/data')
+                self.RTK_DATA_DIR = self.RTK_HOME_DIR + '/.config/RTK/data'
             except OSError:
                 pass
 
-        if not Utilities.dir_exists(_HOMEDIR + '/.config/RTK/logs/'):
+        # Icon directory.
+        if not Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/icons'):
             try:
-                makedirs(_HOMEDIR + '/.config/RTK/logs/')
+                makedirs(self.RTK_HOME_DIR + '/.config/RTK/icons')
+                self.RTK_ICON_DIR = self.RTK_HOME_DIR + '/.config/RTK/icons'
             except OSError:
                 pass
 
-        # Copy format files from SITE_DIR to the user's _CONFDIR.
-        for _file in glob.glob(self.SITE_DIR + '*.xml'):
-            file_util.copy_file(_file, self.conf_dir)
+        # Log directory.
+        if not Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK/logs'):
+            try:
+                makedirs(self.RTK_HOME_DIR + '/.config/RTK/logs')
+                self.RTK_LOG_DIR = self.RTK_HOME_DIR + '/.config/RTK/logs'
+            except OSError:
+                pass
 
-        # Copy SQL files from SITE_DIR to the user's _DATADIR.
-        for _file in glob.glob(self.SITE_DIR + '/data/*.sql'):
-            file_util.copy_file(_file, self.conf_dir + '/data/')
+        # Program directory.
+        if not Utilities.dir_exists(self.RTK_HOME_DIR + '/analyses/RTK'):
+            try:
+                makedirs(self.RTK_HOME_DIR + '/analyses/RTK')
+                self.RTK_PROG_DIR = self.RTK_HOME_DIR + '/analyses/RTK'
+            except OSError:
+                pass
 
-        # Copy the icons from SITE_DIR to the user's _CONFDIR.
-        if not Utilities.dir_exists(self.conf_dir + '/icons/'):
-            makedirs(self.conf_dir + '/icons/')
+        # Copy format files from RTK_SITE_DIR (system) to the user's
+        # RTK_CONF_DIR.
+        for _file in glob.glob(self.RTK_SITE_DIR + '/*.xml'):
+            file_util.copy_file(_file, self.RTK_CONF_DIR)
+
+        # Copy the icons from RTK_SITE_DIR (system) to the user's RTK_ICON_DIR.
         try:
-            dir_util.copy_tree(self.SITE_DIR + '/icons/',
-                               self.conf_dir + '/icons/')
+            dir_util.copy_tree(self.RTK_SITE_DIR + '/icons/',
+                               self.RTK_ICON_DIR)
         except IOError:
-            print self.conf_dir
+            print self.RTK_CONF_DIR
 
         # Create the default RTK user configuration file.
         _config.add_section('General')
@@ -799,28 +608,29 @@ class RTKConf(object):
         _config.set('Backend', 'password', '')
 
         _config.add_section('Directories')
-        _config.set('Directories', 'datadir', 'data')
-        _config.set('Directories', 'icondir', 'icons')
-        _config.set('Directories', 'logdir', 'logs')
-        _config.set('Directories', 'progdir', 'analyses/rtk')
+        _config.set('Directories', 'datadir', self.RTK_DATA_DIR)
+        _config.set('Directories', 'icondir', self.RTK_ICON_DIR)
+        _config.set('Directories', 'logdir', self.RTK_LOG_DIR)
+        _config.set('Directories', 'progdir', self.RTK_PROG_DIR)
 
         _config.add_section('Files')
-        _config.set('Files', 'datasetformat', 'dataset_format.xml')
-        _config.set('Files', 'fmecaformat', 'fmeca_format.xml')
-        _config.set('Files', 'ffmecaformat', 'ffmeca_format.xml')
-        _config.set('Files', 'sfmecaformat', 'sfmeca_format.xml')
-        _config.set('Files', 'functionformat', 'function_format.xml')
-        _config.set('Files', 'hardwareformat', 'hardware_format.xml')
-        _config.set('Files', 'incidentformat', 'incident_format.xml')
-        _config.set('Files', 'rgincidentformat', 'rgincident_format.xml')
-        _config.set('Files', 'partformat', 'part_format.xml')
-        _config.set('Files', 'requirementformat', 'requirement_format.xml')
-        _config.set('Files', 'revisionformat', 'revision_format.xml')
-        _config.set('Files', 'riskformat', 'risk_format.xml')
-        _config.set('Files', 'siaformat', 'sia_format.xml')
-        _config.set('Files', 'softwareformat', 'software_format.xml')
-        _config.set('Files', 'testformat', 'testing_format.xml')
-        _config.set('Files', 'validationformat', 'validation_format.xml')
+        _config.set('Files', 'dataset', 'dataset_format.xml')
+        _config.set('Files', 'fmeca', 'fmeca_format.xml')
+        _config.set('Files', 'ffmeca', 'ffmeca_format.xml')
+        _config.set('Files', 'sfmeca', 'sfmeca_format.xml')
+        _config.set('Files', 'function', 'function_format.xml')
+        _config.set('Files', 'hardware', 'hardware_format.xml')
+        _config.set('Files', 'incident', 'incident_format.xml')
+        _config.set('Files', 'rgincident', 'rgincident_format.xml')
+        _config.set('Files', 'part', 'part_format.xml')
+        _config.set('Files', 'requirement', 'requirement_format.xml')
+        _config.set('Files', 'revision', 'revision_format.xml')
+        _config.set('Files', 'risk', 'risk_format.xml')
+        _config.set('Files', 'sia', 'sia_format.xml')
+        _config.set('Files', 'software', 'software_format.xml')
+        _config.set('Files', 'stakeholder', 'stakeholder_format.xml')
+        _config.set('Files', 'test', 'testing_format.xml')
+        _config.set('Files', 'validation', 'validation_format.xml')
 
         _config.add_section('Colors')
         _config.set('Colors', 'revisionbg', '#FFFFFF')
@@ -831,14 +641,6 @@ class RTKConf(object):
         _config.set('Colors', 'requirementfg', '#000000')
         _config.set('Colors', 'assemblybg', '#FFFFFF')
         _config.set('Colors', 'assemblyfg', '#000000')
-        _config.set('Colors', 'softwarebg', '#FFFFFF')
-        _config.set('Colors', 'softwarefg', '#000000')
-        _config.set('Colors', 'validationbg', '#FFFFFF')
-        _config.set('Colors', 'validationfg', '#00FF00')
-        _config.set('Colors', 'rgbg', '#FFFFFF')
-        _config.set('Colors', 'rgfg', '#000000')
-        _config.set('Colors', 'fracabg', '#FFFFFF')
-        _config.set('Colors', 'fracafg', '#000000')
         _config.set('Colors', 'partbg', '#FFFFFF')
         _config.set('Colors', 'partfg', '#000000')
         _config.set('Colors', 'overstressbg', '#FF0000')
@@ -846,9 +648,19 @@ class RTKConf(object):
         _config.set('Colors', 'taggedbg', '#00FF00')
         _config.set('Colors', 'taggedfg', '#FFFFFF')
         _config.set('Colors', 'nofrmodelfg', '#A52A2A')
+        _config.set('Colors', 'softwarebg', '#FFFFFF')
+        _config.set('Colors', 'softwarefg', '#000000')
+        _config.set('Colors', 'validationbg', '#FFFFFF')
+        _config.set('Colors', 'validationfg', '#00FF00')
+        _config.set('Colors', 'testbg', '#FFFFFF')
+        _config.set('Colors', 'testfg', '#000000')
+        _config.set('Colors', 'incidentbg', '#FFFFFF')
+        _config.set('Colors', 'incidentfg', '#000000')
+        _config.set('Colors', 'survivalbg', '#FFFFFF')
+        _config.set('Colors', 'survivalfg', '#000000')
 
         try:
-            _parser = open(self.conf_file, 'w')
+            _parser = open(self.RTK_PROG_CONF, 'w')
             _config.write(_parser)
             _parser.close()
         except EnvironmentError:
@@ -866,94 +678,60 @@ class RTKConf(object):
 
         _return = False
 
-        if Utilities.file_exists(self.conf_file):
+        _lst_colors = ['revisionfg', 'functionfg', 'requirementfg',
+                       'assemblyfg', 'partfg', 'overstressfg', 'taggedfg',
+                       'nofrmodelfg', 'softwarefg', 'incidentfg',
+                       'validationfg', 'testfg', 'survivalfg', 'revisionbg',
+                       'functionbg', 'requirementbg', 'assemblybg', 'partbg',
+                       'overstressbg', 'taggedbg', 'softwarebg', 'incidentbg',
+                       'validationbg', 'testbg', 'survivalbg']
+        _lst_format_files = ['revision', 'function', 'requirement', 'hardware',
+                             'software', 'incident', 'validation', 'test',
+                             'part', 'sia', 'fmeca', 'rgincident',
+                             'stakeholder', 'dataset', 'risk', 'ffmeca',
+                             'sfmeca']
+
+        if Utilities.file_exists(self.RTK_PROG_CONF):
             _config = ConfigParser.ConfigParser()
             _config.add_section('General')
             _config.set('General', 'reportsize', 'letter')
             _config.set('General', 'repairtimeunit', 'hours')
             _config.set('General', 'parallelcalcs', 'False')
-            _config.set('General', 'frmultiplier', self.FRMULT)
+            _config.set('General', 'frmultiplier', self.RTK_HR_MULTIPLIER)
             _config.set('General', 'failtimeunit', 'hours')
             _config.set('General', 'calcreltime', self.RTK_MTIME)
             _config.set('General', 'autoaddlistitems', 'False')
-            _config.set('General', 'decimal', self.PLACES)
+            _config.set('General', 'decimal', self.RTK_DEC_PLACES)
             _config.set('General', 'modesource', self.RTK_MODE_SOURCE)
-            _config.set('General', 'treetabpos', self.TABPOS[0])
-            _config.set('General', 'listtabpos', self.TABPOS[1])
-            _config.set('General', 'booktabpos', self.TABPOS[2])
+            _config.set('General', 'treetabpos', self.RTK_TABPOS['modulebook'])
+            _config.set('General', 'listtabpos', self.RTK_TABPOS['listbook'])
+            _config.set('General', 'booktabpos', self.RTK_TABPOS['workbook'])
 
             _config.add_section('Backend')
-            _config.set('Backend', 'type', self.BACKEND)
-            _config.set('Backend', 'host', self.RTK_PROG_INFO[0])
-            _config.set('Backend', 'socket', self.RTK_PROG_INFO[1])
-            _config.set('Backend', 'database', self.RTK_PROG_INFO[2])
-            _config.set('Backend', 'user', self.RTK_PROG_INFO[3])
-            _config.set('Backend', 'password', self.RTK_PROG_INFO[4])
+            _config.set('Backend', 'type', self.RTK_BACKEND)
+            _config.set('Backend', 'host', self.RTK_PROG_INFO['host'])
+            _config.set('Backend', 'socket', int(self.RTK_PROG_INFO['socket']))
+            _config.set('Backend', 'database', self.RTK_PROG_INFO['database'])
+            _config.set('Backend', 'user', self.RTK_PROG_INFO['user'])
+            _config.set('Backend', 'password', self.RTK_PROG_INFO['password'])
 
             _config.add_section('Directories')
-            _config.set('Directories', 'datadir', 'data')
-            _config.set('Directories', 'icondir', 'icons')
-            _config.set('Directories', 'logdir', 'log')
+            _config.set('Directories', 'datadir', self.RTK_DATA_DIR)
+            _config.set('Directories', 'icondir', self.RTK_ICON_DIR)
+            _config.set('Directories', 'logdir', self.RTK_LOG_DIR)
+            _config.set('Directories', 'progdir', self.RTK_PROG_DIR)
 
             _config.add_section('Files')
-            _config.set('Files', 'revisionformat',
-                        path.basename(self.RTK_FORMAT_FILE[0]))
-            _config.set('Files', 'functionformat',
-                        path.basename(self.RTK_FORMAT_FILE[1]))
-            _config.set('Files', 'requirementformat',
-                        path.basename(self.RTK_FORMAT_FILE[2]))
-            _config.set('Files', 'hardwareformat',
-                        path.basename(self.RTK_FORMAT_FILE[3]))
-            _config.set('Files', 'validationformat',
-                        path.basename(self.RTK_FORMAT_FILE[4]))
-            _config.set('Files', 'partformat',
-                        path.basename(self.RTK_FORMAT_FILE[5]))
-            _config.set('Files', 'siaformat',
-                        path.basename(self.RTK_FORMAT_FILE[6]))
-            _config.set('Files', 'fmecaformat',
-                        path.basename(self.RTK_FORMAT_FILE[7]))
-            _config.set('Files', 'testformat',
-                        path.basename(self.RTK_FORMAT_FILE[8]))
-            _config.set('Files', 'rgincidentformat',
-                        path.basename(self.RTK_FORMAT_FILE[9]))
-            _config.set('Files', 'stakeholderformat',
-                        path.basename(self.RTK_FORMAT_FILE[10]))
-            _config.set('Files', 'incidentformat',
-                        path.basename(self.RTK_FORMAT_FILE[11]))
-            _config.set('Files', 'softwareformat',
-                        path.basename(self.RTK_FORMAT_FILE[12]))
-            _config.set('Files', 'datasetformat',
-                        path.basename(self.RTK_FORMAT_FILE[13]))
-            _config.set('Files', 'riskformat',
-                        path.basename(self.RTK_FORMAT_FILE[14]))
+            for _file in _lst_format_files:
+                _config.set('Files', _file,
+                            path.basename(self.RTK_FORMAT_FILE[_file]))
 
             _config.add_section('Colors')
-            _config.set('Colors', 'revisionbg', self.RTK_COLORS[0])
-            _config.set('Colors', 'revisionfg', self.RTK_COLORS[1])
-            _config.set('Colors', 'functionbg', self.RTK_COLORS[2])
-            _config.set('Colors', 'functionfg', self.RTK_COLORS[3])
-            _config.set('Colors', 'requirementbg', self.RTK_COLORS[4])
-            _config.set('Colors', 'requirementfg', self.RTK_COLORS[5])
-            _config.set('Colors', 'assemblybg', self.RTK_COLORS[6])
-            _config.set('Colors', 'assemblyfg', self.RTK_COLORS[7])
-            _config.set('Colors', 'validationbg', self.RTK_COLORS[8])
-            _config.set('Colors', 'validationfg', self.RTK_COLORS[9])
-            _config.set('Colors', 'rgbg', self.RTK_COLORS[10])
-            _config.set('Colors', 'rgfg', self.RTK_COLORS[11])
-            _config.set('Colors', 'fracabg', self.RTK_COLORS[12])
-            _config.set('Colors', 'fracafg', self.RTK_COLORS[13])
-            _config.set('Colors', 'partbg', self.RTK_COLORS[14])
-            _config.set('Colors', 'partfg', self.RTK_COLORS[15])
-            _config.set('Colors', 'overstressbg', self.RTK_COLORS[16])
-            _config.set('Colors', 'overstressfg', self.RTK_COLORS[17])
-            _config.set('Colors', 'taggedbg', self.RTK_COLORS[18])
-            _config.set('Colors', 'taggedfg', self.RTK_COLORS[19])
-            _config.set('Colors', 'nofrmodelfg', self.RTK_COLORS[20])
-            _config.set('Colors', 'softwarebg', self.RTK_COLORS[21])
-            _config.set('Colors', 'softwarefg', self.RTK_COLORS[22])
+            for _color in _lst_colors:
+                _config.set('Colors', _color, self.RTK_COLORS[_color])
 
             try:
-                _parser = open(self.conf_file, 'w')
+                _parser = open(self.RTK_PROG_CONF, 'w')
                 _config.write(_parser)
                 _parser.close()
             except EnvironmentError:
@@ -965,17 +743,60 @@ class RTKConf(object):
         """
         Method to read the configuration file.
 
-        :return: _config
-        :rtype: ConfigParser.ConfigParser()
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
+        _return = False
+
+        _lst_colors = ['revisionfg', 'functionfg', 'requirementfg',
+                       'assemblyfg', 'partfg', 'overstressfg', 'taggedfg',
+                       'nofrmodelfg', 'softwarefg', 'incidentfg',
+                       'validationfg', 'testfg', 'survivalfg', 'revisionbg',
+                       'functionbg', 'requirementbg', 'assemblybg', 'partbg',
+                       'overstressbg', 'taggedbg', 'softwarebg', 'incidentbg',
+                       'validationbg', 'testbg', 'survivalbg']
+        _lst_format_files = ['revision', 'function', 'requirement', 'hardware',
+                             'software', 'incident', 'validation', 'test',
+                             'part', 'sia', 'fmeca', 'rgincident',
+                             'stakeholder', 'dataset', 'risk', 'ffmeca',
+                             'sfmeca']
 
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
-        if Utilities.file_exists(self.conf_file):
+        if Utilities.file_exists(self.RTK_PROG_CONF):
             _config = ConfigParser.ConfigParser()
-            _config.read(self.conf_file)
-        else:
-            _config = None
+            _config.read(self.RTK_PROG_CONF)
 
-        return _config
+            for _color in _lst_colors:
+                self.RTK_COLORS[_color] = _config.get('Colors', _color)
+
+            for _file in _lst_format_files:
+                self.RTK_FORMAT_FILE[_file] = _config.get('Files', _file)
+
+            self.RTK_DATA_DIR = _config.get('Directories', 'datadir')
+            self.RTK_ICON_DIR = _config.get('Directories', 'icondir')
+            self.RTK_LOG_DIR = _config.get('Directories', 'logdir')
+            self.RTK_PROG_DIR = _config.get('Directories', 'progdir')
+
+            self.RTK_BACKEND = _config.get('Backend', 'type')
+            self.RTK_PROG_INFO['host'] = _config.get('Backend', 'host')
+            self.RTK_PROG_INFO['socket'] = _config.get('Backend', 'socket')
+            self.RTK_PROG_INFO['database'] = _config.get('Backend', 'database')
+            self.RTK_PROG_INFO['user'] = _config.get('Backend', 'user')
+            self.RTK_PROG_INFO['password'] = _config.get('Backend', 'password')
+
+            self.RTK_HR_MULTIPLIER = _config.get('General', 'frmultiplier')
+            self.RTK_DEC_PLACES = _config.get('General', 'decimal')
+            self.RTK_MTIME = _config.get('General', 'calcreltime')
+            self.RTK_MODE_SOURCE = _config.get('General', 'modesource')
+            self.RTK_TABPOS['listbook'] = _config.get('General', 'listtabpos')
+            self.RTK_TABPOS['modulebook'] = _config.get('General',
+                                                        'treetabpos')
+            self.RTK_TABPOS['workbook'] = _config.get('General', 'booktabpos')
+
+        else:
+            _return = True
+
+        return _return
