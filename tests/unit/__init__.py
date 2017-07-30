@@ -22,6 +22,7 @@ import Utilities as Utilities
 
 # Import the RTK Common database table objects.
 import dao.RTKCommonDB
+from dao.RTKSiteInfo import RTKSiteInfo
 from dao.RTKUser import RTKUser
 from dao.RTKGroup import RTKGroup
 from dao.RTKEnviron import RTKEnviron
@@ -115,6 +116,7 @@ def setUp():
     session.remove()
     session.configure(bind=engine, autoflush=False, expire_on_commit=False)
 
+    RTKSiteInfo.__table__.create(bind=engine)
     RTKUser.__table__.create(bind=engine)
     RTKGroup.__table__.create(bind=engine)
     RTKEnviron.__table__.create(bind=engine)
@@ -141,6 +143,9 @@ def setUp():
 
     # Add an entry to each table.  These are used as the DUT in each test
     # file.
+    _site_info = RTKSiteInfo()
+    _site_info.product_key = '9490059723f3a743fb961d092d3283422f4f2d13'
+    session.add(_site_info)
     session.add(RTKUser())
 
     _group = RTKGroup()

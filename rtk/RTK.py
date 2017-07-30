@@ -6,30 +6,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
@@ -38,18 +38,17 @@ This is the main program for the RTK application.
 
 import datetime
 import gettext
-import glob
 import logging
 import os
-import shutil
 import sys
 
 from sqlalchemy.orm import scoped_session
 from pubsub import pub
 
+from treelib import Tree
+
 try:
     import pygtk
-
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
@@ -59,30 +58,50 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import Configuration
+from Configuration import Configuration
 import Utilities
 from dao.DAO import DAO
-from dao.RTKCommonDB import SiteSession, ProgSession
-from datamodels.matrix.Matrix import Matrix
-from revision.Revision import Revision
-from usage.UsageProfile import UsageProfile
-from failure_definition.FailureDefinition import FailureDefinition
-from function.Function import Function
-from analyses.fmea.FMEA import FMEA
-from requirement.Requirement import Requirement
-from stakeholder.Stakeholder import Stakeholder
-from hardware.BoM import BoM as HardwareBoM
-from analyses.allocation.Allocation import Allocation
-from analyses.hazard.Hazard import Hazard
-from analyses.similar_item.SimilarItem import SimilarItem
-from analyses.pof.PhysicsOfFailure import PoF
-from software.BoM import BoM as SoftwareBoM
-from testing.Testing import Testing
-from testing.growth.Growth import Growth
-from validation.Validation import Validation
-from incident.Incident import Incident
-from incident.action.Action import Action
-from incident.component.Component import Component
+from dao.RTKCommonDB import RTK_SITE_SESSION, RTK_PROGRAM_SESSION
+from dao.RTKCategory import RTKCategory
+from dao.RTKSubCategory import RTKSubCategory
+from dao.RTKFailureMode import RTKFailureMode
+from dao.RTKStakeholders import RTKStakeholders
+from dao.RTKEnviron import RTKEnviron
+from dao.RTKLevel import RTKLevel
+from dao.RTKGroup import RTKGroup
+from dao.RTKMethod import RTKMethod
+from dao.RTKModel import RTKModel
+from dao.RTKPhase import RTKPhase
+from dao.RTKRPN import RTKRPN
+from dao.RTKStatus import RTKStatus
+from dao.RTKType import RTKType
+from dao.RTKApplication import RTKApplication
+from dao.RTKCriticality import RTKCriticality
+from dao.RTKDistribution import RTKDistribution
+from dao.RTKHazards import RTKHazards
+from dao.RTKManufacturer import RTKManufacturer
+from dao.RTKUnit import RTKUnit
+from dao.RTKUser import RTKUser
+# from datamodels.matrix.Matrix import Matrix
+# from revision.Revision import Revision
+# from usage.UsageProfile import UsageProfile
+# from failure_definition.FailureDefinition import FailureDefinition
+# from function.Function import Function
+# from analyses.fmea.FMEA import FMEA
+# from requirement.Requirement import Requirement
+# from stakeholder.Stakeholder import Stakeholder
+# from hardware.BoM import BoM as HardwareBoM
+# from analyses.allocation.Allocation import Allocation
+# from analyses.hazard.Hazard import Hazard
+# from analyses.similar_item.SimilarItem import SimilarItem
+# from analyses.pof.PhysicsOfFailure import PoF
+# from software.BoM import BoM as SoftwareBoM
+# from testing.Testing import Testing
+# from testing.growth.Growth import Growth
+# from validation.Validation import Validation
+# from incident.Incident import Incident
+# from incident.action.Action import Action
+# from incident.component.Component import Component
 # from survival.Survival import Survival
 
 import gui.gtk.Widgets as Widgets
@@ -90,15 +109,15 @@ from gui.gtk.mwi.ListBook import ListView
 from gui.gtk.mwi.ModuleBook import ModuleView
 from gui.gtk.mwi.WorkBook import WorkView
 
-from revision.ModuleBook import ModuleView as mvwRevision
-from function.ModuleBook import ModuleView as mvwFunction
-from requirement.ModuleBook import ModuleView as mvwRequirement
-from hardware.ModuleBook import ModuleView as mvwHardware
-from software.ModuleBook import ModuleView as mvwSoftware
-from testing.ModuleBook import ModuleView as mvwTesting
-from incident.ModuleBook import ModuleView as mvwIncident
-from validation.ModuleBook import ModuleView as mvwValidation
-from survival.ModuleBook import ModuleView as mvwSurvival
+# from revision.ModuleBook import ModuleView as mvwRevision
+# from function.ModuleBook import ModuleView as mvwFunction
+# from requirement.ModuleBook import ModuleView as mvwRequirement
+# from hardware.ModuleBook import ModuleView as mvwHardware
+# from software.ModuleBook import ModuleView as mvwSoftware
+# from testing.ModuleBook import ModuleView as mvwTesting
+# from incident.ModuleBook import ModuleView as mvwIncident
+# from validation.ModuleBook import ModuleView as mvwValidation
+# from survival.ModuleBook import ModuleView as mvwSurvival
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -131,218 +150,14 @@ def main():
     return 0
 
 
-def _read_site_configuration():
-    """
-    Function to read the site configuration file.
-
-    :return: (_error_code, _msg); the error code and associated error message.
-    :rtype: (int, str)
-    """
-
-    _error_code = 0
-    _msg = 'RTK SUCCESS: Parsing site configuration file.'
-
-    if os.name == 'posix':
-        Configuration.RTK_OS = 'Linux'
-    elif os.name == 'nt':
-        Configuration.RTK_OS = 'Windows'
-
-        # Set the gtk+ theme on Windows.
-        # These themes perform well on Windows.
-        # Amaranth
-        # Aurora
-        # Bluecurve
-        # Blueprint
-        # Blueprint-Green
-        # Candido-Calm
-        # CleanIce
-        # CleanIce - Dark
-        # Clearlooks
-        # Metal
-        # MurrinaBlue
-        # Nodoka-Midnight
-        # Rezlooks-Snow
-
-        # These themes perform poorly.
-        # Bluecurve-BerriesAndCream
-        # MurrinaChrome
-        gtk.rc_parse(
-            "C:\\Program Files (x86)\\Common Files\\RTK\\share\\themes\\MurrinaBlue\\gtk-2.0\\gtkrc")
-
-    # Get a config instance for the site configuration file.
-    _config = Configuration.RTKConf('site')
-    if not Utilities.file_exists(_config.conf_file):
-        _error_code = 100
-        _msg = _(u"Site configuration file {0:s} not found.  This typically "
-                 u"indicates RTK was installed improperly or RTK files have "
-                 u"been corrupted.  You may try to uninstall and re-install "
-                 u"RTK.").format(_config.conf_file)
-    else:
-        Configuration.RTK_COM_BACKEND = \
-            _config.read_configuration().get('Backend', 'type')
-        Configuration.RTK_SITE_DIR = \
-            _config.read_configuration().get('Backend', 'path')
-
-        Configuration.RTK_COM_INFO['host'] = \
-            _config.read_configuration().get('Backend', 'host')
-        Configuration.RTK_COM_INFO['socket'] = \
-            _config.read_configuration().get('Backend', 'socket')
-        Configuration.RTK_COM_INFO['database'] = \
-            _config.read_configuration().get('Backend', 'database')
-        Configuration.RTK_COM_INFO['user'] = \
-            _config.read_configuration().get('Backend', 'user')
-        Configuration.RTK_COM_INFO['password'] = \
-            _config.read_configuration().get('Backend', 'password')
-
-    return _error_code, _msg
-
-
-def _read_program_configuration():
-    """
-    Function to read the program configuration file.
-
-    :return: (_error_code, _msg); the error code and associated error message.
-    :rtype: (int, str)
-    """
-
-    _error_code = 0
-    _msg = 'RTK SUCCESS: Parsing program configuration file.'
-
-    _homedir = None
-
-    _lst_format_files = ['revision', 'function', 'requirement', 'hardware',
-                         'software', 'incident', 'validation', 'test', 'part',
-                         'sia', 'fmeca', 'rgincident', 'stakeholder',
-                         'dataset', 'risk', 'ffmeca', 'sfmeca']
-    _lst_bg_colors = ['revisionbg', 'functionbg', 'requirementbg',
-                      'hardwarebg', 'partbg', 'overstressbg', 'taggedbg',
-                      'softwarebg', 'incidentbg', 'validationbg', 'testbg',
-                      'survivalbg']
-    _lst_fg_colors = ['revisionfg', 'functionfg', 'requirementfg',
-                      'hardwarefg', 'partfg', 'overstressfg', 'taggedfg',
-                      'nofrmodelfg', 'softwarefg', 'incidentfg',
-                      'validationfg', 'testfg', 'survivalfg']
-
-    if os.name == 'posix':
-        _homedir = os.environ['HOME']
-    elif os.name == 'nt':
-        _homedir = os.environ['USERPROFILE']
-
-    # Get a config instance for the user configuration file.
-    _config = Configuration.RTKConf('user')
-
-    Configuration.RTK_BACKEND = _config.read_configuration().get('Backend',
-                                                                 'type')
-    Configuration.RTK_PROG_INFO['host'] = \
-        _config.read_configuration().get('Backend', 'host')
-    Configuration.RTK_PROG_INFO['socket'] = \
-        _config.read_configuration().get('Backend', 'socket')
-    Configuration.RTK_PROG_INFO['database'] = \
-        _config.read_configuration().get('Backend', 'database')
-    Configuration.RTK_PROG_INFO['user'] = \
-        _config.read_configuration().get('Backend', 'user')
-    Configuration.RTK_PROG_INFO['password'] = \
-        _config.read_configuration().get('Backend', 'password')
-
-    Configuration.RTK_HR_MULTIPLIER = float(
-            _config.read_configuration().get('General', 'frmultiplier'))
-    Configuration.RTK_DEC_PLACES = _config.read_configuration().get('General',
-                                                                    'decimal')
-    Configuration.RTK_MODE_SOURCE = \
-        _config.read_configuration().get('General', 'modesource')
-    Configuration.RTK_TABPOS['listbook'] = \
-        _config.read_configuration().get('General', 'listtabpos')
-    Configuration.RTK_TABPOS['modulebook'] = \
-        _config.read_configuration().get('General', 'treetabpos')
-    Configuration.RTK_TABPOS['workbook'] = \
-        _config.read_configuration().get('General', 'booktabpos')
-
-    # Get directory and file information.
-    _datadir = _config.read_configuration().get('Directories', 'datadir')
-    _icondir = _config.read_configuration().get('Directories', 'icondir')
-    _logdir = _config.read_configuration().get('Directories', 'logdir')
-    _progdir = _config.read_configuration().get('Directories', 'progdir')
-
-    Configuration.CONF_DIR = _config.conf_dir
-    if not Utilities.dir_exists(Configuration.CONF_DIR):
-        _error_code = 101
-        _msg = _(u"Configuration directory {0:s} does not exist.  "
-                 u"Creating...").format(Configuration.CONF_DIR)
-        os.makedirs(Configuration.CONF_DIR)
-        for _file in glob.glob(Configuration.SITE_DIR + '*.conf'):
-            shutil.copy2(_file, Configuration.CONF_DIR)
-        for _file in glob.glob(Configuration.SITE_DIR + '*.xml'):
-            shutil.copy2(_file, Configuration.CONF_DIR)
-        shutil.copy2(Configuration.SITE_DIR + '/RTKCommon.rtk',
-                     Configuration.CONF_DIR)
-
-    Configuration.DATA_DIR = Configuration.CONF_DIR + _datadir + '/'
-    if not Utilities.dir_exists(Configuration.DATA_DIR):
-        _error_code = 105
-        _msg = _(u"Data directory {0:s} does not exist.  "
-                 u"Creating...").format(Configuration.DATA_DIR)
-        os.makedirs(Configuration.DATA_DIR)
-        for _file in glob.glob(Configuration.data_dir + '*.map'):
-            shutil.copy2(_file, Configuration.DATA_DIR)
-        for _file in glob.glob(Configuration.data_dir + '*.sql'):
-            shutil.copy2(_file, Configuration.DATA_DIR)
-
-    Configuration.ICON_DIR = Configuration.CONF_DIR + _icondir + '/'
-    if not Utilities.dir_exists(Configuration.ICON_DIR):
-        _error_code = 105
-        _msg = _(u"Icon directory {0:s} does not exist.  "
-                 u"Creating...").format(Configuration.ICON_DIR)
-        os.makedirs(Configuration.ICON_DIR)
-        shutil.copytree(Configuration.icon_dir, Configuration.ICON_DIR,
-                        symlinks=True)
-
-    Configuration.LOG_DIR = Configuration.CONF_DIR + _logdir + '/'
-    if not Utilities.dir_exists(Configuration.LOG_DIR):
-        _error_code = 105
-        _msg = _(u"Log directory {0:s} does not exist.  "
-                 u"Creating...").format(Configuration.LOG_DIR)
-        os.makedirs(Configuration.LOG_DIR)
-
-    Configuration.PROG_DIR = _progdir
-    if not Utilities.dir_exists(Configuration.PROG_DIR):
-        _error_code = 105
-        _msg = _(u"RTK Project directory {0:s} does not exist.  Using default "
-                 u"RTK Project directory "
-                 u"{1:s}.").format(Configuration.PROG_DIR,
-                                   _homedir + '/analyses/rtk/')
-        Configuration.PROG_DIR = _homedir + '/analyses/rtk/'
-        if not Utilities.dir_exists(Configuration.PROG_DIR):
-            os.makedirs(Configuration.PROG_DIR)
-
-    # Load dictionary of format files.
-    for _format_file in _lst_format_files:
-        _formatfile = _config.read_configuration().get('Files', _format_file)
-        _formatfile = Configuration.CONF_DIR + _formatfile
-        Configuration.RTK_FORMAT_FILE[_format_file] = _formatfile
-
-    # Load dictionary with background color information.
-    for _bg_color in _lst_bg_colors:
-        try:
-            _bgcolor = _config.read_configuration().get('Colors', _bg_color)
-            Configuration.RTK_COLORS[_bg_color] = _bgcolor
-        except NoOptionError:
-            Configuration.RTK_COLORS[_bg_color] = '#FFFFFF'
-
-    # Load dictionary with foreground colors.
-    for _fg_color in _lst_fg_colors:
-        try:
-            _fgcolor = _config.read_configuration().get('Colors', _fg_color)
-            Configuration.RTK_COLORS[_fg_color] = _fgcolor
-        except NoOptionError:
-            Configuration.RTK_COLORS[_fg_color] = '#000000'
-
-    return _error_code, _msg
-
-
-def _initialize_loggers():
+def _initialize_loggers(configuration):
     """
     Function to create loggers for the RTK application.
 
+    :param configuration: the RTK Configuration() object instance holding all
+                          the configuration values for the current instance of
+                          RTK.
+    :type configuration: :py:class:`rtk.Configuration.Configuration()`
     :return: (_debug_log, _user_log, _import_log)
     :rtype: tuple
     """
@@ -351,12 +166,12 @@ def _initialize_loggers():
     # information for RTK developers.  The second is to log errors for the
     # user.  The user can use these errors to help find problems with their
     # inputs and sich.
-    __user_log = Configuration.RTK_LOG_DIR + '/RTK_user.log'
-    __error_log = Configuration.RTK_LOG_DIR + '/RTK_debug.log'
-    __import_log = Configuration.RTK_LOG_DIR + '/RTK_import.log'
+    __user_log = configuration.RTK_LOG_DIR + '/RTK_user.log'
+    __error_log = configuration.RTK_LOG_DIR + '/RTK_debug.log'
+    __import_log = configuration.RTK_LOG_DIR + '/RTK_import.log'
 
-    if not Utilities.dir_exists(Configuration.RTK_LOG_DIR):
-        os.makedirs(Configuration.RTK_LOG_DIR)
+    if not Utilities.dir_exists(configuration.RTK_LOG_DIR):
+        os.makedirs(configuration.RTK_LOG_DIR)
 
     if Utilities.file_exists(__user_log):
         os.remove(__user_log)
@@ -387,8 +202,12 @@ class Model(object):
     """
     This is the RTK data model class.  The attributes of a RTK data model are:
 
-    :ivar site_dao:
-    :ivar program_dao:
+    :ivar site_dao: the data access object used to communicate with the RTK
+                    Common database.
+    :type site_dao: :py:class:`rtk.dao.DAO.DAO()`
+    :ivar program_dao: the data access object used to communicate with the RTK
+                       Program database
+    :type program_dao: :py:class:`rtk.dao.DAO.DAO()`
     """
 
     def __init__(self, sitedao, programdao):
@@ -412,85 +231,94 @@ class Model(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.tree = Tree()
+
         self.site_dao = sitedao
         self.program_dao = programdao
 
-        # Connect to the RTK Common database.
-        _database = None
-        if Configuration.RTK_COM_INFO['type'] == 'sqlite':
-            _database = Configuration.RTK_COM_INFO['type'] + ':///' + \
-                        Configuration.RTK_COM_INFO['database']
-        self.site_dao.db_connect(_database)
-
-        site_session = SiteSession
-        program_session = ProgSession
-
+        # Create a session for communicating with the RTK Common database
+        site_session = RTK_SITE_SESSION
         site_session.configure(bind=self.site_dao.engine, autoflush=False,
                                expire_on_commit=False)
         self.site_session = scoped_session(site_session)
-        self.site_dao.db_load_globals(self.site_session)
+        self.program_session = None
 
-        program_session.configure(bind=self.program_dao.engine,
-                                  autoflush=False, expire_on_commit=False)
-        self.program_session = scoped_session(program_session)
-
-    def create_program(self):
+    def create_program(self, database):
         """
         Method to create a new RTK Program database.
 
+        :param str database: the RFC1738 URL path to the database to connect
+                             with.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
-        _session = scoped_session(ProgSession)
+        self.program_dao.db_connect(database)
+
+        _session = scoped_session(RTK_PROGRAM_SESSION)
         _session.configure(bind=self.program_dao.engine,
                            autoflush=False, expire_on_commit=False)
 
-        if Configuration.RTK_PROG_INFO['type'] == 'sqlite':
-            _database = Configuration.RTK_PROG_INFO['type'] + ':///' + \
-                        Configuration.RTK_PROG_INFO['database']
-
-        if not self.program_dao.db_create_program(_session):
-            Configuration.RTK_USER_LOG.info('RTK SUCCESS: Creating RTK '
-                                            'Program database {0:s}.'. \
-                                            format(_database))
+        if not self.program_dao.db_create_program(database, _session):
             pub.sendMessage('createdProgram')
         else:
             _return = True
-            Configuration.RTK_DEBUG_LOG.error('RTK ERROR: Failed to create '
-                                              'RTK Program database {0:s}.'. \
-                                              format(_database))
 
         _session.close()
 
         return _return
 
-    def open_program(self):
+    def read_program_info(self):
+        """
+        Method to read the program info table from the RTK Program database.
+
+        :return:
+        :rtype: ()
+        """
+
+        # Find the prefix to use for each module.
+        _query = "SELECT fld_revision_prefix, fld_function_prefix, \
+                         fld_assembly_prefix, fld_part_prefix, \
+                         fld_fmeca_prefix, fld_mode_prefix, \
+                         fld_effect_prefix, fld_cause_prefix, \
+                         fld_software_prefix \
+                  FROM rtk_program_info"
+        _prefixes = self.program_dao.db_query(_query, self.program_session)
+
+        # Find which modules are active in this program.
+        _query = "SELECT fld_revision_active, fld_function_active, \
+                         fld_requirement_active, fld_hardware_active, \
+                         fld_software_active, fld_vandv_active, \
+                         fld_testing_active, fld_fraca_active, \
+                         fld_survival_active, fld_rcm_active, \
+                         fld_rbd_active, fld_fta_active\
+                  FROM rtk_program_info"
+        _actives = self.program_dao.db_query(_query, self.program_session)
+
+        return _prefixes, _actives
+
+    def open_program(self, database):
         """
         Method to open an RTK Program database for analyses.
 
+        :param str database: the RFC1738 URL path to the database to connect
+                             with.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
-        if Configuration.RTK_PROG_INFO['type'] == 'sqlite':
-            _database = Configuration.RTK_PROG_INFO['type'] + ':///' + \
-                        Configuration.RTK_PROG_INFO['database']
-
-        if not self.program_dao.db_connect(_database):
-            Configuration.RTK_USER_LOG.info('RTK SUCCESS: Opening RTK ' 
-                                            'Program database {0:s}.'. \
-                                            format(_database))
+        if not self.program_dao.db_connect(database):
+            program_session = RTK_PROGRAM_SESSION
+            program_session.configure(bind=self.program_dao.engine,
+                                      autoflush=False, expire_on_commit=False)
+            self.program_session = scoped_session(program_session)
             pub.sendMessage('openedProgram')
         else:
             _return = True
-            Configuration.RTK_DEBUG_LOG.error('RTK ERROR: Failed to open ' 
-                                              'RTK Program database {0:s}.'. \
-                                              format(_database))
 
         return _return
 
@@ -528,6 +356,262 @@ class Model(object):
         """
 
         pass
+
+    def load_globals(self, configuration):
+        """
+        Method to load the RTK Program global constants managed by the RTK
+        Configuration class.
+
+        :param configuration: the currently active RTK Program Configuration()
+                              object.
+        :type configuration: :py:class:`rtk.Configuration.Configuration()`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        # ------------------------------------------------------------------- #
+        # Build the component category, component subcategory, failure modes  #
+        # tree.                                                               #
+        # ------------------------------------------------------------------- #
+        self.tree.create_node('Components', -1)
+        for _category in self.site_session.query(RTKCategory).\
+                filter(RTKCategory.type == 'hardware').all():
+            self.tree.create_node(_category.name, _category.category_id,
+                                  parent=-1,
+                                  data=_category.get_attributes()[1:])
+
+        for _subcategory in self.site_session.query(RTKSubCategory).all():
+            # We need to create a unique identifer for each subcategory because
+            # we can't have two nodes in the tree with the same ID, but we can
+            # have a category and subcategory with the same ID in the database.
+            # This simple method guarantees a unique ID for the subcategory for
+            # the tree.
+            _identifier = str(_subcategory.category_id) + \
+                          str(_subcategory.subcategory_id)
+            self.tree.create_node(_subcategory.description, _identifier,
+                                  parent=_subcategory.category_id,
+                                  data=_subcategory.get_attributes()[2:])
+
+        for _mode in self.site_session.query(RTKFailureMode).all():
+            # We need to create a unique identifer for each mode because
+            # we can't have two nodes in the tree with the same ID, but we can
+            # have a category, subcategory, and/or mode with the same ID in the
+            # database.  This simple method guarantees a unique ID for the mode
+            # for the tree.  For the same reason we have to create the parent
+            # ID.
+            _identifier = str(_mode.category_id) + \
+                          str(_mode.subcategory_id) + \
+                          str(_mode.mode_id)
+            _parent = str(_mode.category_id) + str(_mode.subcategory_id)
+            self.tree.create_node(_mode.description, _identifier,
+                                  parent=_parent,
+                                  data=_mode.get_attributes()[3:])
+
+        for _stakeholder in self.site_session.query(RTKStakeholders).all():
+            configuration.RTK_STAKEHOLDERS[_stakeholder.stakeholders_id] = \
+                _stakeholder.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKCategory.                                 #
+        # ------------------------------------------------------------------- #
+        for _category in self.site_session.query(RTKCategory).\
+                filter(RTKCategory.category_id == 'action').all():
+            configuration.RTK_ACTION_CATEGORY[_category.category_id] = \
+                _category.get_attributes()[1:]
+
+        for _category in self.site_session.query(RTKCategory).\
+                filter(RTKCategory.type == 'incident').all():
+            configuration.RTK_INCIDENT_CATEGORY[_category.category_id] = \
+                _category.get_attributes()[1:]
+
+        for _severity in self.site_session.query(RTKCategory).\
+                filter(RTKCategory.type == 'risk').all():
+            configuration.RTK_SEVERITY[_severity.category_id] = \
+                _severity.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKEnviron.                                  #
+        # ------------------------------------------------------------------- #
+        for _environ in self.site_session.query(RTKEnviron).\
+                filter(RTKEnviron.type == 'active').all():
+            configuration.RTK_ACTIVE_ENVIRONMENTS[_environ.environ_id] = \
+                _environ.get_attributes()[1:]
+
+        for _environ in self.site_session.query(RTKEnviron).\
+                filter(RTKEnviron.type == 'dormant').all():
+            configuration.RTK_DORMANT_ENVIRONMENTS[_environ.environ_id] = \
+                _environ.get_attributes()[1:]
+
+        for _environ in self.site_session.query(RTKEnviron).\
+                filter(RTKEnviron.type == 'development').all():
+            configuration.RTK_SW_DEV_ENVIRONMENTS[_environ.environ_id] = \
+                _environ.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKGroup.                                    #
+        # ------------------------------------------------------------------- #
+        for _group in self.site_session.query(RTKGroup).\
+                filter(RTKGroup.type == 'affinity').all():
+            configuration.RTK_AFFINITY_GROUPS[_group.group_id] = \
+                _group.get_attributes()[1:]
+
+        for _group in self.site_session.query(RTKGroup).\
+                filter(RTKGroup.type == 'workgroup').all():
+            configuration.RTK_WORKGROUPS[_group.group_id] = \
+                _group.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKLevel.                                    #
+        # ------------------------------------------------------------------- #
+        for _level in self.site_session.query(RTKLevel).\
+                filter(RTKLevel.type == 'probability').all():
+            configuration.RTK_FAILURE_PROBABILITY[_level.level_id] = \
+                _level.get_attributes()[1:]
+
+        for _level in self.site_session.query(RTKLevel).\
+                filter(RTKLevel.type == 'software').all():
+            configuration.RTK_SW_LEVELS[_level.level_id] = \
+                _level.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load the dictionaries from RTKMethod.                               #
+        # ------------------------------------------------------------------- #
+        for _method in self.site_session.query(RTKMethod).\
+                filter(RTKMethod.type == 'detection').all():
+            configuration.RTK_DETECTION_METHODS[_method.method_id] = \
+                _method.get_attributes[1:]
+
+        for _method in self.site_session.query(RTKMethod).\
+                filter(RTKMethod.type == 'test').all():
+            configuration.RTK_SW_TEST_METHODS[_method.method_id] = \
+                _method.get_attributes[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKModel.                                    #
+        # ------------------------------------------------------------------- #
+        for _model in self.site_session.query(RTKModel).\
+                filter(RTKModel.type == 'allocation').all():
+            configuration.RTK_ALLOCATION_MODELS[_model.model_id] = \
+                _model.get_attributes()[1:]
+        for _model in self.site_session.query(RTKModel).\
+                filter(RTKModel.type == 'rprediction').all():
+            configuration.RTK_HR_MODEL[_model.model_id] = \
+                _model.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load the dictionaries from RTKPhase.                                #
+        # ------------------------------------------------------------------- #
+        for _phase in self.site_session.query(RTKPhase).\
+                filter(RTKPhase.type == 'lifecycle').all():
+            configuration.RTK_LIFECYCLE[_phase.phase_id] = \
+                _phase.get_atrributes()[1:]
+
+        for _phase in self.site_session.query(RTKPhase).\
+                filter(RTKPhase.type == 'development').all():
+            configuration.RTK_SW_DEV_PHASES[_phase.phase_id] = \
+                _phase.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKRPN.                                      #
+        # ------------------------------------------------------------------- #
+        for _rpn in self.site_session.query(RTKRPN).\
+                filter(RTKRPN.type == 'detection').all():
+            configuration.RTK_RPN_DETECTION[_rpn.rpn_id] = \
+                _rpn.get_attributes()[1:]
+
+        for _rpn in self.site_session.query(RTKRPN).\
+                filter(RTKRPN.type == 'occurrence').all():
+            configuration.RTK_RPN_OCCURRENCE[_rpn.rpn_id] = \
+                _rpn.get_attributes()[1:]
+
+        for _rpn in self.site_session.query(RTKRPN). \
+                filter(RTKRPN.type == 'severity').all():
+            configuration.RTK_RPN_SEVERITY[_rpn.rpn_id] = \
+                _rpn.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKStatus.                                   #
+        # ------------------------------------------------------------------- #
+        for _status in self.site_session.query(RTKStatus).\
+                filter(RTKStatus.type == 'action').all():
+            configuration.RTK_ACTION_STATUS[_status.status_id] = \
+                _status.get_attributes()[1:]
+
+        for _status in self.site_session.query(RTKStatus).\
+                filter(RTKStatus.type == 'incident').all():
+            configuration.RTK_INCIDENT_STATUS[_status.status_id] = \
+                _status.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from RTKType.                                     #
+        # ------------------------------------------------------------------- #
+        configuration.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
+
+        for _type in self.site_session.query(RTKType). \
+                filter(RTKType.type == 'cost').all():
+            configuration.RTK_COST_TYPE[_type.type_id] = \
+                _type.get_attributes()[1:]
+
+        for _type in self.site_session.query(RTKType).\
+                filter(RTKType.type == 'mtbf').all():
+            configuration.RTK_HR_TYPE[_type.type_id] = \
+                _type.get_attributes()[1:]
+
+        for _type in self.site_session.query(RTKType).\
+                filter(RTKType.type == 'incident').all():
+            configuration.RTK_INCIDENT_TYPE[_type.type_id] = \
+                _type.get_attributes[1:]
+
+        for _type in self.site_session.query(RTKType).\
+                filter(RTKType.type == 'mttr').all():
+            configuration.RTK_MTTR_TYPE[_type.type_id] = \
+                _type.get_attributes()[1:]
+
+        for _type in self.site_session.query(RTKType).\
+                filter(RTKType.type == 'requirement').all():
+            configuration.RTK_REQUIREMENT_TYPE[_type.type_id] = \
+                _type.get_attributes()[1:]
+
+        for _type in self.site_session.query(RTKType).\
+                filter(RTKType.type == 'validation').all():
+            configuration.RTK_VALIDATION_TYPE[_type.type_id] = \
+                _type.get_attributes()[1:]
+
+        # ------------------------------------------------------------------- #
+        # Load dictionaries from tables not requiring a filter.               #
+        # ------------------------------------------------------------------- #
+        for _application in self.site_session.query(RTKApplication).all():
+            configuration.RTK_SW_APPLICATION[_application.application_id] = \
+                _application.get_attributes()[1:]
+
+        for _crit in self.site_session.query(RTKCriticality).all():
+            configuration.RTK_CRITICALITY[_crit.criticality_id] = \
+                _crit.get_attributes()[1:]
+
+        for _dist in self.site_session.query(RTKDistribution).all():
+            configuration.RTK_S_DIST[_dist.distribution_id] = \
+                _dist.get_attributes()[1:]
+
+        for _hazard in self.site_session.query(RTKHazards).all():
+            configuration.RTK_HAZARDS[_hazard.hazard_id] = \
+                _hazard.get_attributes()[1:]
+
+        for _manufacturer in self.site_session.query(RTKManufacturer).all():
+            configuration.RTK_MANUFACTURERS[_manufacturer.manufacturer_id] = \
+                _manufacturer.get_attributes()[1:]
+
+        for _unit in self.site_session.query(RTKUnit).\
+                filter(RTKUnit.type == 'measurement').all():
+            configuration.RTK_MEASUREMENT_UNITS[_unit.unit_id] = \
+                _unit.get_attributes()[1:]
+
+        for _user in self.site_session.query(RTKUser).all():
+            configuration.RTK_USERS[_user.user_id] = \
+                _user.get_attributes()[1:]
+
+        return _return
 
 
 class RTK(object):
@@ -576,25 +660,23 @@ class RTK(object):
                      data controller.
     """
 
+    RTK_CONFIGURATION = Configuration()
+
     def __init__(self):  # pylint: disable=R0914
         """
         Method to initialize an instance of the RTK data controller.
         """
 
-        RTK_INTERFACE = 1
-
         # Read the site configuration file.
-        _error_code, _msg = _read_site_configuration()
-        # if _error_code != 0:
-
-        # Read the program configuration file.
-        _error_code, _msg = _read_program_configuration()
-        # if _error_code != 0:
+        self.RTK_CONFIGURATION.set_site_variables()
+        self.RTK_CONFIGURATION.set_user_variables()
+        self.RTK_CONFIGURATION.read_configuration()
 
         # Create loggers.
-        (Configuration.RTK_DEBUG_LOG,
-         Configuration.RTK_USER_LOG,
-         Configuration.RTK_IMPORT_LOG) = _initialize_loggers()
+        (self.RTK_CONFIGURATION.RTK_DEBUG_LOG,
+         self.RTK_CONFIGURATION.RTK_USER_LOG,
+         self.RTK_CONFIGURATION.RTK_IMPORT_LOG) = \
+            _initialize_loggers(self.RTK_CONFIGURATION)
 
         # Validate the license.
         # if self._validate_license():
@@ -607,48 +689,54 @@ class RTK(object):
         # Initialize private scalar instance attributes.
 
         # Initialize public dictionary instance attributes.
-        self.dic_controllers = {'revision'   : None,
-                                'function'   : None,
+        self.dic_controllers = {'revision': None,
+                                'function': None,
                                 'requirement': None,
-                                'hardware'   : None,
-                                'software'   : None,
-                                'test'       : None,
-                                'validation' : None,
-                                'incident'   : None,
-                                'survival'   : None,
-                                'matrices'   : None,
-                                'profile'    : None,
-                                'definition' : None,
-                                'fmea'       : None,
+                                'hardware': None,
+                                'software': None,
+                                'testing': None,
+                                'validation': None,
+                                'incident': None,
+                                'survival': None,
+                                'matrices': None,
+                                'profile': None,
+                                'definition': None,
+                                'fmea': None,
                                 'stakeholder': None,
-                                'allocation' : None,
-                                'hazard'     : None,
+                                'allocation': None,
+                                'hazard': None,
                                 'similaritem': None,
-                                'pof'        : None,
-                                'growth'     : None,
-                                'action'     : None,
-                                'component'  : None}
-        self.dic_books = {'listview'  : None,
+                                'pof': None,
+                                'growth': None,
+                                'action': None,
+                                'component': None}
+        self.dic_books = {'listview': None,
                           'moduleview': None,
-                          'workview'  : None}
+                          'workview': None}
 
         # Define public list attributes.
 
         # Define public scalar attributes.
-        _database = Configuration.RTK_COM_INFO['database']
-        self.rtk_model = Model(DAO(_database), DAO(None))
+        # Connect to the RTK Common database.
+        _database = None
+        if self.RTK_CONFIGURATION.RTK_COM_BACKEND == 'sqlite':
+            _database = self.RTK_CONFIGURATION.RTK_COM_BACKEND + ':///' + \
+                        self.RTK_CONFIGURATION.RTK_COM_INFO['database']
+        _dao = DAO()
+        _dao.db_connect(_database)
+
+        # Create an instance of the RTK Data Model and load global constants.
+        self.rtk_model = Model(_dao, DAO())
+        self.request_load_globals()
 
         # Create RTK Books.  These need to be initialized after reading the
         # configuration.
-        if RTK_INTERFACE == 0:  # Single window.
+        if self.RTK_CONFIGURATION.RTK_GUI_LAYOUT == 'basic':  # Single window.
             pass
         else:  # Multiple windows.
             self.dic_books['listview'] = ListView()
             self.dic_books['moduleview'] = ModuleView(self)
             self.dic_books['workview'] = WorkView()
-
-        # Subscribe this controller to RTK control messages.
-        pub.subscribe(self.request_open_program, 'createdProgram')
 
     def request_create_program(self):
         """
@@ -658,7 +746,38 @@ class RTK(object):
         :rtype: bool
         """
 
-        return self.rtk_model.create_program()
+        if self.RTK_CONFIGURATION.RTK_BACKEND == 'sqlite':
+            _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
+                        self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
+
+        _return = self.rtk_model.create_program(_database)
+        if not _return:
+            self.request_open_program()
+            self.RTK_CONFIGURATION.RTK_USER_LOG.info('RTK SUCCESS: Creating '
+                                                     'RTK Program database '
+                                                     '{0:s}.'. \
+                                                     format(_database))
+        else:
+            self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error('RTK ERROR: Failed to '
+                                                       'create RTK Program '
+                                                       'database {0:s}.'. \
+                                                       format(_database))
+
+        return _return
+
+    def request_load_globals(self):
+        """
+        Method to load all the global Configuration variables from the RTK
+        Site database.
+
+        :param session: the SQLAlchemy scoped_session to use for querying the
+                        RTK Common database.
+        :type session: :py:class:`sqlalchemy.orm.scoped_session`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self.rtk_model.load_globals(self.RTK_CONFIGURATION)
 
     def request_open_program(self):
         """
@@ -670,9 +789,13 @@ class RTK(object):
 
         _return = False
 
+        if self.RTK_CONFIGURATION.RTK_BACKEND == 'sqlite':
+            _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
+                        self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
+
         # If the database was successfully opened, create an instance of each
         # of the slave data controllers.
-        if not self.rtk_model.open_program():
+        if not self.rtk_model.open_program(_database):
             # self.dic_controllers['revision'] = Revision()
             # self.dic_controllers['function'] = Function()
             # self.dic_controllers['requirement'] = Requirement()
@@ -695,8 +818,24 @@ class RTK(object):
             # self.dic_controllers['growth'] = Growth()
             # self.dic_controllers['action'] = Action()
             # self.dic_controllers['component'] = Component()
-            pass
+            _prefixes, _actives = self.rtk_model.read_program_info()
+            for _row in _prefixes:
+                self.RTK_CONFIGURATION.RTK_PREFIX = \
+                    [_prefix for _prefix in _row]
+
+            for _row in _actives:
+                self.RTK_CONFIGURATION.RTK_MODULES = \
+                    [_active for _active in _row]
+
+            self.RTK_CONFIGURATION.RTK_USER_LOG.info('RTK SUCCESS: Opening '
+                                                     'RTK Program database '
+                                                     '{0:s}.'. \
+                                                     format(_database))
         else:
+            self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error('RTK ERROR: Failed to '
+                                                       'open RTK Program '
+                                                       'database {0:s}.'. \
+                                                       format(_database))
             _return = True
 
         return _return

@@ -39,7 +39,7 @@ This is the test class for testing the Configuration module algorithms and model
 import shutil
 import sys
 from os import environ, makedirs, name
-from os.path import dirname, isfile, realpath
+from os.path import dirname, isfile
 sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
@@ -159,7 +159,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.DUT.RTK_TABPOS,
                          {'listbook': 'top', 'modulebook': 'bottom',
                           'workbook': 'bottom'})
-        self.assertEqual(self.DUT.RTK_GUI_LAYOUT, 'basic')
+        self.assertEqual(self.DUT.RTK_GUI_LAYOUT, 'advanced')
         self.assertEqual(self.DUT.RTK_METHOD, 'STANDARD')
 
         if name == 'posix':
@@ -264,7 +264,28 @@ class TestConfiguration(unittest.TestCase):
                                '/validation_format.xml'))
 
     @attr(all=True, unit=True)
-    def test05a_read_configuration(self):
+    def test05a_read_site_configuration(self):
+        """
+        (TestConfiguration) _read_site_configuration should return False on success
+        """
+
+        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_HOME_DIR = '/tmp/RTK'
+        self.DUT.set_site_variables()
+        self.DUT.set_user_variables()
+        self.DUT.create_user_configuration()
+
+        self.assertFalse(self.DUT._read_site_configuration())
+
+        self.assertEqual(self.DUT.RTK_COM_BACKEND, 'sqlite')
+        self.assertEqual(self.DUT.RTK_COM_INFO['host'], 'localhost')
+        self.assertEqual(self.DUT.RTK_COM_INFO['socket'], '3306')
+        self.assertEqual(self.DUT.RTK_COM_INFO['database'], '')
+        self.assertEqual(self.DUT.RTK_COM_INFO['user'], 'user')
+        self.assertEqual(self.DUT.RTK_COM_INFO['password'], 'password')
+
+    @attr(all=True, unit=True)
+    def test05b_read_configuration(self):
         """
         (TestConfiguration) read_configuration should return False on success
         """
@@ -316,7 +337,7 @@ class TestConfiguration(unittest.TestCase):
                          'incident_format.xml')
         self.assertEqual(self.DUT.RTK_FORMAT_FILE['validation'],
                          'validation_format.xml')
-        self.assertEqual(self.DUT.RTK_FORMAT_FILE['test'],
+        self.assertEqual(self.DUT.RTK_FORMAT_FILE['testing'],
                          'testing_format.xml')
         self.assertEqual(self.DUT.RTK_FORMAT_FILE['part'], 'part_format.xml')
         self.assertEqual(self.DUT.RTK_FORMAT_FILE['sia'], 'sia_format.xml')
@@ -344,7 +365,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.DUT.RTK_PROG_INFO['user'], '')
         self.assertEqual(self.DUT.RTK_PROG_INFO['password'], '')
 
-        self.assertEqual(self.DUT.RTK_BACKEND, 'sqlite3')
+        self.assertEqual(self.DUT.RTK_BACKEND, 'sqlite')
 
         self.assertEqual(float(self.DUT.RTK_HR_MULTIPLIER), 1000000.0)
         self.assertEqual(int(self.DUT.RTK_DEC_PLACES), 6)

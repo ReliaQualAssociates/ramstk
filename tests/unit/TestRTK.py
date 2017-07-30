@@ -10,30 +10,30 @@ This is the test class for testing the RTK module algorithms and models.
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -43,13 +43,13 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import logging
 
+from treelib import Tree
+
 import unittest
 from nose.plugins.attrib import attr
 
-import Configuration as Configuration
-import Utilities as Utilities
-from RTK import _read_site_configuration, _read_program_configuration, \
-                _initialize_loggers, Model, RTK
+from Configuration import Configuration
+from RTK import _initialize_loggers, Model, RTK
 from dao.DAO import DAO
 from gui.gtk.mwi.ListBook import ListView
 from gui.gtk.mwi.ModuleBook import ModuleView
@@ -71,164 +71,27 @@ class TestFunctions(unittest.TestCase):
         Setup the test fixture for the RTK functions.
         """
 
-        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
-                                                          'DEBUG',
-                                                          '/tmp/RTK_debug.log')
-        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
-                                                         'INFO',
-                                                        '/tmp/RTK_user.log')
+        self.Configuration = Configuration()
 
     @attr(all=True, unit=True)
-    def test00a_read_site_configuration(self):
-        """
-        (TestRTKFunctions) _read_site_configuration should return a zero error code on success
-        """
-
-        _error_code, _msg = _read_site_configuration()
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         'RTK SUCCESS: Parsing site configuration file.')
-
-        if os.name == 'posix':
-            self.assertEqual(Configuration.RTK_OS, 'Linux')
-            self.assertEqual(Configuration.RTK_SITE_DIR,
-                             os.environ['HOME'] + '/.config/RTK')
-        elif os.name == 'nt':
-            self.assertEqual(Configuration.RTK_OS, 'Windows')
-            self.assertEqual(Configuration.RTK_SITE_DIR, '/usr/share/RTK')
-
-        self.assertEqual(Configuration.RTK_COM_BACKEND, 'sqlite3')
-        self.assertEqual(Configuration.RTK_COM_INFO['host'], '')
-        self.assertEqual(Configuration.RTK_COM_INFO['socket'], '3306')
-        self.assertEqual(Configuration.RTK_COM_INFO['database'],
-                         '/tmp/TestCommonDB.rtk')
-        self.assertEqual(Configuration.RTK_COM_INFO['user'], 'rtkcom')
-        self.assertEqual(Configuration.RTK_COM_INFO['password'], 'rtkcom')
-
-    @attr(all=True, unit=True)
-    def test01a_read_program_configuration(self):
-        """
-        (TestRTKFunctions) _read_program_configuration should return zero error code on success
-        """
-
-        _error_code, _msg = _read_program_configuration()
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         'RTK SUCCESS: Parsing program configuration file.')
-
-        if os.name == 'posix':
-            self.assertEqual(Configuration.RTK_SITE_DIR,
-                             os.environ['HOME'] + '/.config/RTK')
-        elif os.name == 'nt':
-            self.assertEqual(Configuration.RTK_SITE_DIR, '/usr/share/RTK')
-
-        self.assertEqual(Configuration.RTK_BACKEND, 'sqlite3')
-        self.assertEqual(Configuration.RTK_PROG_INFO['host'], '')
-        self.assertEqual(Configuration.RTK_PROG_INFO['socket'], '3306')
-        self.assertEqual(Configuration.RTK_PROG_INFO['database'], '')
-        self.assertEqual(Configuration.RTK_PROG_INFO['user'], '')
-        self.assertEqual(Configuration.RTK_PROG_INFO['password'], '')
-
-        self.assertEqual(Configuration.RTK_HR_MULTIPLIER, 1000000.0)
-        self.assertEqual(Configuration.RTK_DEC_PLACES, '6')
-        self.assertEqual(Configuration.RTK_MODE_SOURCE, '1')
-        self.assertEqual(Configuration.RTK_TABPOS['listbook'], 'bottom')
-        self.assertEqual(Configuration.RTK_TABPOS['modulebook'], 'top')
-        self.assertEqual(Configuration.RTK_TABPOS['workbook'], 'bottom')
-
-        self.assertEqual(Configuration.CONF_DIR,
-                         os.environ['HOME'] + '/.config/RTK/')
-        self.assertEqual(Configuration.DATA_DIR,
-                         os.environ['HOME'] + '/.config/RTK/data/')
-        self.assertEqual(Configuration.ICON_DIR,
-                         os.environ['HOME'] + '/.config/RTK/icons/')
-        self.assertEqual(Configuration.LOG_DIR,
-                         os.environ['HOME'] + '/.config/RTK/logs/')
-        self.assertEqual(Configuration.PROG_DIR,
-                         os.environ['HOME'] + '/drive_d/analyses.git/RTK')
-
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['revision'],
-                         Configuration.CONF_DIR + 'revision_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['function'],
-                         Configuration.CONF_DIR + 'function_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['requirement'],
-                         Configuration.CONF_DIR + 'requirement_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['hardware'],
-                         Configuration.CONF_DIR + 'hardware_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['software'],
-                         Configuration.CONF_DIR + 'software_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['incident'],
-                         Configuration.CONF_DIR + 'incident_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['validation'],
-                         Configuration.CONF_DIR + 'validation_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['test'],
-                         Configuration.CONF_DIR + 'testing_format.xml')
-
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['stakeholder'],
-                         Configuration.CONF_DIR + 'stakeholder_format.xml')
-
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['part'],
-                         Configuration.CONF_DIR + 'part_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['sia'],
-                         Configuration.CONF_DIR + 'sia_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['fmeca'],
-                         Configuration.CONF_DIR + 'fmeca_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['ffmeca'],
-                         Configuration.CONF_DIR + 'ffmeca_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['sfmeca'],
-                         Configuration.CONF_DIR + 'sfmeca_format.xml')
-
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['rgincident'],
-                         Configuration.CONF_DIR + 'rgincident_format.xml')
-
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['dataset'],
-                         Configuration.CONF_DIR + 'dataset_format.xml')
-        self.assertEqual(Configuration.RTK_FORMAT_FILE['risk'],
-                         Configuration.CONF_DIR + 'risk_format.xml')
-
-        self.assertEqual(Configuration.RTK_COLORS['revisionbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['functionbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['requirementbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['hardwarebg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['softwarebg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['incidentbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['validationbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['testbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['survivalbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['partbg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['overstressbg'], '#FF0000')
-        self.assertEqual(Configuration.RTK_COLORS['taggedbg'], '#00FF00')
-        self.assertEqual(Configuration.RTK_COLORS['revisionfg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['functionfg'], '#0000FF')
-        self.assertEqual(Configuration.RTK_COLORS['requirementfg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['hardwarefg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['softwarefg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['incidentfg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['validationfg'], '#00FF00')
-        self.assertEqual(Configuration.RTK_COLORS['testfg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['survivalfg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['partfg'], '#000000')
-        self.assertEqual(Configuration.RTK_COLORS['overstressfg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['taggedfg'], '#FFFFFF')
-        self.assertEqual(Configuration.RTK_COLORS['nofrmodelfg'], '#A52A2A')
-
-    @attr(all=True, unit=True)
-    def test02a_initialize_logger(self):
+    def test00a_initialize_logger(self):
         """
         (TestRTKFunctions) _initialize_loggers should return a tuple of logging.Logger instances
         """
 
-        Configuration.RTK_LOG_DIR = '/tmp'
+        self.Configuration.RTK_LOG_DIR = '/tmp'
 
-        (_debug_log,
-         _user_log,
-         _import_log) = _initialize_loggers()
+        (self.Configuration.RTK_DEBUG_LOG,
+         self.Configuration.RTK_USER_LOG,
+         self.Configuration.RTK_IMPORT_LOG) = \
+            _initialize_loggers(self.Configuration)
 
-        self.assertTrue(isinstance(_debug_log, logging.Logger))
-        self.assertTrue(isinstance(_user_log, logging.Logger))
-        self.assertTrue(isinstance(_import_log, logging.Logger))
+        self.assertTrue(isinstance(self.Configuration.RTK_DEBUG_LOG,
+                                   logging.Logger))
+        self.assertTrue(isinstance(self.Configuration.RTK_USER_LOG,
+                                   logging.Logger))
+        self.assertTrue(isinstance(self.Configuration.RTK_IMPORT_LOG,
+                                   logging.Logger))
         self.assertTrue(isfile('/tmp/RTK_debug.log'))
         self.assertTrue(isfile('/tmp/RTK_user.log'))
         self.assertTrue(isfile('/tmp/RTK_import.log'))
@@ -244,23 +107,37 @@ class TestRTKModel(unittest.TestCase):
         Setup test fixture for the RTK class.
         """
 
-        self.site_dao = DAO('')
-        #self.site_dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
-        self.program_dao = DAO('')
-        self.program_dao.db_connect('sqlite:////tmp/TestDB.rtk')
+        self.Configuration = Configuration()
 
-        Configuration.RTK_COM_INFO = {'host'    : 'localhost',
-                                      'socket'  : 3306,
-                                      'database': '/tmp/TestCommonDB.rtk',
-                                      'type'    : 'sqlite',
-                                      'user'    : '',
-                                      'password': ''}
-        Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                       'socket'  : 3306,
-                                       'database': '/tmp/TestDB.rtk',
-                                       'type'    : 'sqlite',
-                                       'user'    : '',
-                                       'password': ''}
+        self.Configuration.RTK_SITE_DIR = \
+            dirname(dirname(dirname(__file__))) + '/config'
+        self.Configuration.RTK_HOME_DIR = '/tmp/RTK'
+        self.Configuration.set_site_variables()
+        self.Configuration.set_user_variables()
+        self.Configuration.create_user_configuration()
+
+        self.Configuration.RTK_COM_BACKEND = 'sqlite'
+        self.Configuration.RTK_COM_INFO = {'host'    : 'localhost',
+                                           'socket'  : 3306,
+                                           'database': '/tmp/TestCommonDB.rtk',
+                                           'user'    : '',
+                                           'password': ''}
+        self.Configuration.RTK_BACKEND = 'sqlite'
+        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
+                                            'socket'  : 3306,
+                                            'database': '/tmp/TestDB.rtk',
+                                            'user'    : '',
+                                            'password': ''}
+
+        self.site_dao = DAO()
+        _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
+                    self.Configuration.RTK_COM_INFO['database']
+        self.site_dao.db_connect(_database)
+        self.program_dao = DAO()
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        self.program_dao.db_connect(_database)
+
         self.DUT = Model(self.site_dao, self.program_dao)
 
     @attr(all=True, unit=True)
@@ -270,6 +147,10 @@ class TestRTKModel(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
+        self.assertTrue(isinstance(self.DUT.tree, Tree))
+        self.assertTrue(isinstance(self.DUT.site_dao, DAO))
+        self.assertTrue(isinstance(self.DUT.program_dao, DAO))
+        self.assertEqual(self.DUT.program_session, None)
 
     @attr(all=True, unit=True)
     def test04a_create_new_program(self):
@@ -277,13 +158,17 @@ class TestRTKModel(unittest.TestCase):
         (TestRTKModel) create_program should return False on success
         """
 
-        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
+        configuration = Configuration()
+        configuration.RTK_BACKEND = 'sqlite'
+        configuration.RTK_PROG_INFO = {'host' : 'localhost',
                                        'socket' : 3306,
                                        'database' : '/tmp/BigAssTestDB.rtk',
                                        'type' : 'sqlite',
                                        'user' : '',
                                        'password' : ''}
-        self.assertFalse(self.DUT.create_program())
+        _database = configuration.RTK_BACKEND + ':///' + \
+                    configuration.RTK_PROG_INFO['database']
+        self.assertFalse(self.DUT.create_program(_database))
 
         if os.path.isfile('/tmp/BigAssTestDB.rtk'):
             os.remove('/tmp/BigAssTestDB.rtk')
@@ -294,27 +179,112 @@ class TestRTKModel(unittest.TestCase):
         (TestRTKModel) create_program should return True on failure
         """
 
-        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
+        configuration = Configuration()
+        configuration.RTK_BACKEND = 'sqlite'
+        configuration.RTK_PROG_INFO = {'host' : 'localhost',
                                        'socket' : 3306,
                                        'database' : 'tmp/BigAssTestDB.rtk',
                                        'type' : 'sqlite',
                                        'user' : '',
                                        'password' : ''}
-        self.assertTrue(self.DUT.create_program())
+        _database = configuration.RTK_BACKEND + ':///' + \
+                    configuration.RTK_PROG_INFO['database']
+        self.assertTrue(self.DUT.create_program(_database))
 
     @attr(all=True, unit=True)
-    def test05_open_project(self):
+    def test06a_open_program(self):
         """
         (TestRTKModel) open_program should return False on success
         """
 
-        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
-                                       'socket' : 3306,
-                                       'database' : '/tmp/BigAssTestDB.rtk',
-                                       'type' : 'sqlite',
-                                       'user' : '',
-                                       'password' : ''}
-        self.assertFalse(self.DUT.open_program())
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        self.assertFalse(self.DUT.open_program(_database))
+
+    @attr(all=True, unit=True)
+    def test07a_dao_db_load_globals(self):
+        """
+        (TestRTKModel) load_globals returns False on success
+        """
+
+        self.assertFalse(self.DUT.load_globals(self.Configuration))
+
+        self.assertTrue(isinstance(self.DUT.tree, Tree))
+
+        self.assertEqual(self.Configuration.RTK_ACTION_CATEGORY, {})
+        self.assertEqual(self.Configuration.RTK_INCIDENT_CATEGORY,
+                         {34: (u'HW', u'Hardware', u'incident', 1),
+                          35: (u'SW', u'Software', u'incident', 1),
+                          36: (u'PROC', u'Process', u'incident', 1)})
+        self.assertEqual(self.Configuration.RTK_SEVERITY,
+                         {10: (u'INS', u'Insignificant', u'risk', 1),
+                          11: (u'SLT', u'Slight', u'risk', 2),
+                          12: (u'LOW', u'Low', u'risk', 3),
+                          13: (u'MED', u'Medium', u'risk', 4),
+                          14: (u'HI', u'High', u'risk', 5),
+                          15: (u'MAJ', u'Major', u'risk', 6)})
+
+        self.assertEqual(self.Configuration.RTK_ACTIVE_ENVIRONMENTS, {})
+        self.assertEqual(self.Configuration.RTK_DORMANT_ENVIRONMENTS, {})
+        self.assertEqual(self.Configuration.RTK_SW_DEV_ENVIRONMENTS, {})
+
+        self.assertEqual(self.Configuration.RTK_AFFINITY_GROUPS, {})
+        self.assertEqual(self.Configuration.RTK_WORKGROUPS[1],
+                         (u'Engineering, Systems', u'workgroup'))
+
+        self.assertEqual(self.Configuration.RTK_FAILURE_PROBABILITY, {})
+        self.assertEqual(self.Configuration.RTK_SW_LEVELS, {})
+
+        self.assertEqual(self.Configuration.RTK_DETECTION_METHODS, {})
+        self.assertEqual(self.Configuration.RTK_SW_TEST_METHODS, {})
+
+        self.assertEqual(self.Configuration.RTK_ALLOCATION_MODELS, {})
+        self.assertEqual(self.Configuration.RTK_DAMAGE_MODELS, {})
+        self.assertEqual(self.Configuration.RTK_HR_MODEL, {})
+
+        self.assertEqual(self.Configuration.RTK_LIFECYCLE, {})
+        self.assertEqual(self.Configuration.RTK_SW_DEV_PHASES, {})
+
+        self.assertEqual(self.Configuration.RTK_RPN_DETECTION, {})
+        self.assertEqual(self.Configuration.RTK_RPN_SEVERITY, {})
+        self.assertEqual(self.Configuration.RTK_RPN_OCCURRENCE, {})
+
+        self.assertEqual(self.Configuration.RTK_ACTION_STATUS, {})
+        self.assertEqual(self.Configuration.RTK_INCIDENT_STATUS, {})
+
+        self.assertEqual(self.Configuration.RTK_CONTROL_TYPES,
+                         [u'Prevention', u'Detection'])
+        self.assertEqual(self.Configuration.RTK_COST_TYPE, {})
+        self.assertEqual(self.Configuration.RTK_HR_TYPE, {})
+        self.assertEqual(self.Configuration.RTK_INCIDENT_TYPE, {})
+        self.assertEqual(self.Configuration.RTK_MTTR_TYPE, {})
+        self.assertEqual(self.Configuration.RTK_REQUIREMENT_TYPE,
+                         {1: (u'Type Code', u'Test Type of Requirement',
+                              u'requirement')})
+        self.assertEqual(self.Configuration.RTK_VALIDATION_TYPE, {})
+
+        self.assertEqual(self.Configuration.RTK_SW_APPLICATION,
+                         {1: (u'Application Description', 1.0, 1.0)})
+        self.assertEqual(self.Configuration.RTK_CATEGORIES, {})
+        self.assertEqual(self.Configuration.RTK_CRITICALITY,
+                         {1: (u'Criticality Name', u'Criticality Description',
+                              u'', 0)})
+        self.assertEqual(self.Configuration.RTK_FAILURE_MODES, {})
+        self.assertEqual(self.Configuration.RTK_HAZARDS,
+                         {1: (u'Hazard Category', u'Hazard Subcategory')})
+        self.assertEqual(self.Configuration.RTK_MANUFACTURERS,
+                         {1: (u'Distribution Description', u'unknown',
+                              u'CAGE Code')})
+        self.assertEqual(self.Configuration.RTK_MEASUREMENT_UNITS, {})
+        self.assertEqual(self.Configuration.RTK_OPERATING_PARAMETERS, {})
+        self.assertEqual(self.Configuration.RTK_S_DIST,
+                         {1: (u'Distribution Description', u'unknown')})
+        self.assertEqual(self.Configuration.RTK_STAKEHOLDERS,
+                         {1: (u'Stakeholder',)})
+        self.assertEqual(self.Configuration.RTK_SUBCATEGORIES, {})
+        self.assertEqual(self.Configuration.RTK_USERS[1],
+                         (u'Last Name', u'First Name', u'EMail', u'867.5309',
+                          u'0'))
 
 
 class TestRTKController(unittest.TestCase):
@@ -327,19 +297,20 @@ class TestRTKController(unittest.TestCase):
         Setup test fixture for the RTK data controller class.
         """
 
-        Configuration.RTK_COM_INFO = {'host'    : 'localhost',
-                                      'socket'  : 3306,
-                                      'database': '/tmp/TestCommonDB.rtk',
-                                      'type'    : 'sqlite',
-                                      'user'    : '',
-                                      'password': ''}
-        Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                       'socket'  : 3306,
-                                       'database': '/tmp/TestDB.rtk',
-                                       'type'    : 'sqlite',
-                                       'user'    : '',
-                                       'password': ''}
         self.DUT = RTK()
+
+        self.DUT.RTK_CONFIGURATION.RTK_COM_BACKEND = 'sqlite'
+        self.DUT.RTK_CONFIGURATION.RTK_COM_INFO = {'host': 'localhost',
+                                                   'socket': 3306,
+                                                   'database': '/tmp/TestCommonDB.rtk',
+                                                   'user': '',
+                                                   'password': ''}
+        self.DUT.RTK_CONFIGURATION.RTK_BACKEND = 'sqlite'
+        self.DUT.RTK_CONFIGURATION.RTK_PROG_INFO = {'host': 'localhost',
+                                                    'socket': 3306,
+                                                    'database': '/tmp/TestDB.rtk',
+                                                    'user': '',
+                                                    'password': ''}
 
     @attr(all=True, unit=True)
     def test00_initialize_RTK(self):
@@ -358,7 +329,7 @@ class TestRTKController(unittest.TestCase):
         self.assertEqual(self.DUT.dic_controllers['requirement'], None)
         self.assertEqual(self.DUT.dic_controllers['hardware'], None)
         self.assertEqual(self.DUT.dic_controllers['software'], None)
-        self.assertEqual(self.DUT.dic_controllers['test'], None)
+        self.assertEqual(self.DUT.dic_controllers['testing'], None)
         self.assertEqual(self.DUT.dic_controllers['validation'], None)
         self.assertEqual(self.DUT.dic_controllers['incident'], None)
         self.assertEqual(self.DUT.dic_controllers['survival'], None)
@@ -376,15 +347,61 @@ class TestRTKController(unittest.TestCase):
         self.assertEqual(self.DUT.dic_controllers['component'], None)
 
     @attr(all=True, unit=True)
-    def test01a_request_create_new_program(self):
+    def test01a_request_load_globals(self):
+        """
+        (TestRTKController) request_load_globals should return False on success
+        """
+
+        self.DUT.rtk_model.tree = None
+        self.DUT.rtk_model.tree = Tree()
+
+        _database = self.DUT.RTK_CONFIGURATION.RTK_COM_BACKEND + ':///' + \
+                    self.DUT.RTK_CONFIGURATION.RTK_COM_INFO['database']
+        self.DUT.rtk_model.program_dao.db_connect(_database)
+
+        self.assertFalse(self.DUT.request_load_globals())
+
+    @attr(all=True, unit=True)
+    def test02a_request_open_program(self):
+        """
+        (TestRTKController) request_open_program should return False on success
+        """
+
+        self.assertFalse(self.DUT.request_open_program())
+        self.assertEqual(self.DUT.RTK_CONFIGURATION.RTK_PREFIX,
+                         [u'REV', u'FUNCTION', u'ASSEMBLY', u'PART', u'FMECA',
+                          u'MODE', u'EFFECT', u'CAUSE', u'MODULE'])
+        self.assertEqual(self.DUT.RTK_CONFIGURATION.RTK_MODULES,
+                         [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0])
+
+    @attr(all=True, unit=True)
+    def test03a_request_create_program(self):
         """
         (TestRTKController) request_create_program should return False on success
         """
 
-        _database = Configuration.RTK_PROG_INFO['type'] + ':///' + \
-                    Configuration.RTK_PROG_INFO['database']
-        self.DUT.rtk_model.program_dao.db_connect(_database)
-
         self.assertFalse(self.DUT.request_create_program())
+
+    @attr(all=True, unit=False)
+    def test04a_request_close_program(self):
+        """
+        (TestRTKController) request_close_program should return False on success
+        """
+
+        self.assertFalse(self.DUT.request_close_program())
+
+    @attr(all=True, unit=True)
+    def test05a_request_save_program(self):
+        """
+        (TestRTKController) request_save_program should return False on success
+        """
+
+        self.DUT.request_open_program()
+
+        _error_code, _msg = self.DUT.request_save_program()
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Updating the RTK Program database.')
+
 
 

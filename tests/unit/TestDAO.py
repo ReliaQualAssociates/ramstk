@@ -5,6 +5,33 @@
 
 #
 # All rights reserved.
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 This is the test class for testing Data Access Object (DAO) module algorithms
@@ -23,8 +50,7 @@ from sqlalchemy.orm import scoped_session
 
 from treelib import Tree
 
-import Configuration as Configuration
-import Utilities as Utilities
+from Configuration import Configuration
 from dao.RTKCommonDB import RTK_SITE_SESSION, RTK_PROGRAM_SESSION
 from dao.DAO import DAO
 from dao.RTKRevision import RTKRevision
@@ -48,37 +74,56 @@ class TestDAO(unittest.TestCase):
         Sets up the test fixture for the DAO class.
         """
 
-        self.site_dao = DAO('')
-        self.site_dao.db_connect('sqlite:////tmp/TestCommonDB.rtk')
+        self.Configuration = Configuration()
+
+        self.Configuration.RTK_SITE_DIR = \
+            dirname(dirname(dirname(__file__))) + '/config'
+        self.Configuration.RTK_HOME_DIR = '/tmp/RTK'
+        self.Configuration.set_site_variables()
+        self.Configuration.set_user_variables()
+        self.Configuration.create_user_configuration()
+
+        self.Configuration.RTK_COM_BACKEND = 'sqlite'
+        self.Configuration.RTK_COM_INFO = {'host'    : 'localhost',
+                                           'socket'  : 3306,
+                                           'database': '/tmp/TestCommonDB.rtk',
+                                           'user'    : '',
+                                           'password': ''}
+        self.Configuration.RTK_BACKEND = 'sqlite'
+        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
+                                            'socket'  : 3306,
+                                            'database': '/tmp/TestDB.rtk',
+                                            'user'    : '',
+                                            'password': ''}
+
+        self.site_dao = DAO()
+        _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
+                    self.Configuration.RTK_COM_INFO['database']
+        self.site_dao.db_connect(_database)
 
         RTK_SITE_SESSION.configure(bind=self.site_dao.engine, autoflush=False,
-                          expire_on_commit=False)
+                                   expire_on_commit=False)
         self.site_session = scoped_session(RTK_SITE_SESSION)
 
-        self.DUT = DAO('')
-        self.DUT.db_connect('sqlite:////tmp/TestDB.rtk')
+        self.DUT = DAO()
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        self.DUT.db_connect(_database)
 
         RTK_PROGRAM_SESSION.configure(bind=self.DUT.engine, autoflush=False,
-                          expire_on_commit=False)
+                                      expire_on_commit=False)
         self.program_session = scoped_session(RTK_PROGRAM_SESSION)
 
         self._revision = self.program_session.query(RTKRevision).first()
-        self._mission = self.program_session.query(RTKMission).\
+        self._mission = self.program_session.query(RTKMission). \
             filter(RTKMission.revision_id ==
                    self._revision.revision_id).first()
-        self._phase = self.program_session.query(RTKMissionPhase).\
+        self._phase = self.program_session.query(RTKMissionPhase). \
             filter(RTKMissionPhase.mission_id ==
                    self._mission.mission_id).first()
-        self._environment = self.program_session.query(RTKEnvironment).\
+        self._environment = self.program_session.query(RTKEnvironment). \
             filter(RTKEnvironment.phase_id ==
                    self._phase.phase_id).first()
-
-        Configuration.DEBUG_LOG = Utilities.create_logger("RTK.debug",
-                                                          'DEBUG',
-                                                          '/tmp/RTK_debug.log')
-        Configuration.USER_LOG = Utilities.create_logger("RTK.user",
-                                                         'INFO',
-                                                        '/tmp/RTK_user.log')
 
     @attr(all=True, unit=True)
     def test00_dao_create(self):
@@ -94,8 +139,9 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_connect should return False on success connecting to an SQLite database.
         """
 
-        _database = 'sqlite:////tmp/TestDB.rtk'
-        _dao = DAO('')
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        _dao = DAO()
 
         self.assertFalse(_dao.db_connect(_database))
 
@@ -105,13 +151,15 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_common should return False on success.
         """
 
-        Configuration.RTK_COM_INFO = {'host' : 'localhost',
-                                      'socket' : 3306,
-                                      'database' : '/tmp/_rtk_common_db.rtk',
-                                      'type' : 'sqlite',
-                                      'user' : '',
-                                      'password' : ''}
-        self.assertFalse(self.DUT.db_create_common(self.program_session))
+        self.Configuration.RTK_COM_INFO = {'host': 'localhost',
+                                           'socket': 3306,
+                                           'database': '/tmp/_rtk_common_db.rtk',
+                                           'user': '',
+                                           'password': ''}
+        _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
+                    self.Configuration.RTK_COM_INFO['database']
+        self.assertFalse(self.DUT.db_create_common(_database,
+                                                   self.site_session))
 
         os.remove('/tmp/_rtk_common_db.rtk')
 
@@ -121,13 +169,15 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_common should return True on failure.
         """
 
-        Configuration.RTK_COM_INFO = {'host' : 'localhost',
-                                      'socket' : 3306,
-                                      'database' : 'tmp/_rtk_common_db.rtk',
-                                      'type' : 'sqlite',
-                                      'user' : '',
-                                      'password' : ''}
-        self.assertTrue(self.DUT.db_create_common(self.program_session))
+        self.Configuration.RTK_COM_INFO = {'host': 'localhost',
+                                           'socket': 3306,
+                                           'database': 'tmp/_rtk_common_db.rtk',
+                                           'user': '',
+                                           'password': ''}
+        _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
+                    self.Configuration.RTK_COM_INFO['database']
+        self.assertTrue(self.DUT.db_create_common(_database,
+                                                  self.program_session))
 
     @attr(all=True, unit=True)
     def test02c_dao_db_create_program(self):
@@ -135,13 +185,16 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_program should return False on success.
         """
 
-        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
-                                       'socket' : 3306,
-                                       'database' : '/tmp/_rtk_program_db.rtk',
-                                       'type' : 'sqlite',
-                                       'user' : '',
-                                       'password' : ''}
-        self.assertFalse(self.DUT.db_create_program(self.program_session))
+        self.Configuration.RTK_PROG_INFO = {'host' : 'localhost',
+                                            'socket' : 3306,
+                                            'database' : '/tmp/_rtk_program_db.rtk',
+                                            'type' : 'sqlite',
+                                            'user' : '',
+                                            'password' : ''}
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        self.assertFalse(self.DUT.db_create_program(_database,
+                                                    self.program_session))
 
         os.remove('/tmp/_rtk_program_db.rtk')
 
@@ -151,13 +204,16 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_program should return True on failure.
         """
 
-        Configuration.RTK_PROG_INFO = {'host' : 'localhost',
-                                       'socket' : 3306,
-                                       'database' : 'tmp/_rtk_program_db.rtk',
-                                       'type' : 'sqlite',
-                                       'user' : '',
-                                       'password' : ''}
-        self.assertTrue(self.DUT.db_create_program(self.program_session))
+        self.Configuration.RTK_PROG_INFO = {'host' : 'localhost',
+                                            'socket' : 3306,
+                                            'database' : 'tmp/_rtk_program_db.rtk',
+                                            'type' : 'sqlite',
+                                            'user' : '',
+                                            'password' : ''}
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        self.assertTrue(self.DUT.db_create_program(_database,
+                                                   self.program_session))
 
     @attr(all=True, unit=True)
     def test03a_dao_db_add(self):
@@ -185,7 +241,7 @@ class TestDAO(unittest.TestCase):
         self.assertEqual(_msg, "RTK ERROR: Adding one or more items to " \
                                "the RTK Program database.")
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test04_dao_db_add_many(self):
         """
         (TestDAO) db_add should return a zero error code on success when adding multiple records to the database.
@@ -193,10 +249,13 @@ class TestDAO(unittest.TestCase):
 
         _mission = RTKMission()
         _mission.revision_id = self._revision.revision_id
+        _mission.mission_id = 1
         _phase = RTKMissionPhase()
-        _phase.mission_id = self._mission.mission_id
+        _phase.mission_id = _mission.mission_id
+        _phase.phase_id = 1
         _environment = RTKEnvironment()
-        _environment.phase_id = self._phase.phase_id
+        _environment.phase_id = _phase.phase_id
+        _environment.environment_id = 1
 
         (_error_code, _msg) = self.DUT.db_add([_mission, _phase, _environment],
                                               self.program_session)
@@ -245,88 +304,3 @@ class TestDAO(unittest.TestCase):
         self.assertEqual(_error_code, 1005)
         self.assertEqual(_msg, "RTK ERROR: Deleting an item from the RTK " \
                                "Program database.")
-
-    @attr(all=True, unit=True)
-    def test07a_dao_db_load_globals(self):
-        """
-        (TestDAO) db_load_globals returns False on success
-        """
-
-        self.assertFalse(self.DUT.db_load_globals(self.site_session))
-
-        self.assertTrue(isinstance(self.DUT.tree, Tree))
-
-        self.assertEqual(Configuration.RTK_ACTION_CATEGORY, {})
-        self.assertEqual(Configuration.RTK_INCIDENT_CATEGORY,
-                         {34: (u'HW', u'Hardware', u'incident', 1),
-                          35: (u'SW', u'Software', u'incident', 1),
-                          36: (u'PROC', u'Process', u'incident', 1)})
-        self.assertEqual(Configuration.RTK_SEVERITY,
-                         {10: (u'INS', u'Insignificant', u'risk', 1),
-                          11: (u'SLT', u'Slight', u'risk', 2),
-                          12: (u'LOW', u'Low', u'risk', 3),
-                          13: (u'MED', u'Medium', u'risk', 4),
-                          14: (u'HI', u'High', u'risk', 5),
-                          15: (u'MAJ', u'Major', u'risk', 6)})
-
-        self.assertEqual(Configuration.RTK_ACTIVE_ENVIRONMENTS, {})
-        self.assertEqual(Configuration.RTK_DORMANT_ENVIRONMENTS, {})
-        self.assertEqual(Configuration.RTK_SW_DEV_ENVIRONMENTS, {})
-
-        self.assertEqual(Configuration.RTK_AFFINITY_GROUPS, {})
-        self.assertEqual(Configuration.RTK_WORKGROUPS[1],
-                         (u'Engineering, Systems', u'workgroup'))
-
-        self.assertEqual(Configuration.RTK_FAILURE_PROBABILITY, {})
-        self.assertEqual(Configuration.RTK_SW_LEVELS, {})
-
-        self.assertEqual(Configuration.RTK_DETECTION_METHODS, {})
-        self.assertEqual(Configuration.RTK_SW_TEST_METHODS, {})
-
-        self.assertEqual(Configuration.RTK_ALLOCATION_MODELS, {})
-        self.assertEqual(Configuration.RTK_DAMAGE_MODELS, {})
-        self.assertEqual(Configuration.RTK_HR_MODEL, {})
-
-        self.assertEqual(Configuration.RTK_LIFECYCLE, {})
-        self.assertEqual(Configuration.RTK_SW_DEV_PHASES, {})
-
-        self.assertEqual(Configuration.RTK_RPN_DETECTION, {})
-        self.assertEqual(Configuration.RTK_RPN_SEVERITY, {})
-        self.assertEqual(Configuration.RTK_RPN_OCCURRENCE, {})
-
-        self.assertEqual(Configuration.RTK_ACTION_STATUS, {})
-        self.assertEqual(Configuration.RTK_INCIDENT_STATUS, {})
-
-        self.assertEqual(Configuration.RTK_CONTROL_TYPES,
-                         [u'Prevention', u'Detection'])
-        self.assertEqual(Configuration.RTK_COST_TYPE, {})
-        self.assertEqual(Configuration.RTK_HR_TYPE, {})
-        self.assertEqual(Configuration.RTK_INCIDENT_TYPE, {})
-        self.assertEqual(Configuration.RTK_MTTR_TYPE, {})
-        self.assertEqual(Configuration.RTK_REQUIREMENT_TYPE,
-                         {1: (u'Type Code', u'Test Type of Requirement',
-                              u'requirement')})
-        self.assertEqual(Configuration.RTK_VALIDATION_TYPE, {})
-
-        self.assertEqual(Configuration.RTK_SW_APPLICATION,
-                         {1: (u'Application Description', 1.0, 1.0)})
-        self.assertEqual(Configuration.RTK_CATEGORIES, {})
-        self.assertEqual(Configuration.RTK_CRITICALITY,
-                         {1: (u'Criticality Name', u'Criticality Description',
-                              u'', 0)})
-        self.assertEqual(Configuration.RTK_FAILURE_MODES, {})
-        self.assertEqual(Configuration.RTK_HAZARDS,
-                         {1: (u'Hazard Category', u'Hazard Subcategory')})
-        self.assertEqual(Configuration.RTK_MANUFACTURERS,
-                         {1: (u'Distribution Description', u'unknown',
-                              u'CAGE Code')})
-        self.assertEqual(Configuration.RTK_MEASUREMENT_UNITS, {})
-        self.assertEqual(Configuration.RTK_OPERATING_PARAMETERS, {})
-        self.assertEqual(Configuration.RTK_S_DIST,
-                         {1: (u'Distribution Description', u'unknown')})
-        self.assertEqual(Configuration.RTK_STAKEHOLDERS,
-                         {1: (u'Stakeholder',)})
-        self.assertEqual(Configuration.RTK_SUBCATEGORIES, {})
-        self.assertEqual(Configuration.RTK_USERS[1],
-                         (u'Last Name', u'First Name', u'EMail', u'867.5309',
-                          u'0'))

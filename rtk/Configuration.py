@@ -68,7 +68,7 @@ class Configuration(object):
                                 * software
                                 * incident
                                 * validation
-                                * test
+                                * testing
                                 * part
                                 * sia
                                 * fmeca
@@ -308,12 +308,12 @@ class Configuration(object):
                                are:
 
                                * mysql
-                               * sqlite3
+                               * sqlite
 
     :cvar str RTK_BACKEND: RTK Program database backend to use.  Options are:
 
                            * mysql
-                           * sqlite3
+                           * sqlite
 
     :cvar str RTK_LOCALE: The language locale to use with RTK.  Default value
                           is *en_US*.
@@ -398,7 +398,7 @@ class Configuration(object):
     RTK_HR_MULTIPLIER = 1000000.0
     RTK_DEC_PLACES = 6
     RTK_MTIME = 10.0
-    RTK_GUI_LAYOUT = 'basic'
+    RTK_GUI_LAYOUT = 'advanced'
     RTK_METHOD = 'STANDARD'  # STANDARD or LRM
     RTK_LOCALE = 'en_US'
     RTK_OS = ''
@@ -418,9 +418,9 @@ class Configuration(object):
                             'testbg', 'survivalbg']
         self._lst_format_files = ['revision', 'function', 'requirement',
                                   'hardware', 'software', 'incident',
-                                  'validation', 'test', 'part', 'sia', 'fmeca',
-                                  'rgincident', 'stakeholder', 'dataset',
-                                  'risk', 'ffmeca', 'sfmeca']
+                                  'validation', 'testing', 'part', 'sia',
+                                  'fmeca', 'rgincident', 'stakeholder',
+                                  'dataset', 'risk', 'ffmeca', 'sfmeca']
         if name == 'posix':
             self.RTK_OS = 'Linux'
             self.RTK_SITE_DIR = '/etc/RTK'
@@ -470,6 +470,8 @@ class Configuration(object):
         if not Utilities.file_exists(self.RTK_SITE_CONF):
             self._create_site_configuration()
 
+        self._read_site_configuration()
+
         return False
 
     def set_user_variables(self):
@@ -515,8 +517,7 @@ class Configuration(object):
         _config.set('Backend', 'database', '')
         _config.set('Backend', 'user', 'user')
         _config.set('Backend', 'password', 'password')
-        _config.set('Backend', 'type', 'sqlite3')
-        _config.set('Backend', 'path', self.RTK_SITE_DIR)
+        _config.set('Backend', 'type', 'sqlite')
 
         try:
             _parser = open(self.RTK_SITE_CONF, 'w')
@@ -613,7 +614,7 @@ class Configuration(object):
         _config.set('General', 'booktabpos', 'bottom')
 
         _config.add_section('Backend')
-        _config.set('Backend', 'type', 'sqlite3')
+        _config.set('Backend', 'type', 'sqlite')
         _config.set('Backend', 'host', 'localhost')
         _config.set('Backend', 'socket', 3306)
         _config.set('Backend', 'database', '')
@@ -642,7 +643,7 @@ class Configuration(object):
         _config.set('Files', 'sia', 'sia_format.xml')
         _config.set('Files', 'software', 'software_format.xml')
         _config.set('Files', 'stakeholder', 'stakeholder_format.xml')
-        _config.set('Files', 'test', 'testing_format.xml')
+        _config.set('Files', 'testing', 'testing_format.xml')
         _config.set('Files', 'validation', 'validation_format.xml')
 
         _config.add_section('Colors')
@@ -736,6 +737,32 @@ class Configuration(object):
                 _parser.close()
             except EnvironmentError:
                 _return = True
+
+        return _return
+
+    def _read_site_configuration(self):
+        """
+        Method to read the site configuration file.
+
+        :return: False of successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        # Try to read the user's configuration file.  If it doesn't exist,
+        # create a new one.  If those options fail, read the system-wide
+        # configuration file and keep going.
+        if Utilities.file_exists(self.RTK_SITE_CONF):
+            _config = ConfigParser.ConfigParser()
+            _config.read(self.RTK_SITE_CONF)
+
+            self.RTK_COM_BACKEND = _config.get('Backend', 'type')
+            self.RTK_COM_INFO['host'] = _config.get('Backend', 'host')
+            self.RTK_COM_INFO['socket'] = _config.get('Backend', 'socket')
+            self.RTK_COM_INFO['database'] = _config.get('Backend', 'database')
+            self.RTK_COM_INFO['user'] = _config.get('Backend', 'user')
+            self.RTK_COM_INFO['password'] = _config.get('Backend', 'password')
 
         return _return
 
