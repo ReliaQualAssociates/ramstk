@@ -408,6 +408,19 @@ class Configuration(object):
         Method to initialize the RTK configuration parser.
         """
 
+        self._lst_colors = ['revisionfg', 'functionfg', 'requirementfg',
+                            'assemblyfg', 'partfg', 'overstressfg', 'taggedfg',
+                            'nofrmodelfg', 'softwarefg', 'incidentfg',
+                            'validationfg', 'testfg', 'survivalfg',
+                            'revisionbg', 'functionbg', 'requirementbg',
+                            'assemblybg', 'partbg', 'overstressbg', 'taggedbg',
+                            'softwarebg', 'incidentbg', 'validationbg',
+                            'testbg', 'survivalbg']
+        self._lst_format_files = ['revision', 'function', 'requirement',
+                                  'hardware', 'software', 'incident',
+                                  'validation', 'test', 'part', 'sia', 'fmeca',
+                                  'rgincident', 'stakeholder', 'dataset',
+                                  'risk', 'ffmeca', 'sfmeca']
         if name == 'posix':
             self.RTK_OS = 'Linux'
             self.RTK_SITE_DIR = '/etc/RTK'
@@ -678,19 +691,6 @@ class Configuration(object):
 
         _return = False
 
-        _lst_colors = ['revisionfg', 'functionfg', 'requirementfg',
-                       'assemblyfg', 'partfg', 'overstressfg', 'taggedfg',
-                       'nofrmodelfg', 'softwarefg', 'incidentfg',
-                       'validationfg', 'testfg', 'survivalfg', 'revisionbg',
-                       'functionbg', 'requirementbg', 'assemblybg', 'partbg',
-                       'overstressbg', 'taggedbg', 'softwarebg', 'incidentbg',
-                       'validationbg', 'testbg', 'survivalbg']
-        _lst_format_files = ['revision', 'function', 'requirement', 'hardware',
-                             'software', 'incident', 'validation', 'test',
-                             'part', 'sia', 'fmeca', 'rgincident',
-                             'stakeholder', 'dataset', 'risk', 'ffmeca',
-                             'sfmeca']
-
         if Utilities.file_exists(self.RTK_PROG_CONF):
             _config = ConfigParser.ConfigParser()
             _config.add_section('General')
@@ -722,12 +722,12 @@ class Configuration(object):
             _config.set('Directories', 'progdir', self.RTK_PROG_DIR)
 
             _config.add_section('Files')
-            for _file in _lst_format_files:
+            for _file in self._lst_format_files:
                 _config.set('Files', _file,
                             path.basename(self.RTK_FORMAT_FILE[_file]))
 
             _config.add_section('Colors')
-            for _color in _lst_colors:
+            for _color in self._lst_colors:
                 _config.set('Colors', _color, self.RTK_COLORS[_color])
 
             try:
@@ -749,19 +749,6 @@ class Configuration(object):
 
         _return = False
 
-        _lst_colors = ['revisionfg', 'functionfg', 'requirementfg',
-                       'assemblyfg', 'partfg', 'overstressfg', 'taggedfg',
-                       'nofrmodelfg', 'softwarefg', 'incidentfg',
-                       'validationfg', 'testfg', 'survivalfg', 'revisionbg',
-                       'functionbg', 'requirementbg', 'assemblybg', 'partbg',
-                       'overstressbg', 'taggedbg', 'softwarebg', 'incidentbg',
-                       'validationbg', 'testbg', 'survivalbg']
-        _lst_format_files = ['revision', 'function', 'requirement', 'hardware',
-                             'software', 'incident', 'validation', 'test',
-                             'part', 'sia', 'fmeca', 'rgincident',
-                             'stakeholder', 'dataset', 'risk', 'ffmeca',
-                             'sfmeca']
-
         # Try to read the user's configuration file.  If it doesn't exist,
         # create a new one.  If those options fail, read the system-wide
         # configuration file and keep going.
@@ -769,10 +756,10 @@ class Configuration(object):
             _config = ConfigParser.ConfigParser()
             _config.read(self.RTK_PROG_CONF)
 
-            for _color in _lst_colors:
+            for _color in self._lst_colors:
                 self.RTK_COLORS[_color] = _config.get('Colors', _color)
 
-            for _file in _lst_format_files:
+            for _file in self._lst_format_files:
                 self.RTK_FORMAT_FILE[_file] = _config.get('Files', _file)
 
             self.RTK_DATA_DIR = _config.get('Directories', 'datadir')

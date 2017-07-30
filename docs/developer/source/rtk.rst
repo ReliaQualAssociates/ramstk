@@ -6,6 +6,7 @@ Subpackages
 
 .. toctree::
 
+    rtk.configuration
     rtk.dao
     rtk.datamodels
 
