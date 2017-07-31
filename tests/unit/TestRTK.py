@@ -202,9 +202,9 @@ class TestRTKModel(unittest.TestCase):
         self.assertFalse(self.DUT.open_program(_database))
 
     @attr(all=True, unit=True)
-    def test07a_dao_db_load_globals(self):
+    def test07a_load_globals(self):
         """
-        (TestRTKModel) load_globals returns False on success
+        (TestRTKModel) load_globals should return False on success
         """
 
         self.assertFalse(self.DUT.load_globals(self.Configuration))
@@ -286,6 +286,31 @@ class TestRTKModel(unittest.TestCase):
                          (u'Last Name', u'First Name', u'EMail', u'867.5309',
                           u'0'))
 
+    @attr(all=True, unit=True)
+    def test08a_validate_license(self):
+        """
+        (TestRTKModel) validate_license should return a zero error code on success
+        """
+
+        _error_code,\
+        _msg = self.DUT.validate_license('9490059723f3a743fb961d092d3283422f4f2d13')
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Validating RTK License.')
+
+    @attr(all=True, unit=True)
+    def test08b_validate_license_wrong_key(self):
+        """
+        (TestRTKModel) validate_license should return a 1 error code when the license key is wrong
+        """
+
+        _error_code, _msg = self.DUT.validate_license('')
+
+        self.assertEqual(_error_code, 1)
+        self.assertEqual(_msg,
+                         'RTK ERROR: Invalid license (Invalid key).  Your '
+                         'license key is incorrect.  Closing the RTK '
+                         'application.')
 
 class TestRTKController(unittest.TestCase):
     """
@@ -311,6 +336,10 @@ class TestRTKController(unittest.TestCase):
                                                     'database': '/tmp/TestDB.rtk',
                                                     'user': '',
                                                     'password': ''}
+        self.DUT.RTK_CONFIGURATION.RTK_DATA_DIR = \
+            '/home/arowland/.config/RTK/data'
+        self.DUT.RTK_CONFIGURATION.RTK_ICON_DIR = \
+            dirname(dirname(dirname(__file__))) + "/config/icons"
 
     @attr(all=True, unit=True)
     def test00_initialize_RTK(self):
@@ -403,5 +432,10 @@ class TestRTKController(unittest.TestCase):
         self.assertEqual(_msg,
                          'RTK SUCCESS: Updating the RTK Program database.')
 
+    @attr(all=True, unit=True)
+    def test06a_request_validate_license(self):
+        """
+        (TestRTKController) request_validate_license should return False on success
+        """
 
-
+        self.assertFalse(self.DUT.request_validate_license())
