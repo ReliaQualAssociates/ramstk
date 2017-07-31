@@ -983,7 +983,6 @@ class RTK(object):
         """
         Method to open an RTK Project database and load it into the views.
 
-
         # Connect to the project database.
         self.project_dao = DAO('')
         self.project_dao.db_connect('sqlite:///' +
