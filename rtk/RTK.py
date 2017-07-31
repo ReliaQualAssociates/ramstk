@@ -36,11 +36,11 @@
 This is the main program for the RTK application.
 """
 
-import datetime
 import gettext
 import logging
 import os
 import sys
+from datetime import date
 
 from sqlalchemy.orm import scoped_session
 from pubsub import pub
@@ -48,11 +48,13 @@ from pubsub import pub
 from treelib import Tree
 
 try:
+    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
+    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
@@ -62,24 +64,25 @@ from Configuration import Configuration
 import Utilities
 from dao.DAO import DAO
 from dao.RTKCommonDB import RTK_SITE_SESSION, RTK_PROGRAM_SESSION
+from dao.RTKApplication import RTKApplication
 from dao.RTKCategory import RTKCategory
-from dao.RTKSubCategory import RTKSubCategory
-from dao.RTKFailureMode import RTKFailureMode
-from dao.RTKStakeholders import RTKStakeholders
+from dao.RTKCriticality import RTKCriticality
+from dao.RTKDistribution import RTKDistribution
 from dao.RTKEnviron import RTKEnviron
-from dao.RTKLevel import RTKLevel
+from dao.RTKFailureMode import RTKFailureMode
 from dao.RTKGroup import RTKGroup
+from dao.RTKHazards import RTKHazards
+from dao.RTKLevel import RTKLevel
+from dao.RTKManufacturer import RTKManufacturer
 from dao.RTKMethod import RTKMethod
 from dao.RTKModel import RTKModel
 from dao.RTKPhase import RTKPhase
 from dao.RTKRPN import RTKRPN
+from dao.RTKSiteInfo import RTKSiteInfo
+from dao.RTKStakeholders import RTKStakeholders
 from dao.RTKStatus import RTKStatus
+from dao.RTKSubCategory import RTKSubCategory
 from dao.RTKType import RTKType
-from dao.RTKApplication import RTKApplication
-from dao.RTKCriticality import RTKCriticality
-from dao.RTKDistribution import RTKDistribution
-from dao.RTKHazards import RTKHazards
-from dao.RTKManufacturer import RTKManufacturer
 from dao.RTKUnit import RTKUnit
 from dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
@@ -613,6 +616,36 @@ class Model(object):
 
         return _return
 
+    def validate_license(self, license_key):
+        """
+        Method to validate the license and the license expiration date.
+
+        :param str license_key: the license key for the current RTK
+                                installation.
+        :return: (_error_code, _msg)
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Validating RTK License.'
+
+        _site_info = self.site_session.query(RTKSiteInfo).first()
+
+        if license_key != _site_info.product_key:
+            _error_code = 1
+            _msg = 'RTK ERROR: Invalid license (Invalid key).  Your license ' \
+                   'key is incorrect.  Closing the RTK application.'
+
+        _today = date.today().strftime('%Y-%m-%d')
+        _expire_date = _site_info.expire_on.strftime('%Y-%m-%d')
+        if _today > _expire_date:
+            _error_code = 2
+            _msg = 'RTK ERROR: Invalid license (Expired).  Your license ' \
+                   'expired on {0:s}.  Closing the RTK application.'. \
+                format(_expire_date)
+
+        return _error_code, _msg
+
 
 class RTK(object):
     """
@@ -717,6 +750,8 @@ class RTK(object):
         # Define public list attributes.
 
         # Define public scalar attributes.
+        self.icoStatus = gtk.StatusIcon()
+
         # Connect to the RTK Common database.
         _database = None
         if self.RTK_CONFIGURATION.RTK_COM_BACKEND == 'sqlite':
@@ -746,6 +781,8 @@ class RTK(object):
         :rtype: bool
         """
 
+        _database = None
+
         if self.RTK_CONFIGURATION.RTK_BACKEND == 'sqlite':
             _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
                         self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
@@ -755,12 +792,12 @@ class RTK(object):
             self.request_open_program()
             self.RTK_CONFIGURATION.RTK_USER_LOG.info('RTK SUCCESS: Creating '
                                                      'RTK Program database '
-                                                     '{0:s}.'. \
+                                                     '{0:s}.'.
                                                      format(_database))
         else:
             self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error('RTK ERROR: Failed to '
                                                        'create RTK Program '
-                                                       'database {0:s}.'. \
+                                                       'database {0:s}.'.
                                                        format(_database))
 
         return _return
@@ -770,9 +807,6 @@ class RTK(object):
         Method to load all the global Configuration variables from the RTK
         Site database.
 
-        :param session: the SQLAlchemy scoped_session to use for querying the
-                        RTK Common database.
-        :type session: :py:class:`sqlalchemy.orm.scoped_session`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -788,6 +822,8 @@ class RTK(object):
         """
 
         _return = False
+
+        _database = None
 
         if self.RTK_CONFIGURATION.RTK_BACKEND == 'sqlite':
             _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
@@ -827,14 +863,35 @@ class RTK(object):
                 self.RTK_CONFIGURATION.RTK_MODULES = \
                     [_active for _active in _row]
 
+            # TODO: Move this code to the ModuleBook.
+            _message = _(u"Opening Program Database {0:s}"). \
+                format(self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
+            self.dic_books['moduleview'].statusbar.push(2, _message)
+            self.dic_books['moduleview'].set_title(
+                    _(u"RTK - Analyzing {0:s}").format(
+                            self.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
+
+            # TODO: Where to put this code for the status icon?
+            _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
+                '/32x32/db-connected.png'
+            _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+            self.icoStatus.set_from_pixbuf(_icon)
+            self.icoStatus.set_tooltip(
+                    _(u"RTK is connected to program database "
+                      u"{0:s}.".format(
+                            self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
+
+            # TODO: Move this code to the ModuleBook.
+            self.dic_books['moduleview'].statusbar.pop(2)
+
             self.RTK_CONFIGURATION.RTK_USER_LOG.info('RTK SUCCESS: Opening '
                                                      'RTK Program database '
-                                                     '{0:s}.'. \
+                                                     '{0:s}.'.
                                                      format(_database))
         else:
             self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error('RTK ERROR: Failed to '
                                                        'open RTK Program '
-                                                       'database {0:s}.'. \
+                                                       'database {0:s}.'.
                                                        format(_database))
             _return = True
 
@@ -843,7 +900,17 @@ class RTK(object):
     def request_close_program(self):
         """
         Method to request the open RTK Program database be closed.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
+        _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '32x32/db-disconnected.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        self.icoStatus.set_from_pixbuf(_icon)
+        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
+                                     u"project database."))
 
         return self.rtk_model.close_program()
 
@@ -855,62 +922,67 @@ class RTK(object):
         :rtype: (int, str)
         """
 
-        return self.rtk_model.save_program()
+        # TODO: Move this to the ModuleBook.
+        _message = _(u"Saving Program Database {0:s}"). \
+            format(self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
+        self.dic_books['moduleview'].statusbar.push(2, _message)
 
-    def __del__(self):
-        del self
+        _return = self.rtk_model.save_program()
 
-    def _validate_license(self):
+        # TODO: Move this to the ModuleBook.
+        self.dic_books['moduleview'].statusbar.pop(2)
+
+        return _return
+
+    def request_validate_license(self):
         """
-        Method to validate the license and the license expiration date.
+        Method to request the RTK license be validated.
 
-        :return: False if successful or true if an error is encountered.
-        :rtype: bool
+        :return:
         """
+
+        _return = False
 
         # Read the license file and compare to the product key in the site
         # database.  If they are not equal, quit the application.
-        _license_file = Configuration.DATA_DIR + '/license.key'
+        _license_file = self.RTK_CONFIGURATION.RTK_DATA_DIR + '/license.key'
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
             Widgets.rtk_warning(_(u"Cannot find license file {0:s}.  If your "
                                   u"license file is elsewhere, please place "
                                   u"it in {1:s}.").format(
-                    _license_file, Configuration.DATA_DIR))
-            return True
+                    _license_file, self.RTK_CONFIGURATION.RTK_DATA_DIR))
+            _return = True
 
         _license_key = _license_file.readline().rstrip('\n')
+        _expire_date = _license_file.readline().rstrip('\n')
         _license_file.close()
 
-        _query = "SELECT fld_product_key, fld_expire_date \
-                  FROM tbl_site_info"
-        (_results, _error_code, __) = self.site_dao.execute(_query, None)
-
-        if _license_key != _results[0][0]:
+        _error_code, _msg = self.rtk_model.validate_license(_license_key)
+        if _error_code == 1:
             Widgets.rtk_error(_(u"Invalid license (Invalid key).  Your "
                                 u"license key is incorrect.  Closing the RTK "
                                 u"application."))
-            return True
-
-        if datetime.datetime.today().toordinal() > _results[0][1]:
-            _expire_date = str(datetime.datetime.fromordinal(int(
-                    _results[0][1])).strftime('%Y-%m-%d'))
+            _return = True
+        elif _error_code == 2:
+            # noinspection PyUnresolvedReferences
             Widgets.rtk_error(_(u"Invalid license (Expired).  Your license "
                                 u"expired on {0:s}.  Closing the RTK "
-                                u"application.").format(_expire_date))
-            return True
+                                u"application.").
+                              format(_expire_date.strftime('%Y-%d-%m')))
+            _return = True
 
-        return False
+        return _return
 
-    def open_project(self):
+    def __del__(self):
+        del self
+
+    @staticmethod
+    def open_project():
         """
         Method to open an RTK Project database and load it into the views.
-        """
 
-        _message = _(u"Opening Program Database {0:s}"). \
-            format(Configuration.RTK_PROG_INFO[2])
-        self.module_book.statusbar.push(2, _message)
 
         # Connect to the project database.
         self.project_dao = DAO('')
@@ -943,42 +1015,6 @@ class RTK(object):
         # self.dtcComponent.dao = self.project_dao
         # self.dtcSurvival.dao = self.project_dao
 
-        # Get a connection to the program database and then retrieve the
-        # program information.
-        _query = "SELECT fld_revision_prefix, fld_revision_next_id, \
-                         fld_function_prefix, fld_function_next_id, \
-                         fld_assembly_prefix, fld_assembly_next_id, \
-                         fld_part_prefix, fld_part_next_id, \
-                         fld_fmeca_prefix, fld_fmeca_next_id, \
-                         fld_mode_prefix, fld_mode_next_id, \
-                         fld_effect_prefix, fld_effect_next_id, \
-                         fld_cause_prefix, fld_cause_next_id, \
-                         fld_software_prefix, fld_software_next_id \
-                  FROM tbl_program_info"
-        (_results, _error_code, __) = self.project_dao.execute(_query,
-                                                               commit=False)
-        Configuration.RTK_PREFIX = [_element for _element in _results[0]]
-
-        _icon = Configuration.ICON_DIR + '32x32/db-connected.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self.icoStatus.set_from_pixbuf(_icon)
-        self.icoStatus.set_tooltip(_(u"RTK is connected to program database "
-                                     u"{0:s}.".format(
-                Configuration.RTK_PROG_INFO[2])))
-        self.module_book.set_title(_(u"RTK - Analyzing {0:s}".format(
-                Configuration.RTK_PROG_INFO[2])))
-
-        # Find which modules are active in this project.
-        _query = "SELECT fld_revision_active, fld_function_active, \
-                         fld_requirement_active, fld_hardware_active, \
-                         fld_software_active, fld_vandv_active, \
-                         fld_testing_active, fld_fraca_active, \
-                         fld_survival_active, fld_rcm_active, \
-                         fld_rbd_active, fld_fta_active\
-                  FROM tbl_program_info"
-        (_results, _error_code, __) = self.project_dao.execute(_query,
-                                                               commit=False)
-
         # For the active RTK modules, load the data.  For the RTK modules
         # that aren't active in the project, remove the page from the
         # RTK Module view.
@@ -996,26 +1032,21 @@ class RTK(object):
 
         # Configuration.METHOD = results[0][36]
 
-        self.module_book.statusbar.pop(2)
-
         self.loaded = True
+        """
 
         return False
 
+    @property
     def save_project(self):
         """
         Method to save the entire RTK Project to the open RTK Project database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
-        """
 
         if not self.loaded:
             return True
-
-        _message = _(u"Saving Program "
-                     u"Database {0:s}".format(Configuration.RTK_PROG_INFO[2]))
-        self.module_book.statusbar.push(2, _message)
 
         self.dtcRevision.save_all_revisions()
         self.dtcRequirement.save_all_requirements()
@@ -1051,35 +1082,12 @@ class RTK(object):
 
         _query = "VACUUM"
         self.project_dao.execute(_query, commit=False)
-
-        self.module_book.statusbar.pop(2)
+        """
 
         return False
 
-    def close_project(self):
-        """
-        Method to close the currently open RTK Project database.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        for _moduleview in Configuration.RTK_MODULES:
-            _moduleview.treeview.get_model().clear()
-
-        self.project_dao.close()
-
-        _icon = Configuration.ICON_DIR + '32x32/db-disconnected.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self.icoStatus.set_from_pixbuf(_icon)
-        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
-                                     u"project database."))
-
-        self.loaded = False
-
-        return False
-
-    def load_revision(self, revision_id):
+    @staticmethod
+    def load_revision(revision_id):
         """
         Method to load the active RTK module data whenever a new Revision is
         selected.
@@ -1087,12 +1095,12 @@ class RTK(object):
         :param int revision_id: the ID of the Revision to load data for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
-        """
 
         self.revision_id = revision_id
 
         for _moduleview in Configuration.RTK_MODULES[1:]:
             self.module_book.load_module_page(_moduleview)
+        """
 
         return False
 
