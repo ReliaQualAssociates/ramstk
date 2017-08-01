@@ -138,7 +138,7 @@ class TestRTKModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.program_dao.db_connect(_database)
 
-        self.DUT = Model(self.site_dao, self.program_dao)
+        self.DUT = Model(self.site_dao, self.program_dao, test=True)
 
     @attr(all=True, unit=True)
     def test00_initialize_RTK(self):
@@ -322,7 +322,7 @@ class TestRTKController(unittest.TestCase):
         Setup test fixture for the RTK data controller class.
         """
 
-        self.DUT = RTK()
+        self.DUT = RTK(test=True)
 
         self.DUT.RTK_CONFIGURATION.RTK_COM_BACKEND = 'sqlite'
         self.DUT.RTK_CONFIGURATION.RTK_COM_INFO = {'host': 'localhost',

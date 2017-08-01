@@ -12,11 +12,8 @@ The RTKCommonDB File.
 """
 
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
 
 RTK_BASE = declarative_base()
-RTK_SITE_SESSION = sessionmaker()
-RTK_PROGRAM_SESSION = sessionmaker()
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

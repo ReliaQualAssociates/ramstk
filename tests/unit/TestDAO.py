@@ -46,12 +46,9 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 import unittest
 from nose.plugins.attrib import attr
 
-from sqlalchemy.orm import scoped_session
-
-from treelib import Tree
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 from Configuration import Configuration
-from dao.RTKCommonDB import RTK_SITE_SESSION, RTK_PROGRAM_SESSION
 from dao.DAO import DAO
 from dao.RTKRevision import RTKRevision
 from dao.RTKMission import RTKMission
@@ -101,18 +98,19 @@ class TestDAO(unittest.TestCase):
                     self.Configuration.RTK_COM_INFO['database']
         self.site_dao.db_connect(_database)
 
-        RTK_SITE_SESSION.configure(bind=self.site_dao.engine, autoflush=False,
-                                   expire_on_commit=False)
-        self.site_session = scoped_session(RTK_SITE_SESSION)
+        self.site_dao.RTK_SESSION.configure(bind=self.site_dao.engine,
+                                            autoflush=False,
+                                            expire_on_commit=False)
+        self.site_session = scoped_session(self.site_dao.RTK_SESSION)
 
         self.DUT = DAO()
         _database = self.Configuration.RTK_BACKEND + ':///' + \
                     self.Configuration.RTK_PROG_INFO['database']
         self.DUT.db_connect(_database)
 
-        RTK_PROGRAM_SESSION.configure(bind=self.DUT.engine, autoflush=False,
-                                      expire_on_commit=False)
-        self.program_session = scoped_session(RTK_PROGRAM_SESSION)
+        self.DUT.RTK_SESSION.configure(bind=self.DUT.engine, autoflush=False,
+                                       expire_on_commit=False)
+        self.program_session = scoped_session(self.DUT.RTK_SESSION)
 
         self._revision = self.program_session.query(RTKRevision).first()
         self._mission = self.program_session.query(RTKMission). \
@@ -132,6 +130,7 @@ class TestDAO(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, DAO))
+        self.assertTrue(isinstance(self.DUT.RTK_SESSION, sessionmaker))
 
     @attr(all=True, unit=True)
     def test01_dao_db_connect(self):

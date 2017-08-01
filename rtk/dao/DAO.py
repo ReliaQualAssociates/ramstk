@@ -41,6 +41,10 @@ import gettext
 from sqlalchemy import create_engine, exc, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import create_database
+from sqlalchemy.orm import sessionmaker
+
+RTK_BASE = declarative_base()
+RTK_SITE_SESSION = sessionmaker()
 
 # Import other RTK modules.
 try:
@@ -135,6 +139,8 @@ class DAO(object):
     """
     This is the data access controller class.
     """
+
+    RTK_SESSION = sessionmaker()
 
     # Define public class scalar attributes.
     engine = None

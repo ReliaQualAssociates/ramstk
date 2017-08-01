@@ -63,7 +63,6 @@ except ImportError:
 from Configuration import Configuration
 import Utilities
 from dao.DAO import DAO
-from dao.RTKCommonDB import RTK_SITE_SESSION, RTK_PROGRAM_SESSION
 from dao.RTKApplication import RTKApplication
 from dao.RTKCategory import RTKCategory
 from dao.RTKCriticality import RTKCriticality
@@ -86,7 +85,7 @@ from dao.RTKType import RTKType
 from dao.RTKUnit import RTKUnit
 from dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
-# from revision.Revision import Revision
+from revision.Revision import Revision
 # from usage.UsageProfile import UsageProfile
 # from failure_definition.FailureDefinition import FailureDefinition
 # from function.Function import Function
@@ -213,7 +212,7 @@ class Model(object):
     :type program_dao: :py:class:`rtk.dao.DAO.DAO()`
     """
 
-    def __init__(self, sitedao, programdao):
+    def __init__(self, sitedao, programdao, **kwargs):
         """
         Method to initialize an instance of the RTK data model.
 
@@ -228,6 +227,7 @@ class Model(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self.__test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -240,7 +240,7 @@ class Model(object):
         self.program_dao = programdao
 
         # Create a session for communicating with the RTK Common database
-        site_session = RTK_SITE_SESSION
+        site_session = self.site_dao.RTK_SESSION
         site_session.configure(bind=self.site_dao.engine, autoflush=False,
                                expire_on_commit=False)
         self.site_session = scoped_session(site_session)
@@ -260,7 +260,7 @@ class Model(object):
 
         self.program_dao.db_connect(database)
 
-        _session = scoped_session(RTK_PROGRAM_SESSION)
+        _session = scoped_session(self.program_dao.RTK_SESSION)
         _session.configure(bind=self.program_dao.engine,
                            autoflush=False, expire_on_commit=False)
 
@@ -315,11 +315,13 @@ class Model(object):
         _return = False
 
         if not self.program_dao.db_connect(database):
-            program_session = RTK_PROGRAM_SESSION
+            program_session = self.program_dao.RTK_SESSION
             program_session.configure(bind=self.program_dao.engine,
                                       autoflush=False, expire_on_commit=False)
             self.program_session = scoped_session(program_session)
-            pub.sendMessage('openedProgram')
+
+            if not self.__test:
+                pub.sendMessage('openedProgram')
         else:
             _return = True
 
@@ -695,7 +697,7 @@ class RTK(object):
 
     RTK_CONFIGURATION = Configuration()
 
-    def __init__(self):  # pylint: disable=R0914
+    def __init__(self, **kwargs):  # pylint: disable=R0914
         """
         Method to initialize an instance of the RTK data controller.
         """
@@ -720,6 +722,7 @@ class RTK(object):
         # Initialize private list instance attributes.
 
         # Initialize private scalar instance attributes.
+        self.__test = kwargs['test']
 
         # Initialize public dictionary instance attributes.
         self.dic_controllers = {'revision': None,
@@ -751,6 +754,7 @@ class RTK(object):
 
         # Define public scalar attributes.
         self.icoStatus = gtk.StatusIcon()
+        self.loaded = False
 
         # Connect to the RTK Common database.
         _database = None
@@ -761,7 +765,7 @@ class RTK(object):
         _dao.db_connect(_database)
 
         # Create an instance of the RTK Data Model and load global constants.
-        self.rtk_model = Model(_dao, DAO())
+        self.rtk_model = Model(_dao, DAO(), test=self.__test)
         self.request_load_globals()
 
         # Create RTK Books.  These need to be initialized after reading the
@@ -769,9 +773,16 @@ class RTK(object):
         if self.RTK_CONFIGURATION.RTK_GUI_LAYOUT == 'basic':  # Single window.
             pass
         else:  # Multiple windows.
-            self.dic_books['listview'] = ListView()
+            self.dic_books['listview'] = ListView(self)
             self.dic_books['moduleview'] = ModuleView(self)
-            self.dic_books['workview'] = WorkView()
+            self.dic_books['workview'] = WorkView(self)
+
+        _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/db-disconnected.png'
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        self.icoStatus.set_from_pixbuf(_icon)
+        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
+                                     u"project database."))
 
     def request_create_program(self):
         """
@@ -832,7 +843,9 @@ class RTK(object):
         # If the database was successfully opened, create an instance of each
         # of the slave data controllers.
         if not self.rtk_model.open_program(_database):
-            # self.dic_controllers['revision'] = Revision()
+            self.dic_controllers['revision'] = \
+                Revision(self.rtk_model.program_dao,
+                         self.rtk_model.program_session)
             # self.dic_controllers['function'] = Function()
             # self.dic_controllers['requirement'] = Requirement()
             # self.dic_controllers['hardware'] = HardwareBoM()
@@ -884,6 +897,8 @@ class RTK(object):
             # TODO: Move this code to the ModuleBook.
             self.dic_books['moduleview'].statusbar.pop(2)
 
+            self.loaded = True
+
             self.RTK_CONFIGURATION.RTK_USER_LOG.info('RTK SUCCESS: Opening '
                                                      'RTK Program database '
                                                      '{0:s}.'.
@@ -906,7 +921,7 @@ class RTK(object):
         """
 
         _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
-            '32x32/db-disconnected.png'
+            '/32x32/db-disconnected.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
