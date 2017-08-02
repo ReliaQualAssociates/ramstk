@@ -89,88 +89,7 @@ class TestRTKRevision(unittest.TestCase):
         self.assertEqual(self.DUT.program_cost_sd, 0.0)
 
     @attr(all=True, unit=True)
-    def test01a_calculate_reliability(self):
-        """
-        (TestRTKRevision) calculate_reliability should return False on success.
-        """
-
-        self.DUT.hazard_rate_active = 0.00000151
-        self.DUT.hazard_rate_dormant = 0.0000000152
-        self.DUT.hazard_rate_software = 0.0000003
-        self.DUT.hazard_rate_mission = 0.000002
-
-        self.assertFalse(self.DUT.calculate_reliability(100.0))
-        self.assertAlmostEqual(self.DUT.hazard_rate_logistics, 1.8252e-06)
-        self.assertAlmostEqual(self.DUT.mtbf_logistics, 547885.1632698)
-        self.assertAlmostEqual(self.DUT.mtbf_mission, 500000.0)
-        self.assertAlmostEqual(self.DUT.reliability_logistics, 0.9998175)
-        self.assertAlmostEqual(self.DUT.reliability_mission, 0.9998000)
-
-    @attr(all=True, unit=True)
-    def test01b_calculate_reliability_divide_by_zero(self):
-        """
-        (TestRTKRevision) calculate_reliability should return True when attempting to divide by zero.
-        """
-
-        self.DUT.hazard_rate_mission = 0.0
-
-        self.assertTrue(self.DUT.calculate_reliability(100.0))
-
-    @attr(all=True, unit=True)
-    def test02a_calculate_availability(self):
-        """
-        (TestRTKRevision) calculate_availability should return False on success.
-        """
-
-        self.DUT.mpmt = 0.5
-        self.DUT.mcmt = 1.2
-        self.DUT.mttr = 5.8
-        self.DUT.mmt = 0.85
-        self.DUT.mtbf_logistics = 547885.1632698
-        self.DUT.mtbf_mission = 500000.0
-
-        self.assertFalse(self.DUT.calculate_availability())
-        self.assertAlmostEqual(self.DUT.availability_logistics, 0.9999894)
-        self.assertAlmostEqual(self.DUT.availability_mission, 0.9999884)
-
-    @attr(all=True, unit=True)
-    def test02b_calculate_availability_divide_by_zero(self):
-        """
-        (TestRTKRevision) calculate_availability should return True when attempting to divide by zero.
-        """
-
-        self.DUT.mttr = 0.0
-        self.DUT.mtbf_logistics = 547885.1632698
-        self.DUT.mtbf_mission = 0.0
-
-        self.assertTrue(self.DUT.calculate_availability())
-
-    @attr(all=True, unit=True)
-    def test03a_calculate_costs(self):
-        """
-        (TestRTKRevision) calculate_costs should return False on success.
-        """
-
-        self.DUT.cost = 1252.78
-        self.DUT.hazard_rate_logistics = 1.0 / 547885.1632698
-
-        self.assertFalse(self.DUT.calculate_costs(100.0))
-        self.assertAlmostEqual(self.DUT.cost_per_failure, 0.002286574)
-        self.assertAlmostEqual(self.DUT.cost_per_hour, 12.5278)
-
-    @attr(all=True, unit=True)
-    def test03b_calculate_costs_divide_by_zero(self):
-        """
-        (TestRTKRevision) calculate_costs should return True when attempting to divide by zero.
-        """
-
-        self.DUT.cost = 1252.78
-        self.DUT.hazard_rate_logistics = 1.0 / 547885.1632698
-
-        self.assertTrue(self.DUT.calculate_costs(0.0))
-
-    @attr(all=True, unit=True)
-    def test04_get_attributes(self):
+    def test01_get_attributes(self):
         """
         (TestRTKRevision) get_attributes should return a tuple of attribute values.
         """
@@ -181,7 +100,7 @@ class TestRTKRevision(unittest.TestCase):
                           1.0, '', 1, '', 0.0, 0.0, 0.0, 0.0))
 
     @attr(all=True, unit=True)
-    def test05a_set_attributes(self):
+    def test02a_set_attributes(self):
         """
         (TestRTKRevision) set_attributes should return a zero error code on success
         """
@@ -199,7 +118,7 @@ class TestRTKRevision(unittest.TestCase):
                                "attributes.".format(self.DUT.revision_id))
 
     @attr(all=True, unit=True)
-    def test05b_set_attributes_wrong_type(self):
+    def test02b_set_attributes_wrong_type(self):
         """
         (TestRTKRevision) set_attributes should return a 10 error code when passed the wrong type
         """
@@ -218,7 +137,7 @@ class TestRTKRevision(unittest.TestCase):
                                "attributes.")
 
     @attr(all=True, unit=True)
-    def test05c_set_attributes_too_few_passed(self):
+    def test02c_set_attributes_too_few_passed(self):
         """
         (TestRTKRevision) set_attributes should return a 40 error code when passed too few attributes
         """
