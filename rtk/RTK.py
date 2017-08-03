@@ -143,7 +143,7 @@ def main():
     #     gtk.main_iteration()
 
     # sleep(3)
-    RTK()
+    RTK(test=False)
 
     # splScreen.window.destroy()
 
@@ -212,7 +212,7 @@ class Model(object):
     :type program_dao: :py:class:`rtk.dao.DAO.DAO()`
     """
 
-    def __init__(self, sitedao, programdao, **kwargs):
+    def __init__(self, sitedao, programdao):
         """
         Method to initialize an instance of the RTK data model.
 
@@ -227,7 +227,6 @@ class Model(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -235,7 +234,6 @@ class Model(object):
 
         # Initialize public scalar attributes.
         self.tree = Tree()
-
         self.site_dao = sitedao
         self.program_dao = programdao
 
@@ -252,11 +250,13 @@ class Model(object):
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Creating RTK Program database {0:s}.'.\
+            format(database)
 
         self.program_dao.db_connect(database)
 
@@ -264,14 +264,14 @@ class Model(object):
         _session.configure(bind=self.program_dao.engine,
                            autoflush=False, expire_on_commit=False)
 
-        if not self.program_dao.db_create_program(database, _session):
-            pub.sendMessage('createdProgram')
-        else:
-            _return = True
+        if self.program_dao.db_create_program(database, _session):
+            _error_code = 1001
+            _msg = 'RTK ERROR: Failed to create RTK Program database {0:s}.'.\
+                format(database)
 
         _session.close()
 
-        return _return
+        return _error_code, _msg
 
     def read_program_info(self):
         """
@@ -308,11 +308,13 @@ class Model(object):
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Opening RTK Program database {0:s}.'.\
+            format(database)
 
         if not self.program_dao.db_connect(database):
             program_session = self.program_dao.RTK_SESSION
@@ -320,12 +322,12 @@ class Model(object):
                                       autoflush=False, expire_on_commit=False)
             self.program_session = scoped_session(program_session)
 
-            if not self.__test:
-                pub.sendMessage('openedProgram')
         else:
-            _return = True
+            _error_code = 1001
+            _msg = 'RTK ERROR: Failed to open RTK Program database {0:s}.'.\
+                format(database)
 
-        return _return
+        return _error_code, _msg
 
     def close_program(self):
         """
@@ -333,8 +335,6 @@ class Model(object):
         """
 
         self.program_dao.db_close()
-
-        pub.sendMessage('closedProgram')
 
         return
 
@@ -347,9 +347,6 @@ class Model(object):
         """
 
         _error_code, _msg = self.program_dao.db_update(self.program_session)
-
-        if _error_code == 0:
-            pub.sendMessage('savedProgram')
 
         return _error_code, _msg
 
@@ -765,7 +762,7 @@ class RTK(object):
         _dao.db_connect(_database)
 
         # Create an instance of the RTK Data Model and load global constants.
-        self.rtk_model = Model(_dao, DAO(), test=self.__test)
+        self.rtk_model = Model(_dao, DAO())
         self.request_load_globals()
 
         # Create RTK Books.  These need to be initialized after reading the
@@ -792,24 +789,21 @@ class RTK(object):
         :rtype: bool
         """
 
+        _return = False
         _database = None
 
         if self.RTK_CONFIGURATION.RTK_BACKEND == 'sqlite':
             _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
                         self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
 
-        _return = self.rtk_model.create_program(_database)
-        if not _return:
+        _error_code, _msg = self.rtk_model.create_program(_database)
+        if _error_code == 0:
             self.request_open_program()
-            self.RTK_CONFIGURATION.RTK_USER_LOG.info('RTK SUCCESS: Creating '
-                                                     'RTK Program database '
-                                                     '{0:s}.'.
-                                                     format(_database))
+            self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)
+            pub.sendMessage('createdProgram')
         else:
-            self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error('RTK ERROR: Failed to '
-                                                       'create RTK Program '
-                                                       'database {0:s}.'.
-                                                       format(_database))
+            self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_msg)
+            _return = True
 
         return _return
 
@@ -842,10 +836,11 @@ class RTK(object):
 
         # If the database was successfully opened, create an instance of each
         # of the slave data controllers.
-        if not self.rtk_model.open_program(_database):
+        _error_code, _msg = self.rtk_model.open_program(_database)
+        if _error_code == 0:
             self.dic_controllers['revision'] = \
                 Revision(self.rtk_model.program_dao,
-                         self.rtk_model.program_session)
+                         self.RTK_CONFIGURATION)
             # self.dic_controllers['function'] = Function()
             # self.dic_controllers['requirement'] = Requirement()
             # self.dic_controllers['hardware'] = HardwareBoM()
@@ -899,15 +894,12 @@ class RTK(object):
 
             self.loaded = True
 
-            self.RTK_CONFIGURATION.RTK_USER_LOG.info('RTK SUCCESS: Opening '
-                                                     'RTK Program database '
-                                                     '{0:s}.'.
-                                                     format(_database))
+            self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)
+            if not self.__test:
+                pub.sendMessage('openedProgram')
+
         else:
-            self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error('RTK ERROR: Failed to '
-                                                       'open RTK Program '
-                                                       'database {0:s}.'.
-                                                       format(_database))
+            self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_msg)
             _return = True
 
         return _return
@@ -927,22 +919,33 @@ class RTK(object):
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
                                      u"project database."))
 
+        pub.sendMessage('closedProgram')
+
         return self.rtk_model.close_program()
 
     def request_save_program(self):
         """
         Method to request the open RTK Program database be saved.
 
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
+
+        _return = False
 
         # TODO: Move this to the ModuleBook.
         _message = _(u"Saving Program Database {0:s}"). \
             format(self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
         self.dic_books['moduleview'].statusbar.push(2, _message)
 
-        _return = self.rtk_model.save_program()
+        _error_code, _msg = self.rtk_model.save_program()
+
+        if _error_code == 0:
+            self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)
+            pub.sendMessage('savedProgram')
+        else:
+            self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_msg)
+            _return = True
 
         # TODO: Move this to the ModuleBook.
         self.dic_books['moduleview'].statusbar.pop(2)

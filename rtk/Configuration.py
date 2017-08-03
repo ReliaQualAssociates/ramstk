@@ -789,10 +789,10 @@ class Configuration(object):
             for _file in self._lst_format_files:
                 self.RTK_FORMAT_FILE[_file] = _config.get('Files', _file)
 
-            self.RTK_DATA_DIR = _config.get('Directories', 'datadir')
-            self.RTK_ICON_DIR = _config.get('Directories', 'icondir')
-            self.RTK_LOG_DIR = _config.get('Directories', 'logdir')
-            self.RTK_PROG_DIR = _config.get('Directories', 'progdir')
+            #self.RTK_DATA_DIR = _config.get('Directories', 'datadir')
+            #self.RTK_ICON_DIR = _config.get('Directories', 'icondir')
+            #self.RTK_LOG_DIR = _config.get('Directories', 'logdir')
+            #self.RTK_PROG_DIR = _config.get('Directories', 'progdir')
 
             self.RTK_BACKEND = _config.get('Backend', 'type')
             self.RTK_PROG_INFO['host'] = _config.get('Backend', 'host')

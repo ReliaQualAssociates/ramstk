@@ -138,7 +138,7 @@ class TestRTKModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.program_dao.db_connect(_database)
 
-        self.DUT = Model(self.site_dao, self.program_dao, test=True)
+        self.DUT = Model(self.site_dao, self.program_dao)
 
     @attr(all=True, unit=True)
     def test00_initialize_RTK(self):
@@ -152,10 +152,10 @@ class TestRTKModel(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT.program_dao, DAO))
         self.assertEqual(self.DUT.program_session, None)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, integration=True, unit=False)
     def test04a_create_new_program(self):
         """
-        (TestRTKModel) create_program should return False on success
+        (TestRTKModel) create_program should return a zero error code on success
         """
 
         configuration = Configuration()
@@ -168,7 +168,11 @@ class TestRTKModel(unittest.TestCase):
                                        'password' : ''}
         _database = configuration.RTK_BACKEND + ':///' + \
                     configuration.RTK_PROG_INFO['database']
-        self.assertFalse(self.DUT.create_program(_database))
+        _error_code, _msg = self.DUT.create_program(_database)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Creating RTK Program database ' \
+                               'sqlite:////tmp/BigAssTestDB.rtk.')
 
         if os.path.isfile('/tmp/BigAssTestDB.rtk'):
             os.remove('/tmp/BigAssTestDB.rtk')
@@ -176,7 +180,7 @@ class TestRTKModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04b_create_new_program_failed(self):
         """
-        (TestRTKModel) create_program should return True on failure
+        (TestRTKModel) create_program should return a non-zero error code on failure
         """
 
         configuration = Configuration()
@@ -189,17 +193,25 @@ class TestRTKModel(unittest.TestCase):
                                        'password' : ''}
         _database = configuration.RTK_BACKEND + ':///' + \
                     configuration.RTK_PROG_INFO['database']
-        self.assertTrue(self.DUT.create_program(_database))
+        _error_code, _msg = self.DUT.create_program(_database)
+
+        self.assertEqual(_error_code, 1001)
+        self.assertEqual(_msg, 'RTK ERROR: Failed to create RTK Program ' \
+                               'database sqlite:///tmp/BigAssTestDB.rtk.')
 
     @attr(all=True, unit=True)
     def test06a_open_program(self):
         """
-        (TestRTKModel) open_program should return False on success
+        (TestRTKModel) open_program should return a zero error code on success
         """
 
         _database = self.Configuration.RTK_BACKEND + ':///' + \
                     self.Configuration.RTK_PROG_INFO['database']
-        self.assertFalse(self.DUT.open_program(_database))
+        _error_code, _msg = self.DUT.open_program(_database)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Opening RTK Program database ' \
+                               'sqlite:////tmp/TestDB.rtk.')
 
     @attr(all=True, unit=True)
     def test07a_load_globals(self):
@@ -312,6 +324,7 @@ class TestRTKModel(unittest.TestCase):
                          'license key is incorrect.  Closing the RTK '
                          'application.')
 
+
 class TestRTKController(unittest.TestCase):
     """
     Class for testing the RTK data controller.
@@ -403,7 +416,7 @@ class TestRTKController(unittest.TestCase):
         self.assertEqual(self.DUT.RTK_CONFIGURATION.RTK_MODULES,
                          [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0])
 
-    @attr(all=True, unit=True)
+    @attr(all=True, integration=True, unit=False)
     def test03a_request_create_program(self):
         """
         (TestRTKController) request_create_program should return False on success
@@ -411,7 +424,7 @@ class TestRTKController(unittest.TestCase):
 
         self.assertFalse(self.DUT.request_create_program())
 
-    @attr(all=True, unit=False)
+    @attr(all=False, unit=False)
     def test04a_request_close_program(self):
         """
         (TestRTKController) request_close_program should return False on success
@@ -427,10 +440,7 @@ class TestRTKController(unittest.TestCase):
 
         self.DUT.request_open_program()
 
-        _error_code, _msg = self.DUT.request_save_program()
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         'RTK SUCCESS: Updating the RTK Program database.')
+        self.assertFalse(self.DUT.request_save_program())
 
     @attr(all=True, unit=True)
     def test06a_request_validate_license(self):
