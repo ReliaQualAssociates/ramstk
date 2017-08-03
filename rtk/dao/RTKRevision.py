@@ -4,6 +4,33 @@
 #       rtk.dao.RTKRevision.py is part of The RTK Project
 #
 # All rights reserved.
+# Copyright 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
 ==============================
@@ -16,10 +43,6 @@ from sqlalchemy import BLOB, Column, Float, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
 try:
     import Utilities as Utilities
 except ImportError:
@@ -39,16 +62,17 @@ class RTKRevision(RTK_BASE):
     """
     Class to represent the rtk_revision table in the RTK Program database.
 
-    This table shares a One-to-Many relationship with rtk_mission.
-    This table shares a One-to-Many relationship with rtk_failure_definition.
-    This table shares a One-to-Many relationship with rtk_function.
-    This table shares a One-to-Many relationship with rtk_requirement.
-    This table shares a One-to-Many relationship with rtk_hardware.
-    This table shares a One-to-Many relationship with rtk_software.
-    This table shares a One-to-Many relationship with rtk_validation.
-    This table shares a One-to-Many relationship with rtk_incident.
-    This table shares a One-to-Many relationship with rtk_survival.
-    This table shares a One-to-Many relationship with rtk_matrix.
+    This table shares a:
+        * One-to-Many relationship with rtk_mission.
+        * One-to-Many relationship with rtk_failure_definition.
+        * One-to-Many relationship with rtk_function.
+        * One-to-Many relationship with rtk_requirement.
+        * One-to-Many relationship with rtk_hardware.
+        * One-to-Many relationship with rtk_software.
+        * One-to-Many relationship with rtk_validation.
+        * One-to-Many relationship with rtk_incident.
+        * One-to-Many relationship with rtk_survival.
+        * One-to-Many relationship with rtk_matrix.
     """
 
     __tablename__ = 'rtk_revision'
