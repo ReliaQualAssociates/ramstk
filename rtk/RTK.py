@@ -800,7 +800,9 @@ class RTK(object):
         if _error_code == 0:
             self.request_open_program()
             self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)
-            pub.sendMessage('createdProgram')
+
+            if not self.__test:
+                pub.sendMessage('createdProgram')
         else:
             self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_msg)
             _return = True
@@ -840,7 +842,7 @@ class RTK(object):
         if _error_code == 0:
             self.dic_controllers['revision'] = \
                 Revision(self.rtk_model.program_dao,
-                         self.RTK_CONFIGURATION)
+                         self.RTK_CONFIGURATION, test='False')
             # self.dic_controllers['function'] = Function()
             # self.dic_controllers['requirement'] = Requirement()
             # self.dic_controllers['hardware'] = HardwareBoM()
@@ -919,7 +921,8 @@ class RTK(object):
         self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
                                      u"project database."))
 
-        pub.sendMessage('closedProgram')
+        if not self.__test:
+            pub.sendMessage('closedProgram')
 
         return self.rtk_model.close_program()
 
@@ -942,7 +945,9 @@ class RTK(object):
 
         if _error_code == 0:
             self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)
-            pub.sendMessage('savedProgram')
+
+            if not self.__test:
+                pub.sendMessage('savedProgram')
         else:
             self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_msg)
             _return = True

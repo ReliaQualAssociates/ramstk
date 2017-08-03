@@ -6,30 +6,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
@@ -46,42 +46,38 @@ import locale
 
 # Import modules required for the GUI.
 try:
+    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
+    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
 try:
+    # noinspection PyUnresolvedReferences
     import gtk.glade
 except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
 try:
-    import Configuration
-    # import Utilities
-    from gui.gtk.Assistants import CreateProject, OpenProject, \
-                                   DeleteProject, Options
+    import Utilities
+    from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
+    from gui.gtk.Assistants import CreateProject, OpenProject, DeleteProject, \
+        Options
 except ImportError:
-    import rtk.Configuration as Configuration
-    # import rtk.Utilities as Utilities
+    import rtk.Utilities as Utilities
+    from rtk.gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
     from rtk.gui.gtk.Assistants import CreateProject, OpenProject, \
-                                       DeleteProject, Options
-from ListBook import ListView
-from WorkBook import WorkView
+        DeleteProject, Options
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
-
-try:
-    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:
-    locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
@@ -90,9 +86,10 @@ def destroy(__widget, __event=None):
     """
     Quits the RTK application when the X in the upper right corner is pressed.
 
-    :param gtk.Widget __widget: the gtk.Widget() that called this function.
-    :keyword gtk.gdk.Event __event: the gtk.gdk.Event() that called this
-                                    function.
+    :param __widget: the gtk.Widget() that called this method.
+    :type __widget: :py:class:`gtk.Widget`
+    :keyword __event: the gtk.gdk.Event() that called this method.
+    :type __event: :py:class:`gtk.gdk.Event`
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
@@ -105,14 +102,33 @@ def destroy(__widget, __event=None):
 class ModuleView(gtk.Window):               # pylint: disable=R0904
     """
     This is the Module view for the pyGTK multiple window interface.
+    Attributes of the ModuleView are:
+
+    :ivar list _lst_handler_id:
+    :ivar _mdcRTK: the RTK master data controller.
+    :type _mdcRTK: :py:class:`rtk.RTK.RTK`
+    :ivar notebook: the gtk.Notebook() widget used to hold each of the RTK
+                    module WorkViews.
+    :type notebook: :py:class:`gtk.Notebook`
+    :ivar menubar: the gtk.MenuBar() for the RTK ModuleBook menu.
+    :type menubar: :py:class:`gtk.MenuBar`
+    :ivar toolbar: the gtk.Toolbar() for the RTK ModuleBook tools.
+    :type toolbar: :py:class:`gtk.Toolbar`
+    :ivar statusbar: the gtk.Statusbar() for displaying messages.
+    :type statusbar: :py:class:`gtk.Statusbar`
+    :ivar progressbar: the gtk.Progressbar() for displaying progress counters.
+    :type progressbar: :py:class:`gtk.Progressbar`
     """
 
     def __init__(self, controller):
         """
         Method to initialize an instance of the Module view class.
 
-        :param controller: the :py:class:`rtk.RTK.RTK`master data controller.
+        :param controller: the RTK master data controller.
+        :type controller: :py:class:`rtk.RTK.RTK`
         """
+
+        # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
         self._lst_handler_id = []
@@ -120,9 +136,20 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         # Initialize private scalar attributes.
         self._mdcRTK = controller
 
+        # Initialize public dictionary attributes.
+        self.dic_module_views = {'revision': mvwRevision(controller)}
+
+        # Initialize public list attributes.
+
         # Initialize public scalar attributes.
         self.listview = None
         self.workview = None
+
+        try:
+            locale.setlocale(locale.LC_ALL,
+                             self._mdcRTK.RTK_CONFIGURATION.RTK_LOCALE)
+        except locale.Error:
+            locale.setlocale(locale.LC_ALL, '')
 
         # Create a new window and set its properties.
         gtk.Window.__init__(self)
@@ -133,10 +160,10 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _width = gtk.gdk.screen_width() / _n_screens
         _height = gtk.gdk.screen_height()
 
-        if Configuration.OS == 'Linux':
+        if self._mdcRTK.RTK_CONFIGURATION.RTK_OS == 'Linux':
             _width = (2 * _width / 3) - 10
             _height = 2 * _height / 7
-        elif Configuration.OS == 'Windows':
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_OS == 'Windows':
             _width = (2 * _width / 3) - 30
             _height = 2 * _height / 7
 
@@ -157,17 +184,25 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _vbox.pack_start(self.toolbar, expand=False, fill=False)
 
         # Find the user's preferred gtk.Notebook tab position.
-        if Configuration.TABPOS[0] == 'left':
+        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'left':
             _position = gtk.POS_LEFT
-        elif Configuration.TABPOS[0] == 'right':
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'right':
             _position = gtk.POS_RIGHT
-        elif Configuration.TABPOS[0] == 'top':
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'top':
             _position = gtk.POS_TOP
         else:
             _position = gtk.POS_BOTTOM
 
         self.notebook = gtk.Notebook()
         self.notebook.set_tab_pos(_position)
+
+        # Insert a page for each of the active RTK Modules.
+        for _page in ['revision']:
+            _object = self.dic_module_views[_page]
+            self.notebook.insert_page(_object,
+                                      tab_label=_object.hbx_tab_label,
+                                      position=-1)
+
         self._lst_handler_id.append(
             self.notebook.connect('select-page', self._on_switch_page))
         self._lst_handler_id.append(
@@ -188,30 +223,15 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         self.show_all()
 
-    def create_listview(self):
-        """
-        Creates an instance of the List View container for RTK module List
-        Books.
-        """
-
-        self.listview = ListView()
-
-        return self.listview
-
-    def create_workview(self):
-        """
-        Creates an instance of the Work View container for RTK module List
-        Books.
-        """
-
-        self.workview = WorkView()
-
-        return self.workview
-
     def _create_menu(self):
         """
         Creates the menu for the ModuleBook view.
+
+        :return _menubar: the gtk.MenuBar() for the RTK ModuleBook.
+        :type _menubar: :py:class:`gtk.MenuBar`
         """
+
+        _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
 
         _menu = gtk.Menu()
 
@@ -222,17 +242,19 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         # Add New menu.
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/open.png')
+        _image.set_from_file(_icon_dir + '/16x16/open.png')
         _menu_item.set_label(_(u"_Open"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', OpenProject, self._mdcRTK)
         _menu.append(_menu_item)
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/save.png')
+        _image.set_from_file(_icon_dir + '/16x16/save.png')
         _menu_item.set_label(_(u"_Save"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', self._request_save_project)
         _menu.append(_menu_item)
 
@@ -242,74 +264,80 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/exit.png')
+        _image.set_from_file(_icon_dir + '/16x16/exit.png')
         _menu_item.set_label(_(u"E_xit"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         _menu_item.connect('activate', destroy)
         _menu.append(_menu_item)
 
-        _mnuFile = gtk.MenuItem(label=_("_File"), use_underline=True)
+        _mnuFile = gtk.MenuItem(label=_(u"_File"), use_underline=True)
         _mnuFile.set_submenu(_menu)
 
         _menu = gtk.Menu()
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/undo.png')
-        _menu_item.set_label(_("Undo"))
+        _image.set_from_file(_icon_dir + '/16x16/undo.png')
+        _menu_item.set_label(_(u"Undo"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         # _menu_item.connect('activate', Utilities.undo)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/redo.png')
-        _menu_item.set_label(_("Redo"))
+        _image.set_from_file(_icon_dir + '/16x16/redo.png')
+        _menu_item.set_label(_(u"Redo"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         # _menu_item.connect('activate', Utilities.redo)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/cut.png')
-        _menu_item.set_label(_("Cut"))
+        _image.set_from_file(_icon_dir + '/16x16/cut.png')
+        _menu_item.set_label(_(u"Cut"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         # _menu_item.connect('activate', Utilities.cut_copy_paste, 0)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/copy.png')
-        _menu_item.set_label(_("Copy"))
+        _image.set_from_file(_icon_dir + '/16x16/copy.png')
+        _menu_item.set_label(_(u"Copy"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         # _menu_item.connect('activate', Utilities.cut_copy_paste, 1)
         _menu.append(_menu_item)
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '16x16/paste.png')
-        _menu_item.set_label(_("Paste"))
+        _image.set_from_file(_icon_dir + '/16x16/paste.png')
+        _menu_item.set_label(_(u"Paste"))
         _menu_item.set_image(_image)
+        _menu_item.set_property('use_underline', True)
         # _menu_item.connect('activate', Utilities.cut_copy_paste, 2)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_("Select _All"), use_underline=True)
+        _menu_item = gtk.MenuItem(label=_(u"Select _All"), use_underline=True)
         # _menu_item.connect('activate', Utilities.select_all)
         _menu.append(_menu_item)
 
-        _mnuEdit = gtk.MenuItem(label=_("_Edit"), use_underline=True)
+        _mnuEdit = gtk.MenuItem(label=_(u"_Edit"), use_underline=True)
         _mnuEdit.set_submenu(_menu)
 
         _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_("_Find"), use_underline=True)
+        _menu_item = gtk.MenuItem(label=_(u"_Find"), use_underline=True)
         # _menu_item.connect('activate', Utilities.find, 0)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_("Find _Next"), use_underline=True)
+        _menu_item = gtk.MenuItem(label=_(u"Find _Next"), use_underline=True)
         # _menu_item.connect('activate', Utilities.find, 1)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_("Find _Previous"),
+        _menu_item = gtk.MenuItem(label=_(u"Find _Previous"),
                                   use_underline=True)
         # _menu_item.connect('activate', Utilities.find, 2)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_("_Replace"), use_underline=True)
+        _menu_item = gtk.MenuItem(label=_(u"_Replace"), use_underline=True)
         # _menu_item.connect('activate', Utilities.find, 3)
         _menu.append(_menu_item)
 
-        _mnuSearch = gtk.MenuItem(label=_("_Search"), use_underline=True)
+        _mnuSearch = gtk.MenuItem(label=_(u"_Search"), use_underline=True)
         _mnuSearch.set_submenu(_menu)
 
         # Create the View menu.
@@ -326,18 +354,18 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _mnuView.set_submenu(_menu)
 
         _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_("_Options"), use_underline=True)
+        _menu_item = gtk.MenuItem(label=_(u"_Options"), use_underline=True)
         _menu_item.connect('activate', Options, self._mdcRTK)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_("_Composite Ref Des"),
+        _menu_item = gtk.MenuItem(label=_(u"_Composite Ref Des"),
                                   use_underline=True)
         _menu_item.connect('activate', self._create_comp_ref_des)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_("_Update Design Review Criteria"),
+        _menu_item = gtk.MenuItem(label=_(u"_Update Design Review Criteria"),
                                   use_underline=True)
         # _menu_item.connect('activate', ReviewCriteria, self._app)
 
-        _mnuTools = gtk.MenuItem(label=_("_Tools"), use_underline=True)
+        _mnuTools = gtk.MenuItem(label=_(u"_Tools"), use_underline=True)
         _mnuTools.set_submenu(_menu)
 
         _menubar = gtk.MenuBar()
@@ -354,7 +382,12 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
     def _create_toolbar(self):
         """
         Creates the toolbar for the ModuleBook view.
+
+        :return _toolbar: the gtk.Toolbar() for the RTK ModuleBook.
+        :type _toolbar: :py:class:`gtk.Toolbar`
         """
+
+        _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
 
         _toolbar = gtk.Toolbar()
 
@@ -364,7 +397,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Create a new RTK Project Database."))
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/new.png')
+        _image.set_from_file(_icon_dir + '/32x32/new.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', CreateProject, self._mdcRTK)
         _toolbar.insert(_button, _position)
@@ -375,7 +408,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Connect to an existing RTK Project "
                                    u"Database."))
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/open.png')
+        _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', OpenProject, self._mdcRTK)
         _toolbar.insert(_button, _position)
@@ -386,7 +419,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Deletes an existing RTK Program "
                                    u"Database."))
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/delete.png')
+        _image.set_from_file(_icon_dir + '/32x32/delete.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', DeleteProject, self._mdcRTK)
         _toolbar.insert(_button, _position)
@@ -400,7 +433,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Save the currently open RTK Project "
                                    u"Database."))
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
+        _image.set_from_file(_icon_dir + '/32x32/save.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_save_project)
         _toolbar.insert(_button, _position)
@@ -414,7 +447,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Save the currently open RTK Program "
                                    u"Database then quits."))
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/save-exit.png')
+        _image.set_from_file(_icon_dir + '/32x32/save-exit.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_save_project, True)
         _toolbar.insert(_button, _position)
@@ -425,7 +458,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _button.set_tooltip_text(_(u"Quits without saving the currently open "
                                    u"RTK Program Database."))
         _image = gtk.Image()
-        _image.set_from_file(Configuration.ICON_DIR + '32x32/exit.png')
+        _image.set_from_file(_icon_dir + '/32x32/exit.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', destroy)
         _toolbar.insert(_button, _position)
@@ -456,8 +489,6 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         the RTK model and load it into the RTK module view.
 
         :param view: the RTK module view class instance to load with data.
-        :param dao: the :py:class:`rtk.dao.DAO` for the view to pass to the
-                    data controller.
         :return:
         :rtype:
         """
@@ -527,7 +558,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :rtype: bool
         """
 
-        self._mdcRTK.save_project()
+        self._mdcRTK.save_project
 
         if end:
             destroy(__widget)

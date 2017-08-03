@@ -391,7 +391,7 @@ class Test01RevisionController(unittest.TestCase):
         self.dao.db_add([RTKRevision(), ], self.session)
         self.dao.db_add([RTKRevision(), ], self.session)
 
-        self.DUT = Revision(self.dao, self.Configuration)
+        self.DUT = Revision(self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):

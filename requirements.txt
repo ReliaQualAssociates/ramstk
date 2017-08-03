@@ -1,9 +1,14 @@
 coverage
+gobject
+gtk
+gtk.glade
 lifelines
 lxml
 matplotlib==1.4.3
 numpy
 pandas
+pubsub==3.3.0
+pygtk
 pypubsub==3.3.0
 scipy
 sqlalchemy

@@ -42,14 +42,13 @@ Revision Package Data Module
 import gettext
 
 from treelib import Tree, tree
+from pubsub import pub
 
 # Import other RTK modules.
 try:
-    import Configuration as Configuration
     import Utilities as Utilities
     from dao.DAO import RTKRevision
 except ImportError:
-    import rtk.Configuration as Configuration  # pylint: disable=E0401
     import rtk.Utilities as Utilities  # pylint: disable=E0401
     from rtk.dao.DAO import RTKRevision  # pylint: disable=E0401
 
@@ -197,10 +196,13 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
+                                        autoflush=True,
+                                        autocommit=False,
                                         expire_on_commit=False)
 
         if self.tree.get_node(revision_id) is not None:
+            _session.add(self.tree.get_node(revision_id).data)
             (_error_code, _msg) = self.dao.db_update(_session)
 
         else:
@@ -386,7 +388,7 @@ class Revision(object):
                           instance associated with the current RTK instance.
     """
 
-    def __init__(self, dao, configuration):
+    def __init__(self, dao, configuration, **kwargs):
         """
         Method to initialize a Revision data controller instance.
 
@@ -403,6 +405,7 @@ class Revision(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self.__test = kwargs['test']
         self._configuration = configuration
 
         # Initialize public dictionary attributes.
@@ -452,6 +455,9 @@ class Revision(object):
         # Otherwise, update the error message and write it to the debug log.
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self.__test:
+                pub.sendMessage('addedRevision')
         else:
             _msg = _msg + '  Failed to add a new Revision to the RTK Program \
                            database.'
@@ -478,6 +484,9 @@ class Revision(object):
         # Otherwise, update the error message and log it to the debug log.
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self.__test:
+                pub.sendMessage('deletedRevision')
         else:
             self._configuration.RTK_DEBUG_LOG.error(_msg)
             _return = True
@@ -500,6 +509,9 @@ class Revision(object):
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self.__test:
+                pub.sendMessage('savedRevision')
         else:
             self._configuration.RTK_DEBUG_LOG.error(_msg)
             _return = True
@@ -524,6 +536,7 @@ class Revision(object):
 
         :param int revision_id: the Revision ID to calculate.
         :param float mission_time: the time to use in the calculations.
+        :param float multiplier: the hazard rate multiplier.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -531,11 +544,14 @@ class Revision(object):
         _return = False
 
         _error_code, _msg = self._dtm_revision.calculate_reliability(
-                revision_id, mission_time,
-                self._configuration.RTK_HR_MULTIPLIER)
+                revision_id, float(mission_time),
+                float(self._configuration.RTK_HR_MULTIPLIER))
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self.__test:
+                pub.sendMessage('calculatedRevision')
         else:
             self._configuration.RTK_DEBUG_LOG.error(_msg)
             _return = True
@@ -559,6 +575,9 @@ class Revision(object):
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self.__test:
+                pub.sendMessage('calculatedRevision')
         else:
             self._configuration.RTK_DEBUG_LOG.error(_msg)
             _return = True
@@ -579,10 +598,13 @@ class Revision(object):
         _return = False
 
         _error_code, _msg = self._dtm_revision.calculate_costs(
-                revision_id, mission_time)
+                revision_id, float(mission_time))
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self.__test:
+                pub.sendMessage('calculatedRevision')
         else:
             self._configuration.RTK_DEBUG_LOG.error(_msg)
             _return = True

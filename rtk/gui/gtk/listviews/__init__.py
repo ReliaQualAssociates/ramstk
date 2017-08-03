@@ -1,6 +1,7 @@
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.moduleviews.__init__.py is part of the RTK Project
+#       rtk.gui.gtk.listviews.__init__.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
