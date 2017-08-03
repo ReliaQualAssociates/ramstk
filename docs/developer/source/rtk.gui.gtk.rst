@@ -1,13 +1,13 @@
-RTK pyGTK GUI Sub-Package
-=========================
+RTK pyGTK GUI
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-.. automodule:: rtk.gui.gtk.mwi.ModuleBook
+.. automodule:: rtk.gui.gtk.mwi.ListBook
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-.. automodule:: rtk.gui.gtk.mwi.ListBook
+.. automodule:: rtk.gui.gtk.mwi.ModuleBook
     :members:
     :undoc-members:
     :private-members:

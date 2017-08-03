@@ -1,5 +1,5 @@
-RTK Revision Sub-Package
-========================
+RTK Revision
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. toctree::
 
@@ -9,14 +9,3 @@ RTK Revision Sub-Package
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.revision.ModuleBook
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.revision.WorkBook
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
