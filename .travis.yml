@@ -10,4 +10,4 @@ install:
 
 # Command to run tests.
 script: 
-    - python devtools/RunTests.py
+    - sh devtools/RunTests.sh

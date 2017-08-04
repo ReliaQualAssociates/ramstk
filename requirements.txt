@@ -5,6 +5,7 @@ gtk.glade
 lifelines
 lxml
 matplotlib==1.4.3
+nose-exclude
 numpy
 pandas
 pubsub==3.3.0

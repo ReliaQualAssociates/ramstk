@@ -50,5 +50,8 @@ pylintout
 /rtk/hardware/BoM.coverage
 /rtk/hardware/BoM.profile
 /rtk/hardware/BoM.timings
+coverage.xml
+
+# Override settings for some specific files.
 !/license.txt
 !/requirements.txt
