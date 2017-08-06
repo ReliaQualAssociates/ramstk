@@ -17,10 +17,6 @@ from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
 try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
     import Utilities as Utilities
 except ImportError:
     import rtk.Utilities as Utilities

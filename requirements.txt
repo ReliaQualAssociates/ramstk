@@ -5,7 +5,6 @@ matplotlib==1.4.3
 nose-exclude
 numpy
 pandas
-pygtk
 pypubsub==3.3.0
 scipy
 sqlalchemy

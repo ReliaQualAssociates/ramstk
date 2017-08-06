@@ -94,7 +94,7 @@ class Model(object):
         self.dao = dao
         self.tree = Tree()
 
-    def get(self, revision_id):
+    def select(self, revision_id):
         """
         Method to retrieve the instance of the RTKRevision data model for the
         Revision ID passed.
@@ -114,7 +114,7 @@ class Model(object):
 
         return _revision
 
-    def get_all(self):
+    def select_all(self):
         """
         Method to retrieve all the Revisions from the RTK Program database.
         Then add each to
@@ -126,6 +126,9 @@ class Model(object):
         _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
                                         expire_on_commit=False)
 
+        if self.tree.contains(0):
+            self.tree.remove_node(0)
+
         self.tree.create_node('Revisions', 0)
         for _revision in _session.query(RTKRevision).all():
             self.tree.create_node(_revision.name, _revision.revision_id,
@@ -135,7 +138,7 @@ class Model(object):
 
         return self.tree
 
-    def add(self):
+    def insert(self):
         """
         Method to add a Revision to the RTK Program database.
 
@@ -186,7 +189,7 @@ class Model(object):
 
         return _error_code, _msg
 
-    def save(self, revision_id):
+    def update(self, revision_id):
         """
         Method to update the revision associated with Revision ID to the RTK
         Program database.
@@ -201,7 +204,13 @@ class Model(object):
                                         autocommit=False,
                                         expire_on_commit=False)
 
-        if self.tree.get_node(revision_id) is not None:
+        try:
+            _revision = self.tree.get_node(revision_id).data
+            print revision_id, _revision
+        except AttributeError:
+            _revision = None
+
+        if _revision is not None:
             _session.add(self.tree.get_node(revision_id).data)
             (_error_code, _msg) = self.dao.db_update(_session)
 
@@ -214,7 +223,7 @@ class Model(object):
 
         return _error_code, _msg
 
-    def save_all(self):
+    def update_all(self):
         """
         Method to save all Revisions to the RTK Program database.
 
@@ -226,12 +235,13 @@ class Model(object):
         _msg = ''
 
         for _node in self.tree.all_nodes():
+            #if _node.identifier != 0:
             _revision_id = _node.identifier
-            _error_code, _msg = self.save(_revision_id)
+            _error_code, _msg = self.update(_revision_id)
 
             # Break if something goes wrong and return.
             if _error_code != 0:
-                break
+                print _error_code
 
         return _error_code, _msg
 
@@ -407,15 +417,15 @@ class Revision(object):
         # Initialize private scalar attributes.
         self.__test = kwargs['test']
         self._configuration = configuration
+        self._dtm_revision = Model(dao)
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self._dtm_revision = Model(dao)
 
-    def request_get(self, revision_id):
+    def request_select(self, revision_id):
         """
         Method to request the Revision Data Model to retrive the RTKRevision
         model associated with the Revision ID.
@@ -425,20 +435,20 @@ class Revision(object):
         :rtype: `:py:class:rtk.dao.DAO.RTKRevision` model
         """
 
-        return self._dtm_revision.get(revision_id)
+        return self._dtm_revision.select(revision_id)
 
-    def request_get_all(self):
+    def request_select_all(self):
         """
         Method to retrieve the Revision tree from the Revision Data Model.
 
-        :return: dicRevision; the dictionary of RTKRevision models in the
+        :return: tree; the treelib Tree() of RTKRevision models in the
                  Revision tree.
         :rtype: dict
         """
 
-        return self._dtm_revision.get_all()
+        return self._dtm_revision.select_all()
 
-    def request_add(self):
+    def request_insert(self):
         """
         Method to request the Revision Data Model to add a new Revision to the
         RTK Program database.
@@ -449,7 +459,7 @@ class Revision(object):
 
         _return = False
 
-        (_error_code, _msg) = self._dtm_revision.add()
+        (_error_code, _msg) = self._dtm_revision.insert()
 
         # If the add was successful log the success message to the user log.
         # Otherwise, update the error message and write it to the debug log.
@@ -493,7 +503,7 @@ class Revision(object):
 
         return _return
 
-    def request_save(self, revision_id):
+    def request_update(self, revision_id):
         """
         Method to request the Revision Data Model save the RTKRevision
         attributes to the RTK Program database.
@@ -505,7 +515,7 @@ class Revision(object):
 
         _return = False
 
-        _error_code, _msg = self._dtm_revision.save(revision_id)
+        _error_code, _msg = self._dtm_revision.update(revision_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
@@ -518,7 +528,7 @@ class Revision(object):
 
         return _return
 
-    def request_save_all(self):
+    def request_update_all(self):
         """
         Method to request the Revision Data Model to save all RTKRevision
         model attributes to the RTK Program database.
@@ -527,7 +537,7 @@ class Revision(object):
         :rtype: bool
         """
 
-        return self._dtm_revision.save_all()
+        return self._dtm_revision.update_all()
 
     def request_calculate_reliability(self, revision_id, mission_time):
         """

@@ -368,13 +368,13 @@ class Configuration(object):
     RTK_STAKEHOLDERS = {}
     RTK_SUBCATEGORIES = {}
     RTK_USERS = {}
+    RTK_PREFIX = {}
+    RTK_MODULES = {}
+    RTK_PAGE_NUMBER = {}
 
     # Define public list class attributes.
-    RTK_PREFIX = []
     RTK_CONTROL_TYPES = []
     RTK_RISK_POINTS = [4, 10]
-    RTK_MODULES = []
-    RTK_PAGE_NUMBER = []
 
     # Define public scalare class attributes.
     RTK_MODE = ''

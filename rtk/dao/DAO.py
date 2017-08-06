@@ -43,9 +43,6 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy_utils import create_database
 from sqlalchemy.orm import sessionmaker
 
-RTK_BASE = declarative_base()
-RTK_SITE_SESSION = sessionmaker()
-
 # Import other RTK modules.
 try:
     import Configuration as Configuration
@@ -176,6 +173,11 @@ class DAO(object):
 
         self.engine = create_engine(database, echo=False)
         self.metadata = MetaData(self.engine)
+
+        self.session = self.RTK_SESSION(bind=self.engine,
+                                        autoflush=True,
+                                        autocommit=False,
+                                        expire_on_commit=False)
 
         return False
 
