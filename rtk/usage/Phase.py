@@ -4,57 +4,50 @@
 #       rtk.usage.Phase.py is part of The RTK Project
 #
 # All rights reserved.
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-####################
+###############################################################################
 Mission Phase Module
-####################
+###############################################################################
 """
 
-<<<<<<< HEAD
+from treelib import Tree, tree
+
 # Import other RTK modules.
 try:
-    import Configuration as Configuration
     import Utilities as Utilities
     from dao.RTKMissionPhase import RTKMissionPhase
 except ImportError:
-    import rtk.Configuration as Configuration   # pylint: disable=E0401
-    import rtk.Utilities as Utilities           # pylint: disable=E0401
-    from rtk.dao.RTKMissionPhase import RTKMissionPhase     # pylint: disable=E0401
-=======
-# -*- coding: utf-8 -*-
-#
-#       rtk.usage.Phase.py is part of The RTK Project
-#
-# All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
->>>>>>> master
+    import rtk.Utilities as Utilities       # pylint: disable=E0401
+    from rtk.dao.RTKMissionPhase import \
+        RTKMissionPhase                     # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -68,23 +61,18 @@ class Model(object):
     phase.  A Mission will consist of one or more mission phases.  The
     attributes of a Phase are:
 
-    :cvar dict dicPhase: dictionary containing all the RTKMissionPhase models
-                         that are part of the Phase tree.  Key is the
-                         Phase ID; value is a pointer to the instance
-                         of the RTKMissionPhase model.
-
-    :ivar int last_id: the last Phase ID used in the RTK Program database.
-    :ivar dao: the `:py:class:rtk.dao.DAO` object used to communicate with the
+    :ivar tree: the :py:class:`treelib.Tree` containing all the RTKMissionPhase
+                models that are part of the Mission Phase tree.  Node ID is the
+                Phase ID; data is the instance of the RTKMissionPhase model.
+    :ivar int _last_id: the last Mission Phase ID used in the RTK Program
+                        database.
+    :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
                RTK Program database.
-
     """
 
-    # Define public class dictionary attributes.
-    dicPhase = {}
-
-    def __init__(self):
+    def __init__(self, dao):
         """
-        Method to initialize a Phase data model instance.
+        Method to initialize a Mission Phase data model instance.
         """
 
         # Initialize private dictionary attributes.
@@ -92,16 +80,17 @@ class Model(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.last_id = None
+        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = None
+        self.dao = dao
+        self.tree = Tree()
 
-    def retrieve(self, phase_id):
+    def select(self, phase_id):
         """
         Method to retrieve the instance of the RTKMissionPhase data model for
         the Phase ID passed.
@@ -113,169 +102,190 @@ class Model(object):
         """
 
         try:
-            _phase = self.dicPhase[phase_id]
-        except KeyError:
+            _phase = self.tree.get_node(phase_id).data
+        except AttributeError:
+            _phase = None
+        except tree.NodeIDAbsentError:
             _phase = None
 
         return _phase
 
-    def retrieve_all(self, dao, mission_id):
+    def select_all(self, mission_id):
         """
         Method to retrieve all the Phases from the RTK Program database.
 
-        :return: dicPhase; the dictionary of RTKMissionPhase data models that
+        :param int mission_id: the Mission ID to selecte the Mission Phases
+                               for.
+        :return: tree; the treelib Tree() of RTKMissionPhase data models that
                  comprise the Mission Phase tree.
-        :rtype: dict
+        :rtype: :py:class:`treelib.Tree`
         """
 
-        self.dao = dao
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
-        # Clear the Phase dictionary of previous Mission's Phases.
-        self.dicPhase = {}
-        for _phase in self.dao.session.query(RTKMissionPhase).\
+        if self.tree.contains(0):
+            self.tree.remove_node(0)
+
+        self.tree.create_node('Mission Phases', 0)
+        for _phase in _session.query(RTKMissionPhase).\
                 filter(RTKMissionPhase.mission_id == mission_id).all():
-            self.dicPhase[_phase.phase_id] = _phase
+            self.tree.create_node(_phase.name, _phase.phase_id,
+                                  parent=0, data=_phase)
 
-        return self.dicPhase
+        _session.close()
 
-    def add_phase(self, mission_id):
+        return self.tree
+
+    def insert(self, mission_id):
         """
         Method to add a Mission Phase to the RTK Program database for Mission
         ID.
 
         :param int mission_id: the Mission ID to add the Mission Phase to.
-        :return: _phase
-        :rtype: `:py:class:rtk.dao.DAO.RTKMissionPhase`
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
+
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
         _phase = RTKMissionPhase()
         _phase.mission_id = mission_id
-        (_error_code, _msg) = self.dao.db_add(_phase)
+        _error_code, _msg = self.dao.db_add([_phase, ], _session)
 
-        self.last_id = _phase.phase_id
+        _session.close()
 
-        # If the add was successful add the new RTKMissionPhase data model
-        # instance to dicPhase and log the success message to the user log.
-        # Otherwise, update the error message and write it to the error log.
         if _error_code == 0:
-            self.dicPhase[_phase.phase_id] = _phase
-            Configuration.RTK_USER_LOG.info(_msg)
-        else:
-            _msg = _msg + "  Failed to add a new Phase to the RTK Program \
-                           database."
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _phase = None
+            self.tree.create_node(_phase.name, _phase.phase_id,
+                                  parent=0, data=_phase)
+            self._last_id = _phase.phase_id
 
-        return _phase
+        return _error_code, _msg
 
-    def delete_phase(self, phase_id):
+    def delete(self, phase_id):
         """
         Method to remove the phase associated with Phase ID.
 
-        :param int phase_id: the ID of the Phase to be removed.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param int phase_id: the ID of the Mission Phase to be removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
         try:
-            _phase = self.dicPhase[phase_id]
-
-            (_error_code, _msg) = self.dao.db_delete(_phase)
+            _phase = self.tree.get_node(phase_id).data
+            _error_code, _msg = self.dao.db_delete(_phase, _session)
 
             if _error_code == 0:
-                self.dicPhase.pop(phase_id)
-                Configuration.RTK_USER_LOG.info(_msg)
-            else:
-                try:
-                    _msg = _msg + "  Failed to delete Phase ID {0:d} from " \
-                            "the RTK Program database.".format(phase_id)
-                except ValueError:      # Phase ID is None.
-                    _msg = _msg + "  Failed to delete Phase ID {0:s} from "\
-                            "the RTK Program database.".format(phase_id)
-                Configuration.RTK_DEBUG_LOG.error(_msg)
-                _return = True
-        except KeyError:
-            try:
-                _msg = "Attempted to delete non-existent Phase ID {0:d}.".\
-                    format(phase_id)
-            except ValueError:      # Phase ID is None.
-                _msg = "Attempted to delete non-existent Phase ID {0:s}.". \
-                    format(phase_id)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
+                self.tree.remove_node(phase_id)
 
-        return _return
+        except AttributeError:
+            _error_code = 1000
+            _msg = 'RTK ERROR: Attempted to delete non-existent Mission ' \
+                   'Phase ID {0:d}.'.format(phase_id)
 
-    def save_phase(self, phase_id):
+        _session.close()
+
+        return _error_code, _msg
+
+    def update(self, phase_id):
         """
         Method to update the phase associated with Phase ID to the RTK
         Program database.
 
         :param int phase_id: the Phase ID to save to the RTK Program
                              database.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
+                                        autoflush=True,
+                                        autocommit=False,
+                                        expire_on_commit=False)
 
         try:
-            _phase = self.dicPhase[phase_id]
+            _phase = self.tree.get_node(phase_id).data
+        except AttributeError:
+            _phase = None
 
-            (_error_code, _msg) = self.dao.db_update()
+        if _phase is not None:
+            _session.add(self.tree.get_node(phase_id).data)
+            _error_code, _msg = self.dao.db_update(_session)
 
-            if _error_code == 0:
-                Configuration.RTK_USER_LOG.info(_msg)
-            else:
-                try:
-                    _msg = _msg + "  Failed to save Phase ID {0:d} to the \
-                                   RTK Program database".format(phase_id)
-                except ValueError:      # If the phase_id = None.
-                    _msg = _msg + "  Failed to save Phase ID {0:s} to the \
-                                   RTK Program database".format(phase_id)
-                Configuration.RTK_DEBUG_LOG.error(_msg)
-                _return = True
-        except KeyError:
-            try:
-                _msg = "Attempted to save non-existent Phase ID {0:d}.".\
-                    format(phase_id)
-            except ValueError:          # If the phase_id = None.
-                _msg = "Attempted to save non-existent Phase ID {0:s}.".\
-                    format(phase_id)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
+        else:
+            _error_code = 1000
+            _msg = 'RTK ERROR: Attempted to save non-existent Mission Phase ' \
+                   'ID {0:d}.'.format(phase_id)
 
-        return _return
+        _session.close()
 
-    def save_all_phases(self):
+        return _error_code, _msg
+
+    def update_all(self):
         """
         Method to save all Mission Phases to the RTK Program database.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
+        _error_code = 0
+        _msg = ''
 
-        for _phase_id in self.dicPhase.keys():
-            if self.save_phase(_phase_id):
-                _return = True
+        for _node in self.tree.all_nodes():
+            _phase_id = _node.identifier
+            _error_code, _msg = self.update(_phase_id)
 
-        return _return
+            # Break if something goes wrong and return.
+            if _error_code != 0:
+                print _error_code
+
+        return _error_code, _msg
 
 
-class Phase(object):
+class MissionPhase(object):
     """
     The Phase controller provides an interface between the Phase data model
     and an RTK view model.  A single Phase controller can control one or more
     Phase data models.  Currently the Phase controller is unused.
+
+    :ivar __test: control variable used to suppress certain code during
+                  testing.
+    :ivar _dtm_phase: the :py:class:`rtk.usage.Phase.Model` associated with
+                      the Mission Phase Data Controller.
+    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
+                          instance associated with the current RTK instance.
     """
 
-    def __init__(self):
+    def __init__(self, dao, configuration, **kwargs):
         """
-        Method to initialize a Phase controller instance.
+        Method to initialize a Mission Phase controller instance.
+
+        :param dao: the RTK Program DAO instance to pass to the Mission Phase
+                    Data Model.
+        :type dao: :py:class:`rtk.dao.DAO`
+        :param configuration: the Configuration instance associated with the
+                              current instance of the RTK application.
+        :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self.__test = kwargs['test']
+        self._configuration = configuration
+        self._dtm_phase = Model(dao)
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
 
         pass

@@ -392,6 +392,8 @@ class Revision(object):
     one or more Revision data models.  The attributes of a Revision data
     controller are:
 
+    :ivar __test: control variable used to suppress certain code during
+                  testing.
     :ivar _dtm_revision: the :py:class:`rtk.Revision.Model` associated with
                          the Revision Data Controller.
     :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`

@@ -112,12 +112,10 @@ class Model(object):
         """
         Method to retrieve all the RTKMissions from the RTK Program database.
 
-        :param dao: the `:py:class:dao.DAO.DAO` instance connected to the RTK
-                    Program database.
         :param int revision_id: the ID of the Revision to retrieve the Mission.
-        :return: dicMission; the dictionary of RTKMission data models that
+        :return: tree; the treelib Tree() of RTKMission data models that
                  comprise the Mission tree.
-        :rtype: dict
+        :rtype: :py:class:`treelib.Tree`
         """
 
         _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
@@ -141,8 +139,8 @@ class Model(object):
         Method to add a Mission to the RTK Program database for Revision ID.
 
         :param int revision_id: the Revision ID to add the Mission to.
-        :return: _mission
-        :rtype: `:py:test:rtk.dao.DAO.RTKMission`
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
         _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
@@ -150,7 +148,7 @@ class Model(object):
 
         _mission = RTKMission()
         _mission.revision_id = revision_id
-        (_error_code, _msg) = self.dao.db_add([_mission, ], _session)
+        _error_code, _msg = self.dao.db_add([_mission, ], _session)
 
         _session.close()
 
@@ -166,8 +164,8 @@ class Model(object):
         Method to remove the mission associated with Mission ID.
 
         :param int mission_id: the ID of the Mission to be removed.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
         _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
@@ -196,8 +194,8 @@ class Model(object):
 
         :param int mission_id: the Mission ID of the Mission to save to the RTK
                                Program database.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
         _session = self.dao.RTK_SESSION(bind=self.dao.engine,
@@ -250,6 +248,13 @@ class Mission(object):
     The Mission controller provides an interface between the Mission data model
     and an RTK view model.  A single Mission controller can control one or more
     Mission data models.  Currently the Mission controller is unused.
+
+    :ivar __test: control variable used to suppress certain code during
+                  testing.
+    :ivar _dtm_mission: the :py:class:`rtk.usage.Mission.Model` associated with
+                         the Mission Data Controller.
+    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
+                          instance associated with the current RTK instance.
     """
 
     def __init__(self, dao, configuration, **kwargs):

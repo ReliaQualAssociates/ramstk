@@ -1,7 +1,11 @@
 #!/usr/bin/env python -O
+"""
+This is the test class for testing the Phase class.
+"""
+
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.TestMission.py is part of The RTK Project
+#       TestPhase.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -32,10 +36,7 @@
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-"""
-This is the test class for testing Mission module algorithms and models.
-"""
-
+# We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 sys.path.insert(0, dirname(dirname(__file__)) + "/rtk")
@@ -48,9 +49,9 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from usage.Mission import Model, Mission
+from usage.Phase import Model, MissionPhase
 from dao.DAO import DAO
-from dao.RTKMission import RTKMission
+from dao.RTKMissionPhase import RTKMissionPhase
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -58,14 +59,14 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestMissionModel(unittest.TestCase):
+class TestPhaseModel(unittest.TestCase):
     """
-    Class for testing the Mission model class.
+    Class for testing the Phase model class.
     """
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Mission class.
+        Method to setup the test fixture for the Phase model class.
         """
 
         self.Configuration = Configuration()
@@ -91,60 +92,70 @@ class TestMissionModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKMission(), ], self.session)
-        self.dao.db_add([RTKMission(), ], self.session)
+        self.dao.db_add([RTKMissionPhase(), ], self.session)
+        self.dao.db_add([RTKMissionPhase(), ], self.session)
 
         self.DUT = Model(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
         """
-        (TestMissionModel) __init__ should return a Mission model
+        (TestMissionPhaseModel) __init__() should return a Mission model
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
+        self.assertEqual(self.DUT._last_id, None)
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
 
     @attr(all=True, unit=True)
     def test01a_select_all(self):
         """
-        (TestMissionModel): select_all() should return a Tree() object populated with RTKMission instances on success.
+        (TestMissionPhaseModel): select_all() should return a Tree() object populated with RTKMissionPhase instances on success.
         """
 
         _tree = self.DUT.select_all(1)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMission))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMissionPhase))
+
+    @attr(all=True, unit=True)
+    def test01b_select_all_non_existent_id(self):
+        """
+        (TestMissionPhaseModel): select_all() should return an empty Tree() when passed a Mission ID that doesn't exist.
+        """
+
+        _tree = self.DUT.select_all(100)
+
+        self.assertTrue(isinstance(_tree, Tree))
+        self.assertEqual(len(_tree.all_nodes()), 1)
 
     @attr(all=True, unit=True)
     def test02a_select(self):
         """
-        (TestMissionModel): select() should return an instance of the RTKMission data model on success.
+        (TestMissionPhaseModel): select() should return an instance of the RTKMissionPhase data model on success.
         """
 
         self.DUT.select_all(1)
-        _mission = self.DUT.select(1)
+        _phase = self.DUT.select(1)
 
-        self.assertTrue(isinstance(_mission, RTKMission))
-        self.assertEqual(_mission.mission_id, 1)
-        self.assertEqual(_mission.description, 'Description')
+        self.assertTrue(isinstance(_phase, RTKMissionPhase))
+        self.assertEqual(_phase.phase_id, 1)
+        self.assertEqual(_phase.description, '')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
         """
-        (TestMissionModel): select should return None when passed a Mission ID that doesn't exist.
+        (TestMissionPhaseModel): select() should return None when passed a Phase ID that doesn't exist.
         """
 
         self.DUT.select_all(1)
-        _mission = self.DUT.select(100)
-
-        self.assertEqual(_mission, None)
+        self.assertEqual(self.DUT.select(100), None)
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
         """
-        (TestMissionModel): insert() should return an RTKMission object on success.
+        (TestMissionPhaseModel): insert() should return False on success.
         """
 
         self.DUT.select_all(1)
@@ -159,7 +170,7 @@ class TestMissionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04a_delete(self):
         """
-        (TestMissionModel): delete() should return False on success.
+        (TestMissionPhaseModel): delete() should return False on success.
         """
 
         self.DUT.select_all(1)
@@ -173,7 +184,7 @@ class TestMissionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
         """
-        (TestMissionModel): delete() should return True when passed a Mission ID that doesn't exist.
+        (TestMissionPhaseModel): delete() should return True when passed a Phase ID that doesn't exist.
         """
 
         self.DUT.select_all(1)
@@ -182,18 +193,18 @@ class TestMissionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 1000)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
-                               'Mission ID 300.')
+                               'Mission Phase ID 300.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
         """
-        (TestMissionModel): update() should return a zero error code on success.
+        (TestMissionPhaseModel): update() should return a zero error code on success.
         """
 
         self.DUT.select_all(1)
 
-        _mission = self.DUT.tree.get_node(1).data
-        _mission.description = 'Test Mission Description'
+        _phase = self.DUT.tree.get_node(1).data
+        _phase.description = 'Test Mission Phase Description'
 
         _error_code, _msg = self.DUT.update(1)
 
@@ -204,7 +215,7 @@ class TestMissionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_05b_update_non_existent_id(self):
         """
-        (TestMissionMOdel): update() should return a non-zero error code when passed a Mission ID that doesn't exist.
+        (TestMissionPhaseModel): update() should return a non-zero error code when passed a Mission Phase ID that doesn't exist.
         """
 
         self.DUT.select_all(1)
@@ -213,12 +224,13 @@ class TestMissionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 1000)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Mission ID 100.')
+                               'Mission Phase ID 100.')
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):
         """
-        (TestMissionModel): update_all() should return a zero error code on success.
+
+        (TestMissionPhaseModel): update_all() should return a zero error code on success.
         """
 
         self.DUT.select_all(1)
@@ -230,14 +242,14 @@ class TestMissionModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
 
-class Test01MissionController(unittest.TestCase):
+class Test01MissionPhaseController(unittest.TestCase):
     """
-    Class for testing the Mission Data Controller class.
+    Class for testing the Mission Phase Data Controller class.
     """
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Mission Data Controller.
+        Method to setup the test fixture for the Mission Phase Data Controller.
         """
 
         self.Configuration = Configuration()
@@ -265,44 +277,44 @@ class Test01MissionController(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKMission(), ], self.session)
-        self.dao.db_add([RTKMission(), ], self.session)
+        self.dao.db_add([RTKMissionPhase(), ], self.session)
+        self.dao.db_add([RTKMissionPhase(), ], self.session)
 
-        self.DUT = Mission(self.dao, self.Configuration, test='True')
+        self.DUT = MissionPhase(self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):
         """
-        (TestMissionController) __init__ should return a Mission Data Controller
+        (TestMissionPhaseController) __init__() should return a Mission Phase Data Controller
         """
 
-        self.assertTrue(isinstance(self.DUT, Mission))
-        self.assertTrue(isinstance(self.DUT._dtm_mission, Model))
+        self.assertTrue(isinstance(self.DUT, MissionPhase))
+        self.assertTrue(isinstance(self.DUT._dtm_phase, Model))
 
     @attr(all=True, unit=False)
     def test01_request_select_all(self):
         """
-        (TestMissionController) request_select_all() should return a Tree of RTKMission models.
+        (TestMissionPhaseController) request_select_all() should return a Tree of RTKMissionPhase models.
         """
 
         _tree = self.DUT.request_select_all(1)
 
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMission))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMissionPhase))
 
     @attr(all=True, unit=False)
     def test02a_request_select(self):
         """
-        (TestMissionController) request_select() should return an RTKv model.
+        (TestMissionPhaseController) request_select() should return an RTKv model.
         """
 
         self.DUT.request_select_all(1)
 
-        self.assertTrue(isinstance(self.DUT.request_select(1), RTKMission))
+        self.assertTrue(isinstance(self.DUT.request_select(1), RTKMissionPhase))
 
     @attr(all=True, unit=False)
     def test02b_request_non_existent_id(self):
         """
-        (TestMissionController) request_select() should return None when requesting a Mission that doesn't exist.
+        (TestMissionPhaseController) request_select() should return None when requesting a Mission that doesn't exist.
         """
 
         self.assertEqual(self.DUT.request_select(100), None)
@@ -310,7 +322,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test03a_request_insert(self):
         """
-        (TestMissionController) request_insert() should return False on success.
+        (TestMissionPhaseController) request_insert() should return False on success.
         """
 
         self.DUT.request_select_all(1)
@@ -319,7 +331,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test04a_request_delete(self):
         """
-        (TestMissionController) request_delete() should return False on success.
+        (TestMissionPhaseController) request_delete() should return False on success.
         """
 
         self.DUT.request_select_all(1)
@@ -328,7 +340,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test04a_request_delete_non_existent_id(self):
         """
-        (TestMissionController) request_delete() should return True when attempting to delete a non-existent Mission.
+        (TestMissionPhaseController) request_delete() should return True when attempting to delete a non-existent Mission.
         """
 
         self.DUT.request_select_all(1)
@@ -337,7 +349,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test05a_request_update(self):
         """
-        (TestMissionController) request_update() should return False on success.
+        (TestMissionPhaseController) request_update() should return False on success.
         """
 
         self.DUT.request_select_all(1)
@@ -347,7 +359,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test05b_request_update_non_existent_id(self):
         """
-        (TestMissionController) request_update() should return True when attempting to save a non-existent Mission.
+        (TestMissionPhaseController) request_update() should return True when attempting to save a non-existent Mission.
         """
 
         self.DUT.request_select_all(1)
@@ -357,7 +369,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test06a_request_update_all(self):
         """
-        (TestMissionController) request_update_all() should return False on success.
+        (TestMissionPhaseController) request_update_all() should return False on success.
         """
 
         self.DUT.request_select_all(1)
