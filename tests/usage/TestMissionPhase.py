@@ -39,7 +39,7 @@ This is the test class for testing the Phase class.
 # We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk")
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
@@ -141,7 +141,7 @@ class TestPhaseModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_phase, RTKMissionPhase))
         self.assertEqual(_phase.phase_id, 1)
-        self.assertEqual(_phase.description, '')
+        self.assertEqual(_phase.description, 'Test Mission Phase Description')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):

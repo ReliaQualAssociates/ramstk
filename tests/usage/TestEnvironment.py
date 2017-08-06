@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.TestMission.py is part of The RTK Project
+#       TestEnvironment.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -31,14 +31,14 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
-This is the test class for testing Mission module algorithms and models.
+This is the test class for testing the Environment class.
 """
 
+# We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk")
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
@@ -48,9 +48,9 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from usage.Mission import Model, Mission
+from usage.Environment import Model, Environment
 from dao.DAO import DAO
-from dao.RTKMission import RTKMission
+from dao.RTKEnvironment import RTKEnvironment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -58,14 +58,14 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestMissionModel(unittest.TestCase):
+class TestEnvironmentModel(unittest.TestCase):
     """
-    Class for testing the Mission model class.
+    Class for testing the Environment model class.
     """
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Mission class.
+        Method to setup the test fixture for the Environment model class.
         """
 
         self.Configuration = Configuration()
@@ -91,60 +91,70 @@ class TestMissionModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKMission(), ], self.session)
-        self.dao.db_add([RTKMission(), ], self.session)
+        self.dao.db_add([RTKEnvironment(), ], self.session)
+        self.dao.db_add([RTKEnvironment(), ], self.session)
 
         self.DUT = Model(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
         """
-        (TestMissionModel) __init__ should return a Mission model
+        (TestEnvironmentModel) __init__() should create an Environment data model.
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
+        self.assertEqual(self.DUT._last_id, None)
 
     @attr(all=True, unit=True)
     def test01a_select_all(self):
         """
-        (TestMissionModel): select_all() should return a Tree() object populated with RTKMission instances on success.
+        (TestEnvironmentModel): select_all() should return a Tree() object populated with RTKEnvironment instances on success.
         """
 
         _tree = self.DUT.select_all(1)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMission))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKEnvironment))
+
+    @attr(all=True, unit=True)
+    def test01b_select_all_non_existent_id(self):
+        """
+        (TestEnvironmentModel): select_all() should return an empty Tree() when passed an Environment ID that doesn't exist.
+        """
+
+        _tree = self.DUT.select_all(100)
+
+        self.assertTrue(isinstance(_tree, Tree))
+        self.assertEqual(len(_tree.all_nodes()), 1)
 
     @attr(all=True, unit=True)
     def test02a_select(self):
         """
-        (TestMissionModel): select() should return an instance of the RTKMission data model on success.
+        (TestEnvironmentModel): select() should return an instance of the RTKEnvironment data model on success.
         """
 
         self.DUT.select_all(1)
-        _mission = self.DUT.select(1)
+        _environment = self.DUT.select(1)
 
-        self.assertTrue(isinstance(_mission, RTKMission))
-        self.assertEqual(_mission.mission_id, 1)
-        self.assertEqual(_mission.description, 'Description')
+        self.assertTrue(isinstance(_environment, RTKEnvironment))
+        self.assertEqual(_environment.environment_id, 1)
+        self.assertEqual(_environment.name, 'Condition Name')
 
     @attr(all=True, unit=True)
-    def test02b_select_non_existent_id(self):
+    def test02b_retrieve_non_existent_id(self):
         """
-        (TestMissionModel): select should return None when passed a Mission ID that doesn't exist.
+        (TestEnvironmentModel): select() should return None when passed an Environment ID that doesn't exist.
         """
 
         self.DUT.select_all(1)
-        _mission = self.DUT.select(100)
-
-        self.assertEqual(_mission, None)
+        self.assertEqual(self.DUT.select(100), None)
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
         """
-        (TestMissionModel): insert() should return an RTKMission object on success.
+        (TestEnvironmentModel): insert() should return a zero error code on success.
         """
 
         self.DUT.select_all(1)
@@ -154,17 +164,17 @@ class TestMissionModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                                'the RTK Program database.')
-        self.assertEqual(self.DUT._last_id, 2)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
         """
-        (TestMissionModel): delete() should return False on success.
+        (TestEnvironmentModel): delete() should return a zero error code on success.
         """
 
         self.DUT.select_all(1)
+        self.DUT.insert(1)
 
-        _error_code, _msg = self.DUT.delete(2)
+        _error_code, _msg = self.DUT.delete(self.DUT._last_id)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
@@ -173,27 +183,27 @@ class TestMissionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
         """
-        (TestMissionModel): delete() should return True when passed a Mission ID that doesn't exist.
+        (TestEnvironmentModel): delete() should return a non-zero error code when passed a Environment ID that doesn't exist.
         """
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.delete(300)
+        _error_code, _msg = self.DUT.delete(100)
 
         self.assertEqual(_error_code, 1000)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
-                               'Mission ID 300.')
+                               'Environment ID 100.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
         """
-        (TestMissionModel): update() should return a zero error code on success.
+        (TestEnvironmentModel): update() should return a zero error code on success.
         """
 
         self.DUT.select_all(1)
 
-        _mission = self.DUT.tree.get_node(1).data
-        _mission.description = 'Test Mission Description'
+        _environment = self.DUT.tree.get_node(1).data
+        _environment.description = 'Test Mission Description'
 
         _error_code, _msg = self.DUT.update(1)
 
@@ -204,7 +214,7 @@ class TestMissionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_05b_update_non_existent_id(self):
         """
-        (TestMissionMOdel): update() should return a non-zero error code when passed a Mission ID that doesn't exist.
+        (TestEnvironmentModel): update() should return a non-zero error code when passed a Environment ID that doesn't exist.
         """
 
         self.DUT.select_all(1)
@@ -213,12 +223,12 @@ class TestMissionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 1000)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Mission ID 100.')
+                               'Environment ID 100.')
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):
         """
-        (TestMissionModel): update_all() should return a zero error code on success.
+        (TestEnvironmentModel): update_all() should return a zero error code on success.
         """
 
         self.DUT.select_all(1)
@@ -230,14 +240,14 @@ class TestMissionModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
 
-class Test01MissionController(unittest.TestCase):
+class Test01EnvironmentController(unittest.TestCase):
     """
-    Class for testing the Mission Data Controller class.
+    Class for testing the Environment Data Controller class.
     """
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Mission Data Controller.
+        Method to setup the test fixture for the Environment Data Controller.
         """
 
         self.Configuration = Configuration()
@@ -265,44 +275,44 @@ class Test01MissionController(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKMission(), ], self.session)
-        self.dao.db_add([RTKMission(), ], self.session)
+        self.dao.db_add([RTKEnvironment(), ], self.session)
+        self.dao.db_add([RTKEnvironment(), ], self.session)
 
-        self.DUT = Mission(self.dao, self.Configuration, test='True')
+        self.DUT = Environment(self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):
         """
-        (TestMissionController) __init__ should return a Mission Data Controller
+        (TestEnvironmentController) __init__ should return a Mission Data Controller
         """
 
-        self.assertTrue(isinstance(self.DUT, Mission))
-        self.assertTrue(isinstance(self.DUT._dtm_mission, Model))
+        self.assertTrue(isinstance(self.DUT, Environment))
+        self.assertTrue(isinstance(self.DUT._dtm_environment, Model))
 
     @attr(all=True, unit=False)
     def test01_request_select_all(self):
         """
-        (TestMissionController) request_select_all() should return a Tree of RTKMission models.
+        (TestEnvironmentController) request_select_all() should return a Tree of RTKEnvironment models.
         """
 
         _tree = self.DUT.request_select_all(1)
 
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMission))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKEnvironment))
 
     @attr(all=True, unit=False)
     def test02a_request_select(self):
         """
-        (TestMissionController) request_select() should return an RTKv model.
+        (TestEnvironmentController) request_select() should return an RTKv model.
         """
 
         self.DUT.request_select_all(1)
 
-        self.assertTrue(isinstance(self.DUT.request_select(1), RTKMission))
+        self.assertTrue(isinstance(self.DUT.request_select(1), RTKEnvironment))
 
     @attr(all=True, unit=False)
     def test02b_request_non_existent_id(self):
         """
-        (TestMissionController) request_select() should return None when requesting a Mission that doesn't exist.
+        (TestEnvironmentController) request_select() should return None when requesting a Mission that doesn't exist.
         """
 
         self.assertEqual(self.DUT.request_select(100), None)
@@ -310,7 +320,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test03a_request_insert(self):
         """
-        (TestMissionController) request_insert() should return False on success.
+        (TestEnvironmentController) request_insert() should return False on success.
         """
 
         self.DUT.request_select_all(1)
@@ -319,7 +329,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test04a_request_delete(self):
         """
-        (TestMissionController) request_delete() should return False on success.
+        (TestEnvironmentController) request_delete() should return False on success.
         """
 
         self.DUT.request_select_all(1)
@@ -328,7 +338,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test04a_request_delete_non_existent_id(self):
         """
-        (TestMissionController) request_delete() should return True when attempting to delete a non-existent Mission.
+        (TestEnvironmentController) request_delete() should return True when attempting to delete a non-existent Mission.
         """
 
         self.DUT.request_select_all(1)
@@ -337,7 +347,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test05a_request_update(self):
         """
-        (TestMissionController) request_update() should return False on success.
+        (TestEnvironmentController) request_update() should return False on success.
         """
 
         self.DUT.request_select_all(1)
@@ -347,7 +357,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test05b_request_update_non_existent_id(self):
         """
-        (TestMissionController) request_update() should return True when attempting to save a non-existent Mission.
+        (TestEnvironmentController) request_update() should return True when attempting to save a non-existent Mission.
         """
 
         self.DUT.request_select_all(1)
@@ -357,7 +367,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test06a_request_update_all(self):
         """
-        (TestMissionController) request_update_all() should return False on success.
+        (TestEnvironmentController) request_update_all() should return False on success.
         """
 
         self.DUT.request_select_all(1)

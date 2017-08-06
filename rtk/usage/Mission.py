@@ -71,6 +71,10 @@ class Model(object):
     def __init__(self, dao):
         """
         Method to initialize a Mission data model instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :py:class:`rtk.dao.DAO.DAO`
         """
 
         # Initialize private dictionary attributes.
