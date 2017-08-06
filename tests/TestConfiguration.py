@@ -40,12 +40,10 @@ import shutil
 import sys
 from os import environ, makedirs, name
 from os.path import dirname, isfile
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+sys.path.insert(0, dirname(dirname(__file__)) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr
-
-import ConfigParser
 
 from Configuration import Configuration
 
@@ -101,7 +99,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.DUT.RTK_USER_LOG, '')
         self.assertEqual(self.DUT.RTK_FORMAT_FILE, {})
         self.assertEqual(self.DUT.RTK_COLORS, {})
-        self.assertEqual(self.DUT.RTK_PREFIX, [])
+        self.assertEqual(self.DUT.RTK_PREFIX, {})
         self.assertEqual(self.DUT.RTK_ACTION_CATEGORY, {})
         self.assertEqual(self.DUT.RTK_INCIDENT_CATEGORY, {})
         self.assertEqual(self.DUT.RTK_SEVERITY, {})
@@ -151,8 +149,8 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.DUT.RTK_BACKEND, '')
         self.assertEqual(self.DUT.RTK_COM_INFO, {})
         self.assertEqual(self.DUT.RTK_PROG_INFO, {})
-        self.assertEqual(self.DUT.RTK_MODULES, [])
-        self.assertEqual(self.DUT.RTK_PAGE_NUMBER, [])
+        self.assertEqual(self.DUT.RTK_MODULES, {})
+        self.assertEqual(self.DUT.RTK_PAGE_NUMBER, {})
         self.assertEqual(self.DUT.RTK_HR_MULTIPLIER, 1000000.0)
         self.assertEqual(self.DUT.RTK_DEC_PLACES, 6)
         self.assertEqual(self.DUT.RTK_MTIME, 10.0)
@@ -229,7 +227,7 @@ class TestConfiguration(unittest.TestCase):
         (TestConfiguration) create_user_configuration should return False on success
         """
 
-        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_SITE_DIR = dirname(dirname(__file__)) + '/config'
         self.DUT.RTK_HOME_DIR = '/tmp/RTK'
         self.DUT.set_site_variables()
         self.DUT.set_user_variables()
@@ -269,7 +267,7 @@ class TestConfiguration(unittest.TestCase):
         (TestConfiguration) _read_site_configuration should return False on success
         """
 
-        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_SITE_DIR = dirname(dirname(__file__)) + '/config'
         self.DUT.RTK_HOME_DIR = '/tmp/RTK'
         self.DUT.set_site_variables()
         self.DUT.set_user_variables()
@@ -290,7 +288,7 @@ class TestConfiguration(unittest.TestCase):
         (TestConfiguration) read_configuration should return False on success
         """
 
-        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_SITE_DIR = dirname(dirname(__file__)) + '/config'
         self.DUT.RTK_HOME_DIR = '/tmp/RTK'
         self.DUT.set_site_variables()
         self.DUT.set_user_variables()
@@ -381,7 +379,7 @@ class TestConfiguration(unittest.TestCase):
         (TestConfiguration) write_configuration should return False on success
         """
 
-        self.DUT.RTK_SITE_DIR = dirname(dirname(dirname(__file__))) + '/config'
+        self.DUT.RTK_SITE_DIR = dirname(dirname(__file__)) + '/config'
         self.DUT.RTK_HOME_DIR = '/tmp/RTK'
         self.DUT.set_site_variables()
         self.DUT.set_user_variables()

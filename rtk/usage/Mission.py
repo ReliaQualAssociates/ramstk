@@ -4,57 +4,49 @@
 #       rtk.usage.Mission.py is part of The RTK Project
 #
 # All rights reserved.
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-##############
+###############################################################################
 Mission Module
-##############
+###############################################################################
 """
 
-<<<<<<< HEAD
+from treelib import Tree, tree
+
 # Import other RTK modules.
 try:
-    import Configuration as Configuration
     import Utilities as Utilities
     from dao.DAO import RTKMission
 except ImportError:
-    import rtk.Configuration as Configuration   # pylint: disable=E0401
     import rtk.Utilities as Utilities           # pylint: disable=E0401
     from rtk.dao.DAO import RTKMission          # pylint: disable=E0401
-=======
-# -*- coding: utf-8 -*-
-#
-#       rtk.usage.Mission.py is part of The RTK Project
-#
-# All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
->>>>>>> master
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -68,20 +60,15 @@ class Model(object):
     A Usage Profile will consist of one or more missions.  The attributes of a
     Mission are:
 
-    :cvar dict dicMission: dictionary containing all the RTKMission models
-                           that are part of the Mission tree.  Key is the
-                           Mission ID; value is a pointer to the instance
-                           of the RTKMission model.
-
-    :ivar int last_id: the last Mission ID used in the RTK Program database.
-    :ivar dao: the `:py:class:rtk.dao.DAO` object used to communicate with the
+    :ivar tree: the :py:class:`treelib.Tree` containing all the RTKMission
+                models that are part of the Mission tree.  Node ID is the
+                Mission ID; data is the instance of the RTKMission model.
+    :ivar int _last_id: the last Mission ID used in the RTK Program database.
+    :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
                RTK Program database.
     """
 
-    # Define public class dictionary attributes.
-    dicMission = {}
-
-    def __init__(self):
+    def __init__(self, dao):
         """
         Method to initialize a Mission data model instance.
         """
@@ -91,34 +78,37 @@ class Model(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = None
-        self.last_id = None
+        self.dao = dao
+        self.tree = Tree()
 
-    def retrieve(self, mission_id):
+    def select(self, mission_id):
         """
         Method to retrieve the instance of the RTKMission data model for the
         Mission ID passed.
 
-        :param int mission_id: the ID Of the RTKMission to retrieve.
+        :param int mission_id: the ID Of the Mission to retrieve.
         :return: the instance of the RTKMission class that was requested or
                  None if the requested Mission ID does not exist.
-        :rtype: :py:class:`rtk.dao.DAO.RTKMission.Model`
+        :rtype: :py:class:`rtk.dao.RTKRevision.RTKRevision`
         """
 
         try:
-            _mission = self.dicMission[mission_id]
-        except KeyError:
+            _mission = self.tree.get_node(mission_id).data
+        except AttributeError:
+            _mission = None
+        except tree.NodeIDAbsentError:
             _mission = None
 
         return _mission
 
-    def retrieve_all(self, dao, revision_id):
+    def select_all(self, revision_id):
         """
         Method to retrieve all the RTKMissions from the RTK Program database.
 
@@ -130,17 +120,23 @@ class Model(object):
         :rtype: dict
         """
 
-        self.dao = dao
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
-        # Clear the Mission dictionary of previous Revision's Missions.
-        self.dicMission = {}
-        for _mission in self.dao.session.query(RTKMission).\
+        if self.tree.contains(0):
+            self.tree.remove_node(0)
+
+        self.tree.create_node('Missions', 0)
+        for _mission in _session.query(RTKMission).\
                 filter(RTKMission.revision_id == revision_id).all():
-            self.dicMission[_mission.mission_id] = _mission
+            self.tree.create_node(_mission.description, _mission.mission_id,
+                                  parent=0, data=_mission)
 
-        return self.dicMission
+        _session.close()
 
-    def add_mission(self, revision_id):
+        return self.tree
+
+    def insert(self, revision_id):
         """
         Method to add a Mission to the RTK Program database for Revision ID.
 
@@ -149,27 +145,23 @@ class Model(object):
         :rtype: `:py:test:rtk.dao.DAO.RTKMission`
         """
 
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
+
         _mission = RTKMission()
         _mission.revision_id = revision_id
+        (_error_code, _msg) = self.dao.db_add([_mission, ], _session)
 
-        (_error_code, _msg) = self.dao.db_add(_mission)
+        _session.close()
 
-        # If the add was successful add the new RTKMission data model instance
-        # to dicMission and log the success message to the user log.
-        # Otherwise, update the error message and write it to the error log.
         if _error_code == 0:
-            self.last_id = _mission.mission_id
-            self.dicMission[_mission.mission_id] = _mission
-            Configuration.RTK_USER_LOG.info(_msg)
-        else:
-            _msg = _msg + "  Failed to add a new Mission to the RTK Program \
-                           database."
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _mission = None
+            self.tree.create_node(_mission.description, _mission.mission_id,
+                                  parent=0, data=_mission)
+            self._last_id = _mission.mission_id
 
-        return _mission
+        return _error_code, _msg
 
-    def delete_mission(self, mission_id):
+    def delete(self, mission_id):
         """
         Method to remove the mission associated with Mission ID.
 
@@ -178,93 +170,79 @@ class Model(object):
         :rtype: bool
         """
 
-        _return = False
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
         try:
-            _mission = self.dicMission[mission_id]
-
-            (_error_code, _msg) = self.dao.db_delete(_mission)
+            _mission = self.tree.get_node(mission_id).data
+            (_error_code, _msg) = self.dao.db_delete(_mission, _session)
 
             if _error_code == 0:
-                self.dicMission.pop(mission_id)
-                Configuration.RTK_USER_LOG.info(_msg)
-            else:
-                try:
-                    _msg = _msg + "  Failed to delete Mission ID {0:d} from " \
-                            "the RTK Program database.".format(mission_id)
-                except ValueError:      # Mission ID is None.
-                    _msg = _msg + "  Failed to delete Mission ID {0:s} from "\
-                            "the RTK Program database.".format(mission_id)
-                Configuration.RTK_DEBUG_LOG.error(_msg)
-                _return = True
-        except KeyError:
-            try:
-                _msg = "Attempted to delete non-existent Mission ID {0:d}.".\
-                    format(mission_id)
-            except ValueError:      # Mission ID is None.
-                _msg = "Attempted to delete non-existent Mission ID {0:s}.". \
-                    format(mission_id)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
+                self.tree.remove_node(mission_id)
 
-        return _return
+        except AttributeError:
+            _error_code = 1000
+            _msg = 'RTK ERROR: Attempted to delete non-existent Mission ' \
+                   'ID {0:d}.'.format(mission_id)
 
-    def save_mission(self, mission_id):
+        _session.close()
+
+        return _error_code, _msg
+
+    def update(self, mission_id):
         """
         Method to update the mission associated with Mission ID to the RTK
         Program database.
 
-        :param int mission_id: the Mission ID to save to the RTK Program
-                               database.
+        :param int mission_id: the Mission ID of the Mission to save to the RTK
+                               Program database.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        _return = False
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
+                                        autoflush=True,
+                                        autocommit=False,
+                                        expire_on_commit=False)
 
         try:
-            _mission = self.dicMission[mission_id]
+            _mission = self.tree.get_node(mission_id).data
+        except AttributeError:
+            _mission = None
 
-            (_error_code, _msg) = self.dao.db_update()
+        if _mission is not None:
+            _session.add(self.tree.get_node(mission_id).data)
+            (_error_code, _msg) = self.dao.db_update(_session)
 
-            if _error_code == 0:
-                Configuration.RTK_USER_LOG.info(_msg)
-            else:
-                try:
-                    _msg = _msg + "  Failed to save Mission ID {0:d} to the \
-                                   RTK Program database".format(mission_id)
-                except ValueError:      # If the revision_id = None.
-                    _msg = _msg + "  Failed to save Mission ID {0:s} to the \
-                                   RTK Program database".format(mission_id)
-                Configuration.RTK_DEBUG_LOG.error(_msg)
-                _return = True
-        except KeyError:
-            try:
-                _msg = "Attempted to save non-existent Mission ID {0:d}.".\
-                    format(mission_id)
-            except ValueError:          # If the revision_id = None.
-                _msg = "Attempted to save non-existent Mission ID {0:s}.".\
-                    format(mission_id)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
+        else:
+            _error_code = 1000
+            _msg = 'RTK ERROR: Attempted to save non-existent Mission ID ' \
+                   '{0:d}.'.format(mission_id)
 
-        return _return
+        _session.close()
 
-    def save_all_missions(self):
+        return _error_code, _msg
+
+    def update_all(self):
         """
         Method to save all Missions to the RTK Program database.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
+        _error_code = 0
+        _msg = ''
 
-        for _mission_id in self.dicMission.keys():
-            if self.save_mission(_mission_id):
-                _return = True
+        for _node in self.tree.all_nodes():
+            _mission_id = _node.identifier
+            _error_code, _msg = self.update(_mission_id)
 
-        return _return
+            # Break if something goes wrong and return.
+            if _error_code != 0:
+                print _error_code
+
+        return _error_code, _msg
 
 
 class Mission(object):
@@ -274,9 +252,16 @@ class Mission(object):
     Mission data models.  Currently the Mission controller is unused.
     """
 
-    def __init__(self):
+    def __init__(self, dao, configuration, **kwargs):
         """
         Method to initialize a Mission controller instance.
+
+        :param dao: the RTK Program DAO instance to pass to the Mission Data
+                    Model.
+        :type dao: :py:class:`rtk.dao.DAO`
+        :param configuration: the Configuration instance associated with the
+                              current instance of the RTK application.
+        :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
         # Initialize private dictionary attributes.
@@ -284,6 +269,9 @@ class Mission(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self.__test = kwargs['test']
+        self._configuration = configuration
+        self._dtm_mission = Model(dao)
 
         # Initialize public dictionary attributes.
 

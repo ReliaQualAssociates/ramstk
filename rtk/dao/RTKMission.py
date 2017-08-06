@@ -6,9 +6,9 @@
 # All rights reserved.
 
 """
-==============================
+===============================================================================
 The RTKMission Table
-==============================
+===============================================================================
 """
 
 # Import the database models.
@@ -16,10 +16,6 @@ from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
 try:
     import Utilities as Utilities
 except ImportError:
@@ -32,7 +28,7 @@ except ImportError:
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
 class RTKMission(RTK_BASE):

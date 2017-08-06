@@ -64,3 +64,4 @@ dao.RTKUser _dao/TestRTKUser.py
 dao.RTKValidation _dao/TestRTKValidation.py
 revision.Revision TestRevision.py
 failure_definition.FailureDefinition TestFailureDefinition.py
+usage.Mission TestMission.py

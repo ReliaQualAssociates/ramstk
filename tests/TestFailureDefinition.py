@@ -117,7 +117,8 @@ class TestFailureDefinitionModel(unittest.TestCase):
         _tree = self.DUT.select_all(1)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKFailureDefinition))
+        self.assertTrue(isinstance(_tree.get_node(1).data,
+                                   RTKFailureDefinition))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
