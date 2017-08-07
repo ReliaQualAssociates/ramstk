@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestRevision.py is part of The RTK Project
+#       tests.revision.TestRevision.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -39,7 +39,7 @@ Controller algorithms and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk")
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
 
 import unittest
 from nose.plugins.attrib import attr

@@ -2,8 +2,8 @@
 
 curPath=$CWD
 projPath=$HOME'/drive_d/projects/RTK'
-testPath=$projPath'/tests/unit'
-testList=$testPath'/Unit.tests'
+testPath=$projPath'/tests'
+testList=$testPath'/unit/Unit.tests'
 excludeList=$testPath'/Excluded.dirs'
 
 noseOpts="-c $projPath/setup.cfg --exclude-dir-file=$excludedList"
