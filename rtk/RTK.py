@@ -63,6 +63,7 @@ except ImportError:
 from Configuration import Configuration
 import Utilities
 from dao.DAO import DAO
+from dao.RTKProgramInfo import RTKProgramInfo
 from dao.RTKApplication import RTKApplication
 from dao.RTKCategory import RTKCategory
 from dao.RTKCriticality import RTKCriticality
@@ -86,8 +87,8 @@ from dao.RTKUnit import RTKUnit
 from dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
 from revision.Revision import Revision
-# from usage.UsageProfile import UsageProfile
-# from failure_definition.FailureDefinition import FailureDefinition
+from usage.UsageProfile import UsageProfile
+from failure_definition.FailureDefinition import FailureDefinition
 # from function.Function import Function
 # from analyses.fmea.FMEA import FMEA
 # from requirement.Requirement import Requirement
@@ -277,30 +278,12 @@ class Model(object):
         """
         Method to read the program info table from the RTK Program database.
 
-        :return:
-        :rtype: ()
+        :return: the list of RTKProgramInfo objects for each row in the
+                 rtk_program_info table in the RTK Program database.
+        :rtype: :py:class:`dao.RTKProgramInfo.RTKProgramInfo`
         """
 
-        # Find the prefix to use for each module.
-        _query = "SELECT fld_revision_prefix, fld_function_prefix, \
-                         fld_assembly_prefix, fld_part_prefix, \
-                         fld_fmeca_prefix, fld_mode_prefix, \
-                         fld_effect_prefix, fld_cause_prefix, \
-                         fld_software_prefix \
-                  FROM rtk_program_info"
-        _prefixes = self.program_dao.db_query(_query, self.program_session)
-
-        # Find which modules are active in this program.
-        _query = "SELECT fld_revision_active, fld_function_active, \
-                         fld_requirement_active, fld_hardware_active, \
-                         fld_software_active, fld_vandv_active, \
-                         fld_testing_active, fld_fraca_active, \
-                         fld_survival_active, fld_rcm_active, \
-                         fld_rbd_active, fld_fta_active\
-                  FROM rtk_program_info"
-        _actives = self.program_dao.db_query(_query, self.program_session)
-
-        return _prefixes, _actives
+        return self.program_session.query(RTKProgramInfo).all()
 
     def open_program(self, database):
         """
@@ -717,9 +700,12 @@ class RTK(object):
         # Initialize private dictionary instance attributes.
 
         # Initialize private list instance attributes.
+        self.__test = kwargs['test']
+        self._lst_modules = ['revision', 'function', 'requirement', 'hardware',
+                             'software', 'testing', 'validation', 'incident',
+                             'survival']
 
         # Initialize private scalar instance attributes.
-        self.__test = kwargs['test']
 
         # Initialize public dictionary instance attributes.
         self.dic_controllers = {'revision': None,
@@ -840,9 +826,11 @@ class RTK(object):
         # of the slave data controllers.
         _error_code, _msg = self.rtk_model.open_program(_database)
         if _error_code == 0:
-            self.dic_controllers['revision'] = \
-                Revision(self.rtk_model.program_dao,
-                         self.RTK_CONFIGURATION, test='False')
+            pub.sendMessage('requestOpen')
+            self.dic_controllers['revision'] = Revision(
+                    self.rtk_model.program_dao,
+                    self.RTK_CONFIGURATION,
+                    test=False)
             # self.dic_controllers['function'] = Function()
             # self.dic_controllers['requirement'] = Requirement()
             # self.dic_controllers['hardware'] = HardwareBoM()
@@ -853,8 +841,14 @@ class RTK(object):
             # self.dic_controllers['survival'] = Survival()
 
             # self.dic_controllers['matrices'] = Matrix()
-            # self.dic_controllers['profile'] = UsageProfile()
-            # self.dic_controllers['definition'] = FailureDefinition()
+            self.dic_controllers['profile'] = UsageProfile(
+                    self.rtk_model.program_dao,
+                    self.RTK_CONFIGURATION,
+                    test=False)
+            self.dic_controllers['definition'] = FailureDefinition(
+                    self.rtk_model.program_dao,
+                    self.RTK_CONFIGURATION,
+                    test=False)
             # self.dic_controllers['fmea'] = FMEA()
             # self.dic_controllers['stakeholder'] = Stakeholder()
             # self.dic_controllers['allocation'] = Allocation()
@@ -864,22 +858,57 @@ class RTK(object):
             # self.dic_controllers['growth'] = Growth()
             # self.dic_controllers['action'] = Action()
             # self.dic_controllers['component'] = Component()
-            _prefixes, _actives = self.rtk_model.read_program_info()
-            for _row in _prefixes:
-                self.RTK_CONFIGURATION.RTK_PREFIX = \
-                    [_prefix for _prefix in _row]
+            _program_info = self.rtk_model.read_program_info()[0]
 
-            for _row in _actives:
-                self.RTK_CONFIGURATION.RTK_MODULES = \
-                    [_active for _active in _row]
+            self.RTK_CONFIGURATION.RTK_PREFIX['revision'] = \
+                [_program_info.revision_prefix, _program_info.revision_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['function'] = \
+                [_program_info.function_prefix, _program_info.function_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['assembly'] = \
+                [_program_info.assembly_prefix, _program_info.assembly_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['part'] = \
+                [_program_info.part_prefix, _program_info.part_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['fmeca'] = \
+                [_program_info.fmeca_prefix, _program_info.fmeca_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['mode'] = \
+                [_program_info.mode_prefix, _program_info.mode_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['effect'] = \
+                [_program_info.effect_prefix, _program_info.effect_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['cause'] = \
+                [_program_info.cause_prefix, _program_info.cause_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['software'] = \
+                [_program_info.software_prefix, _program_info.software_next_id]
 
-            # TODO: Move this code to the ModuleBook.
-            _message = _(u"Opening Program Database {0:s}"). \
-                format(self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
-            self.dic_books['moduleview'].statusbar.push(2, _message)
-            self.dic_books['moduleview'].set_title(
-                    _(u"RTK - Analyzing {0:s}").format(
-                            self.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
+            self.RTK_CONFIGURATION.RTK_MODULES['revision'] = \
+                _program_info.revision_active
+            self.RTK_CONFIGURATION.RTK_MODULES['function'] = \
+                _program_info.function_active
+            self.RTK_CONFIGURATION.RTK_MODULES['requirement'] = \
+                _program_info.requirement_active
+            self.RTK_CONFIGURATION.RTK_MODULES['hardware'] = \
+                _program_info.hardware_active
+            self.RTK_CONFIGURATION.RTK_MODULES['software'] = \
+                _program_info.software_active
+            self.RTK_CONFIGURATION.RTK_MODULES['testing'] = \
+                _program_info.testing_active
+            self.RTK_CONFIGURATION.RTK_MODULES['validation'] = \
+                _program_info.vandv_active
+            self.RTK_CONFIGURATION.RTK_MODULES['incident'] = \
+                _program_info.fraca_active
+            self.RTK_CONFIGURATION.RTK_MODULES['survival'] = \
+                _program_info.survival_active
+            self.RTK_CONFIGURATION.RTK_MODULES['rcm'] = \
+                _program_info.rcm_active
+            self.RTK_CONFIGURATION.RTK_MODULES['rbd'] = \
+                _program_info.rbd_active
+            self.RTK_CONFIGURATION.RTK_MODULES['fta'] = \
+                _program_info.fta_active
+
+            _page = 0
+            for _module in self._lst_modules:
+                if self.RTK_CONFIGURATION.RTK_MODULES[_module] == 1:
+                    self.RTK_CONFIGURATION.RTK_PAGE_NUMBER[_page] = _module
+                    _page += 1
 
             # TODO: Where to put this code for the status icon?
             _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
@@ -891,9 +920,6 @@ class RTK(object):
                       u"{0:s}.".format(
                             self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
 
-            # TODO: Move this code to the ModuleBook.
-            self.dic_books['moduleview'].statusbar.pop(2)
-
             self.loaded = True
 
             self.RTK_CONFIGURATION.RTK_USER_LOG.info(_msg)
@@ -903,7 +929,7 @@ class RTK(object):
         else:
             self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_msg)
             _return = True
-
+        print self.dic_controllers
         return _return
 
     def request_close_program(self):
@@ -1000,131 +1026,6 @@ class RTK(object):
 
     def __del__(self):
         del self
-
-    @staticmethod
-    def open_project():
-        """
-        Method to open an RTK Project database and load it into the views.
-
-        # Connect to the project database.
-        self.project_dao = DAO('')
-        self.project_dao.db_connect('sqlite:///' +
-                                    Configuration.RTK_PROG_INFO[2])
-        # self.project_dao.execute("PRAGMA foreign_keys=ON", commit=False)
-
-        # Set the data access object for each data controller.
-        self.mvwRevision.load_revision_tree(self.project_dao)
-
-        self.dtcMatrices.dao = self.project_dao
-        self.dtcRevision.dao = self.project_dao
-        self.dtcProfile.dao = self.project_dao
-        self.dtcDefinitions.dao = self.project_dao
-        self.dtcFunction.dao = self.project_dao
-        self.dtcFMEA.dao = self.project_dao
-        self.dtcRequirement.dao = self.project_dao
-        self.dtcStakeholder.dao = self.project_dao
-        self.dtcHardwareBoM.dao = self.project_dao
-        self.dtcAllocation.dao = self.project_dao
-        self.dtcHazard.dao = self.project_dao
-        self.dtcSimilarItem.dao = self.project_dao
-        # self.dtcPoF.dao = self.project_dao
-        # self.dtcSoftwareBoM.dao = self.project_dao
-        # self.dtcTesting.dao = self.project_dao
-        # self.dtcGrowth.dao = self.project_dao
-        # self.dtcValidation.dao = self.project_dao
-        # self.dtcIncident.dao = self.project_dao
-        # self.dtcAction.dao = self.project_dao
-        # self.dtcComponent.dao = self.project_dao
-        # self.dtcSurvival.dao = self.project_dao
-
-        # For the active RTK modules, load the data.  For the RTK modules
-        # that aren't active in the project, remove the page from the
-        # RTK Module view.
-        i = 0
-        for _module in _results[0]:
-            if _module == 1 and i < len(Configuration.RTK_MODULES):
-                self.module_book.load_module_page(Configuration.RTK_MODULES[i])
-                if i == 0:
-                    self.revision_id = min(
-                        self.dtcRevision.dicRevisions.keys())
-                Configuration.RTK_PAGE_NUMBER.append(i)
-            else:
-                self.module_book.notebook.remove_page(i)
-            i += 1
-
-        # Configuration.METHOD = results[0][36]
-
-        self.loaded = True
-        """
-
-        return False
-
-    @property
-    def save_project(self):
-        """
-        Method to save the entire RTK Project to the open RTK Project database.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-
-        if not self.loaded:
-            return True
-
-        self.dtcRevision.save_all_revisions()
-        self.dtcRequirement.save_all_requirements()
-        self.dtcStakeholder.save_all_inputs()
-        self.dtcFunction.save_all_functions()
-        self.dtcHardwareBoM.save_bom()
-        self.dtcSoftwareBoM.save_bom()
-        self.dtcSurvival.save_all_survivals()
-        self.dtcGrowth.save_all_tests()
-        self.dtcValidation.save_all_tasks()
-
-        # Save everything that is revision-specific for each revision.
-        for _revision_id in self.dtcRevision.dicRevisions.keys():
-            self.dtcDefinitions.save_definitions(_revision_id)
-            self.dtcProfile.save_profile(_revision_id)
-
-        # Update the next ID for each type of object.
-        _query = "UPDATE tbl_program_info \
-                  SET fld_revision_next_id={0:d}, fld_function_next_id={1:d}, \
-                      fld_assembly_next_id={2:d}, fld_part_next_id={3:d}, \
-                      fld_fmeca_next_id={4:d}, fld_mode_next_id={5:d}, \
-                      fld_effect_next_id={6:d}, fld_cause_next_id={7:d}, \
-                      fld_software_next_id={8:d} \
-                  WHERE fld_program_id={9:d}".format(
-                Configuration.RTK_PREFIX[1], Configuration.RTK_PREFIX[3],
-                Configuration.RTK_PREFIX[5], Configuration.RTK_PREFIX[7],
-                Configuration.RTK_PREFIX[9],
-                Configuration.RTK_PREFIX[11],
-                Configuration.RTK_PREFIX[13],
-                Configuration.RTK_PREFIX[15],
-                Configuration.RTK_PREFIX[17], 1)
-        self.project_dao.execute(_query, commit=True)
-
-        _query = "VACUUM"
-        self.project_dao.execute(_query, commit=False)
-        """
-
-        return False
-
-    @staticmethod
-    def load_revision(revision_id):
-        """
-        Method to load the active RTK module data whenever a new Revision is
-        selected.
-
-        :param int revision_id: the ID of the Revision to load data for.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-
-        self.revision_id = revision_id
-
-        for _moduleview in Configuration.RTK_MODULES[1:]:
-            self.module_book.load_module_page(_moduleview)
-        """
-
-        return False
 
 
 if __name__ == '__main__':

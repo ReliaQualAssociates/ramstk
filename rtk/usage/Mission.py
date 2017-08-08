@@ -92,6 +92,16 @@ class Model(object):
         self.dao = dao
         self.tree = Tree()
 
+        # Add the root to the Mission Tree().  This is neccessary to
+        # to allow multiple missions as there can only be one root node in a
+        # Tree().
+        try:
+            self.tree.create_node(tag='Missions', identifier=0,
+                                  parent=None)
+        # TODO: Create exception class to capture here.
+        except:
+            pass
+
     def select(self, mission_id):
         """
         Method to retrieve the instance of the RTKMission data model for the
@@ -125,10 +135,10 @@ class Model(object):
         _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
                                         expire_on_commit=False)
 
-        if self.tree.contains(0):
-            self.tree.remove_node(0)
+        _root = self.tree.root
+        for _node in self.tree.children(_root):
+            self.tree.remove_node(_node.identifier)
 
-        self.tree.create_node('Missions', 0)
         for _mission in _session.query(RTKMission).\
                 filter(RTKMission.revision_id == revision_id).all():
             self.tree.create_node(_mission.description, _mission.mission_id,
