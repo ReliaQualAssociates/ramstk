@@ -149,7 +149,7 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         self.move((_width / 1), (_height / 2))
 
         # Insert a page for each of the active RTK Modules.
-        for _page in ['revision']:
+        for _page in self.dic_work_views.keys():
             _object = self.dic_work_views[_page]
             self.add(_object)
 

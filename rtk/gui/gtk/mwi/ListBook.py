@@ -44,6 +44,8 @@ import sys
 import gettext
 import locale
 
+from pubsub import pub
+
 # Modules required for the GUI.
 try:
     # noinspection PyUnresolvedReferences
@@ -61,6 +63,12 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
+
+# Import other RTK modules.
+try:
+    from gui.gtk.listviews.Revision import ListView as lvwRevision
+except ImportError:
+    from rtk.gui.gtk.listviews.Revision import ListView as lvwRevision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -104,12 +112,13 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
         self._mdcRTK = controller
 
         # Initialize public dictionary attributes.
-        # self.dic_list_views = {'revision': lvwRevision(controller)}
+        self.dic_list_view = {'revision': lvwRevision(controller)}
 
         # Initialize public list attributes.
 
@@ -141,3 +150,118 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
         self.connect('delete_event', destroy)
 
         self.show_all()
+
+        pub.subscribe(self._on_module_change, 'mvw_switchedPage')
+
+    def _create_toolbar(self):
+        """
+        Creates the toolbar for the ListBook view.
+
+        :return _toolbar: the gtk.Toolbar() for the RTK ModuleBook.
+        :type _toolbar: :py:class:`gtk.Toolbar`
+        """
+
+        _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
+
+        _toolbar = gtk.Toolbar()
+
+        _position = 0
+
+        # New file button.
+        _button = gtk.ToolButton()
+        _button.set_tooltip_text(_(u"Create a new RTK Project Database."))
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/32x32/new.png')
+        _button.set_icon_widget(_image)
+        #_button.connect('clicked', CreateProject, self._mdcRTK)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        # Connect button
+        _button = gtk.ToolButton()
+        _button.set_tooltip_text(_(u"Connect to an existing RTK Project "
+                                   u"Database."))
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/32x32/open.png')
+        _button.set_icon_widget(_image)
+        #_button.connect('clicked', OpenProject, self._mdcRTK)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        # Delete button
+        _button = gtk.ToolButton()
+        _button.set_tooltip_text(_(u"Deletes an existing RTK Program "
+                                   u"Database."))
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/32x32/delete.png')
+        _button.set_icon_widget(_image)
+        #_button.connect('clicked', DeleteProject, self._mdcRTK)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
+
+        # Save button
+        _button = gtk.ToolButton()
+        _button.set_tooltip_text(_(u"Save the currently open RTK Project "
+                                   u"Database."))
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/32x32/save.png')
+        _button.set_icon_widget(_image)
+        #_button.connect('clicked', self._request_save_project)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
+
+        # Save and quit button
+        _button = gtk.ToolButton()
+        _button.set_tooltip_text(_(u"Save the currently open RTK Program "
+                                   u"Database then quits."))
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/32x32/save-exit.png')
+        _button.set_icon_widget(_image)
+        #_button.connect('clicked', self._request_save_project, True)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        # Quit without saving button
+        _button = gtk.ToolButton()
+        _button.set_tooltip_text(_(u"Quits without saving the currently open "
+                                   u"RTK Program Database."))
+        _image = gtk.Image()
+        _image.set_from_file(_icon_dir + '/32x32/exit.png')
+        _button.set_icon_widget(_image)
+        #_button.connect('clicked', destroy)
+        _toolbar.insert(_button, _position)
+
+        _toolbar.show_all()
+
+        return _toolbar
+
+    def _on_module_change(self, module=''):
+        """
+        Method to load the correct ListView for the RTK module that was
+        selected in the ModuleBook.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if self.get_child() is not None:
+            self.remove(self.get_child())
+
+        if self.dic_list_view[module] is not None:
+            self.add(self.dic_list_view[module])
+            self.dic_list_view[module].on_module_change()
+        else:
+            _return = True
+
+        return _return
+
+    def _on_switch_page(self):
+        pass

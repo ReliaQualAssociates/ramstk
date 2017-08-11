@@ -48,15 +48,18 @@ from pubsub import pub
 
 # Modules required for the GUI.
 try:
+    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
+    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
 try:
+    # noinspection PyUnresolvedReferences
     import gtk.glade
 except ImportError:
     sys.exit(1)
@@ -66,7 +69,7 @@ try:
     import gui.gtk.Widgets as Widgets
 except ImportError:
     import rtk.gui.gtk.Widgets as Widgets       # pylint: disable=E0401
-#from Assistants import AddRevision
+# from Assistants import AddRevision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -139,8 +142,8 @@ class WorkView(gtk.VBox):
         """
         Method to initialize the Work Book view for the Revision package.
 
-        :param modulebook: the :py:class:`rtk.revision.ModuleBook` to associate
-                           with this Work Book.
+        :param controller: the RTK master data controller instance.
+        :type controller: :py:class:`rtk.RTK.RTK`
         """
 
         gtk.VBox.__init__(self)
@@ -584,7 +587,7 @@ class WorkView(gtk.VBox):
         """
 
         self._dtc_revision = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_revision.request_get(revision_id)
+        _revision = self._dtc_revision.request_select(revision_id)
 
         fmt = '{0:0.' + str(self._configuration.RTK_DEC_PLACES) + 'g}'
 
@@ -649,8 +652,11 @@ class WorkView(gtk.VBox):
         :rtype: bool
         """
 
+        _index = -1
+        _text = ''
+
         self._dtc_revision = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_revision.request_get(self.revision_id)
+        _revision = self._dtc_revision.request_select(self.revision_id)
 
         entry.handler_block(self._lst_handler_id[index])
 
@@ -685,7 +691,7 @@ class WorkView(gtk.VBox):
         """
 
         # Launch the Add Revision gtk.Assistant().
-        AddRevision(self._modulebook)
+        # AddRevision(self._modulebook)
 
         return False
 
@@ -726,7 +732,7 @@ class WorkView(gtk.VBox):
                         + _msg[1] + "\n\t"
                         + _msg[2]).format(self.revision_id)
             print _prompt
-            #Widgets.rtk_error(_prompt)
+            # Widgets.rtk_error(_prompt)
             _return = True
 
         return _return
@@ -744,34 +750,18 @@ class WorkView(gtk.VBox):
 
         _return = False
 
-        (_model,
-         _row) = self._modulebook.treeview.get_selection().get_selected()
-        _path = _model.get_path(_row)
-
-        (_results,
-         _error_code) = self._dtc_revision.delete_revision(self.revision_id)
-
-        if _error_code != 0:
+        if not self._dtc_revision.request_delete(self.revision_id):
             _prompt = _(u"An error occurred when attempting to delete "
                         u"Revision {0:d}").format(self.revision_id)
-            Widgets.rtk_error(_prompt)
+            print _prompt
+            # Widgets.rtk_error(_prompt)
             _return = True
         else:
-            self._dtc_profile.dicProfiles.pop(self.revision_id)
-            self._dtc_definiions.dicDefinitions.pop(self.revision_id)
+            print "Pop usage profiles"
+            print 'Pop failure definitions'
 
             # Remove the deleted Revision from the gtk.TreeView().
-            _next_row = _model.iter_next(_row)
-
-            _model.remove(_row)
-            _model.row_deleted(_path)
-
-            if _next_row is None:
-                _next_row = _model.get_iter_root()
-            _path = _model.get_path(_next_row)
-            _column = self._modulebook.treeview.get_column(0)
-            self._modulebook.treeview.set_cursor(_path, None, False)
-            self._modulebook.treeview.row_activated(_path, _column)
+            pub.sendMessage('deletedRevision')
 
         return _return
 
@@ -788,7 +778,7 @@ class WorkView(gtk.VBox):
 
         _return = False
 
-        if self._dtc_revision.request_save(self.revision_id):
+        if self._dtc_revision.request_update(self.revision_id):
             _prompt = _(u"An error occurred while attempting to save "
                         u"Revision {0:d}").format(self.revision_id)
             Widgets.rtk_error(_prompt)

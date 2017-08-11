@@ -90,6 +90,10 @@ class RTKEnvironment(RTK_BASE):
     # Define the relationships to other tables in the RTK Program database.
     phase = relationship('RTKMissionPhase', back_populates='environment')
 
+    is_mission = False
+    is_phase = False
+    is_env = True
+
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKEnvironment data model

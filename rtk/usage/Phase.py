@@ -90,6 +90,16 @@ class Model(object):
         self.dao = dao
         self.tree = Tree()
 
+        # Add the root to the Mission Phase Tree().  This is neccessary to
+        # to allow multiple missions as there can only be one root node in a
+        # Tree().
+        try:
+            self.tree.create_node(tag='Mission Phases', identifier=0,
+                                  parent=None)
+        except(tree.MultipleRootError, tree.NodeIDAbsentError,
+               tree.DuplicatedNodeIdError):
+            pass
+
     def select(self, phase_id):
         """
         Method to retrieve the instance of the RTKMissionPhase data model for
@@ -124,10 +134,10 @@ class Model(object):
         _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
                                         expire_on_commit=False)
 
-        if self.tree.contains(0):
-            self.tree.remove_node(0)
+        _root = self.tree.root
+        for _node in self.tree.children(_root):
+            self.tree.remove_node(_node.identifier)
 
-        self.tree.create_node('Mission Phases', 0)
         for _phase in _session.query(RTKMissionPhase).\
                 filter(RTKMissionPhase.mission_id == mission_id).all():
             self.tree.create_node(_phase.name, _phase.phase_id,

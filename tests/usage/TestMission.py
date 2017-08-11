@@ -355,7 +355,7 @@ class Test01MissionController(unittest.TestCase):
     @attr(all=True, unit=False)
     def test06a_request_update_all(self):
         """
-        (TestMissionController) request_update_all() should return False on success.
+        (TestMissionController) request_update_all() should return a zero error code on success.
         """
 
         self.DUT.request_select_all(1)

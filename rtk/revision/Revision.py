@@ -535,8 +535,8 @@ class Revision(object):
         Method to request the Revision Data Model to save all RTKRevision
         model attributes to the RTK Program database.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
         return self._dtm_revision.update_all()

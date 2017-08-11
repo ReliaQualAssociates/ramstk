@@ -85,6 +85,10 @@ class RTKMissionPhase(RTK_BASE):
     environment = relationship('RTKEnvironment', back_populates='phase',
                                cascade='delete')
 
+    is_mission = False
+    is_phase = True
+    is_env = False
+
     def get_attributes(self):
         """
         Method to retrieve the current values of the Phase data model

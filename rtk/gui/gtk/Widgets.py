@@ -6,30 +6,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
@@ -80,7 +80,7 @@ __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 _ = gettext.gettext
 
 
-def make_button(height=40, width=200, label="", image='default'):
+def make_button(height=40, width=200, label="", icon=None):
     """
     Function to create gtk.Button() widgets.
 
@@ -88,7 +88,7 @@ def make_button(height=40, width=200, label="", image='default'):
     :keyword int  width: the width of the gtk.Button().  Default is 200.
     :keyword str label: the text to display on the gtk.Button().  Default is an
                         empty string.
-    :keyword str image: the image to display on the gtk.Button().  Options for
+    :keyword str icon: the image to display on the gtk.Button().  Options for
                         this argument are:
                         - add
                         - assign
@@ -100,17 +100,17 @@ def make_button(height=40, width=200, label="", image='default'):
     """
 
     if width == 0:
-        width = int((int(Configuration.PLACES) + 5) * 8)
+        width = 200
 
     _button = gtk.Button(label=label)
 
-    if image is not None:
-        if width >= 32:
-            _file_image = Configuration.ICON_DIR + '32x32/' + image + '.png'
-        else:
-            _file_image = Configuration.ICON_DIR + '16x16/' + image + '.png'
+    if icon is not None:
+        #if width >= 32:
+        #    _file_image = Configuration.ICON_DIR + '32x32/' + image + '.png'
+        #else:
+        #    _file_image = Configuration.ICON_DIR + '16x16/' + image + '.png'
         _image = gtk.Image()
-        _image.set_from_file(_file_image)
+        _image.set_from_file(icon)
         _button.set_image(_image)
 
     _button.props.width_request = width
@@ -433,7 +433,7 @@ def make_fixed():
     return _fixed
 
 
-def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
+def make_treeview(name, fmt_idx, fmt_file, bg_col='white', fg_col='black'):
     """
     Function to create gtk.TreeView() widgets.
 
@@ -454,27 +454,27 @@ def make_treeview(name, fmt_idx, bg_col='white', fg_col='black'):
 
     # Retrieve the column heading text from the format file.
     path = "/root/tree[@name='%s']/column/usertitle" % name
-    heading = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    heading = etree.parse(fmt_file).xpath(path)
 
     # Retrieve the column datatype from the format file.
     path = "/root/tree[@name='%s']/column/datatype" % name
-    datatype = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    datatype = etree.parse(fmt_file).xpath(path)
 
     # Retrieve the column position from the format file.
     path = "/root/tree[@name='%s']/column/position" % name
-    position = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    position = etree.parse(fmt_file).xpath(path)
 
     # Retrieve the cell renderer type from the format file.
     path = "/root/tree[@name='%s']/column/widget" % name
-    widget = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    widget = etree.parse(fmt_file).xpath(path)
 
     # Retrieve whether or not the column is editable from the format file.
     path = "/root/tree[@name='%s']/column/editable" % name
-    editable = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    editable = etree.parse(fmt_file).xpath(path)
 
     # Retrieve whether or not the column is visible from the format file.
     path = "/root/tree[@name='%s']/column/visible" % name
-    visible = etree.parse(Configuration.RTK_FORMAT_FILE[fmt_idx]).xpath(path)
+    visible = etree.parse(fmt_file).xpath(path)
 
     # Create a list of GObject datatypes to pass to the model.
     types = []
@@ -633,7 +633,8 @@ def format_cell(__column, cell, model, row, data):
     """
 
     if data[1] == 'gfloat':
-        fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
+        #fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
+        fmt = '{0:0.6g}'
     elif data[1] == 'gint':
         fmt = '{0:0.0f}'
     else:
@@ -1130,9 +1131,9 @@ def set_cursor(controller, cursor):
                                   - gtk.gdk.XTERM - selection bar
     """
 
-    controller.module_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.list_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.work_book.get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.dic_books['listview'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.dic_books['moduleview'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.dic_books['workview'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
 
     gtk.gdk.flush()
 
@@ -1157,7 +1158,7 @@ def rtk_error(prompt, _parent=None):
                       u"bugs@reliaqual.com with a description of the " \
                       u"problem, the workflow you are using and the error " \
                       u"log attached if the problem persists.".format(
-                          Configuration.LOG_DIR + 'RTK_error.log')
+                          Configuration.LOG_DIR + 'RTK_debug.log')
 
     _dialog = gtk.MessageDialog(_parent, gtk.DIALOG_DESTROY_WITH_PARENT,
                                 gtk.MESSAGE_ERROR, gtk.BUTTONS_CLOSE,

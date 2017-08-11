@@ -44,6 +44,8 @@ import sys
 import gettext
 import locale
 
+from pubsub import pub
+
 # Import modules required for the GUI.
 try:
     # noinspection PyUnresolvedReferences
@@ -142,8 +144,6 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.listview = None
-        self.workview = None
 
         try:
             locale.setlocale(locale.LC_ALL,
@@ -168,7 +168,6 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             _height = 2 * _height / 7
 
         self.set_default_size(_width, _height)
-
         self.set_border_width(5)
         self.set_position(gtk.WIN_POS_NONE)
         self.move(0, 0)
@@ -197,7 +196,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         self.notebook.set_tab_pos(_position)
 
         # Insert a page for each of the active RTK Modules.
-        for _page in ['revision']:
+        for _page in self.dic_module_views.keys():
             _object = self.dic_module_views[_page]
             self.notebook.insert_page(_object,
                                       tab_label=_object.hbx_tab_label,
@@ -222,6 +221,9 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         self.add(_vbox)
 
         self.show_all()
+
+        pub.subscribe(self._on_request_open, 'requestOpen')
+        pub.subscribe(self._on_open, 'openedProgram')
 
     def _create_menu(self):
         """
@@ -467,41 +469,39 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         return _toolbar
 
-    def create_module_page(self, view, controller, position):
+    def _on_request_open(self):
         """
-        Method to create a Module view page.
+        Method to set the status bar and update the progress bar when opening
+        an RTK Program database.
 
-        :param view: instance of RTK module view class to add to the RTK Work
-                     Book.
-        :param controller: the RTK module data controller for the RTK module
-                           view to use when communicating with the model.
-        :param int position: the position in the RTK Work Book to add the
-                             RTK module view.  Set to -1 to place at the end.
-        :return: RTK module view class instance.
-        :rtype: object
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        return view(controller, self, position)
+        _return = False
 
-    def load_module_page(self, view):
+        _message = _(u"Opening Program Database {0:s}"). \
+            format(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
+        self.statusbar.push(1, _message)
+        self.set_title(_(u"RTK - Analyzing {0:s}").format(
+                self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
+
+        return _return
+
+    def _on_open(self):
         """
-        Method to request the RTK module data controller retrieve the data from
-        the RTK model and load it into the RTK module view.
+        Method to update the status bar and clear the progress bar when the
+        RTK Program database has opened.
 
-        :param view: the RTK module view class instance to load with data.
-        :return:
-        :rtype:
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        _page = None
+        _return = False
 
-        if view.workbook is not None:
-            self.workview.add(view.workbook)
-            self.workview.show_all()
+        self.statusbar.pop(1)
 
-        _page = view.request_load_data()
-
-        return _page
+        return _return
 
     def _on_switch_page(self, __notebook, __page, page_num):
         """
@@ -515,35 +515,15 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
                              2 = Requirements Tree
                              3 = Hardware Tree
                              4 = Software Tree
-                             5 = Validation Tree
-                             6 = Reliability Testing Tree
-                             7 = Field Incident Tree
+                             5 = Testing Tree
+                             6 = Validation Tree
+                             7 = Incident Tree
                              8 = Survival Analyses Tree
         """
 
-        # Remove the existing List Book before adding the new one.
-        if self.listview.get_child() is not None:
-            self.listview.remove(self.listview.get_child())
+        _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[page_num]
 
-        try:
-            _listbook = Configuration.RTK_MODULES[page_num].listbook
-        except IndexError:
-            _listbook = None
-
-        if _listbook is not None:
-            self.listview.add(_listbook)
-
-        # Remove the existing Work Book before adding the new one.
-        if self.workview.get_child() is not None:
-            self.workview.remove(self.workview.get_child())
-
-        try:
-            _workbook = Configuration.RTK_MODULES[page_num].workbook
-        except IndexError:
-            _workbook = None
-
-        if _workbook is not None:
-            self.workview.add(_workbook)
+        pub.sendMessage('mvw_switchedPage', module=_module)
 
         return False
 
@@ -601,7 +581,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :return: False if successful or True if an error is encountered
         :rtype: bool
         """
-
+        # TODO: MOve this to the Hardware class.
         _hardware_id = model.get_value(row, 1)
         _hardware_model = self._mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
 

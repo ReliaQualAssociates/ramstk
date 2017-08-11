@@ -90,11 +90,11 @@ class ModuleView(gtk.ScrolledWindow):
     Project in a flat list.  The attributes of a Module Book view are:
 
     :ivar _mdcRTK: the :py:class:`rtk.RTK.RTK` data controller instance.
+    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
+                          instance for the currently running RTK.
     :ivar _dtc_revision: the :py:class:`rtk.revision.Revision.Revision` data
                          controller to use for accessing the Revision data
                          models.
-    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
-                          instance for the currently running RTK.
     :ivar _lst_col_order: list containing the order of the columns in the
                           Module View gtk.TreeView().
     :ivar hbx_tab_label: the gtk.HBox() used for the label in the ModuleBook.
@@ -114,6 +114,7 @@ class ModuleView(gtk.ScrolledWindow):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_col_order = []
 
         # Initialize private scalar attributes.
         self._mdcRTK = controller
@@ -125,6 +126,8 @@ class ModuleView(gtk.ScrolledWindow):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.hbx_tab_label = gtk.HBox()
+        self.tvw_revision = None
 
         try:
             locale.setlocale(locale.LC_ALL, self._configuration.RTK_LOCALE)
@@ -144,7 +147,6 @@ class ModuleView(gtk.ScrolledWindow):
                 _(u"Displays the list of revisions."))
         self.tvw_revision.connect('cursor_changed', self._on_row_changed,
                                   None, None)
-        # self.tvw_revision.connect('row_activated', self._on_row_changed)
         self.tvw_revision.connect('button_press_event', self._on_button_press)
 
         # Connect the cells to the callback function.
@@ -166,7 +168,6 @@ class ModuleView(gtk.ScrolledWindow):
         _label.show_all()
         _label.set_tooltip_text(_(u"Displays the program revisions."))
 
-        self.hbx_tab_label = gtk.HBox()
         self.hbx_tab_label.pack_start(_image)
         self.hbx_tab_label.pack_end(_label)
         self.hbx_tab_label.show_all()
@@ -174,10 +175,10 @@ class ModuleView(gtk.ScrolledWindow):
         self.add(self.tvw_revision)
         self.show_all()
 
-        pub.subscribe(self.on_program_open, 'openedProgram')
+        pub.subscribe(self._on_program_open, 'openedProgram')
         pub.subscribe(self.on_edit, 'wvw_editedRevision')
 
-    def on_program_open(self):
+    def _on_program_open(self):
         """
         Method to load the Revision Module Book view gtk.TreeModel() with
         Revision information when an RTK Program database is opened.
@@ -189,7 +190,7 @@ class ModuleView(gtk.ScrolledWindow):
         _return = False
 
         self._dtc_revision = self._mdcRTK.dic_controllers['revision']
-        _revisions = self._dtc_revision.request_get_all()
+        _revisions = self._dtc_revision.request_select_all()
 
         _model = self.tvw_revision.get_model()
         _model.clear()
@@ -206,6 +207,9 @@ class ModuleView(gtk.ScrolledWindow):
             _path = _model.get_path(_row)
             _column = self.tvw_revision.get_column(0)
             self.tvw_revision.row_activated(_path, _column)
+
+        _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[0]
+        pub.sendMessage('mvw_switchedPage', module=_module)
 
         return _return
 
@@ -251,7 +255,7 @@ class ModuleView(gtk.ScrolledWindow):
         """
 
         if event.button == 1:
-            self._on_row_changed(treeview, None, 0)
+            self._on_row_changed(treeview, '', gtk.TreeViewColumn())
         elif event.button == 3:
             # FIXME: See bug 190.
             pass
@@ -316,7 +320,7 @@ class ModuleView(gtk.ScrolledWindow):
         (_model, _row) = treeview.get_selection().get_selected()
 
         _revision_id = _model.get_value(_row, 0)
-        self._dtm_revision = self._dtc_revision.request_get(_revision_id)
+        self._dtm_revision = self._dtc_revision.request_select(_revision_id)
 
         pub.sendMessage('selectedRevision', revision_id=_revision_id)
 

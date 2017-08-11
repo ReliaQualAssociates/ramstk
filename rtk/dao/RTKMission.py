@@ -55,6 +55,10 @@ class RTKMission(RTK_BASE):
     revision = relationship('RTKRevision', back_populates='mission')
     phase = relationship('RTKMissionPhase', back_populates='mission')
 
+    is_mission = True
+    is_phase = False
+    is_env = False
+
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKMission data model
