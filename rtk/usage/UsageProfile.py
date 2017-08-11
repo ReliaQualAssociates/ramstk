@@ -540,4 +540,3 @@ class UsageProfile(object):
         """
 
         return  self._dtm_profile.update_all()
-
