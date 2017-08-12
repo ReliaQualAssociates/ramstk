@@ -128,7 +128,7 @@ class TestMissionModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_mission, RTKMission))
         self.assertEqual(_mission.mission_id, 1)
-        self.assertEqual(_mission.description, 'Test Mission Description')
+        self.assertEqual(_mission.description, 'Description')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -178,7 +178,7 @@ class TestMissionModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.delete(300)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2115)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
                                'Mission ID 300.')
 
@@ -209,7 +209,7 @@ class TestMissionModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.update(100)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2116)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
                                'Mission ID 100.')
 

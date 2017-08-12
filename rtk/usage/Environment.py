@@ -109,14 +109,7 @@ class Model(RTKDataModel):
         :rtype: :py:class:`rtk.dao.DAO.RTKEnvironment.Model`
         """
 
-        try:
-            _environment = self.tree.get_node(environment_id).data
-        except AttributeError:
-            _environment = None
-        except tree.NodeIDAbsentError:
-            _environment = None
-
-        return _environment
+        return RTKDataModel.select(self, environment_id)
 
     def select_all(self, phase_id):
         """
@@ -242,8 +235,6 @@ class Environment(RTKDataController):
     control one or more Environment data models.  Currently the Environment
     controller is unused.
 
-    :ivar __test: control variable used to suppress certain code during
-                  testing.
     :ivar _dtm_environment: the :py:class:`rtk.usage.Environment.Model`
                             associated with the Environment Data Controller.
     :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`

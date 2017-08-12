@@ -44,10 +44,14 @@ from treelib import Tree, tree
 try:
     import Utilities as Utilities
     from dao.RTKMissionPhase import RTKMissionPhase
+    from datamodels import RTKDataModel
+    from datamodels import RTKDataController
 except ImportError:
-    import rtk.Utilities as Utilities       # pylint: disable=E0401
+    import rtk.Utilities as Utilities               # pylint: disable=E0401
     from rtk.dao.RTKMissionPhase import \
-        RTKMissionPhase                     # pylint: disable=E0401
+        RTKMissionPhase                             # pylint: disable=E0401
+    from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
+    from rtk.datamodels import RTKDataController    # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -55,7 +59,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 
-class Model(object):
+class Model(RTKDataModel):
     """
     The Phase data model contains the attributes and methods of a mission
     phase.  A Mission will consist of one or more mission phases.  The
@@ -70,35 +74,26 @@ class Model(object):
                RTK Program database.
     """
 
+    _tag = 'Mission Phases'
+
     def __init__(self, dao):
         """
         Method to initialize a Mission Phase data model instance.
         """
+
+        RTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
-        self.tree = Tree()
-
-        # Add the root to the Mission Phase Tree().  This is neccessary to
-        # to allow multiple missions as there can only be one root node in a
-        # Tree().
-        try:
-            self.tree.create_node(tag='Mission Phases', identifier=0,
-                                  parent=None)
-        except(tree.MultipleRootError, tree.NodeIDAbsentError,
-               tree.DuplicatedNodeIdError):
-            pass
 
     def select(self, phase_id):
         """
@@ -111,14 +106,7 @@ class Model(object):
         :rtype: :py:class:`rtk.dao.DAO.RTKMissionPhase.Model`
         """
 
-        try:
-            _phase = self.tree.get_node(phase_id).data
-        except AttributeError:
-            _phase = None
-        except tree.NodeIDAbsentError:
-            _phase = None
-
-        return _phase
+        return RTKDataModel.select(self, phase_id)
 
     def select_all(self, mission_id):
         """
@@ -131,12 +119,7 @@ class Model(object):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
-        _root = self.tree.root
-        for _node in self.tree.children(_root):
-            self.tree.remove_node(_node.identifier)
+        _session = RTKDataModel.select_all(self)
 
         for _phase in _session.query(RTKMissionPhase).\
                 filter(RTKMissionPhase.mission_id == mission_id).all():
@@ -157,14 +140,10 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         _phase = RTKMissionPhase()
         _phase.mission_id = mission_id
-        _error_code, _msg = self.dao.db_add([_phase, ], _session)
 
-        _session.close()
+        _error_code, _msg = RTKDataModel.insert(self, [_phase, ])
 
         if _error_code == 0:
             self.tree.create_node(_phase.name, _phase.phase_id,
@@ -182,22 +161,17 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         try:
             _phase = self.tree.get_node(phase_id).data
-            _error_code, _msg = self.dao.db_delete(_phase, _session)
+            _error_code, _msg = RTKDataModel.delete(self, _phase)
 
             if _error_code == 0:
                 self.tree.remove_node(phase_id)
 
         except AttributeError:
-            _error_code = 1000
+            _error_code = 2225
             _msg = 'RTK ERROR: Attempted to delete non-existent Mission ' \
                    'Phase ID {0:d}.'.format(phase_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -212,26 +186,13 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-                                        autoflush=True,
-                                        autocommit=False,
-                                        expire_on_commit=False)
-
         try:
             _phase = self.tree.get_node(phase_id).data
+            _error_code, _msg = RTKDataModel.update(self, _phase)
         except AttributeError:
-            _phase = None
-
-        if _phase is not None:
-            _session.add(self.tree.get_node(phase_id).data)
-            _error_code, _msg = self.dao.db_update(_session)
-
-        else:
-            _error_code = 1000
+            _error_code = 2226
             _msg = 'RTK ERROR: Attempted to save non-existent Mission Phase ' \
                    'ID {0:d}.'.format(phase_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -247,8 +208,10 @@ class Model(object):
         _msg = ''
 
         for _node in self.tree.all_nodes():
-            _phase_id = _node.identifier
-            _error_code, _msg = self.update(_phase_id)
+            try:
+                _error_code, _msg = self.update(_node.data.phase_id)
+            except AttributeError:
+                pass
 
             # Break if something goes wrong and return.
             if _error_code != 0:
@@ -257,7 +220,7 @@ class Model(object):
         return _error_code, _msg
 
 
-class MissionPhase(object):
+class MissionPhase(RTKDataController):
     """
     The Phase controller provides an interface between the Phase data model
     and an RTK view model.  A single Phase controller can control one or more
@@ -283,13 +246,13 @@ class MissionPhase(object):
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
+        RTKDataController.__init__(self, configuration, **kwargs)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
-        self._configuration = configuration
         self._dtm_phase = Model(dao)
 
         # Initialize public dictionary attributes.

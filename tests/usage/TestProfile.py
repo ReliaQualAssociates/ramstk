@@ -98,7 +98,7 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.DUT = Model(self.dao)
 
-    @attr(all=True, unit=False)
+    @attr(all=True, unit=True)
     def test00_create(self):
         """
         (TestUsageProfileModel) __init__() should create a Usage Profile data model.
@@ -106,44 +106,52 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Model))
 
-        self.assertEqual(self.DUT.dao, None)
-        self.assertEqual(self.DUT.last_id, None)
-        self.assertTrue(isinstance(self.DUT.mission, Mission))
-        self.assertTrue(isinstance(self.DUT.phase, Phase))
-        self.assertTrue(isinstance(self.DUT.environment, Environment))
+        self.assertTrue(isinstance(self.DUT._dtm_mission, Mission))
+        self.assertTrue(isinstance(self.DUT._dtm_phase, Phase))
+        self.assertTrue(isinstance(self.DUT._dtm_environment, Environment))
+        self.assertEqual(self.DUT._last_id, None)
 
-    @attr(all=True, unit=False)
-    def test01a_select(self):
-        """
-        (TestUsageProfileModel): select() should return a Tree() on success.
-        """
+        self.assertTrue(isinstance(self.DUT.tree, Tree))
+        self.assertEqual(self.DUT.dao, self.dao)
 
-        _tre_profile = self.DUT.retrieve_profile(self.dao, 1)
-
-        self.assertTrue(isinstance(_tre_profile, Tree))
-        self.assertTrue(isinstance(_tre_profile.get_node(1).data, RTKMission))
-        self.assertEqual(_tre_profile.get_node(1).data.description,
-                         'Test Mission 1')
-        self.assertTrue(isinstance(_tre_profile.get_node(11).data,
-                                   RTKMissionPhase))
-        self.assertEqual(_tre_profile.get_node(11).data.description,
-                     'Test Phase 11')
-        self.assertTrue(isinstance(_tre_profile.get_node(111).data,
-                                   RTKEnvironment))
-        self.assertEqual(_tre_profile.get_node(111).data.name,
-                     'Test Environment 111')
-
-    @attr(all=True, unit=False)
-    def test02b_select_all_non_existent_id(self):
+    @attr(all=True, unit=True)
+    def test01a_select_all(self):
         """
         (TestUsageProfileModel): select_all() should return an empty Tree() when passed a Revision ID that doesn't exist.
         """
 
-        _tre_profile = self.DUT.retrieve_profile(self.dao, 100)
+        _tree = self.DUT.select_all(1)
 
-        self.assertTrue(isinstance(_tre_profile, Tree))
-        self.assertEqual(_tre_profile.get_node(0).tag, 'Usage Profiles')
-        self.assertEqual(_tre_profile.get_node(1), None)
+        self.assertTrue(isinstance(_tree, Tree))
+        self.assertEqual(_tree.get_node(0).tag, 'Usage Profiles')
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMission))
+        self.assertTrue(isinstance(_tree.get_node(11).data, RTKMissionPhase))
+        self.assertTrue(isinstance(_tree.get_node(111).data, RTKEnvironment))
+
+    @attr(all=True, unit=True)
+    def test01b_select_all_non_existent_id(self):
+        """
+        (TestUsageProfileModel): select_all() should return an empty Tree() when passed a Revision ID that doesn't exist.
+        """
+
+        _tree = self.DUT.select_all(100)
+
+        self.assertTrue(isinstance(_tree, Tree))
+        self.assertEqual(_tree.get_node(0).tag, 'Usage Profiles')
+        self.assertEqual(_tree.get_node(1), None)
+
+    @attr(all=True, unit=True)
+    def test02a_select(self):
+        """
+        (TestUsageProfileModel): select() should return a Tree() on success.
+        """
+
+        self.DUT.select_all(1)
+
+        _entity = self.DUT.select(1)
+
+        self.assertTrue(isinstance(_entity, RTKMission))
+        self.assertEqual(_entity.description, 'Description')
 
     @attr(all=True, unit=False)
     def test03a_add_mission_to_profile(self):
