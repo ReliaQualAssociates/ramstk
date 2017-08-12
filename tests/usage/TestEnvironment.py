@@ -221,7 +221,7 @@ class TestEnvironmentModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.update(100)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2136)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
                                'Environment ID 100.')
 

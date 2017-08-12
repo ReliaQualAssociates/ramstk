@@ -43,18 +43,20 @@ from treelib import Tree, tree
 # Import other RTK modules.
 try:
     import Utilities as Utilities
-    from dao.DAO import RTKEnvironment
+    from dao import RTKEnvironment
+    from datamodels import RTKDataModel
 except ImportError:
     import rtk.Utilities as Utilities           # pylint: disable=E0401
-    from rtk.dao.DAO import RTKEnvironment      # pylint: disable=E0401
+    from rtk.dao import RTKEnvironment          # pylint: disable=E0401
+    from rtk.datamodels import RTKDataModel     # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 
-class Model(object):
+class Model(RTKDataModel):
     """
     The Environment data model contains the attributes and methods of a mission
     phase environment.  A Phase will consist of zero or more environments.  The
@@ -69,6 +71,8 @@ class Model(object):
                RTK Program database.
     """
 
+    _tag = 'Environments'
+
     def __init__(self, dao):
         """
         Method to initialize an Environment data model instance.
@@ -78,30 +82,19 @@ class Model(object):
         :type dao: :py:class:`rtk.dao.DAO.DAO`
         """
 
+        RTKDataModel.__init__(self, dao)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
-        self.tree = Tree()
-
-        # Add the root to the Mission Phase Tree().  This is neccessary to
-        # to allow multiple missions as there can only be one root node in a
-        # Tree().
-        try:
-            self.tree.create_node(tag='Environments', identifier=0,
-                                  parent=None)
-        except(tree.MultipleRootError, tree.NodeIDAbsentError,
-               tree.DuplicatedNodeIdError):
-            pass
 
     def select(self, environment_id):
         """
@@ -161,14 +154,10 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         _environment = RTKEnvironment()
         _environment.phase_id = phase_id
-        _error_code, _msg = self.dao.db_add([_environment, ], _session)
 
-        _session.close()
+        _error_code, _msg = RTKDataModel.insert(self, [_environment, ])
 
         if _error_code == 0:
             self.tree.create_node(_environment.name,
@@ -187,12 +176,9 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         try:
             _environment = self.tree.get_node(environment_id).data
-            (_error_code, _msg) = self.dao.db_delete(_environment, _session)
+            _error_code, _msg = RTKDataModel.delete(self, _environment)
 
             if _error_code == 0:
                 self.tree.remove_node(environment_id)
@@ -201,8 +187,6 @@ class Model(object):
             _error_code = 1000
             _msg = 'RTK ERROR: Attempted to delete non-existent Environment ' \
                    'ID {0:d}.'.format(environment_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -217,26 +201,13 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-                                        autoflush=True,
-                                        autocommit=False,
-                                        expire_on_commit=False)
-
         try:
             _environment = self.tree.get_node(environment_id).data
+            _error_code, _msg = RTKDataModel.update(self, _environment)
         except AttributeError:
-            _environment = None
-
-        if _environment is not None:
-            _session.add(self.tree.get_node(environment_id).data)
-            (_error_code, _msg) = self.dao.db_update(_session)
-
-        else:
-            _error_code = 1000
+            _error_code = 2136
             _msg = 'RTK ERROR: Attempted to save non-existent Environment ' \
                    'ID {0:d}.'.format(environment_id)
-
-        _session.close()
 
         return _error_code, _msg
 
