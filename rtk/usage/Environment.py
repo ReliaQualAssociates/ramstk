@@ -38,17 +38,19 @@ Environment Module
 ###############################################################################
 """
 
-from treelib import Tree, tree
+from treelib import tree
 
 # Import other RTK modules.
 try:
     import Utilities as Utilities
     from dao import RTKEnvironment
     from datamodels import RTKDataModel
+    from datamodels import RTKDataController
 except ImportError:
-    import rtk.Utilities as Utilities           # pylint: disable=E0401
-    from rtk.dao import RTKEnvironment          # pylint: disable=E0401
-    from rtk.datamodels import RTKDataModel     # pylint: disable=E0401
+    import rtk.Utilities as Utilities               # pylint: disable=E0401
+    from rtk.dao import RTKEnvironment              # pylint: disable=E0401
+    from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
+    from rtk.datamodels import RTKDataController    # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -127,18 +129,16 @@ class Model(RTKDataModel):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
-        _root = self.tree.root
-        for _node in self.tree.children(_root):
-            self.tree.remove_node(_node.identifier)
+        _session = RTKDataModel.select_all(self)
 
         for _environment in _session.query(RTKEnvironment).\
                 filter(RTKEnvironment.phase_id == phase_id).all():
-            self.tree.create_node(_environment.name,
-                                  _environment.environment_id,
-                                  parent=0, data=_environment)
+            try:
+                self.tree.create_node(_environment.name,
+                                      _environment.environment_id,
+                                      parent=0, data=_environment)
+            except AttributeError:
+                pass
 
         _session.close()
 
@@ -223,7 +223,10 @@ class Model(RTKDataModel):
         _msg = ''
 
         for _node in self.tree.all_nodes():
-            _error_code, _msg = self.update(_node.data.environment_id)
+            try:
+                _error_code, _msg = self.update(_node.data.environment_id)
+            except AttributeError:
+                pass
 
             # Break if something goes wrong and return.
             if _error_code != 0:
@@ -232,7 +235,7 @@ class Model(RTKDataModel):
         return _error_code, _msg
 
 
-class Environment(object):
+class Environment(RTKDataController):
     """
     The Environment controller provides an interface between the Environment
     data model and an RTK view model.  A single Environment controller can
@@ -259,13 +262,13 @@ class Environment(object):
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
+        RTKDataController.__init__(self, configuration, **kwargs)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
-        self._configuration = configuration
         self._dtm_environment = Model(dao)
 
         # Initialize public dictionary attributes.

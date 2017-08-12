@@ -45,7 +45,7 @@ from treelib import Tree
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 _ = gettext.gettext
 
@@ -118,17 +118,16 @@ class RTKDataModel(object):
         """
         Base method to retrieve and build the RTK Module tree.
 
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: an SQLAlchemy session instance.
+        :rtype:
         """
-
-        _return = False
 
         _root = self.tree.root
         for _node in self.tree.children(_root):
             self.tree.remove_node(_node.identifier)
 
-        return _return
+        return self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                    expire_on_commit=False)
 
     def insert(self, entities):
         """
