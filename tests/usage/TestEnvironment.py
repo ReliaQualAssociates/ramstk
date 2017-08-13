@@ -38,7 +38,8 @@ This is the test class for testing the Environment class.
 # We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -49,8 +50,8 @@ from treelib import Tree
 import Utilities as Utilities
 from Configuration import Configuration
 from usage.Environment import Model, Environment
-from dao.DAO import DAO
-from dao.RTKEnvironment import RTKEnvironment
+from dao import DAO
+from dao import RTKEnvironment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

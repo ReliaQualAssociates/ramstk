@@ -40,7 +40,8 @@ import shutil
 import sys
 from os import environ, makedirs, name
 from os.path import dirname, isfile
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(__file__)) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr

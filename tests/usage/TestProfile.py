@@ -34,7 +34,8 @@
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -44,11 +45,11 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from dao.DAO import DAO
-from dao.RTKRevision import RTKRevision
-from dao.RTKMission import RTKMission
-from dao.RTKMissionPhase import RTKMissionPhase
-from dao.RTKEnvironment import RTKEnvironment
+from dao import DAO
+from dao import RTKRevision
+from dao import RTKMission
+from dao import RTKMissionPhase
+from dao import RTKEnvironment
 from usage.Mission import Model as Mission
 from usage.Phase import Model as Phase
 from usage.Environment import Model as Environment
@@ -153,74 +154,70 @@ class TestUsageProfileModel(unittest.TestCase):
         self.assertTrue(isinstance(_entity, RTKMission))
         self.assertEqual(_entity.description, 'Description')
 
-    @attr(all=True, unit=False)
-    def test03a_add_mission_to_profile(self):
+    @attr(all=True, unit=True)
+    def test03a_insert_mission(self):
         """
-        (TestProfile): add_profile should return a zero error code on success when adding a new Mission.
+        (TestUsageProfileModel): insert() should return a zero error code on success when adding a new Mission.
         """
 
-        self.DUT.retrieve_profile(self.dao, 1)
+        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.add_profile(0, 0, 1)
-
-        _tre_profile = self.DUT.retrieve_profile(self.dao, 1)
+        _error_code, _msg = self.DUT.insert(1, 0, 0)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "RTK SUCCESS: Adding a new item to the Usage Profile.")
+                         "RTK SUCCESS: Adding one or more items to the RTK "
+                         "Program database.")
 
-        self.assertTrue(isinstance(_tre_profile.get_node(5).data, RTKMission))
+        self.assertTrue(isinstance(self.DUT.tree.get_node(2).data, RTKMission))
 
-    @attr(all=True, unit=False)
-    def test03b_add_phase_to_profile(self):
+    @attr(all=True, unit=True)
+    def test03b_insert_phase(self):
         """
-        (TestProfile): add_profile should return a zero error code on success when adding a new Mission Phase.
+        (TestUsageProfileModel): insert() should return a zero error code on success when adding a new Mission Phase.
         """
 
-        self.DUT.retrieve_profile(self.dao, 1)
+        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.add_profile(1, 1, 1)
-
-        _tre_profile = self.DUT.retrieve_profile(self.dao, 1)
+        _error_code, _msg = self.DUT.insert(2, 1, 1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "RTK SUCCESS: Adding a new item to the Usage Profile.")
+                         "RTK SUCCESS: Adding one or more items to the RTK "
+                         "Program database.")
 
-        self.assertTrue(isinstance(_tre_profile.get_node(16).data,
+        self.assertTrue(isinstance(self.DUT.tree.get_node(12).data,
                                    RTKMissionPhase))
 
-    @attr(all=True, unit=False)
-    def test03c_add_environment_to_profile(self):
+    @attr(all=True, unit=True)
+    def test03c_insert_environment(self):
         """
-        (TestProfile): add_profile should return a zero error code on success when adding a new Environment.
+        (TestUsageProfileModel): insert() should return a zero error code on success when adding a new Environment.
         """
 
-        self.DUT.retrieve_profile(self.dao, 1)
+        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.add_profile(2, 16, 6)
-
-        _tre_profile = self.DUT.retrieve_profile(self.dao, 1)
+        _error_code, _msg = self.DUT.insert(2, 11, 2)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "RTK SUCCESS: Adding a new item to the Usage Profile.")
-        self.assertTrue(isinstance(_tre_profile.get_node(167).data,
+                         "RTK SUCCESS: Adding one or more items to the RTK "
+                         "Program database.")
+
+        self.assertTrue(isinstance(self.DUT.tree.get_node(112).data,
                                    RTKEnvironment))
 
-    @attr(all=True, unit=False)
-    def test03d_add_unknown_to_profile(self):
+    @attr(all=True, unit=True)
+    def test03d_insert_non_existent_type(self):
         """
-        (TestProfile): add_profile should return a 3001 error code when attempting to add something other than a Mission, Phase, or Environment.
+        (TestUsageProfileModel): insert() should return a 2105 error code when attempting to add something other than a Mission, Phase, or Environment.
         """
 
-        self.DUT.retrieve_profile(self.dao, 1)
+        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.add_profile(4, 0, 1)
+        _error_code, _msg = self.DUT.insert(1, 0, 4)
 
-        self.DUT.retrieve_profile(self.dao, 1)
-
-        self.assertEqual(_error_code, 3001)
+        self.assertEqual(_error_code, 2105)
         self.assertEqual(_msg,
                          "RTK ERROR: Attempted to add an item to the Usage " \
                          "Profile with an undefined indenture level.  Level " \
@@ -228,9 +225,9 @@ class TestUsageProfileModel(unittest.TestCase):
                          "1 = Mission Phase, and 2 = Environment.")
 
     @attr(all=True, unit=False)
-    def test03e_add_to_profile_no_parent_in_tree(self):
+    def test03e_insert_no_parent_in_tree(self):
         """
-        (TestProfile): add_profile should return a 3002 error code when attempting to add something to a non-existant parent Node.
+        (TestUsageProfileModel): insert() should return a 3002 error code when attempting to add something to a non-existant parent Node.
         """
 
         self.DUT.retrieve_profile(self.dao, 1)
@@ -244,70 +241,78 @@ class TestUsageProfileModel(unittest.TestCase):
                          "RTK ERROR: Creating a new node in the Usage " \
                          "Profile Tree.")
 
-    @attr(all=True, unit=False)
-    def test04a_delete_mission_from_profile(self):
+    @attr(all=True, unit=True)
+    def test04a_delete_environment(self):
         """
-        (TestProfile): delete_profile should return a zero error code on success when removing a Mission.
+        (TestUSageProfileModel): delete() should return a zero error code on success when removing an Environment.
         """
 
-        self.DUT.retrieve_profile(self.dao, 1)
+        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.delete_profile(0, 1)
-
-        self.DUT.retrieve_profile(self.dao, 1)
+        _error_code, _msg = self.DUT.delete(222)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         "RTK SUCCESS: Deleting an item from the Usage Profile.")
+                         "RTK SUCCESS: Deleting an item from the RTK Program "
+                         "database.")
 
-    @attr(all=True, unit=False)
-    def test04b_delete_unknown_from_profile(self):
+    @attr(all=True, unit=True)
+    def test04b_delete_non_existent_node_id(self):
         """
-        (TestProfile): delete_profile should return a 3003 error code when attempting to remove an unkown item from the Profile.
+        (TestUsageProfileModel): delete() should return a 2105 error code when attempting to remove a non-existant item from the Profile.
         """
 
-        self.DUT.retrieve_profile(self.dao, 1)
+        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.delete_profile(4, 1)
+        _error_code, _msg = self.DUT.delete(4)
 
-        self.DUT.retrieve_profile(self.dao, 1)
-
-        self.assertEqual(_error_code, 3003)
+        self.assertEqual(_error_code, 2105)
         self.assertEqual(_msg,
-                         "RTK ERROR: Attempted to delete an item from the " \
-                         "Usage Profile with an undefined indenture level.  " \
-                         "Level 4 was requested.  Must be one of 0 = " \
-                         "Mission, 1 = Mission Phase, and 2 = Environment.")
+                         "RTK ERROR: Attempted to delete a non-existent "
+                         "entity with Node ID 4 from the Usage Profile.")
 
-    @attr(all=True, unit=False)
-    def test04c_delete_non_existant_item_from_profile(self):
+    @attr(all=True, unit=True)
+    def test05a_update(self):
         """
-        (TestProfile): delete_profile should return a 3004 error code when attempting to remove a non-existant item from the Profile.
+        (TestUsageProfileModel): update() should return a zero error code on success.
         """
 
-        self.DUT.retrieve_profile(self.dao, 1)
+        self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.delete_profile(0, 100)
-
-        self.DUT.retrieve_profile(self.dao, 1)
-
-        self.assertEqual(_error_code, 3004)
-        self.assertEqual(_msg,
-                         "RTK ERROR: Failed to delete Node 100 from the " \
-                         "Usage Profile.")
-
-    @attr(all=True, unit=False)
-    def test05a_save_profile(self):
-        """
-        (TestProfile): save_profile should return a zero error code on success.
-        """
-
-        self.DUT.retrieve_profile(self.dao, 1)
-
-        _error_code, _msg = self.DUT.save_profile()
+        _error_code, _msg = self.DUT.update(1)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "SUCCESS: Updating the RTK Program database.")
+        self.assertEqual(_msg,
+                         "RTK SUCCESS: Updating the RTK Program database.")
+
+    @attr(all=True, unit=True)
+    def test05a_update_non_existent_node_id(self):
+        """
+        (TestUsageProfileModel): update() should return a 2106 error code when attempting to update a non-existent Node ID.
+        """
+
+        self.DUT.select_all(1)
+
+        _error_code, _msg = self.DUT.update(100)
+
+        self.assertEqual(_error_code, 2106)
+        self.assertEqual(_msg,
+                         "RTK ERROR: Attempted to save non-existent Usage "
+                         "Profile item with Node ID 100.")
+
+    @attr(all=True, unit=True)
+    def test_06a_update_all(self):
+        """
+        (TestUSageProfileModel): update_all() should return a zero error code on success.
+        """
+
+        self.DUT.select_all(1)
+
+        _error_code, _msg = self.DUT.update_all()
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Updating the RTK Program database.')
 
 
 class TestUsageProfileController(unittest.TestCase):
@@ -359,9 +364,7 @@ class TestUsageProfileController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, UsageProfile))
-        self.assertTrue(isinstance(self.DUT._dtm_mission, Mission))
-        self.assertTrue(isinstance(self.DUT._dtm_phase, Phase))
-        self.assertTrue(isinstance(self.DUT._dtm_environment, Environment))
+        self.assertTrue(isinstance(self.DUT._dtm_profile, Model))
 
     @attr(all=True, unit=True)
     def test01a_request_select_all(self):
@@ -372,13 +375,13 @@ class TestUsageProfileController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT.request_select_all(1), Tree))
 
     @attr(all=True, unit=True)
-    def test03a_request_insert(self):
+    def test03a_request_insert_mission(self):
         """
         (TestUsageProfileController) request_insert() should return False on success.
         """
 
         self.DUT.request_select_all(1)
-        self.assertFalse(self.DUT.request_insert(1, 1))
+        self.assertFalse(self.DUT.request_insert(1, 0, 0))
 
     @attr(all=True, unit=True)
     def test04a_request_delete(self):
@@ -387,16 +390,16 @@ class TestUsageProfileController(unittest.TestCase):
         """
 
         self.DUT.request_select_all(1)
-        self.assertFalse(self.DUT.request_delete(1, 2))
+        self.assertFalse(self.DUT.request_delete(2))
 
     @attr(all=True, unit=True)
     def test04a_request_delete_non_existent_id(self):
         """
-        (TestUsageProfileController) request_delete() should return True when attempting to delete a non-existent Mission.
+        (TestUsageProfileController) request_delete() should return True when attempting to delete a non-existent Node ID.
         """
 
         self.DUT.request_select_all(1)
-        self.assertTrue(self.DUT.request_delete(3, 100))
+        self.assertTrue(self.DUT.request_delete(222))
 
     @attr(all=True, unit=True)
     def test06a_request_update_all(self):

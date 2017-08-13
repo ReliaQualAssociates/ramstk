@@ -38,7 +38,8 @@ This is the test class for testing Mission module algorithms and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -49,8 +50,8 @@ from treelib import Tree
 import Utilities as Utilities
 from Configuration import Configuration
 from usage.Mission import Model, Mission
-from dao.DAO import DAO
-from dao.RTKMission import RTKMission
+from dao import DAO
+from dao import RTKMission
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

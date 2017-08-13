@@ -72,7 +72,6 @@ class RTKDataController(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._configuration = configuration
 
         # Initialize public dictionary attributes.

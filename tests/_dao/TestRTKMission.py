@@ -13,7 +13,8 @@ models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,7 +36,7 @@ class TestRTKMission(unittest.TestCase):
     """
 
     _attributes = (1, 1, 'Test Mission Description', 0.0, 'hours')
-    
+
     def setUp(self):
         """
         Sets up the test fixture for the RTKMission class.
