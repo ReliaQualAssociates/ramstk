@@ -47,10 +47,14 @@ from pubsub import pub
 # Import other RTK modules.
 try:
     import Utilities as Utilities
-    from dao.DAO import RTKFailureDefinition
+    from datamodels import RTKDataModel
+    from datamodels import RTKDataController
+    from dao import RTKFailureDefinition
 except ImportError:
     import rtk.Utilities as Utilities               # pylint: disable=E0401
-    from rtk.dao.DAO import RTKFailureDefinition    # pylint: disable=E0401
+    from rtk.dao import RTKFailureDefinition        # pylint: disable=E0401
+    from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
+    from rtk.datamodels import RTKDataController    # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -60,39 +64,33 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 _ = gettext.gettext
 
 
-class Model(object):
+class Model(RTKDataModel):
     """
     The Failure Definition data model contains the attributes and methods of a
     failure definition.  A Revision will contain zero or more definitions.  The
     attributes of a Failure Definition are:
-
-    :ivar tree: the :py:class:`treelib.Tree` containing all the RTKRevision
-                models that are part of the Revision tree.  Node ID is the
-                Revision ID; data is the instance of the RTKRevision model.
-    :ivar int _last_id: the last Revision ID used in the RTK Program database.
-    :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
-               RTK Program database.
     """
+
+    _tag = 'Failure Definitions'
 
     def __init__(self, dao):
         """
         Method to initialize a Failure Definition data model instance.
         """
 
+        RTKDataModel.__init__(self, dao)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
-        self.tree = Tree()
 
     def select(self, definition_id):
         """
@@ -107,14 +105,7 @@ class Model(object):
         :rtype: :py:class:`rtk.dao.DAO.RTKFailureDefinition`
         """
 
-        try:
-            _definition = self.tree.get_node(definition_id).data
-        except AttributeError:
-            _definition = None
-        except tree.NodeIDAbsentError:
-            _definition = None
-
-        return _definition
+        return RTKDataModel.select(self, definition_id)
 
     def select_all(self, revision_id):
         """
@@ -124,13 +115,7 @@ class Model(object):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
-        try:
-            self.tree.create_node('Failure Definitions', 0)
-        except tree.DuplicatedNodeIdError:
-            pass
+        _session = RTKDataModel.select_all(self)
 
         for _definition in _session.query(RTKFailureDefinition).filter(
                         RTKFailureDefinition.revision_id == revision_id).all():
@@ -152,14 +137,9 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         _definition = RTKFailureDefinition()
         _definition.revision_id = revision_id
-        _error_code, _msg = self.dao.db_add([_definition, ], _session)
-
-        _session.close()
+        _error_code, _msg = RTKDataModel.insert(self, [_definition, ])
 
         if _error_code == 0:
             self.tree.create_node(_definition.definition,
@@ -179,22 +159,17 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         try:
             _definition = self.tree.get_node(definition_id).data
-            (_error_code, _msg) = self.dao.db_delete(_definition, _session)
+            _error_code, _msg = RTKDataModel.delete(self, _definition)
 
             if _error_code == 0:
                 self.tree.remove_node(definition_id)
 
         except AttributeError:
-            _error_code = 1000
+            _error_code = 2005
             _msg = 'RTK ERROR: Attempted to delete non-existent Failure ' \
                    'Definition ID {0:d}.'.format(definition_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -209,26 +184,13 @@ class Model(object):
         :rtype: bool
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-                                        autoflush=True,
-                                        autocommit=False,
-                                        expire_on_commit=False)
-
         try:
             _definition = self.tree.get_node(definition_id).data
+            _error_code, _msg = RTKDataModel.update(self, _definition)
         except AttributeError:
-            _definition = None
-
-        if _definition is not None:
-            _session.add(self.tree.get_node(definition_id).data)
-            (_error_code, _msg) = self.dao.db_update(_session)
-
-        else:
-            _error_code = 1000
+            _error_code = 2207
             _msg = 'RTK ERROR: Attempted to save non-existent Failure ' \
                    'Definition ID {0:d}.'.format(definition_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -244,13 +206,19 @@ class Model(object):
         _msg = ''
 
         for _node in self.tree.all_nodes():
-            _definition_id = _node.identifier
-            _error_code, _msg = self.update(_definition_id)
+            try:
+                _error_code, _msg = self.update(_node.data.revision_id)
+            except AttributeError:
+                pass
+
+            # Break if something goes wrong and return.
+            if _error_code != 0:
+                print _error_code
 
         return _error_code, _msg
 
 
-class FailureDefinition(object):
+class FailureDefinition(RTKDataController):
     """
     The Failure Definition data controller provides an interface between the
     Failure Definition data model and an RTK view model.  A single Failure
@@ -268,13 +236,14 @@ class FailureDefinition(object):
         Method to initialize a Failure Definition data controller instance.
         """
 
+        RTKDataController.__init__(self, configuration, **kwargs)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self.__test = kwargs['test']
-        self._configuration = configuration
         self._dtm_failure_definition = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -301,7 +270,7 @@ class FailureDefinition(object):
         Definition Data Model.
 
         :return: tree; the treelib Tree() of RTKFailureDefinition models in
-                 the Failure Definitio tree.
+                 the Failure Definition tree.
         :rtype: dict
         """
 

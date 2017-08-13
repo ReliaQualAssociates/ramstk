@@ -40,7 +40,8 @@ models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -51,8 +52,8 @@ from treelib import Tree
 import Utilities as Utilities
 from Configuration import Configuration
 from failure_definition.FailureDefinition import Model, FailureDefinition
-from dao.DAO import DAO
-from dao.RTKFailureDefinition import RTKFailureDefinition
+from dao import DAO
+from dao import RTKFailureDefinition
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -182,7 +183,7 @@ class TestFailureDefinitionModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.delete(300)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
                                'Failure Definition ID 300.')
 
@@ -213,7 +214,7 @@ class TestFailureDefinitionModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.update(100)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2207)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
                                'Failure Definition ID 100.')
 
