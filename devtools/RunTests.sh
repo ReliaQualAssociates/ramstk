@@ -1,6 +1,6 @@
 #!/usr/bin/sh
 
-curPath=$CWD
+curPath=$PWD
 projPath=$HOME'/drive_d/projects/RTK'
 testPath=$curPath'/tests'
 testList=$testPath'/unit/Unit.tests'
