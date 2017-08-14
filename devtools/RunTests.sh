@@ -2,11 +2,11 @@
 
 curPath=$CWD
 projPath=$HOME'/drive_d/projects/RTK'
-testPath=$projPath'/tests'
+testPath=$curPath'/tests'
 testList=$testPath'/unit/Unit.tests'
 excludeList=$testPath'/Excluded.dirs'
 
-noseOpts="-c $projPath/setup.cfg --exclude-dir-file=$excludedList"
+noseOpts="-c $curPath/setup.cfg --exclude-dir-file=$excludedList"
 unitNoseOpts="$noseOpts --attr=unit=True --cover-package="
 integrationNoseOpts="$noseOpts --attr=integration=True --cover-package="
 
@@ -41,5 +41,5 @@ do
 done < $testList
 
 # Create the coverage XML file and upload to codacy.
-$coverage xml -o "$projPath/tests/coverage.xml"
-$codacy -r "$projPath/tests/coverage.xml"
+$coverage xml -o "$curPath/tests/coverage.xml"
+$codacy -r "$curPath/tests/coverage.xml"
