@@ -33,9 +33,9 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-############################
+###############################################################################
 Revision Package ModuleView
-############################
+###############################################################################
 """
 
 import sys
@@ -70,10 +70,7 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-try:
-    import gui.gtk.Widgets as Widgets
-except ImportError:
-    import rtk.gui.gtk.Widgets as Widgets
+from gui.gtk import rtk
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -90,8 +87,6 @@ class ModuleView(gtk.ScrolledWindow):
     Project in a flat list.  The attributes of a Module Book view are:
 
     :ivar _mdcRTK: the :py:class:`rtk.RTK.RTK` data controller instance.
-    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
-                          instance for the currently running RTK.
     :ivar _dtc_revision: the :py:class:`rtk.revision.Revision.Revision` data
                          controller to use for accessing the Revision data
                          models.
@@ -112,13 +107,15 @@ class ModuleView(gtk.ScrolledWindow):
         gtk.ScrolledWindow.__init__(self)
 
         # Initialize private dictionary attributes.
+        self._dic_icons = {'tab':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/revision.png'}
 
         # Initialize private list attributes.
         self._lst_col_order = []
 
         # Initialize private scalar attributes.
         self._mdcRTK = controller
-        self._configuration = controller.RTK_CONFIGURATION
         self._dtc_revision = None
 
         # Initialize public dictionary attributes.
@@ -130,18 +127,20 @@ class ModuleView(gtk.ScrolledWindow):
         self.tvw_revision = None
 
         try:
-            locale.setlocale(locale.LC_ALL, self._configuration.RTK_LOCALE)
+            locale.setlocale(locale.LC_ALL,
+                             controller.RTK_CONFIGURATION.RTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
         # Create the main Revision class treeview.
-        _bg_color = self._configuration.RTK_COLORS['revisionbg']
-        _fg_color = self._configuration.RTK_COLORS['revisionfg']
-        _fmt_file = self._configuration.RTK_CONF_DIR + \
-            '/' + self._configuration.RTK_FORMAT_FILE['revision']
-        (self.tvw_revision,
-         self._lst_col_order) = Widgets.make_treeview('Revision', 0, _fmt_file,
-                                                      _bg_color, _fg_color)
+        _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS['revisionbg']
+        _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS['revisionfg']
+        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
+            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['revision']
+        _fmt_path = "/root/tree[@name='Revision']/column"
+        self.tvw_revision = rtk.RTKTreeView(_fmt_path, 0, _fmt_file,
+                                            _bg_color, _fg_color)
+        self._lst_col_order = self.tvw_revision.order
 
         self.tvw_revision.set_tooltip_text(
                 _(u"Displays the list of revisions."))
@@ -156,17 +155,13 @@ class ModuleView(gtk.ScrolledWindow):
             _cell[0].connect('edited', self._on_cell_edited, i,
                              self.tvw_revision.get_model())
 
-        _icon = self._configuration.RTK_ICON_DIR + '/32x32/revision.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(self._dic_icons['tab'],
+                                                     22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
 
-        _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Revisions") + "</span>")
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the program revisions."))
+        _label = rtk.RTKLabel(_(u"Revisions"), width=-1, height=-1,
+                              tooltip=_(u"Displays the program revisions."))
 
         self.hbx_tab_label.pack_start(_image)
         self.hbx_tab_label.pack_end(_label)
@@ -176,7 +171,9 @@ class ModuleView(gtk.ScrolledWindow):
         self.show_all()
 
         pub.subscribe(self._on_program_open, 'openedProgram')
-        pub.subscribe(self.on_edit, 'wvw_editedRevision')
+        pub.subscribe(self._on_program_open, 'insertedRevision')
+        pub.subscribe(self._on_program_open, 'deletedRevision')
+        pub.subscribe(self._on_edit, 'wvw_editedRevision')
 
     def _on_program_open(self):
         """
@@ -213,7 +210,7 @@ class ModuleView(gtk.ScrolledWindow):
 
         return _return
 
-    def on_edit(self, position, new_text):
+    def _on_edit(self, position, new_text):
         """
         Method to update the Module Book gtk.TreeView() with changes to the
         Revision data model attributes.  Called by other views when the
@@ -226,7 +223,7 @@ class ModuleView(gtk.ScrolledWindow):
         :rtype: bool
         """
 
-        (_model, _row) = self.tvw_revision.get_selection().get_selected()
+        _model, _row = self.tvw_revision.get_selection().get_selected()
 
         _model.set(_row, self._lst_col_order[position], new_text)
 
@@ -317,7 +314,7 @@ class ModuleView(gtk.ScrolledWindow):
 
         _return = False
 
-        (_model, _row) = treeview.get_selection().get_selected()
+        _model, _row = treeview.get_selection().get_selected()
 
         _revision_id = _model.get_value(_row, 0)
         self._dtm_revision = self._dtc_revision.request_select(_revision_id)

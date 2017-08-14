@@ -33,24 +33,25 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-############################
+###############################################################################
 Revision Package Data Module
-############################
+###############################################################################
 """
 
 # Import modules for localization support.
 import gettext
 
-from treelib import Tree, tree
 from pubsub import pub
 
 # Import other RTK modules.
 try:
-    import Utilities as Utilities
-    from dao.DAO import RTKRevision
+    from datamodels import RTKDataModel
+    from datamodels import RTKDataController
+    from dao import RTKRevision
 except ImportError:
-    import rtk.Utilities as Utilities  # pylint: disable=E0401
-    from rtk.dao.DAO import RTKRevision  # pylint: disable=E0401
+    from rtk.dao import RTKRevision                 # pylint: disable=E0401
+    from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
+    from rtk.datamodels import RTKDataController    # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -60,39 +61,41 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 _ = gettext.gettext
 
 
-class Model(object):
+class Model(RTKDataModel):
     """
     The Revision data model contains the attributes and methods of a revision.
     An RTK Project will consist of one or more Revisions.  The attributes of a
     Revision are:
 
-    :ivar tree: the :py:class:`treelib.Tree` containing all the RTKRevision
-                models that are part of the Revision tree.  Node ID is the
-                Revision ID; data is the instance of the RTKRevision model.
     :ivar int _last_id: the last Revision ID used in the RTK Program database.
     :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
                RTK Program database.
     """
 
+    _tag = 'Revisions'
+
     def __init__(self, dao):
         """
         Method to initialize a Revision data model instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :py:class:`rtk.dao.DAO.DAO`
         """
+
+        RTKDataModel.__init__(self, dao)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
-        self.tree = Tree()
 
     def select(self, revision_id):
         """
@@ -105,14 +108,7 @@ class Model(object):
         :rtype: :py:class:`rtk.dao.RTKRevision.RTKRevision`
         """
 
-        try:
-            _revision = self.tree.get_node(revision_id).data
-        except AttributeError:
-            _revision = None
-        except tree.NodeIDAbsentError:
-            _revision = None
-
-        return _revision
+        return RTKDataModel.select(self, revision_id)
 
     def select_all(self):
         """
@@ -123,13 +119,8 @@ class Model(object):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
+        _session = RTKDataModel.select_all(self)
 
-        if self.tree.contains(0):
-            self.tree.remove_node(0)
-
-        self.tree.create_node('Revisions', 0)
         for _revision in _session.query(RTKRevision).all():
             self.tree.create_node(_revision.name, _revision.revision_id,
                                   parent=0, data=_revision)
@@ -138,7 +129,7 @@ class Model(object):
 
         return self.tree
 
-    def insert(self):
+    def insert(self, **kwargs):
         """
         Method to add a Revision to the RTK Program database.
 
@@ -146,13 +137,8 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         _revision = RTKRevision()
-        (_error_code, _msg) = self.dao.db_add([_revision, ], _session)
-
-        _session.close()
+        _error_code, _msg = RTKDataModel.insert(self, [_revision, ])
 
         if _error_code == 0:
             self.tree.create_node(_revision.name, _revision.revision_id,
@@ -170,22 +156,17 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         try:
             _revision = self.tree.get_node(revision_id).data
-            (_error_code, _msg) = self.dao.db_delete(_revision, _session)
+            _error_code, _msg = RTKDataModel.delete(self, _revision)
 
             if _error_code == 0:
                 self.tree.remove_node(revision_id)
 
         except AttributeError:
-            _error_code = 1000
+            _error_code = 2005
             _msg = 'RTK ERROR: Attempted to delete non-existent Revision ' \
                    'ID {0:d}.'.format(revision_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -199,27 +180,13 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-                                        autoflush=True,
-                                        autocommit=False,
-                                        expire_on_commit=False)
-
         try:
             _revision = self.tree.get_node(revision_id).data
-            print revision_id, _revision
+            _error_code, _msg = RTKDataModel.update(self, _revision)
         except AttributeError:
-            _revision = None
-
-        if _revision is not None:
-            _session.add(self.tree.get_node(revision_id).data)
-            (_error_code, _msg) = self.dao.db_update(_session)
-
-        else:
-            _error_code = 1000
+            _error_code = 2006
             _msg = 'RTK ERROR: Attempted to save non-existent Revision ID ' \
                    '{0:d}.'.format(revision_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -235,9 +202,10 @@ class Model(object):
         _msg = ''
 
         for _node in self.tree.all_nodes():
-            #if _node.identifier != 0:
-            _revision_id = _node.identifier
-            _error_code, _msg = self.update(_revision_id)
+            try:
+                _error_code, _msg = self.update(_node.data.revision_id)
+            except AttributeError:
+                pass
 
             # Break if something goes wrong and return.
             if _error_code != 0:
@@ -277,7 +245,7 @@ class Model(object):
             _revision.mtbf_logistics = 1.0 / _revision.hazard_rate_logistics
         except(ZeroDivisionError, OverflowError):
             _revision.mtbf_logistics = 0.0
-            _error_code = 1001
+            _error_code = 2008
             _msg = 'RTK ERROR: Zero Division or Overflow Error when ' \
                    'calculating the logistics MTBF for Revision ID ' \
                    '{0:d}.  Logistics hazard rate: {1:f}.'. \
@@ -288,7 +256,7 @@ class Model(object):
             _revision.mtbf_mission = 1.0 / _revision.hazard_rate_mission
         except(ZeroDivisionError, OverflowError):
             _revision.mtbf_mission = 0.0
-            _error_code = 1001
+            _error_code = 2008
             _msg = 'RTK ERROR: Zero Division or Overflow Error when ' \
                    'calculating the mission MTBF for Revision ID ' \
                    '{0:d}.  Mission hazard rate: {1:f}.'. \
@@ -327,7 +295,7 @@ class Model(object):
                                                    + _revision.mttr))
         except(ZeroDivisionError, OverflowError):
             _revision.availability_logistics = 1.0
-            _error_code = 1001
+            _error_code = 2009
             _msg = 'RTK ERROR: Zero Division or Overflow Error when  ' \
                    'calculating the logistics availability for Revision ID ' \
                    '{0:d}.  Logistics MTBF: {1:f} and MTTR: {2:f}.'. \
@@ -342,7 +310,7 @@ class Model(object):
                                                  + _revision.mttr))
         except(ZeroDivisionError, OverflowError):
             _revision.availability_mission = 1.0
-            _error_code = 1001
+            _error_code = 2009
             _msg = 'RTK ERROR: Zero Division or Overflow Error when ' \
                    'calculating the mission availability for Revision ID ' \
                    '{0:d}.  Mission MTBF: {1:f} and MTTR: {2:f}.'. \
@@ -376,7 +344,7 @@ class Model(object):
             _revision.cost_hour = _revision.cost / mission_time
         except(ZeroDivisionError, OverflowError):
             _revision.cost_hour = 0.0
-            _error_code = 1001
+            _error_code = 2010
             _msg = 'RTK ERROR: Zero Division Error or Overflow Error when ' \
                    'calculating the cost per mission hour for Revision ID ' \
                    '{0:d}.  Mission time: {1:f}.'. \
@@ -385,7 +353,7 @@ class Model(object):
         return _error_code, _msg
 
 
-class Revision(object):
+class Revision(RTKDataController):
     """
     The Revision data controller provides an interface between the Revision
     data model and an RTK view model.  A single Revision controller can manage
@@ -412,13 +380,14 @@ class Revision(object):
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
+        RTKDataController.__init__(self, configuration, **kwargs)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self.__test = kwargs['test']
-        self._configuration = configuration
         self._dtm_revision = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -429,7 +398,7 @@ class Revision(object):
 
     def request_select(self, revision_id):
         """
-        Method to request the Revision Data Model to retrive the RTKRevision
+        Method to request the Revision Data Model to retrieve the RTKRevision
         model associated with the Revision ID.
 
         :param int revision_id: the Revision ID to retrieve.
@@ -461,7 +430,7 @@ class Revision(object):
 
         _return = False
 
-        (_error_code, _msg) = self._dtm_revision.insert()
+        _error_code, _msg = self._dtm_revision.insert()
 
         # If the add was successful log the success message to the user log.
         # Otherwise, update the error message and write it to the debug log.
@@ -469,7 +438,7 @@ class Revision(object):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self.__test:
-                pub.sendMessage('addedRevision')
+                pub.sendMessage('insertedRevision')
         else:
             _msg = _msg + '  Failed to add a new Revision to the RTK Program \
                            database.'
@@ -490,7 +459,7 @@ class Revision(object):
 
         _return = False
 
-        (_error_code, _msg) = self._dtm_revision.delete(revision_id)
+        _error_code, _msg = self._dtm_revision.delete(revision_id)
 
         # If the delete was successful log the success message to the user log.
         # Otherwise, update the error message and log it to the debug log.
@@ -548,7 +517,6 @@ class Revision(object):
 
         :param int revision_id: the Revision ID to calculate.
         :param float mission_time: the time to use in the calculations.
-        :param float multiplier: the hazard rate multiplier.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

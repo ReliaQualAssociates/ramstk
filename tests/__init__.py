@@ -11,7 +11,8 @@ This is the test package for testing RTK.
 import sys
 import os
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(__file__)) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -22,71 +23,23 @@ import Utilities as Utilities
 
 # Import the RTK Common database table objects.
 import dao.RTKCommonDB
-from dao.RTKSiteInfo import RTKSiteInfo
-from dao.RTKUser import RTKUser
-from dao.RTKGroup import RTKGroup
-from dao.RTKEnviron import RTKEnviron
-from dao.RTKModel import RTKModel
-from dao.RTKType import RTKType
-from dao.RTKCategory import RTKCategory
-from dao.RTKSubCategory import RTKSubCategory
-from dao.RTKPhase import RTKPhase
-from dao.RTKDistribution import RTKDistribution
-from dao.RTKManufacturer import RTKManufacturer
-from dao.RTKUnit import RTKUnit
-from dao.RTKMethod import RTKMethod
-from dao.RTKCriticality import RTKCriticality
-from dao.RTKRPN import RTKRPN
-from dao.RTKLevel import RTKLevel
-from dao.RTKApplication import RTKApplication
-from dao.RTKHazards import RTKHazards
-from dao.RTKStakeholders import RTKStakeholders
-from dao.RTKStatus import RTKStatus
-from dao.RTKCondition import RTKCondition
-from dao.RTKFailureMode import RTKFailureMode
-from dao.RTKMeasurement import RTKMeasurement
-from dao.RTKLoadHistory import RTKLoadHistory
+from dao import RTKSiteInfo, RTKUser, RTKGroup, RTKEnviron, RTKModel, \
+    RTKType, RTKCategory, RTKSubCategory, RTKPhase, RTKDistribution, \
+    RTKManufacturer, RTKUnit, RTKMethod, RTKCriticality, RTKRPN, RTKLevel, \
+    RTKApplication, RTKHazards, RTKStakeholders, RTKStatus, RTKCondition, \
+    RTKFailureMode, RTKMeasurement, RTKLoadHistory
 
 # Import the RTK Program database table objects.
-from dao.RTKAction import RTKAction
-from dao.RTKAllocation import RTKAllocation
-from dao.RTKCause import RTKCause
-from dao.RTKControl import RTKControl
-from dao.RTKDesignElectric import RTKDesignElectric
-from dao.RTKDesignMechanic import RTKDesignMechanic
-from dao.RTKEnvironment import RTKEnvironment
-from dao.RTKFailureDefinition import RTKFailureDefinition
-from dao.RTKFunction import RTKFunction
-from dao.RTKGrowthTest import RTKGrowthTest
-from dao.RTKHardware import RTKHardware
-from dao.RTKHazardAnalysis import RTKHazardAnalysis
-from dao.RTKIncident import RTKIncident
-from dao.RTKIncidentAction import RTKIncidentAction
-from dao.RTKIncidentDetail import RTKIncidentDetail
-from dao.RTKMatrix import RTKMatrix
-from dao.RTKMechanism import RTKMechanism
-from dao.RTKMilHdbkF import RTKMilHdbkF
-from dao.RTKMission import RTKMission
-from dao.RTKMissionPhase import RTKMissionPhase
-from dao.RTKMode import RTKMode
-from dao.RTKNSWC import RTKNSWC
-from dao.RTKOpLoad import RTKOpLoad
-from dao.RTKOpStress import RTKOpStress
-from dao.RTKProgramInfo import RTKProgramInfo
-from dao.RTKReliability import RTKReliability
-from dao.RTKRequirement import RTKRequirement
-from dao.RTKRevision import RTKRevision
-from dao.RTKSimilarItem import RTKSimilarItem
-from dao.RTKSoftware import RTKSoftware
-from dao.RTKSoftwareDevelopment import RTKSoftwareDevelopment
-from dao.RTKSoftwareReview import RTKSoftwareReview
-from dao.RTKSoftwareTest import RTKSoftwareTest
-from dao.RTKStakeholder import RTKStakeholder
-from dao.RTKSurvival import RTKSurvival
-from dao.RTKSurvivalData import RTKSurvivalData
-from dao.RTKTest import RTKTest
-from dao.RTKTestMethod import RTKTestMethod
-from dao.RTKValidation import RTKValidation
+from dao import RTKAction, RTKAllocation, RTKCause, RTKControl, \
+    RTKDesignElectric, RTKDesignMechanic, RTKEnvironment, \
+    RTKFailureDefinition, RTKFunction, RTKGrowthTest, RTKHardware, \
+    RTKHazardAnalysis, RTKIncident, RTKIncidentAction, RTKIncidentDetail, \
+    RTKMatrix, RTKMechanism, RTKMilHdbkF, RTKMission, RTKMissionPhase, \
+    RTKMode, RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, RTKReliability, \
+    RTKRequirement, RTKRevision, RTKSimilarItem, RTKSoftware, \
+    RTKSoftwareDevelopment, RTKSoftwareReview, RTKSoftwareTest, \
+    RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest, RTKTestMethod, \
+    RTKValidation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

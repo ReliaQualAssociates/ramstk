@@ -44,9 +44,13 @@ from treelib import Tree, tree
 try:
     import Utilities as Utilities
     from dao.DAO import RTKMission
+    from datamodels import RTKDataModel
+    from datamodels import RTKDataController
 except ImportError:
-    import rtk.Utilities as Utilities           # pylint: disable=E0401
-    from rtk.dao.DAO import RTKMission          # pylint: disable=E0401
+    import rtk.Utilities as Utilities               # pylint: disable=E0401
+    from rtk.dao.DAO import RTKMission              # pylint: disable=E0401
+    from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
+    from rtk.datamodels import RTKDataController    # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -54,7 +58,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 
-class Model(object):
+class Model(RTKDataModel):
     """
     The Mission data model contains the attributes and methods of a mission.
     A Usage Profile will consist of one or more missions.  The attributes of a
@@ -68,6 +72,8 @@ class Model(object):
                RTK Program database.
     """
 
+    _tag = 'Missions'
+
     def __init__(self, dao):
         """
         Method to initialize a Mission data model instance.
@@ -77,30 +83,19 @@ class Model(object):
         :type dao: :py:class:`rtk.dao.DAO.DAO`
         """
 
+        RTKDataModel.__init__(self, dao)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
-        self.tree = Tree()
-
-        # Add the root to the Mission Tree().  This is neccessary to
-        # to allow multiple missions as there can only be one root node in a
-        # Tree().
-        try:
-            self.tree.create_node(tag='Missions', identifier=0,
-                                  parent=None)
-        except(tree.MultipleRootError, tree.NodeIDAbsentError,
-               tree.DuplicatedNodeIdError):
-            pass
 
     def select(self, mission_id):
         """
@@ -113,14 +108,7 @@ class Model(object):
         :rtype: :py:class:`rtk.dao.RTKRevision.RTKRevision`
         """
 
-        try:
-            _mission = self.tree.get_node(mission_id).data
-        except AttributeError:
-            _mission = None
-        except tree.NodeIDAbsentError:
-            _mission = None
-
-        return _mission
+        return RTKDataModel.select(self, mission_id)
 
     def select_all(self, revision_id):
         """
@@ -132,12 +120,7 @@ class Model(object):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
-        _root = self.tree.root
-        for _node in self.tree.children(_root):
-            self.tree.remove_node(_node.identifier)
+        _session = RTKDataModel.select_all(self)
 
         for _mission in _session.query(RTKMission).\
                 filter(RTKMission.revision_id == revision_id).all():
@@ -157,14 +140,10 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         _mission = RTKMission()
         _mission.revision_id = revision_id
-        _error_code, _msg = self.dao.db_add([_mission, ], _session)
 
-        _session.close()
+        _error_code, _msg = RTKDataModel.insert(self, [_mission, ])
 
         if _error_code == 0:
             self.tree.create_node(_mission.description, _mission.mission_id,
@@ -182,22 +161,17 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
-
         try:
             _mission = self.tree.get_node(mission_id).data
-            (_error_code, _msg) = self.dao.db_delete(_mission, _session)
+            _error_code, _msg = RTKDataModel.delete(self, _mission)
 
             if _error_code == 0:
                 self.tree.remove_node(mission_id)
 
         except AttributeError:
-            _error_code = 1000
+            _error_code = 2115
             _msg = 'RTK ERROR: Attempted to delete non-existent Mission ' \
                    'ID {0:d}.'.format(mission_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -212,26 +186,13 @@ class Model(object):
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-                                        autoflush=True,
-                                        autocommit=False,
-                                        expire_on_commit=False)
-
         try:
             _mission = self.tree.get_node(mission_id).data
+            _error_code, _msg = RTKDataModel.update(self, _mission)
         except AttributeError:
-            _mission = None
-
-        if _mission is not None:
-            _session.add(self.tree.get_node(mission_id).data)
-            (_error_code, _msg) = self.dao.db_update(_session)
-
-        else:
-            _error_code = 1000
+            _error_code = 2116
             _msg = 'RTK ERROR: Attempted to save non-existent Mission ID ' \
                    '{0:d}.'.format(mission_id)
-
-        _session.close()
 
         return _error_code, _msg
 
@@ -247,8 +208,10 @@ class Model(object):
         _msg = ''
 
         for _node in self.tree.all_nodes():
-            _mission_id = _node.identifier
-            _error_code, _msg = self.update(_mission_id)
+            try:
+                _error_code, _msg = self.update(_node.data.mission_id)
+            except AttributeError:
+                pass
 
             # Break if something goes wrong and return.
             if _error_code != 0:
@@ -257,14 +220,12 @@ class Model(object):
         return _error_code, _msg
 
 
-class Mission(object):
+class Mission(RTKDataController):
     """
     The Mission controller provides an interface between the Mission data model
     and an RTK view model.  A single Mission controller can control one or more
     Mission data models.  Currently the Mission controller is unused.
 
-    :ivar __test: control variable used to suppress certain code during
-                  testing.
     :ivar _dtm_mission: the :py:class:`rtk.usage.Mission.Model` associated with
                          the Mission Data Controller.
     :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
@@ -283,13 +244,13 @@ class Mission(object):
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
+        RTKDataController.__init__(self, configuration, **kwargs)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
-        self._configuration = configuration
         self._dtm_mission = Model(dao)
 
         # Initialize public dictionary attributes.

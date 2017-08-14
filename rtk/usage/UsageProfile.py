@@ -42,12 +42,15 @@ Usage Profile Module
 
 import gettext
 
-from treelib import Tree
+from pubsub import pub
 
 # Import other RTK modules.
-from Mission import Model as Mission
-from Phase import Model as Phase
-from Environment import Model as Environment
+import dao
+from datamodels import RTKDataModel
+from datamodels import RTKDataController
+from .Mission import Model as Mission
+from .Phase import Model as Phase
+from .Environment import Model as Environment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -57,7 +60,7 @@ __copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 _ = gettext.gettext
 
 
-class Model(object):
+class Model(RTKDataModel):
     """
     Class for Usage Profile data model.  This model builds a Usage Profile from
     the Mission, Phase, and Environment data models.  This is a hierarchical
@@ -76,21 +79,15 @@ class Model(object):
           |   |_Environment 121
           |   |_Environment 122
           |
-          |_Mission Phase 13
+          Mission 2
+          |
+          |_Mission Phase 21
               |
-              |_Environment 131
-              |_Environment 132
-
-    Attributes of the Usage Profile data model are:
-
-    :ivar tree: the :py:class:`treelib.Tree` containing all the RTKMission,
-                RTKPhase, and RTKEnvironment models that are part of the
-                Usage Profile tree.  Node ID is the Mission ID, Phase ID, or
-                Environment ID; data is the instance of the RTKMission,
-                RTKPhase, or RTKEnvironment model.
-    :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
-               RTK Program database.
+              |_Environment 211
+              |_Environment 212
     """
+
+    _tag = 'Usage Profiles'
 
     def __init__(self, dao):
         """
@@ -101,6 +98,8 @@ class Model(object):
         :type dao: :py:class:`rtk.dao.DAO.DAO`
         """
 
+        RTKDataModel.__init__(self, dao)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -109,56 +108,14 @@ class Model(object):
         self._dtm_mission = Mission(dao)
         self._dtm_phase = Phase(dao)
         self._dtm_environment = Environment(dao)
-        self._last_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = dao
-        self.tree = Tree()
-
-        # Add the root to the Mission Phase Tree().  This is neccessary to
-        # to allow multiple missions as there can only be one root node in a
-        # Tree().
-        try:
-            self.tree.create_node(tag='Environments', identifier=0,
-                                  parent=None)
-        except(tree.MultipleRootError, tree.NodeIDAbsentError,
-               tree.DuplicatedNodeIdError):
-            pass
-
-    def select(self, node_id):
-        """
-        Method to retrieve the instance of the RTKMission, RTKMissionPhase, or
-        RTKEnvironment data model for the Node ID passed.
-
-        :param int node_id: the Node ID Of the data package to retrieve.
-        :return: the instance of the RTKEnvironment class that was requested
-                 or None if the requested Environment ID does not exist.
-        :rtype: :py:class:`rtk.dao.DAO.RTKEnvironment.Model`
-        """
-
-        try:
-            _entity = self.tree.get_node(node_id).data
-        except AttributeError:
-            _entity = None
-        except tree.NodeIDAbsentError:
-            _entity = None
-
-        return _entity
 
     def select_all(self, revision_id):
-        """
-        Method to retrieve all the Usage Profile from the RTK Program database.
-
-        :param int revision_id: the Revision ID to select the Usage Profile
-                                for.
-        :return: tree; the treelib Tree() of RTKEnvironment data models
-                 that comprise the Environment tree.
-        :rtype: :py:class:`treelib.Tree`
-        """
         """
         Method to retrieve and build the Usage Profile tree for Revision ID.
 
@@ -168,9 +125,7 @@ class Model(object):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _root = self.tree.root
-        for _node in self.tree.children(_root):
-            self.tree.remove_node(_node.identifier)
+        RTKDataModel.select_all(self)
 
         # Build the tree.  We concatenate the Mission ID and the Phase ID to
         # create the Node() identifier for Mission Phases.  This prevents the
@@ -179,8 +134,9 @@ class Model(object):
         # same for the environment by concatenating the Environment ID with the
         # Mission ID and Phase ID.
         _missions = self._dtm_mission.select_all(revision_id).nodes
-        for _key in _missions:
-            _mission = _missions[_key].data
+
+        for _mkey in _missions:
+            _mission = _missions[_mkey].data
             if _mission is not None:
                 self.tree.create_node(tag=_mission.description,
                                       identifier=_mission.mission_id,
@@ -188,8 +144,8 @@ class Model(object):
 
                 # Add the phases, if any, to the mission.
                 _phases = self._dtm_phase.select_all(_mission.mission_id).nodes
-                for _key in _phases:
-                    _phase = _phases[_key].data
+                for _pkey in _phases:
+                    _phase = _phases[_pkey].data
                     if _phase is not None:
                         _phase_id = int(str(_mission.mission_id) +
                                         str(_phase.phase_id))
@@ -201,8 +157,8 @@ class Model(object):
                         # Add the environments, if any, to the phase.
                         _environments = self._dtm_environment.select_all(
                                 _phase.phase_id).nodes
-                        for _key in _environments:
-                            _environment = _environments[_key].data
+                        for _ekey in _environments:
+                            _environment = _environments[_ekey].data
                             if _environment is not None:
                                 _env_id = int(str(_mission.mission_id) +
                                               str(_phase.phase_id) +
@@ -217,37 +173,85 @@ class Model(object):
 
         return self.tree
 
-    def insert(self, id):
+    def insert(self, entity_id, parent_id, level):
         """
         Method to add an entity to the Usage Profile and RTK Program database..
 
-        :param int id: the Revision ID, Mission ID, Mission Phase ID to add the
-                       entity to.
+        :param int entity_id: the RTK Program database Revision ID, Mission ID,
+                              Mission Phase ID to add the entity to.
+        :param int parent_id: the Node ID of the parent node in the treelib
+                              Tree().
+        :param str level: the type of entity to add to the Usage Profile.
+                          Levels are:
+
+                          * mission
+                          * phase
+                          * environment
+
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
+        _tag = 'Tag'
+        _node_id = -1
 
-        if :
-            _entity = RTKMission()
-            _entity.revision_id = id
-        elif :
-            _entity = RTKMissionPhase()
-            _entity.mission_id = id
-        elif :
-            _entity = RTKEnvironment()
-            _environment.phase_id = id
+        if level == 'mission':
+            _entity = dao.RTKMission()
+            _entity.revision_id = entity_id
+        elif level == 'phase':
+            _entity = dao.RTKMissionPhase()
+            _entity.mission_id = entity_id
+        elif level == 'environment':
+            _entity = dao.RTKEnvironment()
+            _entity.phase_id = entity_id
+        else:
+            _entity = None
 
-        _error_code, _msg = self.dao.db_add([_entity, ], _session)
+        _error_code, _msg = RTKDataModel.insert(self, [_entity, ])
 
-        _session.close()
-#--------
-        #if _error_code == 0:
-        #    self.tree.create_node(_entity.name,
-        #                          _entity.environment_id,
-        #                          parent=0, data=_entity)
+        if level == 'mission':
+            _tag = _entity.description
+            _node_id = _entity.mission_id
+        elif level == 'phase':
+            _tag = _entity.name
+            _node_id = int(str(parent_id) + str(_entity.phase_id))
+        elif level == 'environment':
+            _tag = _entity.name
+            _node_id = int(str(parent_id) + str(_entity.environment_id))
+
+        if _error_code == 0:
+            self.tree.create_node(_tag, _node_id, parent=parent_id,
+                                  data=_entity)
+        else:
+            _error_code = 2105
+            _msg = 'RTK ERROR: Attempted to add an item to the Usage ' \
+                   'Profile with an undefined indenture level.  Level {0:s} ' \
+                   'was requested.  Must be one of mission, phase, or ' \
+                   'environment.'.format(level)
+
+        return _error_code, _msg
+
+    def delete(self, node_id):
+        """
+        Method to remove an entity from the Usage Profile and RTK Program
+        database.
+
+        :param int node_id: the Node ID of the entity to be removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        try:
+            _entity = self.tree.get_node(node_id).data
+            _error_code, _msg = RTKDataModel.delete(self, _entity)
+
+            if _error_code == 0:
+                self.tree.remove_node(node_id)
+
+        except AttributeError:
+            _error_code = 2105
+            _msg = 'RTK ERROR: Attempted to delete a non-existent entity ' \
+                   'with Node ID {0:d} from the Usage Profile.'.format(node_id)
 
         return _error_code, _msg
 
@@ -256,32 +260,19 @@ class Model(object):
         Method to update the environment associated with Phase ID to the RTK
         Program database.
 
-        :param int id: the Environment ID to save to the RTK
-                                   Program database.
+        :param int node_id: the Node ID of the entity to save to the RTK
+                            Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-                                        autoflush=True,
-                                        autocommit=False,
-                                        expire_on_commit=False)
-
         try:
             _entity = self.tree.get_node(node_id).data
+            _error_code, _msg = RTKDataModel.update(self, _entity)
         except AttributeError:
-            _entity = None
-
-        if _entity is not None:
-            _session.add(_entity)
-            (_error_code, _msg) = self.dao.db_update(_session)
-
-        else:
-            _error_code = 1000
+            _error_code = 2106
             _msg = 'RTK ERROR: Attempted to save non-existent Usage Profile ' \
-                   'ID {0:d}.'.format(node_id)
-
-        _session.close()
+                   'item with Node ID {0:d}.'.format(node_id)
 
         return _error_code, _msg
 
@@ -297,99 +288,18 @@ class Model(object):
         _error_code = 0
         _msg = ''
 
-        for _node in self.tree.all_nodes():
+        for _key in self.tree.nodes:
+            if _key != 0:
+                _error_code, _msg = self.update(_key)
 
-            _error_code, _msg = self.update(_node.identifier)
-
-            # Break if something goes wrong and return.
-            if _error_code != 0:
-                print _error_code
-
-        return _error_code, _msg
-
-    def add_profile(self, pos, pid, cid):
-        """
-        Method to add a Mission, Mission Phase, or Environment into the Usage
-        Profile.
-
-        :param int pos: the position in the treUsageProfile to add the new
-                        item; 0 = Mission, 1 = Mission Phase, 2 = Environment.
-        :param int pid: the treUsageProfile identifier that will be the parent
-                        of the newly added item.
-        :param int cid: the Revision ID, Mission ID, or Phase ID the newly
-                        added item is associated with in the RTK Program
-                        database.
-        :return: (_error_code, _msg); the error code and associated error
-                                      message.
-        :rtype: (int, str)
-        """
-
-        _nid = None
-        _item = None
-
-        _error_code = 0
-        _msg = "RTK SUCCESS: Adding a new item to the Usage Profile."
-
-        if pos == self._MISSION:
-            _item = self.mission.add_mission(cid)
-            _nid = _item.mission_id
-
-        elif pos == self._PHASE:
-            _item = self.phase.add_phase(cid)
-            _nid = int(str(pid) + str(_item.phase_id))
-
-        elif pos == self._ENVIRONMENT:
-            _item = self.environment.add_environment(cid)
-            _nid = int(str(pid) + str(_item.environment_id))
-
-        else:
-            _error_code = 3001
-            _msg = "RTK ERROR: Adding an item to the Usage Profile."
-
-        return _error_code, _msg
-
-    def delete_profile(self, pos, nid):
-        """
-        Method to remove an item (Mission, Mission Phase, Environment) and all
-        it's children from a Usage Profile.
-
-        :param int pos: the position in the treUsageProfile to add the new
-                        item; 0 = Mission, 1 = Mission Phase, 2 = Environment.
-        :param int nid: the Node() identifier and item ID (mission_id,
-                        phase_id, environment_id) to delete.
-        :return: (_error_code, _msg); the error code and associated error
-                                      message.
-        :rtype: (int, str)
-        """
-
-        _error_code = 0
-        _msg = "RTK SUCCESS: Deleting an item from the Usage Profile."
-
-        if pos == self._MISSION:
-            self.mission.delete_mission(nid)
-        elif pos == self._PHASE:
-            self.phase.delete_phase(nid)
-        elif pos == self._ENVIRONMENT:
-            self.environment.delete_environment(nid)
-        else:
-            _error_code = 3003
-            _msg = "RTK ERROR: Attempted to delete an item from the Usage " \
-                   "Profile with an undefined indenture level.  Level " \
-                   "{0:d} was requested.  Must be one of 0 = Mission, " \
-                   "1 = Mission Phase, and 2 = Environment.".format(pos)
-
-        try:
-            self.tree.remove_node(nid)
-        # TODO: Create exception class to capture here.
-        except tree.NodeIDAbsentError:
-            _error_code = 3004
-            _msg = "RTK ERROR: Failed to delete Node {0:d} from the " \
-                   "Usage Profile.".format(nid)
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print _error_code
 
         return _error_code, _msg
 
 
-class UsageProfile(object):
+class UsageProfile(RTKDataController):
     """
     The Usage Profile controller provides an interface between the Usage
     Profile data model and an RTK view model.  A single Usage Profile
@@ -415,16 +325,14 @@ class UsageProfile(object):
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
+        RTKDataController.__init__(self, configuration, **kwargs)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self.__test = kwargs['test']
-        self._configuration = configuration
-        self._dtm_mission = Mission(dao)
-        self._dtm_phase = Phase(dao)
-        self._dtm_environment = Environment(dao)
         self._dtm_profile = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -432,17 +340,6 @@ class UsageProfile(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.tree = Tree()
-
-        # Add the root to the Usage Profile Tree().  This is neccessary to
-        # to allow multiple missions for each Usage Profile (Revision) as
-        # there can only be one root node in a Tree().
-        try:
-            self.tree.create_node(tag='Usage Profiles', identifier=0,
-                                  parent=None)
-        except(tree.MultipleRootError, tree.NodeIDAbsentError,
-               tree.DuplicatedNodeIdError):
-            pass
 
     def request_select(self, node_id):
         """
@@ -453,7 +350,7 @@ class UsageProfile(object):
                  RTKEnvironment associated with node_id
         """
 
-        return self.tree.get_node(node_id).data
+        return self._dtm_profile.select(node_id)
 
     def request_select_all(self, revision_id):
         """
@@ -467,10 +364,21 @@ class UsageProfile(object):
 
         return self._dtm_profile.select_all(revision_id)
 
-    def request_insert(self):
+    def request_insert(self, entity_id, parent_id, level):
         """
         Method to request a Mission, Mission Phase, or Environment be added to
         the Usage Profile.
+
+        :param int entity_id: the RTK Program database Revision ID, Mission ID,
+                              or Mission Phase ID to add the entity to.
+        :param int parent_id: the Node ID of the parent node in the treelib
+                              Tree().
+        :param str level: the level of entity to add to the Usage Profile.
+                          Levels are:
+
+                          * mission
+                          * phase
+                          * environment
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -478,12 +386,21 @@ class UsageProfile(object):
 
         _return = False
 
-        _error_code, _msg = self._dtm_profile.insert()
+        _error_code, _msg = self._dtm_profile.insert(entity_id, parent_id,
+                                                     level)
 
         # If the add was successful log the success message to the user log.
         # Otherwise, update the error message and write it to the debug log.
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self.__test:
+                if level == 0:
+                    pub.sendMessage('addedMission')
+                elif level == 1:
+                    pub.sendMessage('addedPhase')
+                elif level == 2:
+                    pub.sendMessage('addedEnvironment')
 
         else:
             _msg = _msg + '  Failed to add a new Usage Profile entity to ' \
@@ -493,32 +410,20 @@ class UsageProfile(object):
 
         return _return
 
-    def request_delete(self, level, id):
+    def request_delete(self, node_id):
         """
         Method to request Mission, Mission Phase, or Environment and it's
         children be deleted from the Usage Profile.
 
-        :param int level: the level in the tree to add the new entity.  Levels
-                          are:
-
-                          * 1 = Mission
-                          * 2 = Mission Phase
-                          * 3 = Environment
-
-        :param int id: the Mission, Mission Phase, Environment ID to add the
-                       entity.
+        :param int node_id: the Mission, Mission Phase, Environment ID to add
+                            the entity.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
-        if level == 1:
-            (_error_code, _msg) = self._dtm_mission.delete(id)
-        elif level == 2:
-            (_error_code, _msg) = self._dtm_phase.delete(id)
-        elif level == 3:
-            (_error_code, _msg) = self._dtm_environment.delete(id)
+        _error_code, _msg = self._dtm_profile.delete(node_id)
 
         # If the delete was successful log the success message to the user log.
         # Otherwise, update the error message and log it to the debug log.
@@ -539,4 +444,16 @@ class UsageProfile(object):
         :rtype: bool
         """
 
-        return  self._dtm_profile.update_all()
+        _return = False
+
+        _error_code, _msg = self._dtm_profile.update_all()
+
+        # If the update was successful log the success message to the user log.
+        # Otherwise, update the error message and log it to the debug log.
+        if _error_code == 0:
+            self._configuration.RTK_USER_LOG.info(_msg)
+        else:
+            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            _return = True
+
+        return _return

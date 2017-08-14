@@ -39,7 +39,8 @@ Controller algorithms and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -50,8 +51,8 @@ from treelib import Tree
 import Utilities as Utilities
 from Configuration import Configuration
 from revision.Revision import Model, Revision
-from dao.DAO import DAO
-from dao.RTKRevision import RTKRevision
+from dao import DAO
+from dao import RTKRevision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -180,7 +181,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.delete(3)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
                                'Revision ID 3.')
 
@@ -211,7 +212,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.update(100)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
                                'Revision ID 100.')
 
@@ -232,7 +233,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test07a_calculate_reliability(self):
         """
-        (TestRTKRevision) calculate_reliability should return a zero error code on success.
+        (TestRevisionModel) calculate_reliability should return a zero error code on success.
         """
 
         self.DUT.select_all()
@@ -256,7 +257,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test07b_calculate_reliability_divide_by_zero(self):
         """
-        (TestRTKRevision) calculate_reliability should return a non-zero error code when attempting to divide by zero.
+        (TestRevisionModel) calculate_reliability should return a non-zero error code when attempting to divide by zero.
         """
 
         self.DUT.select_all()
@@ -265,7 +266,7 @@ class Test00RevisionModel(unittest.TestCase):
         _revision.hazard_rate_mission = 0.0
 
         _error_code, _msg = self.DUT.calculate_reliability(1, 100.0, 1.0)
-        self.assertEqual(_error_code, 1001)
+        self.assertEqual(_error_code, 2008)
         self.assertEqual(_msg, 'RTK ERROR: Zero Division or Overflow Error ' \
                                'when calculating the mission MTBF for ' \
                                'Revision ID 1.  Mission hazard rate: ' \
@@ -274,7 +275,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test08a_calculate_availability(self):
         """
-        (TestRTKRevision) calculate_availability should return a zero error code on success.
+        (TestRevisionModel) calculate_availability should return a zero error code on success.
         """
 
         self.DUT.select_all()
@@ -297,7 +298,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test08b_calculate_availability_divide_by_zero(self):
         """
-        (TestRTKRevision) calculate_availability should return a non-zero error code when attempting to divide by zero.
+        (TestRevisionModel) calculate_availability should return a non-zero error code when attempting to divide by zero.
         """
 
         self.DUT.select_all()
@@ -308,7 +309,7 @@ class Test00RevisionModel(unittest.TestCase):
         _revision.mtbf_mission = 0.0
 
         _error_code, _msg = self.DUT.calculate_availability(1)
-        self.assertEqual(_error_code, 1001)
+        self.assertEqual(_error_code, 2009)
         self.assertEqual(_msg, 'RTK ERROR: Zero Division or Overflow Error ' \
                                'when calculating the mission availability ' \
                                'for Revision ID 1.  Mission MTBF: 0.000000 ' \
@@ -317,7 +318,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test09a_calculate_costs(self):
         """
-        (TestRTKRevision) calculate_costs should return a zero error code on success.
+        (TestRevisionModel) calculate_costs should return a zero error code on success.
         """
 
         self.DUT.select_all()
@@ -346,7 +347,7 @@ class Test00RevisionModel(unittest.TestCase):
         _revision.hazard_rate_logistics = 1.0 / 547885.1632698
 
         _error_code, _msg = self.DUT.calculate_costs(1, 0.0)
-        self.assertEqual(_error_code, 1001)
+        self.assertEqual(_error_code, 2010)
         self.assertEqual(_msg, 'RTK ERROR: Zero Division Error or Overflow ' \
                                'Error when calculating the cost per mission ' \
                                'hour for Revision ID 1.  Mission time: ' \

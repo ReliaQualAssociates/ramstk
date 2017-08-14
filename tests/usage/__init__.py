@@ -1,17 +1,19 @@
 #!/usr/bin/env python -O
-"""
-This is the test package for testing RTK.
-"""
 
 # -*- coding: utf-8 -*-
 #
 #       tests.usage.__init__.py is part of The RTK Project
 #
 # All rights reserved.
+"""
+This is the test package for testing RTK.
+"""
+
 import sys
 import os
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker

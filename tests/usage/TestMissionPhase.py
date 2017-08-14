@@ -1,8 +1,4 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing the Phase class.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       TestPhase.py is part of The RTK Project
@@ -35,11 +31,15 @@ This is the test class for testing the Phase class.
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
+This is the test class for testing the Phase class.
+"""
 
 # We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -50,8 +50,8 @@ from treelib import Tree
 import Utilities as Utilities
 from Configuration import Configuration
 from usage.Phase import Model, MissionPhase
-from dao.DAO import DAO
-from dao.RTKMissionPhase import RTKMissionPhase
+from dao import DAO
+from dao import RTKMissionPhase
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -141,7 +141,7 @@ class TestPhaseModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_phase, RTKMissionPhase))
         self.assertEqual(_phase.phase_id, 1)
-        self.assertEqual(_phase.description, 'Test Mission Phase Description')
+        self.assertEqual(_phase.description, '')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -191,7 +191,7 @@ class TestPhaseModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.delete(300)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2225)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
                                'Mission Phase ID 300.')
 
@@ -222,7 +222,7 @@ class TestPhaseModel(unittest.TestCase):
 
         _error_code, _msg = self.DUT.update(100)
 
-        self.assertEqual(_error_code, 1000)
+        self.assertEqual(_error_code, 2226)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
                                'Mission Phase ID 100.')
 

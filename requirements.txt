@@ -1,4 +1,6 @@
+defusedxml
 coverage
+codacy-coverage
 lifelines
 lxml
 matplotlib==1.4.3
