@@ -41,7 +41,6 @@ Failure Definition Module
 # Import modules for localization support.
 import gettext
 
-from treelib import Tree, tree
 from pubsub import pub
 
 # Import other RTK modules.
@@ -109,9 +108,12 @@ class Model(RTKDataModel):
 
     def select_all(self, revision_id):
         """
-        Method to retrieve all the RTKMissions from the RTK Program database.
+        Method to retrieve all the RTKFailureDefinitions from the RTK Program
+        database.
 
-        :return: tree; the treelib Tree() of RTKRevision data models.
+        :param int revision_id: the Revision ID to select the Failure
+                                Definitions for.
+        :return: tree; the treelib Tree() of RTKFailureDefinition data models.
         :rtype: :py:class:`treelib.Tree`
         """
 
@@ -207,7 +209,7 @@ class Model(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.revision_id)
+                _error_code, _msg = self.update(_node.data.definition_id)
             except AttributeError:
                 pass
 
@@ -369,4 +371,14 @@ class FailureDefinition(RTKDataController):
         :rtype: bool
         """
 
-        return self._dtm_failure_definition.update_all()
+        _return = False
+
+        _error_code, _msg = self._dtm_failure_definition.update_all()
+
+        if _error_code == 0:
+            self._configuration.RTK_USER_LOG.info(_msg)
+        else:
+            self._configuration.RTK_DEBUG_LOG.error(_msg)
+            _return = True
+
+        return _return

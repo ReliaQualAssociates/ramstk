@@ -42,15 +42,15 @@ Usage Profile Module
 
 import gettext
 
+from pubsub import pub
+
 # Import other RTK modules.
-from rtk.datamodels import RTKDataModel
-from rtk.datamodels import RTKDataController
-from dao import RTKMission
-from dao import RTKMissionPhase
-from dao import RTKEnvironment
-from Mission import Model as Mission
-from Phase import Model as Phase
-from Environment import Model as Environment
+import dao
+from datamodels import RTKDataModel
+from datamodels import RTKDataController
+from .Mission import Model as Mission
+from .Phase import Model as Phase
+from .Environment import Model as Environment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -79,10 +79,12 @@ class Model(RTKDataModel):
           |   |_Environment 121
           |   |_Environment 122
           |
-          |_Mission Phase 13
+          Mission 2
+          |
+          |_Mission Phase 21
               |
-              |_Environment 131
-              |_Environment 132
+              |_Environment 211
+              |_Environment 212
     """
 
     _tag = 'Usage Profiles'
@@ -132,6 +134,7 @@ class Model(RTKDataModel):
         # same for the environment by concatenating the Environment ID with the
         # Mission ID and Phase ID.
         _missions = self._dtm_mission.select_all(revision_id).nodes
+
         for _mkey in _missions:
             _mission = _missions[_mkey].data
             if _mission is not None:
@@ -174,15 +177,16 @@ class Model(RTKDataModel):
         """
         Method to add an entity to the Usage Profile and RTK Program database..
 
-        :param int entity_id: the Revision ID, Mission ID, Mission Phase ID to
-                              add the entity to.
-        :param int parent_id: the ID of the parent node in the treelib Tree()>
-        :param int level: the type of entity to add to the Usage Profile.
+        :param int entity_id: the RTK Program database Revision ID, Mission ID,
+                              Mission Phase ID to add the entity to.
+        :param int parent_id: the Node ID of the parent node in the treelib
+                              Tree().
+        :param str level: the type of entity to add to the Usage Profile.
                           Levels are:
 
-                          * 0 = Mission
-                          * 1 = Mission Phase
-                          * 2 = Environment
+                          * mission
+                          * phase
+                          * environment
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -191,27 +195,27 @@ class Model(RTKDataModel):
         _tag = 'Tag'
         _node_id = -1
 
-        if level == 0:
-            _entity = RTKMission()
+        if level == 'mission':
+            _entity = dao.RTKMission()
             _entity.revision_id = entity_id
-        elif level == 1:
-            _entity = RTKMissionPhase()
+        elif level == 'phase':
+            _entity = dao.RTKMissionPhase()
             _entity.mission_id = entity_id
-        elif level == 2:
-            _entity = RTKEnvironment()
+        elif level == 'environment':
+            _entity = dao.RTKEnvironment()
             _entity.phase_id = entity_id
         else:
             _entity = None
 
         _error_code, _msg = RTKDataModel.insert(self, [_entity, ])
 
-        if level == 0:
+        if level == 'mission':
             _tag = _entity.description
             _node_id = _entity.mission_id
-        elif level == 1:
+        elif level == 'phase':
             _tag = _entity.name
             _node_id = int(str(parent_id) + str(_entity.phase_id))
-        elif level == 2:
+        elif level == 'environment':
             _tag = _entity.name
             _node_id = int(str(parent_id) + str(_entity.environment_id))
 
@@ -221,9 +225,9 @@ class Model(RTKDataModel):
         else:
             _error_code = 2105
             _msg = 'RTK ERROR: Attempted to add an item to the Usage ' \
-                   'Profile with an undefined indenture level.  Level {0:d} ' \
-                   'was requested.  Must be one of 0 = Mission, 1 = Mission ' \
-                   'Phase, and 2 = Environment.'.format(level)
+                   'Profile with an undefined indenture level.  Level {0:s} ' \
+                   'was requested.  Must be one of mission, phase, or ' \
+                   'environment.'.format(level)
 
         return _error_code, _msg
 
@@ -365,15 +369,16 @@ class UsageProfile(RTKDataController):
         Method to request a Mission, Mission Phase, or Environment be added to
         the Usage Profile.
 
-        :param int entity_id: the Revision ID, Mission ID, Mission Phase ID to
-                              add the entity to.
-        :param int parent_id: the ID of the parent node in the treelib Tree()>
-        :param int level: the level of entity to add to the Usage Profile.
+        :param int entity_id: the RTK Program database Revision ID, Mission ID,
+                              or Mission Phase ID to add the entity to.
+        :param int parent_id: the Node ID of the parent node in the treelib
+                              Tree().
+        :param str level: the level of entity to add to the Usage Profile.
                           Levels are:
 
-                          * 0 = Mission
-                          * 1 = Mission Phase
-                          * 2 = Environment
+                          * mission
+                          * phase
+                          * environment
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

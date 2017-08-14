@@ -1,8 +1,4 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing the Configuration module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.tests.unit.TestConfiguration.py is part of The RTK Project
@@ -35,6 +31,11 @@ This is the test class for testing the Configuration module algorithms and model
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+"""
+This is the test class for testing the Configuration module algorithms and
+models.
+"""
 
 import shutil
 import sys

@@ -162,7 +162,7 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1, 0, 0)
+        _error_code, _msg = self.DUT.insert(1, 0, 'mission')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -179,7 +179,7 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(2, 1, 1)
+        _error_code, _msg = self.DUT.insert(2, 1, 'phase')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -197,7 +197,7 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(2, 11, 2)
+        _error_code, _msg = self.DUT.insert(2, 11, 'environment')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -215,14 +215,14 @@ class TestUsageProfileModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1, 0, 4)
+        _error_code, _msg = self.DUT.insert(1, 0, 'scadamoosh')
 
         self.assertEqual(_error_code, 2105)
         self.assertEqual(_msg,
                          "RTK ERROR: Attempted to add an item to the Usage " \
                          "Profile with an undefined indenture level.  Level " \
-                         "4 was requested.  Must be one of 0 = Mission, " \
-                         "1 = Mission Phase, and 2 = Environment.")
+                         "scadamoosh was requested.  Must be one of "
+                         "mission, phase, or environment.")
 
     @attr(all=True, unit=False)
     def test03e_insert_no_parent_in_tree(self):
@@ -381,7 +381,7 @@ class TestUsageProfileController(unittest.TestCase):
         """
 
         self.DUT.request_select_all(1)
-        self.assertFalse(self.DUT.request_insert(1, 0, 0))
+        self.assertFalse(self.DUT.request_insert(1, 0, 'mission'))
 
     @attr(all=True, unit=True)
     def test04a_request_delete(self):

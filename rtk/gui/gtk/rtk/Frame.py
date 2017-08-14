@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.__init__.py is part of the RTK Project
+#       rtk.gui.gtk.rtk.Frame.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -31,3 +31,63 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+"""
+This module contains functions for creating, populating, destroying, and
+interacting with pyGTK widgets.  Import this module in other modules that
+create, populate, destroy, or interact with pyGTK widgets in the RTK
+application.  This module is specific to frame widgets.
+"""
+
+import gettext
+import sys
+
+# Modules required for the GUI.
+try:
+    from pygtk import require
+    require('2.0')
+except ImportError:
+    sys.exit(1)
+try:
+    from gtk import Frame, JUSTIFY_LEFT, Label, SHADOW_ETCHED_OUT
+except ImportError:
+    sys.exit(1)
+try:
+    import gtk.glade  # @UnusedImport
+except ImportError:
+    sys.exit(1)
+try:
+    import gobject
+except ImportError:
+    sys.exit(1)
+
+from .Label import RTKLabel
+
+__author__ = 'Andrew Rowland'
+__email__ = 'andrew.rowland@reliaqual.com'
+__organization__ = 'ReliaQual Associates, LLC'
+__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+
+_ = gettext.gettext
+
+
+class RTKFrame(gtk.Frame):
+    """
+    This is the RTK Frame class.
+    """
+
+    def __init__(self, label=_("")):
+        """
+        Method to create an RTK Frame widget.
+
+        :keyword str label: the text to display in the RTK Frame label.
+                            Default is an empty string.
+        """
+
+        Frame.__init__(self)
+
+        _label = RTKLabel(label)
+        _label.show_all()
+
+        self.set_shadow_type(SHADOW_ETCHED_OUT)
+        self.set_label_widget(_label)

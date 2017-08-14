@@ -71,10 +71,7 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-try:
-    import gui.gtk.Widgets as Widgets
-except ImportError:
-    import rtk.gui.gtk.Widgets as Widgets       # pylint: disable=E0401
+from gui.gtk import rtk
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -113,13 +110,36 @@ class ListView(gtk.VBox):
         gtk.VBox.__init__(self)
 
         # Initialize private dictionary attributes.
+        self._dic_icons = {'tab':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/revision.png',
+                           'mission':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/mission.png',
+                           'phase':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/phase.png',
+                           'environment':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/environment.png',
+                           'add':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/add.png',
+                           'remove':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/remove.png',
+                           'save':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/save.png',
+                           'error':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/error.png'}
 
         # Initialize private list attributes.
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
         self._mdcRTK = controller
-        self._configuration = controller.RTK_CONFIGURATION
         self._dtc_failure_definition = None
         self._revision_id = None
 
@@ -131,7 +151,8 @@ class ListView(gtk.VBox):
         self.tvw_definition = gtk.TreeView()
 
         try:
-            locale.setlocale(locale.LC_ALL, self._configuration.RTK_LOCALE)
+            locale.setlocale(locale.LC_ALL,
+                             controller.RTK_CONFIGURATION.RTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -186,8 +207,8 @@ class ListView(gtk.VBox):
         self.tvw_definition.connect('button_press_event',
                                     self._on_button_press)
 
-        _icon = self._configuration.RTK_ICON_DIR + '/32x32/revision.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
+        _icon = gtk.gdk.pixbuf_new_from_file_at_size(self._dic_icons['tab'],
+                                                     22, 22)
         _image = gtk.Image()
         _image.set_from_pixbuf(_icon)
 
@@ -201,7 +222,7 @@ class ListView(gtk.VBox):
                                   u"selected revision."))
 
         self.hbx_tab_label = gtk.HBox()
-        self.hbx_tab_label.pack_start(_image)
+        # self.hbx_tab_label.pack_start(_image)
         self.hbx_tab_label.pack_end(_label)
         self.hbx_tab_label.show_all()
 
@@ -216,8 +237,6 @@ class ListView(gtk.VBox):
         self.show_all()
 
         pub.subscribe(self._on_select_revision, 'selectedRevision')
-        pub.subscribe(self._on_insert_definition, 'insertedDefinition')
-        pub.subscribe(self._on_delete_definition, 'deletedDefinition')
 
     def _create_toolbar(self):
         """
@@ -228,8 +247,6 @@ class ListView(gtk.VBox):
         :rtype: :py:class:`gtk.Toolbar`
         """
 
-        _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
-
         _toolbar = gtk.Toolbar()
 
         _position = 0
@@ -238,7 +255,7 @@ class ListView(gtk.VBox):
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Add a new failure definition."))
         _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/add.png')
+        _image.set_from_file(self._dic_icons['add'])
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_insert)
         _toolbar.insert(_button, _position)
@@ -249,7 +266,7 @@ class ListView(gtk.VBox):
         _button.set_tooltip_text(_(u"Deletes the selected failure "
                                    u"definition."))
         _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/delete.png')
+        _image.set_from_file(self._dic_icons['remove'])
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_delete)
         _toolbar.insert(_button, _position)
@@ -260,7 +277,7 @@ class ListView(gtk.VBox):
         _button.set_tooltip_text(_(u"Save changes to the failure "
                                    u"definitions."))
         _image = gtk.Image()
-        _image.set_from_file(_icon_dir + '/32x32/save.png')
+        _image.set_from_file(self._dic_icons['save'])
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_update_all)
         _toolbar.insert(_button, _position)
@@ -308,66 +325,25 @@ class ListView(gtk.VBox):
 
         return _return
 
-    def _on_insert_definition(self):
-        """
-        Method to add the new Failure Definition to the gtk.TreeModel().
-
-        :return: False if successful or True if an error is encountered.
-        :rrype: bool
-        """
-
-        _return = False
-
-        _key = self._dtc_failure_definition.last_id
-        _definition = self._dtc_failure_definition.request_select(_key)
-
-        _model = self.tvw_definition.get_model()
-        _model.append([_definition.definition_id,
-                       _definition.definition])
-
-        return _return
-
-    def _on_delete_definition(self):
-        """
-        Method to remove the selected Failure Definition from the
-        gtk.TreeMode().
-
-        :return: False if successful or True if an error is encountered.
-        :rrype: bool
-        """
-
-        _return = False
-
-        _selection = self.tvw_definition.get_selection()
-        _model, _paths = _selection.get_selected_rows()
-
-        # Get the TreeIter instance for each path
-        for _path in _paths:
-            _iter = _model.get_iter(_path)
-            _model.remove(_iter)
-
-        return _return
-
     @staticmethod
-    def _on_button_press(treeview, event):
+    def _on_button_press(__treeview, event):
         """
         Method for handling mouse clicks on the Failure Definition package
         ListView gtk.TreeView().
 
-        :param  treeview: the Failure Definition ListView
-                          :py:class:`gtk.TreeView`.
-        :param gtk.gdk.Event event: the gtk.gdk.Event() that called this method
-                                    (the important attribute is which mouse
-                                    button was clicked).
+        :param __treeview: the Failure Definition ListView gtk.TreeView().
+        :type __treeview: :py:class:`gtk.TreeView`.
+        :param event: the gtk.gdk.Event() that called this method (the
+                      important attribute is which mouse button was clicked).
 
-                                    * 1 = left
-                                    * 2 = scrollwheel
-                                    * 3 = right
-                                    * 4 = forward
-                                    * 5 = backward
-                                    * 8 =
-                                    * 9 =
-
+                      * 1 = left
+                      * 2 = scrollwheel
+                      * 3 = right
+                      * 4 = forward
+                      * 5 = backward
+                      * 8 =
+                      * 9 =
+        :type event: :py:class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -425,7 +401,19 @@ class ListView(gtk.VBox):
         :rtype: bool
         """
 
-        return self._dtc_failure_definition.request_insert(self._revision_id)
+        _return = False
+
+        if not self._dtc_failure_definition.request_insert(self._revision_id):
+            self._on_select_revision(self._revision_id)
+        else:
+            _prompt = _(u"An error occurred attempting to add a failure "
+                        u"definition to Revision {0:d}.").\
+                format(self._revision_id)
+            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+
+            _return = True
+
+        return _return
 
     def _request_delete(self, __button):
         """
@@ -437,10 +425,22 @@ class ListView(gtk.VBox):
         :rtype: bool
         """
 
+        _return = False
+
         _model, _row = self.tvw_definition.get_selection().get_selected()
         _definition_id = _model.get_value(_row, 0)
 
-        return self._dtc_failure_definition.request_delete(_definition_id)
+        if not self._dtc_failure_definition.request_delete(_definition_id):
+            self._on_select_revision(self._revision_id)
+        else:
+            _prompt = _(u"An error occurred attempting to delete failure "
+                        u"definition {0:d} to Revision {1:d}.").\
+                format(_definition_id, self._revision_id)
+            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+
+            _return = True
+
+        return _return
 
     def _request_update_all(self, __button):
         """
@@ -452,4 +452,16 @@ class ListView(gtk.VBox):
         :rtype: bool
         """
 
-        return self._dtc_failure_definition.request_update_all()
+        _return = False
+
+        if not self._dtc_failure_definition.request_update_all():
+            self._on_select_revision(self._revision_id)
+        else:
+            _prompt = _(u"An error occurred attempting to save the failure "
+                        u"definitions for Revision {0:d}.").\
+                format(self._revision_id)
+            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+
+            _return = True
+
+        return _return

@@ -33,25 +33,22 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-############################
+###############################################################################
 Revision Package Data Module
-############################
+###############################################################################
 """
 
 # Import modules for localization support.
 import gettext
 
-from treelib import Tree, tree
 from pubsub import pub
 
 # Import other RTK modules.
 try:
-    import Utilities as Utilities
     from datamodels import RTKDataModel
     from datamodels import RTKDataController
     from dao import RTKRevision
 except ImportError:
-    import rtk.Utilities as Utilities               # pylint: disable=E0401
     from rtk.dao import RTKRevision                 # pylint: disable=E0401
     from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
     from rtk.datamodels import RTKDataController    # pylint: disable=E0401
@@ -70,9 +67,6 @@ class Model(RTKDataModel):
     An RTK Project will consist of one or more Revisions.  The attributes of a
     Revision are:
 
-    :ivar tree: the :py:class:`treelib.Tree` containing all the RTKRevision
-                models that are part of the Revision tree.  Node ID is the
-                Revision ID; data is the instance of the RTKRevision model.
     :ivar int _last_id: the last Revision ID used in the RTK Program database.
     :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
                RTK Program database.
@@ -135,7 +129,7 @@ class Model(RTKDataModel):
 
         return self.tree
 
-    def insert(self):
+    def insert(self, **kwargs):
         """
         Method to add a Revision to the RTK Program database.
 
@@ -444,7 +438,7 @@ class Revision(RTKDataController):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self.__test:
-                pub.sendMessage('addedRevision')
+                pub.sendMessage('insertedRevision')
         else:
             _msg = _msg + '  Failed to add a new Revision to the RTK Program \
                            database.'
@@ -465,7 +459,7 @@ class Revision(RTKDataController):
 
         _return = False
 
-        (_error_code, _msg) = self._dtm_revision.delete(revision_id)
+        _error_code, _msg = self._dtm_revision.delete(revision_id)
 
         # If the delete was successful log the success message to the user log.
         # Otherwise, update the error message and log it to the debug log.

@@ -1,3 +1,4 @@
+defusedxml
 coverage
 lifelines
 lxml

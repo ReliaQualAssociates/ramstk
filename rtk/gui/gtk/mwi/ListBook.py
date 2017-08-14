@@ -65,10 +65,7 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-try:
-    from gui.gtk.listviews.Revision import ListView as lvwRevision
-except ImportError:
-    from rtk.gui.gtk.listviews.Revision import ListView as lvwRevision
+from gui.gtk.listviews.Revision import ListView as lvwRevision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -257,7 +254,6 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
 
         if self.dic_list_view[module] is not None:
             self.add(self.dic_list_view[module])
-            self.dic_list_view[module].on_module_change()
         else:
             _return = True
 

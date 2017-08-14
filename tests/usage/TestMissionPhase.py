@@ -1,8 +1,4 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing the Phase class.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       TestPhase.py is part of The RTK Project
@@ -35,6 +31,9 @@ This is the test class for testing the Phase class.
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
+This is the test class for testing the Phase class.
+"""
 
 # We add this to ensure the imports within the rtk packages will work.
 import sys
