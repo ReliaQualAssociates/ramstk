@@ -11,7 +11,8 @@ This is the test class for testing Relay module algorithms and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -50,8 +51,8 @@ class TestRelayModel(unittest.TestCase):
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
                             0.0, 0)
         self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, '1', '2', 'Two', 
+                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
+                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, '1', '2', 'Two',
                              'Three', '4')
         self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
 
@@ -132,14 +133,14 @@ class TestRelayModel(unittest.TestCase):
         """
 
         _my_values = (0, 0, 0.0, 0.0, 0.0, 0.0, "")
-        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '', 
-                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '', 
-                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 
-                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0, 
+        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
+                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '',
+                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0) + \
                    _my_values
 
@@ -154,7 +155,7 @@ class TestRelayModel(unittest.TestCase):
         _my_values = (1.0, 0.01, 2.0, 3.0, "")
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + _my_values
-                  
+
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
 
@@ -165,7 +166,7 @@ class TestRelayModel(unittest.TestCase):
         self.assertEqual(_result[87], list(self._user_values[20:30]))
         self.assertEqual(_result[88], list(self._user_values[30:35]))
         self.assertEqual(_result[89:95], self._comp_values)
-        
+
         self.assertEqual(_result[97:], _my_values)
 
 
@@ -193,8 +194,8 @@ class TestMechanicalModel(unittest.TestCase):
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
                             0.0, 0)
         self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, '0', '1', '2', '3', 
+                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
+                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, '0', '1', '2', '3',
                              '4')
         self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
 
@@ -291,15 +292,15 @@ class TestMechanicalModel(unittest.TestCase):
         """
 
         _my_values = (0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0)
-        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '', 
-                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '', 
-                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 
-                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0, 
-                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0, 
+        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
+                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '',
+                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0,
                    0, 0, 0.0, 0.0, 0.0, 0.0, "") + _my_values
 
         self.assertEqual(self.DUT.get_attributes(), _values)
@@ -310,11 +311,11 @@ class TestMechanicalModel(unittest.TestCase):
         (TestMechanical) get_attributes(set_attributes(values)) == values
         """
 
-        _my_values = (0.0, 0.0, 0.0, 0.0, '0', 2, 3, 4, 0, 0, 14.0, 15.0, 16.0, 17.0, 
+        _my_values = (0.0, 0.0, 0.0, 0.0, '0', 2, 3, 4, 0, 0, 14.0, 15.0, 16.0, 17.0,
                       18.0)
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + _my_values
-                  
+
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
 
@@ -325,7 +326,7 @@ class TestMechanicalModel(unittest.TestCase):
         self.assertEqual(_result[87], list(self._user_values[20:30]))
         self.assertEqual(_result[88], list(self._user_values[30:35]))
         self.assertEqual(_result[89:95], self._comp_values)
-        
+
         self.assertEqual(_result[97:], _my_values)
 
     @attr(all=True, unit=True)
