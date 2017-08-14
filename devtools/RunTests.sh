@@ -17,26 +17,26 @@ codacy=$(which python-codacy-coverage)
 # Execute all the unit tests.
 while read package file;
 do
-    printf "EXECUTING UNIT TEST FOR: $package\n"
+    printf "EXECUTING UNIT TESTS FOR: $package\n"
     $nosetest $unitNoseOpts$package $testPath/$file
-    if [ "$?" == "0" ];
+    if [ "$?" = "0" ];
     then
-        printf "UNIT TEST FOR $package: SAT\n\n"
+        printf "UNIT TESTS FOR $package: SAT\n\n"
     else
-        printf "UNIT TEST FOR $package: UNSAT\n\n"
+        printf "UNIT TESTS FOR $package: UNSAT\n\n"
     fi
 done < $testList
 
 # Execute all the integration tests.
 while read package file;
 do
-    printf "EXECUTING INTEGRATION TEST FOR: $package\n"
+    printf "EXECUTING INTEGRATION TESTS FOR: $package\n"
     $nosetest $integrationNoseOpts$package $testPath/$file
-    if [ "$?" == "0" ];
+    if [ "$?" = "0" ];
     then
-        printf "INTEGRATION TEST FOR $package: SAT\n\n"
+        printf "INTEGRATION TESTS FOR $package: SAT\n\n"
     else
-        printf "INTEGRATION TEST FOR $package: UNSAT\n\n"
+        printf "INTEGRATION TESTS FOR $package: UNSAT\n\n"
     fi
 done < $testList
 
