@@ -451,10 +451,10 @@ def make_treeview(name, fmt_idx, fmt_file, bg_col='white', fg_col='black'):
     """
     # WARNING: Refactor make_treeview; current McCabe Complexity metric=21.
     from lxml import etree
-
+    import defusedxml.lxml as lxml
     # Retrieve the column heading text from the format file.
     path = "/root/tree[@name='%s']/column/usertitle" % name
-    heading = etree.parse(fmt_file).xpath(path)
+    heading = lxml.parse(fmt_file).xpath(path)
 
     # Retrieve the column datatype from the format file.
     path = "/root/tree[@name='%s']/column/datatype" % name

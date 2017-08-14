@@ -6,30 +6,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
@@ -39,7 +39,8 @@ and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -75,8 +76,8 @@ class TestVLSIModel(unittest.TestCase):
                             0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
                             0.0, 0)
         self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 
+                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
+                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
                              'Two', 'Three', '4')
         self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
         self._ic_values = (1.0, 0.05, 3.0, 4.0, 5.0, 1, "")
@@ -124,7 +125,7 @@ class TestVLSIModel(unittest.TestCase):
         (TestVLSI) set_attributes should return a 0 error code on success
         """
 
-        _my_values = (1, 3, 24, 1, 1.5, 75.0, 0.0025, 0.0097, 1.2, 0.0038, 0.0, 0.0, 
+        _my_values = (1, 3, 24, 1, 1.5, 75.0, 0.0025, 0.0097, 1.2, 0.0038, 0.0, 0.0,
                       0.0, 0.0, 0.5)
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._ic_values + \
@@ -155,7 +156,7 @@ class TestVLSIModel(unittest.TestCase):
         (TestVLSI) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _my_values = (1, 3, 24, 1, 1.5, 75.0, 0.0025, 0.0097, 1.2, 0.0038, 0.0, 0.0, 
+        _my_values = (1, 3, 24, 1, 1.5, 75.0, 0.0025, 0.0097, 1.2, 0.0038, 0.0, 0.0,
                       0.0, 0.5)
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._ic_values + \
@@ -171,7 +172,7 @@ class TestVLSIModel(unittest.TestCase):
         (TestVLSI) set_attributes should return a 10 error code when the wrong type is passed
         """
 
-        _my_values = (1, 3, 24, 1, 1.5, 75.0, 0.0025, 0.0097, 1.2, 0.0038, 0.0, 0.0, 
+        _my_values = (1, 3, 24, 1, 1.5, 75.0, 0.0025, 0.0097, 1.2, 0.0038, 0.0, 0.0,
                       None, 0.0, 0.5)
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._ic_values + \
@@ -186,18 +187,18 @@ class TestVLSIModel(unittest.TestCase):
         """
         (TestVLSI) get_attributes should return a tuple of attribute values
         """
-        
-        _my_values = (0, 0, 0, 0, 0.0, 0.0, 0.0, 1000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+
+        _my_values = (0, 0, 0, 0, 0.0, 0.0, 0.0, 1000.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                       0.0, 0.0)
-        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '', 
-                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '', 
-                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 
-                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0, 
-                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0, 
+        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
+                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '',
+                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
+                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0,
                    0.0, 0.0, 1.0, 0.0, 0.0, 0, "") + _my_values
 
         self.assertEqual(self.DUT.get_attributes(), _values)
@@ -208,12 +209,12 @@ class TestVLSIModel(unittest.TestCase):
         (TestVLSI) get_attributes(set_attributes(values)) == values
         """
 
-        _my_values = (0, 0, 0, 0, 0.0, 0.0, 0.0, 1000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 
+        _my_values = (0, 0, 0, 0, 0.0, 0.0, 0.0, 1000.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                       0.0, 0.0)
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._ic_values + \
                   _my_values
-                  
+
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
 
@@ -225,9 +226,9 @@ class TestVLSIModel(unittest.TestCase):
         self.assertEqual(_result[88], list(self._user_values[30:35]))
         self.assertEqual(_result[89:95], self._comp_values)
         self.assertEqual(_result[95:102], self._ic_values)
-        
+
         self.assertEqual(_result[102:], _my_values)
-        
+
     @attr(all=False, unit=False)
     def test_calculate_217_count(self):
         """

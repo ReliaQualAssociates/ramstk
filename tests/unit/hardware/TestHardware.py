@@ -11,7 +11,8 @@ This is the test class for testing Hardware module algorithms and models.
 
 import sys
 from os.path import dirname
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk")
+
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -73,7 +74,7 @@ class TestHardwareModel(unittest.TestCase):
         self.assertEqual(self.DUT.user_varchar, ['', '', '', '', ''])
 
         self.assertEqual(self.DUT.dao, self._dao)
-        
+
         self.assertEqual(self.DUT.revision_id, None)
         self.assertEqual(self.DUT.hardware_id, None)
         self.assertEqual(self.DUT.alt_part_number, '')
