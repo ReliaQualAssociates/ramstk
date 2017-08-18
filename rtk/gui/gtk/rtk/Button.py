@@ -74,7 +74,9 @@ class RTKCheckButton(gtk.CheckButton):
     This is the RTK CheckButton class.
     """
 
-    def __init__(self, label="", width=-1):
+    def __init__(self, label="", width=-1,
+                 tooltip='RTK WARNING: Missing tooltip.  '
+                         'Please register an Enhancement type bug.'):
         """
         Method to create CheckButton widgets.
 
@@ -82,11 +84,15 @@ class RTKCheckButton(gtk.CheckButton):
                             Default is an empty string.
         :keyword int width: the desired width of the gtk.CheckButton().
                             Default is -1 or a natural request.
+        :keyword str tooltip: the tooltip to display when hovering over the
+                              CheckButton.
         :return: _checkbutton
         :rtype: :py:class:`gtk.CheckButton`
         """
 
         gtk.CheckButton.__init__(self, label=label, use_underline=True)
+
+        self.set_tooltip_markup(tooltip)
 
         self.get_child().set_use_markup(True)
         self.get_child().set_line_wrap(True)

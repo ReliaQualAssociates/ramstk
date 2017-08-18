@@ -33,9 +33,9 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-===========================================
-PyGTK Multi-Window Interface Work Book View
-===========================================
+===============================================================================
+PyGTK Multi-Window Interface Work Book
+===============================================================================
 """
 
 import sys
@@ -43,6 +43,8 @@ import sys
 # Import modules for localization support.
 import gettext
 import locale
+
+from pubsub import pub
 
 # Modules required for the GUI.
 try:
@@ -65,8 +67,10 @@ except ImportError:
 # Import other RTK modules.
 try:
     from gui.gtk.workviews.Revision import WorkView as wvwRevision
+    from gui.gtk.workviews.Function import WorkView as wvwFunction
 except ImportError:
     from rtk.gui.gtk.workviews.Revision import WorkView as wvwRevision
+    from rtk.gui.gtk.workviews.Function import WorkView as wvwFunction
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -96,7 +100,7 @@ def destroy(__widget, __event=None):
 
 class WorkView(gtk.Window):                 # pylint: disable=R0904
     """
-    This is the Work View for the pyGTK multiple window interface.
+    This is the Work Book for the pyGTK multiple window interface.
     """
 
     def __init__(self, controller):
@@ -115,7 +119,8 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         self._mdcRTK = controller
 
         # Initialize public dictionary attributes.
-        self.dic_work_views = {'revision': wvwRevision(controller)}
+        self.dic_work_view = {'revision': wvwRevision(controller),
+                              'function': wvwFunction(controller)}
 
         # Initialize public list attributes.
 
@@ -148,11 +153,30 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         self.set_position(gtk.WIN_POS_NONE)
         self.move((_width / 1), (_height / 2))
 
-        # Insert a page for each of the active RTK Modules.
-        for _page in self.dic_work_views.keys():
-            _object = self.dic_work_views[_page]
-            self.add(_object)
-
         self.connect('delete_event', destroy)
 
         self.show_all()
+
+        self._on_module_change(module='revision')
+        pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
+
+    def _on_module_change(self, module=''):
+        """
+        Method to load the correct ListView for the RTK module that was
+        selected in the ModuleBook.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if self.get_child() is not None:
+            self.remove(self.get_child())
+
+        if self.dic_work_view[module] is not None:
+            self.add(self.dic_work_view[module])
+        else:
+            _return = True
+
+        return _return

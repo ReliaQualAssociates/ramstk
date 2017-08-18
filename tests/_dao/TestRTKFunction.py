@@ -35,7 +35,7 @@ class TestRTKFunction(unittest.TestCase):
     Class for testing the RTKFunction class.
     """
 
-    _attributes =(1, 1, 0.0, 0.0, 0.0, 'Test Function Code', 0.0, 0.0, 0, 0.0,
+    _attributes =(1, 1, 1.0, 1.0, 0.0, 'Test Function Code', 0.0, 0.0, 0, 0.0,
                   0.0, 0.0, 0.0, 0.0, 0.0, 'Function Name', 0, '', 0, 0, 0, 0)
 
     def setUp(self):
@@ -66,8 +66,8 @@ class TestRTKFunction(unittest.TestCase):
         self.assertEqual(self.DUT.__tablename__, 'rtk_function')
         self.assertEqual(self.DUT.revision_id, 1)
         self.assertEqual(self.DUT.function_id, 1)
-        self.assertEqual(self.DUT.availability_logistics, 0.0)
-        self.assertEqual(self.DUT.availability_mission, 0.0)
+        self.assertEqual(self.DUT.availability_logistics, 1.0)
+        self.assertEqual(self.DUT.availability_mission, 1.0)
         self.assertEqual(self.DUT.cost, 0.0)
         self.assertEqual(self.DUT.function_code, 'Test Function Code')
         self.assertEqual(self.DUT.hazard_rate_logistics, 0.0)
@@ -101,7 +101,7 @@ class TestRTKFunction(unittest.TestCase):
         (TestRTKFunction) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0.0, 0.0, 0.0, 'Test Function Code', 0.0, 0.0, 0, 0.0,
+        _attributes = (1.0, 1.0, 0.0, 'Test Function Code', 0.0, 0.0, 0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 'Function Name', 0, '', 0, 0,
                        0, 0)
 
@@ -117,7 +117,7 @@ class TestRTKFunction(unittest.TestCase):
         (TestRTKFunction) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0.0, 'zero.zero', 0.0, 'Test Function Code', 0.0, 0.0,
+        _attributes = (1.0, 'zero.zero', 0.0, 'Test Function Code', 0.0, 0.0,
                        0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'Function Name', 0, '',
                        0, 0, 0, 0)
 
@@ -134,7 +134,7 @@ class TestRTKFunction(unittest.TestCase):
         (TestRTKFunction) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (0.0, 0.0, 0.0, 'Test Function Code', 0.0, 0.0, 0, 0.0,
+        _attributes = (1.0, 1.0, 0.0, 'Test Function Code', 0.0, 0.0, 0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 'Function Name', 0, '', 0, 0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
@@ -142,55 +142,3 @@ class TestRTKFunction(unittest.TestCase):
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
                                "values to RTKFunction.set_attributes().")
-
-    @attr(all=True, unit=True)
-    def test03a_calculate_reliability(self):
-        """
-        (TestRTKFunction) calculate_reliability should return False on success.
-        """
-
-        self.DUT.hazard_rate_logistics = 0.00000151
-        self.DUT.hazard_rate_mission = 0.000002
-
-        self.assertFalse(self.DUT.calculate_reliability())
-        self.assertAlmostEqual(self.DUT.mtbf_logistics, 662251.6556291)
-        self.assertAlmostEqual(self.DUT.mtbf_mission, 500000.0)
-
-    @attr(all=True, unit=True)
-    def test03b_calculate_reliability_divide_by_zero(self):
-        """
-        (TestRTKFunction) calculate_reliability should return True when attempting to divide by zero.
-        """
-
-        self.DUT.hazard_rate_mission = 0.0
-
-        self.assertTrue(self.DUT.calculate_reliability())
-
-    @attr(all=True, unit=True)
-    def test02a_calculate_availability(self):
-        """
-        (TestRTKFunction) calculate_availability should return False on success.
-        """
-
-        self.DUT.mpmt = 0.5
-        self.DUT.mcmt = 1.2
-        self.DUT.mttr = 5.8
-        self.DUT.mmt = 0.85
-        self.DUT.mtbf_logistics = 662251.6556291
-        self.DUT.mtbf_mission = 500000.0
-
-        self.assertFalse(self.DUT.calculate_availability())
-        self.assertAlmostEqual(self.DUT.availability_logistics, 0.9999912)
-        self.assertAlmostEqual(self.DUT.availability_mission, 0.9999884)
-
-    @attr(all=True, unit=True)
-    def test02b_calculate_availability_divide_by_zero(self):
-        """
-        (TestRTKFunction) calculate_availability should return True when attempting to divide by zero.
-        """
-
-        self.DUT.mttr = 0.0
-        self.DUT.mtbf_logistics = 662251.6556291
-        self.DUT.mtbf_mission = 0.0
-
-        self.assertTrue(self.DUT.calculate_availability())

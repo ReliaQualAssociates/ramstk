@@ -6,9 +6,9 @@
 # All rights reserved.
 
 """
-==============================
+===============================================================================
 The RTKFunction Table
-==============================
+===============================================================================
 """
 
 # Import the database models.
@@ -17,16 +17,10 @@ from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
 try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
+    from Utilities import error_handler, none_to_default
     from dao.RTKCommonDB import RTK_BASE
 except ImportError:
+    from rtk.Utilities import error_handler, none_to_default
     from rtk.dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
@@ -53,10 +47,10 @@ class RTKFunction(RTK_BASE):
                          autoincrement=True, nullable=False)
 
     availability_logistics = Column('fld_availability_logistics', Float,
-                                    default=0.0)
+                                    default=1.0)
     availability_mission = Column('fld_availability_mission', Float,
-                                  default=0.0)
-    cost = Column('cost', Float, default=0.0)
+                                  default=1.0)
+    cost = Column('fld_cost', Float, default=0.0)
     function_code = Column('fld_function_code', String(16),
                            default='Function Code')
     hazard_rate_logistics = Column('fld_hazard_rate_logistics', Float,
@@ -121,107 +115,35 @@ class RTKFunction(RTK_BASE):
                format(self.function_id)
 
         try:
-            self.availability_logistics = float(values[0])
-            self.availability_mission = float(values[1])
-            self.cost = float(values[2])
-            self.function_code = str(values[3])
-            self.hazard_rate_logistics = float(values[4])
-            self.hazard_rate_mission = float(values[5])
-            self.level = int(values[6])
-            self.mmt = float(values[7])
-            self.mcmt = float(values[8])
-            self.mpmt = float(values[9])
-            self.mtbf_logistics = float(values[10])
-            self.mtbf_mission = float(values[11])
-            self.mttr = float(values[12])
-            self.name = str(values[13])
-            self.parent_id = int(values[14])
-            self.remarks = str(values[15])
-            self.safety_critical = int(values[16])
-            self.total_mode_count = int(values[17])
-            self.total_part_count = int(values[18])
-            self.type_id = int(values[19])
+            self.availability_logistics = float(none_to_default(values[0],
+                                                                1.0))
+            self.availability_mission = float(none_to_default(values[1], 1.0))
+            self.cost = float(none_to_default(values[2], 0.0))
+            self.function_code = str(none_to_default(values[3],
+                                                     'Function Code'))
+            self.hazard_rate_logistics = float(none_to_default(values[4], 0.0))
+            self.hazard_rate_mission = float(none_to_default(values[5], 0.0))
+            self.level = int(none_to_default(values[6], 0.0))
+            self.mmt = float(none_to_default(values[7], 0.0))
+            self.mcmt = float(none_to_default(values[8], 0.0))
+            self.mpmt = float(none_to_default(values[9], 0.0))
+            self.mtbf_logistics = float(none_to_default(values[10], 0.0))
+            self.mtbf_mission = float(none_to_default(values[11], 0.0))
+            self.mttr = float(none_to_default(values[12], 0.0))
+            self.name = str(none_to_default(values[13], 'Function Name'))
+            self.parent_id = int(none_to_default(values[14], 0))
+            self.remarks = str(none_to_default(values[15], ''))
+            self.safety_critical = int(none_to_default(values[16], 0))
+            self.total_mode_count = int(none_to_default(values[17], 0))
+            self.total_part_count = int(none_to_default(values[18], 0))
+            self.type_id = int(none_to_default(values[19], 0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKFunction.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKFunction attributes."
 
         return _error_code, _msg
-
-    def calculate_reliability(self):
-        """
-        Method to calculate the logistics MTBF and mission MTBF.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        # Calculate the logistics MTBF.
-        try:
-            self.mtbf_logistics = 1.0 / self.hazard_rate_logistics
-        except(ZeroDivisionError, OverflowError):
-            self.mtbf_logistics = 0.0
-            _msg = "RTK ERROR: Zero Division or Overflow Error when " \
-                   " calculating the logistics MTBF in RTKFunction.  " \
-                   "Logistics hazard rate: {0:f}.".\
-                   format(self.hazard_rate_logistics)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        # Calculate the mission MTBF.
-        try:
-            self.mtbf_mission = 1.0 / self.hazard_rate_mission
-        except(ZeroDivisionError, OverflowError):
-            self.mtbf_mission = 0.0
-            _msg = "RTK ERROR: Zero Division or Overflow Error when " \
-                   "calculating the mission MTBF in RTKFunction.  Mission " \
-                   "hazard rate: {0:f}.".format(self.hazard_rate_logistics)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
-
-    def calculate_availability(self):
-        """
-        Method to calculate the logistics availability and mission
-        availability.
-
-        :return: False if successful and True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        # Calculate logistics availability.
-        try:
-            self.availability_logistics = self.mtbf_logistics / \
-                                          (self.mtbf_logistics + self.mttr)
-        except(ZeroDivisionError, OverflowError):
-            self.availability_logistics = 1.0
-            _msg = "RTK ERROR: Zero Division or Overflow Error when  " \
-                   "calculating the logistics availability in RTKRevision.  " \
-                   "Logistics MTBF: {0:f} and MTTR: {1:f}.".\
-                   format(self.mtbf_logistics, self.mttr)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        # Calculate mission availability.
-        try:
-            self.availability_mission = self.mtbf_mission / \
-                (self.mtbf_mission + self.mttr)
-        except(ZeroDivisionError, OverflowError):
-            self.availability_mission = 1.0
-            _msg = "RTK ERROR: Zero Division or Overflow Error when " \
-                   "calculating the mission availability in RTKRevision.  " \
-                   "Mission MTBF: {0:f} and MTTR: {1:f}.".\
-                   format(self.mtbf_mission, self.mttr)
-            Configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return

@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
+import sys
 from setuptools import setup
 from setuptools.command.install import install as _install
+
+if not sys.version_info[0] == 2:
+    sys.exit("Sorry, Python 3 is not supported (yet)")
 
 
 class install(_install):
@@ -27,8 +31,10 @@ if __name__ == '__main__':
         for performing and documenting RAMS analyses.''',
         author="Andrew 'Weibullguy' Rowland",
         author_email="andrew.rowland@reliaqual.com",
-        license='Proprietary',
+        license='BSD-3',
         url='http://www.reliaqual.com/rtk',
+        python_requires='>=2.7, <4',
+        keywords='reliability RAMS engineering quality',
         scripts=[],
         packages=[
             'rtk.usage',

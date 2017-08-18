@@ -33,9 +33,9 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-=============================================
+===============================================================================
 PyGTK Multi-Window Interface Module Book View
-=============================================
+===============================================================================
 """
 
 import sys
@@ -65,16 +65,11 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-try:
-    import Utilities
-    from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
-    from gui.gtk.Assistants import CreateProject, OpenProject, DeleteProject, \
-        Options
-except ImportError:
-    import rtk.Utilities as Utilities
-    from rtk.gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
-    from rtk.gui.gtk.Assistants import CreateProject, OpenProject, \
-        DeleteProject, Options
+import Utilities
+from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
+from gui.gtk.moduleviews.Function import ModuleView as mvwFunction
+from gui.gtk.Assistants import CreateProject, OpenProject, DeleteProject, \
+    Options
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -139,7 +134,8 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         self._mdcRTK = controller
 
         # Initialize public dictionary attributes.
-        self.dic_module_views = {'revision': mvwRevision(controller)}
+        self.dic_module_views = {'revision': [mvwRevision(controller), 0],
+                                 'function': [mvwFunction(controller), 1]}
 
         # Initialize public list attributes.
 
@@ -147,7 +143,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         try:
             locale.setlocale(locale.LC_ALL,
-                             self._mdcRTK.RTK_CONFIGURATION.RTK_LOCALE)
+                             controller.RTK_CONFIGURATION.RTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
@@ -198,9 +194,9 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         # Insert a page for each of the active RTK Modules.
         for _page in self.dic_module_views.keys():
             _object = self.dic_module_views[_page]
-            self.notebook.insert_page(_object,
-                                      tab_label=_object.hbx_tab_label,
-                                      position=-1)
+            self.notebook.insert_page(_object[0],
+                                      tab_label=_object[0].hbx_tab_label,
+                                      position=_object[1])
 
         self._lst_handler_id.append(
             self.notebook.connect('select-page', self._on_switch_page))
@@ -221,6 +217,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         self.add(_vbox)
 
         self.show_all()
+        self.notebook.set_current_page(0)
 
         pub.subscribe(self._on_request_open, 'requestOpen')
         pub.subscribe(self._on_open, 'openedProgram')
@@ -510,6 +507,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :param gtk.Notebook __notebook: the Tree Book notebook widget.
         :param gtk.Widget __page: the newly selected page's child widget.
         :param int page_num: the newly selected page number.
+
                              0 = Revision Tree
                              1 = Function Tree
                              2 = Requirements Tree
@@ -521,9 +519,17 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
                              8 = Survival Analyses Tree
         """
 
-        _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[page_num]
+        # Key errors occur when no RTK Program database has been loaded.  In
+        # that case, select the Revision page to load.
+        try:
+            _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[page_num]
+        except KeyError:
+            if page_num == 0:
+                _module = 'revision'
+            elif page_num == 1:
+                _module = 'function'
 
-        pub.sendMessage('mvw_switchedPage', module=_module)
+        pub.sendMessage('mvwSwitchedPage', module=_module)
 
         return False
 

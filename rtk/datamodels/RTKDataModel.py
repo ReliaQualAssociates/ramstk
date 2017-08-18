@@ -114,7 +114,7 @@ class RTKDataModel(object):
 
         return _entity
 
-    def select_all(self):
+    def select_all(self, **kwargs):
         """
         Base method to retrieve and build the RTK Module tree.
 

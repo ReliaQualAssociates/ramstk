@@ -172,6 +172,7 @@ class RTKMessageDialog(gtk.MessageDialog):
         """
         Method to run the RTK Message Dialog.
         """
+
         return self.run()
 
     def do_destroy(self):

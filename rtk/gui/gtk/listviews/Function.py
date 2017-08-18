@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.mwi.ListBook.py is part of the RTK Project
+#       rtk.gui.gtk.listviews.Function.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -33,9 +33,9 @@
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
-===============================================================================
-PyGTK Multi-Window Interface List Book
-===============================================================================
+###############################################################################
+Function Package List Book View
+###############################################################################
 """
 
 import sys
@@ -43,8 +43,6 @@ import sys
 # Import modules for localization support.
 import gettext
 import locale
-
-from pubsub import pub
 
 # Modules required for the GUI.
 try:
@@ -63,10 +61,13 @@ try:
     import gtk.glade
 except ImportError:
     sys.exit(1)
+try:
+    # noinspection PyUnresolvedReferences
+    import gobject
+except ImportError:
+    sys.exit(1)
 
 # Import other RTK modules.
-from gui.gtk.listviews.Revision import ListView as lvwRevision
-from gui.gtk.listviews.Function import ListView as lvwFunction
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -76,99 +77,57 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 _ = gettext.gettext
 
 
-def destroy(__widget, __event=None):
+class ListView(gtk.Notebook):
     """
-    Quits the RTK application when the X in the upper right corner is
-    pressed.
-
-    :param __widget: the gtk.Widget() that called this method.
-    :type __widget: :py:class:`gtk.Widget`
-    :keyword __event: the gtk.gdk.Event() that called this method.
-    :type __event: :py:class:`gtk.gdk.Event`
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    gtk.main_quit()
-
-    return False
-
-
-class ListView(gtk.Window):                 # pylint: disable=R0904
-    """
-    This is the List View class for the pyGTK multiple window interface.
+    The List View displays all the matrices and lists associated with the
+    Function Class.  The attributes of a List View are:
     """
 
     def __init__(self, controller):
         """
-        Method to initialize an instance of the RTK List View class.
+        Method to initialize the List View for the Function package.
 
-        :param controller: the RTK master data controller.
+        :param controller: the RTK Master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
+
+        gtk.Notebook.__init__(self)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
 
         # Initialize public dictionary attributes.
-        self.dic_list_view = {'revision': lvwRevision(controller),
-                              'function': lvwFunction(controller)}
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        #self.lvw_usage_profile = lvwUsageProfile(controller)
+        #self.lvw_failure_definition = lvwFailureDefinition(controller)
 
         try:
             locale.setlocale(locale.LC_ALL,
-                             self._mdcRTK.RTK_CONFIGURATION.RTK_LOCALE)
+                             controller.RTK_CONFIGURATION.RTK_LOCALE)
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
-        # Create a new window and set its properties.
-        gtk.Window.__init__(self)
-        self.set_title(_(u"RTK Matrices & Lists"))
-        self.set_resizable(True)
-        self.set_deletable(False)
-        self.set_skip_pager_hint(True)
-        self.set_skip_taskbar_hint(True)
+        # Set the user's preferred gtk.Notebook tab position.
+        if controller.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'left':
+            self.set_tab_pos(gtk.POS_LEFT)
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'right':
+            self.set_tab_pos(gtk.POS_RIGHT)
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'top':
+            self.set_tab_pos(gtk.POS_TOP)
+        else:
+            self.set_tab_pos(gtk.POS_BOTTOM)
 
-        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
-        _width = gtk.gdk.screen_width() / _n_screens
-        _height = gtk.gdk.screen_height()
-
-        self.set_default_size((_width / 3) - 10, (2 * _height / 7))
-        self.set_border_width(5)
-        self.set_position(gtk.WIN_POS_NONE)
-        self.move((2 * _width / 3), 0)
-
-        self.connect('delete_event', destroy)
+        #self.insert_page(self.lvw_usage_profile,
+        #                 tab_label=self.lvw_usage_profile.hbx_tab_label,
+        #                 position=-1)
+        #self.insert_page(self.lvw_failure_definition,
+        #                 tab_label=self.lvw_failure_definition.hbx_tab_label,
+        #                 position=-1)
 
         self.show_all()
-
-        pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
-
-    def _on_module_change(self, module=''):
-        """
-        Method to load the correct List View for the RTK module that was
-        selected in the Module Book.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        if self.get_child() is not None:
-            self.remove(self.get_child())
-
-        if self.dic_list_view[module] is not None:
-            self.add(self.dic_list_view[module])
-        else:
-            _return = True
-
-        return _return

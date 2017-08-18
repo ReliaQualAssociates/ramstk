@@ -33,8 +33,8 @@ experience. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Availability, Predicted</defaulttitle>
-            <usertitle>Availability, Predicted</usertitle>
+            <defaulttitle>Availability, Logistics</defaulttitle>
+            <usertitle>Availability, Logistics</usertitle>
             <datatype>gfloat</datatype>
             <position>2</position>
             <widget>text</widget>
@@ -51,26 +51,26 @@ experience. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Function Code</defaulttitle>
-            <usertitle>Function Code</usertitle>
-            <datatype>gchararray</datatype>
-            <position>4</position>
-            <widget>text</widget>
-            <editable>1</editable>
-            <visible>1</visible>
-        </column>
-        <column>
             <defaulttitle>Cost</defaulttitle>
             <usertitle>Cost</usertitle>
             <datatype>gfloat</datatype>
-            <position>5</position>
+            <position>4</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Failure Rate, Mission</defaulttitle>
-            <usertitle>Failure Rate, Mission</usertitle>
+            <defaulttitle>Function Code</defaulttitle>
+            <usertitle>Function Code</usertitle>
+            <datatype>gchararray</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+        </column>
+        <column>
+            <defaulttitle>Failure Rate, Logistics</defaulttitle>
+            <usertitle>Hazard Rate, Logistics</usertitle>
             <datatype>gfloat</datatype>
             <position>6</position>
             <widget>text</widget>
@@ -78,8 +78,8 @@ experience. -->
             <visible>0</visible>
         </column>
         <column>
-            <defaulttitle>Failure Rate, Predicted</defaulttitle>
-            <usertitle>Failure Rate, Predicted</usertitle>
+            <defaulttitle>Failure Rate, Mission</defaulttitle>
+            <usertitle>Hazard Rate, Mission</usertitle>
             <datatype>gfloat</datatype>
             <position>7</position>
             <widget>text</widget>
@@ -87,10 +87,19 @@ experience. -->
             <visible>1</visible>
         </column>
         <column>
+            <defaulttitle>Level</defaulttitle>
+            <usertitle>Level</usertitle>
+            <datatype>gint</datatype>
+            <position>8</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
             <defaulttitle>Mean Maintenance Time (MMT)</defaulttitle>
             <usertitle>Mean Maintenance Time (MMT)</usertitle>
             <datatype>gfloat</datatype>
-            <position>8</position>
+            <position>9</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
@@ -99,7 +108,7 @@ experience. -->
             <defaulttitle>Mean Corrective Maintenance Time (MCMT)</defaulttitle>
             <usertitle>Mean Corrective Maintenance Time (MCMT)</usertitle>
             <datatype>gfloat</datatype>
-            <position>9</position>
+            <position>10</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
@@ -108,7 +117,16 @@ experience. -->
             <defaulttitle>Mean Preventive Maintenance Time (MPMT)</defaulttitle>
             <usertitle>Mean Preventive Maintenance Time (MPMT)</usertitle>
             <datatype>gfloat</datatype>
-            <position>10</position>
+            <position>11</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>MTBF, Logistics</defaulttitle>
+            <usertitle>MTBF, Logistics</usertitle>
+            <datatype>gfloat</datatype>
+            <position>12</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
@@ -117,16 +135,7 @@ experience. -->
             <defaulttitle>MTBF, Mission</defaulttitle>
             <usertitle>MTBF, Mission</usertitle>
             <datatype>gfloat</datatype>
-            <position>11</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>MTBF, Predicted</defaulttitle>
-            <usertitle>MTBF, Predicted</usertitle>
-            <datatype>gfloat</datatype>
-            <position>12</position>
+            <position>13</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
@@ -135,7 +144,7 @@ experience. -->
             <defaulttitle>Mean Time To Repair (MTTR)</defaulttitle>
             <usertitle>Mean Time To Repair (MTTR)</usertitle>
             <datatype>gfloat</datatype>
-            <position>13</position>
+            <position>14</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
@@ -144,17 +153,35 @@ experience. -->
             <defaulttitle>Function Name</defaulttitle>
             <usertitle>Function Name</usertitle>
             <datatype>gchararray</datatype>
-            <position>14</position>
+            <position>15</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
         </column>
         <column>
+            <defaulttitle>Parent</defaulttitle>
+            <usertitle>Parent</usertitle>
+            <datatype>gchararray</datatype>
+            <position>16</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+        </column>
+        <column>
             <defaulttitle>Remarks</defaulttitle>
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
-            <position>15</position>
+            <position>17</position>
             <widget>text</widget>
+            <editable>1</editable>
+            <visible>0</visible>
+        </column>
+        <column>
+            <defaulttitle>Safety Critical</defaulttitle>
+            <usertitle>Safety Critical</usertitle>
+            <datatype>gint</datatype>
+            <position>18</position>
+            <widget>toggle</widget>
             <editable>1</editable>
             <visible>0</visible>
         </column>
@@ -162,7 +189,7 @@ experience. -->
             <defaulttitle>Total Mode Count</defaulttitle>
             <usertitle>Total Mode Count</usertitle>
             <datatype>gint</datatype>
-            <position>16</position>
+            <position>19</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
@@ -171,7 +198,7 @@ experience. -->
             <defaulttitle>Total Part Count</defaulttitle>
             <usertitle>Total Part Count</usertitle>
             <datatype>gint</datatype>
-            <position>17</position>
+            <position>20</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
@@ -180,36 +207,9 @@ experience. -->
             <defaulttitle>Type</defaulttitle>
             <usertitle>Type</usertitle>
             <datatype>gint</datatype>
-            <position>18</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Parent</defaulttitle>
-            <usertitle>Parent</usertitle>
-            <datatype>gchararray</datatype>
-            <position>19</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Level</defaulttitle>
-            <usertitle>Level</usertitle>
-            <datatype>gint</datatype>
-            <position>20</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Safety Critical</defaulttitle>
-            <usertitle>Safety Critical</usertitle>
-            <datatype>gint</datatype>
             <position>21</position>
-            <widget>toggle</widget>
-            <editable>1</editable>
+            <widget>text</widget>
+            <editable>0</editable>
             <visible>0</visible>
         </column>
     </tree>

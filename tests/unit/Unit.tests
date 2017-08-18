@@ -68,3 +68,4 @@ usage.Mission usage/TestMission.py
 usage.Phase usage/TestMissionPhase.py
 usage.Environment usage/TestEnvironment.py
 usage.UsageProfile usage/TestProfile.py
+function.Function function/TestFunction.py
