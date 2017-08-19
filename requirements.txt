@@ -1,6 +1,6 @@
-defusedxml
-coverage
 codacy-coverage
+coverage
+defusedxml
 lifelines
 lxml
 matplotlib==1.4.3
@@ -9,6 +9,7 @@ numpy
 pandas
 pypubsub==3.3.0
 scipy
+sortedcontainers
 sqlalchemy
 sqlalchemy_utils
 statsmodels

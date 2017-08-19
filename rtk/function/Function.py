@@ -44,14 +44,9 @@ import gettext
 from pubsub import pub
 
 # Import other RTK modules.
-try:
-    from datamodels import RTKDataModel
-    from datamodels import RTKDataController
-    from dao import RTKFunction
-except ImportError:
-    from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
-    from rtk.datamodels import RTKDataController    # pylint: disable=E0401
-    from rtk.dao import RTKFunction                 # pylint: disable=E0401
+from datamodels import RTKDataModel
+from datamodels import RTKDataController
+from dao import RTKFunction
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -64,7 +59,7 @@ _ = gettext.gettext
 class Model(RTKDataModel):
     """
     The Function data model contains the attributes and methods of a function.
-    A :py:class:`rtk.revision.Function` will consist of one or more Functions.
+    A :py:class:`rtk.function.Function` will consist of one or more Functions.
     The attributes of a Function data model are:
     """
 

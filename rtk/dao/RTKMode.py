@@ -4,11 +4,37 @@
 #       rtk.dao.RTKMode.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-==============================
+===============================================================================
 The RTKMode Table
-==============================
+===============================================================================
 """
 
 # Import the database models.
@@ -17,16 +43,10 @@ from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
 try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
+    from Utilities import error_handler, none_to_default
     from dao.RTKCommonDB import RTK_BASE
 except ImportError:
+    from rtk.Utilities import error_handler, none_to_default
     from rtk.dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
@@ -134,37 +154,38 @@ class RTKMode(RTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.critical_item = int(values[0])
-            self.description = str(values[1])
-            self.design_provisions = str(values[2])
-            self.detection_method = str(values[3])
-            self.effect_end = str(values[4])
-            self.effect_local = str(values[5])
-            self.effect_next = str(values[6])
-            self.effect_probability = float(values[7])
-            self.hazard_rate_source = str(values[8])
-            self.isolation_method = str(values[9])
-            self.mission = str(values[10])
-            self.mission_phase = str(values[11])
-            self.mode_criticality = float(values[12])
-            self.mode_hazard_rate = float(values[13])
-            self.mode_op_time = float(values[14])
-            self.mode_probability = str(values[15])
-            self.mode_ratio = float(values[16])
-            self.operator_actions = str(values[17])
-            self.other_indications = str(values[18])
-            self.remarks = str(values[19])
-            self.rpn_severity = str(values[20])
-            self.rpn_severity_new = str(values[21])
-            self.severity_class = str(values[22])
-            self.single_point = int(values[23])
-            self.type_id = int(values[24])
+            self.critical_item = int(none_to_default(values[0], 0))
+            self.description = str(none_to_default(values[1],
+                                                   'Failure Mode Description'))
+            self.design_provisions = str(none_to_default(values[2], ''))
+            self.detection_method = str(none_to_default(values[3], ''))
+            self.effect_end = str(none_to_default(values[4], 'End Effect'))
+            self.effect_local = str(none_to_default(values[5], 'Local Effect'))
+            self.effect_next = str(none_to_default(values[6], 'Next Effect'))
+            self.effect_probability = float(none_to_default(values[7], 0.0))
+            self.hazard_rate_source = str(none_to_default(values[8], ''))
+            self.isolation_method = str(none_to_default(values[9], ''))
+            self.mission = str(none_to_default(values[10], ''))
+            self.mission_phase = str(none_to_default(values[11], ''))
+            self.mode_criticality = float(none_to_default(values[12], 0.0))
+            self.mode_hazard_rate = float(none_to_default(values[13], 0.0))
+            self.mode_op_time = float(none_to_default(values[14], 0.0))
+            self.mode_probability = str(none_to_default(values[15], ''))
+            self.mode_ratio = float(none_to_default(values[16], 0.0))
+            self.operator_actions = str(none_to_default(values[17], ''))
+            self.other_indications = str(none_to_default(values[18], ''))
+            self.remarks = str(none_to_default(values[19], ''))
+            self.rpn_severity = str(none_to_default(values[20], ''))
+            self.rpn_severity_new = str(none_to_default(values[21], ''))
+            self.severity_class = str(none_to_default(values[22], ''))
+            self.single_point = int(none_to_default(values[23], 0))
+            self.type_id = int(none_to_default(values[24], 0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKMode.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKMode attributes."
 
