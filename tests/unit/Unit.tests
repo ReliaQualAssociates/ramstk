@@ -70,3 +70,4 @@ usage.Environment usage/TestEnvironment.py
 usage.UsageProfile usage/TestProfile.py
 function.Function function/TestFunction.py
 analyses.fmea.Mode fmea/TestMode.py
+analyses.fmea.Control fmea/TestControl.py

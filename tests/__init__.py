@@ -319,10 +319,12 @@ def setUp():
     session.commit()
 
     _control = RTKControl()
+    _control.mode_id = _mode.mode_id
     _control.cause_id = _cause.cause_id
     session.add(_control)
 
     _action = RTKAction()
+    _action.mode_id = _mode.mode_id
     _action.cause_id = _cause.cause_id
     session.add(_action)
 

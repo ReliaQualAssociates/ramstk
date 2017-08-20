@@ -117,7 +117,7 @@ class Model(RTKDataModel):
         Method to retrieve all the Modes from the RTK Program database.
         Then add each to the Mode treelib Tree().
 
-        :param int parent_id: the Mode ID or the Hardware ID to select the
+        :param int parent_id: the Function ID or the Hardware ID to select the
                               Modes for.
         :param bool functional: indicates whether to return Modeal
                                 failure modes or Hardware failure modes.
@@ -305,12 +305,8 @@ class Mode(RTKDataController):
     one or more Mode data models.  The attributes of a Mode data
     controller are:
 
-    :ivar last_id: the last Mode ID used.  Default value = None.
-    :ivar dicModes: Dictionary of the Mode data models controlled.  Key
-                        is the Mode ID; value is a pointer to the Mode
-                        data model instance.  Default value = {}.
-    :ivar dao: the :py:class:`rtk.dao.DAO` to use when communicating with the
-               RTK Project database.  Default value = None.
+    :ivar _dtm_mode: the :py:class:`rtk.analyses.fmea.Mode.Model` data model
+                     associated with this data controller.
     """
 
     def __init__(self, dao, configuration, **kwargs):
@@ -341,29 +337,33 @@ class Mode(RTKDataController):
 
         # Initialize public scalar attributes.
 
-    def request_select(self, function_id):
+    def request_select(self, mode_id):
         """
         Method to request the Mode Data Model to retrieve the RTKMode
         model associated with the Mode ID.
 
-        :param int function_id: the Mode ID to retrieve.
+        :param int mode_id: the Mode ID to retrieve.
         :return: the RTKMode model requested.
         :rtype: `:py:class:rtk.dao.DAO.RTKMode` model
         """
 
-        return self._dtm_mode.select(function_id)
+        return self._dtm_mode.select(mode_id)
 
-    def request_select_all(self, revision_id):
+    def request_select_all(self, parent_id, functional=False):
         """
         Method to retrieve the Mode tree from the Mode Data Model.
 
-        :param int revision_id: the Revision ID to select the Modes for.
+        :param int parent_id: the Function ID (functional FMEA) or Hardware ID
+                              (hardware FMEA) to select the Modes for.
+        :param bool functional: indicates whether or not to select the Modes
+                                for a functional FMEA or hardware FMEA
+                                (default).
         :return: tree; the treelib Tree() of RTKMode models in the
                  Mode tree.
         :rtype: dict
         """
 
-        return self._dtm_mode.select_all(revision_id)
+        return self._dtm_mode.select_all(parent_id, functional)
 
     def request_insert(self, function_id, hardware_id):
         """
@@ -400,19 +400,19 @@ class Mode(RTKDataController):
 
         return _return
 
-    def request_delete(self, function_id):
+    def request_delete(self, mode_id):
         """
         Method to request the Mode Data Model to delete a Mode from the
         RTK Program database.
 
-        :param int function_id: the Mode ID to delete.
+        :param int mode_id: the Mode ID to delete.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
-        _error_code, _msg = self._dtm_mode.delete(function_id)
+        _error_code, _msg = self._dtm_mode.delete(mode_id)
 
         # If the delete was successful log the success message to the user log.
         # Otherwise, update the error message and log it to the debug log.
@@ -427,19 +427,19 @@ class Mode(RTKDataController):
 
         return _return
 
-    def request_update(self, function_id):
+    def request_update(self, mode_id):
         """
         Method to request the Mode Data Model save the RTKMode
         attributes to the RTK Program database.
 
-        :param int function_id: the ID of the mode to save.
+        :param int mode_id: the ID of the mode to save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
-        _error_code, _msg = self._dtm_mode.update(function_id)
+        _error_code, _msg = self._dtm_mode.update(mode_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
