@@ -10,6 +10,7 @@
 *.goutputstream*
 *.geanyprj
 *.tox
+*.e5s
 
 # Python specific directories and files to ignore
 target/

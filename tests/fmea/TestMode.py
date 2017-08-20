@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestModeModel.py is part of The RTK Project
+#       tests.unit.TestMode.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -106,7 +106,18 @@ class Test00ModeModelModel(unittest.TestCase):
         self.assertEqual(self.DUT.last_id, None)
 
     @attr(all=True, unit=True)
-    def test01_select_all(self):
+    def test01a_select_all_functional(self):
+        """
+        (TestModeModel): select_all() should return a Tree() object populated with RTKMode instances on success.
+        """
+
+        _tree = self.DUT.select_all(1, True)
+
+        self.assertTrue(isinstance(_tree, Tree))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMode))
+
+    @attr(all=True, unit=True)
+    def test01_select_all_hardware(self):
         """
         (TestModeModel): select_all() should return a Tree() object populated with RTKMode instances on success.
         """
@@ -396,7 +407,17 @@ class Test01ModeController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT._dtm_mode, Model))
 
     @attr(all=True, unit=True)
-    def test01_request_select_all(self):
+    def test01a_request_select_all_functional(self):
+        """
+        (TestModeController) request_select_all() should return a Tree of RTKMode models.
+        """
+
+        _tree = self.DUT.request_select_all(1, True)
+
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMode))
+
+    @attr(all=True, unit=True)
+    def test01b_request_select_all_hardware(self):
         """
         (TestModeController) request_select_all() should return a Tree of RTKMode models.
         """

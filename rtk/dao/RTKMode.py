@@ -42,12 +42,8 @@ from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-try:
-    from Utilities import error_handler, none_to_default
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.Utilities import error_handler, none_to_default
-    from rtk.dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, none_to_default
+from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -108,6 +104,10 @@ class RTKMode(RTK_BASE):
     function = relationship('RTKFunction', back_populates='mode')
     hardware = relationship('RTKHardware', back_populates='mode')
     mechanism = relationship('RTKMechanism', back_populates='mode')
+
+    # The following are required for functional FMEA.
+    control = relationship('RTKControl', back_populates='mode')
+    action = relationship('RTKAction', back_populates='mode')
 
     def get_attributes(self):
         """
