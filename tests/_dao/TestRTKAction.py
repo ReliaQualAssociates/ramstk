@@ -63,6 +63,7 @@ class TestRTKAction(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_action')
+        self.assertEqual(self.DUT.mode_id, 1)
         self.assertEqual(self.DUT.cause_id, 1)
         self.assertEqual(self.DUT.action_id, 1)
         self.assertEqual(self.DUT.action_recommended, '')
@@ -86,7 +87,7 @@ class TestRTKAction(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (1, 1, '', 0, 0, date.today() + timedelta(days=30),
+                         (1, 1, 1, '', 0, 0, date.today() + timedelta(days=30),
                           0, '', 0, date.today() + timedelta(days=30), 0,
                           date.today() + timedelta(days=30)))
 

@@ -71,3 +71,4 @@ usage.UsageProfile usage/TestProfile.py
 function.Function function/TestFunction.py
 analyses.fmea.Mode fmea/TestMode.py
 analyses.fmea.Control fmea/TestControl.py
+analyses.fmea.Action fmea/TestAction.py

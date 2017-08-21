@@ -389,9 +389,8 @@ class Mode(RTKDataController):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self.__test:
-                pub.sendMessage('insertedMode',
-                                mode_id=self._dtm_mode.last_id,
-                                parent_id=parent_id)
+                pub.sendMessage('insertedAction',
+                                mode_id=self._dtm_action.last_id)
         else:
             _msg = _msg + '  Failed to add a new Mode to the RTK Program \
                            database.'
