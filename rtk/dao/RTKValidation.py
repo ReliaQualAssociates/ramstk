@@ -4,11 +4,37 @@
 #       rtk.dao.RTValidation.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-==============================
+===============================================================================
 The RTValidation Table
-==============================
+===============================================================================
 """
 
 from datetime import date, timedelta
@@ -18,18 +44,8 @@ from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, none_to_default
+from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -96,15 +112,15 @@ class RTKValidation(RTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.validation_id, 
-                       self.acceptable_maximum, self.acceptable_mean, 
-                       self.acceptable_minimum, self.acceptable_variance, 
-                       self.confidence, self.cost_average, self.cost_maximum, 
-                       self.cost_mean, self.cost_minimum, self.cost_variance, 
-                       self.date_end, self.date_start, self.description, 
-                       self.measurement_unit_id, self.status_id, 
-                       self.task_type_id, self.task_specification, 
-                       self.time_average, self.time_maximum, self.time_mean, 
+        _attributes = (self.revision_id, self.validation_id,
+                       self.acceptable_maximum, self.acceptable_mean,
+                       self.acceptable_minimum, self.acceptable_variance,
+                       self.confidence, self.cost_average, self.cost_maximum,
+                       self.cost_mean, self.cost_minimum, self.cost_variance,
+                       self.date_end, self.date_start, self.description,
+                       self.measurement_unit_id, self.status_id,
+                       self.task_type_id, self.task_specification,
+                       self.time_average, self.time_maximum, self.time_mean,
                        self.time_minimum, self.time_variance)
 
         return _attributes
@@ -147,11 +163,11 @@ class RTKValidation(RTK_BASE):
             self.time_minimum = float(attributes[20])
             self.time_variance = float(attributes[21])
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKValidation.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKValidation attributes."
 

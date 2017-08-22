@@ -4,11 +4,37 @@
 #       rtk.dao.RTKTest.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+#
+# 1. Redistributions of source code must retain the above copyright notice,
+#    this list of conditions and the following disclaimer.
+#
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+#
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
+#    without specific prior written permission.
+#
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
+#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
-==============================
+===============================================================================
 The RTKTest Table
-==============================
+===============================================================================
 """
 
 # Import the database models.
@@ -16,18 +42,8 @@ from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, none_to_default
+from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -114,19 +130,19 @@ class RTKTest(RTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.test_id, self.assess_model_id, 
-                       self.attachment, self.avg_fef, self.avg_growth, 
-                       self.avg_ms, self.chi_square, self.confidence, 
-                       self.consumer_risk, self.cramer_vonmises, 
-                       self.cum_failures, self.cum_mean, self.cum_mean_ll, 
-                       self.cum_mean_se, self.cum_mean_ul, self.cum_time, 
-                       self.description, self.grouped, self.group_interval, 
-                       self.inst_mean, self.inst_mean_ll, self.inst_mean_se, 
-                       self.inst_mean_ul, self.mg, self.mgp, self.n_phases, 
-                       self.name, self.plan_model_id, self.prob, 
-                       self.producer_risk, self.scale, self.scale_ll, 
-                       self.scale_se, self.scale_ul, self.shape, self.shape_ll, 
-                       self.shape_se, self.shape_ul, self.tr, self.ttt, 
+        _attributes = (self.revision_id, self.test_id, self.assess_model_id,
+                       self.attachment, self.avg_fef, self.avg_growth,
+                       self.avg_ms, self.chi_square, self.confidence,
+                       self.consumer_risk, self.cramer_vonmises,
+                       self.cum_failures, self.cum_mean, self.cum_mean_ll,
+                       self.cum_mean_se, self.cum_mean_ul, self.cum_time,
+                       self.description, self.grouped, self.group_interval,
+                       self.inst_mean, self.inst_mean_ll, self.inst_mean_se,
+                       self.inst_mean_ul, self.mg, self.mgp, self.n_phases,
+                       self.name, self.plan_model_id, self.prob,
+                       self.producer_risk, self.scale, self.scale_ll,
+                       self.scale_se, self.scale_ul, self.shape, self.shape_ll,
+                       self.shape_se, self.shape_ul, self.tr, self.ttt,
                        self.ttff, self.type_id)
 
         return _attributes
@@ -188,11 +204,11 @@ class RTKTest(RTK_BASE):
             self.ttff = float(attributes[39])
             self.type_id = int(attributes[40])
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKTest.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKTest attributes."
 

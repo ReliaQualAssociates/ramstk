@@ -31,7 +31,6 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ===============================================================================
 The RTKPhase Table
@@ -41,14 +40,8 @@ The RTKPhase Table
 from sqlalchemy import Column, Integer, String
 
 # Import other RTK modules.
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, none_to_default
+from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -101,11 +94,11 @@ class RTKPhase(RTK_BASE):
             self.description = str(attributes[0])
             self.type = str(attributes[1])
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKPhase.set_attributes()."
         except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKPhase attributes."
 

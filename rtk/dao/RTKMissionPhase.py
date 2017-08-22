@@ -31,7 +31,6 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ===============================================================================
 The RTKMissionPhase Table
@@ -43,14 +42,8 @@ from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, none_to_default
+from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -122,11 +115,11 @@ class RTKMissionPhase(RTK_BASE):
             self.phase_start = float(attributes[2])
             self.phase_end = float(attributes[3])
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKMissionPhase.set_attributes()."
         except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKMissionPhase attributes."
 

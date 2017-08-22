@@ -31,11 +31,10 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
-==============================
+===============================================================================
 The RTKProgramInfo Table
-==============================
+===============================================================================
 """
 
 from datetime import date
@@ -43,18 +42,8 @@ from datetime import date
 from sqlalchemy import Column, Date, Integer, String
 
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, none_to_default
+from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -198,11 +187,11 @@ class RTKProgramInfo(RTK_BASE):
             self.last_saved_by = str(attributes[33])
             self.method = str(attributes[34])
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKProgramInfo.set_attributes()."
         except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKProgramInfo attributes."
 
