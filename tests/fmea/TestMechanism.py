@@ -1,8 +1,4 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing the FMEA failure Mechanism class.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestFMEAMechanism.py is part of The RTK Project
@@ -35,6 +31,9 @@ This is the test class for testing the FMEA failure Mechanism class.
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""
+This is the test class for testing the FMEA failure Mechanism class.
+"""
 
 import sys
 from os.path import dirname
@@ -44,15 +43,22 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 import unittest
 from nose.plugins.attrib import attr
 
+from sqlalchemy.orm import scoped_session
+from treelib import Tree
+
+import Utilities as Utilities
+from Configuration import Configuration
 from analyses.fmea.Mechanism import Model, Mechanism, OutOfRangeError
+from dao import DAO
+from dao import RTKMechanism
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Andrew "Weibullguy" Rowland'
 
 
-class TestMechanismModel(unittest.TestCase):
+class Test00MechanismModel(unittest.TestCase):
     """
     Class for testing the Mechanism model class.
     """
@@ -62,168 +68,237 @@ class TestMechanismModel(unittest.TestCase):
         Setups the test fixture for the Mechanism model class.
         """
 
-        self.DUT = Model()
+        self.Configuration = Configuration()
+
+        self.Configuration.RTK_BACKEND = 'sqlite'
+        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
+                                            'socket'  : 3306,
+                                            'database': '/tmp/TestDB.rtk',
+                                            'user'    : '',
+                                            'password': ''}
+
+        self.Configuration.DEBUG_LOG = \
+            Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
+        self.Configuration.USER_LOG = \
+            Utilities.create_logger("RTK.user", 'INFO', '/tmp/RTK_user.log')
+
+        # Create a data access object and connect to a test database.
+        self.dao = DAO()
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        self.dao.db_connect(_database)
+
+        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
+                                       expire_on_commit=False)
+        self.session = scoped_session(self.dao.RTK_SESSION)
+        self.dao.db_add([RTKMechanism(), ], self.session)
+        self.dao.db_add([RTKMechanism(), ], self.session)
+
+        self.DUT = Model(self.dao)
 
     @attr(all=True, unit=True)
-    def test_mechanism_create(self):
+    def test00_create(self):
         """
-        (TestMechanism) __init__ should return instance of Mechanism data model
+        (TestMechanismModel) __init__ should return instance of Mechanism data model
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
-
-        self.assertEqual(self.DUT.mode_id, 0)
-        self.assertEqual(self.DUT.mechanism_id, 0)
-        self.assertEqual(self.DUT.description, '')
-        self.assertEqual(self.DUT.rpn_occurrence, 10)
-        self.assertEqual(self.DUT.rpn_detection, 10)
-        self.assertEqual(self.DUT.rpn, 1000)
-        self.assertEqual(self.DUT.rpn_occurrence_new, 10)
-        self.assertEqual(self.DUT.rpn_detection_new, 10)
-        self.assertEqual(self.DUT.rpn_new, 1000)
-        self.assertEqual(self.DUT.include_pof, 0)
+        self.assertEqual(self.DUT.last_id, None)
 
     @attr(all=True, unit=True)
-    def test_set_good_attributes(self):
+    def test01a_select_all(self):
         """
-        (TestMechanism) set_attributes should return 0 with good inputs
+        (TestMechanismModel) select_all() should return a Tree() object populated
+        with RTKMechanism instances on success
         """
 
-        _values = (0, 0, 'Test Mechanism', 10, 10, 1000, 10, 10, 1000, 0)
+        _tree = self.DUT.select_all(1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        self.assertTrue(isinstance(_tree, Tree))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMechanism))
+
+    @attr(all=True, unit=True)
+    def test02a_select(self):
+        """
+        (TestMechanismModel) select() should return an instance of the RTKMechanism
+        data model on success
+        """
+
+        self.DUT.select_all(1)
+        _mechanism = self.DUT.select(1)
+
+        self.assertTrue(isinstance(_mechanism, RTKMechanism))
+        self.assertEqual(_mechanism.mechanism_id, 1)
+        self.assertEqual(_mechanism.description, 'Test Failure Mechanism #1')
+
+    @attr(all=True, unit=True)
+    def test02b_select_non_existent_id(self):
+        """
+        (TestMechanismModel) select() should return None when a non-existent
+        Mechanism ID is requested
+        """
+
+        _mechanism = self.DUT.select(300)
+        
+        self.assertEqual(_mechanism, None)
+
+    @attr(all=True, unit=True)
+    def test03a_insert(self):
+        """
+        (TestMechanismModel) insert() should return a zero error code on success
+        """
+
+        self.DUT.select_all(1)
+
+        _error_code, _msg = self.DUT.insert(mode_id=1)
+
         self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
+                               'the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test_set_attributes_missing_index(self):
+    def test04a_delete(self):
         """
-        (TestMechanism) set_attributes should return 40 with missing input(s)
+        (TestMechanismModel) delete() should return a zero error code on success
         """
 
-        _values = (0, 0, 'Test Mechanism', 10, 10, 1000, 10, 10, 0)
+        self.DUT.select_all(1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 40)
+        _error_code, _msg = self.DUT.delete(self.DUT.last_id)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
+                               'Program database.')
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_type(self):
+    def test04b_delete_non_existent_id(self):
         """
-        (TestMechanism) set_attributes should return 10 with wrong data type
+        (TestMechanismModel) delete() should return a non-zero error code when
+        passed a Mechanism ID that doesn't exist
         """
 
-        _values = (0, 0, 'Test Mechanism', 10, None, 1000, 10, 10, 1000, 0)
+        self.DUT.select_all(1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 10)
+        _error_code, _msg = self.DUT.delete(300)
+
+        self.assertEqual(_error_code, 2015)
+        self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
+                               'Mechanism ID 300.')
 
     @attr(all=True, unit=True)
-    def test_set_attributes_wrong_value(self):
+    def test05a_update(self):
         """
-        (TestMechanism) set_attributes should return 10 with bad value
+        (TestMechanismModel) update() should return a zero error code on success
         """
 
-        _values = (0, 0, 10, 'Test Mechanism', 10, 1000, 10, 10, 1000, 0)
+        self.DUT.select_all(1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
-        self.assertEqual(_error_code, 10)
+        _mechanism = self.DUT.tree.get_node(1).data
+        _mechanism.pof_include = 1
+
+        _error_code, _msg = self.DUT.update(1)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Updating the RTK Program '
+                               'database.')
 
     @attr(all=True, unit=True)
-    def test_get_attributes(self):
+    def test05b_update_non_existent_id(self):
         """
-        (TestMechanism) get_attributes should return good values
+        (TestMechanismModel) update() should return a non-zero error code when
+        passed a Mechanism ID that doesn't exist
         """
 
-        _values = (0, 0, '', 10, 10, 1000, 10, 10, 1000, 0)
+        self.DUT.select_all(1)
 
-        self.assertEqual(self.DUT.get_attributes(), _values)
+        _error_code, _msg = self.DUT.update(100)
+
+        self.assertEqual(_error_code, 2016)
+        self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
+                               'Mechanism ID 100.')
 
     @attr(all=True, unit=True)
-    def test_sanity(self):
+    def test06a_update_all(self):
         """
-        (TestMechanism) get_attributes(set_attributes(values)) == values
+        (TestMechanismModel) update_all() should return a zero error code on
+        success
         """
 
-        _values = (0, 0, 'Test Mechanism', 10, 10, 1000, 10, 10, 1000, 0)
+        self.DUT.select_all(1)
 
-        self.DUT.set_attributes(_values)
-        _result = self.DUT.get_attributes()
-        self.assertEqual(_result, _values)
+        _error_code, _msg = self.DUT.update_all()
 
-    #@attr(all=False, unit=False)
-    #def test_rpn(self):
-    #    """
-    #    (TestMechanism) calculate always returns a value between 1 - 1000
-    #    """
-
-    #    for severity in range(1, 11):
-    #        for occurrence in range(1, 11):
-    #            for detection in range(1, 11):
-    #                self.assertIn(self.DUT.calculate(severity,
-    #                                                 occurrence,
-    #                                                 detection),
-    #                              range(1, 1001))
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Updating the RTK Program '
+                               'database.')
 
     @attr(all=True, unit=True)
-    def test_rpn_out_of_range_severity_inputs(self):
+    def test07a_calculate_rpn_out_of_range_severity_inputs(self):
         """
-        (TestMechanism) calculate raises OutOfRangeError for 11 < severity inputs < 0
+        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < severity inputs < 0
         """
 
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 0, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 11, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 0)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 11)
+        self.DUT.select_all(1)
+
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 0, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 11, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 0)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 11)
 
     @attr(all=True, unit=True)
-    def test_rpn_out_of_range_occurrence_inputs(self):
+    def test07b_calculate_rpn_out_of_range_occurrence_inputs(self):
         """
-        (TestMechanism) calculate raises OutOfRangeError for 11 < occurrence inputs < 0
+        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < occurrence inputs < 0
         """
+
+        self.DUT.select_all(1)
 
         self.DUT.rpn_occurrence = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
         self.DUT.rpn_occurrence = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
 
     @attr(all=True, unit=True)
-    def test_rpn_out_of_range_new_occurrence_inputs(self):
+    def test07c_calculate_rpn_out_of_range_new_occurrence_inputs(self):
         """
-        (TestMechanism) calculate raises OutOfRangeError for 11 < new occurrence inputs < 0
+        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < new occurrence inputs < 0
         """
+
+        self.DUT.select_all(1)
 
         self.DUT.rpn_occurrence_new = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
         self.DUT.rpn_occurrence_new = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
 
     @attr(all=True, unit=True)
-    def test_rpn_out_of_range_detection_inputs(self):
+    def test07d_calculate_rpn_out_of_range_detection_inputs(self):
         """
-        (TestMechanism) calculate raises OutOfRangeError for 11 < detection inputs < 0
+        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < detection inputs < 0
         """
+
+        self.DUT.select_all(1)
 
         self.DUT.rpn_detection = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
         self.DUT.rpn_detection = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
 
     @attr(all=True, unit=True)
-    def test_rpn_out_of_range_new_detection_inputs(self):
+    def test07e_calculate_rpn_out_of_range_new_detection_inputs(self):
         """
-        (TestMechanism) calculate raises OutOfRangeError for 11 < new detection inputs < 0
+        (TestMechanismModel) calculate_rpn raises OutOfRangeError for 11 < new detection inputs < 0
         """
+
+        self.DUT.select_all(1)
 
         self.DUT.rpn_detection_new = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
         self.DUT.rpn_detection_new = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate, 1, 10)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
 
 
-class TestMechanismController(unittest.TestCase):
+class Test01MechanismController(unittest.TestCase):
     """
     Class for testing the FMEA Mechanism data controller.
     """
@@ -233,12 +308,161 @@ class TestMechanismController(unittest.TestCase):
         Method to setup the test fixture for the Mechanism model class.
         """
 
-        self.DUT = Mechanism()
+        self.Configuration = Configuration()
+
+        self.Configuration.RTK_BACKEND = 'sqlite'
+        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
+                                            'socket'  : 3306,
+                                            'database': '/tmp/TestDB.rtk',
+                                            'user'    : '',
+                                            'password': ''}
+
+        self.Configuration.RTK_DEBUG_LOG = \
+            Utilities.create_logger("RTK.debug", 'DEBUG',
+                                    '/tmp/RTK_debug.log')
+        self.Configuration.RTK_USER_LOG = \
+            Utilities.create_logger("RTK.user", 'INFO',
+                                    '/tmp/RTK_user.log')
+
+        # Create a data access object and connect to a test database.
+        self.dao = DAO()
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+                    self.Configuration.RTK_PROG_INFO['database']
+        self.dao.db_connect(_database)
+
+        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
+                                       expire_on_commit=False)
+        self.session = scoped_session(self.dao.RTK_SESSION)
+        self.dao.db_add([RTKMechanism(), ], self.session)
+        self.dao.db_add([RTKMechanism(), ], self.session)
+
+        self.DUT = Mechanism(self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
-    def test_mechanism_create(self):
+    def test00_controller_create(self):
         """
-        (TestMechanism) __init__ should return instance of Mechanism data controller
+        (TestMechanismController) __init__ should return instance of Mechanism data controller
         """
 
         self.assertTrue(isinstance(self.DUT, Mechanism))
+        self.assertTrue(isinstance(self.DUT._dtm_mechanism, Model))
+
+    @attr(all=True, unit=True)
+    def test01a_request_select_all(self):
+        """
+        (TestMechanismController) request_select_all() should return a Tree of
+        RTKMechanism models.
+        """
+
+        _tree = self.DUT.request_select_all(1)
+
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMechanism))
+
+    @attr(all=True, unit=True)
+    def test02a_request_select(self):
+        """
+        (TestMechanismController) request_select() should return an
+        RTKMechanism model.
+        """
+
+        self.DUT.request_select_all(1)
+
+        _mechanism = self.DUT.request_select(1)
+
+        self.assertTrue(isinstance(_mechanism, RTKMechanism))
+
+    @attr(all=True, unit=True)
+    def test02b_request_select_non_existent_id(self):
+        """
+        (TestMechanismController) request_select() should return None when
+        requesting a Mechanism that doesn't exist.
+        """
+
+        _mechanism = self.DUT.request_select(100)
+
+        self.assertEqual(_mechanism, None)
+
+    @attr(all=True, unit=True)
+    def test03a_request_insert(self):
+        """
+        (TestMechanismController) request_insert() should return False on success.
+        """
+
+        self.DUT.request_select_all(1)
+
+        self.assertFalse(self.DUT.request_insert(mode_id=1))
+
+    @attr(all=True, unit=True)
+    def test04a_request_delete(self):
+        """
+        (TestMechanismController) request_delete() should return False on success.
+        """
+
+        self.DUT.request_select_all(1)
+        self.DUT.request_insert(mode_id=1)
+
+        self.assertFalse(self.DUT.request_delete(
+            self.DUT._dtm_mechanism.last_id))
+
+    @attr(all=True, unit=True)
+    def test04a_request_delete_non_existent_id(self):
+        """
+        (TestMechanismController) request_delete() should return True when attempting to delete a non-existent Mode.
+        """
+
+        self.DUT.request_select_all(1)
+
+        self.assertTrue(self.DUT.request_delete(100))
+
+    @attr(all=True, unit=True)
+    def test05a_request_update(self):
+        """
+        (TestMechanismController) request_update() should return False on success.
+        """
+
+        self.DUT.request_select_all(1)
+
+        self.assertFalse(self.DUT.request_update(1))
+
+    @attr(all=True, unit=True)
+    def test05b_request_update_non_existent_id(self):
+        """
+        (TestMechanismController) request_update() should return True when
+        attempting to save a non-existent Mechanism.
+        """
+
+        self.DUT.request_select_all(1)
+
+        self.assertTrue(self.DUT.request_update(100))
+
+    @attr(all=True, unit=True)
+    def test06a_request_update_all(self):
+        """
+        (TestMechanismController) request_update_all() should return False on success.
+        """
+
+        self.DUT.request_select_all(1)
+
+        _error_code, _msg = self.DUT.request_update_all()
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Updating the RTK Program database.')
+
+    @attr(all=True, unit=True)
+    def test07a_request_calculate_rpn(self):
+        """
+        (TestMechanismController) request_calculate_rpn() should return False on success.
+        """
+
+        self.DUT.request_select_all(1)
+        _mechanism = self.DUT.request_select(1)
+        _mechanism.rpn_detection = 10
+        _mechanism.rpn_detection_new = 5
+        _mechanism.rpn_occurrence = 5
+        _mechanism.rpn_occurrence_new = 4
+
+        self.assertFalse(self.DUT.request_calculate_rpn(1, 10, 5))
+        self.assertAlmostEqual(_mechanism.rpn, 500)
+        self.assertAlmostEqual(_mechanism.rpn_new, 100)
+

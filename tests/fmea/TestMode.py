@@ -55,7 +55,7 @@ from dao import RTKMode
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2016 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
 class Test00ModeModelModel(unittest.TestCase):
@@ -117,7 +117,7 @@ class Test00ModeModelModel(unittest.TestCase):
         self.assertTrue(isinstance(_tree.get_node(1).data, RTKMode))
 
     @attr(all=True, unit=True)
-    def test01_select_all_hardware(self):
+    def test01b_select_all_hardware(self):
         """
         (TestModeModel): select_all() should return a Tree() object populated with RTKMode instances on success.
         """
@@ -138,7 +138,7 @@ class Test00ModeModelModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_mode, RTKMode))
         self.assertEqual(_mode.mode_id, 1)
-        self.assertEqual(_mode.description, '')
+        self.assertEqual(_mode.description, 'Test Failure Mode #1')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -153,7 +153,7 @@ class Test00ModeModelModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03a_insert_functional_mode(self):
         """
-        (TestModeModel): insert() should return False on success when inserting a functional failure Mode.
+        (TestModeModel): insert() should return a zero error code on success when inserting a functional failure Mode.
         """
 
         self.DUT.select_all(1)
@@ -167,7 +167,7 @@ class Test00ModeModelModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03b_insert_hardware_mode(self):
         """
-        (TestModeModel): insert() should return False on success when inserting a hardware failure Mode.
+        (TestModeModel): insert() should return a zero error code on success when inserting a hardware failure Mode.
         """
 
         self.DUT.select_all(1)
@@ -238,7 +238,7 @@ class Test00ModeModelModel(unittest.TestCase):
                                'Mode ID 100.')
 
     @attr(all=True, unit=True)
-    def test_06a_update_all(self):
+    def test06a_update_all(self):
         """
         (TestModeModel): update_all() should return a zero error code on success.
         """
@@ -529,3 +529,4 @@ class Test01ModeController(unittest.TestCase):
         self.assertFalse(self.DUT.request_calculate_criticality(1, 0.0000563))
         self.assertAlmostEqual(_mode.mode_hazard_rate, 2.815e-05)
         self.assertAlmostEqual(_mode.mode_criticality, 7.02061e-05)
+

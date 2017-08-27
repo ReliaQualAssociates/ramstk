@@ -50,7 +50,7 @@ from dao.RTKMode import RTKMode
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 _ = gettext.gettext
 
@@ -72,16 +72,16 @@ class OutOfRangeError(Exception):
 
 class Model(RTKDataModel):
     """
-    The MOde data model contains the attributes and methods of a failure mode.
-    A :py:class:`rtk.analyses.fmea.FMEA` will consist of one or more failure
-    modes.
+    The Mode data model contains the attributes and methods of a FMEA failure
+    mode.  A :py:class:`rtk.analyses.fmea.FMEA` will consist of one or more
+    failure modes.
     """
 
     _tag = 'Modes'
 
     def __init__(self, dao):
         """
-        Method to initialize an Mode data model instance.
+        Method to initialize a Mode data model instance.
         """
 
         RTKDataModel.__init__(self, dao)

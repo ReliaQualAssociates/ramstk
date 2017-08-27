@@ -40,7 +40,7 @@ RTKDataModel Module
 
 import gettext
 
-from treelib import Tree
+from treelib import tree, Tree
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
