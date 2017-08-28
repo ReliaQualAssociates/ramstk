@@ -463,5 +463,3 @@ class Test01CauseController(unittest.TestCase):
         self.assertFalse(self.DUT.request_calculate_rpn(1, 10, 5))
         self.assertAlmostEqual(_cause.rpn, 500)
         self.assertAlmostEqual(_cause.rpn_new, 100)
-
-

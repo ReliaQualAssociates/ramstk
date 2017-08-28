@@ -297,13 +297,12 @@ class Cause(RTKDataController):
     """
     The Cause data controller provides an interface between the Cause data
     model and an RTK view model.  A single Cause controller can control one or
-    more Cause data models.
     """
 
     def __init__(self, dao, configuration, **kwargs):
         """
         Method to initialize a Cause controller instance.
-
+        
         :param dao: the RTK Program DAO instance to pass to the Mode Data
                     Model.
         :type dao: :py:class:`rtk.dao.DAO`
