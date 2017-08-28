@@ -407,7 +407,8 @@ class Test01MechanismController(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04a_request_delete_non_existent_id(self):
         """
-        (TestMechanismController) request_delete() should return True when attempting to delete a non-existent Mode.
+        (TestMechanismController) request_delete() should return True when
+        attempting to delete a non-existent Mechanism.
         """
 
         self.DUT.request_select_all(1)

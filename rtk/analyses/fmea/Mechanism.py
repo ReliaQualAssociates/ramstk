@@ -302,7 +302,7 @@ class Mechanism(RTKDataController):
     def __init__(self, dao, configuration, **kwargs):
         """
         Method to initialize a Mechanism data controller instance.
-        
+
         :param dao: the RTK Program DAO instance to pass to the Mode Data
                     Model.
         :type dao: :py:class:`rtk.dao.DAO`
@@ -373,7 +373,7 @@ class Mechanism(RTKDataController):
 
             if not self.__test:
                 pub.sendMessage('insertedMechanism',
-                                mode_id=self._dtm_action.last_id)
+                                mechanism_id=self._dtm_mechanism.last_id)
         else:
             _msg = _msg + '  Failed to add a new Mechanism to the RTK Program \
                            database.'
@@ -471,3 +471,4 @@ class Mechanism(RTKDataController):
             _return = True
 
         return _return
+
