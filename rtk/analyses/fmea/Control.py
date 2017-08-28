@@ -43,9 +43,9 @@ import gettext
 from pubsub import pub
 
 # Import other RTK modules.
-from datamodels import RTKDataModel
-from datamodels import RTKDataController
-from dao.RTKControl import RTKControl
+from datamodels import RTKDataModel         # pylint: disable=E0401, F0401
+from datamodels import RTKDataController    # pylint: disable=F0401
+from dao.RTKControl import RTKControl       # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
