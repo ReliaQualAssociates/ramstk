@@ -12,24 +12,24 @@
 # 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ###############################################################################
@@ -43,9 +43,9 @@ import gettext
 from pubsub import pub
 
 # Import other RTK modules.
-from datamodels import RTKDataModel
-from datamodels import RTKDataController
-from dao.RTKCause import RTKCause
+from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataController        # pylint: disable=E0401
+from dao.RTKCause import RTKCause               # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -228,70 +228,6 @@ class Model(RTKDataModel):
 
         return _error_code, _msg
 
-    def calculate_rpn(self, cause_id, severity, severity_new):
-        """
-        Method to calculate the Risk Priority Number (RPN) for the Mechanism.
-
-            RPN = S * O * D
-
-        :param int cause_id: the ID of the Cause to calculate the RPN.
-        :param int severity: the Severity (S) value of the FMEA end effect for
-                             the failure mode this Cause is associated with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _error_code = 0
-        _msg = 'RTK SUCCESS: Calculating failure cause {0:d} RPN.'.\
-                format(cause_id)
-
-        _cause = self.tree.get_node(cause_id).data
-
-        if not 0 < severity < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN severity is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _cause.rpn_occurrence < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN occurrence is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _cause.rpn_detection < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN detection is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < severity_new < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN new severity is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _cause.rpn_occurrence_new < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN new occurrence is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _cause.rpn_detection_new < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN new detection is outside the range "
-                                    u"[1, 10]."))
-
-        _cause.rpn = int(severity) \
-                * int(_cause.rpn_occurrence) \
-                * int(_cause.rpn_detection)
-        _cause.rpn_new = int(severity_new) \
-                * int(_cause.rpn_occurrence_new) \
-                * int(_cause.rpn_detection_new)
-
-        if _cause.rpn < 1:
-            _error_code = 2030
-            _msg = 'Failure cause RPN has a value less than 1.'
-            raise OutOfRangeError(_(u"Failure cause RPN has a value less "
-                                    u"than 1."))
-        if _cause.rpn_new > 1000:
-            _error_code = 2030
-            _msg = 'Failure cause RPN has a value greater than 1000.'
-            raise OutOfRangeError(_(u"Failure cause RPN has a value "
-                                    u"greater than 1000."))
-
-        return _error_code, _msg
-
 
 class Cause(RTKDataController):
     """
@@ -302,7 +238,7 @@ class Cause(RTKDataController):
     def __init__(self, dao, configuration, **kwargs):
         """
         Method to initialize a Cause controller instance.
-        
+
         :param dao: the RTK Program DAO instance to pass to the Mode Data
                     Model.
         :type dao: :py:class:`rtk.dao.DAO`
@@ -457,7 +393,7 @@ class Cause(RTKDataController):
         _return = False
 
         _error_code, \
-            _msg = self._dtm_cause.calculate_rpn(cause_id, severity, 
+            _msg = self._dtm_cause.calculate_rpn(cause_id, severity,
                                                  severity_new)
 
         if _error_code == 0:

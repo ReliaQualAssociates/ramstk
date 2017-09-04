@@ -128,7 +128,7 @@ class Test00CauseModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_cause, RTKCause))
         self.assertEqual(_cause.cause_id, 1)
-        self.assertEqual(_cause.description, 'This is a failure cause.')
+        self.assertEqual(_cause.description, 'Test Failure Cause #1')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -229,71 +229,6 @@ class Test00CauseModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          'RTK SUCCESS: Updating the RTK Program database.')
-
-    @attr(all=True, unit=True)
-    def test07a_calculate_rpn_out_of_range_severity_inputs(self):
-        """
-        (TestCauseModel) calculate_rpn() raises OutOfRangeError for 11 < severity inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 0, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 11, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 0)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 11)
-
-    @attr(all=True, unit=True)
-    def test07b_calculate_rpn_out_of_range_occurrence_inputs(self):
-        """
-        (TestCauseModel) calculate_rpn() raises OutOfRangeError for 11 < occurrence inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_occurrence = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-        self.DUT.rpn_occurrence = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-
-    @attr(all=True, unit=True)
-    def test07c_calculate_rpn_out_of_range_new_occurrence_inputs(self):
-        """
-        (TestCauseModel) calculate_rpn() raises OutOfRangeError for 11 < new occurrence inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_occurrence_new = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-        self.DUT.rpn_occurrence_new = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-
-    @attr(all=True, unit=True)
-    def test07d_calculate_rpn_out_of_range_detection_inputs(self):
-        """
-        (TestCauseModel) calculate_rpn() raises OutOfRangeError for 11 < detection inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_detection = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
-        self.DUT.rpn_detection = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
-
-    @attr(all=True, unit=True)
-    def test07e_calculate_rpn_out_of_range_new_detection_inputs(self):
-        """
-        (TestCauseModel) calculate_rpn raises OutOfRangeError for 11 < new detection inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_detection_new = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
-        self.DUT.rpn_detection_new = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
 
 
 class Test01CauseController(unittest.TestCase):
@@ -447,19 +382,3 @@ class Test01CauseController(unittest.TestCase):
         self.assertEqual(_msg,
                          'RTK SUCCESS: Updating the RTK Program database.')
 
-    @attr(all=True, unit=True)
-    def test07a_request_calculate_rpn(self):
-        """
-        (TestCauseController) request_calculate_rpn() should return False on success.
-        """
-
-        self.DUT.request_select_all(1)
-        _cause = self.DUT.request_select(1)
-        _cause.rpn_detection = 10
-        _cause.rpn_detection_new = 5
-        _cause.rpn_occurrence = 5
-        _cause.rpn_occurrence_new = 4
-
-        self.assertFalse(self.DUT.request_calculate_rpn(1, 10, 5))
-        self.assertAlmostEqual(_cause.rpn, 500)
-        self.assertAlmostEqual(_cause.rpn_new, 100)

@@ -37,18 +37,22 @@ The RTKMechanism Table
 ===============================================================================
 """
 
+import gettext
+
 # Import the database models.
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
+from Utilities import error_handler, none_to_default, OutOfRangeError
 from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+_ = gettext.gettext
 
 
 class RTKMechanism(RTK_BASE):
@@ -115,14 +119,14 @@ class RTKMechanism(RTK_BASE):
                format(self.mechanism_id)
 
         try:
-            self.description = str(values[0])
-            self.pof_include = int(values[1])
-            self.rpn = int(values[2])
-            self.rpn_detection = int(values[3])
-            self.rpn_detection_new = int(values[4])
-            self.rpn_new = int(values[5])
-            self.rpn_occurrence = int(values[6])
-            self.rpn_occurrence_new = int(values[7])
+            self.description = str(none_to_default(values[0], ''))
+            self.pof_include = int(none_to_default(values[1], 1))
+            self.rpn = int(none_to_default(values[2], 0))
+            self.rpn_detection = int(none_to_default(values[3], 1))
+            self.rpn_detection_new = int(none_to_default(values[4], 1))
+            self.rpn_new = int(none_to_default(values[5], 0))
+            self.rpn_occurrence = int(none_to_default(values[6], 1))
+            self.rpn_occurrence_new = int(none_to_default(values[7], 1))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
@@ -133,3 +137,74 @@ class RTKMechanism(RTK_BASE):
                    "more RTKMechanism attributes."
 
         return _error_code, _msg
+
+    def calculate_rpn(self, severity, severity_new):
+        """
+        Method to calculate the Risk Priority Number (RPN) for the Mechanism.
+
+            RPN = S * O * D
+
+        :param int severity: the Severity (S) value of the FMEA end effect for
+                             the failure mode this Mechanism is associated
+                             with.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Calculating failure mechanism {0:d} RPN.'.\
+                format(self.mechanism_id)
+
+        if not 0 < severity < 11:
+            _error_code = 2020
+            raise OutOfRangeError(
+                _(u"RPN severity is outside the range "
+                  u"[1, 10]."))
+        if not 0 < self.rpn_occurrence < 11:
+            _error_code = 2020
+            raise OutOfRangeError(
+                _(u"RPN occurrence is outside the range "
+                  u"[1, 10]."))
+        if not 0 < self.rpn_detection < 11:
+            _error_code = 2020
+            raise OutOfRangeError(
+                _(u"RPN detection is outside the range "
+                  u"[1, 10]."))
+        if not 0 < severity_new < 11:
+            _error_code = 2020
+            raise OutOfRangeError(
+                _(u"RPN new severity is outside the range "
+                  u"[1, 10]."))
+        if not 0 < self.rpn_occurrence_new < 11:
+            _error_code = 2020
+            raise OutOfRangeError(
+                _(u"RPN new occurrence is outside the range "
+                  u"[1, 10]."))
+        if not 0 < self.rpn_detection_new < 11:
+            _error_code = 2020
+            raise OutOfRangeError(
+                _(u"RPN new detection is outside the range "
+                  u"[1, 10]."))
+
+        self.rpn = int(severity) \
+                * int(self.rpn_occurrence) \
+                * int(self.rpn_detection)
+        self.rpn_new = int(severity_new) \
+                * int(self.rpn_occurrence_new) \
+                * int(self.rpn_detection_new)
+
+        if self.rpn < 1:
+            _error_code = 2020
+            _msg = 'Failure mechanism RPN has a value less than 1.'
+            raise OutOfRangeError(
+                _(u"Failure mechanism RPN has a value less "
+                  u"than 1."))
+        if self.rpn_new > 1000:
+            _error_code = 2020
+            _msg = 'Failure mechanism RPN has a value greater than 1000.'
+            raise OutOfRangeError(
+                _(u"Failure mechanism RPN has a value "
+                  u"greater than 1000."))
+
+        return _error_code, _msg
+

@@ -40,11 +40,11 @@ FMEA Control Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                      # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel         # pylint: disable=E0401, F0401
-from datamodels import RTKDataController    # pylint: disable=F0401
+from datamodels import RTKDataModel         # pylint: disable=E0401
+from datamodels import RTKDataController    # pylint: disable=E0401
 from dao.RTKControl import RTKControl       # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
@@ -96,6 +96,29 @@ class Model(RTKDataModel):
 
         return RTKDataModel.select(self, control_id)
 
+    def _select_all(self, parent_id, functional):
+        """
+        Helper method to retrieve all the Controls
+ 
+        :param int parent_id: the Mode ID (functional FMEA) or the Cause ID
+                              (hardware FMEA) to select the Controls for.
+        :param bool functional: indicates whether the Controls are for a
+                                functional FMEA or a hardware FMEA (default).
+        """
+
+        _session = RTKDataModel.select_all(self)
+
+        if functional:
+            _controls = _session.query(RTKControl).filter(RTKControl.mode_id ==
+                                                          parent_id).all()
+        else:
+            _controls = _session.query(RTKControl).filter(RTKControl.cause_id
+                                                          == parent_id).all()
+
+        _session.close()
+
+        return _controls
+
     def select_all(self, parent_id, functional=False):
         """
         Method to retrieve all the Controls from the RTK Program database.
@@ -109,32 +132,15 @@ class Model(RTKDataModel):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _session = RTKDataModel.select_all(self)
-
-        if functional:
-            for _control in _session.query(RTKControl).filter(
-                    RTKControl.mode_id == parent_id).all():
-                # We get and then set the attributes to replace any None values
-                # (NULL fields in the database) with their default value.
-                _attributes = _control.get_attributes()
-                _control.set_attributes(_attributes[3:])
-                self.tree.create_node(_control.description,
-                                      _control.control_id,
-                                      parent=0, data=_control)
-                self.last_id = max(self.last_id, _control.control_id)
-        else:
-            for _control in _session.query(RTKControl).filter(
-                    RTKControl.cause_id == parent_id).all():
-                # We get and then set the attributes to replace any None values
-                # (NULL fields in the database) with their default value.
-                _attributes = _control.get_attributes()
-                _control.set_attributes(_attributes[3:])
-                self.tree.create_node(_control.description,
-                                      _control.control_id,
-                                      parent=0, data=_control)
-                self.last_id = max(self.last_id, _control.control_id)
-
-        _session.close()
+        for _control in self._select_all(parent_id, functional):
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _control.get_attributes()
+            _control.set_attributes(_attributes[3:])
+            self.tree.create_node(_control.description,
+                                  _control.control_id,
+                                  parent=0, data=_control)
+            self.last_id = max(self.last_id, _control.control_id)
 
         return self.tree
 
@@ -311,7 +317,7 @@ class Control(RTKDataController):
             if not self.__test:
                 pub.sendMessage('insertedControl',
                                 mode_id=self._dtm_control.last_id,
-                                parent_id=parent_id)
+                                parent_id=cause_id)
         else:
             _msg = _msg + '  Failed to add a new Control to the RTK Program \
                            database.'

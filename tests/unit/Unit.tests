@@ -72,3 +72,6 @@ function.Function function/TestFunction.py
 analyses.fmea.Mode fmea/TestMode.py
 analyses.fmea.Control fmea/TestControl.py
 analyses.fmea.Action fmea/TestAction.py
+analyses.fmea.Mechanism fmea/TestMechanism.py
+analyses.fmea.Cause fmea/TestCause.py
+analyses.fmea.FMEA fmea/TestFMEA.py
