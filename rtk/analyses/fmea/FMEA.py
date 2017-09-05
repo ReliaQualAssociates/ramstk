@@ -161,8 +161,8 @@ class Model(RTKDataModel):
         :param int parent_id: the Function ID (functional FMEA) or Hardware ID
                               (hardware FMEA) to retrieve the FMEA and build
                               trees for.
-        :keyword bool functional: indicates whether the FMEA is functional or
-                                  hardware.
+        :param bool functional: indicates whether the FMEA is functional or
+                                hardware.
         :return: tree; the FMEA treelib Tree().
         :rtype: :py:class:`treelib.Tree`
         """
@@ -508,11 +508,13 @@ class FMEA(RTKDataController):
     and an RTK view model.  A single FMEA data controller can manage one or
     more FMEA data models.
 
-    :ivar bool __test: indicates whether or not the data controller is being
-                       created as part of a test.  Suppresses pypubsub
-                       messages.
-    :ivar _dtm_fmea: the instance of the FMEA data model associated with this
-                     controller.
+    :ivar _dao: default value: None
+    :ivar dict dicDFMEA: Dictionary of the Hardware FMEA data models
+                         controlled.  Key is the Hardware ID; value is a
+                         pointer to the instance of the FMEA data model.
+    :ivar dict dicFFMEA: Dictionary of the Function FMEA data models
+                         controlled.  Key is the Function ID; value is a
+                         pointer to the instance of the FMEA data model.
     """
 
     def __init__(self, dao, configuration, **kwargs):
@@ -565,11 +567,11 @@ class FMEA(RTKDataController):
 
     def request_insert(self, entity_id, parent_id, level):
         """
-        Method to add a new FMEA to the dictionary of profiles managed by this
-        controller.
+        Method to add a new entity to the FMEA managed by this controller.
 
-        :keyword int assembly_id: the Hardware item ID to add the FMEA.
-        :keyword int function_id: the Function ID to add the FMEA.
+        :param int entity_id: the Hardware item ID to add the FMEA.
+        :param int parent_id: the Function ID to add the FMEA.
+        :param int level: the level in the FMEA to add the new entity.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

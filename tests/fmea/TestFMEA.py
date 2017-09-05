@@ -145,7 +145,7 @@ class Test00FMEAModel(unittest.TestCase):
         self.assertTrue(isinstance(_tree, Tree))
 
     @attr(all=True, unit=True)
-    def test01a_select_all_hardware(self):
+    def test01b_select_all_hardware(self):
         """
         (TestFMEAModel) select_all() should return a treelib Tree() on success when
         selecting a Hardware FMEA
@@ -672,7 +672,6 @@ class Test00FMEAModel(unittest.TestCase):
                          format(self.DUT._dtm_cause.last_id))
         self.assertEqual(_cause.rpn, 196)
         self.assertEqual(_cause.rpn_new, 60)
-
 
 
 class Test01FMEAController(unittest.TestCase):
