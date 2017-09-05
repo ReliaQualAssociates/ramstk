@@ -46,20 +46,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
-def setUp():
-
-    # Clean up from previous runs.
-    if os.path.isfile('/tmp/RTK_debug.log'):
-        os.remove('/tmp/RTK_debug.log')
-
-    if os.path.isfile('/tmp/RTK_user.log'):
-        os.remove('/tmp/RTK_user.log')
-
-    if os.path.isfile('/tmp/TestDB.rtk'):
-        os.remove('/tmp/TestDB.rtk')
-
-    if os.path.isfile('/tmp/TestCommonDB.rtk'):
-        os.remove('/tmp/TestCommonDB.rtk')
+def _create_common_database():
 
     # Create and populate the RTK Common test database.
     engine = create_engine('sqlite:////tmp/TestCommonDB.rtk', echo=False)
@@ -145,6 +132,9 @@ def setUp():
     _failuremode.subcategory_id = _subcategory.subcategory_id
     session.add(_failuremode)
     session.commit()
+
+
+def _create_program_database():
 
     # Create the RTK Program test database.
     create_database('sqlite:////tmp/TestDB.rtk')
@@ -378,6 +368,26 @@ def setUp():
 
     session.commit()
 
+def setUp():
+
+    # Clean up from previous runs.
+    print "Cleaning up logs and databases from previous run."
+
+    if os.path.isfile('/tmp/RTK_debug.log'):
+        os.remove('/tmp/RTK_debug.log')
+
+    if os.path.isfile('/tmp/RTK_user.log'):
+        os.remove('/tmp/RTK_user.log')
+
+    if os.path.isfile('/tmp/TestDB.rtk'):
+        os.remove('/tmp/TestDB.rtk')
+
+    if os.path.isfile('/tmp/TestCommonDB.rtk'):
+        os.remove('/tmp/TestCommonDB.rtk')
+
+    _create_common_database()
+    _create_program_database()
+
     Configuration.RTK_HR_MULTIPLIER = 1.0
     Configuration.RTK_DEBUG_LOG = Utilities.create_logger("RTK.debug",
                                                           'DEBUG',
@@ -385,6 +395,7 @@ def setUp():
     Configuration.RTK_USER_LOG = Utilities.create_logger("RTK.user",
                                                          'INFO',
                                                          '/tmp/RTK_user.log')
+
 
 def tearDown():
 

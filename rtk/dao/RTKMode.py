@@ -37,18 +37,22 @@ The RTKMode Table
 ===============================================================================
 """
 
+import gettext
+
 # Import the database models.
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
+from Utilities import error_handler, none_to_default, OutOfRangeError
 from dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+_ = gettext.gettext
 
 
 class RTKMode(RTK_BASE):
@@ -190,3 +194,61 @@ class RTKMode(RTK_BASE):
                    "more RTKMode attributes."
 
         return _error_code, _msg
+
+    def calculate_criticality(self, item_hr):
+        """
+        Calculate the Criticality for the Mode.
+
+            Mode Criticality = Item Hazard Rate * Mode Ratio * \
+                               Mode Operating Time * Effect Probability
+
+        :param float item_hr: the hazard rate of the hardware item being
+                              calculated.
+        :return: (_error_code, _msg); the error code and associated message
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Calculating failure mode {0:d} criticality.'.\
+            format(self.mode_id)
+
+        if item_hr < 0.0:
+            _error_code = 2010
+            _msg = 'RTK ERROR: Item hazard rate has a negative value.'
+            raise OutOfRangeError(_(u"Item hazard rate has a negative value."))
+        if not 0.0 <= self.mode_ratio <= 1.0:
+            _error_code = 2010
+            _msg = 'RTK ERROR: Failure mode ratio is outside the range of ' \
+                   '[0.0, 1.0].'
+            raise OutOfRangeError(_(u"Failure mode ratio is outside the range "
+                                    u"of [0.0, 1.0]."))
+        if self.mode_op_time < 0.0:
+            _error_code = 2010
+            _msg = 'Failure mode operating time has a negative value.'
+            raise OutOfRangeError(_(u"Failure mode operating time has a "
+                                    u"negative value."))
+        if not 0.0 <= self.effect_probability <= 1.0:
+            _error_code = 2010
+            _msg = 'Failure effect probability is outside the range ' \
+                   '[0.0, 1.0].'
+            raise OutOfRangeError(_(u"Failure effect probability is outside "
+                                    u"the range [0.0, 1.0]."))
+
+        self.mode_hazard_rate = item_hr * self.mode_ratio
+        self.mode_criticality = self.mode_hazard_rate \
+                * self.mode_op_time * self.effect_probability
+
+        if self.mode_hazard_rate < 0.0:
+            _error_code = 2010
+            _msg = 'Failure mode hazard rate has a negative value.'
+            raise OutOfRangeError(_(u"Failure mode hazard rate has a negative "
+                                    u"value."))
+        if not self.mode_criticality > 0.0:
+            _error_code = 2010
+            _msg = 'Failure mode criticality has a negative value.'
+            raise OutOfRangeError(_(u"Failure mode criticality has a negative "
+                                    u"value."))
+
+        return _error_code, _msg
+
+

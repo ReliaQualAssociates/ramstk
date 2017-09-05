@@ -16,7 +16,7 @@
 #    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
+# 3. Neither the name of the copyright holder nor the names of its contributors
 #    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
@@ -46,6 +46,7 @@ from pubsub import pub
 from datamodels import RTKDataModel
 from datamodels import RTKDataController
 from dao.RTKMechanism import RTKMechanism
+from Utilities import OutOfRangeError
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -55,25 +56,10 @@ __copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 _ = gettext.gettext
 
 
-class OutOfRangeError(Exception):
-    """
-    Exception raised when an input value is outside legal limits.
-    """
-
-    def __init__(self, message):
-        """
-        Method to initialize OutOfRangeError instance.
-        """
-
-        Exception.__init__(self)
-
-        self.message = message
-
-
 class Model(RTKDataModel):
     """
     The Mechanism data model contains the attributes and methods of a FMEA
-    failure mechanism.  A :py:class:`rtk.analyses.fmea.Mode.Mode` will consist 
+    failure mechanism.  A :py:class:`rtk.analyses.fmea.Mode.Mode` will consist
     of one or more failure mechanisms.
     """
 
@@ -101,7 +87,7 @@ class Model(RTKDataModel):
 
     def select(self, mechanism_id):
         """
-        Methodt ot retrieve the instance of the RTKMechanism data model for the
+        Method to retrieve the instance of the RTKMechanism data model for the
         Mechanism ID passed.
 
         :param int mechanism_id: the ID of the failure mechanism to retrieve.
@@ -124,15 +110,17 @@ class Model(RTKDataModel):
 
         _session = RTKDataModel.select_all(self)
 
-        for _mechanism in  _session.query(RTKMechanism).\
-                           filter(RTKMechanism.mode_id == mode_id).all():
+        for _mechanism in _session.query(RTKMechanism).\
+                          filter(RTKMechanism.mode_id == mode_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default values.
             _attributes = _mechanism.get_attributes()
             _mechanism.set_attributes(_attributes[2:])
-            self.tree.create_node(_mechanism.description,
-                                  _mechanism.mechanism_id, parent = 0,
-                                  data=_mechanism)
+            self.tree.create_node(
+                _mechanism.description,
+                _mechanism.mechanism_id,
+                parent=0,
+                data=_mechanism)
             self.last_id = max(self.last_id, _mechanism.mechanism_id)
 
         _session.close()
@@ -146,15 +134,19 @@ class Model(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        
+
         _mechanism = RTKMechanism()
         _mechanism.mode_id = kwargs['mode_id']
-        _error_code, _msg = RTKDataModel.insert(self, [_mechanism, ])
+        _error_code, _msg = RTKDataModel.insert(self, [
+            _mechanism,
+        ])
 
         if _error_code == 0:
-            self.tree.create_node(_mechanism.description,
-                                  _mechanism.mechanism_id, parent=0,
-                                  data=_mechanism)
+            self.tree.create_node(
+                _mechanism.description,
+                _mechanism.mechanism_id,
+                parent=0,
+                data=_mechanism)
             self.last_id = _mechanism.mechanism_id
 
         return _error_code, _msg
@@ -222,71 +214,6 @@ class Model(RTKDataModel):
             # Break if something goes wrong and return
             if _error_code != 0:
                 print _error_code
-
-        return _error_code, _msg
-
-    def calculate_rpn(self, mechanism_id, severity, severity_new):
-        """
-        Method to calculate the Risk Priority Number (RPN) for the Mechanism.
-
-            RPN = S * O * D
-
-        :param int mechanism_id: the ID of the Mechanism to calculate the RPN.
-        :param int severity: the Severity (S) value of the FMEA end effect for
-                             the failure mode this Mechanism is associated
-                             with.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _error_code = 0
-        _msg = 'RTK SUCCESS: Calculating failure mechanism {0:d} RPN.'.\
-                format(mechanism_id)
-
-        _mechanism = self.tree.get_node(mechanism_id).data
-
-        if not 0 < severity < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN severity is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _mechanism.rpn_occurrence < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN occurrence is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _mechanism.rpn_detection < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN detection is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < severity_new < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN new severity is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _mechanism.rpn_occurrence_new < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN new occurrence is outside the range "
-                                    u"[1, 10]."))
-        if not 0 < _mechanism.rpn_detection_new < 11:
-            _error_code = 2020
-            raise OutOfRangeError(_(u"RPN new detection is outside the range "
-                                    u"[1, 10]."))
-
-        _mechanism.rpn = int(severity) \
-                * int(_mechanism.rpn_occurrence) \
-                * int(_mechanism.rpn_detection)
-        _mechanism.rpn_new = int(severity_new) \
-                * int(_mechanism.rpn_occurrence_new) \
-                * int(_mechanism.rpn_detection_new)
-
-        if _mechanism.rpn < 1:
-            _error_code = 2020
-            _msg = 'Failure mechanism RPN has a value less than 1.'
-            raise OutOfRangeError(_(u"Failure mechanism RPN has a value less "
-                                    u"than 1."))
-        if _mechanism.rpn_new > 1000:
-            _error_code = 2020
-            _msg = 'Failure mechanism RPN has a value greater than 1000.'
-            raise OutOfRangeError(_(u"Failure mechanism RPN has a value "
-                                    u"greater than 1000."))
 
         return _error_code, _msg
 
@@ -372,11 +299,13 @@ class Mechanism(RTKDataController):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self.__test:
-                pub.sendMessage('insertedMechanism',
-                                mechanism_id=self._dtm_mechanism.last_id)
+                pub.sendMessage(
+                    'insertedMechanism',
+                    mechanism_id=self._dtm_mechanism.last_id)
         else:
             _msg = _msg + '  Failed to add a new Mechanism to the RTK Program \
                            database.'
+
             self._configuration.RTK_DEBUG_LOG.error(_msg)
             _return = True
 
@@ -384,7 +313,7 @@ class Mechanism(RTKDataController):
 
     def request_delete(self, mechanism_id):
         """
-        Method to request the Mechanism Data Model to delete a Mechanism from 
+        Method to request the Mechanism Data Model to delete a Mechanism from
         the RTK Program database.
 
         :param int mechanism_id: the Mechanism ID to delete.
@@ -458,7 +387,7 @@ class Mechanism(RTKDataController):
         _return = False
 
         _error_code, \
-            _msg = self._dtm_mechanism.calculate_rpn(mechanism_id, severity, 
+            _msg = self._dtm_mechanism.calculate_rpn(mechanism_id, severity,
                                                      severity_new)
 
         if _error_code == 0:
@@ -471,4 +400,3 @@ class Mechanism(RTKDataController):
             _return = True
 
         return _return
-

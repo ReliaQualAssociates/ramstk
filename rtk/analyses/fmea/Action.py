@@ -40,12 +40,12 @@ FMEA Action Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                      # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel
-from datamodels import RTKDataController
-from dao.RTKAction import RTKAction
+from datamodels import RTKDataModel         # pylint: disable=E0401
+from datamodels import RTKDataController    # pylint: disable=E0401
+from dao.RTKAction import RTKAction         # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -96,6 +96,29 @@ class Model(RTKDataModel):
 
         return RTKDataModel.select(self, action_id)
 
+    def _select_all(self, parent_id, functional):
+        """
+        Helper method to retrieve all the Actions.
+ 
+        :param int parent_id: the Mode ID (functional FMEA) or the Cause ID
+                              (hardware FMEA) to select the Controls for.
+        :param bool functional: indicates whether the Controls are for a
+                                functional FMEA or a hardware FMEA (default).
+        """
+
+        _session = RTKDataModel.select_all(self)
+
+        if functional:
+            _actions = _session.query(RTKAction).filter(RTKAction.mode_id ==
+                                                        parent_id).all()
+        else:
+            _actions = _session.query(RTKAction).filter(RTKAction.cause_id == 
+                                                        parent_id).all()
+
+        _session.close()
+
+        return _actions
+
     def select_all(self, parent_id, functional=False):
         """
         Method to retrieve all the Actions from the RTK Program database.
@@ -110,32 +133,15 @@ class Model(RTKDataModel):
         :rtype: :py:class:`treelib.Tree`
         """
 
-        _session = RTKDataModel.select_all(self)
-
-        if functional:
-            for _action in _session.query(RTKAction).filter(
-                            RTKAction.mode_id == parent_id).all():
-                # We get and then set the attributes to replace any None values
-                # (NULL fields in the database) with their default value.
-                _attributes = _action.get_attributes()
-                _action.set_attributes(_attributes[3:])
-                self.tree.create_node(_action.action_due_date,
-                                      _action.action_id,
-                                      parent=0, data=_action)
-                self.last_id = max(self.last_id, _action.action_id)
-        else:
-            for _action in _session.query(RTKAction).filter(
-                            RTKAction.cause_id == parent_id).all():
-                # We get and then set the attributes to replace any None values
-                # (NULL fields in the database) with their default value.
-                _attributes = _action.get_attributes()
-                _action.set_attributes(_attributes[3:])
-                self.tree.create_node(_action.action_due_date,
-                                      _action.action_id,
-                                      parent=0, data=_action)
-                self.last_id = max(self.last_id, _action.action_id)
-
-        _session.close()
+        for _action in self._select_all(parent_id, functional):
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _action.get_attributes()
+            _action.set_attributes(_attributes[3:])
+            self.tree.create_node(_action.action_due_date,
+                                  _action.action_id,
+                                  parent=0, data=_action)
+            self.last_id = max(self.last_id, _action.action_id)
 
         return self.tree
 

@@ -46,6 +46,7 @@ from pubsub import pub
 from datamodels import RTKDataModel
 from datamodels import RTKDataController
 from dao.RTKMode import RTKMode
+from Utilities import OutOfRangeError
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -53,21 +54,6 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 _ = gettext.gettext
-
-
-class OutOfRangeError(Exception):
-    """
-    Exception raised when an input value is outside legal limits.
-    """
-
-    def __init__(self, message):
-        """
-        Method to initialize OutOfRangeError instance.
-        """
-
-        Exception.__init__(self)
-
-        self.message = message
 
 
 class Model(RTKDataModel):
@@ -237,66 +223,6 @@ class Model(RTKDataModel):
                 print _error_code
 
         return _error_code, _msg
-
-    def calculate_criticality(self, mode_id, item_hr):
-        """
-        Calculate the Criticality for the Mode.
-
-            Mode Criticality = Item Hazard Rate * Mode Ratio * \
-                               Mode Operating Time * Effect Probability
-
-        :param float item_hr: the hazard rate of the hardware item being
-                              calculated.
-        :return: (_error_code, _msg); the error code and associated message
-        :rtype: (int, str)
-        """
-
-        _error_code = 0
-        _msg = 'RTK SUCCESS: Calculating failure mode {0:d} criticality.'.\
-            format(mode_id)
-
-        _mode = self.select(mode_id)
-
-        if item_hr < 0.0:
-            _error_code = 2010
-            _msg = 'RTK ERROR: Item hazard rate has a negative value.'
-            raise OutOfRangeError(_(u"Item hazard rate has a negative value."))
-        if not 0.0 <= _mode.mode_ratio <= 1.0:
-            _error_code = 2010
-            _msg = 'RTK ERROR: Failure mode ratio is outside the range of ' \
-                   '[0.0, 1.0].'
-            raise OutOfRangeError(_(u"Failure mode ratio is outside the range "
-                                    u"of [0.0, 1.0]."))
-        if _mode.mode_op_time < 0.0:
-            _error_code = 2010
-            _msg = 'Failure mode operating time has a negative value.'
-            raise OutOfRangeError(_(u"Failure mode operating time has a "
-                                    u"negative value."))
-        if not 0.0 <= _mode.effect_probability <= 1.0:
-            _error_code = 2010
-            _msg = 'Failure effect probability is outside the range ' \
-                   '[0.0, 1.0].'
-            raise OutOfRangeError(_(u"Failure effect probability is outside "
-                                    u"the range [0.0, 1.0]."))
-
-        _mode.mode_hazard_rate = item_hr * _mode.mode_ratio
-        _mode.mode_criticality = _mode.mode_hazard_rate \
-                                 * _mode.mode_op_time \
-                                 * _mode.effect_probability
-
-        if _mode.mode_hazard_rate < 0.0:
-            _error_code = 2010
-            _msg = 'Failure mode hazard rate has a negative value.'
-            raise OutOfRangeError(_(u"Failure mode hazard rate has a negative "
-                                    u"value."))
-        if not _mode.mode_criticality > 0.0:
-            _error_code = 2010
-            _msg = 'Failure mode criticality has a negative value.'
-            raise OutOfRangeError(_(u"Failure mode criticality has a negative "
-                                    u"value."))
-
-        return _error_code, _msg
-
 
 class Mode(RTKDataController):
     """

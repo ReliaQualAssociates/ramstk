@@ -50,6 +50,31 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
+class OutOfRangeError(Exception):
+    """
+    Exception raised when an input value is outside legal limits.
+    """
+
+    def __init__(self, message):
+        """
+        Method to initialize OutOfRangeError instance.
+        """
+
+        Exception.__init__(self)
+
+        self.message = message
+
+
+class ParentError(Exception):
+    """
+    Exception raised when neither a hardware ID or function ID are passed or
+    when both a hardware ID and function ID are passed when initializing an
+    instance of the FMEA model.
+    """
+
+    pass
+
+
 def create_logger(log_name, log_level, log_file, to_tty=False):
     """
     This function creates a logger instance.

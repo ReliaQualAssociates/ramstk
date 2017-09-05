@@ -23,6 +23,7 @@ import unittest
 from nose.plugins.attrib import attr
 
 from dao.RTKMode import RTKMode
+from Utilities import OutOfRangeError
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -150,3 +151,95 @@ class TestRTKMode(unittest.TestCase):
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
                                "values to RTKMode.set_attributes().")
+
+    @attr(all=True, unit=True)
+    def test03a_calculate_criticality(self):
+        """
+        (TestRTKMode) calculate_criticality should return False on success
+        """
+
+        self.DUT.mode_ratio = 0.5
+        self.DUT.mode_op_time = 5.8
+        self.DUT.effect_probability = 0.43
+
+        _error_code, _msg = self.DUT.calculate_criticality(0.0000563)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mode 1 '
+                               'criticality.')
+        self.assertAlmostEqual(self.DUT.mode_hazard_rate, 2.815e-05)
+        self.assertAlmostEqual(self.DUT.mode_criticality, 7.02061e-05)
+
+    @attr(all=False, unit=True)
+    def test03b_calculate_criticality_out_of_range_hazard_rate_input(self):
+        """
+        (TestRTKMode) calculate_criticality raises OutOfRangeError for item_hr <= 0.0
+        """
+
+        self.DUT.mode_ratio = 1.0
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+
+        self.assertRaises(OutOfRangeError,
+                          self.DUT.calculate_criticality, 0.0)
+
+    @attr(all=False, unit=True)
+    def test03c_calculate_criticality_out_of_range_ratio_input(self):
+        """
+        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0.0 > ratio > 1.0
+        """
+
+        self.DUT.mode_ratio = -0.1
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError,
+                          self.DUT.calculate_criticality, 1.1)
+
+    @attr(all=False, unit=True)
+    def test03d_calculate_criticality_out_of_range_op_time_input(self):
+        """
+        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0.0 > operating time
+        """
+
+        self.DUT.mode_ratio = 0.5
+        self.DUT.mode_op_time = -1.2
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError,
+                          self.DUT.calculate_criticality, 1)
+
+    @attr(all=False, unit=True)
+    def test03e_calculate_criticality_out_of_range_eff_prob_input(self):
+        """
+        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0.0 <= effect probability =< 1.0
+        """
+
+        self.DUT.mode_ratio = 11.0
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 2.3
+        self.assertRaises(OutOfRangeError,
+                          self.DUT.calculate_criticality, 1)
+
+    @attr(all=False, unit=True)
+    def test03f_calculate_criticality_out_of_range_mode_hazard_rate(self):
+        """
+        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0 > mode hazard rate
+        """
+
+        self.DUT.mode_ratio = -0.5
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError,
+                          self.DUT.calculate_criticality, 1)
+
+    @attr(all=False, unit=True)
+    def test03g_calculate_criticality_out_of_range_mode_criticaility(self):
+        """
+        (TestRTKMode) calculate_criticality raises OutOfRangeError for 0 > mode criticality
+        """
+
+        self.DUT.mode_ratio = -0.5
+        self.DUT.mode_op_time = 1.0
+        self.DUT.effect_probability = 1.0
+        self.assertRaises(OutOfRangeError,
+                          self.DUT.calculate_criticality, 1)
+

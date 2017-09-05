@@ -139,7 +139,7 @@ class Test00MechanismModel(unittest.TestCase):
         """
 
         _mechanism = self.DUT.select(300)
-        
+
         self.assertEqual(_mechanism, None)
 
     @attr(all=True, unit=True)
@@ -231,72 +231,6 @@ class Test00MechanismModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Updating the RTK Program '
                                'database.')
-
-    @attr(all=True, unit=True)
-    def test07a_calculate_rpn_out_of_range_severity_inputs(self):
-        """
-        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < severity inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 0, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 11, 1)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 0)
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 11)
-
-    @attr(all=True, unit=True)
-    def test07b_calculate_rpn_out_of_range_occurrence_inputs(self):
-        """
-        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < occurrence inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_occurrence = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-        self.DUT.rpn_occurrence = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-
-    @attr(all=True, unit=True)
-    def test07c_calculate_rpn_out_of_range_new_occurrence_inputs(self):
-        """
-        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < new occurrence inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_occurrence_new = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-        self.DUT.rpn_occurrence_new = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 1)
-
-    @attr(all=True, unit=True)
-    def test07d_calculate_rpn_out_of_range_detection_inputs(self):
-        """
-        (TestMechanismModel) calculate_rpn() raises OutOfRangeError for 11 < detection inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_detection = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
-        self.DUT.rpn_detection = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
-
-    @attr(all=True, unit=True)
-    def test07e_calculate_rpn_out_of_range_new_detection_inputs(self):
-        """
-        (TestMechanismModel) calculate_rpn raises OutOfRangeError for 11 < new detection inputs < 0
-        """
-
-        self.DUT.select_all(1)
-
-        self.DUT.rpn_detection_new = 0
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
-        self.DUT.rpn_detection_new = 11
-        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1, 10)
-
 
 class Test01MechanismController(unittest.TestCase):
     """
@@ -449,21 +383,4 @@ class Test01MechanismController(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          'RTK SUCCESS: Updating the RTK Program database.')
-
-    @attr(all=True, unit=True)
-    def test07a_request_calculate_rpn(self):
-        """
-        (TestMechanismController) request_calculate_rpn() should return False on success.
-        """
-
-        self.DUT.request_select_all(1)
-        _mechanism = self.DUT.request_select(1)
-        _mechanism.rpn_detection = 10
-        _mechanism.rpn_detection_new = 5
-        _mechanism.rpn_occurrence = 5
-        _mechanism.rpn_occurrence_new = 4
-
-        self.assertFalse(self.DUT.request_calculate_rpn(1, 10, 5))
-        self.assertAlmostEqual(_mechanism.rpn, 500)
-        self.assertAlmostEqual(_mechanism.rpn_new, 100)
 

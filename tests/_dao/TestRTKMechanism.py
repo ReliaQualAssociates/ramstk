@@ -22,6 +22,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import unittest
 from nose.plugins.attrib import attr
 
+from Utilities import OutOfRangeError
 from dao.RTKMechanism import RTKMechanism
 
 __author__ = 'Andrew Rowland'
@@ -124,3 +125,99 @@ class TestRTKMechanism(unittest.TestCase):
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
                                "values to RTKMechanism.set_attributes().")
+
+    @attr(all=True, unit=True)
+    def test03a_calculate_rpn(self):
+        """
+        (TestRTKMechanism) _calculate_rpn always returns a zero error code on success
+        """
+
+        self.DUT.rpn_detection = 4
+        self.DUT.rpn_detection_new = 3
+        self.DUT.rpn_occurrence = 7
+        self.DUT.rpn_occurrence_new = 5
+
+        _error_code, _msg = \
+        self.DUT.calculate_rpn(7, 4)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mechanism '
+                               '{0:d} RPN.'.\
+                         format(self.DUT.mechanism_id))
+        self.assertEqual(self.DUT.rpn, 196)
+        self.assertEqual(self.DUT.rpn_new, 60)
+
+    @attr(all=True, unit=True)
+    def test03b_calculate_rpn_out_of_range_severity_inputs(self):
+        """
+        (TestRTKMechanism) calculate_rpn() raises OutOfRangeError for 11 < severity inputs < 0
+        """
+
+        self.DUT.rpn_detection = 6
+        self.DUT.rpn_detection_new = 4
+        self.DUT.rpn_occurrence = 7
+        self.DUT.rpn_occurrence_new = 5
+
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 0, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 11, 1)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 0)
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 11)
+
+    @attr(all=True, unit=True)
+    def test03c_calculate_rpn_out_of_range_occurrence_inputs(self):
+        """
+        (TestRTKMechanism) calculate_rpn() raises OutOfRangeError for 11 < occurrence inputs < 0
+        """
+
+        self.DUT.rpn_occurrence = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1)
+        self.DUT.rpn_occurrence = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1)
+
+    @attr(all=True, unit=True)
+    def test03d_calculate_rpn_out_of_range_new_occurrence_inputs(self):
+        """
+        (TestRTKMechanism) calculate_rpn() raises OutOfRangeError for 11 < new occurrence inputs < 0
+        """
+
+        self.DUT.rpn_occurrence_new = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1)
+        self.DUT.rpn_occurrence_new = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 1)
+
+    @attr(all=True, unit=True)
+    def test03e_calculate_rpn_out_of_range_detection_inputs(self):
+        """
+        (TestRTKMechanism) calculate_rpn() raises OutOfRangeError for 11 < detection inputs < 0
+        """
+
+        self.DUT.rpn_detection = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 10)
+        self.DUT.rpn_detection = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 10)
+
+    @attr(all=True, unit=True)
+    def test03f_calculate_rpn_out_of_range_new_detection_inputs(self):
+        """
+        (TestRTKMechanism) calculate_rpn raises OutOfRangeError for 11 < new detection inputs < 0
+        """
+
+        self.DUT.rpn_detection_new = 0
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 10)
+        self.DUT.rpn_detection_new = 11
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 1, 10)
+
+    @attr(all=True, unit=True)
+    def test03g_calculate_rpn_out_of_range_result(self):
+        """
+        (TestRTKMechanism) calculate_rpn returns a non-zero error code when the
+        calculated RPN is outide the range (0, 1000]
+        """
+
+        self.DUT.rpn_detection = 12
+        self.DUT.rpn_detection_new = 3
+        self.DUT.rpn_occurrence = -7
+        self.DUT.rpn_occurrence_new = 5
+
+        self.assertRaises(OutOfRangeError, self.DUT.calculate_rpn, 8, 4)
+
