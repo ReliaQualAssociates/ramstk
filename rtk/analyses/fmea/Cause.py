@@ -40,7 +40,7 @@ FMEA Cause Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
 from datamodels import RTKDataModel             # pylint: disable=E0401
@@ -129,15 +129,15 @@ class Model(RTKDataModel):
 
         _session = RTKDataModel.select_all(self)
 
-        for _cause in _session.query(RTKCause).filter(
-                            RTKCause.mechanism_id == mechanism_id).all():
-                # We get and then set the attributes to replace any None values
-                # (NULL fields in the database) with their default value.
-                _attributes = _cause.get_attributes()
-                _cause.set_attributes(_attributes[2:])
-                self.tree.create_node(_cause.description, _cause.cause_id,
-                                      parent=0, data=_cause)
-                self.last_id = max(self.last_id, _cause.cause_id)
+        for _cause in _session.query(RTKCause).filter(RTKCause.mechanism_id ==
+                                                      mechanism_id).all():
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _cause.get_attributes()
+            _cause.set_attributes(_attributes[2:])
+            self.tree.create_node(_cause.description, _cause.cause_id,
+                                  parent=0, data=_cause)
+            self.last_id = max(self.last_id, _cause.cause_id)
 
         _session.close()
 

@@ -55,7 +55,7 @@ from dao import RTKMechanism
 from dao import RTKCause
 from dao import RTKControl
 from dao import RTKAction
-from analyses.fmea.FMEA import Model, FMEA, ParentError
+from analyses.fmea.FMEA import Model, FMEA
 from analyses.fmea.Mode import Model as Mode
 from analyses.fmea.Mechanism import Model as Mechanism
 from analyses.fmea.Cause import Model as Cause

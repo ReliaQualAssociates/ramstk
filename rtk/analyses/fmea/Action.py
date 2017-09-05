@@ -99,7 +99,7 @@ class Model(RTKDataModel):
     def _select_all(self, parent_id, functional):
         """
         Helper method to retrieve all the Actions.
- 
+
         :param int parent_id: the Mode ID (functional FMEA) or the Cause ID
                               (hardware FMEA) to select the Controls for.
         :param bool functional: indicates whether the Controls are for a
@@ -112,7 +112,7 @@ class Model(RTKDataModel):
             _actions = _session.query(RTKAction).filter(RTKAction.mode_id ==
                                                         parent_id).all()
         else:
-            _actions = _session.query(RTKAction).filter(RTKAction.cause_id == 
+            _actions = _session.query(RTKAction).filter(RTKAction.cause_id ==
                                                         parent_id).all()
 
         _session.close()

@@ -40,13 +40,12 @@ FMEA Failure Mechanism Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel
-from datamodels import RTKDataController
-from dao.RTKMechanism import RTKMechanism
-from Utilities import OutOfRangeError
+from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataController        # pylint: disable=E0401
+from dao.RTKMechanism import RTKMechanism       # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

@@ -48,7 +48,7 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from analyses.fmea.Mode import Model, Mode, OutOfRangeError
+from analyses.fmea.Mode import Model, Mode
 from dao import DAO
 from dao import RTKMode
 

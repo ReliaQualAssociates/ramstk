@@ -98,8 +98,8 @@ class Model(RTKDataModel):
 
     def _select_all(self, parent_id, functional):
         """
-        Helper method to retrieve all the Controls
- 
+        Helper method to retrieve all the Controls.
+
         :param int parent_id: the Mode ID (functional FMEA) or the Cause ID
                               (hardware FMEA) to select the Controls for.
         :param bool functional: indicates whether the Controls are for a
