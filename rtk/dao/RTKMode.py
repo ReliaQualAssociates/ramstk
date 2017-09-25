@@ -40,12 +40,16 @@ The RTKMode Table
 import gettext
 
 # Import the database models.
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import BLOB, Column, Float, \
+                       ForeignKey, Integer, \
+                       String                   # pylint: disable=E0401
+from sqlalchemy.orm import relationship         # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default, OutOfRangeError
-from dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, \
+                      none_to_default, \
+                      OutOfRangeError           # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE            # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -112,6 +116,12 @@ class RTKMode(RTK_BASE):
     # The following are required for functional FMEA.
     control = relationship('RTKControl', back_populates='mode')
     action = relationship('RTKAction', back_populates='mode')
+
+    is_mode = True
+    is_mechanism = False
+    is_cause = False
+    is_control = False
+    is_action = False
 
     def get_attributes(self):
         """
@@ -243,7 +253,7 @@ class RTKMode(RTK_BASE):
             _msg = 'Failure mode hazard rate has a negative value.'
             raise OutOfRangeError(_(u"Failure mode hazard rate has a negative "
                                     u"value."))
-        if not self.mode_criticality > 0.0:
+        if self.mode_criticality < 0.0:
             _error_code = 2010
             _msg = 'Failure mode criticality has a negative value.'
             raise OutOfRangeError(_(u"Failure mode criticality has a negative "

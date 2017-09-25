@@ -38,12 +38,14 @@ The RTKControl Table
 """
 
 # Import the database models.
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey, \
+                       Integer, String              # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -72,8 +74,14 @@ class RTKControl(RTK_BASE):
     type_id = Column('fld_type_id', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
-    cause = relationship('RTKCause', back_populates='control')
     mode = relationship('RTKMode', back_populates='control')
+    cause = relationship('RTKCause', back_populates='control')
+
+    is_mode = False
+    is_mechanism = False
+    is_cause = False
+    is_control = True
+    is_action = False
 
     def get_attributes(self):
         """

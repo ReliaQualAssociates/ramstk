@@ -40,12 +40,14 @@ The RTKAction Table
 from datetime import date, timedelta
 
 # Import the database models.
-from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy import BLOB, Column, Date, \
+                       ForeignKey, Integer, String  # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -72,10 +74,10 @@ class RTKAction(RTK_BASE):
 
     action_recommended = Column('fld_action_recommended', BLOB, default='')
     action_category = Column('fld_action_category', Integer, default=0)
-    action_owner = Column('fld_action_owner', Integer, default=0)
+    action_owner = Column('fld_action_owner', String(512), default=0)
     action_due_date = Column('fld_action_due_date', Date,
                              default=date.today() + timedelta(days=30))
-    action_status_id = Column('fld_action_status', Integer, default=0)
+    action_status = Column('fld_action_status', String(512), default=0)
     action_taken = Column('fld_action_taken', BLOB, default='')
     action_approved = Column('fld_action_approved', Integer, default=0)
     action_approve_date = Column('fld_action_approve_date', Date,
@@ -89,6 +91,12 @@ class RTKAction(RTK_BASE):
     # hardware FMEAs.
     mode = relationship('RTKMode', back_populates='action')
     cause = relationship('RTKCause', back_populates='action')
+
+    is_mode = False
+    is_mechanism = False
+    is_cause = False
+    is_control = False
+    is_action = True
 
     def get_attributes(self):
         """
@@ -105,7 +113,7 @@ class RTKAction(RTK_BASE):
         _values = (self.mode_id, self.cause_id, self.action_id,
                    self.action_recommended, self.action_category,
                    self.action_owner, self.action_due_date,
-                   self.action_status_id, self.action_taken,
+                   self.action_status, self.action_taken,
                    self.action_approved, self.action_approve_date,
                    self.action_closed, self.action_close_date)
 
@@ -128,9 +136,9 @@ class RTKAction(RTK_BASE):
         try:
             self.action_recommended = str(none_to_default(attributes[0], ''))
             self.action_category = int(none_to_default(attributes[1], 0))
-            self.action_owner = int(none_to_default(attributes[2], 0))
+            self.action_owner = str(none_to_default(attributes[2], 0))
             self.action_due_date = none_to_default(attributes[3], _date)
-            self.action_status_id = int(none_to_default(attributes[4], 0))
+            self.action_status = str(none_to_default(attributes[4], 0))
             self.action_taken = str(none_to_default(attributes[5], ''))
             self.action_approved = int(none_to_default(attributes[6], 0))
             self.action_approve_date = none_to_default(attributes[7], _date)

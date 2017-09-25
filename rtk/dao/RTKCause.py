@@ -40,12 +40,15 @@ The RTKCause Table
 import gettext
 
 # Import the database models.
-from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, ForeignKey, \
+                       Integer, String              # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default, OutOfRangeError
-from dao.RTKCommonDB import RTK_BASE
+from Utilities import error_handler, \
+                      none_to_default, \
+                      OutOfRangeError               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -85,6 +88,12 @@ class RTKCause(RTK_BASE):
     mechanism = relationship('RTKMechanism', back_populates='cause')
     control = relationship('RTKControl', back_populates='cause')
     action = relationship('RTKAction', back_populates='cause')
+
+    is_mode = False
+    is_mechanism = False
+    is_cause = True
+    is_control = False
+    is_action = False
 
     def get_attributes(self):
         """
