@@ -53,6 +53,9 @@ if __name__ == '__main__':
             'rtk.dao',
             'rtk._assistants_',
             'rtk.gui',
+            'rtk.gui.gtk',
+            'rtk.gui.gtk.mwi',
+            'rtk.gui.gtk.rtk'
             'rtk.failure_definition',
             'rtk.function',
             'rtk.hardware.component',
@@ -91,8 +94,6 @@ if __name__ == '__main__':
             'rtk.analyses.similar_item',
             'rtk.analyses.pof.gui',
             'rtk.analyses.pof.gui.gtk',
-            'rtk.analyses.fmea.gui',
-            'rtk.analyses.fmea.gui.gtk',
             'rtk.analyses.allocation.gui',
             'rtk.analyses.allocation.gui.gtk',
             'rtk.analyses.hazard.gui',
@@ -103,9 +104,7 @@ if __name__ == '__main__':
             'rtk.survival.__gui',
             'rtk.survival.__gui.gtk',
             'rtk.incident.component',
-            'rtk.incident.action',
-            'rtk.gui.gtk',
-            'rtk.gui.gtk.mwi'
+            'rtk.incident.action'
         ],
         py_modules=[
             'rtk.Utilities',
