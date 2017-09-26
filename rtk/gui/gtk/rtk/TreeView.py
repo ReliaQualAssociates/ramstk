@@ -1,37 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.rtk.TreeView.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
@@ -42,7 +14,7 @@ application.  This module is specific to treeview and related widgets.
 import gettext
 import sys
 
-import defusedxml.lxml as lxml
+import defusedxml.lxml as lxml                      # pylint: disable=E0401
 
 # Modules required for the GUI.
 import pango
@@ -76,7 +48,7 @@ class RTKTreeView(gtk.TreeView):
     """
 
     def __init__(self, fmt_path, fmt_idx, fmt_file, bg_col='white',
-                 fg_col='black', pixbuf=False):
+                 fg_col='black', pixbuf=False, indexed=False):
         """
         Method to create RTK TreeView widgets.
 
@@ -126,75 +98,103 @@ class RTKTreeView(gtk.TreeView):
 
         # Create a list of GObject datatypes to pass to the model.
         _types = []
-        for _datatype in _datatypes:
-            _types.append(gobject.type_from_name(_datatype.text))
+        for i in range(len(_datatypes)):            # pylint: disable=C0200
+            _datatypes[i] = _datatypes[i].text
+            _headings[i] = _headings[i].text.replace("  ", "\n")
+            _widgets[i] = _widgets[i].text
+            editable[i] = int(editable[i].text)
+            position[i] = int(position[i].text)
+            visible[i] = int(visible[i].text)
+
+            _types.append(gobject.type_from_name(_datatypes[i]))
 
         if pixbuf:
+            _datatypes.append('pixbuf')
+            _headings.append('')
             _types.append(gtk.gdk.Pixbuf)
-        # FIXME: What is this for?  It'll become obvious later.
+            _widgets.append('pixbuf')
+            editable.append(0)
+            position.append(len(position))
+            visible.append(1)
+        # FIXME: What is this for?  It'll become obvious later...maybe.
         elif fmt_idx in [15, 16]:
+            print fmt_file
             _types.append(gobject.TYPE_INT)
             _types.append(gobject.TYPE_STRING)
             _types.append(gobject.TYPE_BOOLEAN)
             _types.append(gtk.gdk.Pixbuf)
 
+        # We may want to add a column to hold indexing information for program
+        # control.
+        if indexed:
+            _datatypes.append('text')
+            _headings.append('')
+            _types.append(gobject.TYPE_STRING)
+            _widgets.append('text')
+            editable.append(0)
+            position.append(len(position))
+            visible.append(0)
+
         # Create the model.
         _model = gtk.TreeStore(*_types)
 
-        _n_cols = int(len(_types))
+        if pixbuf:
+            _n_cols = int(len(_types)) - 2
+        else:
+            _n_cols = int(len(_types)) - 1
+
         for i in range(_n_cols):
-            self.order.append(int(position[i].text))
+            self.order.append(position[i])
 
-            _visible = int(visible[i].text)
-            _heading = _headings[i].text.replace("  ", "\n")
-
-            if pixbuf and i == 0:
-                _cell = gtk.CellRendererPixbuf()
-                _visible = 0
-                _heading = ''
-            elif _widgets[i].text == 'combo':
-                _cell = self._do_make_combo_cell(bg_col, fg_col,
-                                                 int(editable[i].text),
-                                                 int(position[i].text))
-            elif _widgets[i].text == 'spin':
-                _cell = self._do_make_spin_cell(bg_col, fg_col,
-                                                int(editable[i].text),
-                                                int(position[i].text),
-                                                _model)
-            elif _widgets[i].text == 'toggle':
-                _cell = self._do_make_toggle_cell(int(editable[i].text),
-                                                  int(position[i].text),
+            if _widgets[i] == 'combo':
+                _cell = self._do_make_combo_cell(bg_col, fg_col, editable[i],
+                                                 position[i], _model)
+            elif _widgets[i] == 'spin':
+                _cell = self._do_make_spin_cell(bg_col, fg_col, editable[i],
+                                                position[i], _model)
+            elif _widgets[i] == 'toggle':
+                _cell = self._do_make_toggle_cell(editable[i], position[i],
                                                   _model)
-            elif _widgets[i].text == 'blob':
-                _cell = self._do_make_text_cell(bg_col, fg_col,
-                                                int(editable[i].text),
-                                                int(position[i].text),
-                                                _model, True)
+            elif _widgets[i] == 'blob':
+                _cell = self._do_make_text_cell(bg_col, fg_col, editable[i],
+                                                position[i], _model, True)
             else:
-                _cell = self._do_make_text_cell(bg_col, fg_col,
-                                                int(editable[i].text),
-                                                int(position[i].text),
-                                                _model)
-
-            _column = self._do_make_column([_cell, ], _visible, _heading)
-            _column.set_cell_data_func(_cell, self._format_cell,
-                                       (int(position[i].text),
-                                        _datatypes[i].text))
+                _cell = self._do_make_text_cell(bg_col, fg_col, editable[i],
+                                                position[i], _model)
 
             if pixbuf and i == 0:
-                _column.set_attributes(_cell, pixbuf=_n_cols)
-            elif _widgets[i].text == 'toggle':
-                _column.set_attributes(_cell, active=int(position[i].text))
+                _pbcell = gtk.CellRendererPixbuf()
+                _pbcell.set_property('xalign', 0.5)
+                _column = self._do_make_column([_pbcell, _cell], visible[i],
+                                               _headings[i])
+                _column.set_attributes(_pbcell, pixbuf=_n_cols)
             else:
-                _column.set_attributes(_cell, text=int(position[i].text))
+                _column = self._do_make_column([_cell, ], visible[i],
+                                               _headings[i])
+            _column.set_cell_data_func(_cell, self._format_cell,
+                                       (position[i], _datatypes[i]))
+
+            if _widgets[i] == 'toggle':
+                _column.set_attributes(_cell, active=position[i])
+            else:
+                _column.set_attributes(_cell, text=position[i])
 
             if i > 0:
                 _column.set_reorderable(True)
 
             self.append_column(_column)
 
-        # FIXME: What is this for?  It'll become obvious later.
+        # Finally, we want to add a column to hold indexing information for
+        # program control.
+        _cell = gtk.CellRendererText()
+        _column = self._do_make_column([_cell, ], False, "")
+        _column.pack_start(_cell, False)
+        _column.set_attributes(_cell, text=_n_cols + 1)
+        self.append_column(_column)
+
+        # FIXME: What is this for?  It'll become obvious later...maybe.
         if fmt_idx == 9:
+            print fmt_file
             column = gtk.TreeViewColumn("")
             column.set_visible(0)
             cell = gtk.CellRendererText()
@@ -209,7 +209,7 @@ class RTKTreeView(gtk.TreeView):
         Method to make a gtk.TreeViewColumn()
 
         :param list cells: list of gtk.CellRenderer()s that are to be packed in
-                           the column
+                           the column.
         :param int visible: indicates whether the column will be visible.
         :param str heading: the column heading text.
         :return: _column
@@ -218,21 +218,24 @@ class RTKTreeView(gtk.TreeView):
 
         _column = gtk.TreeViewColumn("")
 
-        _column.set_visible(visible)
-
         for _cell in cells:
-            _column.pack_start(_cell, True)
-            _column.connect('notify::width', self._resize_wrap, _cell)
+            if isinstance(_cell, gtk.CellRendererPixbuf):
+                _column.pack_start(_cell, False)
+            else:
+                _column.pack_start(_cell, True)
+                _column.connect('notify::width', self._resize_wrap, _cell)
 
         _label = RTKLabel(heading, width=-1, height=-1,
                           justify=gtk.JUSTIFY_CENTER)
         _column.set_widget(_label)
         _column.set_resizable(True)
         _column.set_alignment(0.5)
+        _column.set_visible(visible)
 
         return _column
 
-    def _do_make_combo_cell(self, bg_color, fg_color, editable, position):
+    def _do_make_combo_cell(self, bg_color, fg_color, editable, position,
+                            model):
         """
         Method to make a gtk.CellRendererCombo().
 
@@ -241,6 +244,8 @@ class RTKTreeView(gtk.TreeView):
         :param int editable: indicates whether the cell is editable.
         :param int position: the position in the gtk.TreeModel() that this
                              cell falls.
+        :param model: the `:py:class:gtk.TreeModel` associated with the
+                      treeview.
         :return: _cell
         :rtype: :py:class:`gtk.CellRendererCombo`
         """
@@ -257,7 +262,7 @@ class RTKTreeView(gtk.TreeView):
         _cell.set_property('wrap-width', 250)
         _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
         _cell.set_property('yalign', 0.1)
-        _cell.connect('edited', self._on_edit_tree, position, _model)
+        _cell.connect('edited', self._on_edit_tree, position, model)
 
         if editable == 0:
             _cell.set_property('background', 'light gray')
@@ -423,7 +428,7 @@ class RTKTreeView(gtk.TreeView):
             # fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
             fmt = '{0:0.6g}'
         elif data[1] == 'gint':
-            fmt = '{0:0.0f}'
+            fmt = '{0:0d}'
         else:
             return
 
@@ -431,6 +436,8 @@ class RTKTreeView(gtk.TreeView):
         try:
             cell.set_property('text', fmt.format(val))
         except TypeError:  # It's a gtk.CellRendererToggle
+            pass
+        except ValueError:
             pass
 
         return
