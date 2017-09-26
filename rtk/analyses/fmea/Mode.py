@@ -1,44 +1,14 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.fmea.Mode.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ###############################################################################
 FMEA Failure Mode Module
 ###############################################################################
 """
-
-# Import modules for localization support.
-import gettext
 
 from pubsub import pub                      # pylint: disable=E0401
 
@@ -51,8 +21,6 @@ __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
 
 
 class Model(RTKDataModel):
@@ -114,7 +82,7 @@ class Model(RTKDataModel):
 
         if functional:
             for _mode in _session.query(RTKMode).filter(
-                            RTKMode.function_id == parent_id).all():
+                    RTKMode.function_id == parent_id).all():
                 # We get and then set the attributes to replace any None values
                 # (NULL fields in the database) with their default value.
                 _attributes = _mode.get_attributes()
@@ -124,7 +92,7 @@ class Model(RTKDataModel):
                 self.last_id = max(self.last_id, _mode.mode_id)
         else:
             for _mode in _session.query(RTKMode).filter(
-                            RTKMode.hardware_id == parent_id).all():
+                    RTKMode.hardware_id == parent_id).all():
                 # We get and then set the attributes to replace any None values
                 # (NULL fields in the database) with their default value.
                 _attributes = _mode.get_attributes()
@@ -215,13 +183,16 @@ class Model(RTKDataModel):
             try:
                 _error_code, _msg = self.update(_node.data.mode_id)
             except AttributeError:
-                pass
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.Mode.Model.update_all().'
 
             # Break if something goes wrong and return.
             if _error_code != 0:
-                print _error_code
+                print 'FIXME: Refactor ' \
+                      'rtk.analyses.fmea.Mode.Model.update_all().'
 
         return _error_code, _msg
+
 
 class Mode(RTKDataController):
     """
@@ -314,8 +285,8 @@ class Mode(RTKDataController):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self.__test:
-                pub.sendMessage('insertedAction',
-                                mode_id=self._dtm_action.last_id)
+                pub.sendMessage('insertedMode',
+                                mode_id=self._dtm_mode.last_id)
         else:
             _msg = _msg + '  Failed to add a new Mode to the RTK Program \
                            database.'

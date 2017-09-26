@@ -5,32 +5,6 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 This is the test class for testing the FMEA class.
 """
@@ -190,7 +164,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _entity = self.DUT.select(1, 'mode')
+        _entity = self.DUT.select('0.1')
 
         self.assertTrue(isinstance(_entity, RTKMode))
         self.assertEqual(_entity.description, 'Test Failure Mode #1')
@@ -203,7 +177,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _entity = self.DUT.select(1, 'mechanism')
+        _entity = self.DUT.select('0.1.1')
 
         self.assertTrue(isinstance(_entity, RTKMechanism))
         self.assertEqual(_entity.description, 'Test Failure Mechanism #1')
@@ -216,7 +190,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _entity = self.DUT.select(1, 'cause')
+        _entity = self.DUT.select('0.1.1.1')
 
         self.assertTrue(isinstance(_entity, RTKCause))
         self.assertEqual(_entity.description, 'Test Failure Cause #1')
@@ -229,10 +203,11 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _entity = self.DUT.select(1, 'control')
+        _entity = self.DUT.select('0.1.1.1.01')
 
         self.assertTrue(isinstance(_entity, RTKControl))
-        self.assertEqual(_entity.description, 'Test Control for Failure Cause #1')
+        self.assertEqual(_entity.description,
+                         'Test Control for Failure Cause #1')
 
     @attr(all=True, unit=True)
     def test02e_select_action(self):
@@ -242,7 +217,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _entity = self.DUT.select(1, 'action')
+        _entity = self.DUT.select('0.1.1.1.1')
 
         self.assertTrue(isinstance(_entity, RTKAction))
         self.assertEqual(_entity.action_recommended,
@@ -251,8 +226,7 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03a_insert_mode_functional(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Mode to a Functional FMEA.
+        (TestFMEAModel): insert() should return a zero error code on success when adding a new Mode to a Functional FMEA.
         """
 
         self.DUT.select_all(1, True)
@@ -263,9 +237,9 @@ class Test00FMEAModel(unittest.TestCase):
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Mode_' + str(self.DUT._dtm_mode.last_id)
+        _node_id = '0.' + str(self.DUT._dtm_mode.last_id)
 
-        _mode = self.DUT.select(self.DUT._dtm_mode.last_id, 'mode')
+        _mode = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_mode, RTKMode))
         self.assertEqual(_mode.function_id, 1)
@@ -290,9 +264,9 @@ class Test00FMEAModel(unittest.TestCase):
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Mode_' + str(self.DUT._dtm_mode.last_id)
+        _node_id = '0.' + str(self.DUT._dtm_mode.last_id)
 
-        _mode = self.DUT.select(self.DUT._dtm_mode.last_id, 'mode')
+        _mode = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_mode, RTKMode))
         self.assertEqual(_mode.function_id, -1)
@@ -323,22 +297,20 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03d_insert_mechanism(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Mechanism to a Hardware FMEA.
+        (TestFMEAModel): insert() should return a zero error code on success when adding a new Mechanism to a Hardware FMEA.
         """
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1, 'Mode_1', 'mechanism')
+        _error_code, _msg = self.DUT.insert(1, '0.1', 'mechanism')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Mechanism_' + str(self.DUT._dtm_mechanism.last_id)
+        _node_id = '0.1.' + str(self.DUT._dtm_mechanism.last_id)
 
-        _mechanism = self.DUT.select(self.DUT._dtm_mechanism.last_id,
-                                     'mechanism')
+        _mechanism = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_mechanism, RTKMechanism))
         self.assertEqual(_mechanism.mode_id, 1)
@@ -358,15 +330,15 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1, 'Mechanism_1', 'cause')
+        _error_code, _msg = self.DUT.insert(1, '0.1.1', 'cause')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Cause_' + str(self.DUT._dtm_cause.last_id)
+        _node_id = '0.1.1.' + str(self.DUT._dtm_cause.last_id)
 
-        _cause = self.DUT.select(self.DUT._dtm_cause.last_id, 'cause')
+        _cause = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_cause, RTKCause))
         self.assertEqual(_cause.mechanism_id, 1)
@@ -379,21 +351,20 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03f_insert_control_functional(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Control to a Functional FMEA.
+        (TestFMEAModel): insert() should return a zero error code on success when adding a new Control to a Functional FMEA.
         """
 
         self.DUT.select_all(1, True)
 
-        _error_code, _msg = self.DUT.insert(1, 'Mode_1', 'control')
+        _error_code, _msg = self.DUT.insert(1, '0.1', 'control')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Control_' + str(self.DUT._dtm_control.last_id)
+        _node_id = '0.1.0' + str(self.DUT._dtm_control.last_id)
 
-        _control = self.DUT.select(self.DUT._dtm_control.last_id, 'control')
+        _control = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_control, RTKControl))
         self.assertEqual(_control.mode_id, 1)
@@ -406,21 +377,20 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03g_insert_control_hardware(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Control to a Hardware FMEA.
+        (TestFMEAModel): insert() should return a zero error code on success when adding a new Control to a Hardware FMEA.
         """
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(2, 'Cause_2', 'control')
+        _error_code, _msg = self.DUT.insert(2, '0.1.1.1', 'control')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Control_' + str(self.DUT._dtm_control.last_id)
+        _node_id = '0.1.1.1.0' + str(self.DUT._dtm_control.last_id)
 
-        _control = self.DUT.select(self.DUT._dtm_control.last_id, 'control')
+        _control = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_control, RTKControl))
         self.assertEqual(_control.mode_id, -1)
@@ -433,21 +403,20 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03h_insert_action_functional(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Action to a Functional FMEA.
+        (TestFMEAModel): insert() should return a zero error code on success when adding a new Action to a Functional FMEA.
         """
 
         self.DUT.select_all(1, True)
 
-        _error_code, _msg = self.DUT.insert(1, 'Mode_1', 'action')
+        _error_code, _msg = self.DUT.insert(1, '0.1', 'action')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Action_' + str(self.DUT._dtm_action.last_id)
+        _node_id = '0.1.' + str(self.DUT._dtm_action.last_id)
 
-        _action = self.DUT.select(self.DUT._dtm_action.last_id, 'action')
+        _action = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_action, RTKAction))
         self.assertEqual(_action.mode_id, 1)
@@ -460,21 +429,20 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03i_insert_action_hardware(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Action to a Hardware FMEA.
+        (TestFMEAModel): insert() should return a zero error code on success when adding a new Action to a Hardware FMEA.
         """
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1, 'Cause_1', 'action')
+        _error_code, _msg = self.DUT.insert(1, '0.1.1.1', 'action')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = 'Action_' + str(self.DUT._dtm_action.last_id)
+        _node_id = '0.1.1.1.' + str(self.DUT._dtm_action.last_id)
 
-        _action = self.DUT.select(self.DUT._dtm_action.last_id, 'action')
+        _action = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_action, RTKAction))
         self.assertEqual(_action.mode_id, -1)
@@ -487,9 +455,7 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03j_insert_non_existent_type(self):
         """
-        (TestFMEAModel): insert() should return a 2005 error code when
-        attempting to add something other than a Mode, Mechanism, Cause,
-        Control, or Action.
+        (TestFMEAModel): insert() should return a 2005 error code when attempting to add something other than a Mode, Mechanism, Cause, Control, or Action.
         """
 
         self.DUT.select_all(1)
@@ -511,7 +477,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(100, 'Mode_1', 'action')
+        _error_code, _msg = self.DUT.insert(100, 'mode_1', 'action')
 
         self.assertEqual(_error_code, 3002)
         self.assertEqual(_msg,
@@ -521,12 +487,11 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04a_delete_control(self):
         """
-        (TestFMEAModel): delete() should return a zero error code on success
-        when removing a Control.
+        (TestFMEAModel): delete() should return a zero error code on success when removing a Control.
         """
 
         self.DUT.select_all(1)
-        _node_id = 'Control_' + str(self.DUT._dtm_control.last_id)
+        _node_id = '0.1.1.2.0' + str(self.DUT._dtm_control.last_id)
 
         _error_code, _msg = self.DUT.delete(_node_id)
 
@@ -538,8 +503,7 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_node_id(self):
         """
-        (TestFMEAModel): delete() should return a 2105 error code when
-        attempting to remove a non-existant item from the FMEA.
+        (TestFMEAModel): delete() should return a 2105 error code when attempting to remove a non-existant item from the FMEA.
         """
 
         self.DUT.select_all(1)
@@ -559,7 +523,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.update('Mode_1')
+        _error_code, _msg = self.DUT.update('0.1')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -573,12 +537,12 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.update('Mode_1000')
+        _error_code, _msg = self.DUT.update('mode_1000')
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg,
                          "RTK ERROR: Attempted to save non-existent FMEA "
-                         "entity with Node ID Mode_1000.")
+                         "entity with Node ID mode_1000.")
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
@@ -601,11 +565,11 @@ class Test00FMEAModel(unittest.TestCase):
         """
 
         self.DUT.select_all(1)
-        _mode = self.DUT.select(1, 'mode')
+        _mode = self.DUT.select('0.1')
         _mode.mode_ratio = 0.4
         _mode.mode_op_time = 100.0
         _mode.effect_probability = 1.0
-        _mode = self.DUT.select(3, 'mode')
+        _mode = self.DUT.select('0.3')
         _mode.mode_ratio = 0.5
         _mode.mode_op_time = 100.0
         _mode.effect_probability = 1.0
@@ -616,8 +580,8 @@ class Test00FMEAModel(unittest.TestCase):
                                'criticality.')
         self.assertEqual(_mode.mode_criticality, 0.0005)
 
-        self.DUT.update('Mode_1')
-        self.DUT.update('Mode_3')
+        self.DUT.update('0.1')
+        self.DUT.update('0.3')
 
     @attr(all=True, unit=True)
     def test08a_calculate_mechanism_rpn(self):
@@ -627,7 +591,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        for _node in self.DUT.tree.children('Mode_1'):
+        for _node in self.DUT.tree.children('0.1'):
             _mechanism = _node.data
             _attributes = list(_mechanism.get_attributes()[2:])
             _attributes[3] = 4
@@ -637,7 +601,7 @@ class Test00FMEAModel(unittest.TestCase):
             _mechanism.set_attributes(_attributes)
 
         _error_code, _msg = \
-        self.DUT.calculate_mechanism_rpn('Mode_1', 7, 4)
+        self.DUT.calculate_mechanism_rpn('0.1', 7, 4)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mechanism '
@@ -654,7 +618,7 @@ class Test00FMEAModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        for _node in self.DUT.tree.children('Mechanism_1'):
+        for _node in self.DUT.tree.children('0.1.1'):
             _cause = _node.data
             _attributes = list(_cause.get_attributes()[2:])
             _attributes[2] = 4
@@ -664,7 +628,7 @@ class Test00FMEAModel(unittest.TestCase):
             _cause.set_attributes(_attributes)
 
         _error_code, _msg = \
-        self.DUT.calculate_cause_rpn('Mechanism_1', 7, 4)
+        self.DUT.calculate_cause_rpn('0.1.1', 7, 4)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure cause '
@@ -773,7 +737,7 @@ class Test01FMEAController(unittest.TestCase):
 
         self.DUT.request_select_all(1)
 
-        self.assertFalse(self.DUT.request_insert(1, 'Mode_1', 'mechanism'))
+        self.assertFalse(self.DUT.request_insert(1, '0.1', 'mechanism'))
 
     @attr(all=True, unit=True)
     def test04a_request_delete_control(self):
@@ -783,7 +747,7 @@ class Test01FMEAController(unittest.TestCase):
         """
 
         self.DUT.request_select_all(1)
-        _node_id = 'Control_' + str(self.DUT._dtm_fmea._dtm_control.last_id)
+        _node_id = '0.1.1.1.0' + str(self.DUT._dtm_fmea._dtm_control.last_id)
 
         self.assertFalse(self.DUT.request_delete(_node_id))
 
