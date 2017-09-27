@@ -505,7 +505,7 @@ class FMEA(RTKDataController):
 
         _error_code, _msg = self._dtm_fmea.insert(entity_id, parent_id, level)
 
-        return RTKDataController.request_insert(self, _error_code, _msg)
+        return RTKDataController.handle_results(self, _error_code, _msg)
 
     def request_delete(self, node_id):
         """
@@ -520,12 +520,11 @@ class FMEA(RTKDataController):
 
         _error_code, _msg = self._dtm_fmea.delete(node_id)
 
-        return RTKDataController.request_delete(self, _error_code, _msg, None)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_update_all(self):
         """
-        Method to request the Usage Profile be saved to the RTK Program
-        database.
+        Method to request the (D)FME(C)A be saved to the RTK Program database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -535,12 +534,4 @@ class FMEA(RTKDataController):
 
         _error_code, _msg = self._dtm_fmea.update_all()
 
-        # If the update was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg, None)

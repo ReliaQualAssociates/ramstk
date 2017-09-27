@@ -282,7 +282,7 @@ class Control(RTKDataController):
             _msg = _msg + '  Failed to add a new Control to the RTK ' \
                 'Program database.'
 
-        return RTKDataController.request_insert(self, _error_code, _msg)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, control_id):
         """
@@ -296,7 +296,7 @@ class Control(RTKDataController):
 
         _error_code, _msg = self._dtm_control.delete(control_id)
 
-        return RTKDataController.request_delete(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'deletedControl')
 
     def request_update(self, control_id):
@@ -309,11 +309,9 @@ class Control(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_control.update(control_id)
 
-        return RTKDataController.request_update(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'savedControl')
 
     def request_update_all(self):
@@ -325,4 +323,6 @@ class Control(RTKDataController):
         :rtype: (int, str)
         """
 
-        return self._dtm_control.update_all()
+        _error_code, _msg = self._dtm_control.update_all()
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)

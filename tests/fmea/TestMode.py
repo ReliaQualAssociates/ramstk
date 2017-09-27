@@ -1,4 +1,3 @@
-#!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestMode.py is part of The RTK Project
@@ -376,9 +375,4 @@ class Test01ModeController(unittest.TestCase):
 
         self.DUT.request_select_all(1)
 
-        _error_code, _msg = self.DUT.request_update_all()
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         'RTK SUCCESS: Updating the RTK Program database.')
-
+        self.assertFalse(self.DUT.request_update_all())

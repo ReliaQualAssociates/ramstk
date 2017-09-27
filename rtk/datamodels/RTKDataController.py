@@ -49,71 +49,7 @@ class RTKDataController(object):
 
         # Initialize public scalar attributes.
 
-    def request_insert(self, error_code, error_msg):
-        """
-        Method to request the Data Model to add a new Entity to the RTK
-        Program database.
-
-        :param int error_code: the error code returned by the Data Model when
-                               requested to insert.
-        :param str error_msg: the error message returned by the Data Model when
-                              requested to insert.
-        :param str pub_msg: the message to be published by pypubsub.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        return self._handle_results(error_code, error_msg, pub_msg=None)
-
-    def request_delete(self, error_code, error_msg, pub_msg):
-        """
-        Method to request the Data Model to delete an Entity from the RTK
-        Program database.
-
-        :param int error_code: the error code returned by the Data Model when
-                               requested to insert.
-        :param str error_msg: the error message returned by the Data Model when
-                              requested to insert.
-        :param str pub_msg: the message to be published by pypubsub.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        return self._handle_results(error_code, error_msg, pub_msg)
-
-    def request_update(self, error_code, error_msg, pub_msg):
-        """
-        Method to request the Data Model save the RTK<ENTITY> attributes to the
-        RTK Program database.
-
-        :param int error_code: the error code returned by the Data Model when
-                               requested to insert.
-        :param str error_msg: the error message returned by the Data Model when
-                              requested to insert.
-        :param str pub_msg: the message to be published by pypubsub.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        return self._handle_results(error_code, error_msg, pub_msg)
-
-    def request_calculate(self, error_code, error_msg, pub_msg):
-        """
-        Method to request criticality attributes be calculated for the
-        Mode ID passed.
-
-        :param int error_code: the error code returned by the Data Model when
-                               requested to insert.
-        :param str error_msg: the error message returned by the Data Model when
-                              requested to insert.
-        :param str pub_msg: the message to be published by pypubsub.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        return self._handle_results(error_code, error_msg, pub_msg)
-
-    def _handle_results(self, error_code, error_msg, pub_msg=None):
+    def handle_results(self, error_code, error_msg, pub_msg=None):
         """
         Method to handle the error code and error message from the insert,
         delete, update, and calculate methods.

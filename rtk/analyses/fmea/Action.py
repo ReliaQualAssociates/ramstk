@@ -290,7 +290,7 @@ class Action(RTKDataController):
             _msg = _msg + '  Failed to add a new Action to the RTK ' \
                 'Program database.'
 
-        return RTKDataController.request_insert(self, _error_code, _msg)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, action_id):
         """
@@ -304,7 +304,7 @@ class Action(RTKDataController):
 
         _error_code, _msg = self._dtm_action.delete(action_id)
 
-        return RTKDataController.request_delete(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'deletedAction')
 
     def request_update(self, action_id):
@@ -319,7 +319,7 @@ class Action(RTKDataController):
 
         _error_code, _msg = self._dtm_action.update(action_id)
 
-        return RTKDataController.request_update(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'savedAction')
 
     def request_update_all(self):
@@ -331,4 +331,6 @@ class Action(RTKDataController):
         :rtype: (int, str)
         """
 
-        return self._dtm_action.update_all()
+        _error_code, _msg = self._dtm_action.update_all()
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)

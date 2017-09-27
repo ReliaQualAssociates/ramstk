@@ -259,7 +259,7 @@ class Mechanism(RTKDataController):
             _msg = _msg + '  Failed to add a new Mechanism to the RTK ' \
                 'Program database.'
 
-        return RTKDataController.request_insert(self, _error_code, _msg)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, mechanism_id):
         """
@@ -273,7 +273,7 @@ class Mechanism(RTKDataController):
 
         _error_code, _msg = self._dtm_mechanism.delete(mechanism_id)
 
-        return RTKDataController.request_delete(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'deletedMechanism')
 
     def request_update(self, mechanism_id):
@@ -288,7 +288,7 @@ class Mechanism(RTKDataController):
 
         _error_code, _msg = self._dtm_mechanism.update(mechanism_id)
 
-        return RTKDataController.request_update(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'savedMechanism')
 
     def request_update_all(self):
@@ -300,7 +300,9 @@ class Mechanism(RTKDataController):
         :rtype: (int, str)
         """
 
-        return self._dtm_mechanism.update_all()
+        _error_code, _msg = self._dtm_mechanism.update_all()
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_calculate_rpn(self, mechanism_id, severity, severity_new):
         """
@@ -318,5 +320,5 @@ class Mechanism(RTKDataController):
             _msg = self._dtm_mechanism.calculate_rpn(mechanism_id, severity,
                                                      severity_new)
 
-        return RTKDataController.request_calculate(self, _error_code, _msg,
-                                                   'calculatedMechanism')
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedMechanism')

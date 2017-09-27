@@ -278,7 +278,7 @@ class Mode(RTKDataController):
             _msg = _msg + '  Failed to add a new Mode to the RTK Program ' \
                 'database.'
 
-        return RTKDataController.request_insert(self, _error_code, _msg)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, mode_id):
         """
@@ -292,7 +292,7 @@ class Mode(RTKDataController):
 
         _error_code, _msg = self._dtm_mode.delete(mode_id)
 
-        return RTKDataController.request_delete(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'deletedMode')
 
     def request_update(self, mode_id):
@@ -307,7 +307,7 @@ class Mode(RTKDataController):
 
         _error_code, _msg = self._dtm_mode.update(mode_id)
 
-        return RTKDataController.request_update(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'savedMode')
 
     def request_update_all(self):
@@ -319,7 +319,9 @@ class Mode(RTKDataController):
         :rtype: (int, str)
         """
 
-        return self._dtm_mode.update_all()
+        _error_code, _msg = self._dtm_mode.update_all()
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_calculate_criticality(self, mode_id, item_hr):
         """
@@ -334,5 +336,5 @@ class Mode(RTKDataController):
         _error_code, \
             _msg = self._dtm_mode.calculate_criticality(mode_id, item_hr)
 
-        return RTKDataController.request_calculate(self, _error_code, _msg,
-                                                   'calculatedMode')
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedMode')

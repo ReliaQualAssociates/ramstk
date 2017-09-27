@@ -275,7 +275,7 @@ class Cause(RTKDataController):
             _msg = _msg + '  Failed to add a new Cause to the RTK Program ' \
                 'database.'
 
-        return RTKDataController.request_insert(self, _error_code, _msg)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, cause_id):
         """
@@ -287,11 +287,9 @@ class Cause(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_cause.delete(cause_id)
 
-        return RTKDataController.request_delete(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'deletedCause')
 
     def request_update(self, cause_id):
@@ -304,11 +302,9 @@ class Cause(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_cause.update(cause_id)
 
-        return RTKDataController.request_update(self, _error_code, _msg,
+        return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'savedCause')
 
     def request_update_all(self):
@@ -320,7 +316,9 @@ class Cause(RTKDataController):
         :rtype: (int, str)
         """
 
-        return self._dtm_cause.update_all()
+        _error_code, _msg = self._dtm_cause.update_all()
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_calculate_rpn(self, cause_id, severity, severity_new):
         """
@@ -332,11 +330,9 @@ class Cause(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, \
             _msg = self._dtm_cause.calculate_rpn(cause_id, severity,
                                                  severity_new)
 
-        return RTKDataController.request_calculate(self, _error_code, _msg,
-                                                   'calculatedCause')
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedCause')
