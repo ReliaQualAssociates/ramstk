@@ -1,37 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.function.Function.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ###############################################################################
 Function Package Data Module
@@ -41,12 +13,12 @@ Function Package Data Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel
-from datamodels import RTKDataController
-from dao import RTKFunction
+from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataController        # pylint: disable=E0401
+from dao import RTKFunction                     # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -111,7 +83,7 @@ class Model(RTKDataModel):
         _session = RTKDataModel.select_all(self)
 
         for _function in _session.query(RTKFunction).filter(
-                        RTKFunction.revision_id == revision_id).all():
+                RTKFunction.revision_id == revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _function.get_attributes()
@@ -176,10 +148,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        try:
-            _function = self.tree.get_node(function_id).data
-            _error_code, _msg = RTKDataModel.update(self, _function)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, function_id)
+
+        if _error_code != 0:
             _error_code = 2006
             _msg = 'RTK ERROR: Attempted to save non-existent Function ID ' \
                    '{0:d}.'.format(function_id)
@@ -195,17 +166,20 @@ class Model(RTKDataModel):
         """
 
         _error_code = 0
-        _msg = ''
+        _msg = 'RTK SUCCESS: Saving all Functions.'
 
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.data.function_id)
-            except AttributeError:
-                pass
 
-            # Break if something goes wrong and return.
-            if _error_code != 0:
-                print _error_code
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.function.Function.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.function.Function.Model.update_all().'
 
         return _error_code, _msg
 
@@ -268,8 +242,8 @@ class Model(RTKDataModel):
         # Calculate logistics availability.
         try:
             _function.availability_logistics = _function.mtbf_logistics \
-                                               / (_function.mtbf_logistics
-                                                  + _function.mttr)
+                                               / (_function.mtbf_logistics +
+                                                  _function.mttr)
         except(ZeroDivisionError, OverflowError):
             _function.availability_logistics = 1.0
             _error_code = 3009
@@ -282,8 +256,8 @@ class Model(RTKDataModel):
         # Calculate mission availability.
         try:
             _function.availability_mission = _function.mtbf_mission \
-                                             / (_function.mtbf_mission
-                                                + _function.mttr)
+                                             / (_function.mtbf_mission +
+                                                _function.mttr)
         except(ZeroDivisionError, OverflowError):
             _function.availability_mission = 1.0
             _error_code = 3009
@@ -330,7 +304,6 @@ class Function(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_function = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -377,22 +350,15 @@ class Function(RTKDataController):
         _error_code, _msg = self._dtm_function.insert(revision_id=revision_id,
                                                       parent_id=parent_id)
 
-        # If the add was successful log the success message to the user log.
-        # Otherwise, update the error message and write it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('insertedFunction',
-                                function_id=self._dtm_function.last_id,
-                                parent_id=parent_id)
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedFunction',
+                            function_id=self._dtm_function.last_id,
+                            parent_id=parent_id)
         else:
-            _msg = _msg + '  Failed to add a new Function to the RTK Program \
-                           database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
+            _msg = _msg + '  Failed to add a new Function to the RTK Program ' \
+                'database.'
 
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, function_id):
         """
@@ -404,22 +370,10 @@ class Function(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_function.delete(function_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('deletedFunction')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'deletedFunction')
 
     def request_update(self, function_id):
         """
@@ -431,31 +385,23 @@ class Function(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_function.update(function_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('savedFunction')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'savedFunction')
 
     def request_update_all(self):
         """
         Method to request the Function Data Model to save all RTKFunction
         model attributes to the RTK Program database.
 
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        return self._dtm_function.update_all()
+        _error_code, _msg = self._dtm_function.update_all()
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_calculate_reliability(self, function_id):
         """
@@ -472,16 +418,8 @@ class Function(RTKDataController):
         _error_code, \
             _msg = self._dtm_function.calculate_reliability(function_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedFunction')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedFunction')
 
     def request_calculate_availability(self, function_id):
         """
@@ -498,13 +436,5 @@ class Function(RTKDataController):
         _error_code, \
             _msg = self._dtm_function.calculate_availability(function_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedFunction')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedFunction')
