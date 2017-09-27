@@ -10,8 +10,6 @@ FMEA Module
 ###############################################################################
 """
 
-from pubsub import pub                      # pylint: disable=E0401
-
 # Import other RTK modules.
 from datamodels import RTKDataModel         # pylint: disable=E0401
 from datamodels import RTKDataController    # pylint: disable=E0401
@@ -118,12 +116,6 @@ class Model(RTKDataModel):
 
         RTKDataModel.select_all(self)
 
-        # Build the tree.  We concatenate the Mode ID and the Mechanism ID to
-        # create the Node() identifier for Mechanisms.  This prevents the
-        # likely case when the first Mode and Mechanism have the same ID (1) in
-        # the database from causing problems when building the tree.  Do the
-        # same for the causes by concatenating the Cause ID with the
-        # Mode ID and Mechanism ID.
         _modes = self._dtm_mode.select_all(parent_id, functional).nodes
 
         for _key in _modes:
@@ -281,13 +273,18 @@ class Model(RTKDataModel):
         _tag = 'Tag'
         _node_id = -1
 
+        if self._functional:
+            _function_id = entity_id
+            _hardware_id = -1
+            _mode_id = entity_id
+            _cause_id = -1
+        else:
+            _function_id = -1
+            _hardware_id = entity_id
+            _mode_id = -1
+            _cause_id = entity_id
+
         if level == 'mode':
-            if self._functional:
-                _function_id = entity_id
-                _hardware_id = -1
-            else:
-                _function_id = -1
-                _hardware_id = entity_id
             _error_code, _msg = self._dtm_mode.insert(function_id=_function_id,
                                                       hardware_id=_hardware_id)
             _entity = self._dtm_mode.select(self._dtm_mode.last_id)
@@ -304,28 +301,16 @@ class Model(RTKDataModel):
             _tag = 'Cause'
             _node_id = parent_id + '.' + str(self._dtm_cause.last_id)
         elif level == 'control':
-            if self._functional:
-                _mode_id = entity_id
-                _cause_id = -1
-            else:
-                _mode_id = -1
-                _cause_id = entity_id
             _error_code, _msg = self._dtm_control.insert(mode_id=_mode_id,
                                                          cause_id=_cause_id)
             _entity = self._dtm_control.select(self._dtm_control.last_id)
-            _tag = 'Controls'
+            _tag = 'Control'
             _node_id = parent_id + '.0' + str(self._dtm_control.last_id)
         elif level == 'action':
-            if self._functional:
-                _mode_id = entity_id
-                _cause_id = -1
-            else:
-                _mode_id = -1
-                _cause_id = entity_id
             _error_code, _msg = self._dtm_action.insert(mode_id=_mode_id,
                                                         cause_id=_cause_id)
             _entity = self._dtm_action.select(self._dtm_action.last_id)
-            _tag = 'Actions'
+            _tag = 'Action'
             _node_id = parent_id + '.' + str(self._dtm_action.last_id)
         else:
             _error_code = 2005
@@ -372,22 +357,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        # TODO: Refactor rtk.analyses.fmea.FMEA.Model.update().
+        _error_code, _msg = RTKDataModel.update(self, node_id)
 
-        # Use the commented code when refactoring.
-        # _error_code = RTKDataModel(self, node_id)
-
-        # if _error_code != 0:
-        #     _error_code = 2006
-        #     _msg = 'RTK ERROR: Attempted to save non-existent FMEA entity ' \
-        #            'with Node ID {0:s}.'.format(node_id)
-
-        try:
-            _entity = self.tree.get_node(node_id).data
-            _error_code, _msg = RTKDataModel.update(self, _entity)
-            if _error_code != 0:
-                print 'FIXME: Refactor rtk.analyses.fmea.FMEA.Model.update().'
-        except AttributeError:
+        if _error_code != 0:
             _error_code = 2006
             _msg = 'RTK ERROR: Attempted to save non-existent FMEA entity ' \
                    'with Node ID {0:s}.'.format(node_id)
@@ -403,16 +375,20 @@ class Model(RTKDataModel):
         """
 
         _error_code = 0
-        _msg = ''
+        _msg = 'RTK SUCCESS: Saving all entities in the FMEA.'
 
-        for _key in self.tree.nodes:
-            if _key != 0:
-                _error_code, _msg = self.update(_key)
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.identifier)
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Refactor ' \
-                          'rtk.analyses.fmea.FMEA.Model.update_all().'
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Mode.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.FMEA.Model.update_all().'
 
         return _error_code, _msg
 
@@ -427,13 +403,12 @@ class Model(RTKDataModel):
 
         return _error_code, _msg
 
-    def calculate_mechanism_rpn(self, mode_id, severity, severity_new):
+    def calculate_rpn(self, node_id, severity, severity_new):
         """
         Method to calculate the Mechanisms' RPN for the failure Mode ID that is
         passed.
 
-        :param int mode_id: the ID of the failure Mode to calculate the
-                            Mechanims' RPN.
+        :param int node_id: the ID of the treelib Node to calculate the RPN.
         :param int severity: the severity of the failure Mode the Mechanism is
                              associated with.
         :param int severity_new: the severity of the failure Mode after
@@ -442,28 +417,7 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        for _node in self.tree.children(mode_id):
-            _error_code, _msg = _node.data.calculate_rpn(severity,
-                                                         severity_new)
-
-        return _error_code, _msg
-
-    def calculate_cause_rpn(self, mechanism_id, severity, severity_new):
-        """
-        Method to calculate the FMEA RPN for the failure Cause ID that is
-        passed.
-
-        :param int mechanism_id: the ID of the failure Mechanism to calculate
-                                 the Causes' RPN.
-        :param int severity: the severity of the failure Mode the Mechanism is
-                             associated with.
-        :param int severity_new: the severity of the failure Mode after
-                                 corrective action.
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
-        """
-
-        for _node in self.tree.children(mechanism_id):
+        for _node in self.tree.children(node_id):
             _error_code, _msg = _node.data.calculate_rpn(severity,
                                                          severity_new)
 
@@ -495,14 +449,13 @@ class FMEA(RTKDataController):
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
-        RTKDataController.__init__(self, configuration)
+        RTKDataController.__init__(self, configuration, **kwargs)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_fmea = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -550,32 +503,9 @@ class FMEA(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_fmea.insert(entity_id, parent_id, level)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                if level == 'mode':
-                    pub.sendMessage('addedMode')
-                elif level == 'mechanism':
-                    pub.sendMessage('addedMechanism')
-                elif level == 'cause':
-                    pub.sendMessage('addedCause')
-                elif level == 'control':
-                    pub.sendMessage('addedControl')
-                elif level == 'action':
-                    pub.sendMessage('addedAction')
-
-        else:
-            _msg = _msg + '  Failed to add a new FMEA entity to the RTK ' \
-                'Program database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_insert(self, _error_code, _msg)
 
     def request_delete(self, node_id):
         """
@@ -588,19 +518,9 @@ class FMEA(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_fmea.delete(node_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_delete(self, _error_code, _msg, None)
 
     def request_update_all(self):
         """

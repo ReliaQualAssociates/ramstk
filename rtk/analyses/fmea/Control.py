@@ -10,12 +10,12 @@ FMEA Control Module
 ###############################################################################
 """
 
-from pubsub import pub                      # pylint: disable=E0401
+from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel         # pylint: disable=E0401
-from datamodels import RTKDataController    # pylint: disable=E0401
-from dao.RTKControl import RTKControl       # pylint: disable=E0401
+from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataController        # pylint: disable=E0401
+from dao.RTKControl import RTKControl           # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -105,8 +105,7 @@ class Model(RTKDataModel):
             # (NULL fields in the database) with their default value.
             _attributes = _control.get_attributes()
             _control.set_attributes(_attributes[3:])
-            self.tree.create_node(_control.description,
-                                  _control.control_id,
+            self.tree.create_node(_control.description, _control.control_id,
                                   parent=0, data=_control)
             self.last_id = max(self.last_id, _control.control_id)
 
@@ -165,10 +164,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        try:
-            _control = self.tree.get_node(control_id).data
-            _error_code, _msg = RTKDataModel.update(self, _control)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, control_id)
+
+        if _error_code != 0:
             _error_code = 2006
             _msg = 'RTK ERROR: Attempted to save non-existent Control ID ' \
                    '{0:d}.'.format(control_id)
@@ -184,17 +182,18 @@ class Model(RTKDataModel):
         """
 
         _error_code = 0
-        _msg = ''
+        _msg = 'RTK SUCCESS: Saving all Controls in the FMEA.'
 
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.data.control_id)
-            except AttributeError:
-                pass
 
-            # Break if something goes wrong and return.
-            if _error_code != 0:
-                print 'FIXME: Refactor ' \
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Control.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
                       'rtk.analyses.fmea.Control.Model.update_all().'
 
         return _error_code, _msg
@@ -226,7 +225,6 @@ class Control(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_control = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -273,27 +271,18 @@ class Control(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_control.insert(mode_id=mode_id,
                                                      cause_id=cause_id)
 
-        # If the add was successful log the success message to the user log.
-        # Otherwise, update the error message and write it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('insertedControl',
-                                mode_id=self._dtm_control.last_id,
-                                parent_id=cause_id)
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedControl',
+                            mode_id=self._dtm_control.last_id,
+                            parent_id=cause_id)
         else:
-            _msg = _msg + '  Failed to add a new Control to the RTK Program \
-                           database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
+            _msg = _msg + '  Failed to add a new Control to the RTK ' \
+                'Program database.'
 
-        return _return
+        return RTKDataController.request_insert(self, _error_code, _msg)
 
     def request_delete(self, control_id):
         """
@@ -305,22 +294,10 @@ class Control(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_control.delete(control_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('deletedControl')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_delete(self, _error_code, _msg,
+                                                'deletedControl')
 
     def request_update(self, control_id):
         """
@@ -336,16 +313,8 @@ class Control(RTKDataController):
 
         _error_code, _msg = self._dtm_control.update(control_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('savedControl')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_update(self, _error_code, _msg,
+                                                'savedControl')
 
     def request_update_all(self):
         """

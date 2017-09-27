@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.fmea.gui.gtk.Assistants.py is part of The RTK Project
+#       rtk.gui.gtk.assistants.FMEA.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com

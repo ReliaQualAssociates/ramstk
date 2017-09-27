@@ -78,6 +78,7 @@ class Configuration(object):
                                 * risk
                                 * ffmeca
                                 * sfmeca
+
     :cvar dict RTK_COLORS: Dictionary containing the colors to use for various
                            widgets.  Keys for this dictionary are:
 
