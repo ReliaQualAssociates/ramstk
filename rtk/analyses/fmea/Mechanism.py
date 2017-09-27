@@ -83,11 +83,9 @@ class Model(RTKDataModel):
             # (NULL fields in the database) with their default values.
             _attributes = _mechanism.get_attributes()
             _mechanism.set_attributes(_attributes[2:])
-            self.tree.create_node(
-                _mechanism.description,
-                _mechanism.mechanism_id,
-                parent=0,
-                data=_mechanism)
+            self.tree.create_node(_mechanism.description,
+                                  _mechanism.mechanism_id, parent=0,
+                                  data=_mechanism)
             self.last_id = max(self.last_id, _mechanism.mechanism_id)
 
         _session.close()
@@ -104,16 +102,12 @@ class Model(RTKDataModel):
 
         _mechanism = RTKMechanism()
         _mechanism.mode_id = kwargs['mode_id']
-        _error_code, _msg = RTKDataModel.insert(self, [
-            _mechanism,
-        ])
+        _error_code, _msg = RTKDataModel.insert(self, [_mechanism, ])
 
         if _error_code == 0:
-            self.tree.create_node(
-                _mechanism.description,
-                _mechanism.mechanism_id,
-                parent=0,
-                data=_mechanism)
+            self.tree.create_node(_mechanism.description,
+                                  _mechanism.mechanism_id, parent=0,
+                                  data=_mechanism)
             self.last_id = _mechanism.mechanism_id
 
         return _error_code, _msg
@@ -151,10 +145,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        try:
-            _mechanism = self.tree.get_node(mechanism_id).data
-            _error_code, _msg = RTKDataModel.update(self, _mechanism)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, mechanism_id)
+
+        if _error_code != 0:
             _error_code = 2016
             _msg = 'RTK ERROR: Attempted to save non-existent Mechanism ID ' \
                    '{0:d}.'.format(mechanism_id)
@@ -170,17 +163,18 @@ class Model(RTKDataModel):
         """
 
         _error_code = 0
-        _msg = ''
+        _msg = 'RTK SUCCESS: Saving all Mechanisms in the FMEA.'
 
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.data.mechanism_id)
-            except AttributeError:
-                pass
 
-            # Break if something goes wrong and return
-            if _error_code != 0:
-                print 'FIXME: Refactor ' \
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Mechanism.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
                       'rtk.analyses.fmea.Mechanism.Model.update_all().'
 
         return _error_code, _msg
@@ -213,7 +207,6 @@ class Mechanism(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_mechanism = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -257,27 +250,14 @@ class Mechanism(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_mechanism.insert(mode_id=mode_id)
 
-        # If the add was successful log the success message to the user log.
-        # Otherwise, update the error message and write it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedMechanism',
+                            mechanism_id=self._dtm_mechanism.last_id)
 
-            if not self.__test:
-                pub.sendMessage(
-                    'insertedMechanism',
-                    mechanism_id=self._dtm_mechanism.last_id)
-        else:
-            _msg = _msg + '  Failed to add a new Mechanism to the RTK Program \
-                           database.'
-
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_insert(self, _error_code, _msg,
+                                                entity='Mechanism')
 
     def request_delete(self, mechanism_id):
         """
@@ -289,22 +269,10 @@ class Mechanism(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_mechanism.delete(mechanism_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('deletedMechanism')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_delete(self, _error_code, _msg,
+                                                'deletedMechanism')
 
     def request_update(self, mechanism_id):
         """
@@ -316,20 +284,10 @@ class Mechanism(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_mechanism.update(mechanism_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('savedMechanism')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_update(self, _error_code, _msg,
+                                                'savedMechanism')
 
     def request_update_all(self):
         """
@@ -358,13 +316,5 @@ class Mechanism(RTKDataController):
             _msg = self._dtm_mechanism.calculate_rpn(mechanism_id, severity,
                                                      severity_new)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedMechanism')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_calculate(self, _error_code, _msg,
+                                                   'calculatedMechanism')

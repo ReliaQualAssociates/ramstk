@@ -82,7 +82,7 @@ class RTKDataModel(object):
 
         return _entity
 
-    def select_all(self, **kwargs):
+    def select_all(self):
         """
         Base method to retrieve and build the RTK Module tree.
 
@@ -137,7 +137,7 @@ class RTKDataModel(object):
 
         return _error_code, _msg
 
-    def update(self, entity):
+    def update(self, node_id):
         """
         Base method to update the RTK<Module> instance in the RTK Program
         database.
@@ -148,38 +148,24 @@ class RTKDataModel(object):
         :rtype: (int, str)
         """
 
-        # TODO: Refactor rtk.datamodels.RTKDataModel.update().
+        _error_code = 0
+        _msg = ''
 
-        # Update RTKDataModel.update().  Convert to commented code which will
-        # require updating every class that sources RTKDataModel.  Change
-        # paramater from entity to node_id.
-
-        # _error_code = 0
-
-        # _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-        #                                 autoflush=True,
-        #                                 autocommit=False,
-        #                                 expire_on_commit=False)
-
-        # try:
-        #     _entity = self.tree.get_node(node_id).data
-        # except AttributeError:
-        #    _error_code = 6
-
-        # if _error_code == 0:
-        #     _session.add(_entity)
-        #     _error_code, _msg = self.dao.db_update(_session)
-
-        # _session.close()
-
-        # return _error_code
-        # Delete the following code.
         _session = self.dao.RTK_SESSION(bind=self.dao.engine,
                                         autoflush=True,
                                         autocommit=False,
                                         expire_on_commit=False)
-        _session.add(entity)
-        _error_code, _msg = self.dao.db_update(_session)
+
+        try:
+            _entity = self.tree.get_node(node_id).data
+            if _entity is not None:
+                _session.add(_entity)
+                _error_code, _msg = self.dao.db_update(_session)
+
+        except AttributeError:
+            _error_code = 6
+            _msg = 'RTK ERROR: AAttempted to save non-existent entity ' \
+                   'with Node ID {0:s}.'.format(str(node_id))
 
         _session.close()
 

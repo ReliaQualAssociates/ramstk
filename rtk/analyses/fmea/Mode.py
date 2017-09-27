@@ -10,12 +10,12 @@ FMEA Failure Mode Module
 ###############################################################################
 """
 
-from pubsub import pub                      # pylint: disable=E0401
+from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel         # pylint: disable=E0401
-from datamodels import RTKDataController    # pylint: disable=E0401
-from dao.RTKMode import RTKMode             # pylint: disable=E0401
+from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataController        # pylint: disable=E0401
+from dao.RTKMode import RTKMode                 # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -81,25 +81,20 @@ class Model(RTKDataModel):
         _session = RTKDataModel.select_all(self)
 
         if functional:
-            for _mode in _session.query(RTKMode).filter(
-                    RTKMode.function_id == parent_id).all():
-                # We get and then set the attributes to replace any None values
-                # (NULL fields in the database) with their default value.
-                _attributes = _mode.get_attributes()
-                _mode.set_attributes(_attributes[3:])
-                self.tree.create_node(_mode.description, _mode.mode_id,
-                                      parent=0, data=_mode)
-                self.last_id = max(self.last_id, _mode.mode_id)
+            _modes = _session.query(RTKMode).filter(
+                RTKMode.function_id == parent_id).all()
         else:
-            for _mode in _session.query(RTKMode).filter(
-                    RTKMode.hardware_id == parent_id).all():
-                # We get and then set the attributes to replace any None values
-                # (NULL fields in the database) with their default value.
-                _attributes = _mode.get_attributes()
-                _mode.set_attributes(_attributes[3:])
-                self.tree.create_node(_mode.description, _mode.mode_id,
-                                      parent=0, data=_mode)
-                self.last_id = max(self.last_id, _mode.mode_id)
+            _modes = _session.query(RTKMode).filter(
+                RTKMode.hardware_id == parent_id).all()
+
+        for _mode in _modes:
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _mode.get_attributes()
+            _mode.set_attributes(_attributes[3:])
+            self.tree.create_node(_mode.description, _mode.mode_id,
+                                  parent=0, data=_mode)
+            self.last_id = max(self.last_id, _mode.mode_id)
 
         _session.close()
 
@@ -158,10 +153,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        try:
-            _mode = self.tree.get_node(mode_id).data
-            _error_code, _msg = RTKDataModel.update(self, _mode)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, mode_id)
+
+        if _error_code != 0:
             _error_code = 2006
             _msg = 'RTK ERROR: Attempted to save non-existent Mode ID ' \
                    '{0:d}.'.format(mode_id)
@@ -177,18 +171,19 @@ class Model(RTKDataModel):
         """
 
         _error_code = 0
-        _msg = ''
+        _msg = 'RTK SUCCESS: Saving all Modes in the FMEA.'
 
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.data.mode_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Mode.Model.update_all().'
+
             except AttributeError:
                 print 'FIXME: Handle AttributeError in ' \
-                      'rtk.analyses.fmea.Mode.Model.update_all().'
-
-            # Break if something goes wrong and return.
-            if _error_code != 0:
-                print 'FIXME: Refactor ' \
                       'rtk.analyses.fmea.Mode.Model.update_all().'
 
         return _error_code, _msg
@@ -224,7 +219,6 @@ class Mode(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_mode = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -274,26 +268,15 @@ class Mode(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_mode.insert(function_id=function_id,
                                                   hardware_id=hardware_id)
 
-        # If the add was successful log the success message to the user log.
-        # Otherwise, update the error message and write it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedMode',
+                            mode_id=self._dtm_mode.last_id)
 
-            if not self.__test:
-                pub.sendMessage('insertedMode',
-                                mode_id=self._dtm_mode.last_id)
-        else:
-            _msg = _msg + '  Failed to add a new Mode to the RTK Program \
-                           database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_insert(self, _error_code, _msg,
+                                                entity='Mode')
 
     def request_delete(self, mode_id):
         """
@@ -305,22 +288,10 @@ class Mode(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_mode.delete(mode_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('deletedMode')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_delete(self, _error_code, _msg,
+                                                'deletedMode')
 
     def request_update(self, mode_id):
         """
@@ -332,20 +303,10 @@ class Mode(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_mode.update(mode_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('savedMode')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_update(self, _error_code, _msg,
+                                                'savedMode')
 
     def request_update_all(self):
         """
@@ -368,18 +329,8 @@ class Mode(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, \
             _msg = self._dtm_mode.calculate_criticality(mode_id, item_hr)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedMode')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_calculate(self, _error_code, _msg,
+                                                   'calculatedMode')

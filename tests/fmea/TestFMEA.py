@@ -601,7 +601,7 @@ class Test00FMEAModel(unittest.TestCase):
             _mechanism.set_attributes(_attributes)
 
         _error_code, _msg = \
-        self.DUT.calculate_mechanism_rpn('0.1', 7, 4)
+        self.DUT.calculate_rpn('0.1', 7, 4)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mechanism '
@@ -628,7 +628,7 @@ class Test00FMEAModel(unittest.TestCase):
             _cause.set_attributes(_attributes)
 
         _error_code, _msg = \
-        self.DUT.calculate_cause_rpn('0.1.1', 7, 4)
+        self.DUT.calculate_rpn('0.1.1', 7, 4)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure cause '

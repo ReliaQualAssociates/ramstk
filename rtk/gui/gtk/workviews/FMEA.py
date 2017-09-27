@@ -364,17 +364,24 @@ class WorkView(gtk.HBox):
 
         _return = False
         _choose = False
-        _level = None
 
+        # Try to get the information needed to add a new entity at the correct
+        # location in the FMEA.  If there is nothing in the FMEA, by default
+        # add a failure Mode.
         _model, _row = self.tvw_fmea.get_selection().get_selected()
-        _node_id = _model.get_value(_row, 18)
-        _level = _node_id.count('.')
-        _prow = _model.iter_parent(_row)
+        try:
+            _node_id = _model.get_value(_row, 18)
+            _level = _node_id.count('.')
+            _prow = _model.iter_parent(_row)
+        except TypeError:
+            _node_id = 0
+            _level = 1
+            _prow = None
 
         if sibling:
             if _level == 1:
                 _entity_id = self._function_id
-                _parent_id = 0
+                _parent_id = _node_id
                 _level = 'mode'
             else:
                 _entity_id = _model.get_value(_prow, 0)

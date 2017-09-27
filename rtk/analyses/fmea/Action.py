@@ -10,12 +10,12 @@ FMEA Action Module
 ###############################################################################
 """
 
-from pubsub import pub                      # pylint: disable=E0401
+from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel         # pylint: disable=E0401
-from datamodels import RTKDataController    # pylint: disable=E0401
-from dao.RTKAction import RTKAction         # pylint: disable=E0401
+from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataController        # pylint: disable=E0401
+from dao.RTKAction import RTKAction             # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -106,8 +106,7 @@ class Model(RTKDataModel):
             # (NULL fields in the database) with their default value.
             _attributes = _action.get_attributes()
             _action.set_attributes(_attributes[3:])
-            self.tree.create_node(_action.action_due_date,
-                                  _action.action_id,
+            self.tree.create_node(_action.action_due_date, _action.action_id,
                                   parent=0, data=_action)
             self.last_id = max(self.last_id, _action.action_id)
 
@@ -166,10 +165,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        try:
-            _action = self.tree.get_node(action_id).data
-            _error_code, _msg = RTKDataModel.update(self, _action)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, action_id)
+
+        if _error_code != 0:
             _error_code = 2006
             _msg = 'RTK ERROR: Attempted to save non-existent Action ID ' \
                    '{0:d}.'.format(action_id)
@@ -185,17 +183,18 @@ class Model(RTKDataModel):
         """
 
         _error_code = 0
-        _msg = ''
+        _msg = 'RTK SUCCESS: Saving all Actions in the FMEA.'
 
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.data.action_id)
-            except AttributeError:
-                pass
 
-            # Break if something goes wrong and return.
-            if _error_code != 0:
-                print 'FIXME: Refactor ' \
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Action.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
                       'rtk.analyses.fmea.Action.Model.update_all().'
 
         return _error_code, _msg
@@ -230,7 +229,6 @@ class Action(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_action = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -280,28 +278,17 @@ class Action(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_action.insert(mode_id=mode_id,
                                                     cause_id=cause_id)
 
-        # If the add was successful log the success message to the user log.
-        # Otherwise, update the error message and write it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+        if _error_code == 0 and not self._test:
+            _parent_id = max(mode_id, cause_id)
+            pub.sendMessage('insertedAction',
+                            action_id=self._dtm_action.last_id,
+                            parent_id=_parent_id)
 
-            if not self.__test:
-                _parent_id = max(mode_id, cause_id)
-                pub.sendMessage('insertedAction',
-                                action_id=self._dtm_action.last_id,
-                                parent_id=_parent_id)
-        else:
-            _msg = _msg + '  Failed to add a new Action to the RTK Program \
-                           database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_insert(self, _error_code, _msg,
+                                                entity='Action')
 
     def request_delete(self, action_id):
         """
@@ -313,22 +300,10 @@ class Action(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_action.delete(action_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('deletedAction')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_delete(self, _error_code, _msg,
+                                                'deletedAction')
 
     def request_update(self, action_id):
         """
@@ -340,20 +315,10 @@ class Action(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_action.update(action_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('savedAction')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_update(self, _error_code, _msg,
+                                                'savedAction')
 
     def request_update_all(self):
         """

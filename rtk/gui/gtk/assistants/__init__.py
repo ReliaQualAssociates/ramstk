@@ -6,3 +6,4 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 
 from .FMEA import AddControlAction
+from .Function import AddFunction

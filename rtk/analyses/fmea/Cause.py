@@ -163,10 +163,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        try:
-            _cause = self.tree.get_node(cause_id).data
-            _error_code, _msg = RTKDataModel.update(self, _cause)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, cause_id)
+
+        if _error_code != 0:
             _error_code = 2026
             _msg = 'RTK ERROR: Attempted to save non-existent Cause ID ' \
                    '{0:d}.'.format(cause_id)
@@ -182,18 +181,20 @@ class Model(RTKDataModel):
         """
 
         _error_code = 0
-        _msg = ''
+        _msg = 'RTK SUCCESS: Saving all Causes in the FMEA.'
 
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.data.cause_id)
-            except AttributeError:
-                pass
 
-            # Break if something goes wrong and return.
-            if _error_code != 0:
-                print 'FIXME: Refactor ' \
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Cause.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
                       'rtk.analyses.fmea.Cause.Model.update_all().'
+
 
         return _error_code, _msg
 
@@ -223,7 +224,6 @@ class Cause(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_cause = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -267,25 +267,14 @@ class Cause(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_cause.insert(mechanism_id=mechanism_id)
 
-        # If the add was successful log the success message to the user log.
-        # Otherwise, update the error message and write it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedCause',
+                            cause_id=self._dtm_cause.last_id)
 
-            if not self.__test:
-                pub.sendMessage('insertedCause',
-                                cause_id=self._dtm_cause.last_id)
-        else:
-            _msg = _msg + '  Failed to add a new Cause to the RTK Program \
-                           database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_insert(self, _error_code, _msg,
+                                                entity='Cause')
 
     def request_delete(self, cause_id):
         """
@@ -301,18 +290,8 @@ class Cause(RTKDataController):
 
         _error_code, _msg = self._dtm_cause.delete(cause_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('deletedCause')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_delete(self, _error_code, _msg,
+                                                'deletedCause')
 
     def request_update(self, cause_id):
         """
@@ -328,16 +307,8 @@ class Cause(RTKDataController):
 
         _error_code, _msg = self._dtm_cause.update(cause_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('savedCause')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_update(self, _error_code, _msg,
+                                                'savedCause')
 
     def request_update_all(self):
         """
@@ -366,13 +337,5 @@ class Cause(RTKDataController):
             _msg = self._dtm_cause.calculate_rpn(cause_id, severity,
                                                  severity_new)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedCause')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.request_calculate(self, _error_code, _msg,
+                                                   'calculatedCause')
