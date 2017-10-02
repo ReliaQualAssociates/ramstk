@@ -1,36 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.moduleviews.Function.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ###############################################################################
 Function Package Module View
@@ -43,34 +16,30 @@ import sys
 import gettext
 import locale
 
-from pubsub import pub
-from sortedcontainers import SortedDict
+from pubsub import pub                              # pylint: disable=E0401
+from sortedcontainers import SortedDict             # pylint: disable=E0401
 
 # Modules required for the GUI.
 try:
-    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk.glade
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gobject
 except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-from gui.gtk import rtk
+from gui.gtk import rtk                             # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -112,6 +81,7 @@ class ModuleView(gtk.ScrolledWindow):
 
         # Initialize private list attributes.
         self._lst_col_order = []
+        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
         self._mdcRTK = controller
@@ -143,10 +113,13 @@ class ModuleView(gtk.ScrolledWindow):
         self._lst_col_order = self.tvw_function.order
 
         self.tvw_function.set_tooltip_text(
-                _(u"Displays the list of functions."))
-        self.tvw_function.connect('cursor_changed', self._do_change_row,
-                                  None, None)
-        self.tvw_function.connect('button_press_event', self._do_press_button)
+            _(u"Displays the list of functions."))
+        self._lst_handler_id.append(
+            self.tvw_function.connect('cursor_changed',
+                                      self._do_change_row))
+        self._lst_handler_id.append(
+            self.tvw_function.connect('button_press_event',
+                                      self._on_button_press))
 
         # Connect the cells to the callback function.
         for i in [5, 15, 17]:
@@ -176,25 +149,27 @@ class ModuleView(gtk.ScrolledWindow):
         pub.subscribe(self._on_insert_function, 'insertedFunction')
         pub.subscribe(self._on_edit_function, 'wvwEditedFunction')
 
-    def _do_change_row(self, treeview, __path, __column):
+    def _do_change_row(self, treeview):
         """
         Method to handle events for the Function package Module Book
         gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
         row is activated.
 
         :param gtk.TreeView treeview: the Function class gtk.TreeView().
-        :param str __path: the actived row gtk.TreeView() path.
-        :param gtk.TreeViewColumn __column: the actived gtk.TreeViewColumn().
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
+        treeview.handler_block(self._lst_handler_id[0])
+
         _model, _row = treeview.get_selection().get_selected()
 
         _function_id = _model.get_value(_row, 1)
         self._dtm_rtkfunction = self._dtc_function.request_select(_function_id)
+
+        treeview.handler_unblock(self._lst_handler_id[0])
 
         pub.sendMessage('selectedFunction', function_id=_function_id)
 
@@ -265,7 +240,8 @@ class ModuleView(gtk.ScrolledWindow):
             try:
                 _row = _model.append(row, _data)
             except TypeError:
-                print "FIXME: Handle TypeError in gtk.gui.moduleviews.Function._load_tree"
+                print "FIXME: Handle TypeError in " \
+                      "gtk.gui.moduleviews.Function._load_tree"
         except AttributeError:
             _row = None
 
@@ -275,7 +251,7 @@ class ModuleView(gtk.ScrolledWindow):
 
         return None
 
-    def _do_press_button(self, treeview, event):
+    def _on_button_press(self, treeview, event):
         """
         Method for handling mouse clicks on the Function package Module Book
         gtk.TreeView().
@@ -297,11 +273,19 @@ class ModuleView(gtk.ScrolledWindow):
         :rtype: bool
         """
 
-        if event.button == 1:
-            self._do_change_row(treeview, '', gtk.TreeViewColumn())
-        elif event.button == 3:
-            # FIXME: See bug 190.
-            pass
+        treeview.handler_block(self._lst_handler_id[1])
+
+        # The cursor-changed signal will call the _on_change_row.  If
+        # _on_change_row is called from here, it gets called twice.  Once on
+        # the currently selected row and once on the newly selected row.  Thus,
+        # we don't need (or want) to respond to left button clicks.
+        if event.button == 3:
+            print "FIXME: Rick clicking should launch a pop-up menu with " \
+                  "options to insert sibling, insert child, delete " \
+                  "(selected), save (selected), and save all in " \
+                  "rtk.gui.gtk.moduleviews.Function._on_button_press."
+
+        treeview.handler_unblock(self._lst_handler_id[1])
 
         return False
 
@@ -345,7 +329,8 @@ class ModuleView(gtk.ScrolledWindow):
 
         return False
 
-    def _on_insert_function(self, function_id=None, parent_id=0):
+    def _on_insert_function(self, function_id=None, parent_id=0,
+                            level='sibling'):
         """
         Method to add a Function to the Function RTKTreeView after a successful
         insert into the RTK Program database.
@@ -359,13 +344,16 @@ class ModuleView(gtk.ScrolledWindow):
         _return = False
 
         # Get the currently selected row, the level of the currently selected
-        # item, and it's parent row in the Usage Profile.
+        # item, and it's parent row in the Function tree.
         _model, _row = self.tvw_function.get_selection().get_selected()
+        _prow = _model.iter_parent(_row)
 
         _function = self._dtc_function.request_select(function_id)
         _data = _function.get_attributes()
         if parent_id == 0:
             _model.append(None, _data)
+        elif parent_id != 0 and level == 'sibling':
+            _model.append(_prow, _data)
         else:
             _model.append(_row, _data)
 

@@ -10,7 +10,7 @@ RTKDataModel Module
 ###############################################################################
 """
 
-from treelib import tree, Tree
+from treelib import tree, Tree                  # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

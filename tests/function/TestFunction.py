@@ -389,7 +389,8 @@ class Test01FunctionController(unittest.TestCase):
         self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_insert(revision_id=1,
-                                                 parent_id=0))
+                                                 parent_id=0,
+                                                 level='sibling'))
 
     @attr(all=True, unit=True)
     def test04a_request_delete(self):

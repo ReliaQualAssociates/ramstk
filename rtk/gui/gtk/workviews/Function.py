@@ -1,37 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.workviews.Function.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ################################################################################
 Function Package WorkView
@@ -44,7 +16,7 @@ import sys
 import gettext
 import locale
 
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
 # Modules required for the GUI.
 try:
@@ -65,8 +37,9 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-from gui.gtk import rtk
-# from Assistants import AddFunction
+from gui.gtk import rtk                                 # pylint: disable=E0401
+from gui.gtk.workviews.FMEA import WorkView as FMEA     # pylint: disable=E0401
+from gui.gtk.assistants.Function import AddFunction     # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -203,9 +176,9 @@ class WorkView(gtk.VBox):
 
         # General data page widgets.
         self.chkSafetyCritical = rtk.RTKCheckButton(
-                label=_(u"Function is safety critical."),
-                tooltip=_(u"Indicates whether or not the selected function is "
-                          u"safety critical."))
+            label=_(u"Function is safety critical."),
+            tooltip=_(u"Indicates whether or not the selected function is "
+                      u"safety critical."))
 
         self.txtCode = rtk.RTKEntry(tooltip=_(u"Enter a unique code for the "
                                               u"selected function."))
@@ -226,8 +199,8 @@ class WorkView(gtk.VBox):
                                                    u"number of components "
                                                    u"associated with the "
                                                    u"selected function."))
-        _buffer = gtk.TextBuffer()
-        self.txtRemarks = rtk.RTKTextView(txvbuffer=_buffer, width=400,
+        self.txtRemarks = rtk.RTKTextView(txvbuffer=gtk.TextBuffer(),
+                                          width=400,
                                           tooltip=_(u"Enter any remarks "
                                                     u"related to the selected "
                                                     u"function."))
@@ -292,7 +265,7 @@ class WorkView(gtk.VBox):
             _notebook.set_tab_pos(gtk.POS_BOTTOM)
 
         self._make_general_data_page(_notebook)
-        #self._make_fmea_page(_notebook)
+        self._make_fmea_page(_notebook)
         self._make_assessment_results_page(_notebook)
 
         try:
@@ -305,10 +278,10 @@ class WorkView(gtk.VBox):
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._do_edit_function, 0))
         self._lst_handler_id.append(
-                self.txtName.connect('changed', self._do_edit_function, 1))
+            self.txtName.connect('changed', self._do_edit_function, 1))
         self._lst_handler_id.append(
-                self.txtRemarks.do_get_buffer().connect(
-                        'changed', self._do_edit_function, 2))
+            self.txtRemarks.do_get_buffer().connect(
+                'changed', self._do_edit_function, 2))
 
         # Put it all together.
         self.pack_start(self._make_toolbar(), expand=False)
@@ -319,6 +292,57 @@ class WorkView(gtk.VBox):
         pub.subscribe(self._on_select_function, 'selectedFunction')
         pub.subscribe(self._on_edit_function, 'mvwEditedFunction')
         pub.subscribe(self._on_edit_function, 'calculatedFunction')
+
+    def do_add_function(self, level):
+        """
+        Method to actually add the function.  This method is called by the
+        AddFunction gtk.Assistant() when the Apply button is pressed.
+
+        :param str level: the level the new Function should have relative to
+                          the currently selected Function.  Values are:
+
+                          * sibling
+                          * child
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _function = self._dtc_function.request_select(self.function_id)
+        _revision_id = _function.revision_id
+
+        if level == 'sibling':
+            _parent_id = _function.parent_id
+        else:
+            _parent_id = _function.function_id
+
+        # By default we add the new function as a top-level function.
+        if _parent_id is None:
+            _parent_id = 0
+
+        if not self._dtc_function.request_insert(_revision_id,
+                                                 _parent_id,
+                                                 level):
+            # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
+
+            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['function'][1] += 1
+        else:
+            _msg = _(u"An error occurred while attempting to add one or more "
+                     u"functions.")
+            _error_dialog = rtk.RTKMessageDialog(_msg,
+                                                 self._dic_icons['error'],
+                                                 'error',
+                                                 self.get_parent())
+            self._mdcRTK.debug_log.error(_msg)
+
+            if _error_dialog.do_run() == gtk.RESPONSE_OK:
+                _error_dialog.do_destroy()
+
+            _return = True
+
+        return _return
 
     def _do_edit_function(self, entry, index):
         """
@@ -388,9 +412,8 @@ class WorkView(gtk.VBox):
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Function {0:d}. \n\n\t"
-                        + _msg[0] + "\n\t"
-                        + _msg[1] + "\n\n").format(self.function_id)
+                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
+                        _msg[1] + "\n\n").format(self.function_id)
             _error_dialog = rtk.RTKMessageDialog(_prompt,
                                                  self._dic_icons['error'],
                                                  'error')
@@ -445,33 +468,19 @@ class WorkView(gtk.VBox):
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :param str level: the level the new Function should have relative to
+                          the currently selected Function.  Values are:
+
+                          * sibling
+                          * child
+
+        :return: None
+        :rtype: None
         """
 
-        _return = False
-        # TODO: This method should launch a wizard to assist the user in adding a new Function.
+        AddFunction(self, level=level)
 
-        _function = self._dtc_function.request_select(self.function_id)
-        _revision_id = _function.revision_id
-        if level == 0:
-            _parent_id = 0
-        else:
-            _parent_id = _function.function_id
-
-        if self._dtc_function.request_insert(revision_id=_revision_id,
-                                             parent_id=_parent_id):
-            _prompt = _(u"An error occurred while attempting to add a new "
-                        u"Function.")
-            _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                 self._dic_icons['error'],
-                                                 'error')
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
+        return None
 
     def _do_request_update(self, __button):
         """
@@ -487,7 +496,7 @@ class WorkView(gtk.VBox):
 
     def _make_assessment_results_page(self, notebook):
         """
-        Function to create the Function class gtk.Notebook() page for
+        Method to create the Function class gtk.Notebook() page for
         displaying assessment results for teh selected Function.
 
         :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
@@ -564,14 +573,35 @@ class WorkView(gtk.VBox):
 
         return False
 
+    def _make_fmea_page(self, notebook):
+        """
+        Method to create the Function class gtk.Notebook() page for displaying
+        the FMEA for the selected Function.
+
+        :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
+        :return: false if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _label = rtk.RTKLabel(_(u"FMEA"), width=-1,
+                              justify=gtk.JUSTIFY_CENTER,
+                              tooltip=_(u"Displays the Failure Mode and "
+                                        u"Effects Analysis (FMEA) for "
+                                        u"the selected Function."))
+
+        notebook.insert_page(FMEA(self._mdcRTK), tab_label=_label,
+                             position=-1)
+
+        return False
+
     def _make_general_data_page(self, notebook):
         """
-        Function to create the Function class gtk.Notebook() page for
+        Method to create the Function class gtk.Notebook() page for
         displaying general data about the selected Function.
 
         :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -635,7 +665,7 @@ class WorkView(gtk.VBox):
         _image = gtk.Image()
         _image.set_from_file(self._dic_icons['insert_sibling'])
         _button.set_icon_widget(_image)
-        _button.connect('clicked', self._do_request_insert, 0)
+        _button.connect('clicked', self._do_request_insert, 'sibling')
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -647,7 +677,7 @@ class WorkView(gtk.VBox):
         _image = gtk.Image()
         _image.set_from_file(self._dic_icons['insert_child'])
         _button.set_icon_widget(_image)
-        _button.connect('clicked', self._do_request_insert, 1)
+        _button.connect('clicked', self._do_request_insert, 'child')
         _toolbar.insert(_button, _position)
         _position += 1
 

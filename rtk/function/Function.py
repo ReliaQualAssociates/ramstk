@@ -336,7 +336,7 @@ class Function(RTKDataController):
 
         return self._dtm_function.select_all(revision_id)
 
-    def request_insert(self, revision_id, parent_id):
+    def request_insert(self, revision_id, parent_id, level='sibling'):
         """
         Method to request the Function Data Model to add a new Function to the
         RTK Program database.
@@ -353,10 +353,11 @@ class Function(RTKDataController):
         if _error_code == 0 and not self._test:
             pub.sendMessage('insertedFunction',
                             function_id=self._dtm_function.last_id,
-                            parent_id=parent_id)
+                            parent_id=parent_id,
+                            level=level)
         else:
-            _msg = _msg + '  Failed to add a new Function to the RTK Program ' \
-                'database.'
+            _msg = _msg + '  Failed to add a new Function to the RTK ' \
+                'Program database.'
 
         return RTKDataController.handle_results(self, _error_code, _msg, None)
 
@@ -438,3 +439,14 @@ class Function(RTKDataController):
 
         return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'calculatedFunction')
+
+    def request_last_id(self):
+        """
+        Method to request the last Function ID used in the RTK Program
+        database.
+
+        :return: the last Function ID used.
+        :rtype: int
+        """
+
+        return self._dtm_function.last_id

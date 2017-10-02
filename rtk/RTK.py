@@ -90,7 +90,7 @@ from revision.Revision import Revision
 from usage.UsageProfile import UsageProfile
 from failure_definition.FailureDefinition import FailureDefinition
 from function.Function import Function
-# from analyses.fmea.FMEA import FMEA
+from analyses.fmea.FMEA import FMEA
 # from requirement.Requirement import Requirement
 # from stakeholder.Stakeholder import Stakeholder
 # from hardware.BoM import BoM as HardwareBoM
@@ -710,6 +710,7 @@ class RTK(object):
                                 'matrices': None,
                                 'profile': None,
                                 'definition': None,
+                                'ffmea': None,
                                 'fmea': None,
                                 'stakeholder': None,
                                 'allocation': None,
@@ -818,13 +819,13 @@ class RTK(object):
         if _error_code == 0:
             pub.sendMessage('requestOpen')
             self.dic_controllers['revision'] = Revision(
-                    self.rtk_model.program_dao,
-                    self.RTK_CONFIGURATION,
-                    test=False)
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['function'] = Function(
-                    self.rtk_model.program_dao,
-                    self.RTK_CONFIGURATION,
-                    test=False)
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             # self.dic_controllers['requirement'] = Requirement()
             # self.dic_controllers['hardware'] = HardwareBoM()
             # self.dic_controllers['software'] = SoftwareBoM()
@@ -835,13 +836,16 @@ class RTK(object):
 
             # self.dic_controllers['matrices'] = Matrix()
             self.dic_controllers['profile'] = UsageProfile(
-                    self.rtk_model.program_dao,
-                    self.RTK_CONFIGURATION,
-                    test=False)
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['definition'] = FailureDefinition(
-                    self.rtk_model.program_dao,
-                    self.RTK_CONFIGURATION,
-                    test=False)
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
+            self.dic_controllers['ffmea'] = FMEA(self.rtk_model.program_dao,
+                                                 self.RTK_CONFIGURATION,
+                                                 test=False, functional=True)
             # self.dic_controllers['fmea'] = FMEA()
             # self.dic_controllers['stakeholder'] = Stakeholder()
             # self.dic_controllers['allocation'] = Allocation()
@@ -994,7 +998,8 @@ class RTK(object):
             Widgets.rtk_warning(_(u"Cannot find license file {0:s}.  If your "
                                   u"license file is elsewhere, please place "
                                   u"it in {1:s}.").format(
-                    _license_file, self.RTK_CONFIGURATION.RTK_DATA_DIR))
+                                      _license_file,
+                                      self.RTK_CONFIGURATION.RTK_DATA_DIR))
             _return = True
 
         _license_key = _license_file.readline().rstrip('\n')
