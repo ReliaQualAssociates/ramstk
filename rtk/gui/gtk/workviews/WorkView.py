@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
 ###############################################################################
-RTK Work View Package Meta Classe
+RTK Work View Package Meta Class
 ###############################################################################
 """
 
@@ -108,7 +108,8 @@ class RTKWorkView(object):
 
         pass
 
-    def _make_assessment_results_page(self):
+    @staticmethod
+    def _make_assessment_results_page():
         """
         Method to create the gtk.Notebook() page for displaying assessment
         results.
@@ -151,7 +152,8 @@ class RTKWorkView(object):
 
         return _hbox, _fxd_left, _fxd_right
 
-    def _make_general_data_page(self):
+    @staticmethod
+    def _make_general_data_page():
         """
         Method to create the gtk.Notebook() page for displaying general data.
 

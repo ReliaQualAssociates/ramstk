@@ -320,7 +320,7 @@ class WorkView(gtk.VBox, RTKWorkView):
 
         (_hbx_page,
          _fxd_left,
-         _fxd_right) = RTKWorkView._make_assessment_results_page(self)
+         _fxd_right) = RTKWorkView._make_assessment_results_page()
 
         _labels = [_(u"Active Failure Intensity [\u039B(t)]:"),
                    _(u"Dormant \u039B(t):"), _(u"Software \u039B(t):"),
@@ -379,7 +379,7 @@ class WorkView(gtk.VBox, RTKWorkView):
         :rtype: boolean
         """
 
-        _frame, _fixed = RTKWorkView._make_general_data_page(self)
+        _frame, _fixed = RTKWorkView._make_general_data_page()
 
         _labels = [_(u"Revision Code:"), _(u"Revision Name:"),
                    _(u"Total Cost:"), _(u"Cost/Failure:"),

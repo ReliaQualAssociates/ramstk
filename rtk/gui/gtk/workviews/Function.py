@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
 ###############################################################################
-Function Package WorkView
+Function Package Work View
 ###############################################################################
 """
 
@@ -425,7 +425,7 @@ class WorkView(gtk.VBox, RTKWorkView):
 
         (_hbx_page,
          _fxd_left,
-         _fxd_right) = RTKWorkView._make_assessment_results_page(self)
+         _fxd_right) = RTKWorkView._make_assessment_results_page()
 
         _labels = [_(u"Predicted h(t):"), _(u"Mission h(t):"), _(u"MTBF:"),
                    _(u"Mission MTBF:")]
@@ -492,7 +492,7 @@ class WorkView(gtk.VBox, RTKWorkView):
         :rtype: bool
         """
 
-        _frame, _fixed = RTKWorkView._make_general_data_page(self)
+        _frame, _fixed = RTKWorkView._make_general_data_page()
 
         _labels = [_(u"Function Code:"), _(u"Function Name:"),
                    _(u"Total Cost:"), _(u"Total Mode Count:"),
