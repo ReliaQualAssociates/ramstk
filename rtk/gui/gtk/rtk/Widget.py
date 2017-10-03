@@ -11,22 +11,24 @@ create, populate, destroy, or interact with pyGTK widgets in the RTK
 application.  This module is the base class for all RTK widgets.
 """
 
-import gettext
 import sys
 
+import gettext
+import locale
+
 # Modules required for the GUI.
-import pango                                        # pylint: disable=W0611
+import pango                                    # pylint: disable=E0401,W0611
 try:
-    import pygtk                                    # pylint: disable=W0611
+    import pygtk                                # pylint: disable=W0611
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    import gtk                                      # pylint: disable=W0611
+    import gtk                                  # pylint: disable=W0611
 except ImportError:
     sys.exit(1)
 try:
-    import gobject                                  # pylint: disable=W0611
+    import gobject                              # pylint: disable=W0611
 except ImportError:
     sys.exit(1)
 

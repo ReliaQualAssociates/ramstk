@@ -1,82 +1,21 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.workviews.Revision.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ###############################
 Revision Package WorkView
 ###############################
 """
 
-import sys
-
-# Import modules for localization support.
-import gettext
-import locale
-
 from pubsub import pub
 
-# Modules required for the GUI.
-try:
-    # noinspection PyUnresolvedReferences
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    # noinspection PyUnresolvedReferences
-    from gtk import JUSTIFY_CENTER, HBox, Notebook, ToolButton, \
-        POLICY_AUTOMATIC, SeparatorToolItem, MenuItem, Image, RESPONSE_YES, \
-        TextBuffer, POS_TOP, POS_BOTTOM, ScrolledWindow, POS_RIGHT, POS_LEFT, \
-        MenuToolButton, Menu, VBox, Toolbar, Fixed
-except ImportError:
-    sys.exit(1)
-try:
-    # noinspection PyUnresolvedReferences
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
 # Import other RTK modules.
+from gui.gtk.rtk.Widget import _, gtk, locale
 from gui.gtk import rtk
 # from Assistants import AddRevision
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
 
 
 class WorkView(gtk.VBox):
@@ -144,7 +83,7 @@ class WorkView(gtk.VBox):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        VBox.__init__(self)
+        gtk.VBox.__init__(self)
 
         # Initialize private dictionary attributes.
         self._dic_icons = {'tab':
@@ -210,7 +149,7 @@ class WorkView(gtk.VBox):
                                          tooltip=_(u"Displays the total part "
                                                    u"count for the selected "
                                                    u"Revision."))
-        self.txtRemarks = rtk.RTKTextView(TextBuffer(), width=400,
+        self.txtRemarks = rtk.RTKTextView(gtk.TextBuffer(), width=400,
                                           tooltip=_(u"Enter any remarks "
                                                     u"associated with the "
                                                     u"selected Revision."))
@@ -289,17 +228,17 @@ class WorkView(gtk.VBox):
                                                    u"availability for the "
                                                    u"selected Revision."))
 
-        _notebook = Notebook()
+        _notebook = gtk.Notebook()
 
         # Set the user's preferred gtk.Notebook tab position.
         if controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'left':
-            _notebook.set_tab_pos(POS_LEFT)
+            _notebook.set_tab_pos(gtk.POS_LEFT)
         elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'right':
-            _notebook.set_tab_pos(POS_RIGHT)
+            _notebook.set_tab_pos(gtk.POS_RIGHT)
         elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'top':
-            _notebook.set_tab_pos(POS_TOP)
+            _notebook.set_tab_pos(gtk.POS_TOP)
         else:
-            _notebook.set_tab_pos(POS_BOTTOM)
+            _notebook.set_tab_pos(gtk.POS_BOTTOM)
 
         self._create_general_data_page(_notebook)
         self._create_assessment_results_page(_notebook)
@@ -340,15 +279,15 @@ class WorkView(gtk.VBox):
         :rtype: gtk.ToolBar
         """
 
-        _toolbar = Toolbar()
+        _toolbar = gtk.Toolbar()
 
         _position = 0
 
         # Add revision button.
-        _button = ToolButton()
+        _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Adds a new revision to the open RTK "
                                    u"Program database."))
-        _image = Image()
+        _image = gtk.Image()
         _image.set_from_file(self._dic_icons['add'])
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_insert)
@@ -356,24 +295,24 @@ class WorkView(gtk.VBox):
         _position += 1
 
         # Delete revision button
-        _button = ToolButton()
+        _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Removes the currently selected revision "
                                    u"from the open RTK Project database."))
-        _image = Image()
+        _image = gtk.Image()
         _image.set_from_file(self._dic_icons['remove'])
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_delete)
         _toolbar.insert(_button, _position)
         _position += 1
 
-        _toolbar.insert(SeparatorToolItem(), _position)
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
         _position += 1
 
         # Calculate revision _button_
-        _button = ToolButton()
+        _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Calculate the currently selected "
                                    u"revision."))
-        _image = Image()
+        _image = gtk.Image()
         _image.set_from_file(self._dic_icons['calculate'])
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_calculate)
@@ -381,20 +320,20 @@ class WorkView(gtk.VBox):
         _position += 1
 
         # Create report button.
-        _button = MenuToolButton(None, label="")
+        _button = gtk.MenuToolButton(None, label="")
         _button.set_tooltip_text(_(u"Create Revision reports."))
-        _image = Image()
+        _image = gtk.Image()
         _image.set_from_file(self._dic_icons['reports'])
         _button.set_icon_widget(_image)
-        _menu = Menu()
-        _menu_item = MenuItem(label=_(u"Mission and Environmental "
-                                      u"Profile"))
+        _menu = gtk.Menu()
+        _menu_item = gtk.MenuItem(label=_(u"Mission and Environmental "
+                                          u"Profile"))
         _menu_item.set_tooltip_text(_(u"Creates the mission and environmental "
                                       u"profile report for the currently "
                                       u"selected revision."))
         # _menu_item.connect('activate', self._create_report)
         _menu.add(_menu_item)
-        _menu_item = MenuItem(label=_(u"Failure Definition"))
+        _menu_item = gtk.MenuItem(label=_(u"Failure Definition"))
         _menu_item.set_tooltip_text(_(u"Creates the failure definition report "
                                       u"for the currently selected revision."))
         # _menu_item.connect('activate', self._create_report)
@@ -405,14 +344,14 @@ class WorkView(gtk.VBox):
         _toolbar.insert(_button, _position)
         _position += 1
 
-        _toolbar.insert(SeparatorToolItem(), _position)
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
         _position += 1
 
         # Save revision button.
-        _button = ToolButton()
+        _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Saves the currently selected revision "
                                    u"to the open RTK Project database."))
-        _image = Image()
+        _image = gtk.Image()
         _image.set_from_file(self._dic_icons['save'])
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_save)
@@ -438,10 +377,10 @@ class WorkView(gtk.VBox):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _frame = rtk.RTKFrame(label=_(u"General Information"))
 
-        _fixed = Fixed()
+        _fixed = gtk.Fixed()
 
-        _scrollwindow = ScrolledWindow()
-        _scrollwindow.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
         _frame.add(_scrollwindow)
@@ -469,7 +408,7 @@ class WorkView(gtk.VBox):
 
         # Insert the tab.
         _label = rtk.RTKLabel(_(u"General\nData"), width=-1,
-                              justify=JUSTIFY_CENTER,
+                              justify=gtk.JUSTIFY_CENTER,
                               tooltip=_(u"Displays general information for "
                                         u"the selected Revision."))
         notebook.insert_page(_frame, tab_label=_label, position=-1)
@@ -489,13 +428,13 @@ class WorkView(gtk.VBox):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _hbox = HBox()
+        _hbox = gtk.HBox()
 
         # Reliability results containers.
-        _fixed = Fixed()
+        _fixed = gtk.Fixed()
 
-        _scrollwindow = ScrolledWindow()
-        _scrollwindow.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
         _frame = rtk.RTKFrame(label=_(u"Reliability Results"))
@@ -532,10 +471,10 @@ class WorkView(gtk.VBox):
         # Place the widgets used to display maintainability assessment  #
         # results.                                                      #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fixed = Fixed()
+        _fixed = gtk.Fixed()
 
-        _scrollwindow = ScrolledWindow()
-        _scrollwindow.set_policy(POLICY_AUTOMATIC, POLICY_AUTOMATIC)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
         _frame = rtk.RTKFrame(label=_(u"Maintainability Results"))
@@ -563,7 +502,7 @@ class WorkView(gtk.VBox):
 
         # Insert the tab.
         _label = rtk.RTKLabel(_(u"Assessment\nResults"), width=-1, height=-1,
-                              justify=JUSTIFY_CENTER,
+                              justify=gtk.JUSTIFY_CENTER,
                               tooltip=_(u"Displays reliability, "
                                         u"maintainability, and availability "
                                         u"assessment results for the selected "
@@ -739,7 +678,7 @@ class WorkView(gtk.VBox):
                                        'question')
         _response = _dialog.do_run()
 
-        if _response == RESPONSE_YES:
+        if _response == gtk.RESPONSE_YES:
             _dialog.do_destroy()
             if self._dtc_revision.request_delete(self.revision_id):
                 _prompt = _(u"An error occurred when attempting to delete "

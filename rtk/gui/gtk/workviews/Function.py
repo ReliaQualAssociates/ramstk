@@ -10,43 +10,13 @@ Function Package WorkView
 ################################################################################
 """
 
-import sys
-
-# Import modules for localization support.
-import gettext
-import locale
-
-from pubsub import pub                              # pylint: disable=E0401
-
-# Modules required for the GUI.
-try:
-    # noinspection PyUnresolvedReferences
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    # noinspection PyUnresolvedReferences
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    # noinspection PyUnresolvedReferences
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
+from pubsub import pub                                  # pylint: disable=E0401
 
 # Import other RTK modules.
+from gui.gtk.rtk.Widget import _, gtk, locale           # pylint: disable=E0401
 from gui.gtk import rtk                                 # pylint: disable=E0401
 from gui.gtk.workviews.FMEA import WorkView as FMEA     # pylint: disable=E0401
 from gui.gtk.assistants.Function import AddFunction     # pylint: disable=E0401
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
 
 
 class WorkView(gtk.VBox):
