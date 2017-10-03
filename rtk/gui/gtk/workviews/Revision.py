@@ -227,44 +227,31 @@ class WorkView(gtk.VBox, RTKWorkView):
         :rtype: gtk.ToolBar
         """
 
-        _toolbar = gtk.Toolbar()
+        _position = 6
 
-        _position = 0
+        _toolbar = RTKWorkView._make_toolbar(self)
 
-        # Add revision button.
-        _button = gtk.ToolButton()
+        _button = _toolbar.get_nth_item(0)
         _button.set_tooltip_text(_(u"Adds a new Revision to the open RTK "
                                    u"Program database."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['add'])
-        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_insert)
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        # Delete revision button
-        _button = gtk.ToolButton()
+        _button = _toolbar.get_nth_item(1)
         _button.set_tooltip_text(_(u"Removes the currently selected Revision "
                                    u"from the open RTK Project database."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['remove'])
-        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_delete)
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        _toolbar.insert(gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Calculate revision _button_
-        _button = gtk.ToolButton()
+        _button = _toolbar.get_nth_item(3)
         _button.set_tooltip_text(_(u"Calculate the currently selected "
                                    u"Revision."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['calculate'])
-        _button.set_icon_widget(_image)
         _button.connect('clicked', self._request_calculate)
-        _toolbar.insert(_button, _position)
+
+        _button = _toolbar.get_nth_item(5)
+        _button.set_tooltip_text(_(u"Saves the currently selected Revision "
+                                   u"to the open RTK Project database."))
+        _button.connect('clicked', self._request_save)
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
         _position += 1
 
         # Create report button.
@@ -290,20 +277,6 @@ class WorkView(gtk.VBox, RTKWorkView):
         _menu.show_all()
         _button.show()
         _toolbar.insert(_button, _position)
-        _position += 1
-
-        _toolbar.insert(gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Save revision button.
-        _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Saves the currently selected Revision "
-                                   u"to the open RTK Project database."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['save'])
-        _button.set_icon_widget(_image)
-        _button.connect('clicked', self._request_save)
-        _toolbar.insert(_button, _position)
 
         _toolbar.show()
 
@@ -311,7 +284,7 @@ class WorkView(gtk.VBox, RTKWorkView):
 
     def _make_assessment_results_page(self):
         """
-        Method to create the Revision Wrok Book page for displaying assessment
+        Method to create the Revision Work View page for displaying assessment
         results for the selected Revision.
 
         :return: False if successful or True if an error is encountered.

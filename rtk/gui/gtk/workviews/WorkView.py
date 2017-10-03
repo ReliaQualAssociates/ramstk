@@ -173,3 +173,79 @@ class RTKWorkView(object):
         _frame.add(_scrollwindow)
 
         return _frame, _fixed
+
+    def _make_toolbar(self, hierarchical=False):
+        """
+        Method to create the toolbar for the Work View.
+
+        :param bool hierarchical: indicates whether or not the RTK Module the
+                                  toolbar is being created for is hierarchical.
+        :return: _toolbar
+        :rtpye: :py:class:`gtk.Toolbar`
+        """
+
+        _toolbar = gtk.Toolbar()
+
+        _position = 0
+
+        # If this toolbar is for an RTK Module that is hierarchical (e.g.,
+        # Function, Hardware, Software, etc.) we need to create a button to
+        # add a sibling and a button to add a child.  If it is not hierarchical
+        # (e.g., Revision), we only need to insert an add button.
+        if hierarchical:
+            # Add sibling function button.
+            _button = gtk.ToolButton()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_sibling'])
+            _button.set_icon_widget(_image)
+            _toolbar.insert(_button, _position)
+            _position += 1
+
+            # Add child function button.
+            _button = gtk.ToolButton()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_child'])
+            _button.set_icon_widget(_image)
+            _toolbar.insert(_button, _position)
+            _position += 1
+
+        else:
+            _button = gtk.ToolButton()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['add'])
+            _button.set_icon_widget(_image)
+            _toolbar.insert(_button, _position)
+            _position += 1
+
+        # Delete function button
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(self._dic_icons['remove'])
+        _button.set_icon_widget(_image)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
+
+        # Calculate function button.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(self._dic_icons['calculate'])
+        _button.set_icon_widget(_image)
+        _toolbar.insert(_button, _position)
+        _position += 1
+
+        _toolbar.insert(gtk.SeparatorToolItem(), _position)
+        _position += 1
+
+        # Save function button.
+        _button = gtk.ToolButton()
+        _image = gtk.Image()
+        _image.set_from_file(self._dic_icons['save'])
+        _button.set_icon_widget(_image)
+        _toolbar.insert(_button, _position)
+
+        _toolbar.show()
+
+        return _toolbar

@@ -414,6 +414,33 @@ class WorkView(gtk.VBox, RTKWorkView):
 
         return self._dtc_function.request_update_all()
 
+    def _load_general_data_page(self, function):
+        """
+        Method to load the the General Data page.
+
+        :param function: the Function object whose attributes are to be loaded
+                         into the RTK display widgets.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text(str(function.function_code))
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
+
+        self.txtName.handler_block(self._lst_handler_id[1])
+        self.txtName.set_text(function.name)
+        self.txtName.handler_unblock(self._lst_handler_id[1])
+
+        _textbuffer = self.txtRemarks.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[2])
+        _textbuffer.set_text(function.remarks)
+        _textbuffer.handler_unblock(self._lst_handler_id[2])
+
+        return _return
+
     def _make_assessment_results_page(self):
         """
         Method to create the Function class gtk.Notebook() page for
@@ -523,69 +550,32 @@ class WorkView(gtk.VBox, RTKWorkView):
         Method to create the toolbar for the Function class work book.
         """
 
-        _toolbar = gtk.Toolbar()
+        _toolbar = RTKWorkView._make_toolbar(self, True)
 
-        _position = 0
-
-        # Add sibling function button.
-        _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Adds a new function at the same "
-                                   u"hierarchy level as the selected function "
-                                   u"(i.e., a sibling function)."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['insert_sibling'])
-        _button.set_icon_widget(_image)
+        _button = _toolbar.get_nth_item(0)
+        _button.set_tooltip_text(_(u"Adds a new Function at the same "
+                                   u"hierarchy level as the selected Function "
+                                   u"(i.e., a sibling Function)."))
         _button.connect('clicked', self._do_request_insert, 'sibling')
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        # Add child function button.
-        _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Adds a new function one level "
-                                   u"subordinate to the selected function "
+        _button = _toolbar.get_nth_item(1)
+        _button.set_tooltip_text(_(u"Adds a new Function one level "
+                                   u"subordinate to the selected Function "
                                    u"(i.e., a child function)."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['insert_child'])
-        _button.set_icon_widget(_image)
         _button.connect('clicked', self._do_request_insert, 'child')
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        # Delete function button
-        _button = gtk.ToolButton()
+        _button = _toolbar.get_nth_item(2)
         _button.set_tooltip_text(_(u"Removes the currently selected "
-                                   u"function."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['remove'])
-        _button.set_icon_widget(_image)
+                                   u"Function."))
         _button.connect('clicked', self._do_request_delete)
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        _toolbar.insert(gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Calculate function button.
-        _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Calculate the functions."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['calculate'])
-        _button.set_icon_widget(_image)
+        _button = _toolbar.get_nth_item(4)
+        _button.set_tooltip_text(_(u"Calculate the Functions."))
         _button.connect('clicked', self._do_request_calculate)
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        _toolbar.insert(gtk.SeparatorToolItem(), _position)
-        _position += 1
-
-        # Save function button.
-        _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Saves changes to the selected function."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['save'])
-        _button.set_icon_widget(_image)
+        _button = _toolbar.get_nth_item(6)
+        _button.set_tooltip_text(_(u"Saves changes to the selected Function."))
         _button.connect('clicked', self._do_request_update)
-        _toolbar.insert(_button, _position)
 
         _toolbar.show()
 
@@ -604,19 +594,7 @@ class WorkView(gtk.VBox, RTKWorkView):
         _return = False
 
         _function = self._dtc_function.request_select(function_id)
-
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(_function.function_code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(_function.name)
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        _textbuffer = self.txtRemarks.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[2])
-        _textbuffer.set_text(_function.remarks)
-        _textbuffer.handler_unblock(self._lst_handler_id[2])
+        self._load_general_data_page(_function)
 
         return _return
 
@@ -638,18 +616,7 @@ class WorkView(gtk.VBox, RTKWorkView):
         self.function_id = _function.function_id
 
         # ----- ----- ----- LOAD GENERAL DATA PAGE ----- ----- ----- #
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(_function.function_code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(_function.name)
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        _textbuffer = self.txtRemarks.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[2])
-        _textbuffer.set_text(_function.remarks)
-        _textbuffer.handler_unblock(self._lst_handler_id[2])
+        self._load_general_data_page(_function)
 
         self.txtTotalCost.set_text(
             str(locale.currency(_function.cost)))
