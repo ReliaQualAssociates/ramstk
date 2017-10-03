@@ -5,9 +5,9 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-################################################################################
+###############################################################################
 Function Package WorkView
-################################################################################
+###############################################################################
 """
 
 from pubsub import pub                                  # pylint: disable=E0401
@@ -17,9 +17,10 @@ from gui.gtk.rtk.Widget import _, gtk, locale           # pylint: disable=E0401
 from gui.gtk import rtk                                 # pylint: disable=E0401
 from gui.gtk.workviews.FMEA import WorkView as FMEA     # pylint: disable=E0401
 from gui.gtk.assistants.Function import AddFunction     # pylint: disable=E0401
+from .WorkView import RTKWorkView
 
 
-class WorkView(gtk.VBox):
+class WorkView(gtk.VBox, RTKWorkView):
     """
     The Work View displays all the attributes for the selected Function. The
     attributes of a Work View are:
@@ -94,45 +95,15 @@ class WorkView(gtk.VBox):
         """
 
         gtk.VBox.__init__(self)
+        RTKWorkView.__init__(self, controller)
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {'tab':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/function.png',
-                           'calculate':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/calculate.png',
-                           'add':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/add.png',
-                           'remove':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/remove.png',
-                           'reports':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/reports.png',
-                           'save':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save.png',
-                           'error':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/error.png',
-                           'question':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/question.png',
-                           'insert_sibling':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_sibling.png',
-                           'insert_child':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_child.png'}
+        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/function.png'
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
-        self._mission_time = controller.RTK_CONFIGURATION.RTK_MTIME
         self._dtc_function = None
 
         # Initialize public dictionary attributes.
@@ -140,8 +111,6 @@ class WorkView(gtk.VBox):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = '{0:0.' + \
-                   str(controller.RTK_CONFIGURATION.RTK_DEC_PLACES) + 'g}'
         self.function_id = None
 
         # General data page widgets.
@@ -222,27 +191,9 @@ class WorkView(gtk.VBox):
                                                    u"availability for the "
                                                    u"selected function."))
 
-        _notebook = gtk.Notebook()
-
-        # Set the user's preferred gtk.Notebook tab position.
-        if controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'left':
-            _notebook.set_tab_pos(gtk.POS_LEFT)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'right':
-            _notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'top':
-            _notebook.set_tab_pos(gtk.POS_TOP)
-        else:
-            _notebook.set_tab_pos(gtk.POS_BOTTOM)
-
-        self._make_general_data_page(_notebook)
-        self._make_fmea_page(_notebook)
-        self._make_assessment_results_page(_notebook)
-
-        try:
-            locale.setlocale(locale.LC_ALL,
-                             controller.RTK_CONFIGURATION.RTK_LOCALE)
-        except locale.Error:
-            locale.setlocale(locale.LC_ALL, '')
+        self._make_general_data_page(self._notebook)
+        self._make_fmea_page(self._notebook)
+        self._make_assessment_results_page(self._notebook)
 
         # Connect to callback functions for editable gtk.Widgets().
         self._lst_handler_id.append(
@@ -253,10 +204,9 @@ class WorkView(gtk.VBox):
             self.txtRemarks.do_get_buffer().connect(
                 'changed', self._do_edit_function, 2))
 
-        # Put it all together.
+        # FIXME: The general data page should be the page shown after launching.
         self.pack_start(self._make_toolbar(), expand=False)
-        self.pack_start(_notebook)
-
+        self.pack_start(self._notebook)
         self.show_all()
 
         pub.subscribe(self._on_select_function, 'selectedFunction')

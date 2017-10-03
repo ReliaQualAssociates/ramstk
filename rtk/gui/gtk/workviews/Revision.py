@@ -5,32 +5,27 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################
-Revision Package WorkView
-###############################
+###############################################################################
+Revision Package Work View Class
+###############################################################################
 """
 
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gtk, locale
-from gui.gtk import rtk
+from gui.gtk.rtk.Widget import _, gtk, locale       # pylint: disable=E0401
+from gui.gtk import rtk                             # pylint: disable=E0401
+from .WorkView import RTKWorkView
 # from Assistants import AddRevision
 
 
-class WorkView(gtk.VBox):
-
+class WorkView(gtk.VBox, RTKWorkView):
     """
     The Work Book view displays all the attributes for the selected Revision.
     The attributes of a Work Book view are:
 
-    :ivar _mdcRTK: the :py:class:`rtk.RTK.RTK` master data controller.
     :ivar _dtc_revision: the :py:class:`rtk.revision.Revision.Revision` data
                          controller to use with this Work Book.
-    :ivar list _lst_handler_id: list containing the ID's of the callback
-                                signals for each gtk.Widget() associated with
-                                an editable Revision attribute.
-
     :ivar int revision_id: the ID of the Revision currently being displayed.
     :ivar gtk.Entry txtCode: the gtk.Entry() to display/edit the Revision code.
     :ivar gtk.Entry txtName: the gtk.Entry() to display/edit the Revision name.
@@ -84,39 +79,15 @@ class WorkView(gtk.VBox):
         """
 
         gtk.VBox.__init__(self)
+        RTKWorkView.__init__(self, controller)
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {'tab':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/revision.png',
-                           'calculate':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/calculate.png',
-                           'add':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/add.png',
-                           'remove':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/remove.png',
-                           'reports':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/reports.png',
-                           'save':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save.png',
-                           'error':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/error.png',
-                           'question':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/question.png'}
+        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/revision.png'
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
-        self._mission_time = controller.RTK_CONFIGURATION.RTK_MTIME
         self._dtc_revision = None
 
         # Initialize public dictionary attributes.
@@ -124,8 +95,6 @@ class WorkView(gtk.VBox):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = '{0:0.' + \
-                   str(controller.RTK_CONFIGURATION.RTK_DEC_PLACES) + 'g}'
         self.revision_id = None
 
         # General data tab widgets.
@@ -228,50 +197,29 @@ class WorkView(gtk.VBox):
                                                    u"availability for the "
                                                    u"selected Revision."))
 
-        _notebook = gtk.Notebook()
-
-        # Set the user's preferred gtk.Notebook tab position.
-        if controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'left':
-            _notebook.set_tab_pos(gtk.POS_LEFT)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'right':
-            _notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'top':
-            _notebook.set_tab_pos(gtk.POS_TOP)
-        else:
-            _notebook.set_tab_pos(gtk.POS_BOTTOM)
-
-        self._create_general_data_page(_notebook)
-        self._create_assessment_results_page(_notebook)
-
-        try:
-            locale.setlocale(locale.LC_ALL,
-                             controller.RTK_CONFIGURATION.RTK_LOCALE)
-        except locale.Error:
-            locale.setlocale(locale.LC_ALL, '')
+        self._create_general_data_page(self._notebook)
+        self._create_assessment_results_page(self._notebook)
 
         # Connect gtk.Widget() signals to callback methods.
         self._lst_handler_id.append(
-                self.txtName.connect('focus-out-event',
-                                     self._on_focus_out, 0))
+            self.txtName.connect('focus-out-event',
+                                 self._on_focus_out, 0))
         self._lst_handler_id.append(
-                self.txtRemarks.do_get_buffer().connect('changed',
-                                                        self._on_focus_out,
-                                                        None, 1))
+            self.txtRemarks.do_get_buffer().connect('changed',
+                                                    self._on_focus_out,
+                                                    None, 1))
         self._lst_handler_id.append(
-                self.txtCode.connect('focus-out-event',
-                                     self._on_focus_out, 2))
+            self.txtCode.connect('focus-out-event',
+                                 self._on_focus_out, 2))
 
-        # Put it all together.
-        _toolbar = self._create_toolbar()
-        self.pack_start(_toolbar, expand=False)
-        self.pack_start(_notebook)
-
+        self.pack_start(self._make_toolbar(), expand=False)
+        self.pack_start(self._notebook)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedRevision')
         pub.subscribe(self._on_select, 'mvw_editedRevision')
 
-    def _create_toolbar(self):
+    def _make_toolbar(self):
         """
         Method to create the gtk.ToolBar() for the Revision class work book.
 
@@ -285,7 +233,7 @@ class WorkView(gtk.VBox):
 
         # Add revision button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Adds a new revision to the open RTK "
+        _button.set_tooltip_text(_(u"Adds a new Revision to the open RTK "
                                    u"Program database."))
         _image = gtk.Image()
         _image.set_from_file(self._dic_icons['add'])
@@ -296,7 +244,7 @@ class WorkView(gtk.VBox):
 
         # Delete revision button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Removes the currently selected revision "
+        _button.set_tooltip_text(_(u"Removes the currently selected Revision "
                                    u"from the open RTK Project database."))
         _image = gtk.Image()
         _image.set_from_file(self._dic_icons['remove'])
@@ -311,7 +259,7 @@ class WorkView(gtk.VBox):
         # Calculate revision _button_
         _button = gtk.ToolButton()
         _button.set_tooltip_text(_(u"Calculate the currently selected "
-                                   u"revision."))
+                                   u"Revision."))
         _image = gtk.Image()
         _image.set_from_file(self._dic_icons['calculate'])
         _button.set_icon_widget(_image)
@@ -349,7 +297,7 @@ class WorkView(gtk.VBox):
 
         # Save revision button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Saves the currently selected revision "
+        _button.set_tooltip_text(_(u"Saves the currently selected Revision "
                                    u"to the open RTK Project database."))
         _image = gtk.Image()
         _image.set_from_file(self._dic_icons['save'])
@@ -529,41 +477,41 @@ class WorkView(gtk.VBox):
         # Load the General Data page.
         self.txtTotalCost.set_text(str(locale.currency(_revision.cost)))
         self.txtCostFailure.set_text(
-                str(locale.currency(_revision.cost_failure)))
+            str(locale.currency(_revision.cost_failure)))
         self.txtCostHour.set_text(str(locale.currency(_revision.cost_hour)))
         self.txtName.set_text(_revision.name)
         _buffer = self.txtRemarks.do_get_buffer()
         _buffer.set_text(_revision.remarks)
         self.txtPartCount.set_text(
-                str('{0:0.0f}'.format(_revision.total_part_count)))
+            str('{0:0.0f}'.format(_revision.total_part_count)))
         self.txtCode.set_text(str(_revision.revision_code))
 
         # Load the Assessment Results page.
         self.txtAvailability.set_text(
-                str(self.fmt.format(_revision.availability_logistics)))
+            str(self.fmt.format(_revision.availability_logistics)))
         self.txtMissionAt.set_text(
-                str(self.fmt.format(_revision.availability_mission)))
+            str(self.fmt.format(_revision.availability_mission)))
         self.txtActiveHt.set_text(
-                str(self.fmt.format(_revision.hazard_rate_active)))
+            str(self.fmt.format(_revision.hazard_rate_active)))
         self.txtDormantHt.set_text(
-                str(self.fmt.format(_revision.hazard_rate_dormant)))
+            str(self.fmt.format(_revision.hazard_rate_dormant)))
         self.txtMissionHt.set_text(
-                str(self.fmt.format(_revision.hazard_rate_mission)))
+            str(self.fmt.format(_revision.hazard_rate_mission)))
         self.txtPredictedHt.set_text(
-                str(self.fmt.format(_revision.hazard_rate_logistics)))
+            str(self.fmt.format(_revision.hazard_rate_logistics)))
         self.txtSoftwareHt.set_text(
-                str(self.fmt.format(_revision.hazard_rate_software)))
+            str(self.fmt.format(_revision.hazard_rate_software)))
         self.txtMMT.set_text(str(self.fmt.format(_revision.mmt)))
         self.txtMCMT.set_text(str(self.fmt.format(_revision.mcmt)))
         self.txtMPMT.set_text(str(self.fmt.format(_revision.mpmt)))
         self.txtMissionMTBF.set_text(
-                str(self.fmt.format(_revision.mtbf_mission)))
+            str(self.fmt.format(_revision.mtbf_mission)))
         self.txtMTBF.set_text(str(self.fmt.format(_revision.mtbf_logistics)))
         self.txtMTTR.set_text(str(self.fmt.format(_revision.mttr)))
         self.txtMissionRt.set_text(
-                str(self.fmt.format(_revision.reliability_mission)))
+            str(self.fmt.format(_revision.reliability_mission)))
         self.txtReliability.set_text(
-                str(self.fmt.format(_revision.reliability_logistics)))
+            str(self.fmt.format(_revision.reliability_logistics)))
 
         _title = _(u"RTK Work Book: Revision "
                    u"(Analyzing {0:s})").format(_revision.name)
@@ -648,10 +596,10 @@ class WorkView(gtk.VBox):
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Revision {0:d}. \n\n\t"
-                        + _msg[0] + "\n\t"
-                        + _msg[1] + "\n\t"
-                        + _msg[2] + "\n\n").format(self.revision_id)
+                        u"Revision {0:d}. \n\n\t" +
+                        _msg[0] + "\n\t" +
+                        _msg[1] + "\n\t" +
+                        _msg[2] + "\n\n").format(self.revision_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True

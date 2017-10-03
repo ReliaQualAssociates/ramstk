@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
 ###############################################################################
-FMEA Package WorkView
+FMEA Package Work View
 ###############################################################################
 """
 
@@ -18,9 +18,10 @@ from sortedcontainers import SortedDict             # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk               # pylint: disable=E0401
 from gui.gtk import rtk                             # pylint: disable=E0401
 from gui.gtk.assistants import AddControlAction     # pylint: disable=E0401
+from .WorkView import RTKWorkView
 
 
-class WorkView(gtk.HBox):
+class WorkView(gtk.HBox, RTKWorkView):
     """
     The WorkView displays all the attributes for the Functional FMEA. The
     attributes of a Functional FMEA WorkView are:
@@ -44,55 +45,26 @@ class WorkView(gtk.HBox):
 
     def __init__(self, controller):
         """
-        Method to initialize the WorkView for the Functional FMEA.
+        Method to initialize the Work View for the Functional FMEA.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
         gtk.HBox.__init__(self)
+        RTKWorkView.__init__(self, controller)
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {'mode':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/mode.png',
-                           'calculate':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/calculate.png',
-                           'control':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/control.png',
-                           'remove':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/remove.png',
-                           'reports':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/reports.png',
-                           'save':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save.png',
-                           'error':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/error.png',
-                           'question':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/question.png',
-                           'insert_sibling':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_sibling.png',
-                           'insert_child':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_child.png',
-                           'action':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/action.png'}
+        self._dic_icons['mode'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/mode.png'
+        self._dic_icons['control'] = \
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/control.png'
+        self._dic_icons['action'] = \
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/action.png'
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
-        self._mission_time = controller.RTK_CONFIGURATION.RTK_MTIME
         self._function_id = None
         self._dtc_fmea = None
 
@@ -157,6 +129,7 @@ class WorkView(gtk.HBox):
 
         self.pack_start(self._make_toolbar(), False, True)
         self.pack_end(self._make_tree(), True, True)
+        self.show_all()
 
         pub.subscribe(self._on_select_function, 'selectedFunction')
 
