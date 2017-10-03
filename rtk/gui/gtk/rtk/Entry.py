@@ -8,36 +8,12 @@
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
 create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to data entry and data display widgets.
+application.  This module is specific to RTK data entry and RTK data display
+widgets.
 """
 
-import gettext
-import sys
-
-# Modules required for the GUI.
-import pango
-try:
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    from gtk import STATE_SELECTED, WRAP_WORD, Entry, STATE_ACTIVE, \
-        POLICY_AUTOMATIC, STATE_INSENSITIVE, ScrolledWindow, STATE_PRELIGHT, \
-        TextView, STATE_NORMAL, gdk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
+# Import the rtk.Widget base class.
+from Widget import gtk, pango
 
 
 class RTKEntry(gtk.Entry):
@@ -65,7 +41,7 @@ class RTKEntry(gtk.Entry):
         :rtype: gtk.Entry
         """
 
-        Entry.__init__(self)
+        gtk.Entry.__init__(self)
 
         self.props.width_request = width
         self.props.height_request = height
@@ -75,12 +51,12 @@ class RTKEntry(gtk.Entry):
             self.modify_font(pango.FontDescription('bold'))
 
         if not editable:
-            _bg_color = gdk.Color(color)
-            self.modify_base(STATE_NORMAL, _bg_color)
-            self.modify_base(STATE_ACTIVE, _bg_color)
-            self.modify_base(STATE_PRELIGHT, _bg_color)
-            self.modify_base(STATE_SELECTED, _bg_color)
-            self.modify_base(STATE_INSENSITIVE, _bg_color)
+            _bg_color = gtk.gdk.Color(color)
+            self.modify_base(gtk.STATE_NORMAL, _bg_color)
+            self.modify_base(gtk.STATE_ACTIVE, _bg_color)
+            self.modify_base(gtk.STATE_PRELIGHT, _bg_color)
+            self.modify_base(gtk.STATE_SELECTED, _bg_color)
+            self.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
             self.modify_font(pango.FontDescription('bold'))
 
         self.set_tooltip_markup(tooltip)
@@ -109,16 +85,16 @@ class RTKTextView(gtk.TextView):
         :rtype: gtk.ScrolledWindow
         """
 
-        TextView.__init__(self)
+        gtk.TextView.__init__(self)
 
         self.set_tooltip_markup(tooltip)
 
         self.set_buffer(txvbuffer)
-        self.set_wrap_mode(WRAP_WORD)
+        self.set_wrap_mode(gtk.WRAP_WORD)
 
-        self.scrollwindow = ScrolledWindow()
-        self.scrollwindow.set_policy(POLICY_AUTOMATIC,
-                                     POLICY_AUTOMATIC)
+        self.scrollwindow = gtk.ScrolledWindow()
+        self.scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
+                                     gtk.POLICY_AUTOMATIC)
         self.scrollwindow.props.width_request = width
         self.scrollwindow.props.height_request = height
         self.scrollwindow.add_with_viewport(self)

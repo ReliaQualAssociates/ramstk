@@ -8,36 +8,14 @@
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
 create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to combo box widgets.
+application.  This module is specific to RTK combo box widgets.
 """
 
-import gettext
-import sys
-
-# Modules required for the GUI.
-try:
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    from gtk import CellRendererText, ComboBoxEntry, ListStore
-except ImportError:
-    sys.exit(1)
-try:
-    from gobject import TYPE_STRING
-except ImportError:
-    sys.exit(1)
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
+# Import the rtk.Widget base class.
+from Widget import gobject, gtk
 
 
-class RTKComboBox(ComboBoxEntry):
+class RTKComboBox(gtk.ComboBoxEntry):
     """
     This is the RTK Entry class.
     """
@@ -64,17 +42,19 @@ class RTKComboBox(ComboBoxEntry):
         :rtype: gtk.ComboBox
         """
 
-        ComboBoxEntry.__init__(self)
+        gtk.ComboBoxEntry.__init__(self)
 
         self.props.width_request = width
         self.props.height_request = height
 
         if simple:
-            _list = ListStore(TYPE_STRING)
+            _list = gtk.ListStore(gobject.TYPE_STRING)
         else:
-            _list = ListStore(TYPE_STRING, TYPE_STRING, TYPE_STRING)
+            _list = gtk.ListStore(gobject.TYPE_STRING,
+                                  gobject.TYPE_STRING,
+                                  gobject.TYPE_STRING)
 
-        _cell = CellRendererText()
+        _cell = gtk.CellRendererText()
         self.pack_start(_cell, True)
         self.set_attributes(_cell, text=0)
 

@@ -8,32 +8,14 @@
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
 create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to button widgets.
+application.  This module is specific to RTK button widgets.
 """
 
-import gettext
-import sys
-
-# Modules required for the GUI.
-try:
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    from gtk import Button, RadioButton, Image, CheckButton
-except ImportError:
-    sys.exit(1)
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
+# Import the rtk.Widget base class.
+from Widget import _, gtk
 
 
-class RTKCheckButton(CheckButton):
+class RTKCheckButton(gtk.CheckButton):
     """
     This is the RTK CheckButton class.
     """
@@ -54,7 +36,7 @@ class RTKCheckButton(CheckButton):
         :rtype: :py:class:`gtk.CheckButton`
         """
 
-        CheckButton.__init__(self, label=label, use_underline=True)
+        gtk.CheckButton.__init__(self, label=label, use_underline=True)
 
         self.set_tooltip_markup(tooltip)
 
@@ -63,7 +45,7 @@ class RTKCheckButton(CheckButton):
         self.get_child().props.width_request = width
 
 
-class RTKOptionButton(RadioButton):
+class RTKOptionButton(gtk.RadioButton):
     """
     This is the RTK OptionButton class.
     """
@@ -80,10 +62,10 @@ class RTKOptionButton(RadioButton):
         :rtype: :py:class:`gtk.RadioButton`
         """
 
-        RadioButton.__init__(self, group=btngroup, label=btnlabel)
+        gtk.RadioButton.__init__(self, group=btngroup, label=btnlabel)
 
 
-class RTKButton(Button):
+class RTKButton(gtk.Button):
     """
     This is the RTK Button class.
     """
@@ -102,13 +84,13 @@ class RTKButton(Button):
         :return: None
         """
 
-        Button.__init__(self, label=label)
+        gtk.Button.__init__(self, label=label)
 
         if width == 0:
             width = 200
 
         if icon is not None:
-            _image = Image()
+            _image = gtk.Image()
             _image.set_from_file(icon)
             self.set_image(_image)
 

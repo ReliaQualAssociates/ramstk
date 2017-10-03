@@ -8,30 +8,11 @@
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
 create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to label widgets.
+application.  This module is specific to RTK label widgets.
 """
 
-import gettext
-import sys
-
-# Modules required for the GUI.
-import pango
-try:
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    from gtk import JUSTIFY_LEFT, JUSTIFY_CENTER, Label
-except ImportError:
-    sys.exit(1)
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
+# Import the rtk.Widget base class.
+from Widget import gtk, pango
 
 
 def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
@@ -73,13 +54,13 @@ def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
     return _max_x, _lst_y_pos
 
 
-class RTKLabel(Label):
+class RTKLabel(gtk.Label):
     """
     This is the RTK Label class.
     """
 
     def __init__(self, text, width=190, height=25, bold=True, wrap=False,
-                 justify=JUSTIFY_LEFT,
+                 justify=gtk.JUSTIFY_LEFT,
                  tooltip='RTK WARNING: Missing tooltip.  '
                          'Please register an Enhancement type bug.'):
         """
@@ -98,15 +79,15 @@ class RTKLabel(Label):
         :type justify: GTK Justification Constant
         """
 
-        Label.__init__(self)
+        gtk.Label.__init__(self)
 
         self.set_markup("<span>" + text + "</span>")
         self.set_line_wrap(wrap)
         self.set_justify(justify)
         self.set_tooltip_markup(tooltip)
-        if justify == JUSTIFY_CENTER:
+        if justify == gtk.JUSTIFY_CENTER:
             self.set_alignment(xalign=0.5, yalign=0.5)
-        elif justify == JUSTIFY_LEFT:
+        elif justify == gtk.JUSTIFY_LEFT:
             self.set_alignment(xalign=0.05, yalign=0.5)
         else:
             self.set_alignment(xalign=0.95, yalign=0.5)

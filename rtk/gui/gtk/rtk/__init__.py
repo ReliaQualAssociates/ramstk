@@ -5,6 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 
+import Widget
+
 from .Button import RTKButton, RTKCheckButton, RTKOptionButton
 from .Combo import RTKComboBox
 from .Dialog import RTKDialog, RTKMessageDialog

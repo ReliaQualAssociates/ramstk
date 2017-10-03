@@ -8,48 +8,22 @@
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
 create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to dialog widgets.
+application.  This module is specific to RTK dialog widgets.
 """
 
-import gettext
-import sys
-
-# Modules required for the GUI.
-try:
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    from gtk import Dialog, MessageDialog, Image, DIALOG_MODAL, \
-                    DIALOG_DESTROY_WITH_PARENT, STOCK_OK, STOCK_CANCEL, \
-                    RESPONSE_OK, RESPONSE_CANCEL, MESSAGE_ERROR, BUTTONS_OK, \
-                    MESSAGE_WARNING, MESSAGE_INFO, MESSAGE_QUESTION, \
-                    BUTTONS_YES_NO
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
+# Import the rtk.Widget base class.
+from Widget import _, gtk
 
 
-class RTKDialog(Dialog):
+class RTKDialog(gtk.Dialog):
     """
     This is the RTK Dialog class.
     """
 
     def __init__(self, dlgtitle, dlgparent=None,
-                 dlgflags=(DIALOG_MODAL | DIALOG_DESTROY_WITH_PARENT),
-                 dlgbuttons=(STOCK_OK, RESPONSE_OK,
-                             STOCK_CANCEL, RESPONSE_CANCEL)):
+                 dlgflags=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
+                 dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_OK,
+                             gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)):
         """
         Method to create a RTK Dialog widget.
 
@@ -87,7 +61,7 @@ class RTKDialog(Dialog):
         self.destroy()
 
 
-class RTKMessageDialog(MessageDialog):
+class RTKMessageDialog(gtk.MessageDialog):
     """
     This is the RTK Message Dialog class.  It used for RTK error, warning, and
     information messages.
@@ -111,7 +85,7 @@ class RTKMessageDialog(MessageDialog):
                                      dialog.
         """
 
-        _image = Image()
+        _image = gtk.Image()
         _image.set_from_file(icon)
 
         if criticality == 'error':
@@ -134,20 +108,21 @@ class RTKMessageDialog(MessageDialog):
                          u"description of the problem, the workflow you are "
                          u"using and the error log attached if the problem "
                          u"persists.</b>")
-            _criticality = MESSAGE_ERROR
-            _buttons = BUTTONS_OK
+            _criticality = gtk.MESSAGE_ERROR
+            _buttons = gtk.BUTTONS_OK
         elif criticality == 'warning':
-            _criticality = MESSAGE_WARNING
-            _buttons = BUTTONS_OK
+            _criticality = gtk.MESSAGE_WARNING
+            _buttons = gtk.BUTTONS_OK
         elif criticality == 'information':
-            _criticality = MESSAGE_INFO
-            _buttons = BUTTONS_OK
+            _criticality = gtk.MESSAGE_INFO
+            _buttons = gtk.BUTTONS_OK
         elif criticality == 'question':
-            _criticality = MESSAGE_QUESTION
-            _buttons = BUTTONS_YES_NO
+            _criticality = gtk.MESSAGE_QUESTION
+            _buttons = gtk.BUTTONS_YES_NO
 
-        MessageDialog.__init__(self, parent, DIALOG_DESTROY_WITH_PARENT,
-                               _criticality, _buttons)
+        gtk.MessageDialog.__init__(self, parent,
+                                   gtk.DIALOG_DESTROY_WITH_PARENT,
+                                   _criticality, _buttons)
 
         self.set_markup(prompt)
         self.set_image(_image)

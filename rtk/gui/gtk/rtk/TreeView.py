@@ -8,45 +8,21 @@
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
 create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to treeview and related widgets.
+application.  This module is specific to RTK treeview and related widgets.
 """
-
-import gettext
-import sys
 
 import defusedxml.lxml as lxml                      # pylint: disable=E0401
 
-# Modules required for the GUI.
-import pango
-try:
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
-
+# Import other RTK Widget classes.
+from .Widget import gobject, gtk, pango
 from .Label import RTKLabel
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
 
 
 class RTKTreeView(gtk.TreeView):
     """
     This is the RTK TreeView class.
     """
-
+    # pylint: disable=R0913, R0914
     def __init__(self, fmt_path, fmt_idx, fmt_file, bg_col='white',
                  fg_col='black', pixbuf=False, indexed=False):
         """
@@ -85,16 +61,16 @@ class RTKTreeView(gtk.TreeView):
         _datatypes = lxml.parse(fmt_file).xpath(fmt_path + "/datatype")
 
         # Retrieve the column position from the format file.
-        position = lxml.parse(fmt_file).xpath(fmt_path + "/position")
+        _position = lxml.parse(fmt_file).xpath(fmt_path + "/position")
 
         # Retrieve the cell renderer type from the format file.
         _widgets = lxml.parse(fmt_file).xpath(fmt_path + "/widget")
 
         # Retrieve whether or not the column is editable from the format file.
-        editable = lxml.parse(fmt_file).xpath(fmt_path + "/editable")
+        _editable = lxml.parse(fmt_file).xpath(fmt_path + "/editable")
 
         # Retrieve whether or not the column is visible from the format file.
-        visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
+        _visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
 
         # Create a list of GObject datatypes to pass to the model.
         _types = []
@@ -102,9 +78,9 @@ class RTKTreeView(gtk.TreeView):
             _datatypes[i] = _datatypes[i].text
             _headings[i] = _headings[i].text.replace("  ", "\n")
             _widgets[i] = _widgets[i].text
-            editable[i] = int(editable[i].text)
-            position[i] = int(position[i].text)
-            visible[i] = int(visible[i].text)
+            _editable[i] = int(_editable[i].text)
+            _position[i] = int(_position[i].text)
+            _visible[i] = int(_visible[i].text)
 
             _types.append(gobject.type_from_name(_datatypes[i]))
 
@@ -113,9 +89,9 @@ class RTKTreeView(gtk.TreeView):
             _headings.append('')
             _types.append(gtk.gdk.Pixbuf)
             _widgets.append('pixbuf')
-            editable.append(0)
-            position.append(len(position))
-            visible.append(1)
+            _editable.append(0)
+            _position.append(len(_position))
+            _visible.append(1)
         # FIXME: What is this for?  It'll become obvious later...maybe.
         elif fmt_idx in [15, 16]:
             print fmt_file
@@ -131,9 +107,9 @@ class RTKTreeView(gtk.TreeView):
             _headings.append('')
             _types.append(gobject.TYPE_STRING)
             _widgets.append('text')
-            editable.append(0)
-            position.append(len(position))
-            visible.append(0)
+            _editable.append(0)
+            _position.append(len(_position))
+            _visible.append(0)
 
         # Create the model.
         _model = gtk.TreeStore(*_types)
@@ -144,40 +120,40 @@ class RTKTreeView(gtk.TreeView):
             _n_cols = int(len(_types)) - 1
 
         for i in range(_n_cols):
-            self.order.append(position[i])
+            self.order.append(_position[i])
 
             if _widgets[i] == 'combo':
-                _cell = self._do_make_combo_cell(bg_col, fg_col, editable[i],
-                                                 position[i], _model)
+                _cell = self._do_make_combo_cell(bg_col, fg_col, _editable[i],
+                                                 _position[i], _model)
             elif _widgets[i] == 'spin':
-                _cell = self._do_make_spin_cell(bg_col, fg_col, editable[i],
-                                                position[i], _model)
+                _cell = self._do_make_spin_cell(bg_col, fg_col, _editable[i],
+                                                _position[i], _model)
             elif _widgets[i] == 'toggle':
-                _cell = self._do_make_toggle_cell(editable[i], position[i],
+                _cell = self._do_make_toggle_cell(_editable[i], _position[i],
                                                   _model)
             elif _widgets[i] == 'blob':
-                _cell = self._do_make_text_cell(bg_col, fg_col, editable[i],
-                                                position[i], _model, True)
+                _cell = self._do_make_text_cell(bg_col, fg_col, _editable[i],
+                                                _position[i], _model, True)
             else:
-                _cell = self._do_make_text_cell(bg_col, fg_col, editable[i],
-                                                position[i], _model)
+                _cell = self._do_make_text_cell(bg_col, fg_col, _editable[i],
+                                                _position[i], _model)
 
             if pixbuf and i == 0:
                 _pbcell = gtk.CellRendererPixbuf()
                 _pbcell.set_property('xalign', 0.5)
-                _column = self._do_make_column([_pbcell, _cell], visible[i],
+                _column = self._do_make_column([_pbcell, _cell], _visible[i],
                                                _headings[i])
                 _column.set_attributes(_pbcell, pixbuf=_n_cols)
             else:
-                _column = self._do_make_column([_cell, ], visible[i],
+                _column = self._do_make_column([_cell, ], _visible[i],
                                                _headings[i])
             _column.set_cell_data_func(_cell, self._format_cell,
-                                       (position[i], _datatypes[i]))
+                                       (_position[i], _datatypes[i]))
 
             if _widgets[i] == 'toggle':
-                _column.set_attributes(_cell, active=position[i])
+                _column.set_attributes(_cell, active=_position[i])
             else:
-                _column.set_attributes(_cell, text=position[i])
+                _column.set_attributes(_cell, text=_position[i])
 
             if i > 0:
                 _column.set_reorderable(True)
