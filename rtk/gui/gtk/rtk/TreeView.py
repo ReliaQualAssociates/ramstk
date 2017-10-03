@@ -123,20 +123,24 @@ class RTKTreeView(gtk.TreeView):
             self.order.append(_position[i])
 
             if _widgets[i] == 'combo':
-                _cell = self._do_make_combo_cell(bg_col, fg_col, _editable[i],
-                                                 _position[i], _model)
+                _cell = self._do_make_combo_cell()
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
+                                        _position[i], _model)
             elif _widgets[i] == 'spin':
-                _cell = self._do_make_spin_cell(bg_col, fg_col, _editable[i],
-                                                _position[i], _model)
+                _cell = self._do_make_spin_cell()
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
+                                        _position[i], _model)
             elif _widgets[i] == 'toggle':
                 _cell = self._do_make_toggle_cell(_editable[i], _position[i],
                                                   _model)
             elif _widgets[i] == 'blob':
-                _cell = self._do_make_text_cell(bg_col, fg_col, _editable[i],
-                                                _position[i], _model, True)
+                _cell = self._do_make_text_cell(True)
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
+                                        _position[i], _model)
             else:
-                _cell = self._do_make_text_cell(bg_col, fg_col, _editable[i],
-                                                _position[i], _model)
+                _cell = self._do_make_text_cell()
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
+                                        _position[i], _model)
 
             if pixbuf and i == 0:
                 _pbcell = gtk.CellRendererPixbuf()
@@ -210,18 +214,11 @@ class RTKTreeView(gtk.TreeView):
 
         return _column
 
-    def _do_make_combo_cell(self, bg_color, fg_color, editable, position,
-                            model):
+    @staticmethod
+    def _do_make_combo_cell():
         """
         Method to make a gtk.CellRendererCombo().
 
-        :param str bg_color: the cell background color.
-        :param str fg_color: the cell foreground color.
-        :param int editable: indicates whether the cell is editable.
-        :param int position: the position in the gtk.TreeModel() that this
-                             cell falls.
-        :param model: the `:py:class:gtk.TreeModel` associated with the
-                      treeview.
         :return: _cell
         :rtype: :py:class:`gtk.CellRendererCombo`
         """
@@ -229,24 +226,14 @@ class RTKTreeView(gtk.TreeView):
         _cell = gtk.CellRendererCombo()
         _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
         _cellmodel.append([""])
-        _cell.set_property('background', bg_color)
-        _cell.set_property('editable', editable)
-        _cell.set_property('foreground', fg_color)
         _cell.set_property('has-entry', False)
         _cell.set_property('model', _cellmodel)
         _cell.set_property('text-column', 0)
-        _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-        _cell.set_property('yalign', 0.1)
-        _cell.connect('edited', self._on_edit_tree, position, model)
-
-        if editable == 0:
-            _cell.set_property('background', 'light gray')
 
         return _cell
 
-    def _do_make_spin_cell(self, bg_color, fg_color, editable, position,
-                           model):
+    @staticmethod
+    def _do_make_spin_cell():
         """
         Method to make a gtk.CellRendererCombo().
 
@@ -264,29 +251,15 @@ class RTKTreeView(gtk.TreeView):
         _cell = gtk.CellRendererSpin()
         _adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
         _cell.set_property('adjustment', _adjustment)
-        _cell.set_property('background', bg_color)
         _cell.set_property('digits', 2)
-        _cell.set_property('editable', editable)
-        _cell.set_property('foreground', fg_color)
-        _cell.set_property('yalign', 0.1)
-        _cell.connect('edited', self._on_edit_tree, position, model)
-
-        if editable == 0:
-            _cell.set_property('background', 'light gray')
 
         return _cell
 
-    def _do_make_text_cell(self, bg_color, fg_color, editable, position,
-                           model, blob=False):
+    @staticmethod
+    def _do_make_text_cell(blob=False):
         """
         Method to make a gtk.CellRendererCombo().
 
-        :param str bg_color: the cell background color.
-        :param str fg_color: the cell foreground color.
-        :param int editable: indicates whether the cell is editable.
-        :param int position: the position in the gtk.TreeModel() that this
-                             cell falls.
-        :param model: the gtk.TreeModel() the cell belongs to.
         :param bool blob: indicates whether the cell will be displaying a BLOB
                           field.
         :type model: :py:class:`gtk.TreeModel`
@@ -298,17 +271,6 @@ class RTKTreeView(gtk.TreeView):
             _cell = gtk.CellRendererText()
         else:
             _cell = CellRendererML()
-
-        _cell.set_property('background', bg_color)
-        _cell.set_property('editable', editable)
-        _cell.set_property('foreground', fg_color)
-        _cell.set_property('wrap-width', 250)
-        _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-        _cell.set_property('yalign', 0.1)
-        _cell.connect('edited', self._on_edit_tree, position, model)
-
-        if editable == 0:
-            _cell.set_property('background', 'light gray')
 
         return _cell
 
@@ -330,6 +292,33 @@ class RTKTreeView(gtk.TreeView):
         _cell.connect('toggled', self._on_cell_toggled, position, model)
 
         return _cell
+
+    def _do_set_properties(self, cell, bg_color, fg_color, editable, position,
+                           model):
+        """
+        Method to set common properties of gtk.CellRenderers().
+
+        :param cell: the cell whose properties are to be set.
+        :type cell: :py:class:`gtk.CellRenderer`
+        :param str bg_color: the cell background color.
+        :param str fg_color: the cell foreground color.
+        :param int editable: indicates whether the cell is editable.
+        :param int position: the position in the gtk.TreeModel() that this
+                             cell falls.
+        :param model: the `:py:class:gtk.TreeModel` associated with the
+                      treeview.
+        """
+
+        cell.set_property('background', bg_color)
+        cell.set_property('editable', editable)
+        cell.set_property('foreground', fg_color)
+        cell.set_property('wrap-width', 250)
+        cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+        cell.set_property('yalign', 0.1)
+        cell.connect('edited', self._on_edit_tree, position, model)
+
+        if editable == 0:
+            cell.set_property('background', 'light gray')
 
     @staticmethod
     def _on_cell_toggled(cell, path, position, model):
