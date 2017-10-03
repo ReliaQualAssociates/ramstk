@@ -5,9 +5,9 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-################################################################################
+###############################################################################
 Function Package WorkView
-################################################################################
+###############################################################################
 """
 
 from pubsub import pub                                  # pylint: disable=E0401
@@ -17,9 +17,10 @@ from gui.gtk.rtk.Widget import _, gtk, locale           # pylint: disable=E0401
 from gui.gtk import rtk                                 # pylint: disable=E0401
 from gui.gtk.workviews.FMEA import WorkView as FMEA     # pylint: disable=E0401
 from gui.gtk.assistants.Function import AddFunction     # pylint: disable=E0401
+from .WorkView import RTKWorkView
 
 
-class WorkView(gtk.VBox):
+class WorkView(gtk.VBox, RTKWorkView):
     """
     The Work View displays all the attributes for the selected Function. The
     attributes of a Work View are:
@@ -94,45 +95,15 @@ class WorkView(gtk.VBox):
         """
 
         gtk.VBox.__init__(self)
+        RTKWorkView.__init__(self, controller)
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {'tab':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/function.png',
-                           'calculate':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/calculate.png',
-                           'add':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/add.png',
-                           'remove':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/remove.png',
-                           'reports':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/reports.png',
-                           'save':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save.png',
-                           'error':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/error.png',
-                           'question':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/question.png',
-                           'insert_sibling':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_sibling.png',
-                           'insert_child':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_child.png'}
+        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/function.png'
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
-        self._mission_time = controller.RTK_CONFIGURATION.RTK_MTIME
         self._dtc_function = None
 
         # Initialize public dictionary attributes.
@@ -140,8 +111,6 @@ class WorkView(gtk.VBox):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = '{0:0.' + \
-                   str(controller.RTK_CONFIGURATION.RTK_DEC_PLACES) + 'g}'
         self.function_id = None
 
         # General data page widgets.
@@ -222,27 +191,9 @@ class WorkView(gtk.VBox):
                                                    u"availability for the "
                                                    u"selected function."))
 
-        _notebook = gtk.Notebook()
-
-        # Set the user's preferred gtk.Notebook tab position.
-        if controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'left':
-            _notebook.set_tab_pos(gtk.POS_LEFT)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'right':
-            _notebook.set_tab_pos(gtk.POS_RIGHT)
-        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'top':
-            _notebook.set_tab_pos(gtk.POS_TOP)
-        else:
-            _notebook.set_tab_pos(gtk.POS_BOTTOM)
-
-        self._make_general_data_page(_notebook)
-        self._make_fmea_page(_notebook)
-        self._make_assessment_results_page(_notebook)
-
-        try:
-            locale.setlocale(locale.LC_ALL,
-                             controller.RTK_CONFIGURATION.RTK_LOCALE)
-        except locale.Error:
-            locale.setlocale(locale.LC_ALL, '')
+        self._make_general_data_page()
+        self._make_fmea_page()
+        self._make_assessment_results_page()
 
         # Connect to callback functions for editable gtk.Widgets().
         self._lst_handler_id.append(
@@ -253,10 +204,9 @@ class WorkView(gtk.VBox):
             self.txtRemarks.do_get_buffer().connect(
                 'changed', self._do_edit_function, 2))
 
-        # Put it all together.
+        # FIXME: The general data page should be the page shown after launching.
         self.pack_start(self._make_toolbar(), expand=False)
-        self.pack_start(_notebook)
-
+        self.pack_start(self._notebook)
         self.show_all()
 
         pub.subscribe(self._on_select_function, 'selectedFunction')
@@ -464,91 +414,60 @@ class WorkView(gtk.VBox):
 
         return self._dtc_function.request_update_all()
 
-    def _make_assessment_results_page(self, notebook):
+    def _make_assessment_results_page(self):
         """
         Method to create the Function class gtk.Notebook() page for
-        displaying assessment results for teh selected Function.
+        displaying assessment results for the selected Function.
 
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
-        _hbox = gtk.HBox()
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build the left half of the page.                                    #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
-        _frame = rtk.RTKFrame(label=_(u"Reliability Results"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox.pack_start(_frame)
+        (_hbx_page,
+         _fxd_left,
+         _fxd_right) = RTKWorkView._make_assessment_results_page(self)
 
         _labels = [_(u"Predicted h(t):"), _(u"Mission h(t):"), _(u"MTBF:"),
                    _(u"Mission MTBF:")]
-        _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(_labels, _fxd_left, 5, 5)
         _x_pos += 50
 
-        _fixed.put(self.txtPredictedHt, _x_pos, _y_pos[0])
-        _fixed.put(self.txtMissionHt, _x_pos, _y_pos[1])
-        _fixed.put(self.txtMTBF, _x_pos, _y_pos[2])
-        _fixed.put(self.txtMissionMTBF, _x_pos, _y_pos[3])
+        _fxd_left.put(self.txtPredictedHt, _x_pos, _y_pos[0])
+        _fxd_left.put(self.txtMissionHt, _x_pos, _y_pos[1])
+        _fxd_left.put(self.txtMTBF, _x_pos, _y_pos[2])
+        _fxd_left.put(self.txtMissionMTBF, _x_pos, _y_pos[3])
 
-        _fixed.show_all()
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build the right half of the page.                                   #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
-        _frame = rtk.RTKFrame(label=_(u"Maintainability Results"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
-        _frame.add(_scrollwindow)
-
-        _hbox.pack_end(_frame)
+        _fxd_left.show_all()
 
         _labels = [_(u"MPMT:"), _(u"MCMT:"), _(u"MTTR:"), _(u"MMT:"),
                    _(u"Availability:"), _(u"Mission Availability:")]
-        _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(_labels, _fxd_right, 5, 5)
         _x_pos += 50
 
-        _fixed.put(self.txtMPMT, _x_pos, _y_pos[0])
-        _fixed.put(self.txtMCMT, _x_pos, _y_pos[1])
-        _fixed.put(self.txtMTTR, _x_pos, _y_pos[2])
-        _fixed.put(self.txtMMT, _x_pos, _y_pos[3])
-        _fixed.put(self.txtAvailability, _x_pos, _y_pos[4])
-        _fixed.put(self.txtMissionAt, _x_pos, _y_pos[5])
+        _fxd_right.put(self.txtMPMT, _x_pos, _y_pos[0])
+        _fxd_right.put(self.txtMCMT, _x_pos, _y_pos[1])
+        _fxd_right.put(self.txtMTTR, _x_pos, _y_pos[2])
+        _fxd_right.put(self.txtMMT, _x_pos, _y_pos[3])
+        _fxd_right.put(self.txtAvailability, _x_pos, _y_pos[4])
+        _fxd_right.put(self.txtMissionAt, _x_pos, _y_pos[5])
 
-        _fixed.show_all()
+        _fxd_right.show_all()
 
-        # Insert the tab.
         _label = rtk.RTKLabel(_(u"Assessment\nResults"), width=-1,
                               justify=gtk.JUSTIFY_CENTER,
                               tooltip=_(u"Displays reliability, "
                                         u"maintainability, and availability "
                                         u"assessment results for the selected "
                                         u"function."))
-        notebook.insert_page(_hbox, tab_label=_label, position=-1)
+        self._notebook.insert_page(_hbx_page, tab_label=_label, position=-1)
 
         return False
 
-    def _make_fmea_page(self, notebook):
+    def _make_fmea_page(self):
         """
         Method to create the Function class gtk.Notebook() page for displaying
         the FMEA for the selected Function.
 
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
         :return: false if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -559,46 +478,28 @@ class WorkView(gtk.VBox):
                                         u"Effects Analysis (FMEA) for "
                                         u"the selected Function."))
 
-        notebook.insert_page(FMEA(self._mdcRTK), tab_label=_label,
-                             position=-1)
+        self._notebook.insert_page(FMEA(self._mdcRTK), tab_label=_label,
+                                   position=-1)
 
         return False
 
-    def _make_general_data_page(self, notebook):
+    def _make_general_data_page(self):
         """
         Method to create the Function class gtk.Notebook() page for
         displaying general data about the selected Function.
 
-        :param gtk.Notebook notebook: the gtk.Notebook() to add the page.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Build-up the containers for the tab.                          #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _frame, _fixed = RTKWorkView._make_general_data_page(self)
 
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                 gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
-        _frame.add(_scrollwindow)
-
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        # Place the widgets used to display general information about   #
-        # the function.                                                 #
-        # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _labels = [_(u"Function Code:"), _(u"Function Name:"),
                    _(u"Total Cost:"), _(u"Total Mode Count:"),
                    _(u"Total Part Count:"), _(u"Remarks:")]
         _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
         _x_pos = _x_pos + 50
 
-        # Place the widgets.
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])
         _fixed.put(self.txtName, _x_pos, _y_pos[1])
         _fixed.put(self.txtTotalCost, _x_pos, _y_pos[2])
@@ -609,12 +510,11 @@ class WorkView(gtk.VBox):
 
         _fixed.show_all()
 
-        # Insert the tab.
         _label = rtk.RTKLabel(_(u"General\nData"), width=-1,
                               justify=gtk.JUSTIFY_CENTER,
                               tooltip=_(u"Displays general information for "
                                         u"the selected Function."))
-        notebook.insert_page(_frame, tab_label=_label, position=-1)
+        self._notebook.insert_page(_frame, tab_label=_label, position=-1)
 
         return False
 
