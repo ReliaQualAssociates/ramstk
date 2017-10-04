@@ -58,7 +58,7 @@ class RTKLabel(gtk.Label):
     """
     This is the RTK Label class.
     """
-
+    # pylint: disable=R0913
     def __init__(self, text, width=190, height=25, bold=True, wrap=False,
                  justify=gtk.JUSTIFY_LEFT,
                  tooltip='RTK WARNING: Missing tooltip.  '
