@@ -57,6 +57,10 @@ class WorkView(gtk.HBox, RTKWorkView):
         # Initialize private dictionary attributes.
         self._dic_icons['mode'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
             '/32x32/mode.png'
+        self._dic_icons['mechanism'] = \
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/mechanism.png'
+        self._dic_icons['cause'] = \
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/cause.png'
         self._dic_icons['control'] = \
             controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/control.png'
         self._dic_icons['action'] = \
@@ -87,29 +91,20 @@ class WorkView(gtk.HBox, RTKWorkView):
         self.tvw_fmea.set_tooltip_text(_tooltip)
 
         # Load the severity classes into the gtk.CellRendererCombo().
-        _column = self.tvw_fmea.get_column(7)
-        _cell = _column.get_cell_renderers()[0]
-        _model = _cell.get_property('model')
-        _model.clear()
+        _model = self._do_get_cell_model(7)
         for _item in controller.RTK_CONFIGURATION.RTK_SEVERITY:
             _severity = controller.RTK_CONFIGURATION.RTK_SEVERITY[_item][1]
             _model.append((_severity, ))
 
         # Load the users into the gtk.CellRendererCombo().
-        _column = self.tvw_fmea.get_column(8)
-        _cell = _column.get_cell_renderers()[0]
-        _model = _cell.get_property('model')
-        _model.clear()
+        _model = self._do_get_cell_model(8)
         for _item in controller.RTK_CONFIGURATION.RTK_USERS:
             _user = controller.RTK_CONFIGURATION.RTK_USERS[_item][0] + ', ' + \
                 controller.RTK_CONFIGURATION.RTK_USERS[_item][1]
             _model.append((_user, ))
 
         # Load the status values into the gtk.CellRendererCombo()
-        _column = self.tvw_fmea.get_column(10)
-        _cell = _column.get_cell_renderers()[0]
-        _model = _cell.get_property('model')
-        _model.clear()
+        _model = self._do_get_cell_model(10)
         for _item in controller.RTK_CONFIGURATION.RTK_SEVERITY:
             _severity = controller.RTK_CONFIGURATION.RTK_SEVERITY[_item][1]
             _model.append((_severity,))
@@ -125,7 +120,7 @@ class WorkView(gtk.HBox, RTKWorkView):
                     _cell.connect('edited', self._on_cell_edited)
                 except TypeError:
                     print "FIXME: Handle TypeError in " \
-                          "gui.gtk.workviews.FMEA.__init__"
+                          "gui.gtk.workviews.FMEA.__init__()"
 
         self.pack_start(self._make_toolbar(), False, True)
         self.pack_end(self._make_tree(), True, True)
@@ -133,13 +128,29 @@ class WorkView(gtk.HBox, RTKWorkView):
 
         pub.subscribe(self._on_select_function, 'selectedFunction')
 
+    def _do_get_cell_model(self, column):
+        """
+        Method to retrieve the gtk.CellRendererCombo() gtk.TreeModel().
+
+        :param int column: the column number to retrieve the cell from.
+        :return: _model
+        :rtype: :py:class:`gtk.TreeModel`
+        """
+
+        _column = self.tvw_fmea.get_column(column)
+        _cell = _column.get_cell_renderers()[0]
+        _model = _cell.get_property('model')
+        _model.clear()
+
+        return _model
+
     def _do_load_tree(self, tree, row=None):
         """
         Method to iteratively load the Functional FMEA gtk.TreeView().
 
         :param tree: the treelib Tree() holding the (partial) FMEA to load.
-        :param prow: the parent gtk.Iter() of the entity being added to the
-                     FMEA gtk.TreeView().
+        :param row: the parent gtk.Iter() of the entity being added to the
+                    FMEA gtk.TreeView().
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -164,6 +175,22 @@ class WorkView(gtk.HBox, RTKWorkView):
                          0, '', 0, '', 0, '', 0, '', _entity.remarks, _icon,
                          _node_id]
                 _row = None
+            elif _entity.is_mechanism:
+                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                    self._dic_icons['mechanism'], 22, 22)
+                _data = [_entity.mechanism_id, _entity.description,
+                         _entity.effect_local, _entity.effect_next,
+                         _entity.effect_end, _entity.design_provisions,
+                         _entity.operator_actions, _entity.severity_class,
+                         _entity.remarks, _icon]
+            elif _entity.is_cause:
+                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                    self._dic_icons['cause'], 22, 22)
+                _data = [_entity.cause_id, _entity.description,
+                         _entity.effect_local, _entity.effect_next,
+                         _entity.effect_end, _entity.design_provisions,
+                         _entity.operator_actions, _entity.severity_class,
+                         _entity.remarks, _icon]
             elif _entity.is_control and row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['control'], 22, 22)
@@ -200,80 +227,9 @@ class WorkView(gtk.HBox, RTKWorkView):
 
         return None
 
-    def _do_load_hardware_tree(self, tree, row=None):
-        """
-        Method to iteratively load the Hardware FMEA gtk.TreeView().
-
-        :param tree: the treelib Tree() holding the (partial) FMEA to load.
-        :param prow: the parent gtk.Iter() of the entity being added to the
-                     FMEA gtk.TreeView().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        _data = []
-        _model = self.tvw_fmea.get_model()
-
-        _node = tree.nodes[tree.nodes.keys()[0]]
-        _entity = _node.data
-
-        try:
-            if _entity.is_mode:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self._dic_icons['mode'], 22, 22)
-                _data = [_entity.mode_id, _entity.description,
-                         _entity.effect_local, _entity.effect_next,
-                         _entity.effect_end, _entity.design_provisions,
-                         _entity.operator_actions, _entity.severity_class,
-                         _entity.remarks, _icon]
-                _row = None
-            elif _entity.is_mechanism:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self._dic_icons['mechanism'], 22, 22)
-                _data = [_entity.mechanism_id, _entity.description,
-                         _entity.effect_local, _entity.effect_next,
-                         _entity.effect_end, _entity.design_provisions,
-                         _entity.operator_actions, _entity.severity_class,
-                         _entity.remarks, _icon]
-            elif _entity.is_cause:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self._dic_icons['cause'], 22, 22)
-                _data = [_entity.cause_id, _entity.description,
-                         _entity.effect_local, _entity.effect_next,
-                         _entity.effect_end, _entity.design_provisions,
-                         _entity.operator_actions, _entity.severity_class,
-                         _entity.remarks, _icon]
-            elif _entity.is_control:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self._dic_icons['control'], 22, 22)
-                _data = [_entity.control_id, _entity.description, '', '', '',
-                         '', '', 0, '', _icon]
-            elif _entity.is_action:
-                _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self._dic_icons['action'], 22, 22)
-                _data = [_entity.action_id, _entity.action_recommended, '', '',
-                         '', '', '', 0, '', _icon]
-
-            try:
-                _row = _model.append(row, _data)
-            except TypeError:
-                print "FIXME: Handle TypeError in " \
-                      "gtk.gui.workviews.FMEA.FMEA._do_load_hardware_tree."
-
-        except AttributeError:
-            _row = None
-
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, _row)
-
-        return None
-
     def _do_request_delete(self, __button):
         """
-        Method to delete the selected entity from the Functional FMEA.
+        Method to delete the selected entity from the FMEA.
 
         :param __button: the gtk.ToolButton() that called this method.
         :return: False if sucessful or True if an error is encountered.
@@ -296,7 +252,7 @@ class WorkView(gtk.HBox, RTKWorkView):
 
     def _do_request_insert(self, __button, sibling=True):
         """
-        Method to insert a new entity to the Functional FMEA.
+        Method to insert a new entity to the FMEA.
 
         :param __button: the gtk.ToolButton() that called this method.
         :param bool sibling: indicator variable that determines whether a
@@ -417,11 +373,19 @@ class WorkView(gtk.HBox, RTKWorkView):
 
         _return = False
 
-        if event.button == 1:
-            pass
-        elif event.button == 3:
-            # FIXME: Add a pop-up menu.
-            pass
+        treeview.handler_block(self._lst_handler_id[1])
+
+        # The cursor-changed signal will call the _on_change_row.  If
+        # _on_change_row is called from here, it gets called twice.  Once on
+        # the currently selected row and once on the newly selected row.  Thus,
+        # we don't need (or want) to respond to left button clicks.
+        if event.button == 3:
+            print "FIXME: Rick clicking should launch a pop-up menu with " \
+                  "options to insert sibling, insert child, delete " \
+                  "(selected), save (selected), and save all in " \
+                  "rtk.gui.gtk.moduleviews.FMEA._on_button_press()."
+
+        treeview.handler_unblock(self._lst_handler_id[1])
 
         return _return
 
@@ -566,66 +530,54 @@ class WorkView(gtk.HBox, RTKWorkView):
 
         return None
 
-    def _make_toolbar(self):
+    def _make_toolbar(self, hierarchical=True):
         """
         Method to create the toolbar for the Functional FMEA WorkView.
 
+        :param bool hierarchical: indicates whether or not the RTK Module the
+                                  toolbar is being created for is hierarchical.
         :return: a gtk.Toolbar() instance.
         :rtype: :py:class:`gtk.Toolbar`
         """
 
-        _toolbar = gtk.Toolbar()
+        _toolbar = RTKWorkView._make_toolbar(self, hierarchical)
         _toolbar.set_orientation(gtk.ORIENTATION_VERTICAL)
 
         _position = 0
 
-        _button = gtk.ToolButton()
-        _button.set_property("height_request", 60)
-        _button.set_property("width_request", 60)
-        _button.set_tooltip_markup(_(u"Add a Functional FMEA entity at the "
-                                     u"same level as the currently selected "
-                                     u"entity."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['insert_sibling'])
-        _button.set_icon_widget(_image)
+        _button = _toolbar.get_nth_item(0)
+        _button.set_property("height_request", 56)
+        _button.set_property("width_request", 56)
+        _button.set_tooltip_markup(_(u"Add a FMEA entity at the same level as "
+                                     u"the currently selected entity."))
         _button.connect('clicked', self._do_request_insert, True)
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        _button = gtk.ToolButton()
-        _button.set_property("height_request", 60)
-        _button.set_property("width_request", 60)
-        _button.set_tooltip_markup(_(u"Add a Functional FMEA entity one level "
-                                     u"below the currently selected entity."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['insert_child'])
-        _button.set_icon_widget(_image)
+        _button = _toolbar.get_nth_item(1)
+        _button.set_property("height_request", 56)
+        _button.set_property("width_request", 56)
+        _button.set_tooltip_markup(_(u"Add a FMEA entity one level below the "
+                                     u"currently selected entity."))
         _button.connect('clicked', self._do_request_insert, False)
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        _button = gtk.ToolButton()
-        _button.set_property("height_request", 60)
-        _button.set_property("width_request", 60)
+        _button = _toolbar.get_nth_item(2)
+        _button.set_property("height_request", 56)
+        _button.set_property("width_request", 56)
         _button.set_tooltip_markup(_(u"Remove the selected entity from the "
                                      u"Functional FMEA."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['remove'])
-        _button.set_icon_widget(_image)
         _button.connect('clicked', self._do_request_delete)
-        _toolbar.insert(_button, _position)
-        _position += 1
 
-        _button = gtk.ToolButton()
-        _button.set_property("height_request", 60)
-        _button.set_property("width_request", 60)
+        _button = _toolbar.get_nth_item(4)
+        _button.set_property("height_request", 56)
+        _button.set_property("width_request", 56)
+        _button.set_tooltip_text(_(u"Calculate the FMEA."))
+        # _button.connect('clicked', self._do_request_calculate)
+
+        _button = _toolbar.get_nth_item(6)
+        _button.set_property("height_request", 56)
+        _button.set_property("width_request", 56)
         _button.set_tooltip_markup(_(u"Save the Functional FMEA to the open "
                                      u"RTK Program database."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['save'])
-        _button.set_icon_widget(_image)
         _button.connect('clicked', self._do_request_update_all)
-        _toolbar.insert(_button, _position)
 
         _toolbar.show_all()
 

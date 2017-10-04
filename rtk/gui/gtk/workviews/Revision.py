@@ -221,17 +221,17 @@ class WorkView(gtk.VBox, RTKWorkView):
         pub.subscribe(self._on_select, 'selectedRevision')
         pub.subscribe(self._on_select, 'mvw_editedRevision')
 
-    def _make_toolbar(self):
+    def _make_toolbar(self, hierarchical=False):
         """
-        Method to create the gtk.ToolBar() for the Revision class work book.
+        Method to create the gtk.ToolBar() for the Revision class Work View.
 
         :return: _toolbar
-        :rtype: gtk.ToolBar
+        :rtype: :py:class:`gtk.ToolBar`
         """
 
         _position = 6
 
-        _toolbar = RTKWorkView._make_toolbar(self)
+        _toolbar = RTKWorkView._make_toolbar(self, hierarchical)
 
         _button = _toolbar.get_nth_item(0)
         _button.set_tooltip_text(_(u"Adds a new Revision to the open RTK "

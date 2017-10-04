@@ -547,12 +547,17 @@ class WorkView(gtk.VBox, RTKWorkView):
 
         return False
 
-    def _make_toolbar(self):
+    def _make_toolbar(self, hierarchical=True):
         """
-        Method to create the toolbar for the Function class work book.
+        Method to create the toolbar for the Function class Work View.
+
+        :param bool hierarchical: indicates whether or not the RTK Module the
+                                  toolbar is being created for is hierarchical.
+        :return: _toolbar
+        :rtype: :py:class:`gtk.ToolBar`
         """
 
-        _toolbar = RTKWorkView._make_toolbar(self, True)
+        _toolbar = RTKWorkView._make_toolbar(self, hierarchical)
 
         _button = _toolbar.get_nth_item(0)
         _button.set_tooltip_text(_(u"Adds a new Function at the same "
