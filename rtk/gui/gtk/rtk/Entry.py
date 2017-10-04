@@ -13,14 +13,14 @@ widgets.
 """
 
 # Import the rtk.Widget base class.
-from Widget import gtk, pango
+from .Widget import gtk, pango                      # pylint: disable=E0401
 
 
 class RTKEntry(gtk.Entry):
     """
     This is the RTK Entry class.
     """
-
+    # pylint: disable=R0913
     def __init__(self, width=200, height=25, editable=True, bold=False,
                  color='#BBDDFF',
                  tooltip='RTK WARNING: Missing tooltip.  '

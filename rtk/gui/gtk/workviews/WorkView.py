@@ -10,8 +10,10 @@ RTK Work View Package Meta Class
 ###############################################################################
 """
 
+import locale
+
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gtk, locale   # pylint: disable=E0401,W0611
+from gui.gtk.rtk.Widget import _, gtk           # pylint: disable=E0401,W0611
 from gui.gtk import rtk                         # pylint: disable=E0401,W0611
 
 
@@ -101,13 +103,6 @@ class RTKWorkView(object):
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
-    def _make_toolbar(self):
-        """
-        Method to create the gtk.ToolBar() for the Work View.
-        """
-
-        pass
-
     @staticmethod
     def _make_assessment_results_page():
         """
@@ -125,12 +120,8 @@ class RTKWorkView(object):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fxd_left = gtk.Fixed()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxd_left)
-
+        _scrollwindow = rtk.RTKScrolledWindow(_fxd_left)
         _frame = rtk.RTKFrame(label=_(u"Reliability Results"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
         _hbox.pack_start(_frame)
@@ -140,12 +131,8 @@ class RTKWorkView(object):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fxd_right = gtk.Fixed()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fxd_right)
-
+        _scrollwindow = rtk.RTKScrolledWindow(_fxd_right)
         _frame = rtk.RTKFrame(label=_(u"Maintainability Results"))
-        _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
         _hbox.pack_end(_frame)
@@ -165,24 +152,39 @@ class RTKWorkView(object):
 
         _fixed = gtk.Fixed()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                 gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
         _frame.add(_scrollwindow)
 
         return _frame, _fixed
 
     def _make_toolbar(self, hierarchical=False):
         """
-        Method to create the toolbar for the Work View.
+        Method to create the toolbar for the Work View.  This method creates
+        the base toolbar used by all RTK Work Views.  Individual RTK Module
+        Work Views will add additional buttons after the Save button.
 
         :param bool hierarchical: indicates whether or not the RTK Module the
                                   toolbar is being created for is hierarchical.
         :return: _toolbar
         :rtpye: :py:class:`gtk.Toolbar`
         """
+
+        def _make_button(image):
+            """
+            Function to create a gtk.ToolButton() for the gtk.Toolbar().
+
+            :param str image: the absolute path to the image file to use for
+                              the gtk.ToolButton() icon.
+            :return: _button
+            :rtype: :py:class:`gtk.ToolButton`
+            """
+
+            _button = gtk.ToolButton()
+            _image = gtk.Image()
+            _image.set_from_file(image)
+            _button.set_icon_widget(_image)
+
+            return _button
 
         _toolbar = gtk.Toolbar()
 
@@ -194,34 +196,22 @@ class RTKWorkView(object):
         # (e.g., Revision), we only need to insert an add button.
         if hierarchical:
             # Add sibling function button.
-            _button = gtk.ToolButton()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_sibling'])
-            _button.set_icon_widget(_image)
+            _button = _make_button(self._dic_icons['insert_sibling'])
             _toolbar.insert(_button, _position)
             _position += 1
 
             # Add child function button.
-            _button = gtk.ToolButton()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['insert_child'])
-            _button.set_icon_widget(_image)
+            _button = _make_button(self._dic_icons['insert_child'])
             _toolbar.insert(_button, _position)
             _position += 1
 
         else:
-            _button = gtk.ToolButton()
-            _image = gtk.Image()
-            _image.set_from_file(self._dic_icons['add'])
-            _button.set_icon_widget(_image)
+            _button = _make_button(self._dic_icons['add'])
             _toolbar.insert(_button, _position)
             _position += 1
 
         # Delete function button
-        _button = gtk.ToolButton()
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['remove'])
-        _button.set_icon_widget(_image)
+        _button = _make_button(self._dic_icons['remove'])
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -229,10 +219,7 @@ class RTKWorkView(object):
         _position += 1
 
         # Calculate function button.
-        _button = gtk.ToolButton()
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['calculate'])
-        _button.set_icon_widget(_image)
+        _button = _make_button(self._dic_icons['calculate'])
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -240,10 +227,7 @@ class RTKWorkView(object):
         _position += 1
 
         # Save function button.
-        _button = gtk.ToolButton()
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['save'])
-        _button.set_icon_widget(_image)
+        _button = _make_button(self._dic_icons['save'])
         _toolbar.insert(_button, _position)
 
         _toolbar.show()

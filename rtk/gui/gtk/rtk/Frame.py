@@ -12,8 +12,8 @@ application.  This module is specific to RTK frame widgets.
 """
 
 # Import other RTK Widget classes.
-from .Widget import _, gtk
-from .Label import RTKLabel
+from .Widget import _, gtk                          # pylint: disable=E0401
+from .Label import RTKLabel                         # pylint: disable=E0401
 
 
 class RTKFrame(gtk.Frame):

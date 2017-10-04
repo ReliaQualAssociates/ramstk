@@ -14,7 +14,6 @@ application.  This module is the base class for all RTK widgets.
 import sys
 
 import gettext
-import locale
 
 # Modules required for the GUI.
 import pango                                    # pylint: disable=E0401,W0611

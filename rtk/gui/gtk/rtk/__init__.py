@@ -16,4 +16,5 @@ from .Frame import RTKFrame
 from .Label import RTKLabel, make_label_group
 # from .Matrix import RTKMatrix
 # from .Plot import RTKPlot
+from .ScrolledWindow import RTKScrolledWindow
 from .TreeView import RTKTreeView

@@ -14,8 +14,8 @@ application.  This module is specific to RTK treeview and related widgets.
 import defusedxml.lxml as lxml                      # pylint: disable=E0401
 
 # Import other RTK Widget classes.
-from .Widget import gobject, gtk, pango
-from .Label import RTKLabel
+from .Widget import gobject, gtk, pango             # pylint: disable=E0401
+from .Label import RTKLabel                         # pylint: disable=E0401
 
 
 class RTKTreeView(gtk.TreeView):

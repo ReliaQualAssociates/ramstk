@@ -12,7 +12,7 @@ application.  This module is specific to RTK combo box widgets.
 """
 
 # Import the rtk.Widget base class.
-from Widget import gobject, gtk
+from .Widget import gobject, gtk                    # pylint: disable=E0401
 
 
 class RTKComboBox(gtk.ComboBoxEntry):

@@ -12,7 +12,7 @@ application.  This module is specific to RTK label widgets.
 """
 
 # Import the rtk.Widget base class.
-from Widget import gtk, pango
+from .Widget import gtk, pango                      # pylint: disable=E0401
 
 
 def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
@@ -64,7 +64,7 @@ class RTKLabel(gtk.Label):
                  tooltip='RTK WARNING: Missing tooltip.  '
                          'Please register an Enhancement type bug.'):
         """
-        Function to create Label() widgets.
+        Method to create Label() widgets.
 
         :param str text: the text to display in the gtk.Label() widget.
         :param int width: width of the gtk.Label() widget.  Default is 190.

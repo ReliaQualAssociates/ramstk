@@ -12,7 +12,7 @@ application.  This module is specific to RTK button widgets.
 """
 
 # Import the rtk.Widget base class.
-from Widget import _, gtk
+from .Widget import _, gtk                           # pylint: disable=E0401
 
 
 class RTKCheckButton(gtk.CheckButton):

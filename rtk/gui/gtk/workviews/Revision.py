@@ -10,10 +10,12 @@ Revision Package Work View Class
 ###############################################################################
 """
 
+import locale
+
 from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gtk, locale       # pylint: disable=E0401
+from gui.gtk.rtk.Widget import _, gtk               # pylint: disable=E0401
 from gui.gtk import rtk                             # pylint: disable=E0401
 from .WorkView import RTKWorkView
 # from Assistants import AddRevision
@@ -288,7 +290,7 @@ class WorkView(gtk.VBox, RTKWorkView):
         results for the selected Revision.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         (_hbx_page,
@@ -301,7 +303,7 @@ class WorkView(gtk.VBox, RTKWorkView):
                    _(u"Mean Time Between Failure [MTBF]:"),
                    _(u"Mission MTBF:"), _(u"Reliability [R(t)]:"),
                    _(u"Mission R(t):")]
-        (_x_pos, _y_pos) = rtk.make_label_group(_labels, _fxd_left, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(_labels, _fxd_left, 5, 5)
         _x_pos += 55
 
         _fxd_left.put(self.txtActiveHt, _x_pos, _y_pos[0])
@@ -321,7 +323,7 @@ class WorkView(gtk.VBox, RTKWorkView):
                    _(u"Mean Time to Repair [MTTR]:"),
                    _(u"Mean Maintenance Time [MMT]:"),
                    _(u"Availability [A(t)]:"), _(u"Mission A(t):")]
-        (_x_pos, _y_pos) = rtk.make_label_group(_labels, _fxd_right, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(_labels, _fxd_right, 5, 5)
         _x_pos += 55
 
         _fxd_right.put(self.txtMPMT, _x_pos, _y_pos[0])
@@ -349,7 +351,7 @@ class WorkView(gtk.VBox, RTKWorkView):
         data about the selected Revision.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _frame, _fixed = RTKWorkView._make_general_data_page()
@@ -358,7 +360,7 @@ class WorkView(gtk.VBox, RTKWorkView):
                    _(u"Total Cost:"), _(u"Cost/Failure:"),
                    _(u"Cost/Hour:"), _(u"Total Part Count:"),
                    _(u"Remarks:")]
-        (_x_pos, _y_pos) = rtk.make_label_group(_labels, _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
         _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])
