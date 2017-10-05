@@ -12,7 +12,6 @@ The RTKMechanism Table
 
 import gettext
 
-# Import the database models.
 from sqlalchemy import Column, ForeignKey, \
                        Integer, String          # pylint: disable=E0401
 from sqlalchemy.orm import relationship         # pylint: disable=E0401

@@ -22,11 +22,6 @@ from Utilities import error_handler, \
                       none_to_default               # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 
 class RTKAction(RTK_BASE):
     """

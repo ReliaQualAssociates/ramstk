@@ -1,36 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKIncident.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ===============================================================================
 The RTKIncident Table
@@ -39,20 +12,17 @@ The RTKIncident Table
 
 from datetime import date, timedelta
 
-# Import the database models.
-from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import BLOB, Column, Date, Float, \
+                       ForeignKey, Integer, String  # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 
+# pylint: disable=R0902
 class RTKIncident(RTK_BASE):
     """
     Class to represent the table rtk_validation in the RTK Program datanase.
@@ -209,68 +179,71 @@ class RTKIncident(RTK_BASE):
                format(self.incident_id)
 
         try:
-            self.accepted = int(attributes[0])
-            self.approved = int(attributes[1])
-            self.approved_by = int(attributes[2])
-            self.analysis = str(attributes[3])
-            self.category_id = int(attributes[4])
-            self.chargeable = int(attributes[5])
-            self.chargeable_1 = int(attributes[6])
-            self.chargeable_2 = int(attributes[7])
-            self.chargeable_3 = int(attributes[8])
-            self.chargeable_4 = int(attributes[9])
-            self.chargeable_5 = int(attributes[10])
-            self.chargeable_6 = int(attributes[11])
-            self.chargeable_7 = int(attributes[12])
-            self.chargeable_8 = int(attributes[13])
-            self.chargeable_9 = int(attributes[14])
-            self.chargeable_10 = int(attributes[15])
-            self.complete = int(attributes[16])
-            self.complete_by = int(attributes[17])
-            self.cost = float(attributes[18])
-            self.criticality_id = int(attributes[19])
-            self.date_approved = attributes[20]
-            self.date_complete = attributes[21]
-            self.date_requested = attributes[22]
-            self.date_reviewed = attributes[23]
-            self.description_long = str(attributes[24])
-            self.description_short = str(attributes[25])
-            self.detection_method_id = int(attributes[26])
-            self.execution_time = float(attributes[27])
-            self.hardware_id = int(attributes[28])
-            self.incident_age = int(attributes[29])
-            self.life_cycle_id = int(attributes[30])
-            self.relevant = int(attributes[31])
-            self.relevant_1 = int(attributes[32])
-            self.relevant_2 = int(attributes[33])
-            self.relevant_3 = int(attributes[34])
-            self.relevant_4 = int(attributes[35])
-            self.relevant_5 = int(attributes[36])
-            self.relevant_6 = int(attributes[37])
-            self.relevant_7 = int(attributes[38])
-            self.relevant_8 = int(attributes[39])
-            self.relevant_9 = int(attributes[40])
-            self.relevant_10 = int(attributes[41])
-            self.relevant_11 = int(attributes[42])
-            self.relevant_12 = int(attributes[43])
-            self.relevant_13 = int(attributes[44])
-            self.relevant_14 = int(attributes[45])
-            self.relevant_15 = int(attributes[46])
-            self.relevant_16 = int(attributes[47])
-            self.relevant_17 = int(attributes[48])
-            self.relevant_18 = int(attributes[49])
-            self.relevant_19 = int(attributes[50])
-            self.relevant_20 = int(attributes[51])
-            self.remarks = str(attributes[52])
-            self.request_by = int(attributes[53])
-            self.reviewed = int(attributes[54])
-            self.reviewed_by = int(attributes[55])
-            self.software_id = int(attributes[56])
-            self.status_id = int(attributes[57])
-            self.test_case = str(attributes[58])
-            self.test_found = str(attributes[59])
-            self.type_id = int(attributes[60])
-            self.unit = str(attributes[61])
+            self.accepted = int(none_to_default(attributes[0], 0))
+            self.approved = int(none_to_default(attributes[1], 0))
+            self.approved_by = int(none_to_default(attributes[2], 0))
+            self.analysis = str(none_to_default(attributes[3], ''))
+            self.category_id = int(none_to_default(attributes[4], 0))
+            self.chargeable = int(none_to_default(attributes[5], -1))
+            self.chargeable_1 = int(none_to_default(attributes[6], -1))
+            self.chargeable_2 = int(none_to_default(attributes[7], -1))
+            self.chargeable_3 = int(none_to_default(attributes[8], -1))
+            self.chargeable_4 = int(none_to_default(attributes[9], -1))
+            self.chargeable_5 = int(none_to_default(attributes[10], -1))
+            self.chargeable_6 = int(none_to_default(attributes[11], -1))
+            self.chargeable_7 = int(none_to_default(attributes[12], -1))
+            self.chargeable_8 = int(none_to_default(attributes[13], -1))
+            self.chargeable_9 = int(none_to_default(attributes[14], -1))
+            self.chargeable_10 = int(none_to_default(attributes[15], -1))
+            self.complete = int(none_to_default(attributes[16], 0))
+            self.complete_by = int(none_to_default(attributes[17], 0))
+            self.cost = float(none_to_default(attributes[18], 0.0))
+            self.criticality_id = int(none_to_default(attributes[19], 0))
+            self.date_approved = none_to_default(
+                attributes[20], date.today() + timedelta(days=30))
+            self.date_complete = none_to_default(
+                attributes[21], date.today() + timedelta(days=30))
+            self.date_requested = none_to_default(attributes[22], date.today())
+            self.date_reviewed = none_to_default(
+                attributes[23], date.today() + timedelta(days=30))
+            self.description_long = str(none_to_default(attributes[24], ''))
+            self.description_short = str(none_to_default(attributes[25], ''))
+            self.detection_method_id = int(none_to_default(attributes[26], 0))
+            self.execution_time = float(none_to_default(attributes[27], 0.0))
+            self.hardware_id = int(none_to_default(attributes[28], 0))
+            self.incident_age = int(none_to_default(attributes[29], 0))
+            self.life_cycle_id = int(none_to_default(attributes[30], 0))
+            self.relevant = int(none_to_default(attributes[31], -1))
+            self.relevant_1 = int(none_to_default(attributes[32], -1))
+            self.relevant_2 = int(none_to_default(attributes[33], -1))
+            self.relevant_3 = int(none_to_default(attributes[34], -1))
+            self.relevant_4 = int(none_to_default(attributes[35], -1))
+            self.relevant_5 = int(none_to_default(attributes[36], -1))
+            self.relevant_6 = int(none_to_default(attributes[37], -1))
+            self.relevant_7 = int(none_to_default(attributes[38], -1))
+            self.relevant_8 = int(none_to_default(attributes[39], -1))
+            self.relevant_9 = int(none_to_default(attributes[40], -1))
+            self.relevant_10 = int(none_to_default(attributes[41], -1))
+            self.relevant_11 = int(none_to_default(attributes[42], -1))
+            self.relevant_12 = int(none_to_default(attributes[43], -1))
+            self.relevant_13 = int(none_to_default(attributes[44], -1))
+            self.relevant_14 = int(none_to_default(attributes[45], -1))
+            self.relevant_15 = int(none_to_default(attributes[46], -1))
+            self.relevant_16 = int(none_to_default(attributes[47], -1))
+            self.relevant_17 = int(none_to_default(attributes[48], -1))
+            self.relevant_18 = int(none_to_default(attributes[49], -1))
+            self.relevant_19 = int(none_to_default(attributes[50], -1))
+            self.relevant_20 = int(none_to_default(attributes[51], -1))
+            self.remarks = str(none_to_default(attributes[52], ''))
+            self.request_by = int(none_to_default(attributes[53], 0))
+            self.reviewed = int(none_to_default(attributes[54], 0))
+            self.reviewed_by = int(none_to_default(attributes[55], 0))
+            self.software_id = int(none_to_default(attributes[56], 0))
+            self.status_id = int(none_to_default(attributes[57], 0))
+            self.test_case = str(none_to_default(attributes[58], ''))
+            self.test_found = str(none_to_default(attributes[59], ''))
+            self.type_id = int(none_to_default(attributes[60], 0))
+            self.unit = str(none_to_default(attributes[61], ''))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

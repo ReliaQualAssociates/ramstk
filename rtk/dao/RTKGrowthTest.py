@@ -1,36 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKGrowthTest.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ===============================================================================
 The RTKGrowthTest Table
@@ -39,18 +12,14 @@ The RTKGrowthTest Table
 
 from datetime import date
 
-# Import the database models.
-from sqlalchemy import Column, Date, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Date, Float, \
+                       ForeignKey, Integer          # pylint: disable=R0401
+from sqlalchemy.orm import relationship             # pylint: disable=R0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=R0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=R0401
 
 
 class RTKGrowthTest(RTK_BASE):
@@ -140,34 +109,34 @@ class RTKGrowthTest(RTK_BASE):
                format(self.phase_id)
 
         try:
-            self.i_mi = float(attributes[0])
-            self.i_mf = float(attributes[1])
-            self.i_ma = float(attributes[2])
-            self.i_num_fails = int(attributes[3])
-            self.p_growth_rate = float(attributes[4])
-            self.p_ms = float(attributes[5])
-            self.p_fef_avg = float(attributes[6])
-            self.p_prob = float(attributes[7])
-            self.p_mi = float(attributes[8])
-            self.p_mf = float(attributes[9])
-            self.p_ma = float(attributes[10])
-            self.p_test_time = float(attributes[11])
-            self.p_num_fails = float(attributes[12])
-            self.p_start_date = attributes[13]
-            self.p_end_date = attributes[14]
-            self.p_weeks = float(attributes[15])
-            self.p_test_units = int(attributes[16])
-            self.p_tpu = float(attributes[17])
-            self.p_tpupw = float(attributes[18])
-            self.o_growth_rate = float(attributes[19])
-            self.o_ms = float(attributes[20])
-            self.o_fef_avg = float(attributes[21])
-            self.o_mi = float(attributes[22])
-            self.o_mf = float(attributes[23])
-            self.o_ma = float(attributes[24])
-            self.o_test_time = float(attributes[25])
-            self.o_num_fails = int(attributes[26])
-            self.o_ttff = float(attributes[27])
+            self.i_mi = float(none_to_default(attributes[0], 0.0))
+            self.i_mf = float(none_to_default(attributes[1], 0.0))
+            self.i_ma = float(none_to_default(attributes[2], 0.0))
+            self.i_num_fails = int(none_to_default(attributes[3], 0))
+            self.p_growth_rate = float(none_to_default(attributes[4], 0.0))
+            self.p_ms = float(none_to_default(attributes[5], 0.0))
+            self.p_fef_avg = float(none_to_default(attributes[6], 0.0))
+            self.p_prob = float(none_to_default(attributes[7], 0.0))
+            self.p_mi = float(none_to_default(attributes[8], 0.0))
+            self.p_mf = float(none_to_default(attributes[9], 0.0))
+            self.p_ma = float(none_to_default(attributes[10], 0.0))
+            self.p_test_time = float(none_to_default(attributes[11], 0.0))
+            self.p_num_fails = float(none_to_default(attributes[12], 0.0))
+            self.p_start_date = none_to_default(attributes[13], date.today())
+            self.p_end_date = none_to_default(attributes[14], date.today())
+            self.p_weeks = float(none_to_default(attributes[15], 0.0))
+            self.p_test_units = int(none_to_default(attributes[16], 0))
+            self.p_tpu = float(none_to_default(attributes[17], 0.0))
+            self.p_tpupw = float(none_to_default(attributes[18], 0.0))
+            self.o_growth_rate = float(none_to_default(attributes[19], 0.0))
+            self.o_ms = float(none_to_default(attributes[20], 0.0))
+            self.o_fef_avg = float(none_to_default(attributes[21], 0.0))
+            self.o_mi = float(none_to_default(attributes[22], 0.0))
+            self.o_mf = float(none_to_default(attributes[23], 0.0))
+            self.o_ma = float(none_to_default(attributes[24], 0.0))
+            self.o_test_time = float(none_to_default(attributes[25], 0.0))
+            self.o_num_fails = int(none_to_default(attributes[26], 0))
+            self.o_ttff = float(none_to_default(attributes[27], 0.0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

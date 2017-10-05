@@ -12,7 +12,6 @@ The RTKMode Table
 
 import gettext
 
-# Import the database models.
 from sqlalchemy import BLOB, Column, Float, \
                        ForeignKey, Integer, \
                        String                   # pylint: disable=E0401

@@ -1,56 +1,26 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKDesignElectric.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ===============================================================================
 The RTKDesignElectric Table
 ===============================================================================
 """
 
-# Import the database models.
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import Column, Float, ForeignKey, \
+                       Integer, String              # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 
+# pylint: disable=R0902
 class RTKDesignElectric(RTK_BASE):
     """
     Class to represent the rtk_design_electric table in the RTK Program
@@ -196,58 +166,67 @@ class RTKDesignElectric(RTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.hardware_id = int(attributes[0])
-            self.application_id = int(attributes[1])
-            self.area = float(attributes[2])
-            self.capacitance = float(attributes[3])
-            self.configuration_id = int(attributes[4])
-            self.construction_id = int(attributes[5])
-            self.contact_form_id = int(attributes[6])
-            self.contact_gauge = int(attributes[7])
-            self.contact_rating_id = int(attributes[8])
-            self.current_operating = float(attributes[9])
-            self.current_rated = float(attributes[10])
-            self.current_ratio = float(attributes[11])
-            self.environment_active_id = int(attributes[12])
-            self.environment_dormant_id = int(attributes[13])
-            self.family_id = int(attributes[14])
-            self.feature_size = float(attributes[15])
-            self.frequency_operating = float(attributes[16])
-            self.insert_id = int(attributes[17])
-            self.insulation_id = int(attributes[18])
-            self.manufacturing_id = int(attributes[19])
-            self.matching_id = int(attributes[20])
-            self.n_active_pins = int(attributes[21])
-            self.n_circuit_planes = int(attributes[22])
-            self.n_cycles = int(attributes[23])
-            self.n_elements = int(attributes[24])
-            self.n_hand_soldered = int(attributes[25])
-            self.n_wave_soldered = int(attributes[26])
-            self.operating_life = float(attributes[27])
-            self.overstress = int(attributes[28])
-            self.package_id = int(attributes[29])
-            self.power_operating = float(attributes[30])
-            self.power_rated = float(attributes[31])
-            self.power_ratio = float(attributes[32])
-            self.reason = str(attributes[33])
-            self.resistance = float(attributes[34])
-            self.specification_id = int(attributes[35])
-            self.technology_id = int(attributes[36])
-            self.temperature_case = float(attributes[37])
-            self.temperature_hot_spot = float(attributes[38])
-            self.temperature_junction = float(attributes[39])
-            self.temperature_rated_max = float(attributes[40])
-            self.temperature_rated_min = float(attributes[41])
-            self.temperature_rise = float(attributes[42])
-            self.theta_jc = float(attributes[43])
-            self.type_id = float(attributes[44])
-            self.voltage_ac_operating = float(attributes[45])
-            self.voltage_dc_operating = float(attributes[46])
-            self.voltage_esd = float(attributes[47])
-            self.voltage_rated = float(attributes[48])
-            self.voltage_ratio = float(attributes[49])
-            self.weight = float(attributes[50])
-            self.years_in_production = int(attributes[51])
+            self.hardware_id = int(none_to_default(attributes[0], 0))
+            self.application_id = int(none_to_default(attributes[1], 0))
+            self.area = float(none_to_default(attributes[2], 0.0))
+            self.capacitance = float(none_to_default(attributes[3], 0.0))
+            self.configuration_id = int(none_to_default(attributes[4], 0))
+            self.construction_id = int(none_to_default(attributes[5], 0))
+            self.contact_form_id = int(none_to_default(attributes[6], 0))
+            self.contact_gauge = int(none_to_default(attributes[7], 0))
+            self.contact_rating_id = int(none_to_default(attributes[8], 0))
+            self.current_operating = float(none_to_default(attributes[9], 0.0))
+            self.current_rated = float(none_to_default(attributes[10], 0.0))
+            self.current_ratio = float(none_to_default(attributes[11], 0.0))
+            self.environment_active_id = int(none_to_default(attributes[12],
+                                                             0))
+            self.environment_dormant_id = int(none_to_default(attributes[13],
+                                                              0))
+            self.family_id = int(none_to_default(attributes[14], 0))
+            self.feature_size = float(none_to_default(attributes[15], 0.0))
+            self.frequency_operating = float(none_to_default(attributes[16],
+                                                             0.0))
+            self.insert_id = int(none_to_default(attributes[17], 0))
+            self.insulation_id = int(none_to_default(attributes[18], 0))
+            self.manufacturing_id = int(none_to_default(attributes[19], 0))
+            self.matching_id = int(none_to_default(attributes[20], 0))
+            self.n_active_pins = int(none_to_default(attributes[21], 0))
+            self.n_circuit_planes = int(none_to_default(attributes[22], 1))
+            self.n_cycles = int(none_to_default(attributes[23], 0))
+            self.n_elements = int(none_to_default(attributes[24], 0))
+            self.n_hand_soldered = int(none_to_default(attributes[25], 0))
+            self.n_wave_soldered = int(none_to_default(attributes[26], 0))
+            self.operating_life = float(none_to_default(attributes[27], 0.0))
+            self.overstress = int(none_to_default(attributes[28], 0))
+            self.package_id = int(none_to_default(attributes[29], 0))
+            self.power_operating = float(none_to_default(attributes[30], 0.0))
+            self.power_rated = float(none_to_default(attributes[31], 0.0))
+            self.power_ratio = float(none_to_default(attributes[32], 0.0))
+            self.reason = str(none_to_default(attributes[33], ''))
+            self.resistance = float(none_to_default(attributes[34], 0.0))
+            self.specification_id = int(none_to_default(attributes[35], 0))
+            self.technology_id = int(none_to_default(attributes[36], 0))
+            self.temperature_case = float(none_to_default(attributes[37], 0.0))
+            self.temperature_hot_spot = float(none_to_default(attributes[38],
+                                                              0.0))
+            self.temperature_junction = float(none_to_default(attributes[39],
+                                                              0.0))
+            self.temperature_rated_max = float(none_to_default(attributes[40],
+                                                               0.0))
+            self.temperature_rated_min = float(none_to_default(attributes[41],
+                                                               0.0))
+            self.temperature_rise = float(none_to_default(attributes[42], 0.0))
+            self.theta_jc = float(none_to_default(attributes[43], 0.0))
+            self.type_id = float(none_to_default(attributes[44], 0.0))
+            self.voltage_ac_operating = float(none_to_default(attributes[45],
+                                                              0.0))
+            self.voltage_dc_operating = float(none_to_default(attributes[46],
+                                                              0.0))
+            self.voltage_esd = float(none_to_default(attributes[47], 0.0))
+            self.voltage_rated = float(none_to_default(attributes[48], 0.0))
+            self.voltage_ratio = float(none_to_default(attributes[49], 0.0))
+            self.weight = float(none_to_default(attributes[50], 0.0))
+            self.years_in_production = int(none_to_default(attributes[51], 1))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

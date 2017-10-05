@@ -1,36 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKHardware.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ===============================================================================
 The RTKHardware Table
@@ -39,18 +12,14 @@ The RTKHardware Table
 
 from datetime import date
 
-# Import the database models.
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import BLOB, Column, Float, \
+                       ForeignKey, Integer, String  # pylint: disable=R0401
+from sqlalchemy.orm import relationship             # pylint: disable=R0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=R0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=R0401
 
 
 class RTKHardware(RTK_BASE):
@@ -180,38 +149,41 @@ class RTKHardware(RTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.alt_part_number = str(attributes[0])
-            self.attachments = str(attributes[1])
-            self.cage_code = str(attributes[2])
-            self.category_id = int(attributes[3])
-            self.comp_ref_des = str(attributes[4])
-            self.cost = float(attributes[5])
-            self.cost_failure = float(attributes[6])
-            self.cost_hour = float(attributes[7])
-            self.cost_type_id = int(attributes[8])
-            self.description = str(attributes[9])
-            self.duty_cycle = float(attributes[10])
-            self.figure_number = str(attributes[11])
-            self.lcn = str(attributes[12])
-            self.level = int(attributes[13])
-            self.manufacturer_id = int(attributes[14])
-            self.mission_time = float(attributes[15])
-            self.name = str(attributes[16])
-            self.nsn = str(attributes[17])
-            self.page_number = str(attributes[18])
-            self.parent_id = int(attributes[19])
-            self.part = int(attributes[20])
-            self.part_number = str(attributes[21])
-            self.quantity = int(attributes[22])
-            self.ref_des = str(attributes[23])
-            self.remarks = str(attributes[24])
-            self.repairable = int(attributes[25])
-            self.specification_number = str(attributes[26])
-            self.subcategory_id = int(attributes[27])
-            self.tagged_part = int(attributes[28])
-            self.total_part_count = int(attributes[29])
-            self.total_power_dissipation = float(attributes[30])
-            self.year_of_manufacture = int(attributes[31])
+            self.alt_part_number = str(none_to_default(attributes[0], ''))
+            self.attachments = str(none_to_default(attributes[1], ''))
+            self.cage_code = str(none_to_default(attributes[2], ''))
+            self.category_id = int(none_to_default(attributes[3], 0))
+            self.comp_ref_des = str(none_to_default(attributes[4], ''))
+            self.cost = float(none_to_default(attributes[5], 0.0))
+            self.cost_failure = float(none_to_default(attributes[6], 0.0))
+            self.cost_hour = float(none_to_default(attributes[7], 0.0))
+            self.cost_type_id = int(none_to_default(attributes[8], 0))
+            self.description = str(none_to_default(attributes[9], ''))
+            self.duty_cycle = float(none_to_default(attributes[10], 100.0))
+            self.figure_number = str(none_to_default(attributes[11], ''))
+            self.lcn = str(none_to_default(attributes[12], ''))
+            self.level = int(none_to_default(attributes[13], 0))
+            self.manufacturer_id = int(none_to_default(attributes[14], 0))
+            self.mission_time = float(none_to_default(attributes[15], 100.0))
+            self.name = str(none_to_default(attributes[16], ''))
+            self.nsn = str(none_to_default(attributes[17], ''))
+            self.page_number = str(none_to_default(attributes[18], ''))
+            self.parent_id = int(none_to_default(attributes[19], 0))
+            self.part = int(none_to_default(attributes[20], 0))
+            self.part_number = str(none_to_default(attributes[21], ''))
+            self.quantity = int(none_to_default(attributes[22], 1))
+            self.ref_des = str(none_to_default(attributes[23], ''))
+            self.remarks = str(none_to_default(attributes[24], ''))
+            self.repairable = int(none_to_default(attributes[25], 0))
+            self.specification_number = str(none_to_default(attributes[26],
+                                                            ''))
+            self.subcategory_id = int(none_to_default(attributes[27], 0))
+            self.tagged_part = int(none_to_default(attributes[28], 0))
+            self.total_part_count = int(none_to_default(attributes[29], 0))
+            self.total_power_dissipation = float(
+                none_to_default(attributes[30], 0.0))
+            self.year_of_manufacture = int(none_to_default(attributes[31],
+                                                           date.today().year))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

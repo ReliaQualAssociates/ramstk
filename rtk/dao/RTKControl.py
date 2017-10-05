@@ -10,7 +10,6 @@ The RTKControl Table
 ===============================================================================
 """
 
-# Import the database models.
 from sqlalchemy import Column, ForeignKey, \
                        Integer, String              # pylint: disable=E0401
 from sqlalchemy.orm import relationship             # pylint: disable=E0401
@@ -19,11 +18,6 @@ from sqlalchemy.orm import relationship             # pylint: disable=E0401
 from Utilities import error_handler, \
                       none_to_default               # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
 class RTKControl(RTK_BASE):

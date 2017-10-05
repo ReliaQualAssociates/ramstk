@@ -1,50 +1,18 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKCommonDB.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ===============================================================================
 The RTKCommonDB File
 ===============================================================================
 """
-
+# pylint: disable=E0401
 from sqlalchemy.ext.declarative import declarative_base
 
 RTK_BASE = declarative_base()
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # This file contains all the dictionaries defining the default fields for each
 # of the tables in the RTK Common database.
@@ -411,25 +379,25 @@ RTK_CRITICALITIES = {0: ('Catastrophic',
                          'loss exceeding $1M, or irreversible severe '
                          'environmental damage that violates law or '
                          'regulation.', 'I', 4),
-                    1: ('Critical',
-                        'Could result in permanent partial disability, '
-                        'injuries or occupational illness that may result in '
-                        'hospitalization of at least three personnel, loss '
-                        'exceeding $200K but less than $1M, or reversible '
-                        'environmental damage causing a violation of law or '
-                        'regulation.', 'II', 3),
-                    2: ('Marginal',
-                        'Could result in injury or occupational illness '
-                        'resulting in one or more lost work days(s), loss '
-                        'exceeding $10K but less than $200K, or mitigatible '
-                        'environmental damage without violation of law or '
-                        'regulation where restoration activities can be '
-                        'accomplished.', 'III', 2),
-                    3: ('Negligble',
-                        'Could result in injury or illness not resulting in a '
-                        'lost work day, loss exceeding $2K but less than '
-                        '$10K, or minimal environmental damage not violating '
-                        'law or regulation.', 'IV', 1)}
+                     1: ('Critical',
+                         'Could result in permanent partial disability, '
+                         'injuries or occupational illness that may result in '
+                         'hospitalization of at least three personnel, loss '
+                         'exceeding $200K but less than $1M, or reversible '
+                         'environmental damage causing a violation of law or '
+                         'regulation.', 'II', 3),
+                     2: ('Marginal',
+                         'Could result in injury or occupational illness '
+                         'resulting in one or more lost work days(s), loss '
+                         'exceeding $10K but less than $200K, or mitigatible '
+                         'environmental damage without violation of law or '
+                         'regulation where restoration activities can be '
+                         'accomplished.', 'III', 2),
+                     3: ('Negligble',
+                         'Could result in injury or illness not resulting in a '
+                         'lost work day, loss exceeding $2K but less than '
+                         '$10K, or minimal environmental damage not violating '
+                         'law or regulation.', 'IV', 1)}
 
 RTK_DISTRIBUTIONS = {0: ('Constant Probability', 'statistical'),
                      1: ('Exponential', 'statistical'),
@@ -725,11 +693,11 @@ RTK_MEASUREMENTS = {0: ('Contamination, Concentration',),
                     19: ('Torque',)}
 
 RTK_HISTORIES = {0: ('Cycle Counts',),
-                1: ('Histogram',),
-                2: ('Histogram, Bivariate',),
-                3: ('Level Crossing',),
-                4: ('Rain Flow Count',),
-                5: ('Time at Level',),
-                6: ('Time at Load',),
-                7: ('Time at Maximum',),
-                8: ('Time at Minimum',)}
+                 1: ('Histogram',),
+                 2: ('Histogram, Bivariate',),
+                 3: ('Level Crossing',),
+                 4: ('Rain Flow Count',),
+                 5: ('Time at Level',),
+                 6: ('Time at Load',),
+                 7: ('Time at Maximum',),
+                 8: ('Time at Minimum',)}

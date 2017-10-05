@@ -1,36 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKIncidentAction.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ===============================================================================
 The RTKIncidentAction Table
@@ -39,18 +12,14 @@ The RTKIncidentAction Table
 
 from datetime import date, timedelta
 
-# Import the database models.
-from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy import BLOB, Column, Date, \
+                       ForeignKey, Integer          # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 
 class RTKIncidentAction(RTK_BASE):
@@ -123,17 +92,20 @@ class RTKIncidentAction(RTK_BASE):
                format(self.action_id)
 
         try:
-            self.action_owner = int(values[0])
-            self.action_prescribed = str(values[1])
-            self.action_taken = str(values[2])
-            self.approved = int(values[3])
-            self.approved_by = int(values[4])
-            self.approved_date = values[5]
-            self.closed = int(values[6])
-            self.closed_by = int(values[7])
-            self.closed_date = values[8]
-            self.due_date = values[9]
-            self.status_id = int(values[10])
+            self.action_owner = int(none_to_default(values[0], 0))
+            self.action_prescribed = str(none_to_default(values[1], ''))
+            self.action_taken = str(none_to_default(values[2], ''))
+            self.approved = int(none_to_default(values[3], 0))
+            self.approved_by = int(none_to_default(values[4], 0))
+            self.approved_date = none_to_default(
+                values[5], date.today() + timedelta(days=30))
+            self.closed = int(none_to_default(values[6], 0))
+            self.closed_by = int(none_to_default(values[7], 0))
+            self.closed_date = none_to_default(
+                values[8], date.today() + timedelta(days=30))
+            self.due_date = none_to_default(
+                values[9], date.today() + timedelta(days=30))
+            self.status_id = int(none_to_default(values[10], 0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
@@ -144,4 +116,3 @@ class RTKIncidentAction(RTK_BASE):
                    "more RTKIncidentAction attributes."
 
         return _error_code, _msg
-
