@@ -352,7 +352,7 @@ class Model(object):
         # ------------------------------------------------------------------- #
         self.tree.create_node('Components', -1)
         for _category in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.type == 'hardware').all():
+                filter(RTKCategory.cat_type == 'hardware').all():
             self.tree.create_node(_category.name, _category.category_id,
                                   parent=-1,
                                   data=_category.get_attributes()[1:])
@@ -397,12 +397,12 @@ class Model(object):
                 _category.get_attributes()[1:]
 
         for _category in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.type == 'incident').all():
+                filter(RTKCategory.cat_type == 'incident').all():
             configuration.RTK_INCIDENT_CATEGORY[_category.category_id] = \
                 _category.get_attributes()[1:]
 
         for _severity in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.type == 'risk').all():
+                filter(RTKCategory.cat_type == 'risk').all():
             configuration.RTK_SEVERITY[_severity.category_id] = \
                 _severity.get_attributes()[1:]
 
@@ -410,17 +410,17 @@ class Model(object):
         # Load dictionaries from RTKEnviron.                                  #
         # ------------------------------------------------------------------- #
         for _environ in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.type == 'active').all():
+                filter(RTKEnviron.environ_type == 'active').all():
             configuration.RTK_ACTIVE_ENVIRONMENTS[_environ.environ_id] = \
                 _environ.get_attributes()[1:]
 
         for _environ in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.type == 'dormant').all():
+                filter(RTKEnviron.environ_type == 'dormant').all():
             configuration.RTK_DORMANT_ENVIRONMENTS[_environ.environ_id] = \
                 _environ.get_attributes()[1:]
 
         for _environ in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.type == 'development').all():
+                filter(RTKEnviron.environ_type == 'development').all():
             configuration.RTK_SW_DEV_ENVIRONMENTS[_environ.environ_id] = \
                 _environ.get_attributes()[1:]
 
@@ -428,12 +428,12 @@ class Model(object):
         # Load dictionaries from RTKGroup.                                    #
         # ------------------------------------------------------------------- #
         for _group in self.site_session.query(RTKGroup).\
-                filter(RTKGroup.type == 'affinity').all():
+                filter(RTKGroup.group_type == 'affinity').all():
             configuration.RTK_AFFINITY_GROUPS[_group.group_id] = \
                 _group.get_attributes()[1:]
 
         for _group in self.site_session.query(RTKGroup).\
-                filter(RTKGroup.type == 'workgroup').all():
+                filter(RTKGroup.group_type == 'workgroup').all():
             configuration.RTK_WORKGROUPS[_group.group_id] = \
                 _group.get_attributes()[1:]
 
@@ -441,12 +441,12 @@ class Model(object):
         # Load dictionaries from RTKLevel.                                    #
         # ------------------------------------------------------------------- #
         for _level in self.site_session.query(RTKLevel).\
-                filter(RTKLevel.type == 'probability').all():
+                filter(RTKLevel.level_type == 'probability').all():
             configuration.RTK_FAILURE_PROBABILITY[_level.level_id] = \
                 _level.get_attributes()[1:]
 
         for _level in self.site_session.query(RTKLevel).\
-                filter(RTKLevel.type == 'software').all():
+                filter(RTKLevel.level_type == 'software').all():
             configuration.RTK_SW_LEVELS[_level.level_id] = \
                 _level.get_attributes()[1:]
 
@@ -454,12 +454,12 @@ class Model(object):
         # Load the dictionaries from RTKMethod.                               #
         # ------------------------------------------------------------------- #
         for _method in self.site_session.query(RTKMethod).\
-                filter(RTKMethod.type == 'detection').all():
+                filter(RTKMethod.method_type == 'detection').all():
             configuration.RTK_DETECTION_METHODS[_method.method_id] = \
                 _method.get_attributes[1:]
 
         for _method in self.site_session.query(RTKMethod).\
-                filter(RTKMethod.type == 'test').all():
+                filter(RTKMethod.method_type == 'test').all():
             configuration.RTK_SW_TEST_METHODS[_method.method_id] = \
                 _method.get_attributes[1:]
 
@@ -467,11 +467,11 @@ class Model(object):
         # Load dictionaries from RTKModel.                                    #
         # ------------------------------------------------------------------- #
         for _model in self.site_session.query(RTKModel).\
-                filter(RTKModel.type == 'allocation').all():
+                filter(RTKModel.model_type == 'allocation').all():
             configuration.RTK_ALLOCATION_MODELS[_model.model_id] = \
                 _model.get_attributes()[1:]
         for _model in self.site_session.query(RTKModel).\
-                filter(RTKModel.type == 'rprediction').all():
+                filter(RTKModel.model_type == 'rprediction').all():
             configuration.RTK_HR_MODEL[_model.model_id] = \
                 _model.get_attributes()[1:]
 
@@ -479,12 +479,12 @@ class Model(object):
         # Load the dictionaries from RTKPhase.                                #
         # ------------------------------------------------------------------- #
         for _phase in self.site_session.query(RTKPhase).\
-                filter(RTKPhase.type == 'lifecycle').all():
+                filter(RTKPhase.phase_type == 'lifecycle').all():
             configuration.RTK_LIFECYCLE[_phase.phase_id] = \
                 _phase.get_atrributes()[1:]
 
         for _phase in self.site_session.query(RTKPhase).\
-                filter(RTKPhase.type == 'development').all():
+                filter(RTKPhase.phase_type == 'development').all():
             configuration.RTK_SW_DEV_PHASES[_phase.phase_id] = \
                 _phase.get_attributes()[1:]
 
@@ -492,17 +492,17 @@ class Model(object):
         # Load dictionaries from RTKRPN.                                      #
         # ------------------------------------------------------------------- #
         for _rpn in self.site_session.query(RTKRPN).\
-                filter(RTKRPN.type == 'detection').all():
+                filter(RTKRPN.rpn_type == 'detection').all():
             configuration.RTK_RPN_DETECTION[_rpn.rpn_id] = \
                 _rpn.get_attributes()[1:]
 
         for _rpn in self.site_session.query(RTKRPN).\
-                filter(RTKRPN.type == 'occurrence').all():
+                filter(RTKRPN.rpn_type == 'occurrence').all():
             configuration.RTK_RPN_OCCURRENCE[_rpn.rpn_id] = \
                 _rpn.get_attributes()[1:]
 
         for _rpn in self.site_session.query(RTKRPN). \
-                filter(RTKRPN.type == 'severity').all():
+                filter(RTKRPN.rpn_type == 'severity').all():
             configuration.RTK_RPN_SEVERITY[_rpn.rpn_id] = \
                 _rpn.get_attributes()[1:]
 

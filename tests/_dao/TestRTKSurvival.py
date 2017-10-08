@@ -144,8 +144,8 @@ class TestRTKSurvival(unittest.TestCase):
 
         _attributes = (1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
                        0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, None, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, date.today(),
+                       0.0, 0.0, 0.0, 0.0, 'None', 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, date.today(),
                        date.today() + timedelta(days=30), 0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)

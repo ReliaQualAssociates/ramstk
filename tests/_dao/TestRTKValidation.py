@@ -123,7 +123,7 @@ class TestRTKValidation(unittest.TestCase):
         (TestRTKValidation) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0.0, None, 0.0, 0.0, 95.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+        _attributes = (0.0, 'None', 0.0, 0.0, 95.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                        date.today() + timedelta(days=30), date.today(),
                        'Test Validation', 0, 0.0, 0, '', 0.0, 0.0, 0.0, 0.0,
                        0.0)

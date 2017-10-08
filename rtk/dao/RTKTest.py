@@ -1,54 +1,23 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKTest.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 ===============================================================================
 The RTKTest Table
 ===============================================================================
 """
 
-# Import the database models.
-from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy import BLOB, Column, Float, \
+                       ForeignKey, Integer, String  # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default
-from dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, \
+                      none_to_default               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 
 class RTKTest(RTK_BASE):
@@ -90,6 +59,7 @@ class RTKTest(RTK_BASE):
     inst_mean_ll = Column('fld_inst_mean_ll', Float, default=0.0)
     inst_mean_se = Column('fld_inst_mean_se', Float, default=0.0)
     inst_mean_ul = Column('fld_inst_mean_ul', Float, default=0.0)
+    # pylint: disable=invalid-name
     mg = Column('fld_mg', Float, default=0.0)
     mgp = Column('fld_mgp', Float, default=0.0)
     n_phases = Column('fld_n_phases', Integer, default=1)
@@ -162,47 +132,47 @@ class RTKTest(RTK_BASE):
                format(self.test_id)
 
         try:
-            self.assess_model_id = int(attributes[0])
-            self.attachment = str(attributes[1])
-            self.avg_fef = float(attributes[2])
-            self.avg_growth = float(attributes[3])
-            self.avg_ms = float(attributes[4])
-            self.chi_square = float(attributes[5])
-            self.confidence = float(attributes[6])
-            self.consumer_risk = float(attributes[7])
-            self.cramer_vonmises = float(attributes[8])
-            self.cum_failures = int(attributes[9])
-            self.cum_mean = float(attributes[10])
-            self.cum_mean_ll = float(attributes[11])
-            self.cum_mean_se = float(attributes[12])
-            self.cum_mean_ul = float(attributes[13])
-            self.cum_time = float(attributes[14])
-            self.description = str(attributes[15])
-            self.grouped = int(attributes[16])
-            self.group_interval = float(attributes[17])
-            self.inst_mean = float(attributes[18])
-            self.inst_mean_ll = float(attributes[19])
-            self.inst_mean_se = float(attributes[20])
-            self.inst_mean_ul = float(attributes[21])
-            self.mg = float(attributes[22])
-            self.mgp = float(attributes[23])
-            self.n_phases = int(attributes[24])
-            self.name = str(attributes[25])
-            self.plan_model_id = int(attributes[26])
-            self.prob = float(attributes[27])
-            self.producer_risk = float(attributes[28])
-            self.scale = float(attributes[29])
-            self.scale_ll = float(attributes[30])
-            self.scale_se = float(attributes[31])
-            self.scale_ul = float(attributes[32])
-            self.shape = float(attributes[33])
-            self.shape_ll = float(attributes[34])
-            self.shape_se = float(attributes[35])
-            self.shape_ul = float(attributes[36])
-            self.tr = float(attributes[37])
-            self.ttt = float(attributes[38])
-            self.ttff = float(attributes[39])
-            self.type_id = int(attributes[40])
+            self.assess_model_id = int(none_to_default(attributes[0], 0))
+            self.attachment = str(none_to_default(attributes[1], ''))
+            self.avg_fef = float(none_to_default(attributes[2], 0.0))
+            self.avg_growth = float(none_to_default(attributes[3], 0.0))
+            self.avg_ms = float(none_to_default(attributes[4], 0.0))
+            self.chi_square = float(none_to_default(attributes[5], 0.0))
+            self.confidence = float(none_to_default(attributes[6], 0.0))
+            self.consumer_risk = float(none_to_default(attributes[7], 0.0))
+            self.cramer_vonmises = float(none_to_default(attributes[8], 0.0))
+            self.cum_failures = int(none_to_default(attributes[9], 0))
+            self.cum_mean = float(none_to_default(attributes[10], 0.0))
+            self.cum_mean_ll = float(none_to_default(attributes[11], 0.0))
+            self.cum_mean_se = float(none_to_default(attributes[12], 0.0))
+            self.cum_mean_ul = float(none_to_default(attributes[13], 0.0))
+            self.cum_time = float(none_to_default(attributes[14], 0.0))
+            self.description = str(none_to_default(attributes[15], ''))
+            self.grouped = int(none_to_default(attributes[16], 0))
+            self.group_interval = float(none_to_default(attributes[17], 0.0))
+            self.inst_mean = float(none_to_default(attributes[18], 0.0))
+            self.inst_mean_ll = float(none_to_default(attributes[19], 0.0))
+            self.inst_mean_se = float(none_to_default(attributes[20], 0.0))
+            self.inst_mean_ul = float(none_to_default(attributes[21], 0.0))
+            self.mg = float(none_to_default(attributes[22], 0.0))
+            self.mgp = float(none_to_default(attributes[23], 0.0))
+            self.n_phases = int(none_to_default(attributes[24], 1))
+            self.name = str(none_to_default(attributes[25], ''))
+            self.plan_model_id = int(none_to_default(attributes[26], 0))
+            self.prob = float(none_to_default(attributes[27], 75.0))
+            self.producer_risk = float(none_to_default(attributes[28], 0.0))
+            self.scale = float(none_to_default(attributes[29], 0.0))
+            self.scale_ll = float(none_to_default(attributes[30], 0.0))
+            self.scale_se = float(none_to_default(attributes[31], 0.0))
+            self.scale_ul = float(none_to_default(attributes[32], 0.0))
+            self.shape = float(none_to_default(attributes[33], 0.0))
+            self.shape_ll = float(none_to_default(attributes[34], 0.0))
+            self.shape_se = float(none_to_default(attributes[35], 0.0))
+            self.shape_ul = float(none_to_default(attributes[36], 0.0))
+            self.tr = float(none_to_default(attributes[37], 0.0))
+            self.ttt = float(none_to_default(attributes[38], 0.0))
+            self.ttff = float(none_to_default(attributes[39], 0.0))
+            self.type_id = int(none_to_default(attributes[40], 0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

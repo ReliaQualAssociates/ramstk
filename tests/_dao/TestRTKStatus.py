@@ -51,7 +51,7 @@ class TestRTKStatus(unittest.TestCase):
         self.DUT = session.query(RTKStatus).first()
         self.DUT.name = self.attributes[1]
         self.DUT.description = self.attributes[2]
-        self.DUT.type = self.attributes[3]
+        self.DUT.status_type = self.attributes[3]
 
         session.commit()
 
@@ -68,7 +68,7 @@ class TestRTKStatus(unittest.TestCase):
         self.assertEqual(self.DUT.status_id, 1)
         self.assertEqual(self.DUT.name, 'Initiated')
         self.assertEqual(self.DUT.description, 'Incident has been initiated.')
-        self.assertEqual(self.DUT.type, 'incident')
+        self.assertEqual(self.DUT.status_type, 'incident')
 
     @attr(all=True, unit=True)
     def test01_RTKStatus_get_attributes(self):

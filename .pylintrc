@@ -54,7 +54,7 @@ load-plugins=
 # W0403 = relative import.
 # W0511 = TODOs and FIXMEs.
 # w1402 =  Anomalous Unicode escape in byte string: \'%s\'. String constant
-# might be missing an r or u prefix. 
+# might be missing an r or u prefix.
 disable=C0301, R0903, W0403, W0511, W1402, E1101
 
 
@@ -155,7 +155,7 @@ notes=FIXME,XXX,TODO
 [SIMILARITIES]
 
 # Minimum lines number of a similarity.
-min-similarity-lines=4
+min-similarity-lines=6
 
 # Ignore comments when computing similarities.
 ignore-comments=yes

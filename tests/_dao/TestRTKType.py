@@ -51,7 +51,7 @@ class TestRTKType(unittest.TestCase):
         self.DUT = session.query(RTKType).first()
         self.DUT.code = self.attributes[1]
         self.DUT.description = self.attributes[2]
-        self.DUT.type = self.attributes[3]
+        self.DUT.type_type = self.attributes[3]
 
         session.commit()
 
@@ -68,7 +68,7 @@ class TestRTKType(unittest.TestCase):
         self.assertEqual(self.DUT.type_id, 1)
         self.assertEqual(self.DUT.code, 'CALC')
         self.assertEqual(self.DUT.description, 'Calculated')
-        self.assertEqual(self.DUT.type, 'cost')
+        self.assertEqual(self.DUT.type_type, 'cost')
 
     @attr(all=True, unit=True)
     def test01_RTKType_get_attributes(self):

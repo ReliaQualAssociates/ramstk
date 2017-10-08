@@ -144,7 +144,7 @@ class TestRTKTest(unittest.TestCase):
         _attributes = (0, '', 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
                        0.0, 0.0, 0.0, 'Test Test Description', 0, 0.0, 0.0,
                        0.0, 0.0, 0.0, 0.0, 0.0, 1, '', 0, 75.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, None, 0.0, 0)
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'None', 0.0, 0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

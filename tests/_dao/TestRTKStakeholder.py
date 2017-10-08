@@ -111,7 +111,7 @@ class TestRTKStakeholder(unittest.TestCase):
         """
 
         _attributes = (1, 'Test Stakeholder Description', '', 0.0, 0.0, 1, 1,
-                       0, '', 0.0, 0.0, 0.0, 0.0, None)
+                       0, '', 0.0, 0.0, 0.0, 0.0, 'None')
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

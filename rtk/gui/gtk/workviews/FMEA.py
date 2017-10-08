@@ -347,8 +347,7 @@ class WorkView(gtk.HBox, RTKWorkView):
 
         return self._dtc_fmea.request_update_all()
 
-    @staticmethod
-    def _on_button_press(treeview, event):
+    def _on_button_press(self, treeview, event):
         """
         Method for handling mouse clicks on the FMEA package TreeView
         gtk.TreeView().
