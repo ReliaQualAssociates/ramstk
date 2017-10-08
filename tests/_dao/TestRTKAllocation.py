@@ -114,8 +114,8 @@ class TestRTKAllocation(unittest.TestCase):
         (TestRTKAllocation) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0.0, 10, 1, 0.0, None, 1, 1, 1, 0.0, 0.0, 1, 1, 1, 0.0,
-                       0.0, 1.0, 1, 1, 1)
+        _attributes = (0.0, 10, 1, 0.0, 'None', 1, 1, 1, 0.0, 0.0, 1, 1, 1,
+                       0.0, 0.0, 1.0, 1, 1, 1)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

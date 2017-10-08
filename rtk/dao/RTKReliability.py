@@ -138,7 +138,7 @@ class RTKReliability(RTK_BASE):
                        self.reliability_miss_variance, self.scale_parameter,
                        self.shape_parameter, self.survival_analysis_id,
                        self.lambda_b)
-
+        print _attributes
         return _attributes
 
     def set_attributes(self, attributes):

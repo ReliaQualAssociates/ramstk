@@ -100,7 +100,7 @@ class TestRTKPhase(unittest.TestCase):
         (TestRTKPhases) set_attributes should return a 10 error code when passed the wrong data type
         """
 
-        _attributes = ('Test Mission Phase', 'Test', 0.0, None)
+        _attributes = ('Test Mission Phase', 'Test', 0.0, 'None')
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

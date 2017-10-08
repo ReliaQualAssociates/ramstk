@@ -51,7 +51,7 @@ class TestRTKRPN(unittest.TestCase):
         self.DUT = session.query(RTKRPN).first()
         self.DUT.name = self.attributes[1]
         self.DUT.description = self.attributes[2]
-        self.DUT.type = self.attributes[3]
+        self.DUT.rpn_type = self.attributes[3]
         self.DUT.value = self.attributes[4]
 
         session.commit()
@@ -69,7 +69,7 @@ class TestRTKRPN(unittest.TestCase):
         self.assertEqual(self.DUT.rpn_id, 1)
         self.assertEqual(self.DUT.description, 'No effect.')
         self.assertEqual(self.DUT.name, 'None')
-        self.assertEqual(self.DUT.type, 'severity')
+        self.assertEqual(self.DUT.rpn_type, 'severity')
         self.assertEqual(self.DUT.value, 1)
 
     @attr(all=True, unit=True)

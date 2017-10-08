@@ -101,7 +101,7 @@ class RTKEnvironment(RTK_BASE):
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKEnvironment.set_attributes()."
-        except TypeError as _err:
+        except (TypeError, ValueError) as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKEnvironment attributes."

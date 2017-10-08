@@ -101,7 +101,7 @@ class TestRTKMatrix(unittest.TestCase):
         (TestRTKMatrix) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0, 0, 0, 0, 0, 0, None)
+        _attributes = (0, 0, 0, 0, 0, 0, 'None')
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

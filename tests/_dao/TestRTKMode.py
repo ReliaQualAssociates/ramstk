@@ -173,7 +173,7 @@ class TestRTKMode(unittest.TestCase):
     @attr(all=False, unit=True)
     def test03b_calculate_criticality_out_of_range_hazard_rate_input(self):
         """
-        (TestRTKMode) calculate_criticality raises OutOfRangeError for item_hr <= 0.0
+        (TestRTKMode) calculate_criticality raises OutOfRangeError for item_hr < 0.0
         """
 
         self.DUT.mode_ratio = 1.0
@@ -181,7 +181,7 @@ class TestRTKMode(unittest.TestCase):
         self.DUT.effect_probability = 1.0
 
         self.assertRaises(OutOfRangeError,
-                          self.DUT.calculate_criticality, 0.0)
+                          self.DUT.calculate_criticality, -0.000015)
 
     @attr(all=False, unit=True)
     def test03c_calculate_criticality_out_of_range_ratio_input(self):

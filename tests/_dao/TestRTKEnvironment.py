@@ -105,7 +105,7 @@ class TestRTKEnvironment(unittest.TestCase):
         (TestRTKEnvironment) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = ('Test Environmental Condition', 'hours', 4.5, None,
+        _attributes = ('Test Environmental Condition', 'hours', 4.5, 'None',
                        31.4, 544.0, 15.3, 25.0, 85.0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)

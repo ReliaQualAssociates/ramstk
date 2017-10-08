@@ -50,7 +50,7 @@ class TestRTKGroup(unittest.TestCase):
 
         self.DUT = session.query(RTKGroup).first()
         self.DUT.description = self.attributes[1]
-        self.DUT.type = self.attributes[2]
+        self.DUT.group_type = self.attributes[2]
 
         session.commit()
 
@@ -66,7 +66,7 @@ class TestRTKGroup(unittest.TestCase):
         self.assertEqual(self.DUT.__tablename__, 'rtk_group')
         self.assertEqual(self.DUT.group_id, 1)
         self.assertEqual(self.DUT.description, 'Engineering, Design')
-        self.assertEqual(self.DUT.type, 'workgroup')
+        self.assertEqual(self.DUT.group_type, 'workgroup')
 
     @attr(all=True, unit=True)
     def test01_rtkworkgroup_get_attributes(self):

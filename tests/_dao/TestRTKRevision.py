@@ -124,8 +124,8 @@ class TestRTKRevision(unittest.TestCase):
         (TestRTKRevision) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0.986, 0.999, 113.25, None, 0.15, 0.000001523,
-                       0.0000001523, None, 0.000001018, 0.00000852,
+        _attributes = (0.986, 0.999, 113.25, 'None', 0.15, 0.000001523,
+                       0.0000001523, 'None', 0.000001018, 0.00000852,
                        32.8, 2.3, 1.8, 59690.8, 982318.3, 12.6,
                        'Revision Name', 0.988, 0.9999, 'Remarks', 12, '-',
                        5688.6, 26812.0, 186238, 255487369.5)

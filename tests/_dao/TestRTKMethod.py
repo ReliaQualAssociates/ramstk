@@ -54,7 +54,7 @@ class TestRTKMethod(unittest.TestCase):
         self.DUT = session.query(RTKMethod).first()
         self.DUT.name = self.attributes[1]
         self.DUT.description = self.attributes[2]
-        self.DUT.type = self.attributes[3]
+        self.DUT.method_type = self.attributes[3]
 
         session.commit()
 
@@ -73,7 +73,7 @@ class TestRTKMethod(unittest.TestCase):
                          'Code review is a systematic examination (often ' \
                          'known as peer review) of computer source code.')
         self.assertEqual(self.DUT.name, 'Code Review')
-        self.assertEqual(self.DUT.type, 'test')
+        self.assertEqual(self.DUT.method_type, 'test')
 
     @attr(all=True, unit=True)
     def test01_RTKMethod_get_attributes(self):

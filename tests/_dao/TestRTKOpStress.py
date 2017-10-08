@@ -98,7 +98,7 @@ class TestRTKOpStress(unittest.TestCase):
         (TestRTKOpStress) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = ('Test Op Stress', 0, None, '')
+        _attributes = ('Test Op Stress', 0, 'None', '')
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

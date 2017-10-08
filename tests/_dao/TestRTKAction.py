@@ -68,10 +68,10 @@ class TestRTKAction(unittest.TestCase):
         self.assertEqual(self.DUT.action_id, 1)
         self.assertEqual(self.DUT.action_recommended, '')
         self.assertEqual(self.DUT.action_category, 0)
-        self.assertEqual(self.DUT.action_owner, 0)
+        self.assertEqual(self.DUT.action_owner, '0')
         self.assertEqual(self.DUT.action_due_date,
                          date.today() + timedelta(days=30))
-        self.assertEqual(self.DUT.action_status_id, 0)
+        self.assertEqual(self.DUT.action_status, '0')
         self.assertEqual(self.DUT.action_taken, '')
         self.assertEqual(self.DUT.action_approved, 0)
         self.assertEqual(self.DUT.action_approve_date,
@@ -87,8 +87,9 @@ class TestRTKAction(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (1, 1, 1, '', 0, 0, date.today() + timedelta(days=30),
-                          0, '', 0, date.today() + timedelta(days=30), 0,
+                         (1, 1, 1, '', 0, '0',
+                          date.today() + timedelta(days=30),
+                          '0', '', 0, date.today() + timedelta(days=30), 0,
                           date.today() + timedelta(days=30)))
 
     @attr(all=True, unit=True)
@@ -114,7 +115,7 @@ class TestRTKAction(unittest.TestCase):
         """
 
         _attributes = ('', 0, 0, date.today() + timedelta(days=30), 0, '', 0,
-                       date.today() + timedelta(days=30), None,
+                       date.today() + timedelta(days=30), 'None',
                        date.today() + timedelta(days=30))
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
