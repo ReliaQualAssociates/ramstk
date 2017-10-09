@@ -20,11 +20,6 @@ from datamodels import RTKDataModel             # pylint: disable=E0401
 from datamodels import RTKDataController        # pylint: disable=E0401
 from dao import RTKFunction                     # pylint: disable=E0401
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
-
 _ = gettext.gettext
 
 
@@ -414,8 +409,6 @@ class Function(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, \
             _msg = self._dtm_function.calculate_reliability(function_id)
 
@@ -431,8 +424,6 @@ class Function(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        _return = False
 
         _error_code, \
             _msg = self._dtm_function.calculate_availability(function_id)

@@ -58,6 +58,7 @@ class Model(RTKDataModel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.last_id = None
 
     def select(self, revision_id):
         """
@@ -84,6 +85,10 @@ class Model(RTKDataModel):
         _session = RTKDataModel.select_all(self)
 
         for _revision in _session.query(RTKRevision).all():
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _revision.get_attributes()
+            _revision.set_attributes(_attributes[2:])
             self.tree.create_node(_revision.name, _revision.revision_id,
                                   parent=0, data=_revision)
 
@@ -91,7 +96,7 @@ class Model(RTKDataModel):
 
         return self.tree
 
-    def insert(self, **kwargs):
+    def insert(self):
         """
         Method to add a Revision to the RTK Program database.
 
@@ -105,7 +110,7 @@ class Model(RTKDataModel):
         if _error_code == 0:
             self.tree.create_node(_revision.name, _revision.revision_id,
                                   parent=0, data=_revision)
-            self._last_id = _revision.revision_id
+            self._last_id = _revision.revision_id   # pylint: disable=W0201
 
         return _error_code, _msg
 
@@ -165,12 +170,15 @@ class Model(RTKDataModel):
         for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.data.revision_id)
-            except AttributeError:
-                pass
 
-            # Break if something goes wrong and return.
-            if _error_code != 0:
-                print _error_code
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.revision.Revision.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.revision.Revision.Model.update_all().'
 
         return _error_code, _msg
 
@@ -197,9 +205,9 @@ class Model(RTKDataModel):
                'ID {0:d}.'.format(_revision.revision_id)
 
         # Calculate the logistics h(t).
-        _revision.hazard_rate_logistics = (_revision.hazard_rate_active
-                                           + _revision.hazard_rate_dormant
-                                           + _revision.hazard_rate_software)
+        _revision.hazard_rate_logistics = (_revision.hazard_rate_active +
+                                           _revision.hazard_rate_dormant +
+                                           _revision.hazard_rate_software)
 
         # Calculate the logistics MTBF.
         try:
@@ -224,12 +232,12 @@ class Model(RTKDataModel):
                 format(_revision.revision_id, _revision.hazard_rate_logistics)
 
         # Calculate reliabilities.
-        _revision.reliability_logistics = exp(-1.0
-                                              * _revision.hazard_rate_logistics
-                                              * mission_time / multiplier)
-        _revision.reliability_mission = exp(-1.0
-                                            * _revision.hazard_rate_mission
-                                            * mission_time / multiplier)
+        _revision.reliability_logistics = exp(-1.0 *
+                                              _revision.hazard_rate_logistics *
+                                              mission_time / multiplier)
+        _revision.reliability_mission = exp(-1.0 *
+                                            _revision.hazard_rate_mission *
+                                            mission_time / multiplier)
 
         return _error_code, _msg
 
@@ -251,9 +259,9 @@ class Model(RTKDataModel):
 
         # Calculate logistics availability.
         try:
-            _revision.availability_logistics = (_revision.mtbf_logistics
-                                                / (_revision.mtbf_logistics
-                                                   + _revision.mttr))
+            _revision.availability_logistics = (_revision.mtbf_logistics /
+                                                (_revision.mtbf_logistics +
+                                                 _revision.mttr))
         except(ZeroDivisionError, OverflowError):
             _revision.availability_logistics = 1.0
             _error_code = 2009
@@ -266,9 +274,9 @@ class Model(RTKDataModel):
 
         # Calculate mission availability.
         try:
-            _revision.availability_mission = (_revision.mtbf_mission
-                                              / (_revision.mtbf_mission
-                                                 + _revision.mttr))
+            _revision.availability_mission = (_revision.mtbf_mission /
+                                              (_revision.mtbf_mission +
+                                               _revision.mttr))
         except(ZeroDivisionError, OverflowError):
             _revision.availability_mission = 1.0
             _error_code = 2009
@@ -298,9 +306,8 @@ class Model(RTKDataModel):
         _msg = 'RTK SUCCESS: Calculating cost metrics for Revision ID ' \
                '{0:d}.'.format(_revision.revision_id)
 
-        # Calculate costs.
-        _revision.cost_failure = (_revision.cost
-                                  * _revision.hazard_rate_logistics)
+        _revision.cost_failure = (_revision.cost *
+                                  _revision.hazard_rate_logistics)
         try:
             _revision.cost_hour = _revision.cost / mission_time
         except(ZeroDivisionError, OverflowError):
@@ -348,7 +355,6 @@ class Revision(RTKDataController):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self.__test = kwargs['test']
         self._dtm_revision = Model(dao)
 
         # Initialize public dictionary attributes.
@@ -393,20 +399,14 @@ class Revision(RTKDataController):
 
         _error_code, _msg = self._dtm_revision.insert()
 
-        # If the add was successful log the success message to the user log.
-        # Otherwise, update the error message and write it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('insertedRevision')
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedRevision',
+                            revision_id=self.dtm_revision.last_id)
         else:
-            _msg = _msg + '  Failed to add a new Revision to the RTK Program \
-                           database.'
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
+            _msg = _msg + '  Failed to add a new Function to the RTK ' \
+                'Program database.'
 
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, revision_id):
         """
@@ -418,22 +418,10 @@ class Revision(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_revision.delete(revision_id)
 
-        # If the delete was successful log the success message to the user log.
-        # Otherwise, update the error message and log it to the debug log.
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('deletedRevision')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'deletedRevision')
 
     def request_update(self, revision_id):
         """
@@ -445,20 +433,10 @@ class Revision(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_revision.update(revision_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('savedRevision')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'savedRevision')
 
     def request_update_all(self):
         """
@@ -469,35 +447,30 @@ class Revision(RTKDataController):
         :rtype: (int, str)
         """
 
-        return self._dtm_revision.update_all()
+        _error_code, _msg = self._dtm_revision.update_all()
 
-    def request_calculate_reliability(self, revision_id, mission_time):
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
+
+    def request_calculate_reliability(self, revision_id, mission_time,
+                                      multiplier):
         """
         Method to request reliability attributes be calculated for the
         Revision ID passed.
 
         :param int revision_id: the Revision ID to calculate.
         :param float mission_time: the time to use in the calculations.
+        :param float multiplier: the hazard rate multiplier.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        _return = False
+        _error_code, \
+            _msg = self._dtm_revision.calculate_reliability(revision_id,
+                                                            mission_time,
+                                                            multiplier)
 
-        _error_code, _msg = self._dtm_revision.calculate_reliability(
-                revision_id, float(mission_time),
-                float(self._configuration.RTK_HR_MULTIPLIER))
-
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedRevision')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedRevision')
 
     def request_calculate_availability(self, revision_id):
         """
@@ -509,21 +482,11 @@ class Revision(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, \
             _msg = self._dtm_revision.calculate_availability(revision_id)
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedRevision')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedRevision')
 
     def request_calculate_costs(self, revision_id, mission_time):
         """
@@ -536,18 +499,8 @@ class Revision(RTKDataController):
         :rtype: bool
         """
 
-        _return = False
-
         _error_code, _msg = self._dtm_revision.calculate_costs(
-                revision_id, float(mission_time))
+            revision_id, float(mission_time))
 
-        if _error_code == 0:
-            self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self.__test:
-                pub.sendMessage('calculatedRevision')
-        else:
-            self._configuration.RTK_DEBUG_LOG.error(_msg)
-            _return = True
-
-        return _return
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'calculatedRevision')
