@@ -1,3 +1,4 @@
+# pylint: disable=C0141,W0611
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.workviews.__init__.py is part of the RTK Project
