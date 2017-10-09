@@ -161,10 +161,9 @@ class RTKDataModel(object):
             if _entity is not None:
                 _session.add(_entity)
                 _error_code, _msg = self.dao.db_update(_session)
-
         except AttributeError:
             _error_code = 6
-            _msg = 'RTK ERROR: AAttempted to save non-existent entity ' \
+            _msg = 'RTK ERROR: Attempted to save non-existent entity ' \
                    'with Node ID {0:s}.'.format(str(node_id))
 
         _session.close()
