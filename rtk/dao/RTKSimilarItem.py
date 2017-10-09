@@ -20,6 +20,7 @@ from Utilities import error_handler, \
 from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 
+# pylint: disable=R0902
 class RTKSimilarItem(RTK_BASE):
     """
     Class to represent the rtk_similar_item table in the RTK Program database.

@@ -13,13 +13,13 @@ The RTKGrowthTest Table
 from datetime import date
 
 from sqlalchemy import Column, Date, Float, \
-                       ForeignKey, Integer          # pylint: disable=R0401
-from sqlalchemy.orm import relationship             # pylint: disable=R0401
+                       ForeignKey, Integer          # pylint: disable=E0401
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, \
-                      none_to_default               # pylint: disable=R0401
-from dao.RTKCommonDB import RTK_BASE                # pylint: disable=R0401
+                      none_to_default               # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 
 class RTKGrowthTest(RTK_BASE):
