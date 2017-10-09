@@ -12,15 +12,13 @@ The RTKCause Table
 
 import gettext
 
-# Import the database models.
-from sqlalchemy import Column, ForeignKey, \
-                       Integer, String              # pylint: disable=E0401
+# pylint: disable=E0401
+from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, \
-                      none_to_default, \
-                      OutOfRangeError               # pylint: disable=E0401
+# pylint: disable=E0401
+from Utilities import error_handler, none_to_default, OutOfRangeError
 from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
 _ = gettext.gettext

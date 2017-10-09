@@ -12,13 +12,11 @@ The RTKSiteInfo Table
 
 from datetime import date, timedelta
 
-from sqlalchemy import Column, Date, \
-                       Integer, String              # pylint: disable=E0401
+from sqlalchemy import Column, Date, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, \
-                      none_to_default               # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKSiteInfo(RTK_BASE):

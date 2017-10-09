@@ -12,15 +12,13 @@ The RTKAction Table
 
 from datetime import date, timedelta
 
-# Import the database models.
-from sqlalchemy import BLOB, Column, Date, \
-                       ForeignKey, Integer, String  # pylint: disable=E0401
-from sqlalchemy.orm import relationship             # pylint: disable=E0401
+# pylint: disable=E0401
+from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, \
-                      none_to_default               # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKAction(RTK_BASE):
