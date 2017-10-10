@@ -13,11 +13,11 @@ Usage Profile Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
-from dao import RTKMission, RTKMissionPhase, \
-                RTKEnvironment                      # pylint: disable=E0401
+# pylint: disable=E0401
+from dao import RTKMission, RTKMissionPhase, RTKEnvironment
 from datamodels import RTKDataModel                 # pylint: disable=E0401
 from datamodels import RTKDataController            # pylint: disable=E0401
 from .Mission import Model as Mission

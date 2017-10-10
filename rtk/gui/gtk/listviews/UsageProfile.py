@@ -1,37 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.listviews.UsageProfile.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ###############################################################################
 Usage Profile Package List Book View
@@ -44,19 +16,17 @@ import sys
 import gettext
 import locale
 
-from pubsub import pub
-from sortedcontainers import SortedDict
+from pubsub import pub                              # pylint: disable=E0401
+from sortedcontainers import SortedDict             # pylint: disable=E0401
 
 # Modules required for the GUI.
-import pango
+import pango                                        # pylint: disable=E0401
 try:
-    # noinspection PyUnresolvedReferences
     from pygtk import require
     require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     from gtk import JUSTIFY_CENTER, HBox, ToolButton, Label, \
         TREE_VIEW_COLUMN_AUTOSIZE, Image, gdk, TreeStore, TreeViewColumn, \
         ScrolledWindow, CellRendererText, TreeView, VBox, CellRendererPixbuf, \
@@ -64,23 +34,16 @@ try:
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk.glade
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     from gobject import type_name, TYPE_INT, TYPE_STRING, TYPE_FLOAT
 except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-from gui.gtk import rtk
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from gui.gtk import rtk                             # pylint: disable=E0401
 
 _ = gettext.gettext
 
@@ -267,14 +230,14 @@ class ListView(gtk.VBox):
 
         self.tvw_profile.set_rubber_banding(True)
         self.tvw_profile.set_tooltip_text(
-                _(u"Displays the list of usage profiles for the selected "
-                  u"revision."))
+            _(u"Displays the list of usage profiles for the selected "
+              u"revision."))
         self._lst_handler_id.append(
-                self.tvw_profile.connect('cursor_changed',
-                                         self._on_row_changed))
+            self.tvw_profile.connect('cursor_changed',
+                                     self._on_row_changed))
         self._lst_handler_id.append(
-                self.tvw_profile.connect('button_press_event',
-                                         self._on_button_press))
+            self.tvw_profile.connect('button_press_event',
+                                     self._on_button_press))
 
         _icon = gdk.pixbuf_new_from_file_at_size(self._dic_icons['tab'],
                                                  22, 22)
@@ -389,7 +352,7 @@ class ListView(gtk.VBox):
         try:
             if _entity.is_mission:
                 _icon = gdk.pixbuf_new_from_file_at_size(
-                        self._dic_icons['mission'], 22, 22)
+                    self._dic_icons['mission'], 22, 22)
                 _data = [_icon, _entity.mission_id, _entity.description, '',
                          _entity.time_units, 0.0, _entity.mission_time, 0.0,
                          0.0, _node.identifier, 0, 'mission']
@@ -397,7 +360,7 @@ class ListView(gtk.VBox):
 
             elif _entity.is_phase:
                 _icon = gdk.pixbuf_new_from_file_at_size(
-                        self._dic_icons['phase'], 22, 22)
+                    self._dic_icons['phase'], 22, 22)
                 _data = [_icon, _entity.phase_id, _entity.name,
                          _entity.description, '', _entity.phase_start,
                          _entity.phase_end, 0.0, 0.0, _node.identifier, 0,
@@ -405,7 +368,7 @@ class ListView(gtk.VBox):
 
             elif _entity.is_env:
                 _icon = gdk.pixbuf_new_from_file_at_size(
-                        self._dic_icons['environment'], 22, 22)
+                    self._dic_icons['environment'], 22, 22)
                 _data = [_icon, _entity.environment_id, _entity.name, '',
                          _entity.units, _entity.minimum, _entity.maximum,
                          _entity.mean, _entity.variance, _node.identifier,
