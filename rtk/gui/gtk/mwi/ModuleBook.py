@@ -1,37 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.mwi.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ===============================================================================
 PyGTK Multi-Window Interface Module Book View
@@ -44,37 +16,29 @@ import sys
 import gettext
 import locale
 
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
 # Import modules required for the GUI.
 try:
-    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk.glade
 except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import Utilities
+# pylint: disable=E0401
 from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
 from gui.gtk.moduleviews.Function import ModuleView as mvwFunction
 from gui.gtk.Assistants import CreateProject, OpenProject, DeleteProject, \
     Options
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 
 _ = gettext.gettext
 
@@ -192,7 +156,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         self.notebook.set_tab_pos(_position)
 
         # Insert a page for each of the active RTK Modules.
-        for _page in self.dic_module_views.keys():
+        for _page in self.dic_module_views:
             _object = self.dic_module_views[_page]
             self.notebook.insert_page(_object[0],
                                       tab_label=_object[0].hbx_tab_label,
@@ -481,7 +445,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             format(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
         self.statusbar.push(1, _message)
         self.set_title(_(u"RTK - Analyzing {0:s}").format(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
+            self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
 
         return _return
 

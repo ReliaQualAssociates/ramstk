@@ -5,33 +5,6 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This is the main program for the RTK application.
 """
@@ -43,18 +16,16 @@ import sys
 from datetime import date
 
 from sqlalchemy.orm import scoped_session
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
-from treelib import Tree
+from treelib import Tree                            # pylint: disable=E0401
 
 try:
-    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
@@ -510,12 +481,12 @@ class Model(object):
         # Load dictionaries from RTKStatus.                                   #
         # ------------------------------------------------------------------- #
         for _status in self.site_session.query(RTKStatus).\
-                filter(RTKStatus.type == 'action').all():
+                filter(RTKStatus.status_type == 'action').all():
             configuration.RTK_ACTION_STATUS[_status.status_id] = \
                 _status.get_attributes()[1:]
 
         for _status in self.site_session.query(RTKStatus).\
-                filter(RTKStatus.type == 'incident').all():
+                filter(RTKStatus.status_type == 'incident').all():
             configuration.RTK_INCIDENT_STATUS[_status.status_id] = \
                 _status.get_attributes()[1:]
 
@@ -525,32 +496,32 @@ class Model(object):
         configuration.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
 
         for _type in self.site_session.query(RTKType). \
-                filter(RTKType.type == 'cost').all():
+                filter(RTKType.type_type == 'cost').all():
             configuration.RTK_COST_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'mtbf').all():
+                filter(RTKType.type_type == 'mtbf').all():
             configuration.RTK_HR_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'incident').all():
+                filter(RTKType.type_type == 'incident').all():
             configuration.RTK_INCIDENT_TYPE[_type.type_id] = \
                 _type.get_attributes[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'mttr').all():
+                filter(RTKType.type_type == 'mttr').all():
             configuration.RTK_MTTR_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'requirement').all():
+                filter(RTKType.type_type == 'requirement').all():
             configuration.RTK_REQUIREMENT_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'validation').all():
+                filter(RTKType.type_type == 'validation').all():
             configuration.RTK_VALIDATION_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
@@ -578,7 +549,7 @@ class Model(object):
                 _manufacturer.get_attributes()[1:]
 
         for _unit in self.site_session.query(RTKUnit).\
-                filter(RTKUnit.type == 'measurement').all():
+                filter(RTKUnit.unit_type == 'measurement').all():
             configuration.RTK_MEASUREMENT_UNITS[_unit.unit_id] = \
                 _unit.get_attributes()[1:]
 
@@ -913,9 +884,9 @@ class RTK(object):
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip(
-                    _(u"RTK is connected to program database "
-                      u"{0:s}.".format(
-                            self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
+                _(u"RTK is connected to program database "
+                  u"{0:s}.".format(
+                      self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
 
             self.loaded = True
 

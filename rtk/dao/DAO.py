@@ -12,8 +12,8 @@ import gettext
 
 from sqlalchemy import create_engine, exc, MetaData     # pylint: disable=E0401
 from sqlalchemy.ext.declarative import declarative_base # pylint: disable=E0401
-from sqlalchemy_utils import create_database            # pylint: disable=E0401
 from sqlalchemy.orm import sessionmaker                 # pylint: disable=E0401
+from sqlalchemy_utils import create_database            # pylint: disable=E0401
 
 # Import other RTK modules.
 import RTKCommonDB                                      # pylint: disable=E0401
@@ -69,7 +69,7 @@ from .RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
 from .RTKOpStress import RTKOpStress
 from .RTKProgramInfo import RTKProgramInfo
-from .RTKReliability import RTKReliability
+from .RTKReliability import RTKReliability          # pylint: disable=E0401
 from .RTKRequirement import RTKRequirement
 from .RTKRevision import RTKRevision
 from .RTKSimilarItem import RTKSimilarItem
