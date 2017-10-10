@@ -11,14 +11,11 @@ FMEA Package Work View
 """
 
 from datetime import datetime
-from pubsub import pub                              # pylint: disable=E0401
 from sortedcontainers import SortedDict             # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gtk               # pylint: disable=E0401
-from gui.gtk import rtk                             # pylint: disable=E0401
 from gui.gtk.assistants import AddControlAction     # pylint: disable=E0401
-from .WorkView import RTKWorkView
+from .WorkView import RTKWorkView, pub, gtk, rtk, _
 
 
 class WorkView(gtk.HBox, RTKWorkView):

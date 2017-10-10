@@ -12,14 +12,10 @@ Function Package Work View
 
 import locale
 
-from pubsub import pub                                  # pylint: disable=E0401
-
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gtk                   # pylint: disable=E0401
-from gui.gtk import rtk                                 # pylint: disable=E0401
 from gui.gtk.workviews.FMEA import WorkView as FMEA     # pylint: disable=E0401
 from gui.gtk.assistants.Function import AddFunction     # pylint: disable=E0401
-from .WorkView import RTKWorkView
+from .WorkView import RTKWorkView, pub, gtk, rtk, _
 
 
 class WorkView(gtk.VBox, RTKWorkView):

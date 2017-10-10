@@ -12,12 +12,8 @@ Revision Package Work View Class
 
 import locale
 
-from pubsub import pub                              # pylint: disable=E0401
-
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gtk               # pylint: disable=E0401
-from gui.gtk import rtk                             # pylint: disable=E0401
-from .WorkView import RTKWorkView
+from .WorkView import RTKWorkView, pub, gtk, rtk, _
 # from Assistants import AddRevision
 
 

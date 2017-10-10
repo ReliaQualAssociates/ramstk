@@ -15,7 +15,7 @@ import os
 import sys
 from datetime import date
 
-from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import scoped_session           # pylint: disable=E0401
 from pubsub import pub                              # pylint: disable=E0401
 
 from treelib import Tree                            # pylint: disable=E0401
