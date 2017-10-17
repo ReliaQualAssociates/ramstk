@@ -34,6 +34,11 @@ class RTKBaseView(object):
 
     _response_ok = gtk.RESPONSE_OK
 
+    _left_tab = gtk.POS_LEFT
+    _right_tab = gtk.POS_RIGHT
+    _top_tab = gtk.POS_TOP
+    _bottom_tab = gtk.POS_BOTTOM
+
     def __init__(self, controller):
         """
         Method to initialize the Work View.

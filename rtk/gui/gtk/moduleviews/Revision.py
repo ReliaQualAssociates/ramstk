@@ -82,7 +82,7 @@ class ModuleView(RTKModuleView):
         pub.subscribe(self._on_select_revision, 'openedProgram')
         pub.subscribe(self._on_select_revision, 'insertedRevision')
         pub.subscribe(self._on_select_revision, 'deletedRevision')
-        pub.subscribe(self._on_edit, 'wvw_editedRevision')
+        pub.subscribe(self._on_edit, 'wvwEditedRevision')
 
     def _do_change_row(self, treeview):
         """
@@ -138,7 +138,7 @@ class ModuleView(RTKModuleView):
 
             _attributes[self._lst_col_order[position] - 1] = str(new_text)
 
-            pub.sendMessage('mvw_editedRevision',
+            pub.sendMessage('mvwEditedRevision',
                             revision_id=self._revision_id)
         else:
             _return = True
@@ -248,18 +248,16 @@ class ModuleView(RTKModuleView):
                                                           'horizontal', 56, 56)
 
         _button = _toolbar.get_nth_item(0)
-        _button.set_tooltip_text(_(u"Adds a new Function at the same "
-                                   u"hierarchy level as the selected Function "
-                                   u"(i.e., a sibling Function)."))
+        _button.set_tooltip_text(_(u"Adds a new Revision."))
         _button.connect('clicked', self._do_request_insert)
 
         _button = _toolbar.get_nth_item(1)
         _button.set_tooltip_text(_(u"Removes the currently selected "
-                                   u"Function."))
+                                   u"Revision."))
         _button.connect('clicked', self._do_request_delete)
 
         _button = _toolbar.get_nth_item(2)
-        _button.set_tooltip_text(_(u"Saves changes to the selected Function."))
+        _button.set_tooltip_text(_(u"Saves changes to the Revisions."))
         _button.connect('clicked', self._do_request_update_all)
 
         _toolbar.show_all()

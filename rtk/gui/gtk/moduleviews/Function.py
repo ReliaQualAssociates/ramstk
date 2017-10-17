@@ -139,44 +139,6 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_calculate(self, __button):
-        """
-        Method to send request to calculate the selected function to the
-        Function data controller.
-
-        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
-                                        method.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        _error_code = 0
-        _msg = ['', '']
-
-        if self._dtc_function.request_calculate_reliability(self.function_id):
-            _error_code = 1
-            _msg[0] = 'Error calculating reliability attributes.'
-
-        if self._dtc_function.request_calculate_availability(self.function_id):
-            _error_code = 1
-            _msg[1] = 'Error calculating availability attributes.'
-
-        if _error_code != 0:
-            _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
-                        _msg[1] + "\n\n").format(self.function_id)
-            _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                 self._dic_icons['error'],
-                                                 'error')
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
     def _do_request_delete(self, __button):
         """
         Method to delete the selected Function and it's children.
@@ -297,8 +259,7 @@ class ModuleView(RTKModuleView):
         :rtype: :py:class:`gtk.Toolbar`
         """
 
-        _icons = ['insert_sibling', 'insert_child', 'remove', None,
-                  'calculate', None, 'save']
+        _icons = ['insert_sibling', 'insert_child', 'remove', None, 'save']
         _toolbar, _position = RTKModuleView._make_toolbar(self, _icons,
                                                           'horizontal', 56, 56)
 
@@ -320,10 +281,6 @@ class ModuleView(RTKModuleView):
         _button.connect('clicked', self._do_request_delete)
 
         _button = _toolbar.get_nth_item(4)
-        _button.set_tooltip_text(_(u"Calculate the Functions."))
-        _button.connect('clicked', self._do_request_calculate)
-
-        _button = _toolbar.get_nth_item(6)
         _button.set_tooltip_text(_(u"Saves changes to the selected Function."))
         _button.connect('clicked', self._do_request_update_all)
 

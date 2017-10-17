@@ -9,5 +9,4 @@
 from .ListView import RTKListView
 
 from .FailureDefinition import ListView as lvwFailureDefinition
-from .Function import ListView
 from .UsageProfile import ListView as lvwUsageProfile

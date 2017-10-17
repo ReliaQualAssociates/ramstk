@@ -717,7 +717,7 @@ class RTK(object):
         # configuration.
         if self.RTK_CONFIGURATION.RTK_GUI_LAYOUT == 'basic':  # Single window.
             pass
-        else:  # Multiple windows.
+        else:                                   # Multiple windows.
             self.dic_books['listbook'] = ListBook(self)
             self.dic_books['modulebook'] = ModuleBook(self)
             self.dic_books['workbook'] = WorkBook(self)
