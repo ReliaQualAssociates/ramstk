@@ -10,56 +10,20 @@ PyGTK Multi-Window Interface List Book
 ===============================================================================
 """
 
-import sys
-
 # Import modules for localization support.
 import gettext
-import locale
 
 from pubsub import pub                              # pylint: disable=E0401
 
-# Modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
 # Import other RTK modules.
 # pylint: disable=E0401
-from gui.gtk.listviews.Revision import ListView as lvwRevision
-from gui.gtk.listviews.Function import ListView as lvwFunction
+from gui.gtk.rtk import RTKBook
+from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition
 
 _ = gettext.gettext
 
 
-def destroy(__widget, __event=None):
-    """
-    Quits the RTK application when the X in the upper right corner is
-    pressed.
-
-    :param __widget: the gtk.Widget() that called this method.
-    :type __widget: :py:class:`gtk.Widget`
-    :keyword __event: the gtk.gdk.Event() that called this method.
-    :type __event: :py:class:`gtk.gdk.Event`
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    gtk.main_quit()
-
-    return False
-
-
-class ListView(gtk.Window):                 # pylint: disable=R0904
+class ListBook(RTKBook):                 # pylint: disable=R0904
     """
     This is the List View class for the pyGTK multiple window interface.
     """
@@ -72,46 +36,44 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
+        RTKBook.__init__(self, controller)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
 
         # Initialize public dictionary attributes.
-        self.dic_list_view = {'revision': lvwRevision(controller),
-                              'function': lvwFunction(controller)}
+        self.dic_list_view = {'revision':
+                              [lvwUsageProfile(controller),
+                               lvwFailureDefinition(controller)],
+                              'function':
+                              []}
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
 
-        try:
-            locale.setlocale(locale.LC_ALL,
-                             self._mdcRTK.RTK_CONFIGURATION.RTK_LOCALE)
-        except locale.Error:
-            locale.setlocale(locale.LC_ALL, '')
-
-        # Create a new window and set its properties.
-        gtk.Window.__init__(self)
+        # Set the properties for the ListBook and it's widgets.
         self.set_title(_(u"RTK Matrices & Lists"))
-        self.set_resizable(True)
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
 
-        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
-        _width = gtk.gdk.screen_width() / _n_screens
-        _height = gtk.gdk.screen_height()
+        self.set_default_size((self._width / 3) - 10, (2 * self._height / 7))
+        self.move((2 * self._width / 3), 0)
 
-        self.set_default_size((_width / 3) - 10, (2 * _height / 7))
-        self.set_border_width(5)
-        self.set_position(gtk.WIN_POS_NONE)
-        self.move((2 * _width / 3), 0)
+        if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'left':
+            self.notebook.set_tab_pos(self._left_tab)
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'right':
+            self.notebook.set_tab_pos(self._right_tab)
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['listbook'] == 'top':
+            self.notebook.set_tab_pos(self._top_tab)
+        else:
+            self.notebook.set_tab_pos(self._bottom_tab)
 
-        self.connect('delete_event', destroy)
+        self.add(self.notebook)
 
         self.show_all()
 
@@ -119,7 +81,7 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
 
     def _on_module_change(self, module=''):
         """
-        Method to load the correct List View for the RTK module that was
+        Method to load the correct List Views for the RTK module that was
         selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
@@ -128,12 +90,9 @@ class ListView(gtk.Window):                 # pylint: disable=R0904
 
         _return = False
 
-        if self.get_child() is not None:
-            self.remove(self.get_child())
+        RTKBook._on_module_change(self)
 
-        if self.dic_list_view[module] is not None:
-            self.add(self.dic_list_view[module])
-        else:
-            _return = True
+        for _list in self.dic_list_view[module]:
+            self.notebook.insert_page(_list, _list.hbx_tab_label, -1)
 
         return _return

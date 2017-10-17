@@ -1131,9 +1131,9 @@ def set_cursor(controller, cursor):
                                   - gtk.gdk.XTERM - selection bar
     """
 
-    controller.dic_books['listview'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.dic_books['moduleview'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.dic_books['workview'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.dic_books['listbook'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.dic_books['modulebook'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.dic_books['workbook'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
 
     gtk.gdk.flush()
 

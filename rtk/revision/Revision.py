@@ -451,6 +451,20 @@ class Revision(RTKDataController):
 
         return RTKDataController.handle_results(self, _error_code, _msg, None)
 
+    def request_get_attributes(self, revision_id):
+        """
+        Method to request the attributes from the selected Revision data model.
+
+        :param int revision_id: the ID of the Revision whose attributes are
+                                being requested.
+        :return: _attributes
+        :rtype: list
+        """
+
+        _revision = self.request_select(revision_id)
+
+        return list(_revision.get_attributes())
+
     def request_calculate_reliability(self, revision_id, mission_time,
                                       multiplier):
         """

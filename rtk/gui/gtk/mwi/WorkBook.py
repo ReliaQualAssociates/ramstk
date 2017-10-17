@@ -10,56 +10,21 @@ PyGTK Multi-Window Interface Work Book
 ===============================================================================
 """
 
-import sys
-
 # Import modules for localization support.
 import gettext
-import locale
 
 from pubsub import pub                              # pylint: disable=E0401
 
-# Modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
 # Import other RTK modules.
 # pylint: disable=E0401
+from gui.gtk.rtk import RTKBook
 from gui.gtk.workviews.Revision import WorkView as wvwRevision
-from gui.gtk.workviews.Function import WorkView as wvwFunction
+#from gui.gtk.workviews.Function import WorkView as wvwFunction
 
 _ = gettext.gettext
 
 
-def destroy(__widget, __event=None):
-    """
-    Quits the RTK application when the X in the upper right corner is
-    pressed.
-
-    :param __widget: the gtk.Widget() that called this method.
-    :type __widget: :py:class:`gtk.Widget`
-    :keyword __event: the gtk.gdk.Event() that called this method.
-    :type __event: :py:class:`gtk.gdk.Event`
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    gtk.main_quit()
-
-    return False
-
-
-class WorkView(gtk.Window):                 # pylint: disable=R0904
+class WorkBook(RTKBook):                 # pylint: disable=R0904
     """
     This is the Work Book for the pyGTK multiple window interface.
     """
@@ -72,59 +37,56 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
+        RTKBook.__init__(self, controller)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
 
         # Initialize public dictionary attributes.
-        self.dic_work_view = {'revision': wvwRevision(controller),
-                              'function': wvwFunction(controller)}
+        self.dic_work_views = {'revision': [wvwRevision(controller), ]} #,
+                               #'function': wvwFunction(controller)}
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
 
-        try:
-            locale.setlocale(locale.LC_ALL,
-                             self._mdcRTK.RTK_CONFIGURATION.RTK_LOCALE)
-        except locale.Error:
-            locale.setlocale(locale.LC_ALL, '')
-
-        # Create a new window and set its properties.
-        gtk.Window.__init__(self)
-        self.set_resizable(True)
+        # Set the properties for the ModuleBook and it's widgets.
+        self.set_title(_(u"RTK Work Book"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
-        self.set_title(_(u"RTK Work Book"))
-
-        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
-        _width = gtk.gdk.screen_width() / _n_screens
-        _height = gtk.gdk.screen_height()
 
         # On a 1268x1024 screen, the size will be 845x640.
-        _width = _width - 20
-        _height = (5 * _height / 8) - 40
+        _width = self._width - 20
+        _height = (5 * self._height / 8) - 40
 
         self.set_default_size(_width, _height)
-        self.set_border_width(5)
-        self.set_position(gtk.WIN_POS_NONE)
         self.move((_width / 1), (_height / 2))
 
-        self.connect('delete_event', destroy)
+        if controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'left':
+            self.notebook.set_tab_pos(self._left_tab)
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'right':
+            self.notebook.set_tab_pos(self._right_tab)
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'top':
+            self.notebook.set_tab_pos(self._top_tab)
+        else:
+            self.notebook.set_tab_pos(self._bottom_tab)
+
+        self.add(self.notebook)
 
         self.show_all()
 
         self._on_module_change(module='revision')
+
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
 
     def _on_module_change(self, module=''):
         """
-        Method to load the correct ListView for the RTK module that was
-        selected in the ModuleBook.
+        Method to load the correct Work Views for the RTK module that was
+        selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -132,12 +94,9 @@ class WorkView(gtk.Window):                 # pylint: disable=R0904
 
         _return = False
 
-        if self.get_child() is not None:
-            self.remove(self.get_child())
+        RTKBook._on_module_change(self)
 
-        if self.dic_work_view[module] is not None:
-            self.add(self.dic_work_view[module])
-        else:
-            _return = True
+        for _list in self.dic_work_views[module]:
+            self.notebook.insert_page(_list, _list.hbx_tab_label, -1)
 
         return _return

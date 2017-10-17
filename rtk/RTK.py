@@ -79,9 +79,9 @@ from analyses.fmea.FMEA import FMEA
 # from survival.Survival import Survival
 
 import gui.gtk.Widgets as Widgets
-from gui.gtk.mwi.ListBook import ListView
-from gui.gtk.mwi.ModuleBook import ModuleView
-from gui.gtk.mwi.WorkBook import WorkView
+from gui.gtk.mwi import ListBook
+from gui.gtk.mwi import ModuleBook
+from gui.gtk.mwi import WorkBook
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -691,9 +691,9 @@ class RTK(object):
                                 'growth': None,
                                 'action': None,
                                 'component': None}
-        self.dic_books = {'listview': None,
-                          'moduleview': None,
-                          'workview': None}
+        self.dic_books = {'listbook': None,
+                          'modulebook': None,
+                          'workbook': None}
 
         # Define public list attributes.
 
@@ -718,9 +718,9 @@ class RTK(object):
         if self.RTK_CONFIGURATION.RTK_GUI_LAYOUT == 'basic':  # Single window.
             pass
         else:  # Multiple windows.
-            self.dic_books['listview'] = ListView(self)
-            self.dic_books['moduleview'] = ModuleView(self)
-            self.dic_books['workview'] = WorkView(self)
+            self.dic_books['listbook'] = ListBook(self)
+            self.dic_books['modulebook'] = ModuleBook(self)
+            self.dic_books['workbook'] = WorkBook(self)
 
         _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
@@ -933,7 +933,7 @@ class RTK(object):
         # TODO: Move this to the ModuleBook.
         _message = _(u"Saving Program Database {0:s}"). \
             format(self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
-        self.dic_books['moduleview'].statusbar.push(2, _message)
+        self.dic_books['modulebook'].statusbar.push(2, _message)
 
         _error_code, _msg = self.rtk_model.save_program()
 
@@ -947,7 +947,7 @@ class RTK(object):
             _return = True
 
         # TODO: Move this to the ModuleBook.
-        self.dic_books['moduleview'].statusbar.pop(2)
+        self.dic_books['modulebook'].statusbar.pop(2)
 
         return _return
 

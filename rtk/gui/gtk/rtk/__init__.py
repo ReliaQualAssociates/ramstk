@@ -8,6 +8,7 @@
 
 import Widget
 
+from .Book import RTKBook, destroy
 from .Button import RTKButton, RTKCheckButton, RTKOptionButton
 from .Combo import RTKComboBox
 from .Dialog import RTKDialog, RTKMessageDialog
@@ -19,3 +20,4 @@ from .Label import RTKLabel, make_label_group
 # from .Plot import RTKPlot
 from .ScrolledWindow import RTKScrolledWindow
 from .TreeView import RTKTreeView
+from .View import RTKBaseView

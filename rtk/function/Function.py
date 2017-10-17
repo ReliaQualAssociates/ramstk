@@ -399,6 +399,20 @@ class Function(RTKDataController):
 
         return RTKDataController.handle_results(self, _error_code, _msg, None)
 
+    def request_get_attributes(self, function_id):
+        """
+        Method to request the attributes from the selected Function data model.
+
+        :param int funcion_id: the ID of the Function whose attributes are
+                                being requested.
+        :return: _attributes
+        :rtype: list
+        """
+
+        _function = self._request_select(function_id)
+
+        return list(_revision.get_attributes())
+
     def request_calculate_reliability(self, function_id):
         """
         Method to request reliability attributes be calculated for the

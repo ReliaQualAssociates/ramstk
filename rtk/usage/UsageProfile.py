@@ -424,3 +424,17 @@ class UsageProfile(RTKDataController):
             _return = True
 
         return _return
+
+    def request_get_attributes(self, node_id):
+        """
+        Method to request the attributes from the selected Usage Profile data
+        model.
+
+        :param int node_id: the Node ID of the data package to retrieve.
+        :return: _attributes
+        :rtype: list
+        """
+
+        _node = self.request_select(node_id)
+
+        return list(_node.get_attributes())
