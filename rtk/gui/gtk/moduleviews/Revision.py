@@ -106,7 +106,7 @@ class ModuleView(RTKModuleView):
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
-        pub.sendMessage('selectedRevision', revision_id=self._revision_id)
+        pub.sendMessage('selectedRevision', module_id=self._revision_id)
 
         return _return
 

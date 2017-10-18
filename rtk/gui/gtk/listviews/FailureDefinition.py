@@ -319,7 +319,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, revision_id):
+    def _on_select_revision(self, module_id):
         """
         Method to load the Failure Definition List View gtk.TreeModel() with
         Failure Definition information whenever a new Revision is selected.
@@ -332,10 +332,12 @@ class ListView(RTKListView):
 
         _return = False
 
+        self._revision_id = module_id
+
         self._dtc_failure_definition = \
             self._mdcRTK.dic_controllers['definition']
         _definitions = \
-            self._dtc_failure_definition.request_select_all(revision_id)
+            self._dtc_failure_definition.request_select_all(self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()
@@ -347,7 +349,5 @@ class ListView(RTKListView):
             except AttributeError:
                 print "FIXME: Handle AttributeError in " \
                       "gtk.gui.listviews.FailureDefinition._on_select_revision"
-
-        self._revision_id = revision_id
 
         return _return

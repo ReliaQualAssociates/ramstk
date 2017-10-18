@@ -18,8 +18,9 @@ from pubsub import pub                              # pylint: disable=E0401
 # Import other RTK modules.
 # pylint: disable=E0401
 from gui.gtk.rtk import RTKBook
-from gui.gtk.workviews import wvwRevision
-from gui.gtk.workviews import wvwFunction
+from gui.gtk.workviews import wvwFMEA
+from gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
+from gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
 
 _ = gettext.gettext
 
@@ -46,8 +47,11 @@ class WorkBook(RTKBook):                 # pylint: disable=R0904
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_work_views = {'revision': wvwRevision(controller),
-                               'function': wvwFunction(controller)}
+        self.dic_work_views = {'revision':[wvwRevisionGD(controller),
+                                           wvwRevisionAR(controller)],
+                               'function':[wvwFunctionGD(controller),
+                                           wvwFMEA(controller),
+                                           wvwFunctionAR(controller)]}
 
         # Initialize public list attributes.
 
@@ -66,8 +70,18 @@ class WorkBook(RTKBook):                 # pylint: disable=R0904
         self.set_default_size(_width, _height)
         self.move((_width / 1), (_height / 2))
 
+        if controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'left':
+            self.notebook.set_tab_pos(self._left_tab)
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'right':
+            self.notebook.set_tab_pos(self._right_tab)
+        elif controller.RTK_CONFIGURATION.RTK_TABPOS['workbook'] == 'top':
+            self.notebook.set_tab_pos(self._top_tab)
+        else:
+            self.notebook.set_tab_pos(self._bottom_tab)
+
         self._on_module_change(module='revision')
 
+        self.add(self.notebook)
         self.show_all()
 
         pub.subscribe(self._on_module_change, 'mvwSwitchedPage')
@@ -83,11 +97,9 @@ class WorkBook(RTKBook):                 # pylint: disable=R0904
 
         _return = False
 
-        for _child in self.get_children():
-            self.remove(_child)
+        RTKBook._on_module_change(self)
 
-        self.add(self.dic_work_views[module])
-        #for _workspace in self.dic_work_views[module]:
-        #    self.notebook.insert_page(_workspace, _workspace.hbx_tab_label, -1)
+        for _workspace in self.dic_work_views[module]:
+            self.notebook.insert_page(_workspace, _workspace.hbx_tab_label, -1)
 
         return _return

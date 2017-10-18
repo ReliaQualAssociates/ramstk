@@ -558,7 +558,7 @@ class ListView(RTKListView):
 
         return False
 
-    def _on_select_revision(self, revision_id):
+    def _on_select_revision(self, module_id):
         """
         Method to load the Usage Profile List View gtk.TreeModel() with
         Usage Profile information whenever a new Revision is selected.
@@ -571,8 +571,11 @@ class ListView(RTKListView):
 
         _return = False
 
+        self._revision_id = module_id
+
         self._dtc_usage_profile = self._mdcRTK.dic_controllers['profile']
-        _profile = self._dtc_usage_profile.request_select_all(revision_id)
+        _profile = self._dtc_usage_profile.request_select_all(
+            self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()
@@ -587,6 +590,5 @@ class ListView(RTKListView):
             self.treeview.row_activated(_path, _column)
 
         self.treeview.expand_all()
-        self._revision_id = revision_id
 
         return _return

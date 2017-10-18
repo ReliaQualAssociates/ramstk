@@ -78,7 +78,7 @@ from analyses.fmea.FMEA import FMEA
 # from incident.component.Component import Component
 # from survival.Survival import Survival
 
-import gui.gtk.Widgets as Widgets
+import gui.gtk.rtk.Widget as Widgets
 from gui.gtk.mwi import ListBook
 from gui.gtk.mwi import ModuleBook
 from gui.gtk.mwi import WorkBook

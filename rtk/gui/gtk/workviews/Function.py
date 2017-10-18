@@ -12,13 +12,15 @@ Function Package Work View
 
 import locale
 
+from pubsub import pub                          # pylint: disable=E0401
+
 # Import other RTK modules.
-from gui.gtk.workviews.FMEA import WorkView as FMEA     # pylint: disable=E0401
-from gui.gtk.assistants.Function import AddFunction     # pylint: disable=E0401
-from .WorkView import RTKWorkView, pub, gtk, rtk, _
+from gui.gtk import rtk                         # pylint: disable=E0401
+from gui.gtk.rtk.Widget import _, gtk           # pylint: disable=E0401,W0611
+from .WorkView import RTKWorkView
 
 
-class WorkView(gtk.VBox, RTKWorkView):
+class GeneralData(RTKWorkView):
     """
     The Work View displays all the attributes for the selected Function. The
     attributes of a Work View are:
@@ -62,26 +64,6 @@ class WorkView(gtk.VBox, RTKWorkView):
                         hardware components comprising the Function.
     :ivar txtRemarks: the :class:`gtk.Entry` to display/edit the Function
                       remarks.
-    :ivar txtPredictedHt: the :class:`gtk.Entry` to display the Function
-                          logistics hazard rate.
-    :ivar txtMissionHt: the :class:`gtk.Entry` to display the Function mission
-                        hazard rate.
-    :ivar txtMTBF: the :class:`gtk.Entry` to display the Function logistics
-                   MTBF.
-    :ivar txtMissionMTBF: the :class:`gtk.Entry` to display the Function
-                          mission MTBF.
-    :ivar txtMPMT: the :class:`gtk.Entry` to display the Function mean
-                   preventive maintenance time.
-    :ivar txtMCMT: the :class:`gtk.Entry` to display the Function mean
-                   corrective maintenance time.
-    :ivar txtMTTR: the :class:`gtk.Entry` to display the Function mean time to
-                   repair.
-    :ivar txtMMT: the :class:`gtk.Entry` to display the Function mean
-                  maintenance time.
-    :ivar txtAvailability: the :class:`gtk.Entry` to display the Function
-                           logistics availability.
-    :ivar txtMissionAt: the :class:`gtk.Entry` to display the Function mission
-                        availability.
     """
 
     def __init__(self, controller):
@@ -92,12 +74,9 @@ class WorkView(gtk.VBox, RTKWorkView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        gtk.VBox.__init__(self)
         RTKWorkView.__init__(self, controller)
 
         # Initialize private dictionary attributes.
-        self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
-            '/32x32/function.png'
 
         # Initialize private list attributes.
 
@@ -109,7 +88,7 @@ class WorkView(gtk.VBox, RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.function_id = None
+        self._function_id = None
 
         # General data page widgets.
         self.chkSafetyCritical = rtk.RTKCheckButton(
@@ -142,7 +121,284 @@ class WorkView(gtk.VBox, RTKWorkView):
                                                     u"related to the selected "
                                                     u"function."))
 
-        # Assessment results page widgets.
+        # Connect to callback functions for editable gtk.Widgets().
+        self._lst_handler_id.append(
+            self.txtCode.connect('changed', self._on_focus_out, 0))
+        self._lst_handler_id.append(
+            self.txtName.connect('changed', self._on_focus_out, 1))
+        self._lst_handler_id.append(
+            self.txtRemarks.do_get_buffer().connect(
+                'changed', self._on_focus_out, 2))
+
+        # FIXME: The general data page should be the page shown after launching.
+        self.pack_start(self._make_toolbar(), expand=False, fill=False)
+        self.pack_start(self._make_general_data_page(), expand=True, fill=True)
+        self.show_all()
+
+        pub.subscribe(self._on_select, 'selectedFunction')
+        pub.subscribe(self._on_edit, 'mvwEditedFunction')
+        pub.subscribe(self._on_edit, 'calculatedFunction')
+
+    def _do_request_calculate(self, __button):
+        """
+        Method to send request to calculate the selected function to the
+        Function data controller.
+
+        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
+                                        method.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _error_code = 0
+        _msg = ['', '']
+
+        if self._dtc_function.request_calculate_reliability(self.function_id):
+            _error_code = 1
+            _msg[0] = 'Error calculating reliability attributes.'
+
+        if self._dtc_function.request_calculate_availability(self.function_id):
+            _error_code = 1
+            _msg[1] = 'Error calculating availability attributes.'
+
+        if _error_code != 0:
+            _prompt = _(u"An error occurred when attempting to calculate "
+                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
+                        _msg[1] + "\n\n").format(self.function_id)
+            _error_dialog = rtk.RTKMessageDialog(_prompt,
+                                                 self._dic_icons['error'],
+                                                 'error')
+            if _error_dialog.do_run() == gtk.RESPONSE_OK:
+                _error_dialog.do_destroy()
+
+            _return = True
+
+        return _return
+
+    def _do_request_update(self, __button):
+        """
+        Method to save the currently selected Function.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._dtc_function.request_update(self._function_id)
+
+    def _make_general_data_page(self):
+        """
+        Method to create the Function class gtk.Notebook() page for
+        displaying general data about the selected Function.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _frame, _fixed = RTKWorkView._make_general_data_page()
+
+        _labels = [_(u"Function Code:"), _(u"Function Name:"),
+                   _(u"Total Cost:"), _(u"Total Mode Count:"),
+                   _(u"Total Part Count:"), _(u"Remarks:")]
+        _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
+        _x_pos = _x_pos + 50
+
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
+        _fixed.put(self.txtTotalCost, _x_pos, _y_pos[2])
+        _fixed.put(self.txtModeCount, _x_pos, _y_pos[3])
+        _fixed.put(self.txtPartCount, _x_pos, _y_pos[4])
+        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[5])
+        _fixed.put(self.chkSafetyCritical, 5, _y_pos[5] + 110)
+
+        _fixed.show_all()
+
+        _label = rtk.RTKLabel(_(u"General\nData"), height=30, width=-1,
+                              justify=gtk.JUSTIFY_CENTER,
+                              tooltip=_(u"Displays general information for "
+                                        u"the selected Function."))
+        self.hbx_tab_label.pack_start(_label)
+
+        return _frame
+
+    def _make_toolbar(self):
+        """
+        Method to create the toolbar for the Function class Work View.
+
+        :return: _toolbar
+        :rtype: :py:class:`gtk.ToolBar`
+        """
+
+        _icons = ['calculate', None, 'save']
+        _toolbar, _position = RTKWorkView._make_toolbar(self, _icons)
+
+        _button = _toolbar.get_nth_item(0)
+        _button.set_tooltip_text(_(u"Calculate the selected Function."))
+        _button.connect('clicked', self._do_request_calculate)
+
+        _button = _toolbar.get_nth_item(2)
+        _button.set_tooltip_text(_(u"Saves changes to the selected Function."))
+        _button.connect('clicked', self._do_request_update)
+
+        _toolbar.show()
+
+        return _toolbar
+
+    def _on_edit(self, function_id):
+        """
+        Method to update the Work View gtk.Widgets() with changes to the
+        Function data model attributes.
+
+        :param int function_id: the ID of the Function that was edited.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        self._on_select(function_id)
+
+        return _return
+
+    def _on_focus_out(self, entry, index):
+        """
+        Method to retrieve changes made to Function attributes through the
+        various gtk.Widgets() and assign the new data to the appropriate
+        Function data model attribute.  This method is called by:
+
+            * gtk.Entry() 'changed' signal
+            * gtk.TextView() 'changed' signal
+
+        This method sends the 'wvwEditedFunction' message.
+
+        :param gtk.Entry entry: the gtk.Entry() that called the method.
+        :param int index: the position in the Function class gtk.TreeModel()
+                          associated with the data from the calling
+                          gtk.Widget().
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _index = -1
+        _return = False
+        _text = ''
+
+        entry.handler_block(self._lst_handler_id[index])
+
+        if index == 0:
+            _text = str(entry.get_text())
+            _position = 5
+        elif index == 1:
+            _text = str(entry.get_text())
+            _position = 15
+        elif index == 2:
+            _text = self.txtRemarks.do_get_text()
+            _position = 17
+
+        entry.handler_unblock(self._lst_handler_id[index])
+
+        pub.sendMessage('wvwEditedFunction', position=_position,
+                        new_text=_text)
+
+        return _return
+
+    def _on_select(self, module_id, **kwargs):
+        """
+        Method to load the Function Work View class gtk.Notebook() widgets.
+
+        :param int function_id: the Function ID of the selected/edited
+                                Function.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        self._function_id = module_id
+
+        self._dtc_function = self._mdcRTK.dic_controllers['function']
+        _function = self._dtc_function.request_select(self._function_id)
+
+        # ----- ----- ----- LOAD GENERAL DATA PAGE ----- ----- ----- #
+        self.txtCode.handler_block(self._lst_handler_id[0])
+        self.txtCode.set_text(str(_function.function_code))
+        self.txtCode.handler_unblock(self._lst_handler_id[0])
+
+        self.txtName.handler_block(self._lst_handler_id[1])
+        self.txtName.set_text(_function.name)
+        self.txtName.handler_unblock(self._lst_handler_id[1])
+
+        _textbuffer = self.txtRemarks.do_get_buffer()
+        _textbuffer.handler_block(self._lst_handler_id[2])
+        _textbuffer.set_text(_function.remarks)
+        _textbuffer.handler_unblock(self._lst_handler_id[2])
+
+        self.txtTotalCost.set_text(
+            str(locale.currency(_function.cost)))
+        self.txtModeCount.set_text(
+            str('{0:d}'.format(_function.total_mode_count)))
+        self.txtPartCount.set_text(
+            str('{0:d}'.format(_function.total_part_count)))
+
+        return _return
+
+
+class AssessmentResults(RTKWorkView):
+    """
+    The Work View displays all the attributes for the selected Function. The
+    attributes of a Work View are:
+
+    :ivar _dtc_function: the :class:`rtk.function.Function.Function` data
+                         controller to use with this Work Book.
+    :ivar txtPredictedHt: the :class:`gtk.Entry` to display the Function
+                          logistics hazard rate.
+    :ivar txtMissionHt: the :class:`gtk.Entry` to display the Function mission
+                        hazard rate.
+    :ivar txtMTBF: the :class:`gtk.Entry` to display the Function logistics
+                   MTBF.
+    :ivar txtMissionMTBF: the :class:`gtk.Entry` to display the Function
+                          mission MTBF.
+    :ivar txtMPMT: the :class:`gtk.Entry` to display the Function mean
+                   preventive maintenance time.
+    :ivar txtMCMT: the :class:`gtk.Entry` to display the Function mean
+                   corrective maintenance time.
+    :ivar txtMTTR: the :class:`gtk.Entry` to display the Function mean time to
+                   repair.
+    :ivar txtMMT: the :class:`gtk.Entry` to display the Function mean
+                  maintenance time.
+    :ivar txtAvailability: the :class:`gtk.Entry` to display the Function
+                           logistics availability.
+    :ivar txtMissionAt: the :class:`gtk.Entry` to display the Function mission
+                        availability.
+    """
+
+    def __init__(self, controller):
+        """
+        Method to initialize the Work View for the Function package.
+
+        :param controller: the RTK master data controller instance.
+        :type controller: :py:class:`rtk.RTK.RTK`
+        """
+
+        RTKWorkView.__init__(self, controller)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._dtc_function = None
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self._function_id = None
+
         self.txtPredictedHt = rtk.RTKEntry(width=100, editable=False,
                                            bold=True,
                                            tooltip=_(u"Displays the logistics "
@@ -189,255 +445,11 @@ class WorkView(gtk.VBox, RTKWorkView):
                                                    u"availability for the "
                                                    u"selected function."))
 
-        self._make_general_data_page()
-        self._make_fmea_page()
-        self._make_assessment_results_page()
-
-        # Connect to callback functions for editable gtk.Widgets().
-        self._lst_handler_id.append(
-            self.txtCode.connect('changed', self._do_edit_function, 0))
-        self._lst_handler_id.append(
-            self.txtName.connect('changed', self._do_edit_function, 1))
-        self._lst_handler_id.append(
-            self.txtRemarks.do_get_buffer().connect(
-                'changed', self._do_edit_function, 2))
-
-        # FIXME: The general data page should be the page shown after launching.
-        self.pack_start(self._make_toolbar(), expand=False)
-        self.pack_start(self._notebook)
+        self.pack_start(self._make_assessment_results_page(), expand=True,
+                        fill=True)
         self.show_all()
 
-        pub.subscribe(self._on_select_function, 'selectedFunction')
-        pub.subscribe(self._on_edit_function, 'mvwEditedFunction')
-        pub.subscribe(self._on_edit_function, 'calculatedFunction')
-
-    def do_add_function(self, level):
-        """
-        Method to actually add the function.  This method is called by the
-        AddFunction gtk.Assistant() when the Apply button is pressed.
-
-        :param str level: the level the new Function should have relative to
-                          the currently selected Function.  Values are:
-
-                          * sibling
-                          * child
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        _function = self._dtc_function.request_select(self.function_id)
-        _revision_id = _function.revision_id
-
-        if level == 'sibling':
-            _parent_id = _function.parent_id
-        else:
-            _parent_id = _function.function_id
-
-        # By default we add the new function as a top-level function.
-        if _parent_id is None:
-            _parent_id = 0
-
-        if not self._dtc_function.request_insert(_revision_id,
-                                                 _parent_id,
-                                                 level):
-            # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
-
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['function'][1] += 1
-        else:
-            _msg = _(u"An error occurred while attempting to add one or more "
-                     u"functions.")
-            _error_dialog = rtk.RTKMessageDialog(_msg,
-                                                 self._dic_icons['error'],
-                                                 'error',
-                                                 self.get_parent())
-            self._mdcRTK.debug_log.error(_msg)
-
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
-    def _do_edit_function(self, entry, index):
-        """
-        Method to retrieve changes made to Function attributes through the
-        various gtk.Widgets() and assign the new data to the appropriate
-        Function data model attribute.  This method is called by:
-
-            * gtk.Entry() 'changed' signal
-            * gtk.TextView() 'changed' signal
-
-        This method sends the 'wvwEditedFunction' message.
-
-        :param gtk.Entry entry: the gtk.Entry() that called the method.
-        :param int index: the position in the Function class gtk.TreeModel()
-                          associated with the data from the calling
-                          gtk.Widget().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-        _position = None
-        _text = None
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        if index == 0:
-            _text = str(entry.get_text())
-            _position = 5
-        elif index == 1:
-            _text = str(entry.get_text())
-            _position = 15
-        elif index == 2:
-            _text = self.txtRemarks.do_get_text()
-            _position = 17
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        pub.sendMessage('wvwEditedFunction', position=_position,
-                        new_text=_text)
-
-        return _return
-
-    def _do_request_calculate(self, __button):
-        """
-        Method to send request to calculate the selected function to the
-        Function data controller.
-
-        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
-                                        method.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        _error_code = 0
-        _msg = ['', '']
-
-        if self._dtc_function.request_calculate_reliability(self.function_id):
-            _error_code = 1
-            _msg[0] = 'Error calculating reliability attributes.'
-
-        if self._dtc_function.request_calculate_availability(self.function_id):
-            _error_code = 1
-            _msg[1] = 'Error calculating availability attributes.'
-
-        if _error_code != 0:
-            _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
-                        _msg[1] + "\n\n").format(self.function_id)
-            _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                 self._dic_icons['error'],
-                                                 'error')
-            if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                _error_dialog.do_destroy()
-
-            _return = True
-
-        return _return
-
-    def _do_request_delete(self, __button):
-        """
-        Method to send request to delete the selected function from the
-        Function data controller.
-
-        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
-                                        method.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        _prompt = _(u"You are about to delete Function {0:d} and all data "
-                    u"associated with it.  Is this really what you want "
-                    u"to do?").format(self.function_id)
-        _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['question'],
-                                       'question')
-        _response = _dialog.do_run()
-
-        if _response == gtk.RESPONSE_YES:
-            _dialog.do_destroy()
-            if self._dtc_function.request_delete(self.function_id):
-                _prompt = _(u"An error occurred when attempting to delete "
-                            u"Function {0:d}.").format(self.function_id)
-                _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                     self._dic_icons['error'],
-                                                     'error')
-                if _error_dialog.do_run() == gtk.RESPONSE_OK:
-                    _error_dialog.do_destroy()
-
-                _return = True
-        else:
-            _dialog.do_destroy()
-
-        return _return
-
-    def _do_request_insert(self, __button, level):
-        """
-        Method to send request to insert a new Function into the RTK Program
-        database.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
-        :param str level: the level the new Function should have relative to
-                          the currently selected Function.  Values are:
-
-                          * sibling
-                          * child
-
-        :return: None
-        :rtype: None
-        """
-
-        AddFunction(self, level=level)
-
-        return None
-
-    def _do_request_update(self, __button):
-        """
-        Method to save all the Functions.
-
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        return self._dtc_function.request_update_all()
-
-    def _load_general_data_page(self, function):
-        """
-        Method to load the the General Data page.
-
-        :param function: the Function object whose attributes are to be loaded
-                         into the RTK display widgets.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        self.txtCode.handler_block(self._lst_handler_id[0])
-        self.txtCode.set_text(str(function.function_code))
-        self.txtCode.handler_unblock(self._lst_handler_id[0])
-
-        self.txtName.handler_block(self._lst_handler_id[1])
-        self.txtName.set_text(function.name)
-        self.txtName.handler_unblock(self._lst_handler_id[1])
-
-        _textbuffer = self.txtRemarks.do_get_buffer()
-        _textbuffer.handler_block(self._lst_handler_id[2])
-        _textbuffer.set_text(function.remarks)
-        _textbuffer.handler_unblock(self._lst_handler_id[2])
-
-        return _return
+        pub.subscribe(self._on_select, 'selectedFunction')
 
     def _make_assessment_results_page(self):
         """
@@ -464,8 +476,11 @@ class WorkView(gtk.VBox, RTKWorkView):
 
         _fxd_left.show_all()
 
-        _labels = [_(u"MPMT:"), _(u"MCMT:"), _(u"MTTR:"), _(u"MMT:"),
-                   _(u"Availability:"), _(u"Mission Availability:")]
+        _labels = [_(u"Mean Preventive Maintenance Time [MPMT]:"),
+                   _(u"Mean Corrective Maintenance Time [MCMT]:"),
+                   _(u"Mean Time to Repair [MTTR]:"),
+                   _(u"Mean Maintenance Time [MMT]:"),
+                   _(u"Availability [A(t)]:"), _(u"Mission A(t):")]
         _x_pos, _y_pos = rtk.make_label_group(_labels, _fxd_right, 5, 5)
         _x_pos += 50
 
@@ -478,157 +493,33 @@ class WorkView(gtk.VBox, RTKWorkView):
 
         _fxd_right.show_all()
 
-        _label = rtk.RTKLabel(_(u"Assessment\nResults"), width=-1,
+        _label = rtk.RTKLabel(_(u"Assessment\nResults"), height=30, width=-1,
                               justify=gtk.JUSTIFY_CENTER,
                               tooltip=_(u"Displays reliability, "
                                         u"maintainability, and availability "
                                         u"assessment results for the selected "
                                         u"function."))
-        self._notebook.insert_page(_hbx_page, tab_label=_label, position=-1)
+        self.hbx_tab_label.pack_start(_label)
 
-        return False
+        return _hbx_page
 
-    def _make_fmea_page(self):
-        """
-        Method to create the Function class gtk.Notebook() page for displaying
-        the FMEA for the selected Function.
-
-        :return: false if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _label = rtk.RTKLabel(_(u"FMEA"), width=-1,
-                              justify=gtk.JUSTIFY_CENTER,
-                              tooltip=_(u"Displays the Failure Mode and "
-                                        u"Effects Analysis (FMEA) for "
-                                        u"the selected Function."))
-
-        self._notebook.insert_page(FMEA(self._mdcRTK), tab_label=_label,
-                                   position=-1)
-
-        return False
-
-    def _make_general_data_page(self):
-        """
-        Method to create the Function class gtk.Notebook() page for
-        displaying general data about the selected Function.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _frame, _fixed = RTKWorkView._make_general_data_page()
-
-        _labels = [_(u"Function Code:"), _(u"Function Name:"),
-                   _(u"Total Cost:"), _(u"Total Mode Count:"),
-                   _(u"Total Part Count:"), _(u"Remarks:")]
-        _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
-        _x_pos = _x_pos + 50
-
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
-        _fixed.put(self.txtTotalCost, _x_pos, _y_pos[2])
-        _fixed.put(self.txtModeCount, _x_pos, _y_pos[3])
-        _fixed.put(self.txtPartCount, _x_pos, _y_pos[4])
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[5])
-        _fixed.put(self.chkSafetyCritical, 5, _y_pos[5] + 110)
-
-        _fixed.show_all()
-
-        _label = rtk.RTKLabel(_(u"General\nData"), width=-1,
-                              justify=gtk.JUSTIFY_CENTER,
-                              tooltip=_(u"Displays general information for "
-                                        u"the selected Function."))
-        self._notebook.insert_page(_frame, tab_label=_label, position=-1)
-
-        return False
-
-    def _make_toolbar(self, hierarchical=True):
-        """
-        Method to create the toolbar for the Function class Work View.
-
-        :param bool hierarchical: indicates whether or not the RTK Module the
-                                  toolbar is being created for is hierarchical.
-        :return: _toolbar
-        :rtype: :py:class:`gtk.ToolBar`
-        """
-
-        _toolbar = RTKWorkView._make_toolbar(self, hierarchical)
-
-        _button = _toolbar.get_nth_item(0)
-        _button.set_tooltip_text(_(u"Adds a new Function at the same "
-                                   u"hierarchy level as the selected Function "
-                                   u"(i.e., a sibling Function)."))
-        _button.connect('clicked', self._do_request_insert, 'sibling')
-
-        _button = _toolbar.get_nth_item(1)
-        _button.set_tooltip_text(_(u"Adds a new Function one level "
-                                   u"subordinate to the selected Function "
-                                   u"(i.e., a child function)."))
-        _button.connect('clicked', self._do_request_insert, 'child')
-
-        _button = _toolbar.get_nth_item(2)
-        _button.set_tooltip_text(_(u"Removes the currently selected "
-                                   u"Function."))
-        _button.connect('clicked', self._do_request_delete)
-
-        _button = _toolbar.get_nth_item(4)
-        _button.set_tooltip_text(_(u"Calculate the Functions."))
-        _button.connect('clicked', self._do_request_calculate)
-
-        _button = _toolbar.get_nth_item(6)
-        _button.set_tooltip_text(_(u"Saves changes to the selected Function."))
-        _button.connect('clicked', self._do_request_update)
-
-        _toolbar.show()
-
-        return _toolbar
-
-    def _on_edit_function(self, function_id):
-        """
-        Method to update the Work View gtk.Widgets() with changes to the
-        Function data model attributes.
-
-        :param int function_id: the ID of the Function that was edited.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        _function = self._dtc_function.request_select(function_id)
-        self._load_general_data_page(_function)
-
-        return _return
-
-    def _on_select_function(self, function_id):
+    def _on_select(self, module_id, **kwargs):
         """
         Method to load the Function Work View class gtk.Notebook() widgets.
 
         :param int function_id: the Function ID of the selected/edited
                                 Function.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _return = False
 
+        self._function_id = module_id
+
         self._dtc_function = self._mdcRTK.dic_controllers['function']
-        _function = self._dtc_function.request_select(function_id)
+        _function = self._dtc_function.request_select(self._function_id)
 
-        self.function_id = _function.function_id
-
-        # ----- ----- ----- LOAD GENERAL DATA PAGE ----- ----- ----- #
-        self._load_general_data_page(_function)
-
-        self.txtTotalCost.set_text(
-            str(locale.currency(_function.cost)))
-        self.txtModeCount.set_text(
-            str('{0:d}'.format(_function.total_mode_count)))
-        self.txtPartCount.set_text(
-            str('{0:d}'.format(_function.total_part_count)))
-
-        # ----- ----- ----- LOAD ASSESSMENT RESULTS PAGE ----- ----- ----- #
         self.txtAvailability.set_text(
             str(self.fmt.format(_function.availability_logistics)))
         self.txtMissionAt.set_text(

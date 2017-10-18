@@ -141,3 +141,133 @@ class RTKMessageDialog(gtk.MessageDialog):
         """
 
         self.destroy()
+
+
+class RTKFileChooser(gtk.FileChooserDialog):
+    """
+    This is the RTK File Chooser Dialog class.
+    """
+
+    def __init__(self, title, cwd):
+
+        gtk.FileChooserDialog.__init__(self, None,
+                                       gtk.DIALOG_MODAL |
+                                       gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+
+        self.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+        self.set_current_folder(cwd)
+
+        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(u"All files")
+        _filter.add_pattern("*")
+        self.add_filter(_filter)
+
+        _filter = gtk.FileFilter()
+        _filter.set_name("Text Files (csv, txt)")
+        _filter.add_mime_type("text/csv")
+        _filter.add_mime_type("text/txt")
+        _filter.add_mime_type("application/xls")
+        _filter.add_pattern("*.csv")
+        _filter.add_pattern("*.txt")
+        _filter.add_pattern("*.xls")
+        self.add_filter(_filter)
+
+    def do_run(self):
+        """
+        Method to run the RTKFileChooser dialog.
+        """
+
+        if self.run() == gtk.RESPONSE_ACCEPT:
+            _filename = self.get_filename()
+            __, _extension = os.path.splitext(_filename)
+
+        if _extension == '.csv' or _extension == '.txt':
+            self._do_read_text_file(_filename)
+
+        return False
+
+    def _do_read_text_file(self, filename):
+        """
+        Method to read the contents of a text file.
+
+        :param str filename: the file to be read.
+        :return:
+        :rtype:
+        """
+
+        # Run the dialog and write the file.
+        _headers = []
+        _contents = []
+
+        __, _extension = os.path.splitext(filename)
+        _file = open(filename, 'r')
+        if _extension == '.csv':
+            _delimiter = ','
+        else:
+            _delimiter = '\t'
+
+        for _line in _file:
+            _contents.append([_line.rstrip('\n')])
+
+        _headers = str(_contents[0][0]).rsplit(_delimiter)
+        for i in range(len(_contents) - 1):
+            _contents[i] = str(_contents[i + 1][0]).rsplit(_delimiter)
+
+        self.destroy()
+
+        return _headers, _contents
+
+    def do_destroy(self):
+        """
+        Method to destroy the RTKFileChooser dialog.
+        """
+
+        self.destroy()
+
+
+class RTKDateSelect(gtk.Dialog):
+    """
+    This is the RTK Date Select Dialog class.
+    """
+
+    def __init__(self, entry=None):
+        """
+        Method to initialize an instance of the RTKDateSelect class.
+
+        :param entry: the gtk.Entry() in which to place the date, if any.
+        :type entry: :py:class:`gtk.Entry`
+        """
+
+        from datetime import datetime
+
+        gtk.Dialog.__init__(self, _(u"Select Date"),
+                            dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+
+        self._entry = entry
+        self._calendar = gtk.Calendar()
+        self.vbox.pack_start(self._calendar)    # pylint: disable=E1101
+        self.vbox.show_all()                    # pylint: disable=E1101
+
+    def do_run(self):
+        """
+        """
+
+        if self.run() == gtk.RESPONSE_ACCEPT:
+            _date = self._calendar.get_date()
+            _date = datetime(_date[0], _date[1] + 1,
+                             _date[2]).date().strftime("%Y-%m-%d")
+        else:
+            _date = "1970-01-01"
+
+        if self._entry is not None:
+            self._entry.set_text(_date)
+            self._entry.grab_focus()
+
+        return _date
+
+    def do_destroy(self):
+
+        self.destroy()

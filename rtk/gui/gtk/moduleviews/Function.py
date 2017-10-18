@@ -100,7 +100,7 @@ class ModuleView(RTKModuleView):
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
-        pub.sendMessage('selectedFunction', function_id=self._function_id)
+        pub.sendMessage('selectedFunction', module_id=self._function_id)
 
         return _return
 
@@ -363,7 +363,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self, revision_id):     # pylint: disable=W0221
+    def _on_select_revision(self, module_id):     # pylint: disable=W0221
         """
         Method to load the Function Module Book view gtk.TreeModel() with
         Function information when an RTK Program database is opened.
@@ -372,19 +372,19 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
 
+        self._revision_id = module_id
+
         self._dtc_function = self._mdcRTK.dic_controllers['function']
-        _functions = self._dtc_function.request_select_all(revision_id)
+        _functions = self._dtc_function.request_select_all(self._revision_id)
 
         _return = RTKModuleView._on_select_revision(self, _functions)
         if _return:
             _prompt = _(u"An error occured while loading the Functions for "
                         u"Revision ID {0:d} into the Module "
-                        u"View.").format(revision_id)
+                        u"View.").format(self._revision_id)
             _dialog = rtk.RTKMessageDialog(_prompt, self._dic_icons['error'],
                                            'error')
             if _dialog.do_run() == self._response_ok:
                 _dialog.do_destroy()
-
-        self._revision_id = revision_id
 
         return _return

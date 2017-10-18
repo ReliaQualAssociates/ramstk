@@ -37,7 +37,7 @@ except ImportError:
 from gui.gtk.rtk import RTKBook, destroy
 from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
 from gui.gtk.moduleviews.Function import ModuleView as mvwFunction
-from gui.gtk.Assistants import CreateProject, OpenProject, DeleteProject, \
+from gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
     Options
 
 _ = gettext.gettext
