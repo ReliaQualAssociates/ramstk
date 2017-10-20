@@ -131,7 +131,7 @@ class GeneralData(RTKWorkView):
                 'changed', self._on_focus_out, 2))
 
         # FIXME: The general data page should be the page shown after launching.
-        self.pack_start(self._make_toolbar(), expand=False, fill=False)
+        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_start(self._make_general_data_page(), expand=True, fill=True)
         self.show_all()
 
@@ -224,28 +224,25 @@ class GeneralData(RTKWorkView):
 
         return _frame
 
-    def _make_toolbar(self):
+    def _make_buttonbox(self):
         """
-        Method to create the toolbar for the Function class Work View.
+        Method to create the gtk.ButtonBox() for the Function class Work View.
 
-        :return: _toolbar
-        :rtype: :py:class:`gtk.ToolBar`
+        :return: _buttonbox; the gtk.ButtonBox() for the Function class Work
+                 View.
+        :rtype: :py:class:`gtk.ButtonBox`
         """
 
-        _icons = ['calculate', None, 'save']
-        _toolbar, _position = RTKWorkView._make_toolbar(self, _icons)
+        _tooltips = [_(u"Calculate the currently selected Function."),
+                     _(u"Saves the currently selected Function to the open "
+                       u"RTK Project database.")]
+        _callbacks = [self._do_request_calculate, self._do_request_update]
 
-        _button = _toolbar.get_nth_item(0)
-        _button.set_tooltip_text(_(u"Calculate the selected Function."))
-        _button.connect('clicked', self._do_request_calculate)
+        _icons = ['calculate', 'save']
+        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
+                                                 _callbacks, 'vertical')
 
-        _button = _toolbar.get_nth_item(2)
-        _button.set_tooltip_text(_(u"Saves changes to the selected Function."))
-        _button.connect('clicked', self._do_request_update)
-
-        _toolbar.show()
-
-        return _toolbar
+        return _buttonbox
 
     def _on_edit(self, function_id):
         """
@@ -288,20 +285,26 @@ class GeneralData(RTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index == 0:
-            _text = str(entry.get_text())
-            _position = 5
-        elif index == 1:
-            _text = str(entry.get_text())
-            _position = 15
-        elif index == 2:
-            _text = self.txtRemarks.do_get_text()
-            _position = 17
+        if self._dtc_function is not None:
+            _function = self._dtc_function.request_select(self._function_id)
+
+            if index == 0:
+                _index = 5
+                _text = str(entry.get_text())
+                _function.code = _text
+            elif index == 1:
+                _index = 15
+                _text = str(entry.get_text())
+                _function.name = _text
+            elif index == 2:
+                _index = 17
+                _text = self.txtRemarks.do_get_text()
+                _function.remarks = _text
+
+            pub.sendMessage('wvwEditedFunction', position=_position,
+                            new_text=_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
-
-        pub.sendMessage('wvwEditedFunction', position=_position,
-                        new_text=_text)
 
         return _return
 

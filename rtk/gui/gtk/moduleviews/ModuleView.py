@@ -17,7 +17,7 @@ from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
 from gui.gtk import rtk                         # pylint: disable=E0401,W0611
 
 
-class RTKModuleView(gtk.VBox, rtk.RTKBaseView):
+class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
     """
     This is the meta class for all RTK Module View classes.  Attributes of the
     RTKModuleView are:
@@ -40,7 +40,7 @@ class RTKModuleView(gtk.VBox, rtk.RTKBaseView):
         :param str module: the module that is being loaded.
         """
 
-        gtk.VBox.__init__(self)
+        gtk.HBox.__init__(self)
         rtk.RTKBaseView.__init__(self, controller)
 
         # Initialize private dictionary attributes.

@@ -187,7 +187,8 @@ class DeleteProject(object):
 
         return False
 
-    def _confirm_action(self, prompt):
+    @staticmethod
+    def _confirm_action(prompt):
         """
         Method to confirm deleting a Project.
 

@@ -75,7 +75,7 @@ class ModuleView(RTKModuleView):
         self.hbx_tab_label.pack_end(_label)
         self.hbx_tab_label.show_all()
 
-        self.pack_start(self._make_toolbar(), expand=False, fill=False)
+        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
 
         self.show_all()
 
@@ -235,34 +235,27 @@ class ModuleView(RTKModuleView):
 
         return self._dtc_revision.request_update_all()
 
-    def _make_toolbar(self):
+    def _make_buttonbox(self):
         """
-        Method to create the toolbar for the Revision Module View.
+        Method to create the gtk.ButtonBox() for the Revision class Module
+        View.
 
-        :return: _toolbar: the gtk.Toolbar() for the Revision Module View.
-        :rtype: :py:class:`gtk.Toolbar`
+        :return: _buttonbox; the gtk.ButtonBox() for the Revision class Module
+                 View.
+        :rtype: :py:class:`gtk.ButtonBox`
         """
 
+        _tooltips = [_(u"Add a new Revision."),
+                     _(u"Remove the currently selected Revision."),
+                     _(u"Save the Revision to the open RTK Program database.")]
+        _callbacks = [self._do_request_insert, self._do_request_delete,
+                      self._do_request_update_all]
         _icons = ['add', 'remove', 'save']
-        _toolbar, _position = RTKModuleView._make_toolbar(self, _icons,
-                                                          'horizontal', 56, 56)
 
-        _button = _toolbar.get_nth_item(0)
-        _button.set_tooltip_text(_(u"Adds a new Revision."))
-        _button.connect('clicked', self._do_request_insert)
+        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
+                                                   _callbacks, 'vertical')
 
-        _button = _toolbar.get_nth_item(1)
-        _button.set_tooltip_text(_(u"Removes the currently selected "
-                                   u"Revision."))
-        _button.connect('clicked', self._do_request_delete)
-
-        _button = _toolbar.get_nth_item(2)
-        _button.set_tooltip_text(_(u"Saves changes to the Revisions."))
-        _button.connect('clicked', self._do_request_update_all)
-
-        _toolbar.show_all()
-
-        return _toolbar
+        return _buttonbox
 
     def _make_treeview(self):
         """

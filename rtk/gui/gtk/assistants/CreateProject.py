@@ -10,41 +10,12 @@ RTK Assistants Module
 #####################
 """
 
-import gettext
-import sys
-
 from os import remove
 
-# Modules required for the GUI.
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-
 # Import other RTK modules.
-try:
-    import Utilities
-    import gui.gtk.rtk.Widget as Widgets
-except ImportError:
-    import rtk.Utilities as Utilities
-    import rtk.gui.gtk.Widget as Widgets
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 Andrew "Weibullguy" Rowland'
-
-_ = gettext.gettext
-
+import Utilities                                    # pylint: disable=E0401
+from gui.gtk.rtk.Widget import _, gtk, set_cursor   # pylint: disable=E0401
+from gui.gtk import rtk                             # pylint: disable=E0401
 
 class CreateProject(object):
     """
@@ -74,11 +45,11 @@ class CreateProject(object):
 
         # Initialize public scalar attributes.
 
-        Widgets.set_cursor(self._mdcRTK, gtk.gdk.WATCH)
+        set_cursor(self._mdcRTK, gtk.gdk.WATCH)
 
         self._request_create_project()
 
-        Widgets.set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
+        set_cursor(self._mdcRTK, gtk.gdk.LEFT_PTR)
 
     def _request_create_project(self):
         """
@@ -97,17 +68,16 @@ class CreateProject(object):
             _new_program = _new_program + '.rtk'
 
             if Utilities.file_exists(_new_program):
-                _dlgConfirm = Widgets.make_dialog(
+                _dlgConfirm = rtk.RTKDialog(
                     _(u"RTK - Confirm Overwrite"),
                     dlgbuttons=(gtk.STOCK_YES, gtk.RESPONSE_YES,
                                 gtk.STOCK_NO, gtk.RESPONSE_NO))
 
-                _label = Widgets.make_label(_(u"RTK Program database already "
-                                              u"exists.\n\n{0:s}\n\n"
-                                              u"Overwrite?").format(
-                                                  _new_program),
-                                            width=-1, height=-1, bold=False,
-                                            wrap=True)
+                _label = rtk.RTLabel(_(u"RTK Program database already exists. "
+                                       u"\n\n{0:s}\n\nOverwrite?").format(
+                                           _new_program),
+                                     width=-1, height=-1, bold=False,
+                                     wrap=True)
                 _dlgConfirm.vbox.pack_start(_label)     # pylint: disable=E1101
                 _label.show()
 

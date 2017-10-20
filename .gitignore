@@ -1,5 +1,6 @@
 # Generic files to ignore
 *~
+*.fuse*
 *.lock
 *.DS_Store
 *.out

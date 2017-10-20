@@ -11,10 +11,8 @@ create, populate, destroy, or interact with pyGTK widgets in the RTK
 application.  This module is specific to RTK plots.
 """
 
-import locale
-
 # Import other RTK Widget classes.
-from .Widget import gtk                             # pylint: disable=E0401
+from .Widget import _, gtk                             # pylint: disable=E0401
 
 
 def load_plot(axis, plot, x_vals, y1=None, y2=None, y3=None, y4=None,

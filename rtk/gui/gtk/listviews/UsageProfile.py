@@ -98,7 +98,7 @@ class ListView(RTKListView):
         _scrolledwindow = gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
 
-        self.pack_start(self._make_toolbar(), expand=False, fill=False)
+        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_end(_scrolledwindow, expand=True, fill=True)
 
         self.show_all()
@@ -367,41 +367,33 @@ class ListView(RTKListView):
 
         return self._dtc_usage_profile.request_update_all()
 
-    def _make_toolbar(self):
+    def _make_buttonbox(self):
         """
-        Method to create the toolbar for the Usage Profile ListView.
+        Method to create the buttonbox for the Usage Profile List View.
 
-        :return: _toolbar: the gtk.Toolbar() for the Usage Profile
-                           List View.
-        :rtype: :py:class:`gtk.Toolbar`
+        :return: _buttonbox; the gtk.ButtonBox() for the Usage Profile List
+                             View.
+        :rtype: :py:class:`gtk.ButtonBox`
         """
 
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'save']
-        _toolbar, _position = RTKListView._make_toolbar(self, _icons,
-                                                        'vertical', 56, 56)
+        _tooltips = [_(u"Add a new Usage Profile entity at the same level "
+                       u"as the currently selected entity."),
+                     _(u"Add a new Usage Profile entity one level below the "
+                       u"currently selected entity."),
+                     _(u"Remove the curently selected entity from the Usage "
+                       u"Profile."),
+                     _(u"Save the Usage Profile to the open RTK Program "
+                       u"database."),
+                     _(u"Create the Mission and Usage Profile report.")]
+        _callbacks = [self._do_request_insert, self._do_request_insert,
+                      self._do_request_delete, self._do_request_update_all]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'save',
+                  'reports']
 
-        _button = _toolbar.get_nth_item(0)
-        _button.set_tooltip_text(_(u"Add a new sibling entity to the selected "
-                                   u"entity."))
-        _button.connect('clicked', self._do_request_insert, True)
+        _buttonbox = RTKListView._make_buttonbox(self, _icons, _tooltips,
+                                                 _callbacks, 'vertical')
 
-        _button = _toolbar.get_nth_item(1)
-        _button.set_tooltip_text(_(u"Add a new child entity to the selected "
-                                   u"entity."))
-        _button.connect('clicked', self._do_request_insert, False)
-
-        _button = _toolbar.get_nth_item(2)
-        _button.set_tooltip_text(_(u"Deletes the selected entity from the "
-                                   u"usage profile."))
-        _button.connect('clicked', self._do_request_delete)
-
-        _button = _toolbar.get_nth_item(3)
-        _button.set_tooltip_text(_(u"Save changes to the usage profile."))
-        _button.connect('clicked', self._do_request_update_all)
-
-        _toolbar.show_all()
-
-        return _toolbar
+        return _buttonbox
 
     def _make_treeview(self):
         """

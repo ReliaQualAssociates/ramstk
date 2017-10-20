@@ -91,7 +91,10 @@ class RTKButton(gtk.Button):
 
         if icon is not None:
             _image = gtk.Image()
-            _image.set_from_file(icon)
+            _icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, height, width)
+            _image.set_from_pixbuf(_icon)
+
+            #_image.set_from_file(icon)
             self.set_image(_image)
 
         self.props.width_request = width

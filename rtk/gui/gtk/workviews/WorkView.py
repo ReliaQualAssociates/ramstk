@@ -15,7 +15,7 @@ from gui.gtk.rtk.Widget import _, gtk           # pylint: disable=E0401,W0611
 from gui.gtk import rtk                         # pylint: disable=E0401,W0611
 
 
-class RTKWorkView(gtk.VBox, rtk.RTKBaseView):
+class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
     """
     This is the meta class for all RTK Work View classes.  Attributes of the
     RTKWorkView are:
@@ -29,7 +29,7 @@ class RTKWorkView(gtk.VBox, rtk.RTKBaseView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        gtk.VBox.__init__(self)
+        gtk.HBox.__init__(self)
         rtk.RTKBaseView.__init__(self, controller)
 
         # Initialize private dictionary attributes.

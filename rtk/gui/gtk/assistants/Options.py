@@ -18,6 +18,7 @@ from os.path import basename
 from ConfigParser import SafeConfigParser, NoOptionError
 
 # Modules required for the GUI.
+import pango                                    # pylint: disable=E0401
 try:
     import pygtk
     pygtk.require('2.0')
@@ -66,8 +67,6 @@ class Options(gtk.Window):                  # pylint: disable=R0902
         :param gtk.Widget __widget: the gtk.Widget() that called this class.
         :param controller: the :py:class:`rtk.RTK.RTK` master data controller.
         """
-
-        import pango
 
         # Initialize private dictionary attributes.
 
@@ -769,7 +768,8 @@ class Options(gtk.Window):                  # pylint: disable=R0902
 
         return False
 
-    def _set_color(self, colorbutton, rtk_colors):
+    @staticmethod
+    def _set_color(colorbutton, rtk_colors):
         """
         Method to set the selected color.
 

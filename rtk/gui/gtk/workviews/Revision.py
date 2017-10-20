@@ -103,7 +103,7 @@ class GeneralData(RTKWorkView):
             self.txtCode.connect('focus-out-event',
                                  self._on_focus_out, 2))
 
-        self.pack_start(self._make_toolbar(), expand=False, fill=False)
+        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_end(self._make_general_data_page(), expand=True, fill=True)
         self.show_all()
 
@@ -201,55 +201,25 @@ class GeneralData(RTKWorkView):
 
         return _frame
 
-    def _make_toolbar(self):
+    def _make_buttonbox(self):
         """
-        Method to create the gtk.ToolBar() for the Revision class Work View.
+        Method to create the gtk.ButtonBox() for the Revision class Work View.
 
-        :return: _toolbar
-        :rtype: :py:class:`gtk.ToolBar`
+        :return: _buttonbox; the gtk.ButtonBox() for the Revision class Work
+                 View.
+        :rtype: :py:class:`gtk.ButtonBox`
         """
 
-        _icons = ['calculate', None, 'save', None]
-        _toolbar, _position = RTKWorkView._make_toolbar(self, _icons,
-                                                        'horizontal', 56, 56)
+        _tooltips = [_(u"Calculate the currently selected Revision."),
+                     _(u"Saves the currently selected Revision to the open "
+                       u"RTK Project database.")]
+        _callbacks = [self._do_request_calculate, self._do_request_update]
 
-        _button = _toolbar.get_nth_item(0)
-        _button.set_tooltip_text(_(u"Calculate the currently selected "
-                                   u"Revision."))
-        _button.connect('clicked', self._do_request_calculate)
+        _icons = ['calculate', 'save']
+        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
+                                                 _callbacks, 'vertical')
 
-        _button = _toolbar.get_nth_item(2)
-        _button.set_tooltip_text(_(u"Saves the currently selected Revision "
-                                   u"to the open RTK Project database."))
-        _button.connect('clicked', self._do_request_update)
-
-        # Create report button.
-        _button = gtk.MenuToolButton(None, label="")
-        _button.set_tooltip_text(_(u"Create Revision reports."))
-        _image = gtk.Image()
-        _image.set_from_file(self._dic_icons['reports'])
-        _button.set_icon_widget(_image)
-        _menu = gtk.Menu()
-        _menu_item = gtk.MenuItem(label=_(u"Mission and Environmental "
-                                          u"Profile"))
-        _menu_item.set_tooltip_text(_(u"Creates the mission and environmental "
-                                      u"profile report for the currently "
-                                      u"selected revision."))
-        # _menu_item.connect('activate', self._do_create_report)
-        _menu.add(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"Failure Definition"))
-        _menu_item.set_tooltip_text(_(u"Creates the failure definition report "
-                                      u"for the currently selected revision."))
-        # _menu_item.connect('activate', self._do_create_report)
-        _menu.add(_menu_item)
-        _button.set_menu(_menu)
-        _menu.show_all()
-        _button.show()
-        _toolbar.insert(_button, _position)
-
-        _toolbar.show_all()
-
-        return _toolbar
+        return _buttonbox
 
     def _on_focus_out(self, entry, __event, index):
         """

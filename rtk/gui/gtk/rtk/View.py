@@ -12,7 +12,8 @@ ListView, ModuleView, and WorkView.
 import locale
 
 # Import other RTK Widget classes.
-from .Widget import gtk                             # pylint: disable=E0401
+from .Widget import gtk                         # pylint: disable=E0401
+from gui.gtk.rtk import RTKButton               # pylint: disable=E0401
 
 
 class RTKBaseView(object):
@@ -98,17 +99,66 @@ class RTKBaseView(object):
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
+    def _make_buttonbox(self, icons, tooltips, callbacks,
+                        orientation='horizontal', height=-1, width=-1):
+        """
+        Method to create the buttonbox for RTK Views.  This method creates the
+        base buttonbox used by all RTK View.  Use a buttonbox for an RTK View
+        if there are only buttons to be added.
+
+        :param list icons: list of icon names to place on the toolbuttons.
+                           The items in the list are keys in _dic_icons.
+        :return: _buttonbox
+        :rtype: :py:class:`gtk.ButtonBox`
+        """
+
+        if orientation == 'horizontal':
+            _buttonbox = gtk.HButtonBox()
+        else:
+            _buttonbox = gtk.VButtonBox()
+
+        _buttonbox.set_layout(gtk.BUTTONBOX_START)
+
+        i = 0
+        for _icon in icons:
+            _image = gtk.Image()
+            _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                self._dic_icons[_icon], height, width)
+            _image.set_from_pixbuf(_icon)
+
+            _button = gtk.Button()
+            _button.set_image(_image)
+
+            _button.props.width_request = width
+            _button.props.height_request = height
+
+            try:
+                _button.set_tooltip_markup(tooltips[i])
+            except IndexError:
+                _button.set_tooltip_markup("")
+
+            try:
+                _button.connect('clicked', callbacks[i])
+            except IndexError:
+                _button.set_sensitive(False)
+
+            _buttonbox.pack_start(_button)
+
+            i += 1
+
+        return _buttonbox
+
     def _make_toolbar(self, icons, orientation='horizontal', height=60,
                       width=60):
         """
         Method to create the toolbar for RTK Views.  This method creates the
-        base toolbar used by all RTK Views.  Individual RTK Views will add
-        additional buttons after the Save button.
+        base toolbar used by all RTK Views.  Use a toolbar for an RTK View if
+        there are other than buttons to be added.
 
         :param list icons: list of icon names to place on the toolbuttons.
                            The items in the list are keys in _dic_icons.
         :return: _toolbar, _position
-        :rtpye: (:py:class:`gtk.Toolbar`, int)
+        :rtype: (:py:class:`gtk.Toolbar`, int)
         """
 
         _toolbar = gtk.Toolbar()

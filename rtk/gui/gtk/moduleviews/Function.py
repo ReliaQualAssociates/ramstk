@@ -72,7 +72,10 @@ class ModuleView(RTKModuleView):
         self.hbx_tab_label.pack_end(_label)
         self.hbx_tab_label.show_all()
 
-        self.pack_start(self._make_toolbar(), expand=False, fill=False)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self._make_buttonbox())
+        self.pack_start(_scrollwindow, expand=False, fill=False)
 
         self.show_all()
 
@@ -251,42 +254,30 @@ class ModuleView(RTKModuleView):
 
         return self._dtc_function.request_update_all()
 
-    def _make_toolbar(self):
+    def _make_buttonbox(self):
         """
-        Method to create the toolbar for the Revision Module View.
+        Method to create the gtk.ButtonBox() for the Function class Module
+        View.
 
-        :return: _toolbar: the gtk.Toolbar() for the Revision Module View.
-        :rtype: :py:class:`gtk.Toolbar`
+        :return: _buttonbox; the gtk.ButtonBox() for the Function class Module
+                 View.
+        :rtype: :py:class:`gtk.ButtonBox`
         """
 
-        _icons = ['insert_sibling', 'insert_child', 'remove', None, 'save']
-        _toolbar, _position = RTKModuleView._make_toolbar(self, _icons,
-                                                          'horizontal', 56, 56)
+        _tooltips = [_(u"Adds a new Function at the same hierarchy level as "
+                       u"the selected Function (i.e., a sibling Function)."),
+                     _(u"Adds a new Function one level subordinate to the "
+                       u"selected Function (i.e., a child function)."),
+                     _(u"Remove the currently selected Function."),
+                     _(u"Save the Function to the open RTK Program database.")]
+        _callbacks = [self._do_request_insert, self._do_request_insert,
+                      self._do_request_delete, self._do_request_update_all]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'save']
 
-        _button = _toolbar.get_nth_item(0)
-        _button.set_tooltip_text(_(u"Adds a new Function at the same "
-                                   u"hierarchy level as the selected Function "
-                                   u"(i.e., a sibling Function)."))
-        _button.connect('clicked', self._do_request_insert, 'sibling')
+        _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
+                                                   _callbacks, 'vertical')
 
-        _button = _toolbar.get_nth_item(1)
-        _button.set_tooltip_text(_(u"Adds a new Function one level "
-                                   u"subordinate to the selected Function "
-                                   u"(i.e., a child function)."))
-        _button.connect('clicked', self._do_request_insert, 'child')
-
-        _button = _toolbar.get_nth_item(2)
-        _button.set_tooltip_text(_(u"Removes the currently selected "
-                                   u"Function."))
-        _button.connect('clicked', self._do_request_delete)
-
-        _button = _toolbar.get_nth_item(4)
-        _button.set_tooltip_text(_(u"Saves changes to the selected Function."))
-        _button.connect('clicked', self._do_request_update_all)
-
-        _toolbar.show_all()
-
-        return _toolbar
+        return _buttonbox
 
     def _make_treeview(self):
         """

@@ -11,6 +11,10 @@ create, populate, destroy, or interact with pyGTK widgets in the RTK
 application.  This module is specific to RTK dialog widgets.
 """
 
+import os
+
+from datetime import datetime
+
 # Import the rtk.Widget base class.
 from .Widget import _, gtk                          # pylint: disable=E0401
 
@@ -149,8 +153,13 @@ class RTKFileChooser(gtk.FileChooserDialog):
     """
 
     def __init__(self, title, cwd):
+        """
+        Method to initialize an instance of the RTKFileChooser dialog.
 
-        gtk.FileChooserDialog.__init__(self, None,
+        :param str cwd: the absolute path to the file to open.
+        """
+
+        gtk.FileChooserDialog.__init__(self, title, None,
                                        gtk.DIALOG_MODAL |
                                        gtk.DIALOG_DESTROY_WITH_PARENT,
                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
@@ -241,8 +250,6 @@ class RTKDateSelect(gtk.Dialog):
         :type entry: :py:class:`gtk.Entry`
         """
 
-        from datetime import datetime
-
         gtk.Dialog.__init__(self, _(u"Select Date"),
                             dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
@@ -253,6 +260,7 @@ class RTKDateSelect(gtk.Dialog):
 
     def do_run(self):
         """
+        Method to run the RTKDateSelect dialog.
         """
 
         if self.run() == gtk.RESPONSE_ACCEPT:
@@ -269,5 +277,8 @@ class RTKDateSelect(gtk.Dialog):
         return _date
 
     def do_destroy(self):
+        """
+        Method to destroy the RTKDateSelect dialog.
+        """
 
         self.destroy()

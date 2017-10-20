@@ -21,7 +21,7 @@ from gui.gtk.assistants import AddControlAction     # pylint: disable=E0401
 from .WorkView import RTKWorkView
 
 
-class FMEA(gtk.HBox, RTKWorkView):
+class FMEA(RTKWorkView):
     """
     The WorkView displays all the attributes for the Functional FMEA. The
     attributes of a Functional FMEA WorkView are:
@@ -51,7 +51,6 @@ class FMEA(gtk.HBox, RTKWorkView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        gtk.HBox.__init__(self)
         RTKWorkView.__init__(self, controller)
 
         # Initialize private dictionary attributes.
@@ -129,7 +128,7 @@ class FMEA(gtk.HBox, RTKWorkView):
                                         u"selected function."))
         self.hbx_tab_label.pack_start(_label)
 
-        self.pack_start(self._make_toolbar(), False, True)
+        self.pack_start(self._make_buttonbox(), False, True)
         self.pack_end(self._make_treeview(), True, True)
         self.show_all()
 
@@ -346,6 +345,19 @@ class FMEA(gtk.HBox, RTKWorkView):
 
         return None
 
+    def _do_request_calculate(self, __button):
+        """
+        Method to calculate the FMEA RPN or criticality.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :return: False if sucessful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        return _return
+
     def _do_request_delete(self, __button):
         """
         Method to delete the selected entity from the FMEA.
@@ -466,56 +478,31 @@ class FMEA(gtk.HBox, RTKWorkView):
 
         return self._dtc_fmea.request_update_all()
 
-    def _make_toolbar(self):
+    def _make_buttonbox(self):
         """
-        Method to create the toolbar for the Functional FMEA WorkView.
+        Method to create the gtk.ButtonBox() for the FMEA class Work View.
 
-        :return: a gtk.Toolbar() instance.
-        :rtype: :py:class:`gtk.Toolbar`
+        :return: _buttonbox; the gtk.ButtonBox() for the FMEA Work View.
+        :rtype: :py:class:`gtk.ButtonBox`
         """
 
-        _icons = ['insert_sibling', 'insert_child', 'remove', None,
-                  'calculate', None, 'save']
-        _toolbar, _position = RTKWorkView._make_toolbar(self, _icons)
-        _toolbar.set_orientation(gtk.ORIENTATION_VERTICAL)
+        _tooltips = [_(u"Add a new FMEA entity at the same level as the "
+                       u"currently selected entity."),
+                     _(u"Add a new FMEA entity one level below the currently "
+                       u"selected entity."),
+                     _(u"Remove the selected entity from the FMEA."),
+                     _(u"Calculate the FMEA."),
+                     _(u"Save the FMEA to the open RTK Program database.")]
+        _callbacks = [self._do_request_insert, self._do_request_insert,
+                      self._do_request_delete, self._do_request_calculate,
+                      self._do_request_update_all]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'calculate',
+                  'save']
 
-        _button = _toolbar.get_nth_item(0)
-        _button.set_property("height_request", 56)
-        _button.set_property("width_request", 56)
-        _button.set_tooltip_markup(_(u"Add a FMEA entity at the same level as "
-                                     u"the currently selected entity."))
-        _button.connect('clicked', self._do_request_insert, True)
+        _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
+                                                 _callbacks, 'vertical')
 
-        _button = _toolbar.get_nth_item(1)
-        _button.set_property("height_request", 56)
-        _button.set_property("width_request", 56)
-        _button.set_tooltip_markup(_(u"Add a FMEA entity one level below the "
-                                     u"currently selected entity."))
-        _button.connect('clicked', self._do_request_insert, False)
-
-        _button = _toolbar.get_nth_item(2)
-        _button.set_property("height_request", 56)
-        _button.set_property("width_request", 56)
-        _button.set_tooltip_markup(_(u"Remove the selected entity from the "
-                                     u"Functional FMEA."))
-        _button.connect('clicked', self._do_request_delete)
-
-        _button = _toolbar.get_nth_item(4)
-        _button.set_property("height_request", 56)
-        _button.set_property("width_request", 56)
-        _button.set_tooltip_text(_(u"Calculate the FMEA."))
-        # _button.connect('clicked', self._do_request_calculate)
-
-        _button = _toolbar.get_nth_item(6)
-        _button.set_property("height_request", 56)
-        _button.set_property("width_request", 56)
-        _button.set_tooltip_markup(_(u"Save the Functional FMEA to the open "
-                                     u"RTK Program database."))
-        _button.connect('clicked', self._do_request_update_all)
-
-        _toolbar.show_all()
-
-        return _toolbar
+        return _buttonbox
 
     def _make_treeview(self):
         """
