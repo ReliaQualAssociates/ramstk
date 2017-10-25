@@ -21,7 +21,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
     RTKWorkView are:
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):
         """
         Method to initialize the Work View.
 
@@ -37,6 +37,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._module = kwargs['module']
 
         # Initialize public dictionary attributes.
 
@@ -45,8 +46,96 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         # Initialize public scalar attributes.
         self.hbx_tab_label = gtk.HBox()
 
-    @staticmethod
-    def _make_assessment_results_page():
+        self.txtActiveHt = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                        tooltip=_(u"Displays the active "
+                                                  u"failure intensity for the "
+                                                  u"selected {0:s}.").
+                                        format(self._module))
+        self.txtDormantHt = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                         tooltip=_(u"Displays the dormant "
+                                                   u"failure intensity for "
+                                                   u"the selected {0:s}.").
+                                         format(self._module))
+        self.txtSoftwareHt = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                          tooltip=_(u"Displays the software "
+                                                    u"failure intensity for "
+                                                    u"the selected {0:s}.").
+                                          format(self._module))
+        self.txtPredictedHt = rtk.RTKEntry(width=125, editable=False,
+                                           bold=True,
+                                           tooltip=_(u"Displays the logistics "
+                                                     u"failure intensity for "
+                                                     u"the selected {0:s}.  "
+                                                     u"This is the sum of the "
+                                                     u"active, dormant, and "
+                                                     u"software hazard "
+                                                     u"rates.").
+                                           format(self._module))
+        self.txtMissionHt = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                         tooltip=_(u"Displays the mission "
+                                                   u"failure intensity for "
+                                                   u"the selected {0:s}.").
+                                         format(self._module))
+        self.txtMTBF = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                    tooltip=_(u"Displays the logistics mean "
+                                              u"time between failure (MTBF) "
+                                              u"for the selected {0:s}.").
+                                    format(self._module))
+        self.txtMissionMTBF = rtk.RTKEntry(width=125, editable=False,
+                                           bold=True,
+                                           tooltip=_(u"Displays the mission "
+                                                     u"mean time between "
+                                                     u"failure (MTBF) for the "
+                                                     u"selected {0:s}.").
+                                           format(self._module))
+        self.txtReliability = rtk.RTKEntry(width=125, editable=False,
+                                           bold=True,
+                                           tooltip=_(u"Displays the logistics "
+                                                     u"reliability for the "
+                                                     u"selected {0:s}.").
+                                           format(self._module))
+        self.txtMissionRt = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                         tooltip=_(u"Displays the mission "
+                                                   u"reliability for the "
+                                                   u"selected {0:s}.").
+                                         format(self._module))
+
+        self.txtMPMT = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                    tooltip=_(u"Displays the mean preventive "
+                                              u"maintenance time (MPMT) for "
+                                              u"the selected {0:s}.").
+                                    format(self._module))
+        self.txtMCMT = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                    tooltip=_(u"Displays the mean corrective "
+                                              u"maintenance time (MCMT) for "
+                                              u"the selected {0:s}.").
+                                    format(self._module))
+        self.txtMTTR = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                    tooltip=_(u"Displays the mean time to "
+                                              u"repair (MTTR) for the "
+                                              u"selected {0:s}.").
+                                    format(self._module))
+        self.txtMMT = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                   tooltip=_(u"Displays the mean maintenance "
+                                             u"time (MMT) for the selected "
+                                             u"{0:s}.  This includes "
+                                             u"preventive and corrective "
+                                             u"maintenance.").
+                                   format(self._module))
+        self.txtAvailability = rtk.RTKEntry(width=125, editable=False,
+                                            bold=True,
+                                            tooltip=_(u"Displays the "
+                                                      u"logistics "
+                                                      u"availability for the "
+                                                      u"selected {0:s}.").
+                                            format(self._module))
+        self.txtMissionAt = rtk.RTKEntry(width=125, editable=False, bold=True,
+                                         tooltip=_(u"Displays the mission "
+                                                   u"availability for the "
+                                                   u"selected {0:s}.").
+                                         format(self._module))
+
+    def _make_assessment_results_page(self):
         """
         Method to create the gtk.Notebook() page for displaying assessment
         results.
@@ -68,6 +157,26 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
         _hbox.pack_start(_frame)
 
+        _labels = [_(u"Active Failure Intensity [\u039B(t)]:"),
+                   _(u"Dormant \u039B(t):"), _(u"Software \u039B(t):"),
+                   _(u"Predicted h(t):"), _(u"Mission h(t):"), _(u"MTBF:"),
+                   _(u"Mission MTBF:"), _(u"Reliability [R(t)]:"),
+                   _(u"Mission R(t):")]
+        _x_pos_l, _y_pos = rtk.make_label_group(_labels, _fxd_left, 5, 5)
+        _x_pos_l += 50
+
+        _fxd_left.put(self.txtActiveHt, _x_pos_l, _y_pos[0])
+        _fxd_left.put(self.txtDormantHt, _x_pos_l, _y_pos[1])
+        _fxd_left.put(self.txtSoftwareHt, _x_pos_l, _y_pos[2])
+        _fxd_left.put(self.txtPredictedHt, _x_pos_l, _y_pos[3])
+        _fxd_left.put(self.txtMissionHt, _x_pos_l, _y_pos[4])
+        _fxd_left.put(self.txtMTBF, _x_pos_l, _y_pos[5])
+        _fxd_left.put(self.txtMissionMTBF, _x_pos_l, _y_pos[6])
+        _fxd_left.put(self.txtReliability, _x_pos_l, _y_pos[7])
+        _fxd_left.put(self.txtMissionRt, _x_pos_l, _y_pos[8])
+
+        _fxd_left.show_all()
+
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build the right half of the page.                                   #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -79,7 +188,32 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
         _hbox.pack_end(_frame)
 
-        return _hbox, _fxd_left, _fxd_right
+        _labels = [_(u"Mean Preventive Maintenance Time [MPMT]:"),
+                   _(u"Mean Corrective Maintenance Time [MCMT]:"),
+                   _(u"Mean Time to Repair [MTTR]:"),
+                   _(u"Mean Maintenance Time [MMT]:"),
+                   _(u"Availability [A(t)]:"), _(u"Mission A(t):")]
+        _x_pos_r, _y_pos = rtk.make_label_group(_labels, _fxd_right, 5, 5)
+        _x_pos_r += 55
+
+        _fxd_right.put(self.txtMPMT, _x_pos_r, _y_pos[0])
+        _fxd_right.put(self.txtMCMT, _x_pos_r, _y_pos[1])
+        _fxd_right.put(self.txtMTTR, _x_pos_r, _y_pos[2])
+        _fxd_right.put(self.txtMMT, _x_pos_r, _y_pos[3])
+        _fxd_right.put(self.txtAvailability, _x_pos_r, _y_pos[4])
+        _fxd_right.put(self.txtMissionAt, _x_pos_r, _y_pos[5])
+
+        _fxd_right.show_all()
+
+        _label = rtk.RTKLabel(_(u"Assessment\nResults"), height=30, width=-1,
+                              justify=gtk.JUSTIFY_CENTER,
+                              tooltip=_(u"Displays reliability, "
+                                        u"maintainability, and availability "
+                                        u"assessment results for the selected "
+                                        u"{0:s}.").format(self._module))
+        self.hbx_tab_label.pack_start(_label)
+
+        return _hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r
 
     @staticmethod
     def _make_general_data_page():

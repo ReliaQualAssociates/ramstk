@@ -51,7 +51,7 @@ class FMEA(RTKWorkView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        RTKWorkView.__init__(self, controller)
+        RTKWorkView.__init__(self, controller, module='FMEA')
 
         # Initialize private dictionary attributes.
         self._dic_icons['mode'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \

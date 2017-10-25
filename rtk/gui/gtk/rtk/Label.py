@@ -44,8 +44,12 @@ def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
     _lst_y_pos = []
     _max_x = 0
 
-    for __, label_text in enumerate(text):
-        _label = RTKLabel(label_text, width=-1, height=-1, wrap=wrap)
+    _char_width = max([len(_label_text) for _label_text in text])
+
+    for __, _label_text in enumerate(text):
+        _label = RTKLabel(_label_text, width=-1, height=-1, wrap=wrap,
+                          justify=gtk.JUSTIFY_RIGHT)
+        _label.set_width_chars(_char_width)
         _max_x = max(_max_x, _label.size_request()[0])
         container.put(_label, x_pos, y_pos)
         _lst_y_pos.append(y_pos)
@@ -90,7 +94,7 @@ class RTKLabel(gtk.Label):
         elif justify == gtk.JUSTIFY_LEFT:
             self.set_alignment(xalign=0.05, yalign=0.5)
         else:
-            self.set_alignment(xalign=0.95, yalign=0.5)
+            self.set_alignment(xalign=0.99, yalign=0.5)
         self.props.width_request = width
         self.props.height_request = height
 

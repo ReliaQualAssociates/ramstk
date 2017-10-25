@@ -74,7 +74,7 @@ class GeneralData(RTKWorkView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        RTKWorkView.__init__(self, controller)
+        RTKWorkView.__init__(self, controller, module='Function')
 
         # Initialize private dictionary attributes.
 
@@ -96,30 +96,31 @@ class GeneralData(RTKWorkView):
             tooltip=_(u"Indicates whether or not the selected function is "
                       u"safety critical."))
 
-        self.txtCode = rtk.RTKEntry(tooltip=_(u"Enter a unique code for the "
-                                              u"selected function."))
-        self.txtTotalCost = rtk.RTKEntry(width=75, editable=False, bold=True,
+        self.txtCode = rtk.RTKEntry(width=125,
+                                    tooltip=_(u"Enter a unique code for the "
+                                              u"selected Function."))
+        self.txtTotalCost = rtk.RTKEntry(width=125, editable=False, bold=True,
                                          tooltip=_(u"Displays the total cost "
                                                    u"of the selected "
-                                                   u"function."))
+                                                   u"Function."))
         self.txtName = rtk.RTKEntry(width=400, tooltip=_(u"Enter the name of "
                                                          u"the selected "
-                                                         u"function."))
-        self.txtModeCount = rtk.RTKEntry(width=75, editable=False, bold=True,
+                                                         u"Function."))
+        self.txtModeCount = rtk.RTKEntry(width=125, editable=False, bold=True,
                                          tooltip=_(u"Displays the total "
                                                    u"number of failure modes "
                                                    u"associated with the "
-                                                   u"selected function."))
-        self.txtPartCount = rtk.RTKEntry(width=75, editable=False, bold=True,
+                                                   u"selected Function."))
+        self.txtPartCount = rtk.RTKEntry(width=125, editable=False, bold=True,
                                          tooltip=_(u"Displays the total "
                                                    u"number of components "
                                                    u"associated with the "
-                                                   u"selected function."))
+                                                   u"selected Function."))
         self.txtRemarks = rtk.RTKTextView(txvbuffer=gtk.TextBuffer(),
                                           width=400,
                                           tooltip=_(u"Enter any remarks "
                                                     u"related to the selected "
-                                                    u"function."))
+                                                    u"Function."))
 
         # Connect to callback functions for editable gtk.Widgets().
         self._lst_handler_id.append(
@@ -301,7 +302,7 @@ class GeneralData(RTKWorkView):
                 _text = self.txtRemarks.do_get_text()
                 _function.remarks = _text
 
-            pub.sendMessage('wvwEditedFunction', position=_position,
+            pub.sendMessage('wvwEditedFunction', position=_index,
                             new_text=_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
@@ -386,7 +387,7 @@ class AssessmentResults(RTKWorkView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        RTKWorkView.__init__(self, controller)
+        RTKWorkView.__init__(self, controller, module='Function')
 
         # Initialize private dictionary attributes.
 
@@ -401,52 +402,6 @@ class AssessmentResults(RTKWorkView):
 
         # Initialize public scalar attributes.
         self._function_id = None
-
-        self.txtPredictedHt = rtk.RTKEntry(width=100, editable=False,
-                                           bold=True,
-                                           tooltip=_(u"Displays the logistics "
-                                                     u"failure intensity for "
-                                                     u"the selected "
-                                                     u"function."))
-        self.txtMissionHt = rtk.RTKEntry(width=100, editable=False, bold=True,
-                                         tooltip=_(u"Displays the mission "
-                                                   u"failure intensity for "
-                                                   u"the selected function."))
-        self.txtMTBF = rtk.RTKEntry(width=100, editable=False, bold=True,
-                                    tooltip=_(u"Displays the logistics mean "
-                                              u"time between failure (MTBF) "
-                                              u"for the selected function."))
-        self.txtMissionMTBF = rtk.RTKEntry(width=100, editable=False,
-                                           bold=True,
-                                           tooltip=_(u"Displays the mission "
-                                                     u"mean time between "
-                                                     u"failure (MTBF) for the "
-                                                     u"selected function."))
-        self.txtMPMT = rtk.RTKEntry(width=100, editable=False, bold=True,
-                                    tooltip=_(u"Displays the mean preventive "
-                                              u"maintenance time (MPMT) for "
-                                              u"the selected function."))
-        self.txtMCMT = rtk.RTKEntry(width=100, editable=False, bold=True,
-                                    tooltip=_(u"Displays the mean corrective "
-                                              u"maintenance time (MCMT) for "
-                                              u"the selected function."))
-        self.txtMTTR = rtk.RTKEntry(width=100, editable=False, bold=True,
-                                    tooltip=_(u"Displays the mean time to "
-                                              u"repair (MTTR) for the "
-                                              u"selected function."))
-        self.txtMMT = rtk.RTKEntry(width=100, editable=False, bold=True,
-                                   tooltip=_(u"Displays the mean maintenance "
-                                             u"time (MMT) for the selected "
-                                             u"function."))
-        self.txtAvailability = rtk.RTKEntry(width=100, editable=False,
-                                            bold=True,
-                                            tooltip=_(u"Displays the lgistics "
-                                                      u"availability for the "
-                                                      u"selected function."))
-        self.txtMissionAt = rtk.RTKEntry(width=100, editable=False, bold=True,
-                                         tooltip=_(u"Displays the mission "
-                                                   u"availability for the "
-                                                   u"selected function."))
 
         self.pack_start(self._make_assessment_results_page(), expand=True,
                         fill=True)
@@ -464,45 +419,11 @@ class AssessmentResults(RTKWorkView):
         """
 
         (_hbx_page,
-         _fxd_left,
-         _fxd_right) = RTKWorkView._make_assessment_results_page()
+         __, __, __, __) = RTKWorkView._make_assessment_results_page(self)
 
-        _labels = [_(u"Predicted h(t):"), _(u"Mission h(t):"), _(u"MTBF:"),
-                   _(u"Mission MTBF:")]
-        _x_pos, _y_pos = rtk.make_label_group(_labels, _fxd_left, 5, 5)
-        _x_pos += 50
-
-        _fxd_left.put(self.txtPredictedHt, _x_pos, _y_pos[0])
-        _fxd_left.put(self.txtMissionHt, _x_pos, _y_pos[1])
-        _fxd_left.put(self.txtMTBF, _x_pos, _y_pos[2])
-        _fxd_left.put(self.txtMissionMTBF, _x_pos, _y_pos[3])
-
-        _fxd_left.show_all()
-
-        _labels = [_(u"Mean Preventive Maintenance Time [MPMT]:"),
-                   _(u"Mean Corrective Maintenance Time [MCMT]:"),
-                   _(u"Mean Time to Repair [MTTR]:"),
-                   _(u"Mean Maintenance Time [MMT]:"),
-                   _(u"Availability [A(t)]:"), _(u"Mission A(t):")]
-        _x_pos, _y_pos = rtk.make_label_group(_labels, _fxd_right, 5, 5)
-        _x_pos += 50
-
-        _fxd_right.put(self.txtMPMT, _x_pos, _y_pos[0])
-        _fxd_right.put(self.txtMCMT, _x_pos, _y_pos[1])
-        _fxd_right.put(self.txtMTTR, _x_pos, _y_pos[2])
-        _fxd_right.put(self.txtMMT, _x_pos, _y_pos[3])
-        _fxd_right.put(self.txtAvailability, _x_pos, _y_pos[4])
-        _fxd_right.put(self.txtMissionAt, _x_pos, _y_pos[5])
-
-        _fxd_right.show_all()
-
-        _label = rtk.RTKLabel(_(u"Assessment\nResults"), height=30, width=-1,
-                              justify=gtk.JUSTIFY_CENTER,
-                              tooltip=_(u"Displays reliability, "
-                                        u"maintainability, and availability "
-                                        u"assessment results for the selected "
-                                        u"function."))
-        self.hbx_tab_label.pack_start(_label)
+        self.txtActiveHt.set_sensitive(False)
+        self.txtDormantHt.set_sensitive(False)
+        self.txtSoftwareHt.set_sensitive(False)
 
         return _hbx_page
 

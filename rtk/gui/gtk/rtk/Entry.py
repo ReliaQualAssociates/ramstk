@@ -56,7 +56,7 @@ class RTKEntry(gtk.Entry):
             self.modify_base(gtk.STATE_ACTIVE, _bg_color)
             self.modify_base(gtk.STATE_PRELIGHT, _bg_color)
             self.modify_base(gtk.STATE_SELECTED, _bg_color)
-            self.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
+            self.modify_base(gtk.STATE_INSENSITIVE, gtk.gdk.Color('#BFBFBF'))
             self.modify_font(pango.FontDescription('bold'))
 
         self.set_tooltip_markup(tooltip)

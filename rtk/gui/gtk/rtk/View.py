@@ -13,7 +13,6 @@ import locale
 
 # Import other RTK Widget classes.
 from .Widget import gtk                         # pylint: disable=E0401
-from gui.gtk.rtk import RTKButton               # pylint: disable=E0401
 
 
 class RTKBaseView(object):
@@ -99,6 +98,7 @@ class RTKBaseView(object):
         except locale.Error:
             locale.setlocale(locale.LC_ALL, '')
 
+    # pylint: disable=too-many-arguments
     def _make_buttonbox(self, icons, tooltips, callbacks,
                         orientation='horizontal', height=-1, width=-1):
         """
