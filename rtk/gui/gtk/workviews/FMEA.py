@@ -104,8 +104,9 @@ class FMEA(RTKWorkView):
 
         # Load the status values into the gtk.CellRendererCombo()
         _model = self._do_get_cell_model(10)
-        for _item in controller.RTK_CONFIGURATION.RTK_SEVERITY:
-            _severity = controller.RTK_CONFIGURATION.RTK_SEVERITY[_item][1]
+        for _item in controller.RTK_CONFIGURATION.RTK_ACTION_STATUS:
+            _severity = \
+                controller.RTK_CONFIGURATION.RTK_ACTION_STATUS[_item][0]
             _model.append((_severity,))
 
         self._lst_handler_id.append(
@@ -264,7 +265,7 @@ class FMEA(RTKWorkView):
 
     def _do_load_tree(self, tree, row=None):
         """
-        Method to iteratively load the Functional FMEA gtk.TreeView().
+        Method to iteratively load the FMEA gtk.TreeView().
 
         :param tree: the treelib Tree() holding the (partial) FMEA to load.
         :param row: the parent gtk.Iter() of the entity being added to the
@@ -290,7 +291,7 @@ class FMEA(RTKWorkView):
                          _entity.effect_local, _entity.effect_next,
                          _entity.effect_end, _entity.design_provisions,
                          _entity.operator_actions, _entity.severity_class,
-                         0, '', 0, '', 0, '', 0, '', _entity.remarks, _icon,
+                         '', '', '', '', 0, '', 0, '', _entity.remarks, _icon,
                          _node_id]
                 _row = None
             elif _entity.is_mechanism:
@@ -313,13 +314,13 @@ class FMEA(RTKWorkView):
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['control'], 22, 22)
                 _data = [_entity.control_id, _entity.description, '', '', '',
-                         '', '', 0, 0, '', 0, '', 0, '', 0, '', '', _icon,
+                         '', '', '', '', '', '', '', 0, '', 0, '', '', _icon,
                          _node_id]
             elif _entity.is_action and row is not None:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['action'], 22, 22)
                 _data = [_entity.action_id, _entity.action_recommended, '', '',
-                         '', '', '', 0, _entity.action_owner,
+                         '', '', '', '', _entity.action_owner,
                          _entity.action_due_date, _entity.action_status,
                          _entity.action_taken, _entity.action_approved,
                          _entity.action_approve_date, _entity.action_closed,
@@ -355,7 +356,7 @@ class FMEA(RTKWorkView):
         """
 
         _return = False
-
+        # FIXME: Add code to _do_request_calculate() when refactoring the Hardware module.
         return _return
 
     def _do_request_delete(self, __button):
@@ -506,7 +507,7 @@ class FMEA(RTKWorkView):
 
     def _make_treeview(self):
         """
-        Method to create the Functional FMEA gtk.Treeview().
+        Method to create the FMEA gtk.Treeview().
 
         :return: a gtk.Frame() containing the instance of gtk.Treeview().
         :rtype: :py:class:`gtk.Frame`

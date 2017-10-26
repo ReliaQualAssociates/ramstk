@@ -222,12 +222,12 @@ class Model(RTKDataModel):
 
     def _do_add_actions(self, cause_id, parent_id, functional):
         """
-        Method to add the control methods to the FMEA tree for the Mode ID
+        Method to add the action to the FMEA tree for the Mode ID
         (funtional FMEA) or Cause ID (hardware FMEA) that is passed.
 
         :param int cause_id: the Mode ID (functional FMEA) or Cause ID
-                             (hardware FMEA) to add the control methods to.
-        :param str parent_id: the Node ID to add the control methods to.
+                             (hardware FMEA) to add the action to.
+        :param str parent_id: the Node ID to add the action to.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

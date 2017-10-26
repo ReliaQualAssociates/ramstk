@@ -243,8 +243,9 @@ class Model(RTKDataModel):
             _function.availability_logistics = 1.0
             _error_code = 3009
             _msg = "RTK ERROR: Zero Division or Overflow Error " \
-                   "when calculating the mission MTBF for Function ID " \
-                   "{2:d}.  Logistics MTBF: {0:f} and MTTR: {1:f}.".\
+                   "when calculating the logistics availability for " \
+                   "Function ID {2:d}.  Logistics MTBF: {0:f} and MTTR: " \
+                   "{1:f}.".\
                    format(_function.mtbf_logistics, _function.mttr,
                           _function.function_id)
 
@@ -257,8 +258,9 @@ class Model(RTKDataModel):
             _function.availability_mission = 1.0
             _error_code = 3009
             _msg = "RTK ERROR: Zero Division or Overflow Error " \
-                   "when calculating the mission MTBF for Function ID " \
-                   "{2:d}.  Mission MTBF: {0:f} and MTTR: {1:f}.".\
+                   "when calculating the mission availability for " \
+                   "Function ID {2:d}.  Mission MTBF: {0:f} and MTTR: " \
+                   "{1:f}.".\
                    format(_function.mtbf_mission, _function.mttr,
                           _function.function_id)
 
@@ -409,9 +411,9 @@ class Function(RTKDataController):
         :rtype: list
         """
 
-        _function = self._request_select(function_id)
+        _function = self.request_select(function_id)
 
-        return list(_revision.get_attributes())
+        return list(_function.get_attributes())
 
     def request_calculate_reliability(self, function_id):
         """

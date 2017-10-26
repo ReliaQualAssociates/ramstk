@@ -130,13 +130,14 @@ class ModuleView(RTKModuleView):
         if not RTKModuleView._do_edit_cell(__cell, path, new_text,
                                            position, model):
 
-            _attributes = \
-                self._dtc_function.request_get_attributes(self._function_id)
-
-            _attributes[self._lst_col_order[position] - 1] = str(new_text)
+            _function = self._dtc_function.request_select(self._function_id)
+            _attributes = list(_function.get_attributes())[2:]
+            _attributes[self._lst_col_order[position] - 2] = str(new_text)
+            _function.set_attributes(_attributes)
 
             pub.sendMessage('mvwEditedFunction',
-                            function_id=self._function_id)
+                            index=self._lst_col_order[position],
+                            new_text=new_text)
         else:
             _return = True
 

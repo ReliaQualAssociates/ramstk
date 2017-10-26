@@ -466,14 +466,14 @@ class Revision(RTKDataController):
         return list(_revision.get_attributes())
 
     def request_calculate_reliability(self, revision_id, mission_time,
-                                      multiplier):
+                                      multiplier=1.0):
         """
         Method to request reliability attributes be calculated for the
         Revision ID passed.
 
         :param int revision_id: the Revision ID to calculate.
         :param float mission_time: the time to use in the calculations.
-        :param float multiplier: the hazard rate multiplier.
+        :keyword float multiplier: the hazard rate multiplier.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

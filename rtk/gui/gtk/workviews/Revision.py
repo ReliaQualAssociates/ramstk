@@ -110,7 +110,7 @@ class GeneralData(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedRevision')
-        pub.subscribe(self._on_select, 'mvwEditedRevision')
+        pub.subscribe(self._on_edit, 'mvwEditedRevision')
 
     def _do_request_calculate(self, __button):
         """
@@ -149,7 +149,11 @@ class GeneralData(RTKWorkView):
                         _msg[0] + "\n\t" +
                         _msg[1] + "\n\t" +
                         _msg[2] + "\n\n").format(self._revision_id)
-            rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
+            _error_dialog = rtk.RTKMessageDialog(_prompt,
+                                                 self._dic_icons['error'],
+                                                 'error')
+            if _error_dialog.do_run() == gtk.RESPONSE_OK:
+                _error_dialog.do_destroy()
 
             _return = True
 
@@ -222,6 +226,37 @@ class GeneralData(RTKWorkView):
                                                  _callbacks, 'vertical')
 
         return _buttonbox
+
+    def _on_edit(self, index, new_text):
+        """
+        Method to update the Work View gtk.Widgets() with changes to the
+        Revision data model attributes.  This method is called whenever an
+        attribute is edited in a different view.
+
+        :param int index: the index in the Revision attributes list of the
+                          attribute that was edited.
+        :param str new_text: the new text to update the gtk.Widget() with.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        if index == 17:
+            self.txtName.handler_block(self._lst_handler_id[0])
+            self.txtName.set_text(new_text)
+            self.txtName.handler_unblock(self._lst_handler_id[0])
+        elif index == 20:
+            _textbuffer = self.txtRemarks.do_get_buffer()
+            _textbuffer.handler_block(self._lst_handler_id[1])
+            _textbuffer.set_text(new_text)
+            _textbuffer.handler_unblock(self._lst_handler_id[1])
+        elif index == 22:
+            self.txtCode.handler_block(self._lst_handler_id[2])
+            self.txtCode.set_text(str(new_text))
+            self.txtCode.handler_unblock(self._lst_handler_id[2])
+
+        return _return
 
     def _on_focus_out(self, entry, __event, index):
         """

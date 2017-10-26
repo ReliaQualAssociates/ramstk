@@ -156,18 +156,19 @@ class GeneralData(RTKWorkView):
         _error_code = 0
         _msg = ['', '']
 
-        if self._dtc_function.request_calculate_reliability(self.function_id):
+        if self._dtc_function.request_calculate_reliability(self._function_id):
             _error_code = 1
             _msg[0] = 'Error calculating reliability attributes.'
 
-        if self._dtc_function.request_calculate_availability(self.function_id):
+        if self._dtc_function.request_calculate_availability(
+                self._function_id):
             _error_code = 1
             _msg[1] = 'Error calculating availability attributes.'
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
                         u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
-                        _msg[1] + "\n\n").format(self.function_id)
+                        _msg[1] + "\n\n").format(self._function_id)
             _error_dialog = rtk.RTKMessageDialog(_prompt,
                                                  self._dic_icons['error'],
                                                  'error')
@@ -245,19 +246,34 @@ class GeneralData(RTKWorkView):
 
         return _buttonbox
 
-    def _on_edit(self, function_id):
+    def _on_edit(self, index, new_text):
         """
         Method to update the Work View gtk.Widgets() with changes to the
-        Function data model attributes.
+        Function data model attributes.  This method is called whenever an
+        attribute is edited in a different view.
 
-        :param int function_id: the ID of the Function that was edited.
+        :param int index: the index in the Function attributes list of the
+                          attribute that was edited.
+        :param str new_text: the new text to update the gtk.Widget() with.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _return = False
 
-        self._on_select(function_id)
+        if index == 5:
+            self.txtCode.handler_block(self._lst_handler_id[0])
+            self.txtCode.set_text(str(new_text))
+            self.txtCode.handler_unblock(self._lst_handler_id[0])
+        elif index == 15:
+            self.txtName.handler_block(self._lst_handler_id[1])
+            self.txtName.set_text(new_text)
+            self.txtName.handler_unblock(self._lst_handler_id[1])
+        elif index == 17:
+            _textbuffer = self.txtRemarks.do_get_buffer()
+            _textbuffer.handler_block(self._lst_handler_id[2])
+            _textbuffer.set_text(new_text)
+            _textbuffer.handler_unblock(self._lst_handler_id[2])
 
         return _return
 
@@ -292,7 +308,7 @@ class GeneralData(RTKWorkView):
             if index == 0:
                 _index = 5
                 _text = str(entry.get_text())
-                _function.code = _text
+                _function.function_code = _text
             elif index == 1:
                 _index = 15
                 _text = str(entry.get_text())
@@ -326,7 +342,6 @@ class GeneralData(RTKWorkView):
         self._dtc_function = self._mdcRTK.dic_controllers['function']
         _function = self._dtc_function.request_select(self._function_id)
 
-        # ----- ----- ----- LOAD GENERAL DATA PAGE ----- ----- ----- #
         self.txtCode.handler_block(self._lst_handler_id[0])
         self.txtCode.set_text(str(_function.function_code))
         self.txtCode.handler_unblock(self._lst_handler_id[0])
@@ -424,6 +439,8 @@ class AssessmentResults(RTKWorkView):
         self.txtActiveHt.set_sensitive(False)
         self.txtDormantHt.set_sensitive(False)
         self.txtSoftwareHt.set_sensitive(False)
+        self.txtReliability.set_sensitive(False)
+        self.txtMissionRt.set_sensitive(False)
 
         return _hbx_page
 

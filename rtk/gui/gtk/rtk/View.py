@@ -81,7 +81,7 @@ class RTKBaseView(object):
 
         # Initialize private scalar attributes.
         self._mdcRTK = controller
-        self._mission_time = controller.RTK_CONFIGURATION.RTK_MTIME
+        self._mission_time = float(controller.RTK_CONFIGURATION.RTK_MTIME)
         self._notebook = gtk.Notebook()
 
         # Initialize public dictionary attributes.
