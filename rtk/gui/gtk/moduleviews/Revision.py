@@ -75,7 +75,10 @@ class ModuleView(RTKModuleView):
         self.hbx_tab_label.pack_end(_label)
         self.hbx_tab_label.show_all()
 
-        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
+        _scrollwindow = gtk.ScrolledWindow()
+        _scrollwindow.set_policy(gtk.POLICY_NEVER, gtk.POLICY_AUTOMATIC)
+        _scrollwindow.add_with_viewport(self._make_buttonbox())
+        self.pack_start(_scrollwindow, expand=False, fill=False)
 
         self.show_all()
 
@@ -203,8 +206,6 @@ class ModuleView(RTKModuleView):
         _revision = self._dtc_revision.request_select(self._revision_id)
 
         if not self._dtc_revision.request_insert():
-            # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
-
             # Get the currently selected row, the level of the currently
             # selected item, and it's parent row in the Function tree.
             _model, _row = self.treeview.get_selection().get_selected()
@@ -229,9 +230,21 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_update(self, __button):
+        """
+        Method to save the currently selected Revision.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._dtc_revision.request_update(self._revision_id)
+
     def _do_request_update_all(self, __button):
         """
-        Method to save all the Functions.
+        Method to save all the Revisions.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
@@ -253,10 +266,13 @@ class ModuleView(RTKModuleView):
 
         _tooltips = [_(u"Add a new Revision."),
                      _(u"Remove the currently selected Revision."),
-                     _(u"Save the Revision to the open RTK Program database.")]
+                     _(u"Save the currently selected Revision to the open "
+                       u"RTK Program database."),
+                     _(u"Saves all Revisions to the open RTK Program "
+                       u"database.")]
         _callbacks = [self._do_request_insert, self._do_request_delete,
-                      self._do_request_update_all]
-        _icons = ['add', 'remove', 'save']
+                      self._do_request_update, self._do_request_update_all]
+        _icons = ['add', 'remove', 'save', 'save-all']
 
         _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
                                                    _callbacks, 'vertical')
@@ -311,10 +327,48 @@ class ModuleView(RTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            print "FIXME: Rick clicking should launch a pop-up menu with " \
-                  "options to insert sibling, insert child, delete " \
-                  "(selected), save (selected), and save all in " \
-                  "rtk.gui.gtk.moduleviews.Revision._on_button_press."
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['add'])
+            _menu_item.set_label(_(u"Add New Revision"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['remove'])
+            _menu_item.set_label(_(u"Remove Selected Revision"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_delete)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save Selected Revision"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-all'])
+            _menu_item.set_label(_(u"Save All Revisions"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 

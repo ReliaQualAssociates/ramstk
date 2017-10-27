@@ -243,6 +243,18 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_update(self, __button):
+        """
+        Method to save the currently selected Function.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._dtc_function.request_update(self._function_id)
+
     def _do_request_update_all(self, __button):
         """
         Method to save all the Functions.
@@ -270,10 +282,15 @@ class ModuleView(RTKModuleView):
                      _(u"Adds a new Function one level subordinate to the "
                        u"selected Function (i.e., a child function)."),
                      _(u"Remove the currently selected Function."),
-                     _(u"Save the Function to the open RTK Program database.")]
+                     _(u"Save the currently selected Function to the open "
+                       u"RTK Program database."),
+                     _(u"Saves all Functions to the open RTK Program "
+                       u"database.")]
         _callbacks = [self._do_request_insert, self._do_request_insert,
-                      self._do_request_delete, self._do_request_update_all]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'save']
+                      self._do_request_delete, self._do_request_update,
+                      self._do_request_update_all]
+        _icons = ['insert_sibling', 'insert_child', 'remove', 'save',
+                  'save-all']
 
         _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
                                                    _callbacks, 'vertical')
@@ -328,10 +345,58 @@ class ModuleView(RTKModuleView):
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            print "FIXME: Rick clicking should launch a pop-up menu with " \
-                  "options to insert sibling, insert child, delete " \
-                  "(selected), save (selected), and save all in " \
-                  "rtk.gui.gtk.moduleviews.Function._on_button_press."
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_sibling'])
+            _menu_item.set_label(_(u"Add Sibling Function"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_child'])
+            _menu_item.set_label(_(u"Add Child Function"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['remove'])
+            _menu_item.set_label(_(u"Remove Selected Function"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_delete)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save Selected Function"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-all'])
+            _menu_item.set_label(_(u"Save All Functions"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
 
         treeview.handler_unblock(self._lst_handler_id[1])
 

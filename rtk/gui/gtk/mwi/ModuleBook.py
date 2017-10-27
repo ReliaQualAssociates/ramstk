@@ -159,7 +159,6 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         _menu_item.connect('activate', CreateProject, self._mdcRTK)
         _menu.append(_menu_item)
 
-        # Add New menu.
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/16x16/open.png')
