@@ -50,6 +50,7 @@ class ListView(RTKListView):
         # Initialize private scalar attributes.
         self._dtc_failure_definition = None
         self._revision_id = None
+        self._definition_id = None
 
         # Initialize public dictionary attributes.
 
@@ -63,7 +64,10 @@ class ListView(RTKListView):
             _(u"Displays the list of failure definitions for the selected "
               u"revision."))
         self._lst_handler_id.append(
+            self.treeview.connect('cursor_changed', self._do_change_row))
+        self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
+
 
         # _icon = gtk.gdk.pixbuf_new_from_file_at_size(self._dic_icons['tab'],
         #                                              22, 22)
@@ -92,6 +96,30 @@ class ListView(RTKListView):
         self.show_all()
 
         pub.subscribe(self._on_select_revision, 'selectedRevision')
+
+    def _do_change_row(self, treeview):
+        """
+        Method to handle events for the Failure Defition package List View
+        gtk.TreeView().  It is called whenever a Failure Definition List View
+        gtk.TreeView() row is activated.
+
+        :param treeview: the Failure Definition List View gtk.TreeView().
+        :type treeview: :py:class:`gtk.TreeView`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        treeview.handler_block(self._lst_handler_id[0])
+
+        _model, _row = treeview.get_selection().get_selected()
+
+        self._definition_id = _model.get_value(_row, 0)
+
+        treeview.handler_unblock(self._lst_handler_id[0])
+
+        return _return
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
@@ -171,6 +199,19 @@ class ListView(RTKListView):
 
         return _return
 
+    def _do_request_update(self, __button):
+        """
+        Method to save the currently selected Failure Definition.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._dtc_failure_definition.request_update(
+            self._definition_id)
+
     def _do_request_update_all(self, __button):
         """
         Method to save all the Failure Definitions.
@@ -206,12 +247,14 @@ class ListView(RTKListView):
 
         _tooltips = [_(u"Add a new Failure Definition."),
                      _(u"Remove the currently selected Failure Definition."),
-                     _(u"Save the Failure Definitions to the open RTK Program "
-                       u"database."),
+                     _(u"Save the currently selected Failure Definition to "
+                       u"the open RTK Program database."),
+                     _(u"Save all of the Failure Definitions to the open RTK "
+                       u"Program database."),
                      _(u"Create the Failure Definition report.")]
         _callbacks = [self._do_request_insert, self._do_request_delete,
-                      self._do_request_update_all]
-        _icons = ['add', 'remove', 'save', 'reports']
+                      self._do_request_update, self._do_request_update_all]
+        _icons = ['add', 'remove', 'save', 'save-all', 'reports']
 
         _buttonbox = RTKListView._make_buttonbox(self, _icons, _tooltips,
                                                  _callbacks, 'vertical')
@@ -296,18 +339,57 @@ class ListView(RTKListView):
         :rtype: bool
         """
 
-        treeview.handler_block(self._lst_handler_id[0])
+        treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on
         # the currently selected row and once on the newly selected row.  Thus,
         # we don't need (or want) to respond to left button clicks.
         if event.button == 3:
-            print "FIXME: Rick clicking should launch a pop-up menu with " \
-                  "options to add, remove (selected), and save all in " \
-                  "rtk.gui.gtk.listviews.FailureDefinition._on_button_press."
+            _menu = gtk.Menu()
+            _menu.popup(None, None, None, event.button, event.time)
 
-        treeview.handler_unblock(self._lst_handler_id[0])
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['add'])
+            _menu_item.set_label(_(u"Add New Definition"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['remove'])
+            _menu_item.set_label(_(u"Remove Selected Definition"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_delete)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save'])
+            _menu_item.set_label(_(u"Save Selected Definition"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['save-all'])
+            _menu_item.set_label(_(u"Save All Definitions"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_update_all)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+        treeview.handler_unblock(self._lst_handler_id[1])
 
         return False
 

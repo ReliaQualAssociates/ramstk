@@ -333,7 +333,7 @@ class Function(RTKDataController):
 
         return self._dtm_function.select_all(revision_id)
 
-    def request_insert(self, revision_id, parent_id, level='sibling'):
+    def request_insert(self, revision_id, parent_id, sibling=True):
         """
         Method to request the Function Data Model to add a new Function to the
         RTK Program database.
@@ -351,7 +351,7 @@ class Function(RTKDataController):
             pub.sendMessage('insertedFunction',
                             function_id=self._dtm_function.last_id,
                             parent_id=parent_id,
-                            level=level)
+                            sibling=sibling)
         else:
             _msg = _msg + '  Failed to add a new Function to the RTK ' \
                 'Program database.'

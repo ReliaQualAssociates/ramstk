@@ -294,7 +294,7 @@ class Test00FunctionModel(unittest.TestCase):
         _error_code, _msg = self.DUT.calculate_availability(1)
         self.assertEqual(_error_code, 3009)
         self.assertEqual(_msg, 'RTK ERROR: Zero Division or Overflow Error '
-                               'when calculating the mission MTBF for '
+                               'when calculating the mission availability for '
                                'Function ID 1.  Mission MTBF: 0.000000 and '
                                'MTTR: 0.000000.')
 
@@ -390,7 +390,7 @@ class Test01FunctionController(unittest.TestCase):
 
         self.assertFalse(self.DUT.request_insert(revision_id=1,
                                                  parent_id=0,
-                                                 level='sibling'))
+                                                 sibling=True))
 
     @attr(all=True, unit=True)
     def test04a_request_delete(self):

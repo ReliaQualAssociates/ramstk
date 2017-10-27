@@ -179,7 +179,7 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert(self, __button, level):
+    def _do_request_insert(self, __button, sibling=True):
         """
         Method to send request to insert a new Function into the RTK Program
         database.
@@ -200,7 +200,7 @@ class ModuleView(RTKModuleView):
 
         _function = self._dtc_function.request_select(self._function_id)
 
-        if level == 'sibling':
+        if sibling:
             _parent_id = _function.parent_id
         else:
             _parent_id = _function.function_id
@@ -210,7 +210,7 @@ class ModuleView(RTKModuleView):
             _parent_id = 0
 
         if not self._dtc_function.request_insert(self._revision_id, _parent_id,
-                                                 level):
+                                                 sibling):
             # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
 
             # Get the currently selected row, the level of the currently
@@ -221,7 +221,7 @@ class ModuleView(RTKModuleView):
             _data = _function.get_attributes()
             if _parent_id == 0:
                 _model.append(None, _data)
-            elif _parent_id != 0 and level == 'sibling':
+            elif _parent_id != 0 and sibling:
                 _model.append(_prow, _data)
             else:
                 _model.append(_row, _data)
