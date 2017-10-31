@@ -51,7 +51,7 @@ class TestRTKCategory(unittest.TestCase):
         self.DUT = session.query(RTKCategory).first()
         self.DUT.name = self.attributes[1]
         self.DUT.description = self.attributes[2]
-        self.DUT.type = self.attributes[3]
+        self.DUT.cat_type = self.attributes[3]
         self.DUT.value = self.attributes[4]
 
         session.commit()
@@ -69,7 +69,7 @@ class TestRTKCategory(unittest.TestCase):
         self.assertEqual(self.DUT.category_id, 0)
         self.assertEqual(self.DUT.name, 'IC')
         self.assertEqual(self.DUT.description, 'Integrated Circuit')
-        self.assertEqual(self.DUT.type, 'hardware')
+        self.assertEqual(self.DUT.cat_type, 'hardware')
         self.assertEqual(self.DUT.value, 1)
 
     @attr(all=True, unit=True)

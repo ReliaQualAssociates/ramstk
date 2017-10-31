@@ -1,36 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKModel.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKModel Table
-==============================
+===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKModel(RTK_BASE):
@@ -45,18 +29,18 @@ class RTKModel(RTK_BASE):
                       autoincrement=True, nullable=False)
     description = Column('fld_description', String(512),
                          default='Model Description')
-    type = Column('fld_type', Integer, default='unknown')
+    model_type = Column('fld_type', Integer, default='unknown')
 
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKModel data model
         attributes.
 
-        :return: (model_id, description, type)
+        :return: (model_id, description, model_type)
         :rtype: tuple
         """
 
-        _values = (self.model_id, self.description, self.type)
+        _values = (self.model_id, self.description, self.model_type)
 
         return _values
 
@@ -75,14 +59,15 @@ class RTKModel(RTK_BASE):
             format(self.model_id)
 
         try:
-            self.description = str(attributes[0])
-            self.type = str(attributes[1])
+            self.description = str(none_to_default(attributes[0],
+                                                   'Model Description'))
+            self.model_type = str(none_to_default(attributes[1], 'unkown'))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKModel.set_attributes()."
         except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKModel attributes."
 

@@ -51,7 +51,7 @@ class TestRTKUnit(unittest.TestCase):
         self.DUT = session.query(RTKUnit).first()
         self.DUT.code = self.attributes[1]
         self.DUT.description = self.attributes[2]
-        self.DUT.type = self.attributes[3]
+        self.DUT.unit_type = self.attributes[3]
 
         session.commit()
 
@@ -68,7 +68,7 @@ class TestRTKUnit(unittest.TestCase):
         self.assertEqual(self.DUT.unit_id, 1)
         self.assertEqual(self.DUT.description, 'Pounds Force')
         self.assertEqual(self.DUT.code, 'lbf')
-        self.assertEqual(self.DUT.type, 'measurement')
+        self.assertEqual(self.DUT.unit_type, 'measurement')
 
     @attr(all=True, unit=True)
     def test01_RTKUnit_get_attributes(self):

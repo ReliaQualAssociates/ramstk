@@ -1,34 +1,21 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKMission.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
 ===============================================================================
 The RTKMission Table
 ===============================================================================
 """
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKMission(RTK_BASE):
@@ -88,15 +75,16 @@ class RTKMission(RTK_BASE):
             format(self.mission_id)
 
         try:
-            self.description = str(attributes[0])
-            self.mission_time = float(attributes[1])
-            self.time_units = str(attributes[2])
+            self.description = str(none_to_default(attributes[0],
+                                                   'Description'))
+            self.mission_time = float(none_to_default(attributes[1], 0.0))
+            self.time_units = str(none_to_default(attributes[2], 'hours'))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKMission.set_attributes()."
-        except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+        except (TypeError, ValueError) as _err:
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKMission attributes."
 

@@ -1,5 +1,6 @@
 # Generic files to ignore
 *~
+*.fuse*
 *.lock
 *.DS_Store
 *.out
@@ -10,6 +11,7 @@
 *.goutputstream*
 *.geanyprj
 *.tox
+*.e5s
 
 # Python specific directories and files to ignore
 target/

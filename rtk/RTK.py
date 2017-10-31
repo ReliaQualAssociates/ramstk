@@ -5,33 +5,6 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This is the main program for the RTK application.
 """
@@ -42,19 +15,17 @@ import os
 import sys
 from datetime import date
 
-from sqlalchemy.orm import scoped_session
-from pubsub import pub
+from sqlalchemy.orm import scoped_session           # pylint: disable=E0401
+from pubsub import pub                              # pylint: disable=E0401
 
-from treelib import Tree
+from treelib import Tree                            # pylint: disable=E0401
 
 try:
-    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
@@ -89,8 +60,8 @@ from dao.RTKUser import RTKUser
 from revision.Revision import Revision
 from usage.UsageProfile import UsageProfile
 from failure_definition.FailureDefinition import FailureDefinition
-# from function.Function import Function
-# from analyses.fmea.FMEA import FMEA
+from function.Function import Function
+from analyses.fmea.FMEA import FMEA
 # from requirement.Requirement import Requirement
 # from stakeholder.Stakeholder import Stakeholder
 # from hardware.BoM import BoM as HardwareBoM
@@ -107,10 +78,10 @@ from failure_definition.FailureDefinition import FailureDefinition
 # from incident.component.Component import Component
 # from survival.Survival import Survival
 
-import gui.gtk.Widgets as Widgets
-from gui.gtk.mwi.ListBook import ListView
-from gui.gtk.mwi.ModuleBook import ModuleView
-from gui.gtk.mwi.WorkBook import WorkView
+import gui.gtk.rtk.Widget as Widgets
+from gui.gtk.mwi import ListBook
+from gui.gtk.mwi import ModuleBook
+from gui.gtk.mwi import WorkBook
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -352,7 +323,7 @@ class Model(object):
         # ------------------------------------------------------------------- #
         self.tree.create_node('Components', -1)
         for _category in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.type == 'hardware').all():
+                filter(RTKCategory.cat_type == 'hardware').all():
             self.tree.create_node(_category.name, _category.category_id,
                                   parent=-1,
                                   data=_category.get_attributes()[1:])
@@ -397,12 +368,12 @@ class Model(object):
                 _category.get_attributes()[1:]
 
         for _category in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.type == 'incident').all():
+                filter(RTKCategory.cat_type == 'incident').all():
             configuration.RTK_INCIDENT_CATEGORY[_category.category_id] = \
                 _category.get_attributes()[1:]
 
         for _severity in self.site_session.query(RTKCategory).\
-                filter(RTKCategory.type == 'risk').all():
+                filter(RTKCategory.cat_type == 'risk').all():
             configuration.RTK_SEVERITY[_severity.category_id] = \
                 _severity.get_attributes()[1:]
 
@@ -410,17 +381,17 @@ class Model(object):
         # Load dictionaries from RTKEnviron.                                  #
         # ------------------------------------------------------------------- #
         for _environ in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.type == 'active').all():
+                filter(RTKEnviron.environ_type == 'active').all():
             configuration.RTK_ACTIVE_ENVIRONMENTS[_environ.environ_id] = \
                 _environ.get_attributes()[1:]
 
         for _environ in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.type == 'dormant').all():
+                filter(RTKEnviron.environ_type == 'dormant').all():
             configuration.RTK_DORMANT_ENVIRONMENTS[_environ.environ_id] = \
                 _environ.get_attributes()[1:]
 
         for _environ in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.type == 'development').all():
+                filter(RTKEnviron.environ_type == 'development').all():
             configuration.RTK_SW_DEV_ENVIRONMENTS[_environ.environ_id] = \
                 _environ.get_attributes()[1:]
 
@@ -428,12 +399,12 @@ class Model(object):
         # Load dictionaries from RTKGroup.                                    #
         # ------------------------------------------------------------------- #
         for _group in self.site_session.query(RTKGroup).\
-                filter(RTKGroup.type == 'affinity').all():
+                filter(RTKGroup.group_type == 'affinity').all():
             configuration.RTK_AFFINITY_GROUPS[_group.group_id] = \
                 _group.get_attributes()[1:]
 
         for _group in self.site_session.query(RTKGroup).\
-                filter(RTKGroup.type == 'workgroup').all():
+                filter(RTKGroup.group_type == 'workgroup').all():
             configuration.RTK_WORKGROUPS[_group.group_id] = \
                 _group.get_attributes()[1:]
 
@@ -441,12 +412,12 @@ class Model(object):
         # Load dictionaries from RTKLevel.                                    #
         # ------------------------------------------------------------------- #
         for _level in self.site_session.query(RTKLevel).\
-                filter(RTKLevel.type == 'probability').all():
+                filter(RTKLevel.level_type == 'probability').all():
             configuration.RTK_FAILURE_PROBABILITY[_level.level_id] = \
                 _level.get_attributes()[1:]
 
         for _level in self.site_session.query(RTKLevel).\
-                filter(RTKLevel.type == 'software').all():
+                filter(RTKLevel.level_type == 'software').all():
             configuration.RTK_SW_LEVELS[_level.level_id] = \
                 _level.get_attributes()[1:]
 
@@ -454,12 +425,12 @@ class Model(object):
         # Load the dictionaries from RTKMethod.                               #
         # ------------------------------------------------------------------- #
         for _method in self.site_session.query(RTKMethod).\
-                filter(RTKMethod.type == 'detection').all():
+                filter(RTKMethod.method_type == 'detection').all():
             configuration.RTK_DETECTION_METHODS[_method.method_id] = \
                 _method.get_attributes[1:]
 
         for _method in self.site_session.query(RTKMethod).\
-                filter(RTKMethod.type == 'test').all():
+                filter(RTKMethod.method_type == 'test').all():
             configuration.RTK_SW_TEST_METHODS[_method.method_id] = \
                 _method.get_attributes[1:]
 
@@ -467,11 +438,11 @@ class Model(object):
         # Load dictionaries from RTKModel.                                    #
         # ------------------------------------------------------------------- #
         for _model in self.site_session.query(RTKModel).\
-                filter(RTKModel.type == 'allocation').all():
+                filter(RTKModel.model_type == 'allocation').all():
             configuration.RTK_ALLOCATION_MODELS[_model.model_id] = \
                 _model.get_attributes()[1:]
         for _model in self.site_session.query(RTKModel).\
-                filter(RTKModel.type == 'rprediction').all():
+                filter(RTKModel.model_type == 'rprediction').all():
             configuration.RTK_HR_MODEL[_model.model_id] = \
                 _model.get_attributes()[1:]
 
@@ -479,12 +450,12 @@ class Model(object):
         # Load the dictionaries from RTKPhase.                                #
         # ------------------------------------------------------------------- #
         for _phase in self.site_session.query(RTKPhase).\
-                filter(RTKPhase.type == 'lifecycle').all():
+                filter(RTKPhase.phase_type == 'lifecycle').all():
             configuration.RTK_LIFECYCLE[_phase.phase_id] = \
                 _phase.get_atrributes()[1:]
 
         for _phase in self.site_session.query(RTKPhase).\
-                filter(RTKPhase.type == 'development').all():
+                filter(RTKPhase.phase_type == 'development').all():
             configuration.RTK_SW_DEV_PHASES[_phase.phase_id] = \
                 _phase.get_attributes()[1:]
 
@@ -492,17 +463,17 @@ class Model(object):
         # Load dictionaries from RTKRPN.                                      #
         # ------------------------------------------------------------------- #
         for _rpn in self.site_session.query(RTKRPN).\
-                filter(RTKRPN.type == 'detection').all():
+                filter(RTKRPN.rpn_type == 'detection').all():
             configuration.RTK_RPN_DETECTION[_rpn.rpn_id] = \
                 _rpn.get_attributes()[1:]
 
         for _rpn in self.site_session.query(RTKRPN).\
-                filter(RTKRPN.type == 'occurrence').all():
+                filter(RTKRPN.rpn_type == 'occurrence').all():
             configuration.RTK_RPN_OCCURRENCE[_rpn.rpn_id] = \
                 _rpn.get_attributes()[1:]
 
         for _rpn in self.site_session.query(RTKRPN). \
-                filter(RTKRPN.type == 'severity').all():
+                filter(RTKRPN.rpn_type == 'severity').all():
             configuration.RTK_RPN_SEVERITY[_rpn.rpn_id] = \
                 _rpn.get_attributes()[1:]
 
@@ -510,12 +481,12 @@ class Model(object):
         # Load dictionaries from RTKStatus.                                   #
         # ------------------------------------------------------------------- #
         for _status in self.site_session.query(RTKStatus).\
-                filter(RTKStatus.type == 'action').all():
+                filter(RTKStatus.status_type == 'action').all():
             configuration.RTK_ACTION_STATUS[_status.status_id] = \
                 _status.get_attributes()[1:]
 
         for _status in self.site_session.query(RTKStatus).\
-                filter(RTKStatus.type == 'incident').all():
+                filter(RTKStatus.status_type == 'incident').all():
             configuration.RTK_INCIDENT_STATUS[_status.status_id] = \
                 _status.get_attributes()[1:]
 
@@ -525,32 +496,32 @@ class Model(object):
         configuration.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
 
         for _type in self.site_session.query(RTKType). \
-                filter(RTKType.type == 'cost').all():
+                filter(RTKType.type_type == 'cost').all():
             configuration.RTK_COST_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'mtbf').all():
+                filter(RTKType.type_type == 'mtbf').all():
             configuration.RTK_HR_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'incident').all():
+                filter(RTKType.type_type == 'incident').all():
             configuration.RTK_INCIDENT_TYPE[_type.type_id] = \
                 _type.get_attributes[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'mttr').all():
+                filter(RTKType.type_type == 'mttr').all():
             configuration.RTK_MTTR_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'requirement').all():
+                filter(RTKType.type_type == 'requirement').all():
             configuration.RTK_REQUIREMENT_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
         for _type in self.site_session.query(RTKType).\
-                filter(RTKType.type == 'validation').all():
+                filter(RTKType.type_type == 'validation').all():
             configuration.RTK_VALIDATION_TYPE[_type.type_id] = \
                 _type.get_attributes()[1:]
 
@@ -578,7 +549,7 @@ class Model(object):
                 _manufacturer.get_attributes()[1:]
 
         for _unit in self.site_session.query(RTKUnit).\
-                filter(RTKUnit.type == 'measurement').all():
+                filter(RTKUnit.unit_type == 'measurement').all():
             configuration.RTK_MEASUREMENT_UNITS[_unit.unit_id] = \
                 _unit.get_attributes()[1:]
 
@@ -710,6 +681,7 @@ class RTK(object):
                                 'matrices': None,
                                 'profile': None,
                                 'definition': None,
+                                'ffmea': None,
                                 'fmea': None,
                                 'stakeholder': None,
                                 'allocation': None,
@@ -719,9 +691,9 @@ class RTK(object):
                                 'growth': None,
                                 'action': None,
                                 'component': None}
-        self.dic_books = {'listview': None,
-                          'moduleview': None,
-                          'workview': None}
+        self.dic_books = {'listbook': None,
+                          'modulebook': None,
+                          'workbook': None}
 
         # Define public list attributes.
 
@@ -745,10 +717,10 @@ class RTK(object):
         # configuration.
         if self.RTK_CONFIGURATION.RTK_GUI_LAYOUT == 'basic':  # Single window.
             pass
-        else:  # Multiple windows.
-            self.dic_books['listview'] = ListView(self)
-            self.dic_books['moduleview'] = ModuleView(self)
-            self.dic_books['workview'] = WorkView(self)
+        else:                                   # Multiple windows.
+            self.dic_books['listbook'] = ListBook(self)
+            self.dic_books['modulebook'] = ModuleBook(self)
+            self.dic_books['workbook'] = WorkBook(self)
 
         _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
@@ -818,10 +790,13 @@ class RTK(object):
         if _error_code == 0:
             pub.sendMessage('requestOpen')
             self.dic_controllers['revision'] = Revision(
-                    self.rtk_model.program_dao,
-                    self.RTK_CONFIGURATION,
-                    test=False)
-            # self.dic_controllers['function'] = Function()
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
+            self.dic_controllers['function'] = Function(
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             # self.dic_controllers['requirement'] = Requirement()
             # self.dic_controllers['hardware'] = HardwareBoM()
             # self.dic_controllers['software'] = SoftwareBoM()
@@ -832,13 +807,16 @@ class RTK(object):
 
             # self.dic_controllers['matrices'] = Matrix()
             self.dic_controllers['profile'] = UsageProfile(
-                    self.rtk_model.program_dao,
-                    self.RTK_CONFIGURATION,
-                    test=False)
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             self.dic_controllers['definition'] = FailureDefinition(
-                    self.rtk_model.program_dao,
-                    self.RTK_CONFIGURATION,
-                    test=False)
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
+            self.dic_controllers['ffmea'] = FMEA(self.rtk_model.program_dao,
+                                                 self.RTK_CONFIGURATION,
+                                                 test=False, functional=True)
             # self.dic_controllers['fmea'] = FMEA()
             # self.dic_controllers['stakeholder'] = Stakeholder()
             # self.dic_controllers['allocation'] = Allocation()
@@ -906,9 +884,9 @@ class RTK(object):
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip(
-                    _(u"RTK is connected to program database "
-                      u"{0:s}.".format(
-                            self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
+                _(u"RTK is connected to program database "
+                  u"{0:s}.".format(
+                      self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
 
             self.loaded = True
 
@@ -955,7 +933,7 @@ class RTK(object):
         # TODO: Move this to the ModuleBook.
         _message = _(u"Saving Program Database {0:s}"). \
             format(self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
-        self.dic_books['moduleview'].statusbar.push(2, _message)
+        self.dic_books['modulebook'].statusbar.push(2, _message)
 
         _error_code, _msg = self.rtk_model.save_program()
 
@@ -969,7 +947,7 @@ class RTK(object):
             _return = True
 
         # TODO: Move this to the ModuleBook.
-        self.dic_books['moduleview'].statusbar.pop(2)
+        self.dic_books['modulebook'].statusbar.pop(2)
 
         return _return
 
@@ -991,7 +969,8 @@ class RTK(object):
             Widgets.rtk_warning(_(u"Cannot find license file {0:s}.  If your "
                                   u"license file is elsewhere, please place "
                                   u"it in {1:s}.").format(
-                    _license_file, self.RTK_CONFIGURATION.RTK_DATA_DIR))
+                                      _license_file,
+                                      self.RTK_CONFIGURATION.RTK_DATA_DIR))
             _return = True
 
         _license_key = _license_file.readline().rstrip('\n')

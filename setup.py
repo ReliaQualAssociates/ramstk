@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
+import sys
 from setuptools import setup
 from setuptools.command.install import install as _install
+
+if not sys.version_info[0] == 2:
+    sys.exit("Sorry, Python 3 is not supported (yet)")
 
 
 class install(_install):
@@ -27,8 +31,10 @@ if __name__ == '__main__':
         for performing and documenting RAMS analyses.''',
         author="Andrew 'Weibullguy' Rowland",
         author_email="andrew.rowland@reliaqual.com",
-        license='Proprietary',
+        license='BSD-3',
         url='http://www.reliaqual.com/rtk',
+        python_requires='>=2.7, <4',
+        keywords='reliability RAMS engineering quality',
         scripts=[],
         packages=[
             'rtk.usage',
@@ -47,6 +53,9 @@ if __name__ == '__main__':
             'rtk.dao',
             'rtk._assistants_',
             'rtk.gui',
+            'rtk.gui.gtk',
+            'rtk.gui.gtk.mwi',
+            'rtk.gui.gtk.rtk',
             'rtk.failure_definition',
             'rtk.function',
             'rtk.hardware.component',
@@ -85,8 +94,6 @@ if __name__ == '__main__':
             'rtk.analyses.similar_item',
             'rtk.analyses.pof.gui',
             'rtk.analyses.pof.gui.gtk',
-            'rtk.analyses.fmea.gui',
-            'rtk.analyses.fmea.gui.gtk',
             'rtk.analyses.allocation.gui',
             'rtk.analyses.allocation.gui.gtk',
             'rtk.analyses.hazard.gui',
@@ -97,9 +104,7 @@ if __name__ == '__main__':
             'rtk.survival.__gui',
             'rtk.survival.__gui.gtk',
             'rtk.incident.component',
-            'rtk.incident.action',
-            'rtk.gui.gtk',
-            'rtk.gui.gtk.mwi'
+            'rtk.incident.action'
         ],
         py_modules=[
             'rtk.Utilities',

@@ -1,59 +1,27 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.datamodels.RTKDataController.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ###############################################################################
-RTKDataModel Module
+RTKDataController Module
 ###############################################################################
 """
 
-import gettext
+from pubsub import pub                              # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
-_ = gettext.gettext
-
 
 class RTKDataController(object):
     """
     This is the meta-class for all RTK data controllers.
 
-    :ivar __test: control variable used to suppress certain code during
-                  testing.
     :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
                           instance associated with the current RTK instance.
     """
@@ -72,6 +40,7 @@ class RTKDataController(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._test = kwargs['test']
         self._configuration = configuration
 
         # Initialize public dictionary attributes.
@@ -80,3 +49,31 @@ class RTKDataController(object):
 
         # Initialize public scalar attributes.
 
+    def handle_results(self, error_code, error_msg, pub_msg=None):
+        """
+        Method to handle the error code and error message from the insert,
+        delete, update, and calculate methods.
+
+        :param int error_code: the error code returned by the Data Model when
+                               requested to insert.
+        :param str error_msg: the error message returned by the Data Model when
+                              requested to insert.
+        :param str pub_msg: the message to be published by pypubsub.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        # If the insert, delete, update, or calculation was successful log the
+        # error message to the user log.  Otherwise, log it to the debug log.
+        if error_code == 0:
+            self._configuration.RTK_USER_LOG.info(error_msg)
+
+            if pub_msg is not None and not self._test:
+                pub.sendMessage(pub_msg)
+        else:
+            self._configuration.RTK_DEBUG_LOG.error(error_msg)
+            _return = True
+
+        return _return

@@ -1,24 +1,18 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKCommonDB.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
-The RTKCommonDB File.
-==============================
+===============================================================================
+The RTKCommonDB File
+===============================================================================
 """
-
+# pylint: disable=E0401
 from sqlalchemy.ext.declarative import declarative_base
 
 RTK_BASE = declarative_base()
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 # This file contains all the dictionaries defining the default fields for each
 # of the tables in the RTK Common database.
@@ -55,84 +49,84 @@ RTK_CATEGORIES = {0: ('IC', 'Integrated Circuit', 'hardware', 1),
                        'based on the received data.',
                        'software', 1),
                   19: ('Procedure Control',
-                       'Controls other software; for example, an operating ' 
-                       'system that controls execution of time-shared and ' 
+                       'Controls other software; for example, an operating '
+                       'system that controls execution of time-shared and '
                        'batch computer programs.',
                        'software', 1),
                   20: ('Navigation',
-                       'Does computation and modeling to computer ' 
-                       'information required to guide an airplane from ' 
+                       'Does computation and modeling to computer '
+                       'information required to guide an airplane from '
                        'point of origin to destination.',
                        'software', 1),
                   21: ('Flight Dynamics',
-                       'Uses the functions computed by navigation software ' 
-                       'and augmented by control theory to control the ' 
+                       'Uses the functions computed by navigation software '
+                       'and augmented by control theory to control the '
                        'entire flight of an aircraft.',
                        'software', 1),
                   22: ('Orbital Dynamics',
-                       'Resembles navigation and flight dynamics software, ' 
-                       'but has the additional complexity required by ' 
-                       'orbital navigation, such as a more complex ' 
-                       'reference system and the inclusion of ' 
+                       'Resembles navigation and flight dynamics software, '
+                       'but has the additional complexity required by '
+                       'orbital navigation, such as a more complex '
+                       'reference system and the inclusion of '
                        'gravitational effects of other heavenly bodies.',
                        'software', 1),
                   23: ('Message Processing',
-                       'Handles input and output mnessages. processing the ' 
+                       'Handles input and output mnessages. processing the '
                        'text or information contained therein.',
                        'software', 1),
                   24: ('Diagnostic Software',
-                       'Used to detect and isolate hardware errors in the ' 
-                       'computer in which it resides or in other hardware ' 
+                       'Used to detect and isolate hardware errors in the '
+                       'computer in which it resides or in other hardware '
                        'that can communicate with the computer.',
                        'software', 1),
                   25: ('Sensor and Signal Processing',
-                       'Similar to that of message processing, except that ' 
-                       'it required greater processing, analyzing, and ' 
-                       'transforming the input into a usable data ' 
+                       'Similar to that of message processing, except that '
+                       'it required greater processing, analyzing, and '
+                       'transforming the input into a usable data '
                        'processing format.',
                        'software', 1),
                   26: ('Simulation',
-                       'Used to simulate and environment ieseion ' 
-                       'situation. other heavradlwuaatrieo,n aonfd a ' 
-                       'icnopmutps uftreo mpr otghreasme nt o enable a ' 
+                       'Used to simulate and environment ieseion '
+                       'situation. other heavradlwuaatrieo,n aonfd a '
+                       'icnopmutps uftreo mpr otghreasme nt o enable a '
                        'more realistic or a piece of hardware.',
                        'software', 1),
                   27: ('Database Management',
-                       'Manages the storage and access of (typically ' 
-                       'large) groups of data. Such software can also ' 
-                       'often prepare reports in user-defined formats, ' 
+                       'Manages the storage and access of (typically '
+                       'large) groups of data. Such software can also '
+                       'often prepare reports in user-defined formats, '
                        'based on the contents of the database.',
                        'software', 1),
                   28: ('Data Acquisition',
-                       'Receives information in real-time and stores it in ' 
-                       'some form suitable format for later processing, ' 
-                       'for example, software that receives data from a ' 
+                       'Receives information in real-time and stores it in '
+                       'some form suitable format for later processing, '
+                       'for example, software that receives data from a '
                        'space probe ,and files.',
                        'software', 1),
                   29: ('Data Presentation',
-                       'Formats and transforms data, as necessary, for ' 
-                       'convenient and understandable displays for ' 
-                       'humans.  Typically, such displays would be for ' 
+                       'Formats and transforms data, as necessary, for '
+                       'convenient and understandable displays for '
+                       'humans.  Typically, such displays would be for '
                        'some screen presentation.',
                        'software', 1),
                   30: ('Decision and Planning Aids',
-                       'Uses artificial intelligence techniques to provide ' 
-                       'an expert system to evaluate data and provide ' 
-                       'additional information and consideration for ' 
+                       'Uses artificial intelligence techniques to provide '
+                       'an expert system to evaluate data and provide '
+                       'additional information and consideration for '
                        'decision and policy makers.',
                        'software', 1),
                   31: ('Pattern and Image Processing',
-                       'Used for computer image generation and ' 
-                       'processing.  Such software may analyze terrain ' 
+                       'Used for computer image generation and '
+                       'processing.  Such software may analyze terrain '
                        'data and generate images based on stored data.',
                        'software', 1),
                   32: ('Computer System Software',
-                       'Provides services to operational computer ' 
+                       'Provides services to operational computer '
                        'programs (i.e., problem oriented).',
                        'software', 1),
                   33: ('Software Development Tools',
-                       'Provides services to aid in the development of ' 
-                       'software (e.g., compilers, assemblers, static and ' 
+                       'Provides services to aid in the development of '
+                       'software (e.g., compilers, assemblers, static and '
                        'dynamic analyzers).',
                        'software', 1),
                   34: ('HW', 'Hardware', 'incident', 1),
@@ -229,14 +223,14 @@ RTK_RPNS = {0: ('None', 'No effect.', 'severity', 1),
                 'severity', 2),
             2: ('Minor', 'System operable with some degradation of '
                 'performance.', 'severity', 3),
-            3: ('Very Low', 'System operable with significant degradation of ' 
+            3: ('Very Low', 'System operable with significant degradation of '
                 'performance.', 'severity', 4),
             4: ('Low', 'System inoperable without damage.', 'severity', 5),
             5: ('Moderate', 'System inoperable with minor damage.',
                 'severity', 6),
             6: ('High', 'System inoperable with system damage.',
                 'severity', 7),
-            7: ('Very High', 'System inoperable with destructive failure ' 
+            7: ('Very High', 'System inoperable with destructive failure '
                 'without compromising safety.', 'severity', 8),
             8: ('Hazardous, with warning',
                 'Failure effects safe system operation with warning.',
@@ -258,11 +252,11 @@ RTK_RPNS = {0: ('None', 'No effect.', 'severity', 1),
             19: ('Dangerously High', 'Failure rate is > 1 in 2.',
                  'occurrence', 10),
             20: ('Almost Certain',
-                 'Design control will almost certainly detect a potential ' 
+                 'Design control will almost certainly detect a potential '
                  'mechanism/cause and subsequent failure mode.',
                  'detection', 1),
-            21: ('Very High', 'Very high chance the existing design controls ' 
-                 'will or can detect a potential mechanism/cause and ' 
+            21: ('Very High', 'Very high chance the existing design controls '
+                 'will or can detect a potential mechanism/cause and '
                  'subsequent failure mode.', 'detection', 2),
             22: ('High', 'High chance the existing design controls will or '
                  'can detect a potential mechanism/cause and subsequent '
@@ -274,8 +268,8 @@ RTK_RPNS = {0: ('None', 'No effect.', 'severity', 1),
             24: ('Moderate', 'Moderate chance the existing design controls '
                  'will or can detect a potential mechanism/cause and '
                  'subsequent failure mode.', 'detection', 5),
-            25: ('Low', 'Low chance the existing design controls will or can ' 
-                 'detect a potential mechanism/cause and subsequent failure ' 
+            25: ('Low', 'Low chance the existing design controls will or can '
+                 'detect a potential mechanism/cause and subsequent failure '
                  'mode.', 'detection', 6),
             26: ('Very Low', 'Very low chance the existing design controls '
                  'will or can detect a potential mechanism/cause and '
@@ -283,11 +277,11 @@ RTK_RPNS = {0: ('None', 'No effect.', 'severity', 1),
             27: ('Remote', 'Remote chance the existing design controls will '
                  'or can detect a potential mechanism/cause and subsequent '
                  'failure mode.', 'detection', 8),
-            28: ('Very Remote', 'Very remote chance the existing design ' 
-                 'controls will or can detect a potential mechanism/cause and ' 
+            28: ('Very Remote', 'Very remote chance the existing design '
+                 'controls will or can detect a potential mechanism/cause and '
                  'subsequent failure mode.', 'detection', 9),
-            29: ('Absolute Uncertainty', 'Existing design controls will not ' 
-                 'or cannot detect a potential mechanism/cause and subsequent ' 
+            29: ('Absolute Uncertainty', 'Existing design controls will not '
+                 'or cannot detect a potential mechanism/cause and subsequent '
                  'failure mode; there is no design control.', 'detection', 10)}
 
 RTK_STATUSES = {0: ('Initiated', 'Incident has been initiated.', 'incident'),
@@ -385,25 +379,25 @@ RTK_CRITICALITIES = {0: ('Catastrophic',
                          'loss exceeding $1M, or irreversible severe '
                          'environmental damage that violates law or '
                          'regulation.', 'I', 4),
-                    1: ('Critical',
-                        'Could result in permanent partial disability, '
-                        'injuries or occupational illness that may result in '
-                        'hospitalization of at least three personnel, loss '
-                        'exceeding $200K but less than $1M, or reversible '
-                        'environmental damage causing a violation of law or '
-                        'regulation.', 'II', 3),
-                    2: ('Marginal',
-                        'Could result in injury or occupational illness '
-                        'resulting in one or more lost work days(s), loss '
-                        'exceeding $10K but less than $200K, or mitigatible '
-                        'environmental damage without violation of law or '
-                        'regulation where restoration activities can be '
-                        'accomplished.', 'III', 2),
-                    3: ('Negligble',
-                        'Could result in injury or illness not resulting in a '
-                        'lost work day, loss exceeding $2K but less than '
-                        '$10K, or minimal environmental damage not violating '
-                        'law or regulation.', 'IV', 1)}
+                     1: ('Critical',
+                         'Could result in permanent partial disability, '
+                         'injuries or occupational illness that may result in '
+                         'hospitalization of at least three personnel, loss '
+                         'exceeding $200K but less than $1M, or reversible '
+                         'environmental damage causing a violation of law or '
+                         'regulation.', 'II', 3),
+                     2: ('Marginal',
+                         'Could result in injury or occupational illness '
+                         'resulting in one or more lost work days(s), loss '
+                         'exceeding $10K but less than $200K, or mitigatible '
+                         'environmental damage without violation of law or '
+                         'regulation where restoration activities can be '
+                         'accomplished.', 'III', 2),
+                     3: ('Negligble',
+                         'Could result in injury or illness not resulting in a '
+                         'lost work day, loss exceeding $2K but less than '
+                         '$10K, or minimal environmental damage not violating '
+                         'law or regulation.', 'IV', 1)}
 
 RTK_DISTRIBUTIONS = {0: ('Constant Probability', 'statistical'),
                      1: ('Exponential', 'statistical'),
@@ -582,7 +576,7 @@ RTK_HAZARDS = {0: ('Acceleration/Gravity', 'Falls'),
                165: ('Pneumatic/Hydraulic', 'Pipe/Hose Whip'),
                166: ('Pneumatic/Hydraulic', 'Pipe/Vessel/Duct Rupture'),
                167: ('Pneumatic/Hydraulic', 'Relief Pressure Improperly Set'),
-               168: ('Thermal', 'Altered Structural Properties (e.g., ' 
+               168: ('Thermal', 'Altered Structural Properties (e.g., '
                      'Embrittlement)'),
                169: ('Thermal', 'Confined Gas/Liquid'),
                170: ('Thermal', 'Elevated Flammability'),
@@ -699,11 +693,11 @@ RTK_MEASUREMENTS = {0: ('Contamination, Concentration',),
                     19: ('Torque',)}
 
 RTK_HISTORIES = {0: ('Cycle Counts',),
-                1: ('Histogram',),
-                2: ('Histogram, Bivariate',),
-                3: ('Level Crossing',),
-                4: ('Rain Flow Count',),
-                5: ('Time at Level',),
-                6: ('Time at Load',),
-                7: ('Time at Maximum',),
-                8: ('Time at Minimum',)}
+                 1: ('Histogram',),
+                 2: ('Histogram, Bivariate',),
+                 3: ('Level Crossing',),
+                 4: ('Rain Flow Count',),
+                 5: ('Time at Level',),
+                 6: ('Time at Load',),
+                 7: ('Time at Maximum',),
+                 8: ('Time at Minimum',)}

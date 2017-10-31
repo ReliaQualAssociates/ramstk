@@ -97,7 +97,7 @@ class TestRTKMission(unittest.TestCase):
         (TestRTKMission) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = ('Test Mission Description', None, 'hours')
+        _attributes = ('Test Mission Description', 'None', 'hours')
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

@@ -1,38 +1,27 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKCause.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKCause Table
-==============================
+===============================================================================
 """
 
-# Import the database models.
+import gettext
+
+# pylint: disable=E0401
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship             # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
+# pylint: disable=E0401
+from Utilities import error_handler, none_to_default, OutOfRangeError
+from dao.RTKCommonDB import RTK_BASE                # pylint: disable=E0401
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+_ = gettext.gettext
 
 
 class RTKCause(RTK_BASE):
@@ -66,6 +55,12 @@ class RTKCause(RTK_BASE):
     control = relationship('RTKControl', back_populates='cause')
     action = relationship('RTKAction', back_populates='cause')
 
+    is_mode = False
+    is_mechanism = False
+    is_cause = True
+    is_control = False
+    is_action = False
+
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKCause data model
@@ -98,21 +93,82 @@ class RTKCause(RTK_BASE):
                format(self.cause_id)
 
         try:
-            self.description = str(values[0])
-            self.rpn = int(values[1])
-            self.rpn_detection = int(values[2])
-            self.rpn_detection_new = int(values[3])
-            self.rpn_new = int(values[4])
-            self.rpn_occurrence = int(values[5])
-            self.rpn_occurrence_new = int(values[6])
+            self.description = str(none_to_default(values[0], ''))
+            self.rpn = int(none_to_default(values[1], 0))
+            self.rpn_detection = int(none_to_default(values[2], 0))
+            self.rpn_detection_new = int(none_to_default(values[3], 0))
+            self.rpn_new = int(none_to_default(values[4], 0))
+            self.rpn_occurrence = int(none_to_default(values[5], 0))
+            self.rpn_occurrence_new = int(none_to_default(values[6], 0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKCause.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKCause attributes."
 
         return _error_code, _msg
 
+    def calculate_rpn(self, severity, severity_new):
+        """
+        Method to calculate the Risk Priority Number (RPN) for the Mechanism.
+
+            RPN = S * O * D
+
+        :param int cause_id: the ID of the Cause to calculate the RPN.
+        :param int severity: the Severity (S) value of the FMEA end effect for
+                             the failure mode this Cause is associated with.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Calculating failure cause {0:d} RPN.'.\
+            format(self.cause_id)
+
+        if not 0 < severity < 11:
+            _error_code = 2020
+            raise OutOfRangeError(_(u"RPN severity is outside the range "
+                                    u"[1, 10]."))
+        if not 0 < self.rpn_occurrence < 11:
+            _error_code = 2020
+            raise OutOfRangeError(_(u"RPN occurrence is outside the range "
+                                    u"[1, 10]."))
+        if not 0 < self.rpn_detection < 11:
+            _error_code = 2020
+            raise OutOfRangeError(_(u"RPN detection is outside the range "
+                                    u"[1, 10]."))
+        if not 0 < severity_new < 11:
+            _error_code = 2020
+            raise OutOfRangeError(_(u"RPN new severity is outside the range "
+                                    u"[1, 10]."))
+        if not 0 < self.rpn_occurrence_new < 11:
+            _error_code = 2020
+            raise OutOfRangeError(_(u"RPN new occurrence is outside the range "
+                                    u"[1, 10]."))
+        if not 0 < self.rpn_detection_new < 11:
+            _error_code = 2020
+            raise OutOfRangeError(_(u"RPN new detection is outside the range "
+                                    u"[1, 10]."))
+
+        self.rpn = int(severity) \
+            * int(self.rpn_occurrence) \
+            * int(self.rpn_detection)
+        self.rpn_new = int(severity_new) \
+            * int(self.rpn_occurrence_new) \
+            * int(self.rpn_detection_new)
+
+        if self.rpn < 1:
+            _error_code = 2030
+            _msg = 'Failure cause RPN has a value less than 1.'
+            raise OutOfRangeError(_(u"Failure cause RPN has a value less "
+                                    u"than 1."))
+        if self.rpn_new > 1000:
+            _error_code = 2030
+            _msg = 'Failure cause RPN has a value greater than 1000.'
+            raise OutOfRangeError(_(u"Failure cause RPN has a value "
+                                    u"greater than 1000."))
+
+        return _error_code, _msg

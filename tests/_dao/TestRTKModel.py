@@ -50,7 +50,7 @@ class TestRTKModel(unittest.TestCase):
 
         self.DUT = session.query(RTKModel).first()
         self.DUT.description = self.attributes[1]
-        self.DUT.type = self.attributes[2]
+        self.DUT.model_type = self.attributes[2]
 
         session.commit()
 
@@ -66,7 +66,7 @@ class TestRTKModel(unittest.TestCase):
         self.assertEqual(self.DUT.__tablename__, 'rtk_model')
         self.assertEqual(self.DUT.model_id, 1)
         self.assertEqual(self.DUT.description, 'Equal Apportionment')
-        self.assertEqual(self.DUT.type, 'allocation')
+        self.assertEqual(self.DUT.model_type, 'allocation')
 
     @attr(all=True, unit=True)
     def test01_RTKModel_get_attributes(self):

@@ -1,107 +1,49 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.mwi.ModuleBook.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
-=============================================
-PyGTK Multi-Window Interface Module Book View
-=============================================
+===============================================================================
+PyGTK Multi-Window Interface Module Book
+===============================================================================
 """
 
 import sys
 
 # Import modules for localization support.
 import gettext
-import locale
 
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
 # Import modules required for the GUI.
 try:
-    # noinspection PyUnresolvedReferences
     import pygtk
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk
 except ImportError:
     sys.exit(1)
 try:
-    # noinspection PyUnresolvedReferences
     import gtk.glade
 except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-try:
-    import Utilities
-    from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
-    from gui.gtk.Assistants import CreateProject, OpenProject, DeleteProject, \
-        Options
-except ImportError:
-    import rtk.Utilities as Utilities
-    from rtk.gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
-    from rtk.gui.gtk.Assistants import CreateProject, OpenProject, \
-        DeleteProject, Options
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
+# pylint: disable=E0401
+from gui.gtk.rtk import RTKBook, destroy
+from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
+from gui.gtk.moduleviews.Function import ModuleView as mvwFunction
+from gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
+    Options
 
 _ = gettext.gettext
 
 
-def destroy(__widget, __event=None):
-    """
-    Quits the RTK application when the X in the upper right corner is pressed.
-
-    :param __widget: the gtk.Widget() that called this method.
-    :type __widget: :py:class:`gtk.Widget`
-    :keyword __event: the gtk.gdk.Event() that called this method.
-    :type __event: :py:class:`gtk.gdk.Event`
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    gtk.main_quit()
-
-    return False
-
-
-class ModuleView(gtk.Window):               # pylint: disable=R0904
+class ModuleBook(RTKBook):               # pylint: disable=R0904
     """
     This is the Module view for the pyGTK multiple window interface.
     Attributes of the ModuleView are:
@@ -130,104 +72,80 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
+        RTKBook.__init__(self, controller)
+
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
 
         # Initialize private scalar attributes.
-        self._mdcRTK = controller
 
         # Initialize public dictionary attributes.
-        self.dic_module_views = {'revision': mvwRevision(controller)}
+        self.dic_module_views = {'revision': [mvwRevision(controller), 0],
+                                 'function': [mvwFunction(controller), 1]}
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.progressbar = gtk.ProgressBar(adjustment=None)
+        self.statusbar = gtk.Statusbar()
 
-        try:
-            locale.setlocale(locale.LC_ALL,
-                             self._mdcRTK.RTK_CONFIGURATION.RTK_LOCALE)
-        except locale.Error:
-            locale.setlocale(locale.LC_ALL, '')
-
-        # Create a new window and set its properties.
-        gtk.Window.__init__(self)
-        self.set_resizable(True)
+        # Set the properties for the ModuleBook and it's widgets.
         self.set_title(_(u"RTK Module Book"))
 
-        _n_screens = gtk.gdk.screen_get_default().get_n_monitors()
-        _width = gtk.gdk.screen_width() / _n_screens
-        _height = gtk.gdk.screen_height()
-
         if self._mdcRTK.RTK_CONFIGURATION.RTK_OS == 'Linux':
-            _width = (2 * _width / 3) - 10
-            _height = 2 * _height / 7
+            _width = (2 * self._width / 3) - 10
+            _height = 2 * self._height / 7
         elif self._mdcRTK.RTK_CONFIGURATION.RTK_OS == 'Windows':
-            _width = (2 * _width / 3) - 30
-            _height = 2 * _height / 7
+            _width = (2 * self._width / 3) - 30
+            _height = 2 * self._height / 7
 
         self.set_default_size(_width, _height)
-        self.set_border_width(5)
-        self.set_position(gtk.WIN_POS_NONE)
         self.move(0, 0)
 
-        self.connect('delete_event', destroy)
-
-        _vbox = gtk.VBox()
-
-        self.menubar = self._create_menu()
-        _vbox.pack_start(self.menubar, expand=False, fill=False)
-
-        self.toolbar = self._create_toolbar()
-        _vbox.pack_start(self.toolbar, expand=False, fill=False)
-
-        # Find the user's preferred gtk.Notebook tab position.
         if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'left':
-            _position = gtk.POS_LEFT
+            self.notebook.set_tab_pos(self._left_tab)
         elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'right':
-            _position = gtk.POS_RIGHT
+            self.notebook.set_tab_pos(self._right_tab)
         elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'top':
-            _position = gtk.POS_TOP
+            self.notebook.set_tab_pos(self._top_tab)
         else:
-            _position = gtk.POS_BOTTOM
+            self.notebook.set_tab_pos(self._bottom_tab)
 
-        self.notebook = gtk.Notebook()
-        self.notebook.set_tab_pos(_position)
-
-        # Insert a page for each of the active RTK Modules.
-        for _page in self.dic_module_views.keys():
-            _object = self.dic_module_views[_page]
-            self.notebook.insert_page(_object,
-                                      tab_label=_object.hbx_tab_label,
-                                      position=-1)
+        self.progressbar.set_pulse_step(0.25)
+        self.statusbar.add(self.progressbar)
 
         self._lst_handler_id.append(
             self.notebook.connect('select-page', self._on_switch_page))
         self._lst_handler_id.append(
             self.notebook.connect('switch-page', self._on_switch_page))
 
+        # Insert a page for each of the active RTK Modules.
+        for _page in self.dic_module_views:
+            _object = self.dic_module_views[_page]
+            self.notebook.insert_page(_object[0],
+                                      tab_label=_object[0].hbx_tab_label,
+                                      position=_object[1])
+
+        _vbox = gtk.VBox()
+        _vbox.pack_start(self._make_menu(), expand=False, fill=False)
+        _vbox.pack_start(self._make_toolbar(), expand=False, fill=False)
         _vbox.pack_start(self.notebook, expand=True, fill=True)
-
-        self.statusbar = gtk.Statusbar()
-        self.statusbar.push(1, _(u"Ready"))
-
-        self.progressbar = gtk.ProgressBar(adjustment=None)
-        self.progressbar.set_pulse_step(0.25)
-        self.statusbar.add(self.progressbar)
-
         _vbox.pack_start(self.statusbar, expand=False, fill=False)
 
         self.add(_vbox)
 
         self.show_all()
+        self.notebook.set_current_page(0)
+
+        self.statusbar.push(1, _(u"Ready"))
 
         pub.subscribe(self._on_request_open, 'requestOpen')
         pub.subscribe(self._on_open, 'openedProgram')
 
-    def _create_menu(self):
+    def _make_menu(self):
         """
-        Creates the menu for the ModuleBook view.
+        Method to create the menu for the ModuleBook view.
 
         :return _menubar: the gtk.MenuBar() for the RTK ModuleBook.
         :type _menubar: :py:class:`gtk.MenuBar`
@@ -241,7 +159,6 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         _menu_item.connect('activate', CreateProject, self._mdcRTK)
         _menu.append(_menu_item)
 
-        # Add New menu.
         _menu_item = gtk.ImageMenuItem()
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/16x16/open.png')
@@ -381,9 +298,9 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
 
         return _menubar
 
-    def _create_toolbar(self):
+    def _make_toolbar(self):
         """
-        Creates the toolbar for the ModuleBook view.
+        Method to create the toolbar for the ModuleBook view.
 
         :return _toolbar: the gtk.Toolbar() for the RTK ModuleBook.
         :type _toolbar: :py:class:`gtk.Toolbar`
@@ -484,7 +401,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
             format(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
         self.statusbar.push(1, _message)
         self.set_title(_(u"RTK - Analyzing {0:s}").format(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
+            self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
 
         return _return
 
@@ -507,9 +424,12 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         """
         Called whenever the Module Book gtk.Notebook() page is changed.
 
-        :param gtk.Notebook __notebook: the Tree Book notebook widget.
-        :param gtk.Widget __page: the newly selected page's child widget.
+        :param __notebook: the Tree Book notebook widget.
+        :type __notebook: :py:class:`gtk.Notebook`
+        :param __page: the newly selected page's child widget.
+        :type __page: :py:class:`gtk.Widget`
         :param int page_num: the newly selected page number.
+
                              0 = Revision Tree
                              1 = Function Tree
                              2 = Requirements Tree
@@ -519,11 +439,22 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
                              6 = Validation Tree
                              7 = Incident Tree
                              8 = Survival Analyses Tree
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[page_num]
+        # Key errors occur when no RTK Program database has been loaded.  In
+        # that case, select the Revision page to load.
+        try:
+            _module = self._mdcRTK.RTK_CONFIGURATION.RTK_PAGE_NUMBER[page_num]
+        except KeyError:
+            if page_num == 0:
+                _module = 'revision'
+            elif page_num == 1:
+                _module = 'function'
 
-        pub.sendMessage('mvw_switchedPage', module=_module)
+        pub.sendMessage('mvwSwitchedPage', module=_module)
 
         return False
 
@@ -538,7 +469,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :rtype: bool
         """
 
-        self._mdcRTK.save_project
+        self._mdcRTK.save_project()
 
         if end:
             destroy(__widget)
@@ -566,8 +497,8 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :param gtk.Widget __widget: the gtk.Widget() that called this function.
         :return: False if successful or True if an error is encounterd.
         """
-
-        _hardware = Configuration.RTK_MODULES[3]
+        # TODO: Move this to the Hardware module.
+        _hardware = self._mdcRTK.RTK_CONFIGURATION.RTK_MODULES[3]
         _model = _hardware.treeview.get_model()
 
         _model.foreach(self._build_composite_ref_des)
@@ -581,7 +512,7 @@ class ModuleView(gtk.Window):               # pylint: disable=R0904
         :return: False if successful or True if an error is encountered
         :rtype: bool
         """
-        # TODO: MOve this to the Hardware class.
+        # TODO: Move this to the Hardware class.
         _hardware_id = model.get_value(row, 1)
         _hardware_model = self._mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
 

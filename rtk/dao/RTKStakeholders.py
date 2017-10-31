@@ -1,36 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKStakeholders.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKStakeholders Table
-==============================
+===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKStakeholders(RTK_BASE):
@@ -47,8 +31,8 @@ class RTKStakeholders(RTK_BASE):
 
     def get_attributes(self):
         """
-        Stakeholders to retrieve the current values of the RTKStakeholders data model
-        attributes.
+        Stakeholders to retrieve the current values of the RTKStakeholders data
+        model attributes.
 
         :return: (stakeholders_id, stakeholder)
         :rtype: tuple
@@ -60,8 +44,8 @@ class RTKStakeholders(RTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Stakeholders to set the current values of the RTKStakeholders data model
-        attributes.
+        Stakeholders to set the current values of the RTKStakeholders data
+        model attributes.
 
         :param tuple attributes: tuple containing the values to set.
         :return: (_error_code, _msg)
@@ -73,13 +57,14 @@ class RTKStakeholders(RTK_BASE):
             format(self.stakeholders_id)
 
         try:
-            self.stakeholder = str(attributes[0])
+            self.stakeholder = str(none_to_default(attributes[0],
+                                                   'Stakeholder'))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKStakeholders.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKStakeholders attributes."
 

@@ -1,38 +1,21 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKMatrix.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKMatrix Table
-==============================
+===============================================================================
 """
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKMatrix(RTK_BASE):
@@ -114,19 +97,19 @@ class RTKMatrix(RTK_BASE):
                format(self.matrix_id)
 
         try:
-            self.column_id = int(values[0])
-            self.column_item_id = int(values[1])
-            self.parent_id = int(values[2])
-            self.row_id = int(values[3])
-            self.row_item_id = int(values[4])
-            self.type_id = int(values[5])
-            self.value = float(values[6])
+            self.column_id = int(none_to_default(values[0], 0))
+            self.column_item_id = int(none_to_default(values[1], 0))
+            self.parent_id = int(none_to_default(values[2], 0))
+            self.row_id = int(none_to_default(values[3], 0))
+            self.row_item_id = int(none_to_default(values[4], 0))
+            self.type_id = int(none_to_default(values[5], 0))
+            self.value = float(none_to_default(values[6], 0.0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKMatrix.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKMatrix attributes."
 

@@ -1,61 +1,21 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKRevision.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ===============================================================================
 The RTKRevision Table
 ===============================================================================
 """
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKRevision(RTK_BASE):
@@ -185,38 +145,47 @@ class RTKRevision(RTK_BASE):
             format(self.revision_id)
 
         try:
-            self.availability_logistics = float(attributes[0])
-            self.availability_mission = float(attributes[1])
-            self.cost = float(attributes[2])
-            self.cost_failure = float(attributes[3])
-            self.cost_hour = float(attributes[4])
-            self.hazard_rate_active = float(attributes[5])
-            self.hazard_rate_dormant = float(attributes[6])
-            self.hazard_rate_logistics = float(attributes[7])
-            self.hazard_rate_mission = float(attributes[8])
-            self.hazard_rate_software = float(attributes[9])
-            self.mmt = float(attributes[10])
-            self.mcmt = float(attributes[11])
-            self.mpmt = float(attributes[12])
-            self.mtbf_logistics = float(attributes[13])
-            self.mtbf_mission = float(attributes[14])
-            self.mttr = float(attributes[15])
-            self.name = str(attributes[16])
-            self.reliability_logistics = float(attributes[17])
-            self.reliability_mission = float(attributes[18])
-            self.remarks = str(attributes[19])
-            self.total_part_count = int(attributes[20])
-            self.revision_code = str(attributes[21])
-            self.program_time = float(attributes[22])
-            self.program_time_sd = float(attributes[23])
-            self.program_cost = float(attributes[24])
-            self.program_cost_sd = float(attributes[25])
+            self.availability_logistics = float(
+                none_to_default(attributes[0], 1.0))
+            self.availability_mission = float(
+                none_to_default(attributes[1], 1.0))
+            self.cost = float(none_to_default(attributes[2], 0.0))
+            self.cost_failure = float(none_to_default(attributes[3], 0.0))
+            self.cost_hour = float(none_to_default(attributes[4], 0.0))
+            self.hazard_rate_active = float(
+                none_to_default(attributes[5], 0.0))
+            self.hazard_rate_dormant = float(
+                none_to_default(attributes[6], 0.0))
+            self.hazard_rate_logistics = float(
+                none_to_default(attributes[7], 0.0))
+            self.hazard_rate_mission = float(
+                none_to_default(attributes[8], 0.0))
+            self.hazard_rate_software = float(
+                none_to_default(attributes[9], 0.0))
+            self.mmt = float(none_to_default(attributes[10], 0.0))
+            self.mcmt = float(none_to_default(attributes[11], 0.0))
+            self.mpmt = float(none_to_default(attributes[12], 0.0))
+            self.mtbf_logistics = float(none_to_default(attributes[13], 0.0))
+            self.mtbf_mission = float(none_to_default(attributes[14], 0.0))
+            self.mttr = float(none_to_default(attributes[15], 0.0))
+            self.name = str(none_to_default(attributes[16], ''))
+            self.reliability_logistics = float(
+                none_to_default(attributes[17], 1.0))
+            self.reliability_mission = float(
+                none_to_default(attributes[18], 1.0))
+            self.remarks = str(none_to_default(attributes[19], ''))
+            self.total_part_count = int(none_to_default(attributes[20], 0))
+            self.revision_code = str(none_to_default(attributes[21], ''))
+            self.program_time = float(none_to_default(attributes[22], 0.0))
+            self.program_time_sd = float(none_to_default(attributes[23], 0.0))
+            self.program_cost = float(none_to_default(attributes[24], 0.0))
+            self.program_cost_sd = float(none_to_default(attributes[25], 0.0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKRevision.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKRevision attributes."
 

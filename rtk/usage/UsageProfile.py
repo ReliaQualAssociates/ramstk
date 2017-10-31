@@ -1,61 +1,28 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.usage.UsageProfile.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-# Import modules for localization support.
-
 """
 ###############################################################################
 Usage Profile Module
 ###############################################################################
 """
 
+# Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
-import dao
-from datamodels import RTKDataModel
-from datamodels import RTKDataController
+# pylint: disable=E0401
+from dao import RTKMission, RTKMissionPhase, RTKEnvironment
+from datamodels import RTKDataModel                 # pylint: disable=E0401
+from datamodels import RTKDataController            # pylint: disable=E0401
 from .Mission import Model as Mission
 from .Phase import Model as Phase
 from .Environment import Model as Environment
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 _ = gettext.gettext
 
@@ -135,6 +102,7 @@ class Model(RTKDataModel):
         # Mission ID and Phase ID.
         _missions = self._dtm_mission.select_all(revision_id).nodes
 
+        # pylint: disable=too-many-nested-blocks
         for _mkey in _missions:
             _mission = _missions[_mkey].data
             if _mission is not None:
@@ -156,7 +124,7 @@ class Model(RTKDataModel):
 
                         # Add the environments, if any, to the phase.
                         _environments = self._dtm_environment.select_all(
-                                _phase.phase_id).nodes
+                            _phase.phase_id).nodes
                         for _ekey in _environments:
                             _environment = _environments[_ekey].data
                             if _environment is not None:
@@ -196,13 +164,13 @@ class Model(RTKDataModel):
         _node_id = -1
 
         if level == 'mission':
-            _entity = dao.RTKMission()
+            _entity = RTKMission()
             _entity.revision_id = entity_id
         elif level == 'phase':
-            _entity = dao.RTKMissionPhase()
+            _entity = RTKMissionPhase()
             _entity.mission_id = entity_id
         elif level == 'environment':
-            _entity = dao.RTKEnvironment()
+            _entity = RTKEnvironment()
             _entity.phase_id = entity_id
         else:
             _entity = None
@@ -266,10 +234,9 @@ class Model(RTKDataModel):
         :rtype: (int, str)
         """
 
-        try:
-            _entity = self.tree.get_node(node_id).data
-            _error_code, _msg = RTKDataModel.update(self, _entity)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, node_id)
+
+        if _error_code != 0:
             _error_code = 2106
             _msg = 'RTK ERROR: Attempted to save non-existent Usage Profile ' \
                    'item with Node ID {0:d}.'.format(node_id)
@@ -457,3 +424,17 @@ class UsageProfile(RTKDataController):
             _return = True
 
         return _return
+
+    def request_get_attributes(self, node_id):
+        """
+        Method to request the attributes from the selected Usage Profile data
+        model.
+
+        :param int node_id: the Node ID of the data package to retrieve.
+        :return: _attributes
+        :rtype: list
+        """
+
+        _node = self.request_select(node_id)
+
+        return list(_node.get_attributes())

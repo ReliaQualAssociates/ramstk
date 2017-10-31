@@ -1,36 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKMethod.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKMethod Table
-==============================
+===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKMethod(RTK_BASE):
@@ -46,18 +30,19 @@ class RTKMethod(RTK_BASE):
     name = Column('fld_name', String(256), default='Method Name')
     description = Column('fld_description', String(512),
                          default='Method Description')
-    type = Column('fld_type', String(256), default='unknown')
+    method_type = Column('fld_type', String(256), default='unknown')
 
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKMethod data model
         attributes.
 
-        :return: (method_id, name, description, type)
+        :return: (method_id, name, description, method_type)
         :rtype: tuple
         """
 
-        _values = (self.method_id, self.name, self.description, self.type)
+        _values = (self.method_id, self.name, self.description,
+                   self.method_type)
 
         return _values
 
@@ -76,15 +61,16 @@ class RTKMethod(RTK_BASE):
             format(self.method_id)
 
         try:
-            self.name = str(attributes[0])
-            self.description = str(attributes[1])
-            self.type = str(attributes[2])
+            self.name = str(none_to_default(attributes[0], 'Method Name'))
+            self.description = str(none_to_default(attributes[1],
+                                                   'Method Description'))
+            self.method_type = str(none_to_default(attributes[2], 'unknown'))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKMethod.set_attributes()."
         except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKMethod attributes."
 

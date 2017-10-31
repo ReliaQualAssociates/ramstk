@@ -1,5 +1,7 @@
 #!/usr/bin/sh
 
+export CODACY_PROJECT_TOKEN=9ef97176f7504721a0f3ec251bf51c19
+
 curPath=$PWD
 projPath=$HOME'/drive_d/projects/RTK'
 testPath=$curPath'/tests'
@@ -28,18 +30,20 @@ do
 done < $testList
 
 # Execute all the integration tests.
-while read package file;
-do
-    printf "EXECUTING INTEGRATION TESTS FOR: $package\n"
-    $nosetest $integrationNoseOpts$package $testPath/$file
-    if [ "$?" = "0" ];
-    then
-        printf "INTEGRATION TESTS FOR $package: SAT\n\n"
-    else
-        printf "INTEGRATION TESTS FOR $package: UNSAT\n\n"
-    fi
-done < $testList
+#while read package file;
+#do
+#    printf "EXECUTING INTEGRATION TESTS FOR: $package\n"
+#    $nosetest $integrationNoseOpts$package $testPath/$file
+#    if [ "$?" = "0" ];
+#    then
+#        printf "INTEGRATION TESTS FOR $package: SAT\n\n"
+#    else
+#        printf "INTEGRATION TESTS FOR $package: UNSAT\n\n"
+#    fi
+#done < $testList
 
 # Create the coverage XML file and upload to codacy.
 $coverage xml -o "$curPath/tests/coverage.xml"
 $codacy -r "$curPath/tests/coverage.xml"
+
+unset CODACY_PROJECT_TOKEN

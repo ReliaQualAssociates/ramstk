@@ -129,7 +129,7 @@ class TestRTKGrowthTest(unittest.TestCase):
         """
         _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                        0.0, 0, date.today(), date.today(), 0.0, 0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, None, 0.0, 0.0, 0, 0.0)
+                       0.0, 0.0, 0.0, 0.0, 'None', 0.0, 0.0, 0, 0.0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

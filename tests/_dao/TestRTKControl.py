@@ -61,6 +61,7 @@ class TestRTKControl(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_control')
+        self.assertEqual(self.DUT.mode_id, 1)
         self.assertEqual(self.DUT.cause_id, 1)
         self.assertEqual(self.DUT.control_id, 1)
         self.assertEqual(self.DUT.description, 'Test Control')
@@ -73,7 +74,7 @@ class TestRTKControl(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.get_attributes(),
-                         (1, 1, 'Test Control', 0))
+                         (1, 1, 1, 'Test Control', 0))
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):

@@ -50,7 +50,7 @@ class TestRTKLevel(unittest.TestCase):
 
         self.DUT = session.query(RTKLevel).first()
         self.DUT.description = self.attributes[1]
-        self.DUT.type = self.attributes[2]
+        self.DUT.level_type = self.attributes[2]
         self.DUT.value = self.attributes[3]
 
         session.commit()
@@ -67,7 +67,7 @@ class TestRTKLevel(unittest.TestCase):
         self.assertEqual(self.DUT.__tablename__, 'rtk_level')
         self.assertEqual(self.DUT.level_id, 1)
         self.assertEqual(self.DUT.description, 'Software System')
-        self.assertEqual(self.DUT.type, 'software')
+        self.assertEqual(self.DUT.level_type, 'software')
         self.assertEqual(self.DUT.value, 0)
 
     @attr(all=True, unit=True)

@@ -1,40 +1,23 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTValidation.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTValidation Table
-==============================
+===============================================================================
 """
 
 from datetime import date, timedelta
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKValidation(RTK_BASE):
@@ -96,15 +79,15 @@ class RTKValidation(RTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.validation_id, 
-                       self.acceptable_maximum, self.acceptable_mean, 
-                       self.acceptable_minimum, self.acceptable_variance, 
-                       self.confidence, self.cost_average, self.cost_maximum, 
-                       self.cost_mean, self.cost_minimum, self.cost_variance, 
-                       self.date_end, self.date_start, self.description, 
-                       self.measurement_unit_id, self.status_id, 
-                       self.task_type_id, self.task_specification, 
-                       self.time_average, self.time_maximum, self.time_mean, 
+        _attributes = (self.revision_id, self.validation_id,
+                       self.acceptable_maximum, self.acceptable_mean,
+                       self.acceptable_minimum, self.acceptable_variance,
+                       self.confidence, self.cost_average, self.cost_maximum,
+                       self.cost_mean, self.cost_minimum, self.cost_variance,
+                       self.date_end, self.date_start, self.description,
+                       self.measurement_unit_id, self.status_id,
+                       self.task_type_id, self.task_specification,
+                       self.time_average, self.time_maximum, self.time_mean,
                        self.time_minimum, self.time_variance)
 
         return _attributes
@@ -124,34 +107,38 @@ class RTKValidation(RTK_BASE):
                format(self.validation_id)
 
         try:
-            self.acceptable_maximum = float(attributes[0])
-            self.acceptable_mean = float(attributes[1])
-            self.acceptable_minimum = float(attributes[2])
-            self.acceptable_variance = float(attributes[3])
-            self.confidence = float(attributes[4])
-            self.cost_average = float(attributes[5])
-            self.cost_maximum = float(attributes[6])
-            self.cost_mean = float(attributes[7])
-            self.cost_minimum = float(attributes[8])
-            self.cost_variance = float(attributes[9])
-            self.date_end = attributes[10]
-            self.date_start = attributes[11]
-            self.description = str(attributes[12])
-            self.measurement_unit_id = int(attributes[13])
-            self.status_id = int(attributes[14])
-            self.task_type_id = int(attributes[15])
-            self.task_specification = str(attributes[16])
-            self.time_average = float(attributes[17])
-            self.time_maximum = float(attributes[18])
-            self.time_mean = float(attributes[19])
-            self.time_minimum = float(attributes[20])
-            self.time_variance = float(attributes[21])
+            self.acceptable_maximum = float(
+                none_to_default(attributes[0], 0.0))
+            self.acceptable_mean = float(none_to_default(attributes[1], 0.0))
+            self.acceptable_minimum = float(
+                none_to_default(attributes[2], 0.0))
+            self.acceptable_variance = float(
+                none_to_default(attributes[3], 0.0))
+            self.confidence = float(none_to_default(attributes[4], 95.0))
+            self.cost_average = float(none_to_default(attributes[5], 0.0))
+            self.cost_maximum = float(none_to_default(attributes[6], 0.0))
+            self.cost_mean = float(none_to_default(attributes[7], 0.0))
+            self.cost_minimum = float(none_to_default(attributes[8], 0.0))
+            self.cost_variance = float(none_to_default(attributes[9], 0.0))
+            self.date_end = none_to_default(attributes[10],
+                                            date.today() + timedelta(days=30))
+            self.date_start = none_to_default(attributes[11], date.today())
+            self.description = str(none_to_default(attributes[12], ''))
+            self.measurement_unit_id = int(none_to_default(attributes[13], 0))
+            self.status_id = int(none_to_default(attributes[14], 0))
+            self.task_type_id = int(none_to_default(attributes[15], 0))
+            self.task_specification = str(none_to_default(attributes[16], ''))
+            self.time_average = float(none_to_default(attributes[17], 0.0))
+            self.time_maximum = float(none_to_default(attributes[18], 0.0))
+            self.time_mean = float(none_to_default(attributes[19], 0.0))
+            self.time_minimum = float(none_to_default(attributes[20], 0.0))
+            self.time_variance = float(none_to_default(attributes[21], 0.0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKValidation.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKValidation attributes."
 

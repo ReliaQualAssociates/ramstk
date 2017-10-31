@@ -1,64 +1,29 @@
-#!/usr/bin/env python
-"""
-#############
-Matrix Module
-#############
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.datamodels.matrix.Matrix.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
 import gettext
 import locale
 
+import pandas as pd
+
 # Import other RTK modules.
-try:
-    import Configuration
-    import Utilities
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as Configuration
-    import rtk.Utilities as Utilities
+import Configuration
+import Utilities
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
 
-try:
-    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
-    locale.setlocale(locale.LC_ALL, '')
+#try:
+#    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
+#except locale.Error:                                # pragma: no cover
+#    locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
@@ -113,7 +78,7 @@ class Model(object):
     :ivar int n_col: the number of columns in the Matrix.
     """
 
-    def __init__(self):
+    def __init__(self, dao):
         """
         Method to initialize a Matrix data model instance.
         """
@@ -125,18 +90,67 @@ class Model(object):
         # Define private scalar attributes.
 
         # Define public dictionary attributes.
-        self.dicRows = {}
+        self.matrix = None
 
         # Define public list attributes.
-        self.lstColumnHeaders = []
 
         # Define public scalar attributes.
+        self.dao = dao
         self.revision_id = None
         self.matrix_id = None
         self.matrix_type = None
         self.n_row = 1
         self.n_col = 1
 
+    def select(self, row_num, col_num):
+        """
+        Method to select the value from the cell identified by row_num and
+        col_num.
+
+        :param int row_num: the row number of the cell.
+        :param int col_num: the column number of the cell.
+        :return: _cell; the value in the cell at (row_num, col_num).
+        :rtype: int
+        """
+
+        _cell = 0
+
+        return _cell
+
+    def select_all(self):
+        """
+        Method to select the row heaings, the column headings, and the cell
+        values for the matrix then build the matrix as a Pandas DataFrame.
+
+        :return: False if successful or True if an error occurs.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _row_hdrs = self._retrieve_row_headers()
+        _col_hdrs = self._retrieve_col_headers()
+        _matrix = self._retrieve_matrix()
+
+        _dic_matrix = {}
+        for i in xrange(len(_matrix)):
+            _dic_matrix[_col_hdrs[i]] = pd.Series(_matrix[i], index=_row_hdrs)
+
+        self.matrix = pd.DataFrame(_dic_matrix)
+
+        return _return
+
+    def _retrieve_row_headers(self):
+
+        return ['Function 1', 'Function 2', 'Function 3']
+
+    def _retrieve_col_headers(self):
+
+        return ['System 1', 'System 2', 'System 3']
+
+    def _retrieve_matrix(self):
+
+        return [[2, 0, 0], [0, 1, 1], [1, 1, 0]]
 
 class Matrix(object):
     """

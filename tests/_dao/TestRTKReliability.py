@@ -37,8 +37,9 @@ class TestRTKReliability(unittest.TestCase):
 
     _attributes = (1, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0, 0.0,
                    'Test HR Model', 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0.0, 0, 1.0, 1.0,
                    0.0, 0.0, 0.0, 0.0, 0, 0.0)
+
 
     def setUp(self):
         """
@@ -95,12 +96,12 @@ class TestRTKReliability(unittest.TestCase):
         self.assertEqual(self.DUT.mtbf_log_variance, 0.0)
         self.assertEqual(self.DUT.mtbf_miss_variance, 0.0)
         self.assertEqual(self.DUT.mtbf_spec_variance, 0.0)
-        self.assertEqual(self.DUT.mult_adj_factor, 0.0)
+        self.assertEqual(self.DUT.mult_adj_factor, 1.0)
         self.assertEqual(self.DUT.quality_id, 0)
         self.assertEqual(self.DUT.reliability_goal, 0.0)
         self.assertEqual(self.DUT.reliability_goal_measure_id, 0)
-        self.assertEqual(self.DUT.reliability_logistics, 0.0)
-        self.assertEqual(self.DUT.reliability_mission, 0.0)
+        self.assertEqual(self.DUT.reliability_logistics, 1.0)
+        self.assertEqual(self.DUT.reliability_mission, 1.0)
         self.assertEqual(self.DUT.reliability_log_variance, 0.0)
         self.assertEqual(self.DUT.reliability_miss_variance, 0.0)
         self.assertEqual(self.DUT.scale_parameter, 0.0)
@@ -141,8 +142,8 @@ class TestRTKReliability(unittest.TestCase):
 
         _attributes = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0, 0.0,
                        'Test HR Model', 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, None, 0.0, 0, 0.0, 0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0)
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'None', 0.0, 0, 0.0,
+                       0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

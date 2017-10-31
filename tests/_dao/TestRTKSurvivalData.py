@@ -125,7 +125,7 @@ class TestRTKSurvivalData(unittest.TestCase):
 
         _attributes = ('Test Survival Record Name', 0, date.today(), 0.0, 0.0,
                        0, 0, 0.0, 0, 0, date.today(), 0, date.today(), 0, 0.0,
-                       0.0, None, 0, 0, 0, '', '', '')
+                       0.0, 'None', 0, 0, 0, '', '', '')
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

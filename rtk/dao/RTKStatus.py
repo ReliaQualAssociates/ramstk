@@ -1,36 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKStatus.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKStatus Table
-==============================
+===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKStatus(RTK_BASE):
@@ -46,18 +30,19 @@ class RTKStatus(RTK_BASE):
     name = Column('fld_name', String(256), default='Status Name')
     description = Column('fld_description', String(512),
                          default='Status Decription')
-    type = Column('fld_type', String(256), default='')
+    status_type = Column('fld_type', String(256), default='')
 
     def get_attributes(self):
         """
         Status to retrieve the current values of the RTKStatus data model
         attributes.
 
-        :return: (status_id, name, description, type)
+        :return: (status_id, name, description, status_type)
         :rtype: tuple
         """
 
-        _values = (self.status_id, self.name, self.description, self.type)
+        _values = (self.status_id, self.name, self.description,
+                   self.status_type)
 
         return _values
 
@@ -76,15 +61,16 @@ class RTKStatus(RTK_BASE):
             format(self.status_id)
 
         try:
-            self.name = str(attributes[0])
-            self.description = str(attributes[1])
-            self.type = str(attributes[2])
+            self.name = str(none_to_default(attributes[0], 'Status Name'))
+            self.description = str(none_to_default(attributes[1],
+                                                   'Status Description'))
+            self.status_type = str(none_to_default(attributes[2], ''))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKStatus.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKStatus attributes."
 

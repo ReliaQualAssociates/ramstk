@@ -1,38 +1,21 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKStakeholder.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKStakeholder Table
-==============================
+===============================================================================
 """
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKStakeholder(RTK_BASE):
@@ -87,7 +70,7 @@ class RTKStakeholder(RTK_BASE):
                        self.customer_rank, self.description, self.group,
                        self.improvement, self.overall_weight,
                        self.planned_rank, self.priority, self.requirement_id,
-                       self.stakeholder, self.user_float_1, self.user_float_2, 
+                       self.stakeholder, self.user_float_1, self.user_float_2,
                        self.user_float_3, self.user_float_4, self.user_float_5)
 
         return _attributes
@@ -107,26 +90,26 @@ class RTKStakeholder(RTK_BASE):
                format(self.stakeholder_id)
 
         try:
-            self.customer_rank = int(attributes[0])
-            self.description = str(attributes[1])
-            self.group = str(attributes[2])
-            self.improvement = float(attributes[3])
-            self.overall_weight = float(attributes[4])
-            self.planned_rank = int(attributes[5])
-            self.priority = int(attributes[6])
-            self.requirement_id = int(attributes[7])
-            self.stakeholder = str(attributes[8])
-            self.user_float_1 = float(attributes[9])
-            self.user_float_2 = float(attributes[10])
-            self.user_float_3 = float(attributes[11])
-            self.user_float_4 = float(attributes[12])
-            self.user_float_5 = float(attributes[13])
+            self.customer_rank = int(none_to_default(attributes[0], 1))
+            self.description = str(none_to_default(attributes[1], ''))
+            self.group = str(none_to_default(attributes[2], ''))
+            self.improvement = float(none_to_default(attributes[3], 0.0))
+            self.overall_weight = float(none_to_default(attributes[4], 0.0))
+            self.planned_rank = int(none_to_default(attributes[5], 1))
+            self.priority = int(none_to_default(attributes[6], 1))
+            self.requirement_id = int(none_to_default(attributes[7], 0))
+            self.stakeholder = str(none_to_default(attributes[8], ''))
+            self.user_float_1 = float(none_to_default(attributes[9], 0.0))
+            self.user_float_2 = float(none_to_default(attributes[10], 0.0))
+            self.user_float_3 = float(none_to_default(attributes[11], 0.0))
+            self.user_float_4 = float(none_to_default(attributes[12], 0.0))
+            self.user_float_5 = float(none_to_default(attributes[13], 0.0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKStakeholder.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKStakeholder attributes."
 

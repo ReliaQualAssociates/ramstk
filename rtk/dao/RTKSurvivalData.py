@@ -1,40 +1,23 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKSurvivalData.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKSurvivalData Table
-==============================
+===============================================================================
 """
 
 from datetime import date
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKSurvivalData(RTK_BASE):
@@ -122,35 +105,35 @@ class RTKSurvivalData(RTK_BASE):
                format(self.record_id)
 
         try:
-            self.name = str(attributes[0])
-            self.source_id = int(attributes[1])
-            self.failure_date = attributes[2]
-            self.left_interval = float(attributes[3])
-            self.right_interval = float(attributes[4])
-            self.status_id = int(attributes[5])
-            self.quantity = int(attributes[6])
-            self.tbf = float(attributes[7])
-            self.mode_type_id = int(attributes[8])
-            self.nevada_chart = int(attributes[9])
-            self.ship_date = attributes[10]
-            self.number_shipped = int(attributes[11])
-            self.return_date = attributes[12]
-            self.number_returned = int(attributes[13])
-            self.user_float_1 = float(attributes[14])
-            self.user_float_2 = float(attributes[15])
-            self.user_float_3 = float(attributes[16])
-            self.user_integer_1 = int(attributes[17])
-            self.user_integer_2 = int(attributes[18])
-            self.user_integer_3 = int(attributes[19])
-            self.user_string_1 = str(attributes[20])
-            self.user_string_2 = str(attributes[21])
-            self.user_string_3 = str(attributes[22])
+            self.name = str(none_to_default(attributes[0], ''))
+            self.source_id = int(none_to_default(attributes[1], 0))
+            self.failure_date = none_to_default(attributes[2], date.today())
+            self.left_interval = float(none_to_default(attributes[3], 0.0))
+            self.right_interval = float(none_to_default(attributes[4], 0.0))
+            self.status_id = int(none_to_default(attributes[5], 0))
+            self.quantity = int(none_to_default(attributes[6], 0))
+            self.tbf = float(none_to_default(attributes[7], 0.0))
+            self.mode_type_id = int(none_to_default(attributes[8], 0))
+            self.nevada_chart = int(none_to_default(attributes[9], 0))
+            self.ship_date = none_to_default(attributes[10], date.today())
+            self.number_shipped = int(none_to_default(attributes[11], 0))
+            self.return_date = none_to_default(attributes[12], date.today())
+            self.number_returned = int(none_to_default(attributes[13], 0))
+            self.user_float_1 = float(none_to_default(attributes[14], 0.0))
+            self.user_float_2 = float(none_to_default(attributes[15], 0.0))
+            self.user_float_3 = float(none_to_default(attributes[16], 0.0))
+            self.user_integer_1 = int(none_to_default(attributes[17], 0))
+            self.user_integer_2 = int(none_to_default(attributes[18], 0))
+            self.user_integer_3 = int(none_to_default(attributes[19], 0))
+            self.user_string_1 = str(none_to_default(attributes[20], ''))
+            self.user_string_2 = str(none_to_default(attributes[21], ''))
+            self.user_string_3 = str(none_to_default(attributes[22], ''))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKSurvivalData.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKSurvivalData attributes."
 

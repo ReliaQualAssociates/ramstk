@@ -1,38 +1,21 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKControl.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKControl Table
-==============================
+===============================================================================
 """
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKControl(RTK_BASE):
@@ -45,6 +28,8 @@ class RTKControl(RTK_BASE):
     __tablename__ = 'rtk_control'
     __table_args__ = {'extend_existing': True}
 
+    mode_id = Column('fld_mode_id', Integer,
+                     ForeignKey('rtk_mode.fld_mode_id'), nullable=False)
     cause_id = Column('fld_cause_id', Integer,
                       ForeignKey('rtk_cause.fld_cause_id'), nullable=False)
     control_id = Column('fld_control_id', Integer, primary_key=True,
@@ -54,19 +39,26 @@ class RTKControl(RTK_BASE):
     type_id = Column('fld_type_id', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
+    mode = relationship('RTKMode', back_populates='control')
     cause = relationship('RTKCause', back_populates='control')
+
+    is_mode = False
+    is_mechanism = False
+    is_cause = False
+    is_control = True
+    is_action = False
 
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKControl data model
         attributes.
 
-        :return: (cause_id, control_id, description, type_id)
+        :return: (mode_id, cause_id, control_id, description, type_id)
         :rtype: tuple
         """
 
-        _attributes = (self.cause_id, self.control_id, self.description,
-                       self.type_id)
+        _attributes = (self.mode_id, self.cause_id, self.control_id,
+                       self.description, self.type_id)
 
         return _attributes
 
@@ -84,14 +76,14 @@ class RTKControl(RTK_BASE):
                format(self.control_id)
 
         try:
-            self.description = str(attributes[0])
-            self.type_id = int(attributes[1])
+            self.description = str(none_to_default(attributes[0], ''))
+            self.type_id = int(none_to_default(attributes[1], 0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKControl.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKControl attributes."
 

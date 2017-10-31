@@ -50,7 +50,7 @@ class TestRTKSoftwareReview(unittest.TestCase):
         session.configure(bind=engine, autoflush=False, expire_on_commit=False)
 
         self.DUT = session.query(RTKSoftwareReview).first()
-        self.DUT.type = self._attributes[4]
+        self.DUT.review_type = self._attributes[4]
 
         session.commit()
 
@@ -68,7 +68,7 @@ class TestRTKSoftwareReview(unittest.TestCase):
         self.assertEqual(self.DUT.question_id, 1)
         self.assertEqual(self.DUT.answer, 0)
         self.assertEqual(self.DUT.value, 0)
-        self.assertEqual(self.DUT.type, 'Test Software Review Type')
+        self.assertEqual(self.DUT.review_type, 'Test Software Review Type')
 
     @attr(all=True, unit=True)
     def test01_get_attributes(self):

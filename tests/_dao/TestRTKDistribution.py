@@ -50,7 +50,7 @@ class TestRTKDistribution(unittest.TestCase):
 
         self.DUT = session.query(RTKDistribution).first()
         self.DUT.description = self.attributes[1]
-        self.DUT.type = self.attributes[2]
+        self.DUT.dist_type = self.attributes[2]
 
         session.commit()
 
@@ -66,7 +66,7 @@ class TestRTKDistribution(unittest.TestCase):
         self.assertEqual(self.DUT.__tablename__, 'rtk_distribution')
         self.assertEqual(self.DUT.distribution_id, 1)
         self.assertEqual(self.DUT.description, 'Constant Probability')
-        self.assertEqual(self.DUT.type, 'statistical')
+        self.assertEqual(self.DUT.dist_type, 'statistical')
 
     @attr(all=True, unit=True)
     def test01_RTKDistribution_get_attributes(self):

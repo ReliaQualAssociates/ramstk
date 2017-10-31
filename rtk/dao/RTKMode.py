@@ -1,38 +1,31 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKMode.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKMode Table
-==============================
+===============================================================================
 """
 
-# Import the database models.
+import gettext
+# pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship         # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
+# pylint: disable=E0401
+from Utilities import error_handler, none_to_default, OutOfRangeError
+from dao.RTKCommonDB import RTK_BASE            # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+
+_ = gettext.gettext
 
 
 class RTKMode(RTK_BASE):
@@ -89,6 +82,16 @@ class RTKMode(RTK_BASE):
     hardware = relationship('RTKHardware', back_populates='mode')
     mechanism = relationship('RTKMechanism', back_populates='mode')
 
+    # The following are required for functional FMEA.
+    control = relationship('RTKControl', back_populates='mode')
+    action = relationship('RTKAction', back_populates='mode')
+
+    is_mode = True
+    is_mechanism = False
+    is_cause = False
+    is_control = False
+    is_action = False
+
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKMode data model
@@ -134,38 +137,95 @@ class RTKMode(RTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.critical_item = int(values[0])
-            self.description = str(values[1])
-            self.design_provisions = str(values[2])
-            self.detection_method = str(values[3])
-            self.effect_end = str(values[4])
-            self.effect_local = str(values[5])
-            self.effect_next = str(values[6])
-            self.effect_probability = float(values[7])
-            self.hazard_rate_source = str(values[8])
-            self.isolation_method = str(values[9])
-            self.mission = str(values[10])
-            self.mission_phase = str(values[11])
-            self.mode_criticality = float(values[12])
-            self.mode_hazard_rate = float(values[13])
-            self.mode_op_time = float(values[14])
-            self.mode_probability = str(values[15])
-            self.mode_ratio = float(values[16])
-            self.operator_actions = str(values[17])
-            self.other_indications = str(values[18])
-            self.remarks = str(values[19])
-            self.rpn_severity = str(values[20])
-            self.rpn_severity_new = str(values[21])
-            self.severity_class = str(values[22])
-            self.single_point = int(values[23])
-            self.type_id = int(values[24])
+            self.critical_item = int(none_to_default(values[0], 0))
+            self.description = str(none_to_default(values[1],
+                                                   'Failure Mode Description'))
+            self.design_provisions = str(none_to_default(values[2], ''))
+            self.detection_method = str(none_to_default(values[3], ''))
+            self.effect_end = str(none_to_default(values[4], 'End Effect'))
+            self.effect_local = str(none_to_default(values[5], 'Local Effect'))
+            self.effect_next = str(none_to_default(values[6], 'Next Effect'))
+            self.effect_probability = float(none_to_default(values[7], 0.0))
+            self.hazard_rate_source = str(none_to_default(values[8], ''))
+            self.isolation_method = str(none_to_default(values[9], ''))
+            self.mission = str(none_to_default(values[10], ''))
+            self.mission_phase = str(none_to_default(values[11], ''))
+            self.mode_criticality = float(none_to_default(values[12], 0.0))
+            self.mode_hazard_rate = float(none_to_default(values[13], 0.0))
+            self.mode_op_time = float(none_to_default(values[14], 0.0))
+            self.mode_probability = str(none_to_default(values[15], ''))
+            self.mode_ratio = float(none_to_default(values[16], 0.0))
+            self.operator_actions = str(none_to_default(values[17], ''))
+            self.other_indications = str(none_to_default(values[18], ''))
+            self.remarks = str(none_to_default(values[19], ''))
+            self.rpn_severity = str(none_to_default(values[20], ''))
+            self.rpn_severity_new = str(none_to_default(values[21], ''))
+            self.severity_class = str(none_to_default(values[22], ''))
+            self.single_point = int(none_to_default(values[23], 0))
+            self.type_id = int(none_to_default(values[24], 0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKMode.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKMode attributes."
+
+        return _error_code, _msg
+
+    def calculate_criticality(self, item_hr):
+        """
+        Calculate the Criticality for the Mode.
+
+            Mode Criticality = Item Hazard Rate * Mode Ratio * \
+                               Mode Operating Time * Effect Probability
+
+        :param float item_hr: the hazard rate of the hardware item being
+                              calculated.
+        :return: (_error_code, _msg); the error code and associated message
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Calculating failure mode {0:d} criticality.'.\
+            format(self.mode_id)
+
+        if item_hr < 0.0:
+            _error_code = 2010
+            _msg = 'RTK ERROR: Item hazard rate has a negative value.'
+            raise OutOfRangeError(_(u"Item hazard rate has a negative value."))
+        if not 0.0 <= self.mode_ratio <= 1.0:
+            _error_code = 2010
+            _msg = 'RTK ERROR: Failure mode ratio is outside the range of ' \
+                   '[0.0, 1.0].'
+            raise OutOfRangeError(_(u"Failure mode ratio is outside the range "
+                                    u"of [0.0, 1.0]."))
+        if self.mode_op_time < 0.0:
+            _error_code = 2010
+            _msg = 'Failure mode operating time has a negative value.'
+            raise OutOfRangeError(_(u"Failure mode operating time has a "
+                                    u"negative value."))
+        if not 0.0 <= self.effect_probability <= 1.0:
+            _error_code = 2010
+            _msg = 'Failure effect probability is outside the range ' \
+                   '[0.0, 1.0].'
+            raise OutOfRangeError(_(u"Failure effect probability is outside "
+                                    u"the range [0.0, 1.0]."))
+
+        self.mode_hazard_rate = item_hr * self.mode_ratio
+        self.mode_criticality = self.mode_hazard_rate \
+            * self.mode_op_time * self.effect_probability
+
+        if self.mode_hazard_rate < 0.0:
+            _error_code = 2010
+            _msg = 'Failure mode hazard rate has a negative value.'
+            raise OutOfRangeError(_(u"Failure mode hazard rate has a negative "
+                                    u"value."))
+        if self.mode_criticality < 0.0:
+            _error_code = 2010
+            _msg = 'Failure mode criticality has a negative value.'
+            raise OutOfRangeError(_(u"Failure mode criticality has a negative "
+                                    u"value."))
 
         return _error_code, _msg

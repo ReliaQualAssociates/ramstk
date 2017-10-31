@@ -51,7 +51,7 @@ class TestRTKEnviron(unittest.TestCase):
         self.DUT = session.query(RTKEnviron).first()
         self.DUT.code = self.attributes[1]
         self.DUT.description = self.attributes[2]
-        self.DUT.type = self.attributes[3]
+        self.DUT.environ_type = self.attributes[3]
         self.DUT.pi_e = self.attributes[4]
         self.DUT.do = self.attributes[5]
 
@@ -70,7 +70,7 @@ class TestRTKEnviron(unittest.TestCase):
         self.assertEqual(self.DUT.environ_id, 1)
         self.assertEqual(self.DUT.code, 'GF')
         self.assertEqual(self.DUT.description, 'Ground, Fixed')
-        self.assertEqual(self.DUT.type, 'active')
+        self.assertEqual(self.DUT.environ_type, 'active')
         self.assertEqual(self.DUT.pi_e, 2.0)
         self.assertEqual(self.DUT.do, 1.0)
 

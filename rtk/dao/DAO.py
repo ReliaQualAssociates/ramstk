@@ -1,121 +1,88 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.DAO.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 The Data Access Object (DAO) Package.
 """
 
 import gettext
 
-from sqlalchemy import create_engine, exc, MetaData
-from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy_utils import create_database
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy import create_engine, exc, MetaData     # pylint: disable=E0401
+from sqlalchemy.ext.declarative import declarative_base # pylint: disable=E0401
+from sqlalchemy.orm import sessionmaker                 # pylint: disable=E0401
+from sqlalchemy_utils import create_database            # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-
-import RTKCommonDB
+import RTKCommonDB                                      # pylint: disable=E0401
 
 # Import tables objects for the RTK Common database.
-from RTKUser import RTKUser
-from RTKGroup import RTKGroup
-from RTKEnviron import RTKEnviron
-from RTKModel import RTKModel
-from RTKType import RTKType
-from RTKCategory import RTKCategory
-from RTKSubCategory import RTKSubCategory
-from RTKPhase import RTKPhase
-from RTKDistribution import RTKDistribution
-from RTKManufacturer import RTKManufacturer
-from RTKUnit import RTKUnit
-from RTKMethod import RTKMethod
-from RTKCriticality import RTKCriticality
-from RTKRPN import RTKRPN
-from RTKLevel import RTKLevel
-from RTKApplication import RTKApplication
-from RTKHazards import RTKHazards
-from RTKStakeholders import RTKStakeholders
-from RTKStatus import RTKStatus
-from RTKCondition import RTKCondition
-from RTKFailureMode import RTKFailureMode
-from RTKMeasurement import RTKMeasurement
-from RTKLoadHistory import RTKLoadHistory
+from .RTKUser import RTKUser
+from .RTKGroup import RTKGroup
+from .RTKEnviron import RTKEnviron
+from .RTKModel import RTKModel
+from .RTKType import RTKType
+from .RTKCategory import RTKCategory
+from .RTKSubCategory import RTKSubCategory
+from .RTKPhase import RTKPhase
+from .RTKDistribution import RTKDistribution
+from .RTKManufacturer import RTKManufacturer
+from .RTKUnit import RTKUnit
+from .RTKMethod import RTKMethod
+from .RTKCriticality import RTKCriticality
+from .RTKRPN import RTKRPN
+from .RTKLevel import RTKLevel
+from .RTKApplication import RTKApplication
+from .RTKHazards import RTKHazards
+from .RTKStakeholders import RTKStakeholders
+from .RTKStatus import RTKStatus
+from .RTKCondition import RTKCondition
+from .RTKFailureMode import RTKFailureMode
+from .RTKMeasurement import RTKMeasurement
+from .RTKLoadHistory import RTKLoadHistory
 
 # Import RTK Program database table objects.
-from RTKAction import RTKAction
-from RTKAllocation import RTKAllocation
-from RTKCause import RTKCause
-from RTKControl import RTKControl
-from RTKDesignElectric import RTKDesignElectric
-from RTKDesignMechanic import RTKDesignMechanic
-from RTKEnvironment import RTKEnvironment
-from RTKFailureDefinition import RTKFailureDefinition
-from RTKFunction import RTKFunction
-from RTKGrowthTest import RTKGrowthTest
-from RTKHardware import RTKHardware
-from RTKHazardAnalysis import RTKHazardAnalysis
-from RTKIncident import RTKIncident
-from RTKIncidentAction import RTKIncidentAction
-from RTKIncidentDetail import RTKIncidentDetail
-from RTKMatrix import RTKMatrix
-from RTKMechanism import RTKMechanism
-from RTKMilHdbkF import RTKMilHdbkF
-from RTKMission import RTKMission
-from RTKMissionPhase import RTKMissionPhase
-from RTKMode import RTKMode
-from RTKNSWC import RTKNSWC
-from RTKOpLoad import RTKOpLoad
-from RTKOpStress import RTKOpStress
-from RTKProgramInfo import RTKProgramInfo
-from RTKReliability import RTKReliability
-from RTKRequirement import RTKRequirement
-from RTKRevision import RTKRevision
-from RTKSimilarItem import RTKSimilarItem
-from RTKSoftware import RTKSoftware
-from RTKSoftwareDevelopment import RTKSoftwareDevelopment
-from RTKSoftwareReview import RTKSoftwareReview
-from RTKSoftwareTest import RTKSoftwareTest
-from RTKStakeholder import RTKStakeholder
-from RTKSurvival import RTKSurvival
-from RTKSurvivalData import RTKSurvivalData
-from RTKTest import RTKTest
-from RTKTestMethod import RTKTestMethod
-from RTKValidation import RTKValidation
+from .RTKAction import RTKAction
+from .RTKAllocation import RTKAllocation
+from .RTKCause import RTKCause
+from .RTKControl import RTKControl
+from .RTKDesignElectric import RTKDesignElectric
+from .RTKDesignMechanic import RTKDesignMechanic
+from .RTKEnvironment import RTKEnvironment
+from .RTKFailureDefinition import RTKFailureDefinition
+from .RTKFunction import RTKFunction
+from .RTKGrowthTest import RTKGrowthTest
+from .RTKHardware import RTKHardware
+from .RTKHazardAnalysis import RTKHazardAnalysis
+from .RTKIncident import RTKIncident
+from .RTKIncidentAction import RTKIncidentAction
+from .RTKIncidentDetail import RTKIncidentDetail
+from .RTKMatrix import RTKMatrix
+from .RTKMechanism import RTKMechanism
+from .RTKMilHdbkF import RTKMilHdbkF
+from .RTKMission import RTKMission
+from .RTKMissionPhase import RTKMissionPhase
+from .RTKMode import RTKMode
+from .RTKNSWC import RTKNSWC
+from .RTKOpLoad import RTKOpLoad
+from .RTKOpStress import RTKOpStress
+from .RTKProgramInfo import RTKProgramInfo
+from .RTKReliability import RTKReliability          # pylint: disable=E0401
+from .RTKRequirement import RTKRequirement
+from .RTKRevision import RTKRevision
+from .RTKSimilarItem import RTKSimilarItem
+from .RTKSoftware import RTKSoftware
+from .RTKSoftwareDevelopment import RTKSoftwareDevelopment
+from .RTKSoftwareReview import RTKSoftwareReview
+from .RTKSoftwareTest import RTKSoftwareTest
+from .RTKStakeholder import RTKStakeholder
+from .RTKSurvival import RTKSurvival
+from .RTKSurvivalData import RTKSurvivalData
+from .RTKTest import RTKTest
+from .RTKTestMethod import RTKTestMethod
+from .RTKValidation import RTKValidation
 
 RTK_BASE = declarative_base()
 
@@ -194,7 +161,7 @@ class DAO(object):
 
         return _return
 
-    def db_create_common(self, database, session):
+    def db_create_common(self, database, session):  # pylint: disable=R0914
         """
         Method to create a new RTK Program database.
 
@@ -214,7 +181,7 @@ class DAO(object):
 
         self._db_table_create(RTKUser.__table__)
         self._db_table_create(RTKGroup.__table__)
-        for _key in RTKCommonDB.RTK_GROUPS.keys():
+        for _key in RTKCommonDB.RTK_GROUPS:
             _group = RTKGroup()
             _group.group_id = _key
             self.db_add([_group, ], session)
@@ -223,7 +190,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKEnviron.__table__)
-        for _key in RTKCommonDB.RTK_ENVIRONS.keys():
+        for _key in RTKCommonDB.RTK_ENVIRONS:
             _environ = RTKEnviron()
             _environ.environ_id = _key
             self.db_add([_environ, ], session)
@@ -232,7 +199,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKModel.__table__)
-        for _key in RTKCommonDB.RTK_MODELS.keys():
+        for _key in RTKCommonDB.RTK_MODELS:
             _model = RTKModel()
             _model.model_id = _key
             self.db_add([_model, ], session)
@@ -241,7 +208,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKType.__table__)
-        for _key in RTKCommonDB.RTK_TYPES.keys():
+        for _key in RTKCommonDB.RTK_TYPES:
             _type = RTKType()
             _type.type_id = _key
             self.db_add([_type, ], session)
@@ -250,7 +217,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKCategory.__table__)
-        for _key in RTKCommonDB.RTK_CATEGORIES.keys():
+        for _key in RTKCommonDB.RTK_CATEGORIES:
             _category = RTKCategory()
             _category.category_id = _key
             self.db_add([_category, ], session)
@@ -262,7 +229,7 @@ class DAO(object):
         self._db_table_create(RTKFailureMode.__table__)
 
         self._db_table_create(RTKPhase.__table__)
-        for _key in RTKCommonDB.RTK_PHASES.keys():
+        for _key in RTKCommonDB.RTK_PHASES:
             _phase = RTKPhase()
             _phase.phase_id = _key
             self.db_add([_phase, ], session)
@@ -271,7 +238,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKDistribution.__table__)
-        for _key in RTKCommonDB.RTK_DISTRIBUTIONS.keys():
+        for _key in RTKCommonDB.RTK_DISTRIBUTIONS:
             _distribution = RTKDistribution()
             _distribution.distribution_id = _key
             self.db_add([_distribution, ], session)
@@ -280,7 +247,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKManufacturer.__table__)
-        for _key in RTKCommonDB.RTK_MANUFACTURERS.keys():
+        for _key in RTKCommonDB.RTK_MANUFACTURERS:
             _manufacturer = RTKManufacturer()
             _manufacturer.manufacturer_id = _key
             self.db_add([_manufacturer, ], session)
@@ -289,7 +256,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKUnit.__table__)
-        for _key in RTKCommonDB.RTK_UNITS.keys():
+        for _key in RTKCommonDB.RTK_UNITS:
             _unit = RTKUnit()
             _unit.unit_id = _key
             self.db_add([_unit, ], session)
@@ -298,7 +265,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKMethod.__table__)
-        for _key in RTKCommonDB.RTK_METHODS.keys():
+        for _key in RTKCommonDB.RTK_METHODS:
             _method = RTKMethod()
             _method.method_id = _key
             self.db_add([_method, ], session)
@@ -307,7 +274,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKCriticality.__table__)
-        for _key in RTKCommonDB.RTK_CRITICALITIES.keys():
+        for _key in RTKCommonDB.RTK_CRITICALITIES:
             _criticality = RTKCriticality()
             _criticality.criticality_id = _key
             self.db_add([_criticality, ], session)
@@ -316,7 +283,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKRPN.__table__)
-        for _key in RTKCommonDB.RTK_RPNS.keys():
+        for _key in RTKCommonDB.RTK_RPNS:
             _rpn = RTKRPN()
             _rpn.rpn_id = _key
             self.db_add([_rpn, ], session)
@@ -325,7 +292,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKLevel.__table__)
-        for _key in RTKCommonDB.RTK_LEVELS.keys():
+        for _key in RTKCommonDB.RTK_LEVELS:
             _level = RTKLevel()
             _level.level_id = _key
             self.db_add([_level, ], session)
@@ -334,7 +301,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKApplication.__table__)
-        for _key in RTKCommonDB.RTK_APPLICATIONS.keys():
+        for _key in RTKCommonDB.RTK_APPLICATIONS:
             _application = RTKApplication()
             _application.application_id = _key
             self.db_add([_application, ], session)
@@ -343,7 +310,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKHazards.__table__)
-        for _key in RTKCommonDB.RTK_HAZARDS.keys():
+        for _key in RTKCommonDB.RTK_HAZARDS:
             _hazard = RTKHazards()
             _hazard.hazard_id = _key
             self.db_add([_hazard, ], session)
@@ -352,7 +319,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKStakeholders.__table__)
-        for _key in RTKCommonDB.RTK_STAKEHOLDERS.keys():
+        for _key in RTKCommonDB.RTK_STAKEHOLDERS:
             _stakeholder = RTKStakeholders()
             _stakeholder.stakeholders_id = _key
             self.db_add([_stakeholder, ], session)
@@ -361,7 +328,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKStatus.__table__)
-        for _key in RTKCommonDB.RTK_STATUSES.keys():
+        for _key in RTKCommonDB.RTK_STATUSES:
             _status = RTKStatus()
             _status.status_id = _key
             self.db_add([_status, ], session)
@@ -370,7 +337,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKCondition.__table__)
-        for _key in RTKCommonDB.RTK_CONDITIONS.keys():
+        for _key in RTKCommonDB.RTK_CONDITIONS:
             _condition = RTKCondition()
             _condition.condition_id = _key
             self.db_add([_condition, ], session)
@@ -379,7 +346,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKMeasurement.__table__)
-        for _key in RTKCommonDB.RTK_MEASUREMENTS.keys():
+        for _key in RTKCommonDB.RTK_MEASUREMENTS:
             _measurement = RTKMeasurement()
             _measurement.measurement_id = _key
             self.db_add([_measurement, ], session)
@@ -388,7 +355,7 @@ class DAO(object):
             session.commit()
 
         self._db_table_create(RTKLoadHistory.__table__)
-        for _key in RTKCommonDB.RTK_HISTORIES.keys():
+        for _key in RTKCommonDB.RTK_HISTORIES:
             _history = RTKLoadHistory()
             _history.history_id = _key
             self.db_add([_history, ], session)

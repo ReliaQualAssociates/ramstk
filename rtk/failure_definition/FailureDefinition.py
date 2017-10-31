@@ -1,37 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.failure_definition.FailureDefinition.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ###############################################################################
 Failure Definition Module
@@ -41,24 +13,12 @@ Failure Definition Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub
+from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Utilities as Utilities
-    from datamodels import RTKDataModel
-    from datamodels import RTKDataController
-    from dao import RTKFailureDefinition
-except ImportError:
-    import rtk.Utilities as Utilities               # pylint: disable=E0401
-    from rtk.dao import RTKFailureDefinition        # pylint: disable=E0401
-    from rtk.datamodels import RTKDataModel         # pylint: disable=E0401
-    from rtk.datamodels import RTKDataController    # pylint: disable=E0401
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
+from datamodels import RTKDataModel                 # pylint: disable=E0401
+from datamodels import RTKDataController            # pylint: disable=E0401
+from dao import RTKFailureDefinition                # pylint: disable=E0401
 
 _ = gettext.gettext
 
@@ -120,7 +80,7 @@ class Model(RTKDataModel):
         _session = RTKDataModel.select_all(self)
 
         for _definition in _session.query(RTKFailureDefinition).filter(
-                        RTKFailureDefinition.revision_id == revision_id).all():
+                RTKFailureDefinition.revision_id == revision_id).all():
             self.tree.create_node(_definition.definition,
                                   _definition.definition_id,
                                   parent=0, data=_definition)
@@ -147,7 +107,7 @@ class Model(RTKDataModel):
             self.tree.create_node(_definition.definition,
                                   _definition.definition_id,
                                   parent=0, data=_definition)
-            self._last_id = _definition.definition_id
+            self._last_id = _definition.definition_id   # pylint: disable=W0201
 
         return _error_code, _msg
 
@@ -186,10 +146,9 @@ class Model(RTKDataModel):
         :rtype: bool
         """
 
-        try:
-            _definition = self.tree.get_node(definition_id).data
-            _error_code, _msg = RTKDataModel.update(self, _definition)
-        except AttributeError:
+        _error_code, _msg = RTKDataModel.update(self, definition_id)
+
+        if _error_code != 0:
             _error_code = 2207
             _msg = 'RTK ERROR: Attempted to save non-existent Failure ' \
                    'Definition ID {0:d}.'.format(definition_id)

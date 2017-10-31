@@ -50,7 +50,7 @@ class TestRTKCondition(unittest.TestCase):
 
         self.DUT = session.query(RTKCondition).first()
         self.DUT.description = self.attributes[1]
-        self.DUT.type = self.attributes[2]
+        self.DUT.cond_type = self.attributes[2]
 
         session.commit()
 
@@ -66,7 +66,7 @@ class TestRTKCondition(unittest.TestCase):
         self.assertEqual(self.DUT.__tablename__, 'rtk_condition')
         self.assertEqual(self.DUT.condition_id, 1)
         self.assertEqual(self.DUT.description, 'Cavitation')
-        self.assertEqual(self.DUT.type, 'operating')
+        self.assertEqual(self.DUT.cond_type, 'operating')
 
     @attr(all=True, unit=True)
     def test01_RTKCondition_get_attributes(self):

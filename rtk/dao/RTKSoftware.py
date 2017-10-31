@@ -1,40 +1,24 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKSoftware.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKSoftware Table
-==============================
+===============================================================================
 """
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
+# pylint: disable=R0902
 class RTKSoftware(RTK_BASE):
     """
     Class to represent the table rtk_software in the RTK Program database.
@@ -52,6 +36,7 @@ class RTKSoftware(RTK_BASE):
     software_id = Column('fld_software_id', Integer, primary_key=True,
                          autoincrement=True, nullable=False)
 
+    # pylint: disable=invalid-name
     a = Column('fld_a', Float, default=0.0)
     aloc = Column('fld_aloc', Integer, default=0)
     am = Column('fld_am', Float, default=0.0)
@@ -190,86 +175,86 @@ class RTKSoftware(RTK_BASE):
                format(self.software_id)
 
         try:
-            self.a = float(attributes[0])
-            self.aloc = int(attributes[1])
-            self.am = float(attributes[2])
-            self.application_id = int(attributes[3])
-            self.ax = int(attributes[4])
-            self.budget_test = float(attributes[5])
-            self.budget_dev = float(attributes[6])
-            self.bx = int(attributes[7])
-            self.category_id = int(attributes[8])
-            self.cb = int(attributes[9])
-            self.cx = int(attributes[10])
-            self.d = float(attributes[11])
-            self.dc = float(attributes[12])
-            self.dd = int(attributes[13])
-            self.description = str(attributes[14])
-            self.development_id = int(attributes[15])
-            self.dev_assess_type_id = int(attributes[16])
-            self.df = float(attributes[17])
-            self.do = float(attributes[18])
-            self.dr = float(attributes[19])
-            self.dr_eot = int(attributes[20])
-            self.dr_test = int(attributes[21])
-            self.e = float(attributes[22])
-            self.ec = float(attributes[23])
-            self.et = float(attributes[24])
-            self.ev = float(attributes[25])
-            self.ew = float(attributes[26])
-            self.f = float(attributes[27])
-            self.ft1 = float(attributes[28])
-            self.ft2 = float(attributes[29])
-            self.hloc = int(attributes[30])
-            self.labor_hours_dev = float(attributes[31])
-            self.labor_hours_test = float(attributes[32])
-            self.level = int(attributes[33])
-            self.loc = int(attributes[34])
-            self.n_branches = int(attributes[35])
-            self.n_branches_test = int(attributes[36])
-            self.n_inputs = int(attributes[37])
-            self.n_inputs_test = int(attributes[38])
-            self.n_interfaces = int(attributes[39])
-            self.n_interfaces_test = int(attributes[40])
-            self.ncb = int(attributes[41])
-            self.nm = int(attributes[42])
-            self.nm_test = int(attributes[43])
-            self.os = float(attributes[44])
-            self.parent_id = int(attributes[45])
-            self.phase_id = int(attributes[46])
-            self.ren_avg = float(attributes[47])
-            self.ren_eot = float(attributes[48])
-            self.rpfom = float(attributes[49])
-            self.s1 = float(attributes[50])
-            self.s2 = float(attributes[51])
-            self.sa = float(attributes[52])
-            self.schedule_dev = float(attributes[53])
-            self.schedule_test = float(attributes[54])
-            self.sl = float(attributes[55])
-            self.sm = float(attributes[56])
-            self.sq = float(attributes[57])
-            self.sr = float(attributes[58])
-            self.st = float(attributes[59])
-            self.sx = float(attributes[60])
-            self.t = float(attributes[61])
-            self.tc = float(attributes[62])
-            self.tcl = int(attributes[63])
-            self.te = float(attributes[64])
-            self.test_approach = int(attributes[65])
-            self.test_effort = int(attributes[66])
-            self.test_path = int(attributes[67])
-            self.test_time = float(attributes[68])
-            self.test_time_eot = float(attributes[69])
-            self.tm = float(attributes[70])
-            self.um = int(attributes[71])
-            self.wm = int(attributes[72])
-            self.xm = int(attributes[73])
+            self.a = float(none_to_default(attributes[0], 0.0))
+            self.aloc = int(none_to_default(attributes[1], 0))
+            self.am = float(none_to_default(attributes[2], 0.0))
+            self.application_id = int(none_to_default(attributes[3], 0))
+            self.ax = int(none_to_default(attributes[4], 0))
+            self.budget_test = float(none_to_default(attributes[5], 0.0))
+            self.budget_dev = float(none_to_default(attributes[6], 0.0))
+            self.bx = int(none_to_default(attributes[7], 0))
+            self.category_id = int(none_to_default(attributes[8], 0))
+            self.cb = int(none_to_default(attributes[9], 0))
+            self.cx = int(none_to_default(attributes[10], 0))
+            self.d = float(none_to_default(attributes[11], 0.0))
+            self.dc = float(none_to_default(attributes[12], 0.0))
+            self.dd = int(none_to_default(attributes[13], 0))
+            self.description = str(none_to_default(attributes[14], ''))
+            self.development_id = int(none_to_default(attributes[15], 0))
+            self.dev_assess_type_id = int(none_to_default(attributes[16], 0))
+            self.df = float(none_to_default(attributes[17], 0.0))
+            self.do = float(none_to_default(attributes[18], 0.0))
+            self.dr = float(none_to_default(attributes[19], 0.0))
+            self.dr_eot = int(none_to_default(attributes[20], 0))
+            self.dr_test = int(none_to_default(attributes[21], 0))
+            self.e = float(none_to_default(attributes[22], 0.0))
+            self.ec = float(none_to_default(attributes[23], 0.0))
+            self.et = float(none_to_default(attributes[24], 0.0))
+            self.ev = float(none_to_default(attributes[25], 0.0))
+            self.ew = float(none_to_default(attributes[26], 0.0))
+            self.f = float(none_to_default(attributes[27], 0.0))
+            self.ft1 = float(none_to_default(attributes[28], 0.0))
+            self.ft2 = float(none_to_default(attributes[29], 0.0))
+            self.hloc = int(none_to_default(attributes[30], 0))
+            self.labor_hours_dev = float(none_to_default(attributes[31], 0.0))
+            self.labor_hours_test = float(none_to_default(attributes[32], 0.0))
+            self.level = int(none_to_default(attributes[33], 0))
+            self.loc = int(none_to_default(attributes[34], 0))
+            self.n_branches = int(none_to_default(attributes[35], 0))
+            self.n_branches_test = int(none_to_default(attributes[36], 0))
+            self.n_inputs = int(none_to_default(attributes[37], 0))
+            self.n_inputs_test = int(none_to_default(attributes[38], 0))
+            self.n_interfaces = int(none_to_default(attributes[39], 0))
+            self.n_interfaces_test = int(none_to_default(attributes[40], 0))
+            self.ncb = int(none_to_default(attributes[41], 0))
+            self.nm = int(none_to_default(attributes[42], 0))
+            self.nm_test = int(none_to_default(attributes[43], 0))
+            self.os = float(none_to_default(attributes[44], 0.0))
+            self.parent_id = int(none_to_default(attributes[45], 0))
+            self.phase_id = int(none_to_default(attributes[46], 0))
+            self.ren_avg = float(none_to_default(attributes[47], 0.0))
+            self.ren_eot = float(none_to_default(attributes[48], 0.0))
+            self.rpfom = float(none_to_default(attributes[49], 0.0))
+            self.s1 = float(none_to_default(attributes[50], 0.0))
+            self.s2 = float(none_to_default(attributes[51], 0.0))
+            self.sa = float(none_to_default(attributes[52], 0.0))
+            self.schedule_dev = float(none_to_default(attributes[53], 0.0))
+            self.schedule_test = float(none_to_default(attributes[54], 0.0))
+            self.sl = float(none_to_default(attributes[55], 0.0))
+            self.sm = float(none_to_default(attributes[56], 0.0))
+            self.sq = float(none_to_default(attributes[57], 0.0))
+            self.sr = float(none_to_default(attributes[58], 0.0))
+            self.st = float(none_to_default(attributes[59], 0.0))
+            self.sx = float(none_to_default(attributes[60], 0.0))
+            self.t = float(none_to_default(attributes[61], 0.0))
+            self.tc = float(none_to_default(attributes[62], 0.0))
+            self.tcl = int(none_to_default(attributes[63], 0))
+            self.te = float(none_to_default(attributes[64], 0.0))
+            self.test_approach = int(none_to_default(attributes[65], 0))
+            self.test_effort = int(none_to_default(attributes[66], 0))
+            self.test_path = int(none_to_default(attributes[67], 0))
+            self.test_time = float(none_to_default(attributes[68], 0.0))
+            self.test_time_eot = float(none_to_default(attributes[69], 0.0))
+            self.tm = float(none_to_default(attributes[70], 0.0))
+            self.um = int(none_to_default(attributes[71], 0))
+            self.wm = int(none_to_default(attributes[72], 0))
+            self.xm = int(none_to_default(attributes[73], 0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKSoftware.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKSoftware attributes."
 

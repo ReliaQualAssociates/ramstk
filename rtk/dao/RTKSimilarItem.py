@@ -1,40 +1,24 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKSimilarItem.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKSimilarItem Table
-==============================
+===============================================================================
 """
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
+# pylint: disable=R0902
 class RTKSimilarItem(RTK_BASE):
     """
     Class to represent the rtk_similar_item table in the RTK Program database.
@@ -171,65 +155,66 @@ class RTKSimilarItem(RTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.change_description_1 = str(attributes[0])
-            self.change_description_2 = str(attributes[1])
-            self.change_description_3 = str(attributes[2])
-            self.change_description_4 = str(attributes[3])
-            self.change_description_5 = str(attributes[4])
-            self.change_description_6 = str(attributes[5])
-            self.change_description_7 = str(attributes[6])
-            self.change_description_8 = str(attributes[7])
-            self.change_description_9 = str(attributes[8])
-            self.change_description_10 = str(attributes[9])
-            self.change_factor_1 = float(attributes[10])
-            self.change_factor_2 = float(attributes[11])
-            self.change_factor_3 = float(attributes[12])
-            self.change_factor_4 = float(attributes[13])
-            self.change_factor_5 = float(attributes[14])
-            self.change_factor_6 = float(attributes[15])
-            self.change_factor_7 = float(attributes[16])
-            self.change_factor_8 = float(attributes[17])
-            self.change_factor_9 = float(attributes[18])
-            self.change_factor_10 = float(attributes[19])
-            self.environment_from_id = int(attributes[20])
-            self.environment_to_id = int(attributes[21])
-            self.function_1 = str(attributes[22])
-            self.function_2 = str(attributes[23])
-            self.function_3 = str(attributes[24])
-            self.function_4 = str(attributes[25])
-            self.function_5 = str(attributes[26])
-            self.method_id = int(attributes[27])
-            self.parent_id = int(attributes[28])
-            self.quality_from_id = int(attributes[29])
-            self.quality_to_id = int(attributes[30])
-            self.result_1 = float(attributes[31])
-            self.result_2 = float(attributes[32])
-            self.result_3 = float(attributes[33])
-            self.result_4 = float(attributes[34])
-            self.result_5 = float(attributes[35])
-            self.temperature_from = float(attributes[36])
-            self.temperature_to = float(attributes[37])
-            self.user_blob_1 = str(attributes[38])
-            self.user_blob_2 = str(attributes[39])
-            self.user_blob_3 = str(attributes[40])
-            self.user_blob_4 = str(attributes[41])
-            self.user_blob_5 = str(attributes[42])
-            self.user_float_1 = float(attributes[43])
-            self.user_float_2 = float(attributes[44])
-            self.user_float_3 = float(attributes[45])
-            self.user_float_4 = float(attributes[46])
-            self.user_float_5 = float(attributes[47])
-            self.user_int_1 = int(attributes[48])
-            self.user_int_2 = int(attributes[49])
-            self.user_int_3 = int(attributes[50])
-            self.user_int_4 = int(attributes[51])
-            self.user_int_5 = int(attributes[52])
+            self.change_description_1 = str(none_to_default(attributes[0], ''))
+            self.change_description_2 = str(none_to_default(attributes[1], ''))
+            self.change_description_3 = str(none_to_default(attributes[2], ''))
+            self.change_description_4 = str(none_to_default(attributes[3], ''))
+            self.change_description_5 = str(none_to_default(attributes[4], ''))
+            self.change_description_6 = str(none_to_default(attributes[5], ''))
+            self.change_description_7 = str(none_to_default(attributes[6], ''))
+            self.change_description_8 = str(none_to_default(attributes[7], ''))
+            self.change_description_9 = str(none_to_default(attributes[8], ''))
+            self.change_description_10 = str(
+                none_to_default(attributes[9], ''))
+            self.change_factor_1 = float(none_to_default(attributes[10], 1.0))
+            self.change_factor_2 = float(none_to_default(attributes[11], 1.0))
+            self.change_factor_3 = float(none_to_default(attributes[12], 1.0))
+            self.change_factor_4 = float(none_to_default(attributes[13], 1.0))
+            self.change_factor_5 = float(none_to_default(attributes[14], 1.0))
+            self.change_factor_6 = float(none_to_default(attributes[15], 1.0))
+            self.change_factor_7 = float(none_to_default(attributes[16], 1.0))
+            self.change_factor_8 = float(none_to_default(attributes[17], 1.0))
+            self.change_factor_9 = float(none_to_default(attributes[18], 1.0))
+            self.change_factor_10 = float(none_to_default(attributes[19], 1.0))
+            self.environment_from_id = int(none_to_default(attributes[20], 0))
+            self.environment_to_id = int(none_to_default(attributes[21], 0))
+            self.function_1 = str(none_to_default(attributes[22], ''))
+            self.function_2 = str(none_to_default(attributes[23], ''))
+            self.function_3 = str(none_to_default(attributes[24], ''))
+            self.function_4 = str(none_to_default(attributes[25], ''))
+            self.function_5 = str(none_to_default(attributes[26], ''))
+            self.method_id = int(none_to_default(attributes[27], 0))
+            self.parent_id = int(none_to_default(attributes[28], 0))
+            self.quality_from_id = int(none_to_default(attributes[29], 0))
+            self.quality_to_id = int(none_to_default(attributes[30], 0))
+            self.result_1 = float(none_to_default(attributes[31], 0))
+            self.result_2 = float(none_to_default(attributes[32], 0))
+            self.result_3 = float(none_to_default(attributes[33], 0))
+            self.result_4 = float(none_to_default(attributes[34], 0))
+            self.result_5 = float(none_to_default(attributes[35], 0))
+            self.temperature_from = float(none_to_default(attributes[36], 0))
+            self.temperature_to = float(none_to_default(attributes[37], 0))
+            self.user_blob_1 = str(none_to_default(attributes[38], ''))
+            self.user_blob_2 = str(none_to_default(attributes[39], ''))
+            self.user_blob_3 = str(none_to_default(attributes[40], ''))
+            self.user_blob_4 = str(none_to_default(attributes[41], ''))
+            self.user_blob_5 = str(none_to_default(attributes[42], ''))
+            self.user_float_1 = float(none_to_default(attributes[43], 0.0))
+            self.user_float_2 = float(none_to_default(attributes[44], 0.0))
+            self.user_float_3 = float(none_to_default(attributes[45], 0.0))
+            self.user_float_4 = float(none_to_default(attributes[46], 0.0))
+            self.user_float_5 = float(none_to_default(attributes[47], 0.0))
+            self.user_int_1 = int(none_to_default(attributes[48], 0))
+            self.user_int_2 = int(none_to_default(attributes[49], 0))
+            self.user_int_3 = int(none_to_default(attributes[50], 0))
+            self.user_int_4 = int(none_to_default(attributes[51], 0))
+            self.user_int_5 = int(none_to_default(attributes[52], 0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKSimilarItem.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKSimilarItem attributes."
 

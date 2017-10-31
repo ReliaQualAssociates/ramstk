@@ -1,72 +1,22 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.gui.gtk.rtk.Dialog.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This module contains functions for creating, populating, destroying, and
 interacting with pyGTK widgets.  Import this module in other modules that
 create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to dialog widgets.
+application.  This module is specific to RTK dialog widgets.
 """
 
-import gettext
-import sys
+import os
 
-# Modules required for the GUI.
-try:
-    from pygtk import require
-    require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    from gtk import Dialog, MessageDialog
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade  # @UnusedImport
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
+from datetime import datetime
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
-
-_ = gettext.gettext
+# Import the rtk.Widget base class.
+from .Widget import _, gtk                          # pylint: disable=E0401
 
 
 class RTKDialog(gtk.Dialog):
@@ -76,8 +26,8 @@ class RTKDialog(gtk.Dialog):
 
     def __init__(self, dlgtitle, dlgparent=None,
                  dlgflags=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
-                 dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                             gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT)):
+                 dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_OK,
+                             gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)):
         """
         Method to create a RTK Dialog widget.
 
@@ -99,6 +49,20 @@ class RTKDialog(gtk.Dialog):
                             flags=dlgflags, buttons=dlgbuttons)
 
         self.set_has_separator(True)
+
+    def do_run(self):
+        """
+        Method to run the RTK Message Dialog.
+        """
+
+        return self.run()
+
+    def do_destroy(self):
+        """
+        Method to destroy the RTK Message Dialog.
+        """
+
+        self.destroy()
 
 
 class RTKMessageDialog(gtk.MessageDialog):
@@ -172,11 +136,149 @@ class RTKMessageDialog(gtk.MessageDialog):
         """
         Method to run the RTK Message Dialog.
         """
+
         return self.run()
 
     def do_destroy(self):
         """
         Method to destroy the RTK Message Dialog.
+        """
+
+        self.destroy()
+
+
+class RTKFileChooser(gtk.FileChooserDialog):
+    """
+    This is the RTK File Chooser Dialog class.
+    """
+
+    def __init__(self, title, cwd):
+        """
+        Method to initialize an instance of the RTKFileChooser dialog.
+
+        :param str cwd: the absolute path to the file to open.
+        """
+
+        gtk.FileChooserDialog.__init__(self, title, None,
+                                       gtk.DIALOG_MODAL |
+                                       gtk.DIALOG_DESTROY_WITH_PARENT,
+                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
+                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+
+        self.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
+        self.set_current_folder(cwd)
+
+        # Set some filters to select all files or only some text files.
+        _filter = gtk.FileFilter()
+        _filter.set_name(u"All files")
+        _filter.add_pattern("*")
+        self.add_filter(_filter)
+
+        _filter = gtk.FileFilter()
+        _filter.set_name("Text Files (csv, txt)")
+        _filter.add_mime_type("text/csv")
+        _filter.add_mime_type("text/txt")
+        _filter.add_mime_type("application/xls")
+        _filter.add_pattern("*.csv")
+        _filter.add_pattern("*.txt")
+        _filter.add_pattern("*.xls")
+        self.add_filter(_filter)
+
+    def do_run(self):
+        """
+        Method to run the RTKFileChooser dialog.
+        """
+
+        if self.run() == gtk.RESPONSE_ACCEPT:
+            _filename = self.get_filename()
+            __, _extension = os.path.splitext(_filename)
+
+        if _extension == '.csv' or _extension == '.txt':
+            self._do_read_text_file(_filename)
+
+        return False
+
+    def _do_read_text_file(self, filename):
+        """
+        Method to read the contents of a text file.
+
+        :param str filename: the file to be read.
+        :return:
+        :rtype:
+        """
+
+        # Run the dialog and write the file.
+        _headers = []
+        _contents = []
+
+        __, _extension = os.path.splitext(filename)
+        _file = open(filename, 'r')
+        if _extension == '.csv':
+            _delimiter = ','
+        else:
+            _delimiter = '\t'
+
+        for _line in _file:
+            _contents.append([_line.rstrip('\n')])
+
+        _headers = str(_contents[0][0]).rsplit(_delimiter)
+        for i in range(len(_contents) - 1):
+            _contents[i] = str(_contents[i + 1][0]).rsplit(_delimiter)
+
+        self.destroy()
+
+        return _headers, _contents
+
+    def do_destroy(self):
+        """
+        Method to destroy the RTKFileChooser dialog.
+        """
+
+        self.destroy()
+
+
+class RTKDateSelect(gtk.Dialog):
+    """
+    This is the RTK Date Select Dialog class.
+    """
+
+    def __init__(self, entry=None):
+        """
+        Method to initialize an instance of the RTKDateSelect class.
+
+        :param entry: the gtk.Entry() in which to place the date, if any.
+        :type entry: :py:class:`gtk.Entry`
+        """
+
+        gtk.Dialog.__init__(self, _(u"Select Date"),
+                            dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+
+        self._entry = entry
+        self._calendar = gtk.Calendar()
+        self.vbox.pack_start(self._calendar)    # pylint: disable=E1101
+        self.vbox.show_all()                    # pylint: disable=E1101
+
+    def do_run(self):
+        """
+        Method to run the RTKDateSelect dialog.
+        """
+
+        if self.run() == gtk.RESPONSE_ACCEPT:
+            _date = self._calendar.get_date()
+            _date = datetime(_date[0], _date[1] + 1,
+                             _date[2]).date().strftime("%Y-%m-%d")
+        else:
+            _date = "1970-01-01"
+
+        if self._entry is not None:
+            self._entry.set_text(_date)
+            self._entry.grab_focus()
+
+        return _date
+
+    def do_destroy(self):
+        """
+        Method to destroy the RTKDateSelect dialog.
         """
 
         self.destroy()

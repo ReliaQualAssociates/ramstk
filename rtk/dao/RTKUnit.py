@@ -1,36 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKUnit.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKUnit Table
-==============================
+===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String
+from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKUnit(RTK_BASE):
@@ -46,18 +30,18 @@ class RTKUnit(RTK_BASE):
     code = Column('fld_code', String(256), default='Unit Code')
     description = Column('fld_description', String(512),
                          default='Unit Description')
-    type = Column('fld_type', String(256), default='unknown')
+    unit_type = Column('fld_type', String(256), default='unknown')
 
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKUnit data model
         attributes.
 
-        :return: (unit_id, code, description, type)
+        :return: (unit_id, code, description, unit_type)
         :rtype: tuple
         """
 
-        _values = (self.unit_id, self.code, self.description, self.type)
+        _values = (self.unit_id, self.code, self.description, self.unit_type)
 
         return _values
 
@@ -76,15 +60,16 @@ class RTKUnit(RTK_BASE):
             format(self.unit_id)
 
         try:
-            self.code = str(attributes[0])
-            self.description = str(attributes[2])
-            self.type = str(attributes[2])
+            self.code = str(none_to_default(attributes[0], 'Unit Code'))
+            self.description = str(none_to_default(attributes[2],
+                                                   'Unit Description'))
+            self.unit_type = str(none_to_default(attributes[2], ''))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKUnit.set_attributes()."
         except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKUnit attributes."
 

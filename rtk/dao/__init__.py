@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+#
+#       rtk.dao.__init__.py is part of The RTK Project
+#
+# All rights reserved.
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+
 from .DAO import DAO
 
 # Common database.

@@ -38,9 +38,10 @@ This is the test class for testing the RTK module algorithms and models.
 
 import sys
 import os
-from os.path import dirname, isfile
+from os.path import isfile
 
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk", )
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                '../rtk')))
 
 import logging
 

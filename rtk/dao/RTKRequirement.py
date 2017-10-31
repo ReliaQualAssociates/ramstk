@@ -1,40 +1,23 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKRequirement.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKRequirement Table
-==============================
+===============================================================================
 """
 
 from datetime import date
-
-# Import the database models.
+# pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship
+from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration as Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities as Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
 
 
 class RTKRequirement(RTK_BASE):
@@ -105,24 +88,24 @@ class RTKRequirement(RTK_BASE):
                format(self.requirement_id)
 
         try:
-            self.derived = int(attributes[0])
-            self.description = str(attributes[1])
-            self.figure_number = str(attributes[2])
-            self.owner_id = int(attributes[3])
-            self.page_number = str(attributes[4])
-            self.parent_id = int(attributes[5])
-            self.priority = int(attributes[6])
-            self.requirement_code = str(attributes[7])
-            self.specification = str(attributes[8])
-            self.type_id = int(attributes[9])
-            self.validated = int(attributes[10])
-            self.validated_date = attributes[11]
+            self.derived = int(none_to_default(attributes[0], 0))
+            self.description = str(none_to_default(attributes[1], ''))
+            self.figure_number = str(none_to_default(attributes[2], ''))
+            self.owner_id = int(none_to_default(attributes[3], 0))
+            self.page_number = str(none_to_default(attributes[4], ''))
+            self.parent_id = int(none_to_default(attributes[5], 0))
+            self.priority = int(none_to_default(attributes[6], 0))
+            self.requirement_code = str(none_to_default(attributes[7], ''))
+            self.specification = str(none_to_default(attributes[8], ''))
+            self.type_id = int(none_to_default(attributes[9], 0))
+            self.validated = int(none_to_default(attributes[10], 0))
+            self.validated_date = none_to_default(attributes[11], date.today())
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKRequirement.set_attributes()."
         except (TypeError, ValueError) as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKRequirement attributes."
 

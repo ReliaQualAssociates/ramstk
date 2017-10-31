@@ -1,36 +1,20 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.dao.RTKEnviron.py is part of The RTK Project
 #
 # All rights reserved.
-
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-==============================
+===============================================================================
 The RTKEnviron Table
-==============================
+===============================================================================
 """
 
-from sqlalchemy import Column, Float, Integer, String
+from sqlalchemy import Column, Float, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-try:
-    import Utilities
-except ImportError:
-    import rtk.Utilities as Utilities
-try:
-    from dao.RTKCommonDB import RTK_BASE
-except ImportError:
-    from rtk.dao.RTKCommonDB import RTK_BASE
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
+from Utilities import error_handler, none_to_default   # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE                   # pylint: disable=E0401
 
 
 class RTKEnviron(RTK_BASE):
@@ -46,8 +30,9 @@ class RTKEnviron(RTK_BASE):
     code = Column('fld_code', String(256), default='Environ Code')
     description = Column('fld_description', String(512),
                          default='Environ Description')
-    type = Column('fld_type', Integer, default='unknown')
+    environ_type = Column('fld_type', Integer, default='unknown')
     pi_e = Column('fld_pi_e', Float, default=1.0)
+    # pylint: disable=invalid-name
     do = Column('fld_do', Float, default=1.0)
 
     def get_attributes(self):
@@ -55,12 +40,12 @@ class RTKEnviron(RTK_BASE):
         Method to retrieve the current values of the RTKEnviron data model
         attributes.
 
-        :return: (environs_id, code, description, type, pi_e, do)
+        :return: (environs_id, code, description, environ_type, pi_e, do)
         :rtype: tuple
         """
 
-        _values = (self.environ_id, self.code, self.description, self.type,
-                   self.pi_e, self.do)
+        _values = (self.environ_id, self.code, self.description,
+                   self.environ_type, self.pi_e, self.do)
 
         return _values
 
@@ -79,17 +64,18 @@ class RTKEnviron(RTK_BASE):
             format(self.environ_id)
 
         try:
-            self.code = str(attributes[0])
-            self.description = str(attributes[1])
-            self.type = str(attributes[2])
-            self.pi_e = float(attributes[3])
-            self.do = float(attributes[4])
+            self.code = str(none_to_default(attributes[0], 'Environ Code'))
+            self.description = str(none_to_default(attributes[1],
+                                                   'Environ Description'))
+            self.environ_type = str(none_to_default(attributes[2], 'unknown'))
+            self.pi_e = float(none_to_default(attributes[3], 1.0))
+            self.do = float(none_to_default(attributes[4], 1.0))
         except IndexError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \
                    "RTKEnviron.set_attributes()."
         except TypeError as _err:
-            _error_code = Utilities.error_handler(_err.args)
+            _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKEnviron attributes."
 

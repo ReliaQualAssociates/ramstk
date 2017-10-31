@@ -112,7 +112,7 @@ class Test06RTKRequirement(unittest.TestCase):
         """
 
         _attributes = (0, 'Test Requirement', '', 0, '', 0, 0, 'Test Code', '',
-                       0, None, date.today())
+                       0, 'None', date.today())
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
