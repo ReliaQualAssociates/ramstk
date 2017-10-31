@@ -360,7 +360,7 @@ class Configuration(object):
     RTK_SW_APPLICATION = {}
     RTK_CATEGORIES = {}
     RTK_CRITICALITY = {}
-    RTK_FAILURE_MODES = {}  # Default failure modes.
+    RTK_FAILURE_MODES = {}                      # Default failure modes.
     RTK_HAZARDS = {}
     RTK_MANUFACTURERS = {}
     RTK_MEASUREMENT_UNITS = {}
