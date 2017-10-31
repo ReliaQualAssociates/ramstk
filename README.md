@@ -1,8 +1,8 @@
-Master Branch:
-[![Build Status](https://travis-ci.org/weibullguy/rtk.svg?branch=master)](https://travis-ci.org/weibullguy/rtk)
-Develop Branch:
-[![Build Status](https://travis-ci.org/weibullguy/rtk.svg?branch=develop)](https://travis-ci.org/weibullguy/rtk)
-[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/rtk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/rtk&amp;utm_campaign=Badge_Grade)
+Master Branch:  
+[![Build Status](https://travis-ci.org/weibullguy/rtk.svg?branch=master)](https://travis-ci.org/weibullguy/rtk)  
+Develop Branch:  
+[![Build Status](https://travis-ci.org/weibullguy/rtk.svg?branch=develop)](https://travis-ci.org/weibullguy/rtk)  
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/rtk?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=weibullguy/rtk&amp;utm_campaign=Badge_Grade)  
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/rtk?utm_source=github.com&utm_medium=referral&utm_content=weibullguy/rtk&utm_campaign=Badge_Coverage)
 
 # rtk
