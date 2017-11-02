@@ -75,6 +75,12 @@ class ParentError(Exception):
     pass
 
 
+class NoMatrixError(Exception):
+    """
+    Error to raise when no Matrices are returned.
+    """
+    pass
+
 def create_logger(log_name, log_level, log_file, to_tty=False):
     """
     This function creates a logger instance.

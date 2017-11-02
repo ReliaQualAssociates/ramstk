@@ -56,12 +56,14 @@ class RTKMatrix(RTK_BASE):
                        autoincrement=True, nullable=False)
 
     column_id = Column('fld_column_id', Integer, default=0)
-    column_item_id = Column('fld_column_item_id', Integer, default=0)
+    column_item_id = Column('fld_column_item_id', Integer, primary_key=True,
+                            default=0)
     parent_id = Column('fld_parent_id', Integer, default=0)
     row_id = Column('fld_row_id', Integer, default=0)
-    row_item_id = Column('fld_row_item_id', Integer, default=0)
+    row_item_id = Column('fld_row_item_id', Integer, primary_key=True,
+                         default=0)
     type_id = Column('fld_type_id', Integer, default=0)
-    value = Column('fld_value', Float, default=0.0)
+    value = Column('fld_value', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
     revision = relationship('RTKRevision', back_populates='matrix')
