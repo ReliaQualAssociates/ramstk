@@ -23,7 +23,7 @@ import pandas as pd
 
 import Utilities as Utilities
 from Configuration import Configuration
-from datamodels.matrix.Matrix import RTKDataMatrix
+from datamodels import RTKDataMatrix
 from dao import DAO
 from dao import RTKMatrix
 from dao import RTKFunction, RTKHardware

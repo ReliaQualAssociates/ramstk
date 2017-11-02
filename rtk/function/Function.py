@@ -302,6 +302,7 @@ class Function(RTKDataController):
 
         # Initialize private scalar attributes.
         self._dtm_function = Model(dao)
+        #self._dtm_fctn_hw_matrix = RTKDataMatrix(dao)
 
         # Initialize public dictionary attributes.
 
