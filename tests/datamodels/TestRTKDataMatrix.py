@@ -210,23 +210,3 @@ class TestMatrixModel(unittest.TestCase):
         (_error_code, _msg) = self.DUT.update(3)
 
         self.assertEqual(_error_code, 0)
-
-
-class TestMatrixController(unittest.TestCase):
-    """
-    Class for testing the Matrix data controller class.
-    """
-
-    def setUp(self):
-
-        self.DUT = Matrix()
-
-    @attr(all=True, unit=False)
-    def test01_create_controller(self):
-        """
-        (TestMatrix) __init__ should return instance of Matrix data controller
-        """
-
-        self.assertTrue(isinstance(self.DUT, Matrix))
-        self.assertEqual(self.DUT._dao, None)           # pylint: disable=W0212
-        self.assertEqual(self.DUT.dicMatrices, {})
