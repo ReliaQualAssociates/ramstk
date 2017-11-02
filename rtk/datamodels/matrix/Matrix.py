@@ -4,45 +4,25 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+"""
+###############################################################################
+RTKDataMatrix Module
+###############################################################################
+"""
 
 # Import modules for localization support.
 import gettext
-import locale
 
 import pandas as pd
+from sqlalchemy import and_
 
 # Import other RTK modules.
-import Configuration
-import Utilities
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2016 Andrew "weibullguy" Rowland'
-
-#try:
-#    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-#except locale.Error:                                # pragma: no cover
-#    locale.setlocale(locale.LC_ALL, '')
+from dao import RTKMatrix                       # pylint: disable=E0401
 
 _ = gettext.gettext
 
 
-class ParentError(Exception):
-    """
-    Error to raise when no Revision ID is passed.
-    """
-    pass
-
-
-class NoMatrixError(Exception):
-    """
-    Error to raise when no Matrices are returned.
-    """
-    pass
-
-
-class Model(object):
+class RTKDataMatrix(object):
     """
     The Matrix data model is an aggregate model of N x M cell data models.  The
     attributes of a Matrix are:
@@ -78,482 +58,238 @@ class Model(object):
     :ivar int n_col: the number of columns in the Matrix.
     """
 
-    def __init__(self, dao):
+    _tag = 'matrix'
+
+    def __init__(self, dao, row_table, column_table):
         """
         Method to initialize a Matrix data model instance.
         """
 
-        # Define private dictionary attributes.
+        # Initialize private dictionary attributes.
+        self._dic_row_hdrs = {}
+        self._dic_column_hdrs = {}
 
-        # Define private list attributes.
+        # Initialize private list attributes.
 
-        # Define private scalar attributes.
+        # Initialize private scalar attributes.
+        self._column_table = column_table
+        self._row_table = row_table
+        self._last_id = None
 
-        # Define public dictionary attributes.
-        self.matrix = None
+        # Initialize public dictionary attributes.
+        self.dtf_matrix = None
 
-        # Define public list attributes.
+        # Initialize public list attributes.
 
-        # Define public scalar attributes.
+        # Initialize public scalar attributes.
         self.dao = dao
-        self.revision_id = None
-        self.matrix_id = None
-        self.matrix_type = None
         self.n_row = 1
         self.n_col = 1
 
-    def select(self, row_num, col_num):
+    def select(self, col, row):
         """
-        Method to select the value from the cell identified by row_num and
-        col_num.
+        Method to select the value from the cell identified by col and row.
 
-        :param int row_num: the row number of the cell.
-        :param int col_num: the column number of the cell.
-        :return: _cell; the value in the cell at (row_num, col_num).
-        :rtype: int
+        :param str col: the column of the cell.  This is the first index of the
+                        Pandas DataFrame.
+        :param str row: the row of the cell.  This is the second index of the
+                        Pandas DataFrame.
+        :return: the value in the cell at (col, row).
+        :rtype: float
         """
 
-        _cell = 0
+        return self.dtf_matrix[col][row]
 
-        return _cell
-
-    def select_all(self):
+    def select_all(self, revision_id, matrix_id, rindex, cindex, rheader,
+                   cheader):
         """
-        Method to select the row heaings, the column headings, and the cell
+        Method to select the row heaidngs, the column headings, and the cell
         values for the matrix then build the matrix as a Pandas DataFrame.
 
+        :param int revision_id: the ID of the Revision the desired Matrix is
+                                associated with.
+        :param int matrix_id: the ID of the Matrix to select all rows and all
+                              columns for.
+        :param int rindex: the index in the row table attributes containing the
+                           module ID.
+        :param int cindex: the index in the column table attributes containing
+                           the module ID.
+        :param int rheader: the index in the row table attributes containing
+                            the text to use for the Matrix row headings.
+        :param int cheader: the index in the column table attributes containing
+                            the text to use for the Matrix column headings.
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
 
         _return = False
 
-        _row_hdrs = self._retrieve_row_headers()
-        _col_hdrs = self._retrieve_col_headers()
-        _matrix = self._retrieve_matrix()
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
-        _dic_matrix = {}
-        for i in xrange(len(_matrix)):
-            _dic_matrix[_col_hdrs[i]] = pd.Series(_matrix[i], index=_row_hdrs)
+        _column_id = 0
+        _lst_row_id = []
+        _lst_value = []
+        _dic_column = {}
 
-        self.matrix = pd.DataFrame(_dic_matrix)
+        self.n_col = 0
+        self.n_row = 0
+
+        # Retrieve the dictionary of row headings.  The key is the row table's
+        # module ID.  The value is the row table field with string data
+        # (typically the code, description, or name field).
+        for _row in _session.query(self._row_table).filter(
+                self._row_table.revision_id == revision_id).all():
+            _attributes = _row.get_attributes()
+            self._dic_row_hdrs[_attributes[rindex]] = _attributes[rheader]
+
+            self.n_row += 1
+
+        # Retrieve the dictionary of column headings.  The key is the column
+        # table's module ID.  The value is the column table field with string
+        # data (typically the code, description, or name field).
+        for _column in _session.query(self._column_table).filter(
+                self._column_table.revision_id == revision_id).all():
+            _attributes = _column.get_attributes()
+            self._dic_column_hdrs[_attributes[cindex]] = _attributes[cheader]
+
+            self.n_col += 1
+
+        # Retrieve the matrix values for the desired Matrix ID.
+        for _matrix in _session.query(RTKMatrix).filter(
+                RTKMatrix.matrix_id == matrix_id).all():
+            if _matrix.column_item_id == _column_id:
+                _lst_row_id.append(_matrix.row_item_id)
+                _lst_value.append(_matrix.value)
+            else:
+                _lst_row_id = [_matrix.row_item_id]
+                _lst_value = [_matrix.value]
+                _column_id = _matrix.column_item_id
+
+            _dic_column[_column_id] = pd.Series(_lst_value, index=_lst_row_id)
+
+        self.dtf_matrix = pd.DataFrame(_dic_column)
+
+        _session.close()
 
         return _return
 
-    def _retrieve_row_headers(self):
-
-        return ['Function 1', 'Function 2', 'Function 3']
-
-    def _retrieve_col_headers(self):
-
-        return ['System 1', 'System 2', 'System 3']
-
-    def _retrieve_matrix(self):
-
-        return [[2, 0, 0], [0, 1, 1], [1, 1, 0]]
-
-class Matrix(object):
-    """
-    The Matrix data controller provides an interface between the Matrix data
-    model and an RTK view model.  A single Matrix data controller can manage
-    one or more Matrix data models.
-
-    :ivar _dao: the :py:class:`rtk.dao.DAO` object for this controller to use
-                when interfacing with the open RTK Project database.
-    :ivar dict dicMatrices: Dictionary of the Matrix data models managed.  Key
-                            is the Matrix type; value is a pointer to the
-                            Matrix data model instance.
-    """
-
-    def __init__(self):
+    def insert(self, item_id, heading, row=True):
         """
-        Initialize a Matrix data controller instance.
-        """
+        Method to insert a row or a column into the matrix.
 
-        # Define private dictionary attributes.
-
-        # Define private list attributes.
-
-        # Define private scalar attributes.
-
-        # Define public dictionary attributes.
-        self.dicMatrices = {}
-
-        # Define public list attributes.
-
-        # Define public scalar attributes.
-        self.dao = None
-
-    def request_matrix(self):
-        """
-        Method to load the entire set of Matrices for the Revision ID.
-
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        for _matrix_type in [0, 1, 2, 3, 4, 5, 6, 7]:
-            if _matrix_type in [0, 1, 2]:
-                _id_field = "function_id"
-                _code_field = "code"
-                _name_field = "name"
-                _row_table = "tbl_functions"
-            elif _matrix_type in [3, 4, 5]:
-                _id_field = "requirement_id"
-                _code_field = "code"
-                _name_field = "description"
-                _row_table = "tbl_requirements"
-            elif _matrix_type in [6, 7]:
-                _id_field = "hardware_id"
-                _code_field = "ref_des"
-                _name_field = "name"
-                _row_table = "rtk_hardware"
-
-            _query = "SELECT t1.fld_matrix_id, t1.fld_matrix_type, \
-                             t2.fld_{5:s}, t2.fld_{4:s}, t2.fld_{1:s}, \
-                             t1.fld_parent_id, t1.fld_row_id, t1.fld_col_id, \
-                             t1.fld_value, t1.fld_col_item_id, \
-                             t1.fld_revision_id \
-                      FROM rtk_matrix AS t1 \
-                      INNER JOIN {2:s} AS t2 \
-                      ON t2.fld_{3:s}=t1.fld_row_item_id \
-                      WHERE t1.fld_matrix_type={0:d} \
-                      ORDER BY t1.fld_matrix_id, t1.fld_row_id, \
-                               t1.fld_col_id".format(_matrix_type, _id_field,
-                                                     _row_table, _id_field,
-                                                     _name_field, _code_field)
-            (_results, _error_code, __) = self.dao.execute(_query)
-
-            if len(_results) > 0:
-                self._create_matrix(_results[0][10], _results)
-
-                _column_ids = list(set([_r[9] for _r in _results]))
-                self._request_column_headers(_column_ids, _matrix_type)
-
-        return(_results, _error_code)
-
-    def _create_matrix(self, revision_id, results):
-        """
-        Method to create a Matrix data model, populate it's row dictionary, and
-        add it to the Matrix data controller's matrix dictionary.
-
-        :param int revision_id: the ID of the Revision this Matrix is
-                                associated with.
-        :param list results: the data returned from the open RTK Program
-                             database for the Matrix to create.
-        :return: False on success or True if an error is encountered.
-        :rtype: bool
-        """
-
-        # Each results record is:
-        #     [matrix_id, matrix_type, function code, function name,
-        #      function id, parent_id, row id, col id, value, col_item_id]
-        _matrix_id = results[0][0]
-
-        # Create a list of the row values for the Matrix.
-        # _rows = [function code, function name, function id, parent_id,
-        #          row id, col id, value, col_item_id]
-        _rows = [_m[2:len(_m)] for _m in results]
-
-        # Create a new Matrix data model, set it's attributes, and add it to
-        # the Matrix dictionary.
-        _matrix = Model()
-        _row_ids = list(set([_m[4] for _m in _rows]))
-        _n_col = len(set([_m[5] for _m in _rows]))
-        _matrix.set_attributes([revision_id, results[0][1], _matrix_id,
-                                len(_row_ids), _n_col])
-        self.dicMatrices[_matrix_id] = _matrix
-
-        # Populate the row dictionary for the Matrix.
-        for __, _row_id in enumerate(_row_ids):
-            _name = list(set([_r[0:4] for _r in _rows if _r[4] == _row_id]))
-            # A _values record is:
-            #     [parent_id, function id, function code, function name,
-            #      value1, value2, ... valueN]
-            _values = [_name[0][3], _name[0][2], _name[0][0], _name[0][1]]
-            _values.extend([_r[6] for _r in _rows if _r[4] == _row_id])
-            _matrix.dicRows[_row_id] = _values
-
-        return False
-
-    def _request_column_headers(self, column_ids, matrix_type):
-        """
-        Method to retrieve the Function/Hardware Matrix information from the
-        open RTK Program database.
-
-        :param list column_ids: list of the IDs for the items that represent
-                                the columns in the Matrix.
-        :param int matrix_type: the type of Matrix to retrieve the headers for.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _matrix = self.dicMatrices[matrix_type]
-
-        if len(column_ids) == 1:
-            _column_ids = "({0:d})".format(column_ids[0])
-        else:
-            _column_ids = str(tuple(column_ids))
-
-        _matrix.lstColumnHeaders = []
-        if matrix_type in [0, 3]:
-            _query = "SELECT fld_name \
-                      FROM rtk_hardware \
-                      WHERE fld_hardware_id IN " + _column_ids + \
-                      " AND fld_part=0"
-        elif matrix_type in [1, 4]:
-            _query = "SELECT fld_description \
-                      FROM rtk_software \
-                      WHERE fld_software_id IN " + _column_ids + \
-                      " AND fld_level_id<4"
-        elif matrix_type in [2, 6]:
-            _query = "SELECT fld_name \
-                      FROM rtk_tests \
-                      WHERE fld_test_id IN " + _column_ids
-        elif matrix_type in [5, 7]:
-            _query = "SELECT fld_task_desc \
-                      FROM rtk_validation \
-                      WHERE fld_validation_id IN " + _column_ids
-
-        (_results, _error_code, __) = self.dao.execute(_query)
-
-        try:
-            _n_headers = len(_results)
-        except TypeError:
-            _n_headers = 0
-
-        for i in range(_n_headers):
-            _matrix.lstColumnHeaders.append(_results[i][0])
-
-        return False
-
-    def save_matrix(self, matrix_id):
-        """
-        Method to save the Matrix information to the open RTK Project database.
-
-        :param int matrix_id: the ID of the Matrix to save.
+        :param int item_id: the ID of the row or column item to insert into the
+                            Matrix.
+        :param str heading: the heading for the new row or column.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        if matrix_id in self.dicMatrices.keys():
-            _matrix = self.dicMatrices[matrix_id]
+        _return = False
 
-            for _row_id in _matrix.dicRows.keys():
-                for _col_id in range(len(_matrix.dicRows[_row_id][4:])):
-                    (_results,
-                     _error_code) = self.save_cell(matrix_id, _row_id, _col_id,
-                                                   _matrix.dicRows[_row_id][0],
-                                                   _matrix.dicRows[_row_id][_col_id + 4])
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
-        return False
+        if row:
+            self._dic_row_hdrs[item_id] = heading
+            _values = [0] * self.n_col
 
-    def add_row(self, matrix_id, parent_id=-1, row_item_id=0, **kwargs):
-        """
-        Method to add a new row to the selected Matrix.
+            _tmp_matrix = self.dtf_matrix.transpose()
+            _tmp_matrix.insert(self.n_row, item_id, _values)
 
-        :param int matrix_id: the Matrix ID to add the row to.
-        :keyword int parent_id: the ID of the parent row, if any.
-        :keyword int row_item_id: the ID for the item associated with the new
-                                  row.  For each matrix this will be:
-                                  #. Functional/Hardware -> Function ID
-                                  #. Functional/Software -> Function ID
-                                  #. Functional/Testing -> Function ID
-                                  #. Requirement/Hardware -> Requirement ID
-                                  #. Requirement/Software -> Requirement ID
-                                  #. Requirement/Validation -> Requirement ID
-                                  #. Hardware/Testing -> Hardware ID
-                                  #. Hardware/Validation -> Hardware ID
-        :keyword dict **kwargs: any additional inputs provided.  Typically used
-                                to pass the new code and name.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
+            self.dtf_matrix = _tmp_matrix.transpose()
+            self.n_row += 1
 
-        _code = kwargs.get('val1', '')
-        _name = kwargs.get('val2', '')
-
-        # Define local list variables.
-        _row = [parent_id, row_item_id, _code, _name]
-        _cells = []
-
-        # Retrieve the matrix to add the row to.
-        if matrix_id in self.dicMatrices.keys():
-            _matrix = self.dicMatrices[matrix_id]
-
-            # Retrieve the existing column IDs and column item IDs.
-            _query = "SELECT DISTINCT fld_col_id, fld_col_item_id \
-                      FROM rtk_matrix \
-                      WHERE fld_matrix_id={0:d}".format(matrix_id)
-            (_columns, _error_code, __) = self.dao.execute(_query,
-                                                            commit=False)
-
-            try:
-                _n_col = len(_columns)
-            except TypeError:
-                _n_col = 0
-
-            # Add one cell for each column in the matrix.
-            for i in range(_n_col):
-                _query = "INSERT INTO rtk_matrix \
-                          (fld_revision_id, fld_matrix_id, fld_matrix_type, \
-                           fld_row_id, fld_col_id, fld_parent_id, fld_value, \
-                           fld_row_item_id, fld_col_item_id) \
-                          VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
-                                  '0', {6:d}, {7:d})".format(
-                                      _matrix.revision_id, matrix_id,
-                                      _matrix.matrix_type, _matrix.n_row + 1,
-                                      _columns[i][0], parent_id, row_item_id,
-                                      _columns[i][1])
-                (_results, _error_code, __) = self.dao.execute(_query,
-                                                                commit=True)
-
-                _cells.append('')
-
-            # If the row was successfully added to the open RTK Project
-            # database add a new row to the Matrix's row dictionary and update
-            # the count of rows in the Matrix.
-            if _results:
-                _row.extend(_cells)
-                _matrix.dicRows[_matrix.n_row] = _row
-                _matrix.n_row += 1
         else:
-            _results = True
-            _error_code = 110
+            self._dic_column_hdrs[item_id] = heading
+            _values = [0] * self.n_row
+            self.dtf_matrix.insert(self.n_col, item_id, _values)
+            self.n_col += 1
 
-        return(_results, _error_code)
+        _session.close()
 
-    def delete_row(self, matrix_id, row_id):
+        return _return
+
+    def delete(self, item_id, row=True):
         """
-        Method to delete the selected Row from the selected Matrix.
+        Method to delete a column or row from the Matrix.
 
-        :param int matrix_id: the Matrix ID to delete the Row from.
-        :param int row_id: the ID of the Row to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int item_id: the ID of the row or column item to delete from the
+                            Matrix.
+        :param bool row: indicates whether to delete a row (default) or a
+                         column identified by identifier.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        if matrix_id in self.dicMatrices.keys():
-            _matrix = self.dicMatrices[matrix_id]
+        _return = False
 
-            _query = "DELETE FROM rtk_matrix \
-                      WHERE fld_revision_id={0:d} \
-                      AND fld_matrix_id={1:d} \
-                      AND fld_row_id={2:d}".format(_matrix.revision_id,
-                                                   matrix_id, row_id)
-            (_results, _error_code, __) = self.dao.execute(_query,
-                                                            commit=True)
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
+                                        expire_on_commit=False)
 
-            # If the row was successfully deleted, remove it from the Matrix's
-            # row dictionary and decrement the count of rows by one.  Then
-            # update the remaining row IDs in case the removed row wasn't the
-            # last one.
-            if _results:
+        if row:
+            _tmp_matrix = self.dtf_matrix.transpose()
+            try:
+                _tmp_matrix.pop(item_id)
+                self._dic_row_hdrs.pop(item_id)
+                self.dtf_matrix = _tmp_matrix.transpose()
+                self.n_row -= 1
+            except KeyError:
+                _return = True
+
+        else:
+            try:
+                self.dtf_matrix.pop(item_id)
+                self._dic_column_hdrs.pop(item_id)
+                self.n_col -= 1
+            except KeyError:
+                _return = True
+
+        _session.close()
+
+        return _return
+
+    def update(self, matrix_id):
+        """
+        Method to update the Matrix associated with Matrix ID to the RTK
+        Program database.
+
+        :param int matrix_id: the ID of the Matrix to update.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Updating Matrix {0:s}.'.format(str(matrix_id))
+
+        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
+                                        autoflush=True,
+                                        autocommit=False,
+                                        expire_on_commit=False)
+
+        for _column_item_id in list(self.dtf_matrix.columns):
+            for _row_item_id in list(self.dtf_matrix.index):
+                _entity = _session.query(RTKMatrix).filter(
+                    and_(RTKMatrix.matrix_id == matrix_id,
+                         RTKMatrix.column_item_id == int(_column_item_id),
+                         RTKMatrix.row_item_id == int(_row_item_id))).first()
+
                 try:
-                    _matrix.dicRows.pop(row_id)
-                except KeyError:
-                    pass
+                    if _entity is not None:
+                        _entity.value = int(self.dtf_matrix[_column_item_id]
+                                            [_row_item_id])
+                        _session.add(_entity)
+                        _error_code, _msg = self.dao.db_update(_session)
+                except AttributeError:
+                    _error_code = 6
+                    _msg = 'RTK ERROR: Attempted to save non-existent ' \
+                           'entity with Column ID {0:s} and Row ID {1:s} to ' \
+                           'Matrix {2:s}.'.format(
+                               str(_column_item_id), str(_row_item_id),
+                               str(matrix_id))
 
-        return(_results, _error_code)
+        _session.close()
 
-    def add_column(self, matrix_id, col_item_id=0):
-        """
-        Method to add a new column to the selected Matrix.
-
-        :param int matrix_id: the Matrix ID to add the column to.
-        :keyword int col_item_id: the ID for the item associated with the new
-                                  column.
-        :return: _error_codes
-        :rtype: list of tuples
-        """
-
-        _error_codes = []
-
-        # Retrieve the matrix to add the column to.
-        if matrix_id in self.dicMatrices.keys():
-            _matrix = self.dicMatrices[matrix_id]
-
-
-            # Add one cell for each row in the matrix.
-            for _key in _matrix.dicRows.keys():
-                _query = "INSERT INTO rtk_matrix \
-                          (fld_revision_id, fld_matrix_id, fld_matrix_type, \
-                           fld_row_id, fld_col_id, fld_parent_id, fld_value, \
-                           fld_row_item_id, fld_col_item_id) \
-                          VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, {5:d}, \
-                                  '0', {6:d}, {7:d})".format(
-                                      _matrix.revision_id, matrix_id,
-                                      _matrix.matrix_type, _key,
-                                      _matrix.n_col, _matrix.dicRows[_key][0],
-                                      _matrix.dicRows[_key][1], col_item_id)
-                (__, _error_code, __) = self.dao.execute(_query, commit=True)
-
-                _error_codes.append((_key, _error_code))
-
-            # If the column was successfully added to the open RTK Project
-            # database add a new column to each of the Matrix's rows and update
-            # the count of columns in the Matrix.
-            if _error_code == 0:
-                for _row in _matrix.dicRows.values():
-                    _row.append('0')
-
-                _matrix.n_col += 1
-
-        return _error_codes
-
-    def delete_column(self, matrix_id, col_id):
-        """
-        Method to delete the selected column from the selected Matrix.
-
-        :param int matrix_id: the Matrix ID to delete the Row from.
-        :param int int_id: the ID of the column to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        # Retrieve the matrix to delete the column from.
-        if matrix_id in self.dicMatrices.keys():
-            _matrix = self.dicMatrices[matrix_id]
-
-            _query = "DELETE FROM rtk_matrix \
-                      WHERE fld_revision_id={0:d} \
-                      AND fld_matrix_id={1:d} \
-                      AND fld_col_id={2:d}".format(_matrix.revision_id,
-                                                   matrix_id, col_id)
-            (_results, _error_code, __) = self.dao.execute(_query,
-                                                            commit=True)
-
-            # If the column was successfully deleted, remove it's values from
-            # the Matrix's row dictionary and decrement the count of columns by
-            # one.  Then update the remaining column IDs in case the removed
-            # column wasn't the last one.
-            if _results:
-                for _row in _matrix.dicRows.values():
-                    _row.pop(col_id + 3)
-
-                _matrix.n_col -= 1
-
-        return(_results, _error_code)
-
-    def save_cell(self, matrix_id, row_id, col_id, parent_id, value):
-        """
-        Method to save the cell information to the open RTK Project database.
-
-        :param int matrix_id: the ID of the Matrix the row is associated with.
-        :param int row_id: the ID of the row the cell to save is in.
-        :param int col_id: the ID of the column the cell to save is in.
-        :param int parent_id: the ID of the parent row.
-        :param value: the value of the cell to save.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _query = "UPDATE rtk_matrix \
-                  SET fld_parent_id={0:d}, fld_value='{1:s}' \
-                  WHERE fld_matrix_id={2:d} \
-                  AND fld_row_id={3:d} \
-                  AND fld_col_id={4:d}".format(parent_id, str(value),
-                                               matrix_id, row_id, col_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        return(_results, _error_code)
+        return _error_code, _msg
