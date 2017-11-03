@@ -5,8 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-This is the base class for all the RTK views.  It provides the basis for the
-ListView, ModuleView, and WorkView.
+This is the base class for all the RTK data views.  It provides the basis for
+the ListView, ModuleView, and WorkView.
 """
 
 import locale

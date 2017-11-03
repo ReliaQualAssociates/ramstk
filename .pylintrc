@@ -155,7 +155,7 @@ notes=FIXME,XXX,TODO
 [SIMILARITIES]
 
 # Minimum lines number of a similarity.
-min-similarity-lines=15
+min-similarity-lines=10
 
 # Ignore comments when computing similarities.
 ignore-comments=yes
@@ -213,7 +213,8 @@ defining-attr-methods=__init__,__new__,setUp
 [DESIGN]
 
 # Maximum number of arguments for function / method
-max-args=6
+# Set this to 7 which allows for 6 arguments in addition to self.
+max-args=7
 
 # Argument names that match this expression will be ignored. Default to name
 # with leading underscore
