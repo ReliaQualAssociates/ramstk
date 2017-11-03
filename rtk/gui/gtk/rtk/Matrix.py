@@ -1,347 +1,362 @@
 # -*- coding: utf-8 -*-
 #
-#       gui.gtk.Matrix.py is part of The RTK Project
+#       gui.gtk.rtk.Matrix.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-#############
-Matrix Module
-#############
+This is the base class for all the RTK matrix views.  It provides the basis for
+the MatrixView.
 """
-
-import sys
 
 # Import modules for localization support.
 import gettext
 import locale
 
-# Import modules for the GUI.
-import pango                                    # pylint: disable=E0401
-try:
-    import pygtk
-    pygtk.require('2.0')
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk
-except ImportError:
-    sys.exit(1)
-try:
-    import gtk.glade
-except ImportError:
-    sys.exit(1)
-try:
-    import gobject
-except ImportError:
-    sys.exit(1)
-
 # Import other RTK modules.
-try:
-    import Configuration
-except ImportError:
-    import rtk.Configuration as Configuration
-
-try:
-    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:
-    locale.setlocale(locale.LC_ALL, '')
+from gui.gtk.rtk import RTKLabel                    # pylint: disable=E0401
+from .Widget import gobject, gtk, pango             # pylint: disable=E0401
 
 _ = gettext.gettext
 
 
-def _format_cell(__column, cell, model, row, position):
+class RTKBaseMatrix(object):
     """
-    Method to set the formatting of the gtk.Treeview() gtk.CellRenderers().
+    The RTK base widget for displaying RTK Matrix views.  The attributes of an
+    RTKBaseMatrix are:
 
-    :param gtk.TreeViewColumn __column: the gtk.TreeViewColumn() containing
-                                        the gtk.CellRenderer() to format.
-    :param gtk.CellRenderer cell: the gtk.CellRenderer() to format.
-    :param gtk.TreeModel model: the gtk.TreeModel() containing the
-                                gtk.TreeViewColumn().
-    :param gtk.TreeIter row: the gtk.TreeIter() pointing to the row
-                             containing the gtk.CellRenderer() to format.
-    :param int position: the column position in the Matrix.
-    :return: False is successful or True if an error is encountered.
-    :rtype: bool
+    :ivar list _dic_icons: dictionary of icons to use in the various RTKMatrix
+                           views.
+    :ivar _rtk_matrix:
+    :ivar int _n_columns:
+    :ivar int _n_rows:
+    :ivar matrix:
+    :type matrix: :py:class:`gtk.TreeView`
     """
 
-    _cell_type = gobject.type_name(model.get_column_type(position))
-
-    if _cell_type == 'gfloat':
-        _fmt = '{0:0.' + str(Configuration.PLACES) + 'f}'
-    elif _cell_type == 'gint':
-        _fmt = '{0:0.0f}'
-    else:
-        return
-
-    _val = model.get_value(row, position)
-    try:
-        cell.set_property('text', _fmt.format(_val))
-    except TypeError:                       # It's a gtk.CellRendererToggle
-        pass
-
-    return False
-
-
-def _resize_wrap(column, __param, cell):
-    """
-    Method to dynamically set the wrap-width property for a gtk.CellRenderer()
-    in the gtk.TreeView() when the column width is resized.
-
-    :param gtk.TreeViewColumn column: the gtk.TreeViewColumn() being resized.
-    :param GParamInt __param: the triggering parameter.
-    :param gtk.CellRenderer cell: the gtk.CellRenderer() that needs to be
-                                  resized.
-    :return: False if successful or True if an error is encountered.
-    :rtype: bool
-    """
-
-    _width = column.get_width()
-
-    if _width <= 0:
-        return
-    else:
-        _width += 10
-
-    try:
-        cell.set_property('wrap-width', _width)
-    except TypeError:                       # This is a gtk.CellRendererToggle
-        cell.set_property('width', _width)
-
-    return False
-
-
-class Matrix(gobject.GObject):
-    """
-    The List Book view for displaying a Matrix.  The attributes of a matrix
-    List Book view are:
-
-    :ivar _lst_matrix_icons: list of icons to use in the various Matrix views.
-    """
-
-    def __init__(self, model=None):
+    def __init__(self, controller):
         """
-        Method to initialize an instance of the Matrix widget class.
+        Method to initialize an instance of the RTKMatrix widget class.
 
-        :keyword gtk.TreeModel model: the gtk.ListStore() or gtk.TreeStore() to
-                                      use as the gtk.TreeModel() for this
-                                      Matrix.
+        :param controller: the RTK master data controller instance.
+        :type controller: :py:class:`rtk.RTK.RTK`
         """
-        self.__gobject_init__()
 
-        # Define private dictionary attributes.
+        # Initialize private dictionary attributes.
+        self._dic_icons = {0:
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/none.png',
+                           1:
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/partial.png',
+                           2:
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/complete.png',
+                           'save':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/save.png',
+                           'save-all':
+                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+                           '/32x32/save-all.png'}
 
-        # Define private list attributes.
-        _icon = Configuration.ICON_DIR + '32x32/none.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self._lst_matrix_icons = [_icon]
-        _icon = Configuration.ICON_DIR + '32x32/partial.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self._lst_matrix_icons.append(_icon)
-        _icon = Configuration.ICON_DIR + '32x32/complete.png'
-        _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
-        self._lst_matrix_icons.append(_icon)
+        # Initialize private list attributes.
 
-        # Define private scalar attributes.
+        # Initialize private scalar attributes.
+        self._mdcRTK = controller
+        self._rtk_matrix = None
+        self._n_columns = 0
+        self._n_rows = 0
 
-        # Define public dictionary attributes.
+        # Initialize public dictionary attributes.
 
-        # Define public list attributes.
+        # Initialize public list attributes.
 
-        # Define public scalar attributes.
+        # Initialize public scalar attributes.
         self.n_fixed_columns = 0
+        self.matrix = gtk.TreeView(None)
 
-        self.treeview = gtk.TreeView(model)
+        try:
+            locale.setlocale(locale.LC_ALL,
+                             controller.RTK_CONFIGURATION.RTK_LOCALE)
+        except locale.Error:
+            locale.setlocale(locale.LC_ALL, '')
 
-    def add_column(self, heading, position, editable=True, background='white',
-                   foreground='black'):
+    def do_load_matrix(self, matrix, column_headings, row_headings, rows):
         """
-        Method to create and add a column to the Matrix at the end.
+        Method to load the RTKMatrix view with the values from the
+        RTKDataMatrix that is passed to this method.
 
-        :param str heading: the string to use as the column heading.
-        :param int position: the position of the column in the gtk.TreeView().
-        :keyword bool editable: indicates whether or not the gtk.CellRenderer()
-                                in the column is editable.
-        :keyword str background: the background color of the gtk.CellRenderer()
-                                 in the column.
-        :keyword str foreground: the foreground color of the gtk.CellRenderer()
-                                 in the column.
+        :param matrix: the RTKDataMatrix to display in the RTKMatrix widget.
+        :type matrix: :py:class:`rtk.datamodels.RTKDataMatrix.RTKDataMatrix`
+        :param dict column_headings: the dicionary containing the headings to
+                                     use for the matrix columns.  Keys are the
+                                     column <MODULE> IDs; values are a noun
+                                     field associated with the key.
+        :param dict row_headings: the dictionary containing the headings to
+                                  use for the matrix rows.  Keys are the row
+                                  <MODULE> IDs; values are a noun field
+                                  associated with the key.
+        :param str rows: the heading to put in the first column of the matrix.
+                         This indicates what information is found in the rows.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        _label = gtk.Label()
-        _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_angle(90)
-        _label.set_justify(gtk.JUSTIFY_CENTER)
-        _label.set_markup("<span weight='bold'>" + heading + "</span>")
-        _label.set_tooltip_markup("<span weight='bold'>" + heading + "</span>")
-        _label.set_use_markup(True)
-        _label.show_all()
+        _return = False
 
-        _column = gtk.TreeViewColumn()
-        _column.set_visible(1)
+        self._rtk_matrix = matrix
+        self._n_columns = len(self._rtk_matrix.columns)
+        self._n_rows = len(self._rtk_matrix.index)
 
-        if position in [0, 1, 2]:
-            _cell = gtk.CellRendererText()
-            _cell.set_property('background', background)
-            _cell.set_property('editable', editable)
-            _cell.set_property('foreground', foreground)
-            _cell.set_property('wrap-width', 250)
-            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-            _cell.set_property('yalign', 0.1)
-            _column.pack_start(_cell, True)
-            _column.set_attributes(_cell, text=position)
-        else:
-            # The position in the Matrix that the gtk.CellRendererPixbuf() will
-            # display depends on the number of non-x-reference columns at the
-            # beginning of the Matrix.  The general function for determining
-            # the position for the gtk.CellRendererPixbuf() to display is:
-            #
-            #    _pixbuf_pos = 2 * position - n_fixed_columns
-            #
-            # In this case, there are three non-x-reference columns.
-            _position = 2 * position - self.n_fixed_columns
-            _cell = gtk.CellRendererPixbuf()
-            _column.pack_start(_cell, False)
-            _column.set_attributes(_cell, pixbuf=_position)
+        _gobject_types = [gobject.TYPE_INT, gobject.TYPE_STRING] + \
+                         [gtk.gdk.Pixbuf, gobject.TYPE_STRING] * \
+            (self._n_columns) + [gobject.TYPE_STRING]
 
-            _cell = gtk.CellRendererCombo()
-            _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
-            _cellmodel.append([""])
-            _cellmodel.append([_(u"Partial")])
-            _cellmodel.append([_(u"Complete")])
-            _cell.set_property('background', background)
-            _cell.set_property('editable', editable)
-            _cell.set_property('foreground', foreground)
-            _cell.set_property('has-entry', False)
-            _cell.set_property('model', _cellmodel)
-            _cell.set_property('text-column', 0)
-            _cell.set_property('wrap-width', 250)
-            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-            _cell.set_property('yalign', 0.1)
-            _cell.connect('changed', self._on_combo_changed, _position)
-            _column.pack_end(_cell, True)
+        _model = gtk.TreeStore(*_gobject_types)
 
-        # Make sure non-editable cells have a light gray background.
-        if not editable:
-            _cell.set_property('background', 'light gray')
+        self.matrix.set_model(_model)
 
-        _column.set_alignment(0.5)
-        _column.set_resizable(True)
-        _column.set_widget(_label)
+        # The first column will contain the Function ID and Function Code.
+        _cell = gtk.CellRendererText()
+        _cell.set_property('background', 'light gray')
+        _column = self._make_column([_cell, ], '', visible=False)
+        _column.set_attributes(_cell, text=0)
+        _cell = gtk.CellRendererText()
+        _cell.set_alignment(0.9, 0.5)
+        _cell.set_property('background', 'light gray')
+        _cell.set_property('editable', False)
+        _cell.set_property('foreground', '#000000')
+        _cell.set_property('wrap-width', 250)
+        _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+        _column = self._make_column([_cell, ], rows)
+        _column.set_attributes(_cell, markup=1)
+        self.matrix.append_column(_column)
 
-        _column.set_cell_data_func(_cell, _format_cell, position)
-        _column.connect('notify::width', _resize_wrap, _cell)
+        # The remaining columns will be gtk.CellRendererCombo()'s for
+        # displaying the interaction between Function and Hardware.
+        j = 2
+        for i in xrange(self._n_columns):
+            _cell = self._make_combo_cell()
+            self._do_set_properties(_cell, True, i + j + 1,
+                                    self._rtk_matrix.columns[i], _model)
 
-        self.treeview.append_column(_column)
+            _pbcell = gtk.CellRendererPixbuf()
+            _pbcell.set_property('xalign', 0.5)
+            _heading = column_headings[self._rtk_matrix.columns[i]]
+            _column = self._make_column([_pbcell, _cell], _heading)
+            _column.set_attributes(_pbcell, pixbuf=i + j)
+            self.matrix.append_column(_column)
 
-        return False
+            j += 1
 
-    def remove_column(self, position):
-        """
-        Method to remove a column from the Matrix.
+        # Add one more column so the last column will not be extra wide.
+        _column = self._make_column([gtk.CellRendererText(), ], '')
+        # pylint: disable=undefined-loop-variable
+        _column.set_attributes(_cell, text=i + j + 1)
+        self.matrix.append_column(_column)
 
-        :param int position: the position in the Matrix of the column to
-                             remove.
-        :return: False if succesful or True if an error is encountered.
-        :rtype: bool
-        """
+        # Now we load the data into the RTK Matrix View.
+        for i in list(self._rtk_matrix.index):
+            _data = [i, "<span weight='bold'>" + row_headings[i] + "</span>"]
+            for j in list(self._rtk_matrix.loc[i]):
+                _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                    self._dic_icons[j], 22, 22)
+                _data.append(_pixbuf)
+                _data.append(j)
+            _data.append('')
 
-        _model = self.treeview.get_model()
-        _column = _model.get_n_columns()[position]
+            _model.append(None, _data)
 
-        self.treeview.remove_column(_column)
+        return _return
 
-        return False
-
-    def load_matrix(self, parents, items, model, prow=None):
-        """
-        Method to load data into the Matrix view.
-
-        :param list parents: the list of top-level items to load.
-        :param list items: the complete list of items to use for finding the
-                           child items for each parent.  Each list in the list
-                           of items must have the following fields:
-                           [Parent ID, Item ID, Col 1 Val, ... Col m Val]
-        :param gtk.TreeModel model: the Matrix List View gtk.TreeModel().
-        :keyword gtk.TreeIter prow: the parent gtk.TreeIter().
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        # Iterate through the list of parent items and load them into the
-        # matrix.
-        for _item in parents:
-            if _item[0] == -1:              # Indicates a top-level item.
-                prow = None
-
-            _data = _item[1:4]
-
-            # Add the proper Pixbuf right before the database index that
-            # defines which Pixbuf to use.
-            for _index in range(4, len(_item)):
-                if _item[_index] == '':
-                    _item[_index] = '0'
-                _pixbuf = self._lst_matrix_icons[int(_item[_index])]
-                _data.extend([_pixbuf, _item[_index]])
-
-            try:
-                _piter = model.append(prow, _data)
-            except ValueError:
-                print model.get_n_columns(), len(_data), _data
-
-            _parent_id = _item[1]
-
-            # Find the child items of the current parent item.  These will be
-            # the new parent items to pass to this method.
-            _parents = [_i for _i in items if _i[0] == _parent_id]
-            self.load_matrix(_parents, items, model, _piter)
-
-        return False
-
-    def _on_combo_changed(self, cell, __path, row, column):
+    # pylint: disable=too-many-arguments
+    def _do_edit_cell(self, cell, path, row, position, col_index, model):
         """
         Callback method to respond to changed signals for the
-        gtk.CellRendererCombo() in the Matrix.
+        gtk.CellRendererCombo() in the RTKMatrix.
 
-        :param gkt.CellRendererCombo cell: the gtk.CellRendererCombo() calling
-                                           this method.
-        :param str __path: the path of the selected row in the Matrix.
-        :param gtk.TreeIter row: the gtk.TreeIter() for the
-                                 gtk.CellRendererCombo() in the selected row in
-                                 the Matrix.
-        :param int column: the column position of the gtk.CellRendererCombo()
-                           in the Matrix.
+        :param cell: the gtk.CellRendererCombo() calling this method.
+        :type cell: :py:class:`gtk.CellRendererCombo`
+        :param str path: the path of the selected row in the RTKMatrix.
+        :param row: the gtk.TreeIter() for the gtk.CellRendererCombo() in the
+                    selected row in the RTKMatrix.
+        :type row: :py:class:`gtk.TreeIter`
+        :param int position: the position of the cell in the RTKMatrix.
+        :param int col_index: the column_item_id of the Matrix cell to be
+                              edited.
+        :param model: the gtk.TreeModel() associated with the RTKMatrix.
+        :type model: :py:class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
         _model = cell.get_property('model')
 
-        (_matrix_model,
-         _matrix_row) = self.treeview.get_selection().get_selected()
-
+        _column_item_id = col_index
+        _row_item_id = model[path][0]
         if _model.get_value(row, 0) == 'Partial':
-            _value = 1
-            _icon = self._lst_matrix_icons[1]
+            self._rtk_matrix[_column_item_id][_row_item_id] = 1
+            _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                self._dic_icons[1], 22, 22)
         elif _model.get_value(row, 0) == 'Complete':
-            _value = 2
-            _icon = self._lst_matrix_icons[2]
+            self._rtk_matrix[_column_item_id][_row_item_id] = 2
+            _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                self._dic_icons[2], 22, 22)
         else:
-            _value = 0
-            _icon = self._lst_matrix_icons[0]
+            self._rtk_matrix[_column_item_id][_row_item_id] = 0
+            _pixbuf = gtk.gdk.pixbuf_new_from_file_at_size(
+                self._dic_icons[0], 22, 22)
 
-        _matrix_model.set_value(_matrix_row, column, _icon)
-
-        self.emit('changed', self.treeview, _value, column)
+        model[path][position - 1] = _pixbuf
 
         return False
 
+    def _do_set_properties(self, cell, editable, position, col_index, model):
+        """
+        Method to set common properties of gtk.CellRenderers().
 
-# Register the new widget type.
-gobject.type_register(Matrix)
-gobject.signal_new('changed', Matrix, gobject.SIGNAL_RUN_FIRST,
-                   gobject.TYPE_NONE,
-                   (gtk.TreeView(), gobject.TYPE_INT, gobject.TYPE_INT))
+        :param cell: the cell whose properties are to be set.
+        :type cell: :py:class:`gtk.CellRenderer`
+        :param bool editable: indicates whether or not the cell is editable.
+        :param int position: the position in the gtk.TreeModel() that this
+                             cell falls.
+        :param int col_index: the column_item_id of the Matrix cell to be
+                              edited.
+        :param model: the `:py:class:gtk.TreeModel` associated with the
+                      treeview.
+        """
+
+        cell.set_property('background', '#FFFFFF')
+        cell.set_property('editable', editable)
+        cell.set_property('foreground', '#000000')
+        cell.set_property('wrap-width', 250)
+        cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+        cell.set_property('yalign', 0.1)
+        cell.connect('changed', self._do_edit_cell, position, col_index, model)
+
+    # pylint: disable=too-many-arguments
+    def _make_buttonbox(self, icons, tooltips, callbacks,
+                        orientation='horizontal', height=-1, width=-1):
+        """
+        Method to create the buttonbox for RTK Matrix Views.  This method
+        creates the base buttonbox used by all RTK Matrix Views.  Use a
+        buttonbox for an RTK Matrix View if there are only buttons to be added.
+
+        :param list icons: list of icon names to place on the toolbuttons.
+                           The items in the list are keys in _dic_icons.
+        :return: _buttonbox
+        :rtype: :py:class:`gtk.ButtonBox`
+        """
+
+        if orientation == 'horizontal':
+            _buttonbox = gtk.HButtonBox()
+        else:
+            _buttonbox = gtk.VButtonBox()
+
+        _buttonbox.set_layout(gtk.BUTTONBOX_START)
+
+        i = 0
+        for _icon in icons:
+            _image = gtk.Image()
+            _icon = gtk.gdk.pixbuf_new_from_file_at_size(
+                self._dic_icons[_icon], height, width)
+            _image.set_from_pixbuf(_icon)
+
+            _button = gtk.Button()
+            _button.set_image(_image)
+
+            _button.props.width_request = width
+            _button.props.height_request = height
+
+            try:
+                _button.set_tooltip_markup(tooltips[i])
+            except IndexError:
+                _button.set_tooltip_markup("")
+
+            try:
+                _button.connect('clicked', callbacks[i])
+            except IndexError:
+                _button.set_sensitive(False)
+
+            _buttonbox.pack_start(_button)
+
+            i += 1
+
+        return _buttonbox
+
+    @staticmethod
+    def _make_combo_cell():
+        """
+        Method to make a gtk.CellRendererCombo().
+
+        :return: _cell
+        :rtype: :py:class:`gtk.CellRendererCombo`
+        """
+
+        _cell = gtk.CellRendererCombo()
+        _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
+        _cellmodel.append([""])
+        _cellmodel.append([_(u"Partial")])
+        _cellmodel.append([_(u"Complete")])
+        _cell.set_property('has-entry', False)
+        _cell.set_property('model', _cellmodel)
+        _cell.set_property('text-column', 0)
+
+        return _cell
+
+    def _make_column(self, cells, heading, visible=True):
+        """
+        Method to make a gtk.TreeViewColumn()
+
+        :param list cells: list of gtk.CellRenderer()s that are to be packed in
+                           the column.
+        :param str heading: the column heading text.
+        :return: _column
+        :rtype: :py:class:`gtk.TreeViewColumn`
+        """
+
+        _column = gtk.TreeViewColumn("")
+
+        for _cell in cells:
+            if isinstance(_cell, gtk.CellRendererPixbuf):
+                _column.pack_start(_cell, False)
+            else:
+                _column.pack_start(_cell, True)
+                _column.connect('notify::width', self._on_resize_wrap, _cell)
+
+        _label = RTKLabel(heading, width=-1, height=-1,
+                          justify=gtk.JUSTIFY_CENTER)
+        _label.set_angle(90)
+        _column.set_widget(_label)
+        _column.set_resizable(True)
+        _column.set_alignment(0.5)
+        _column.set_visible(visible)
+
+        return _column
+
+    @staticmethod
+    def _on_resize_wrap(column, __param, cell):
+        """
+        Method to dynamically set the wrap-width property for a
+        gtk.CellRenderer() in the gtk.TreeView() when the column width is
+        resized.
+
+        :param column: the gtk.TreeViewColumn() being resized.
+        :type column: :py:class:`gtk.TreeViewColumn`
+        :param GParamInt __param: the triggering parameter.
+        :param cell: the gtk.CellRenderer() that needs to be resized.
+        :type cell: :py:class:`gtk.CellRenderer`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _width = column.get_width()
+
+        if _width <= 0:
+            return
+        else:
+            _width += 10
+
+        cell.set_property('wrap-width', _width)
+
+        return False

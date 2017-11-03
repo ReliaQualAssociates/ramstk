@@ -20,7 +20,7 @@ from .Label import RTKLabel                         # pylint: disable=E0401
 
 class RTKTreeView(gtk.TreeView):
     """
-    This is the RTK TreeView class.
+    This is the RTKTreeView class.
     """
     # pylint: disable=R0913, R0914
     def __init__(self, fmt_path, fmt_idx, fmt_file, bg_col='white',
@@ -552,4 +552,5 @@ class CellRendererML(gtk.CellRendererText):
             self.textedit_window.response(gtk.RESPONSE_OK)
 
 # Register the new widget types.
+gobject.type_register(RTKTreeView)
 gobject.type_register(CellRendererML)
