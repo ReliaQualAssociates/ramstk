@@ -5,7 +5,6 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-
 from .MatrixView import RTKMatrixView
 
 from .FunctionHardware import MatrixView as FunctionHardware
