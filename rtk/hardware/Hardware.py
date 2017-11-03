@@ -6,30 +6,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
@@ -134,8 +134,8 @@ class Model(object):  # pylint: disable=R0902
     The Hardware data model contains the attributes and methods of a Hardware
     item.  The Hardware class is a meta-class for the Assembly and Component
     classes.  A :py:class:`rtk.hardware.BoM.BoM` will consist of one or more
-    Hardware items.  
-    
+    Hardware items.
+
     The class attributes of a Hardware item are:
     :cvar str _qry_get_general: the SQL query used to retrieve general Hardware
                                 information from the RTK Program database.
@@ -144,20 +144,20 @@ class Model(object):  # pylint: disable=R0902
     :cvar str _qry_get_reliability: the SQL query used to retrieve the
                                     reliability information from the RTK
                                     Program database.
-    :cvar str _qry_add_stress: the SQL query used to add a new record to the 
+    :cvar str _qry_add_stress: the SQL query used to add a new record to the
                                table rk_stress in the RTK Program database.
     :cvar str _qry_add_reliability: the SQL query used to add a new record to
-                                    the table rtk_reliability in the RTK 
+                                    the table rtk_reliability in the RTK
                                     Program database.
     :cvar str _qry_save_general: the SQL query used to save the Hardware item's
-                                 general attributes to the RTK Program 
+                                 general attributes to the RTK Program
                                  database.
     :cvar str _qry_save_stress: the SQL query used to save the Hardware item's
                                 stress attributes to the RTK Program database.
     :cvar str _qry_save_reliability: the SQL query used to save the Hardware
                                      item's reliability attributes to the RTK
                                      Program database.
-    
+
     The instance attributes of a Hardware item are:
     :ivar dao: the `rtk.DAO.DAO` providing the connection to the RTK Program
                database.
@@ -196,21 +196,21 @@ class Model(object):  # pylint: disable=R0902
     :ivar int tagged_part: indicator for user-defined use.
     :ivar int year_of_manufacture: the year the Hardware item was manufactured.
 
-    :ivar int environment_active_id: the index of the active ambient 
+    :ivar int environment_active_id: the index of the active ambient
                                      environment.
-    :ivar int environment_dormant_id: the index of the dormant ambient 
+    :ivar int environment_dormant_id: the index of the dormant ambient
                                       evironment.
     :ivar int overstress: indicates whether the Hardware item is overstressed.
     :ivar str reason: the reason(s) the Hardware item is overstressed.
     :ivar float temperature_active: the active operating ambient temperature.
     :ivar float temperature_dormant: the dormant ambient temperature.
-    
+
     :ivar float add_adj_factor: the hazard rate additive adjustment factor.
     :ivar float availability_logistics: the logistics availability.
     :ivar float availability_mission: the mission availability.
     :ivar float avail_log_variance: the variance of the logistics availability.
     :ivar float avail_mis_variance: the variance of the mission availability.
-    :ivar int failure_distribution_id: the index of the statistical 
+    :ivar int failure_distribution_id: the index of the statistical
                                        distribution for the hazard rate.
     :ivar float failure_parameter_1: the hazard rate distribution scale
                                      parameter.
@@ -424,7 +424,7 @@ class Model(object):  # pylint: disable=R0902
     def __init__(self, dao=None):
         """
         Method to initialize a Hardware data model instance.
-        
+
         :param dao: the `rtk.DAO.DAO` object connected to the RTK Program
                     database.
         """
@@ -557,7 +557,7 @@ class Model(object):  # pylint: disable=R0902
     def _get_general_attributes(self):
         """
         Method to retrieve the general attributes from the RTK Program database.
-        
+
         :return: _records
         :rtype: tuple
         """
@@ -579,7 +579,7 @@ class Model(object):  # pylint: disable=R0902
     def _get_stress_attributes(self):
         """
         Method to retrieve the stress attributes from the RTK Program database.
-        
+
         :return: _records; the stress attributes for the selected Hardware.
         :rtype: tuple
         """
@@ -600,7 +600,7 @@ class Model(object):  # pylint: disable=R0902
         """
         Method to set the Hardware data model attributes.
 
-        :param tuple attributes: tuple of attribute values to assign to the 
+        :param tuple attributes: tuple of attribute values to assign to the
                                  instance attributes.
         :return: (_code, _msg); the error codes and error messages.
         :rtype: (list, list)
@@ -727,7 +727,7 @@ class Model(object):  # pylint: disable=R0902
         Method to save the attributes for a Hardware object to the RTK
         Program database.
 
-        :return: _error_codes; list of error codes from each save 
+        :return: _error_codes; list of error codes from each save
                                method.
         :rtype: list
         """
@@ -745,8 +745,8 @@ class Model(object):  # pylint: disable=R0902
         """
         Method to save the general attributes for a Hardware object to the RTK
         Program database.
-        
-        :return: _error_code;  
+
+        :return: _error_code;
         :rtype: int
         """
 
@@ -788,10 +788,10 @@ class Model(object):  # pylint: disable=R0902
 
     def save_stress_attributes(self):
         """
-        Method to save the stress attributes for a Hardware object to the RTK 
+        Method to save the stress attributes for a Hardware object to the RTK
         Program database.
-        
-        :return: _error_code; 
+
+        :return: _error_code;
         :rtype: int
         """
         _query = self._qry_save_stress.format(self.environment_active_id,
@@ -807,9 +807,9 @@ class Model(object):  # pylint: disable=R0902
 
     def save_reliability_attributes(self):
         """
-        Method to save the reliability attributes for a Hardware object to the 
+        Method to save the reliability attributes for a Hardware object to the
         RTK Program database.
-        
+
         :return: _error_code;
         :rtype: int
         """
@@ -862,8 +862,8 @@ class Model(object):  # pylint: disable=R0902
     def calculate(self):
         """
         Method to calculate various Hardware attributes.
-        
-        :return: (_code, _msg); lists of error codes and error messages. 
+
+        :return: (_code, _msg); lists of error codes and error messages.
         :rtype: (list, list)
         """
 
@@ -1043,7 +1043,7 @@ class Model(object):  # pylint: disable=R0902
         """
         Method to add a Hardware record to the RTK Program database.
 
-        :param int revision_id: the ID of the Revision to associate the 
+        :param int revision_id: the ID of the Revision to associate the
                                 Hardware item with.
         :param dao: the `rtk.DAO.DAO` object connected to the RTK Program
                     database.
@@ -1052,7 +1052,7 @@ class Model(object):  # pylint: disable=R0902
                               item.
         :param int part: variable indicating whether to add a new assembly
                          (part=0, default) or component (part=1).
-        :return: (_error_code, _msg, _item_id); a tuple containing the code 
+        :return: (_error_code, _msg, _item_id); a tuple containing the code
                  and message for the error that occured, if any, and the ID of
                  the newly added item.  Error codes are:
                      * 0 = success

@@ -6,30 +6,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 """
@@ -232,7 +232,7 @@ def load_integrated_circuit(subcategory):
     """
     Function to load the integrated circuit data model.
 
-    :param int subcategory: the subcategory of the integrated circuit data model to 
+    :param int subcategory: the subcategory of the integrated circuit data model to
                             load.
     :return: _component
     :rtype: an instance of the appropriate integrated circuit data model.
@@ -365,10 +365,10 @@ class ParentError(Exception):
 
 
 class BoM(object):
-    
+
     """
-    The BoM data controller provides an interface between the BoM data model and an 
-    RTK view model.  A single BoM data controller can manage one or more BoM data 
+    The BoM data controller provides an interface between the BoM data model and an
+    RTK view model.  A single BoM data controller can manage one or more BoM data
     models.  The attributes of a BoM data controller are:
 
     :ivar _dao: the Data Access Object to use when communicating with the RTK
@@ -399,7 +399,7 @@ class BoM(object):
 
     def request_bom(self, revision_id):
         """
-        Method to read the RTK Project database and load all the Hardware associated 
+        Method to read the RTK Project database and load all the Hardware associated
         with the selected Revision.  For each hardware item returned:
 
         #. Retrieve the hardware assemblies and components from the RTK Project
@@ -599,7 +599,7 @@ class BoM(object):
 
         _query = "INSERT INTO rtk_hardware \
                   (fld_revision_id, fld_parent_id, fld_part) \
-            VALUES({0:d}, {1:d}, {2:d})".format(revision_id, parent_id, 
+            VALUES({0:d}, {1:d}, {2:d})".format(revision_id, parent_id,
                                                 hardware_type)
         (_results, _error_code, _hardware_id) = self.dao.execute(_query,
                                                                   commit=True)
@@ -769,22 +769,22 @@ class BoM(object):
                      fld_varchar_3, fld_varchar_4, fld_varchar_5) \
                     VALUES ({0:d}, {1:f}, {2:f}, {3:f}, {4:f}, {5:d}, {6:f}, \
                     {7:f}, {8:f}, {9:d}, {10:f}, {11:f}, {12:f}, {13:d}, '{14:s}', \
-                    {15:f}, {16:d})".format(_hardware_id, 
+                    {15:f}, {16:d})".format(_hardware_id,
                                            _hardware.hazard_rate_active,
                                            _hardware.hazard_rate_dormant,
                                            _hardware.hazard_rate_software,
                                            _hardware.hazard_rate_specified,
                                            _hardware.hazard_rate_type,
                                            _hardware.mtbf_logistics,
-                                           _hardware.mtbf_specified, 
-                                           _hardware.add_adj_factor, 
-                                           _hardware.failure_dist, 
-                                           _hardware.failure_parameter_1, 
-                                           _hardware.failure_parameter_2, 
-                                           _hardware.failure_parameter_3, 
-                                           _hardware.hazard_rate_method, 
-                                           _hardware.hazard_rate_model, 
-                                           _hardware.mult_adj_factor, 
+                                           _hardware.mtbf_specified,
+                                           _hardware.add_adj_factor,
+                                           _hardware.failure_dist,
+                                           _hardware.failure_parameter_1,
+                                           _hardware.failure_parameter_2,
+                                           _hardware.failure_parameter_3,
+                                           _hardware.hazard_rate_method,
+                                           _hardware.hazard_rate_model,
+                                           _hardware.mult_adj_factor,
                                            _hardware.survival_analysis)
                 (_results, _error_code, __) = self.dao.execute(_query,
                                                                 commit=True)
