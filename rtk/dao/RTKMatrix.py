@@ -53,7 +53,7 @@ class RTKMatrix(RTK_BASE):
                          ForeignKey('rtk_revision.fld_revision_id'),
                          nullable=False)
     matrix_id = Column('fld_matrix_id', Integer, primary_key=True,
-                       autoincrement=True, nullable=False)
+                       default=0)
 
     column_id = Column('fld_column_id', Integer, default=0)
     column_item_id = Column('fld_column_item_id', Integer, primary_key=True,

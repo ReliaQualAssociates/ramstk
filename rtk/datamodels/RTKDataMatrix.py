@@ -27,35 +27,47 @@ class RTKDataMatrix(object):
     The Matrix data model is an aggregate model of N x M cell data models.  The
     attributes of a Matrix are:
 
-    :ivar dict dicRows: Dictionary of the Rows associated with the Matrix.  Key
-                        is the Row ID; value is a list as follows:
-                        [parent_id, row item id, row item code, row item name,
-                         value1, value2, ... valueN]
-    :ivar int revision_id: the Revision ID the Matrix belongs to.
-    :ivar int matrix_id: the Matrix ID this model represents.
-    :ivar int matrix_type: the type of Matrix this model represents.  Matrix
-                           types are one of the following:
-    +------+------------+-------------+
-    | Type |    Rows    |   Columns   |
-    +======+============+=============+
-    |   0  | Function   | Hardware    |
-    +------+------------+-------------+
-    |   1  | Function   | Software    |
-    +------+------------+-------------+
-    |   2  | Function   | Testing     |
-    +------+------------+-------------+
-    |   3  | Requirement| Hardware    |
-    +------+------------+-------------+
-    |   4  | Requirement| Software    |
-    +------+------------+-------------+
-    |   5  | Requirement| Validation  |
-    +------+------------+-------------+
-    |   6  | Hardware   | Testing     |
-    +------+------------+-------------+
-    |   7  | Hardware   | Validation  |
-    +------+------------+-------------+
+    :ivar dict dic_row_hdrs: dictionary of the row heading text to use in
+                              views.  Key is the <MODULE> ID; values are the
+                              noun name to use in the row heading.
+    :ivar dict dic_column_hdrs: dictionary of the column heading text to use
+                                 in views.  Key is the <MODULE> ID; values are
+                                 the noun name to use in the column heading.
+    :ivar object _column_table: the RTK Progam database table to use for the
+                                matrix columns.  This is an SQLAlchemy object.
+    :ivar object _row_table: the RTK Progam database table to use for the
+                             matrix rows.  This is an SQLAlchemy object.
+    :ivar dtf_matrix: the :py:class:`pd.DataFrame` storing the Matrix.
+    :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
+               RTK Program database.
     :ivar int n_row: the number of rows in the Matrix.
     :ivar int n_col: the number of columns in the Matrix.
+
+    There are currently 10 matrices as defined by their matrix ID.  These are:
+
+        +-----------+-------------+--------------+
+        | Matrix ID |  Row Table  | Column Table |
+        +-----------+-------------+--------------+
+        |     1     | Function    | Hardware     |
+        +-----------+-------------+--------------+
+        |     2     | Function    | Software     |
+        +-----------+-------------+--------------+
+        |     3     | Function    | Validation   |
+        +-----------+-------------+--------------+
+        |    11     | Requirement | Hardware     |
+        +-----------+-------------+--------------+
+        |    12     | Requirement | Software     |
+        +-----------+-------------+--------------+
+        |    13     | Requirement | Validation   |
+        +-----------+-------------+--------------+
+        |    21     | Hardware    | Testing      |
+        +-----------+-------------+--------------+
+        |    22     | Hardware    | Validation   |
+        +-----------+-------------+--------------+
+        |    31     | Software    | Risk         |
+        +-----------+-------------+--------------+
+        |    32     | Software    | Validation   |
+        +-----------+-------------+--------------+
     """
 
     _tag = 'matrix'
@@ -66,18 +78,17 @@ class RTKDataMatrix(object):
         """
 
         # Initialize private dictionary attributes.
-        self._dic_row_hdrs = {}
-        self._dic_column_hdrs = {}
 
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
         self._column_table = column_table
         self._row_table = row_table
-        self._last_id = None
 
         # Initialize public dictionary attributes.
         self.dtf_matrix = None
+        self.dic_row_hdrs = {}
+        self.dic_column_hdrs = {}
 
         # Initialize public list attributes.
 
@@ -100,8 +111,8 @@ class RTKDataMatrix(object):
 
         return self.dtf_matrix[col][row]
 
-    def select_all(self, revision_id, matrix_id, rindex, cindex, rheader,
-                   cheader):
+    def select_all(self, revision_id, matrix_id, rindex=0, cindex=0, rheader=0,
+                   cheader=0):
         """
         Method to select the row heaidngs, the column headings, and the cell
         values for the matrix then build the matrix as a Pandas DataFrame.
@@ -110,14 +121,15 @@ class RTKDataMatrix(object):
                                 associated with.
         :param int matrix_id: the ID of the Matrix to select all rows and all
                               columns for.
-        :param int rindex: the index in the row table attributes containing the
-                           module ID.
-        :param int cindex: the index in the column table attributes containing
-                           the module ID.
-        :param int rheader: the index in the row table attributes containing
-                            the text to use for the Matrix row headings.
-        :param int cheader: the index in the column table attributes containing
-                            the text to use for the Matrix column headings.
+        :keyword int rindex: the index in the row table attributes containing
+                             the module ID.
+        :keyword int cindex: the index in the column table attributes
+                             containing the module ID.
+        :keyword int rheader: the index in the row table attributes containing
+                              the text to use for the Matrix row headings.
+        :keyword int cheader: the index in the column table attributes
+                              containing the text to use for the Matrix column
+                              headings.
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
@@ -141,7 +153,7 @@ class RTKDataMatrix(object):
         for _row in _session.query(self._row_table).filter(
                 self._row_table.revision_id == revision_id).all():
             _attributes = _row.get_attributes()
-            self._dic_row_hdrs[_attributes[rindex]] = _attributes[rheader]
+            self.dic_row_hdrs[_attributes[rindex]] = _attributes[rheader]
 
             self.n_row += 1
 
@@ -151,7 +163,7 @@ class RTKDataMatrix(object):
         for _column in _session.query(self._column_table).filter(
                 self._column_table.revision_id == revision_id).all():
             _attributes = _column.get_attributes()
-            self._dic_column_hdrs[_attributes[cindex]] = _attributes[cheader]
+            self.dic_column_hdrs[_attributes[cindex]] = _attributes[cheader]
 
             self.n_col += 1
 
@@ -183,34 +195,44 @@ class RTKDataMatrix(object):
         :param str heading: the heading for the new row or column.
         :keyword bool row: indicates whether to insert a row (default) or a
                            column.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
-
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Inserting a row or column into the matrix.'
 
         if row:
-            self._dic_row_hdrs[item_id] = heading
-            _values = [0] * self.n_col
+            if (self.dtf_matrix.index == item_id).any():
+                _error_code = 6
+                _msg = 'RTK ERROR: Attempting to insert row {0:d} into a ' \
+                       'matrix already containing a row {0:d}.'.format(item_id)
+            else:
+                self.dic_row_hdrs[item_id] = heading
+                _values = [0] * len(self.dtf_matrix.columns)
 
-            _tmp_matrix = self.dtf_matrix.transpose()
-            _tmp_matrix.insert(self.n_row, item_id, _values)
-
-            self.dtf_matrix = _tmp_matrix.transpose()
-            self.n_row += 1
-
+                try:
+                    self.dtf_matrix.loc[item_id] = _values
+                    self.n_row = len(self.dtf_matrix.index)
+                except ValueError:
+                    _error_code = 6
+                    _msg = 'RTK ERROR: Inserting row into matrix.  Row ' \
+                           '{0:d} already exists or adjacent row {1:d} does ' \
+                           'NOT exist.'.format(item_id, self.n_row - 1)
         else:
-            self._dic_column_hdrs[item_id] = heading
-            _values = [0] * self.n_row
-            self.dtf_matrix.insert(self.n_col, item_id, _values)
-            self.n_col += 1
+            self.dic_column_hdrs[item_id] = heading
+            _values = [0] * len(self.dtf_matrix.index)
 
-        _session.close()
+            try:
+                self.dtf_matrix.insert(self.n_col, item_id, _values)
+                self.n_col = len(self.dtf_matrix.columns)
+            except ValueError:
+                _error_code = 6
+                _msg = 'RTK ERROR: Inserting column into matrix.  Column ' \
+                       '{0:d} already exists or adjacent column {1:d} does ' \
+                       'NOT exist.'.format(item_id, self.n_col)
 
-        return _return
+        return _error_code, _msg
 
     def delete(self, item_id, row=True):
         """
@@ -220,42 +242,41 @@ class RTKDataMatrix(object):
                             Matrix.
         :param bool row: indicates whether to delete a row (default) or a
                          column identified by identifier.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
-        _return = False
-
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Removing a row or column from the matrix.'
 
         if row:
-            _tmp_matrix = self.dtf_matrix.transpose()
             try:
-                _tmp_matrix.pop(item_id)
-                self._dic_row_hdrs.pop(item_id)
-                self.dtf_matrix = _tmp_matrix.transpose()
-                self.n_row -= 1
-            except KeyError:
-                _return = True
+                self.dtf_matrix = self.dtf_matrix.drop(item_id)
+                self.dic_row_hdrs.pop(item_id)
+                self.n_row = len(self.dtf_matrix.index)
+            except(KeyError, ValueError):
+                _error_code = 6
+                _msg = 'RTK ERROR: Attempted to drop non-existent row {0:d} ' \
+                       'from the matrix.'.format(item_id)
 
         else:
             try:
                 self.dtf_matrix.pop(item_id)
-                self._dic_column_hdrs.pop(item_id)
-                self.n_col -= 1
+                self.dic_column_hdrs.pop(item_id)
+                self.n_col = len(self.dtf_matrix.columns)
             except KeyError:
-                _return = True
+                _error_code = 6
+                _msg = 'RTK ERROR: Attempted to drop non-existent column ' \
+                       '{0:d} from the matrix.'.format(item_id)
 
-        _session.close()
+        return _error_code, _msg
 
-        return _return
-
-    def update(self, matrix_id):
+    def update(self, revision_id, matrix_id):
         """
         Method to update the Matrix associated with Matrix ID to the RTK
         Program database.
 
+        :param int revision_id: the Revision ID the matrix is associated with.
         :param int matrix_id: the ID of the Matrix to update.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)

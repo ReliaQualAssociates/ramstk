@@ -67,7 +67,6 @@ class TestMatrixModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKMatrix(), ], self.session)
 
         self.DUT = RTKDataMatrix(self.dao, RTKFunction, RTKHardware)
 
@@ -79,8 +78,8 @@ class TestMatrixModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, RTKDataMatrix))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
-        self.assertEqual(self.DUT._dic_column_hdrs, {})
-        self.assertEqual(self.DUT._dic_row_hdrs, {})
+        self.assertEqual(self.DUT.dic_column_hdrs, {})
+        self.assertEqual(self.DUT.dic_row_hdrs, {})
         self.assertEqual(self.DUT.dtf_matrix, None)
         self.assertEqual(self.DUT.n_row, 1)
         self.assertEqual(self.DUT.n_col, 1)
@@ -94,10 +93,10 @@ class TestMatrixModel(unittest.TestCase):
         self.assertFalse(self.DUT.select_all(1, 1, 1, 1, 5, 6))
 
         self.assertTrue(isinstance(self.DUT.dtf_matrix, pd.DataFrame))
-        self.assertEqual(self.DUT._dic_column_hdrs,
+        self.assertEqual(self.DUT.dic_column_hdrs,
                          {1: u'S1', 2: u'S1:SS1', 3: u'S1:SS2'})
-        self.assertEqual(self.DUT._dic_row_hdrs,
-                         {1: u'PRESS-001', 3: u'FLOW-001', 5: u'TEMP-001'})
+        self.assertEqual(self.DUT.dic_row_hdrs,
+                         {1: u'PRESS-001', 2: u'FLOW-001', 3: u'TEMP-001'})
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 3)
 
@@ -109,7 +108,7 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        _cell = self.DUT.dtf_matrix[2][1]
+        _cell = self.DUT.dtf_matrix[2][2]
 
         self.assertEqual(_cell, 1)
 
@@ -121,7 +120,9 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        self.assertFalse(self.DUT.insert(6, 'TEMP-001A', row=True))
+        _error_code, _msg = self.DUT.insert(6, 'TEMP-001A', row=True)
+
+        self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.n_row, 4)
         self.assertEqual(self.DUT.n_col, 3)
         self.assertEqual(self.DUT.dtf_matrix[1][6], 0)
@@ -134,7 +135,9 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        self.assertFalse(self.DUT.insert(4, 'S1:SS1:A1', row=False))
+        _error_code, _msg = self.DUT.insert(4, 'S1:SS1:A1', row=False)
+
+        self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 4)
         self.assertEqual(self.DUT.dtf_matrix[4][1], 0)
@@ -147,7 +150,11 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        self.assertFalse(self.DUT.delete(5, row=True))
+        _error_code, _msg = self.DUT.delete(3, row=True)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Removing a row or column from ' \
+                               'the matrix.')
         self.assertEqual(self.DUT.n_row, 2)
         self.assertEqual(self.DUT.n_col, 3)
 
@@ -159,7 +166,11 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        self.assertTrue(self.DUT.delete(22, row=True))
+        _error_code, _msg = self.DUT.delete(22, row=True)
+
+        self.assertEqual(_error_code, 6)
+        self.assertEqual(_msg, 'RTK ERROR: Attempted to drop non-existent ' \
+                               'row 22 from the matrix.')
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 3)
 
@@ -171,7 +182,11 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        self.assertFalse(self.DUT.delete(2, row=False))
+        _error_code, _msg = self.DUT.delete(2, row=False)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Removing a row or column from ' \
+                               'the matrix.')
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 2)
 
@@ -183,7 +198,11 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        self.assertTrue(self.DUT.delete(400, row=False))
+        _error_code, _msg = self.DUT.delete(400, row=False)
+
+        self.assertEqual(_error_code, 6)
+        self.assertEqual(_msg, 'RTK ERROR: Attempted to drop non-existent ' \
+                               'column 400 from the matrix.')
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 3)
 
@@ -195,7 +214,7 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        (_error_code, _msg) = self.DUT.update(1)
+        (_error_code, _msg) = self.DUT.update(1, 1)
 
         self.assertEqual(_error_code, 0)
 
@@ -207,6 +226,6 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        (_error_code, _msg) = self.DUT.update(3)
+        (_error_code, _msg) = self.DUT.update(1, 3)
 
         self.assertEqual(_error_code, 0)

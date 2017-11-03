@@ -17,8 +17,9 @@ from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
 from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataMatrix             # pylint: disable=E0401
 from datamodels import RTKDataController        # pylint: disable=E0401
-from dao import RTKFunction                     # pylint: disable=E0401
+from dao import RTKFunction, RTKHardware        # pylint: disable=E0401
 
 _ = gettext.gettext
 
@@ -302,7 +303,7 @@ class Function(RTKDataController):
 
         # Initialize private scalar attributes.
         self._dtm_function = Model(dao)
-        #self._dtm_fctn_hw_matrix = RTKDataMatrix(dao)
+        self._dmx_fctn_hw_matrix = RTKDataMatrix(dao, RTKFunction, RTKHardware)
 
         # Initialize public dictionary attributes.
 
@@ -334,6 +335,39 @@ class Function(RTKDataController):
 
         return self._dtm_function.select_all(revision_id)
 
+    def request_select_all_matrix(self, revision_id, matrix_id):
+        """
+        Method to retrieve all the Matrices associated with the Function
+        module.
+
+        :param int revision_id: the Revision ID to select the matrices for.
+        :param int matrix_id: the ID of the Matrix to retrieve.  Current matrix
+                              IDs are:
+
+                              1 = Function:Hardware
+                              2 = Function:Software
+                              3 = Function:Validation
+
+        :return: (_matrix, _column_hdrs, _row_hdrs); the Pandas Dataframe,
+                 noun names to use for column headings, noun names to use for
+                 row headings.
+        :rtype: (:py:class:`pandas.DataFrame`, dict, dict)
+        """
+
+        _matrix = None
+        _column_hdrs = []
+        _row_hdrs = []
+
+        if matrix_id == 1:
+            self._dmx_fctn_hw_matrix.select_all(revision_id, matrix_id,
+                                                rindex=1, cindex=1,
+                                                rheader=5, cheader=6)
+            _matrix = self._dmx_fctn_hw_matrix.dtf_matrix
+            _column_hdrs = self._dmx_fctn_hw_matrix.dic_column_hdrs
+            _row_hdrs = self._dmx_fctn_hw_matrix.dic_row_hdrs
+
+        return (_matrix, _column_hdrs, _row_hdrs)
+
     def request_insert(self, revision_id, parent_id, sibling=True):
         """
         Method to request the Function Data Model to add a new Function to the
@@ -342,8 +376,6 @@ class Function(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        _return = False
 
         _error_code, _msg = self._dtm_function.insert(revision_id=revision_id,
                                                       parent_id=parent_id)
@@ -356,6 +388,40 @@ class Function(RTKDataController):
         else:
             _msg = _msg + '  Failed to add a new Function to the RTK ' \
                 'Program database.'
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
+
+    def request_insert_matrix(self, matrix_id, item_id, heading, row=True):
+        """
+        Method to request the selected Function Data Matrix to add a new row or
+        column to the Matrix.
+
+        :param int matrix_id: the ID of the Matrix to retrieve.  Current matrix
+                              IDs are:
+
+                              1 = Function:Hardware
+                              2 = Function:Software
+                              3 = Function:Validation
+
+        :param int item_id: the ID of the row or column item to insert into the
+                            Matrix.
+        :param str heading: the heading for the new row or column.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if matrix_id == 1:
+            _error_code, _msg = self._dmx_fctn_hw_matrix.insert(item_id,
+                                                                heading,
+                                                                row=row)
+
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedMatrix',
+                            matrix_id=matrix_id,
+                            item_id=item_id,
+                            row=row)
 
         return RTKDataController.handle_results(self, _error_code, _msg, None)
 
@@ -374,6 +440,33 @@ class Function(RTKDataController):
         return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'deletedFunction')
 
+    def request_delete_matrix(self, matrix_id, item_id, row=True):
+        """
+        Method to request to remove a row or column from the selected Function
+        Data Matrix.
+
+        :param int matrix_id: the ID of the Matrix to retrieve.  Current matrix
+                              IDs are:
+
+                              1 = Function:Hardware
+                              2 = Function:Software
+                              3 = Function:Validation
+
+        :param int item_id: the ID of the row or column item to remove from the
+                            Matrix.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if matrix_id == 1:
+            _error_code, _msg = self._dmx_fctn_hw_matrix.delete(item_id,
+                                                                row=row)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'deletedMatrix')
+
     def request_update(self, function_id):
         """
         Method to request the Function Data Model save the RTKFunction
@@ -388,6 +481,29 @@ class Function(RTKDataController):
 
         return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'savedFunction')
+
+    def request_update_matrix(self, revision_id, matrix_id):
+        """
+        Method to request the Function Data Model save the RTKFunction
+        attributes to the RTK Program database.
+
+        :param int revision_id: the ID of the Revision is the matrix to update
+                                is associated with.
+        :param int matrix_id: the ID of the Matrix to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if matrix_id == 1:
+            _error_code, _msg = self._dmx_fctn_hw_matrix.update(revision_id,
+                                                                matrix_id)
+        else:
+            _error_code = 6
+            _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \
+                   '{0:d}.'.format(matrix_id)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'savedMatrix')
 
     def request_update_all(self):
         """

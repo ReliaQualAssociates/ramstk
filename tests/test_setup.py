@@ -196,10 +196,6 @@ def _create_program_database():
     session.commit()
 
     # Create tables that have Revision ID as a Foreign Key.
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    session.add(_matrix)
-
     _mission = RTKMission()
     _mission.revision_id = _revision.revision_id
     session.add(_mission)
@@ -210,6 +206,17 @@ def _create_program_database():
 
     _function = RTKFunction()
     _function.revision_id = _revision.revision_id
+    _function.function_code = 'PRESS-001'
+    session.add(_function)
+
+    _function = RTKFunction()
+    _function.revision_id = _revision.revision_id
+    _function.function_code = 'FLOW-001'
+    session.add(_function)
+
+    _function = RTKFunction()
+    _function.revision_id = _revision.revision_id
+    _function.function_code = 'TEMP-001'
     session.add(_function)
 
     _requirement = RTKRequirement()
@@ -222,6 +229,17 @@ def _create_program_database():
 
     _hardware = RTKHardware()
     _hardware.revision_id = _revision.revision_id
+    _hardware.comp_ref_des = 'S1'
+    session.add(_hardware)
+
+    _hardware = RTKHardware()
+    _hardware.revision_id = _revision.revision_id
+    _hardware.comp_ref_des = 'S1:SS1'
+    session.add(_hardware)
+
+    _hardware = RTKHardware()
+    _hardware.revision_id = _revision.revision_id
+    _hardware.comp_ref_des = 'S1:SS2'
     session.add(_hardware)
 
     _incident = RTKIncident()
@@ -284,6 +302,75 @@ def _create_program_database():
     _mode.hardware_id = _hardware.hardware_id
     _mode.description = 'Test Failure Mode #1'
     session.add(_mode)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 1
+    _matrix.column_item_id = 1
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 2
+    _matrix.column_item_id = 1
+    _matrix.value = 2
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 3
+    _matrix.column_item_id = 1
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 1
+    _matrix.column_item_id = 2
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 2
+    _matrix.column_item_id = 2
+    _matrix.value = 1
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 3
+    _matrix.column_item_id = 2
+    _matrix.value = 1
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 1
+    _matrix.column_item_id = 3
+    _matrix.value = 1
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 2
+    _matrix.column_item_id = 3
+    session.add(_matrix)
+
+    _matrix = RTKMatrix()
+    _matrix.revision_id = _revision.revision_id
+    _matrix.matrix_id = 1
+    _matrix.row_item_id = 3
+    _matrix.column_item_id = 3
+    _matrix.value = 1
+    session.add(_matrix)
+
     session.commit()
 
     # Create tables that have other than Revision ID or Hardware ID as a

@@ -19,6 +19,7 @@ from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
+import pandas as pd
 
 import Utilities as Utilities
 from Configuration import Configuration
@@ -65,8 +66,6 @@ class Test00FunctionModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKFunction(), ], self.session)
-        self.dao.db_add([RTKFunction(), ], self.session)
 
         self.DUT = Model(self.dao)
 
@@ -81,7 +80,7 @@ class Test00FunctionModel(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT.dao, DAO))
 
     @attr(all=True, unit=True)
-    def test01_select_all(self):
+    def test01a_select_all(self):
         """
         (TestFunctionModel): select_all() should return a Tree() object populated with RTKFunction instances on success.
         """
@@ -127,7 +126,7 @@ class Test00FunctionModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                                'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 2)
+        self.assertEqual(self.DUT.last_id, 4)
 
     @attr(all=True, unit=True)
     def test03b_insert_child(self):
@@ -142,7 +141,7 @@ class Test00FunctionModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                                'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 3)
+        self.assertEqual(self.DUT.last_id, 5)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
@@ -152,7 +151,8 @@ class Test00FunctionModel(unittest.TestCase):
 
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.delete(2)
+        _error_code, _msg = self.DUT.delete(4)
+        _error_code, _msg = self.DUT.delete(5)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
@@ -334,8 +334,6 @@ class Test01FunctionController(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKFunction(), ], self.session)
-        self.dao.db_add([RTKFunction(), ], self.session)
 
         self.DUT = Function(self.dao, self.Configuration, test='True')
 
@@ -349,7 +347,7 @@ class Test01FunctionController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT._dtm_function, Model))
 
     @attr(all=True, unit=True)
-    def test01_request_select_all(self):
+    def test01a_request_select_all(self):
         """
         (TestFunctionController) request_select_all() should return a Tree of RTKFunction models.
         """
@@ -357,6 +355,21 @@ class Test01FunctionController(unittest.TestCase):
         _tree = self.DUT.request_select_all(1)
 
         self.assertTrue(isinstance(_tree.get_node(1).data, RTKFunction))
+
+    @attr(all=True, unit=True)
+    def test01b_request_select_all_matrix(self):
+        """
+        (TestFunctionController): select_all() should return a tuple containing the matrix, column headings, and row headings.
+        """
+
+        (_matrix,
+         _column_hdrs,
+         _row_hdrs) = self.DUT.request_select_all_matrix(1, 1)
+
+        self.assertTrue(isinstance(_matrix, pd.DataFrame))
+        self.assertEqual(_column_hdrs, {1: u'S1', 2: u'S1:SS1', 3: u'S1:SS2'})
+        self.assertEqual(_row_hdrs,
+                         {1: u'PRESS-001', 2: u'FLOW-001', 3: u'TEMP-001'})
 
     @attr(all=True, unit=True)
     def test02a_request_select(self):
@@ -393,6 +406,47 @@ class Test01FunctionController(unittest.TestCase):
                                                  sibling=True))
 
     @attr(all=True, unit=True)
+    def test03b_insert_matrix_row(self):
+        """
+        (TestFunctionController) request_insert_matrix() should return False on successfully inserting a row.
+        """
+
+        (_matrix,
+         _column_hdrs,
+         _row_hdrs) = self.DUT.request_select_all_matrix(1, 1)
+
+        self.assertFalse(self.DUT.request_insert_matrix(1, 4, 'Function Code'))
+        self.assertEqual(self.DUT._dmx_fctn_hw_matrix.dic_row_hdrs[4],
+                         'Function Code')
+
+    @attr(all=True, unit=True)
+    def test03c_insert_matrix_duplicate_row(self):
+        """
+        (TestFunctionController) request_insert_matrix() should return True when attempting to insert a duplicate row.
+        """
+
+        (_matrix,
+         _column_hdrs,
+         _row_hdrs) = self.DUT.request_select_all_matrix(1, 1)
+
+        self.assertTrue(self.DUT.request_insert_matrix(1, 2, 'Function Code'))
+
+    @attr(all=True, unit=True)
+    def test03d_insert_matrix_column(self):
+        """
+        (TestFunctionController) request_insert_matrix() should return False on successfully inserting a column.
+        """
+
+        (_matrix,
+         _column_hdrs,
+         _row_hdrs) = self.DUT.request_select_all_matrix(1, 1)
+
+        self.assertFalse(
+            self.DUT.request_insert_matrix(1, 4, 'S1:SS1:A1', row=False))
+        self.assertEqual(self.DUT._dmx_fctn_hw_matrix.dic_column_hdrs[4],
+                         'S1:SS1:A1')
+
+    @attr(all=True, unit=True)
     def test04a_request_delete(self):
         """
         (TestFunctionController) request_delete() should return False on success.
@@ -404,7 +458,7 @@ class Test01FunctionController(unittest.TestCase):
         self.assertFalse(self.DUT.request_delete(4))
 
     @attr(all=True, unit=True)
-    def test04a_request_delete_non_existent_id(self):
+    def test04b_request_delete_non_existent_id(self):
         """
         (TestFunctionController) request_delete() should return True when attempting to delete a non-existent Function.
         """
@@ -412,6 +466,38 @@ class Test01FunctionController(unittest.TestCase):
         self.DUT.request_select_all(1)
 
         self.assertTrue(self.DUT.request_delete(100))
+
+    @attr(all=True, unit=True)
+    def test04c_request_delete_matrix_row(self):
+        """
+        (TestFunctionController) request_delete_matrix() should return False on successfully deleting a row.
+        """
+
+        self.DUT.request_select_all_matrix(1, 1)
+        self.DUT.request_insert_matrix(1, 4, 'Function Code')
+
+        self.assertFalse(self.DUT.request_delete_matrix(1, 4))
+
+    @attr(all=True, unit=True)
+    def test04d_request_delete_matrix_non_existent_row(self):
+        """
+        (TestFunctionController) request_delete_matrix() should return True when attempting to delete a non-existent row.
+        """
+
+        self.DUT.request_select_all_matrix(1, 1)
+
+        self.assertTrue(self.DUT.request_delete_matrix(1, 4))
+
+    @attr(all=True, unit=True)
+    def test04e_request_delete_matrix_column(self):
+        """
+        (TestFunctionController) request_delete_matrix() should return False on successfully deleting a column.
+        """
+
+        self.DUT.request_select_all_matrix(1, 1)
+        self.DUT.request_insert_matrix(1, 4, 'S1:SS1:A1', row=False)
+
+        self.assertFalse(self.DUT.request_delete_matrix(1, 4, row=False))
 
     @attr(all=True, unit=True)
     def test05a_request_update(self):
@@ -432,6 +518,26 @@ class Test01FunctionController(unittest.TestCase):
         self.DUT.request_select_all(1)
 
         self.assertTrue(self.DUT.request_update(100))
+
+    @attr(all=True, unit=True)
+    def test05c_request_update_matrix(self):
+        """
+        (TestFunctionController) request_update_matrix() should return False on success.
+        """
+
+        self.DUT.request_select_all_matrix(1, 1)
+
+        self.assertFalse(self.DUT.request_update_matrix(1, 1))
+
+    @attr(all=True, unit=True)
+    def test05d_request_update_non_existent_matrix(self):
+        """
+        (TestFunctionController) request_update_matrix() should return True when attempting to update a non-existent matrix.
+        """
+
+        self.DUT.request_select_all_matrix(1, 1)
+
+        self.assertTrue(self.DUT.request_update_matrix(1, 3))
 
     @attr(all=True, unit=True)
     def test06a_request_update_all(self):
