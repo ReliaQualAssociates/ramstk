@@ -10,16 +10,11 @@ RTKDataMatrix Module
 ###############################################################################
 """
 
-# Import modules for localization support.
-import gettext
-
-import pandas as pd
-from sqlalchemy import and_
+import pandas as pd                             # pylint: disable=E0401
+from sqlalchemy import and_                     # pylint: disable=E0401
 
 # Import other RTK modules.
 from dao import RTKMatrix                       # pylint: disable=E0401
-
-_ = gettext.gettext
 
 
 class RTKDataMatrix(object):
@@ -111,10 +106,11 @@ class RTKDataMatrix(object):
 
         return self.dtf_matrix[col][row]
 
+    # pylint: disable=R0913
     def select_all(self, revision_id, matrix_id, rindex=0, cindex=0, rheader=0,
                    cheader=0):
         """
-        Method to select the row heaidngs, the column headings, and the cell
+        Method to select the row headngs, the column headings, and the cell
         values for the matrix then build the matrix as a Pandas DataFrame.
 
         :param int revision_id: the ID of the Revision the desired Matrix is
@@ -293,7 +289,8 @@ class RTKDataMatrix(object):
         for _column_item_id in list(self.dtf_matrix.columns):
             for _row_item_id in list(self.dtf_matrix.index):
                 _entity = _session.query(RTKMatrix).filter(
-                    and_(RTKMatrix.matrix_id == matrix_id,
+                    and_(RTKMatrix.revision_id == revision_id,
+                         RTKMatrix.matrix_id == matrix_id,
                          RTKMatrix.column_item_id == int(_column_item_id),
                          RTKMatrix.row_item_id == int(_row_item_id))).first()
 

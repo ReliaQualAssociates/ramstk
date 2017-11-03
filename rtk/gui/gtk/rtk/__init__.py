@@ -16,7 +16,7 @@ from .Entry import RTKEntry, RTKTextView
 from .Frame import RTKFrame
 # from .Helpers import rtk_date_select, rtk_file_select, rtk_set_cursor
 from .Label import RTKLabel, make_label_group
-# from .Matrix import RTKMatrix
+from .Matrix import RTKBaseMatrix
 # from .Plot import RTKPlot
 from .ScrolledWindow import RTKScrolledWindow
 from .TreeView import RTKTreeView

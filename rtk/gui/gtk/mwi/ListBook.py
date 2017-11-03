@@ -19,6 +19,7 @@ from pubsub import pub                              # pylint: disable=E0401
 # pylint: disable=E0401
 from gui.gtk.rtk import RTKBook
 from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition
+from gui.gtk.matrixviews import FunctionHardware
 
 _ = gettext.gettext
 
@@ -49,7 +50,7 @@ class ListBook(RTKBook):                 # pylint: disable=R0904
                               [lvwUsageProfile(controller),
                                lvwFailureDefinition(controller)],
                               'function':
-                              []}
+                              [FunctionHardware(controller)]}
 
         # Initialize public list attributes.
 
