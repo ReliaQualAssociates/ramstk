@@ -137,7 +137,7 @@ class RTKBook(gtk.Window):               # pylint: disable=R0904
         # selected.
         _n_pages = self.notebook.get_n_pages()
         if _n_pages > 0:
-            for _page in list(xrange(_n_pages)):
+            for _page in list(xrange(_n_pages)):    # pylint: disable=E0602
                 self.notebook.remove_page(-1)
 
         return _return

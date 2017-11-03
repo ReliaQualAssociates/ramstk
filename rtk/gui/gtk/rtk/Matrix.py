@@ -135,7 +135,7 @@ class RTKBaseMatrix(object):
         # The remaining columns will be gtk.CellRendererCombo()'s for
         # displaying the interaction between Function and Hardware.
         j = 2
-        for i in xrange(self._n_columns):
+        for i in xrange(self._n_columns):           # pylint: disable=E0602
             _cell = self._make_combo_cell()
             self._do_set_properties(_cell, True, i + j + 1,
                                     self._rtk_matrix.columns[i], _model)

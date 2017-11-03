@@ -18,7 +18,7 @@ from pubsub import pub                          # pylint: disable=E0401
 # Import other RTK modules.
 from gui.gtk import rtk                         # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
-from .ModuleView import RTKModuleView
+from .ModuleView import RTKModuleView           # pylint: disable=E0401
 
 _ = gettext.gettext
 
