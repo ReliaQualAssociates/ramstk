@@ -37,8 +37,8 @@ class Test06RTKRequirement(unittest.TestCase):
     Class for testing the RTKRequirement class.
     """
 
-    _attributes = (1, 1, 0, 'Test Requirement', '', 0, '', 0, 0, 'Test Code',
-                   '', 0, 0, date.today(),
+    _attributes = (1, 1, 0, 'Test Requirement', '', '', '', 0, 0, 'Test Code',
+                   '', '', 0, date.today(),
                    0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                    0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -76,13 +76,13 @@ class Test06RTKRequirement(unittest.TestCase):
         self.assertEqual(self.DUT.derived, 0)
         self.assertEqual(self.DUT.description, 'Test Requirement')
         self.assertEqual(self.DUT.figure_number, '')
-        self.assertEqual(self.DUT.owner_id, 0)
+        self.assertEqual(self.DUT.owner, '')
         self.assertEqual(self.DUT.page_number, '')
         self.assertEqual(self.DUT.parent_id, 0)
         self.assertEqual(self.DUT.priority, 0)
         self.assertEqual(self.DUT.requirement_code, 'Test Code')
         self.assertEqual(self.DUT.specification, '')
-        self.assertEqual(self.DUT.type_id, 0)
+        self.assertEqual(self.DUT.requirement_type, '')
         self.assertEqual(self.DUT.validated, 0)
         self.assertEqual(self.DUT.validated_date, date.today())
         self.assertEqual(self.DUT.q_clarity_0, 0)
@@ -146,8 +146,8 @@ class Test06RTKRequirement(unittest.TestCase):
         (TestRTKRequirement) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (1, 1, 0, 'Test Requirement', '', 0, '', 0, 0,
-                       'Test Code', '', 0, 0, date.today(),
+        _attributes = (1, 1, 0, 'Test Requirement', '', '', '', 0, 0,
+                       'Test Code', '', '', 0, date.today(),
                        0, 0, 0, 0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
                        0, 0, 0, 0, 0, 0, 0, 0, 0,
@@ -166,8 +166,8 @@ class Test06RTKRequirement(unittest.TestCase):
         (TestRTKRequirement) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (0, 'Test Requirement', '', 0, '', 0, 0, 'Test Code', '',
-                       0, 0)
+        _attributes = (0, 'Test Requirement', '', '', '', 0, 0, 'Test Code',
+                       '', '', 0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

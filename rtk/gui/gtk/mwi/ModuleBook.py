@@ -35,8 +35,9 @@ except ImportError:
 # Import other RTK modules.
 # pylint: disable=E0401
 from gui.gtk.rtk import RTKBook, destroy
-from gui.gtk.moduleviews.Revision import ModuleView as mvwRevision
-from gui.gtk.moduleviews.Function import ModuleView as mvwFunction
+from gui.gtk.moduleviews import mvwRevision
+from gui.gtk.moduleviews import mvwFunction
+from gui.gtk.moduleviews import mvwRequirement
 from gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
     Options
 
@@ -81,8 +82,9 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_module_views = {'revision': [mvwRevision(controller), 0],
-                                 'function': [mvwFunction(controller), 1]}
+        self.dic_module_views = {'revision':[mvwRevision(controller), 0],
+                                 'function':[mvwFunction(controller), 1],
+                                 'requirement':[mvwRequirement(controller), 2]}
 
         # Initialize public list attributes.
 
@@ -453,6 +455,8 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
                 _module = 'revision'
             elif page_num == 1:
                 _module = 'function'
+            elif page_num == 2:
+                _module = 'requirement'
 
         pub.sendMessage('mvwSwitchedPage', module=_module)
 

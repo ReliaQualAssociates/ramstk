@@ -10,11 +10,11 @@ RTK List View Package Meta Class
 ###############################################################################
 """
 
-from sortedcontainers import SortedDict         # pylint: disable=E0401
+from sortedcontainers import SortedDict  # pylint: disable=E0401
 
 # Import other RTK modules.
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
-from gui.gtk import rtk                         # pylint: disable=E0401,W0611
+from gui.gtk import rtk  # pylint: disable=E0401,W0611
 
 
 class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
@@ -33,7 +33,7 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
 
     def __init__(self, controller, module=''):
         """
-        Method to initialize the List View.
+        Method to initialize the Module View.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
@@ -56,7 +56,6 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.hbx_tab_label = gtk.HBox()
         self.treeview = None
 
         _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module + 'bg']
@@ -65,8 +64,8 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
             '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[module]
         _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
 
-        self.treeview = rtk.RTKTreeView(_fmt_path, 0, _fmt_file,
-                                        _bg_color, _fg_color)
+        self.treeview = rtk.RTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
+                                        _fg_color)
         self._lst_col_order = self.treeview.order
 
         _scrolledwindow = gtk.ScrolledWindow()

@@ -83,6 +83,7 @@ class RTKBaseView(object):
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
+        self._dtc_data_controller = None
         self._mdcRTK = controller
         self._mission_time = float(controller.RTK_CONFIGURATION.RTK_MTIME)
         self._notebook = gtk.Notebook()
@@ -94,6 +95,7 @@ class RTKBaseView(object):
         # Initialize public scalar attributes.
         self.fmt = '{0:0.' + \
                    str(controller.RTK_CONFIGURATION.RTK_DEC_PLACES) + 'g}'
+        self.hbx_tab_label = gtk.HBox()
 
         try:
             locale.setlocale(locale.LC_ALL,

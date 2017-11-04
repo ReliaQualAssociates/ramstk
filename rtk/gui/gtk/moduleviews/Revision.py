@@ -28,9 +28,9 @@ class ModuleView(RTKModuleView):
     The Module Book view displays all the Revisions associated with the RTK
     Project in a flat list.  The attributes of a Module View are:
 
-    :ivar _dtc_revision: the :py:class:`rtk.revision.Revision.Revision` data
-                         controller to use for accessing the Revision data
-                         models.
+    :ivar _dtc_data_controller: the :py:class:`rtk.revision.Revision.Revision`
+                                data controller to use for accessing the
+                                Revision data models.
     :ivar _revision_id: the ID of the currently selected Revision.
     """
 
@@ -51,7 +51,6 @@ class ModuleView(RTKModuleView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_revision = None
         self._revision_id = None
 
         # Initialize public dictionary attributes.
@@ -136,13 +135,9 @@ class ModuleView(RTKModuleView):
         if not RTKModuleView._do_edit_cell(__cell, path, new_text,
                                            position, model):
 
-            #_attributes = \
-            #    self._dtc_revision.request_get_attributes(self._revision_id)
-
-            #_attributes[self._lst_col_order[position] - 1] = str(new_text)
-
-            _revision = self._dtc_revision.request_select(self._revision_id)
-            _attributes = list(_revision.get_attributes())[1:]
+            _revision = self._dtc_data_controller.request_select(
+                self._revision_id)
+            _attributes = list(_revision.get_attributes())[2:]
             _attributes[self._lst_col_order[position] - 2] = str(new_text)
             _revision.set_attributes(_attributes)
 
@@ -203,9 +198,9 @@ class ModuleView(RTKModuleView):
 
         _return = False
 
-        _revision = self._dtc_revision.request_select(self._revision_id)
+        _revision = self._dtc_data_controller.request_select(self._revision_id)
 
-        if not self._dtc_revision.request_insert():
+        if not self._dtc_data_controller.request_insert():
             # Get the currently selected row, the level of the currently
             # selected item, and it's parent row in the Function tree.
             _model, _row = self.treeview.get_selection().get_selected()
@@ -240,7 +235,7 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
 
-        return self._dtc_revision.request_update(self._revision_id)
+        return self._dtc_data_controller.request_update(self._revision_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -252,7 +247,7 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
 
-        return self._dtc_revision.request_update_all()
+        return self._dtc_data_controller.request_update_all()
 
     def _make_buttonbox(self):
         """
@@ -402,8 +397,10 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
 
-        self._dtc_revision = self._mdcRTK.dic_controllers['revision']
-        _revisions = self._dtc_revision.request_select_all()
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
+        _revisions = self._dtc_data_controller.request_select_all()
 
         _return = RTKModuleView._on_select_revision(self, _revisions)
         if _return:

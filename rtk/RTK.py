@@ -62,7 +62,7 @@ from usage.UsageProfile import UsageProfile
 from failure_definition.FailureDefinition import FailureDefinition
 from function.Function import Function
 from analyses.fmea.FMEA import FMEA
-# from requirement.Requirement import Requirement
+from requirement.Requirement import Requirement
 # from stakeholder.Stakeholder import Stakeholder
 # from hardware.BoM import BoM as HardwareBoM
 # from analyses.allocation.Allocation import Allocation
@@ -797,7 +797,10 @@ class RTK(object):
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)
-            # self.dic_controllers['requirement'] = Requirement()
+            self.dic_controllers['requirement'] = Requirement(
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             # self.dic_controllers['hardware'] = HardwareBoM()
             # self.dic_controllers['software'] = SoftwareBoM()
             # self.dic_controllers['test'] = Test()

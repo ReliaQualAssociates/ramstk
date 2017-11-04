@@ -89,14 +89,73 @@ def _create_common_database():
 
     _group = RTKGroup()
     _group.description = 'Engineering, Systems'
-    _group.type = 'workgroup'
+    _group.group_type = 'workgroup'
+    session.add(_group)
+
+    _group = RTKGroup()
+    _group.description = 'Engineering, Reliability'
+    _group.group_type = 'workgroup'
+    session.add(_group)
+
+    _group = RTKGroup()
+    _group.description = 'Engineering, Design Services'
+    _group.group_type = 'workgroup'
     session.add(_group)
 
     session.add(RTKEnviron())
     session.add(RTKModel())
     _type = RTKType()
-    _type.description = 'Test Type of Requirement'
-    _type.type = 'requirement'
+    _type.code = 'STMD'
+    _type.description = 'State/Mode Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'FUNC'
+    _type.description = 'Functional Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'PERF'
+    _type.description = 'Performance Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'EXIN'
+    _type.description = 'External Interface Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'ENVT'
+    _type.description = 'Environmental Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'RESC'
+    _type.description = 'Resource Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'PHYS'
+    _type.description = 'Physical Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'QUAL'
+    _type.description = 'Quality Requirement'
+    _type.type_type = 'requirement'
+    session.add(_type)
+
+    _type = RTKType()
+    _type.code = 'DSGN'
+    _type.description = 'Design Requirement'
+    _type.type_type = 'requirement'
     session.add(_type)
 
     session.add(RTKPhase())

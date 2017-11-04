@@ -10,3 +10,4 @@ from .ModuleView import RTKModuleView
 
 from .Function import ModuleView as mvwFunction
 from .Revision import ModuleView as mvwRevision
+from .Requirement import ModuleView as mvwRequirement

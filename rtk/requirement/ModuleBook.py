@@ -6,32 +6,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ###############################
 Requirement Package Module View
@@ -141,9 +140,8 @@ class ModuleView(object):
         # Create the main Requirement class treeview.
         _bg_color = Configuration.RTK_COLORS[4]
         _fg_color = Configuration.RTK_COLORS[5]
-        (self.treeview,
-         self._lst_col_order) = Widgets.make_treeview('Requirement', 2,
-                                                      _bg_color, _fg_color)
+        (self.treeview, self._lst_col_order) = Widgets.make_treeview(
+            'Requirement', 2, _bg_color, _fg_color)
 
         # Load the Requirements Type gtk.CellRendererCombo()
         _cell = self.treeview.get_column(
@@ -177,10 +175,11 @@ class ModuleView(object):
             _cellmodel.append([_owner[0]])
             self.dicOwners[_owner[0]] = [_owner[1], _index]
 
-        self.treeview.set_tooltip_text(_(u"Displays the hierarchical list of "
-                                         u"requirements."))
-        self.treeview.connect('cursor_changed', self._on_row_changed,
-                              None, None)
+        self.treeview.set_tooltip_text(
+            _(u"Displays the hierarchical list of "
+              u"requirements."))
+        self.treeview.connect('cursor_changed', self._on_row_changed, None,
+                              None)
         self.treeview.connect('row_activated', self._on_row_changed)
         self.treeview.connect('button_press_event', self._on_button_press)
 
@@ -188,9 +187,8 @@ class ModuleView(object):
         for i in [2, 4, 5, 6, 7, 8, 10]:
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cell_renderers()
-            self._dic_handler_id[i] = _cell[0].connect('edited',
-                                                       self._on_cell_edited, i,
-                                                       self.treeview.get_model())
+            self._dic_handler_id[i] = _cell[0].connect(
+                'edited', self._on_cell_edited, i, self.treeview.get_model())
 
         _scrollwindow = gtk.ScrolledWindow()
         _scrollwindow.add(self.treeview)
@@ -207,16 +205,17 @@ class ModuleView(object):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the engineering requirements for "
-                                  u"the selected revision."))
+        _label.set_tooltip_text(
+            _(u"Displays the engineering requirements for "
+              u"the selected revision."))
 
         _hbox = gtk.HBox()
         _hbox.pack_start(_image)
         _hbox.pack_end(_label)
         _hbox.show_all()
 
-        rtk_view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
-                                      position=position)
+        rtk_view.notebook.insert_page(
+            _scrollwindow, tab_label=_hbox, position=position)
 
         # Create a List View to associate with this Module View.
         self.listbook = ListView(self)
@@ -237,8 +236,9 @@ class ModuleView(object):
             self.mdcRTK.revision_id)
 
         # Only load the requirements associated with the selected Revision.
-        _requirements = [_r for _r in _requirements
-                         if _r[0] == self.mdcRTK.revision_id]
+        _requirements = [
+            _r for _r in _requirements if _r[0] == self.mdcRTK.revision_id
+        ]
         _top_reqs = [_r for _r in _requirements if _r[13] == -1]
 
         # Clear the Requirement Module View gtk.TreeModel().
@@ -354,7 +354,8 @@ class ModuleView(object):
 
         if _row is not None:
             _requirement_id = _model.get_value(_row, 1)
-            self._model = self._dtc_requirements.dicRequirements[_requirement_id]
+            self._model = self._dtc_requirements.dicRequirements[
+                _requirement_id]
             self.workbook.load(self._model)
 
         return False
