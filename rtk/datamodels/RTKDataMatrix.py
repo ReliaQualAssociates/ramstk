@@ -165,7 +165,8 @@ class RTKDataMatrix(object):
 
         # Retrieve the matrix values for the desired Matrix ID.
         for _matrix in _session.query(RTKMatrix).filter(
-                RTKMatrix.matrix_id == matrix_id).all():
+                and_(RTKMatrix.revision_id == revision_id,
+                     RTKMatrix.matrix_id == matrix_id)).all():
             if _matrix.column_item_id == _column_id:
                 _lst_row_id.append(_matrix.row_item_id)
                 _lst_value.append(_matrix.value)

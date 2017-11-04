@@ -34,7 +34,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 
-class TestMatrixModel(unittest.TestCase):
+class Test00MatrixModel(unittest.TestCase):
     """
     Class for testing the Matrix model class.
     """
@@ -108,9 +108,9 @@ class TestMatrixModel(unittest.TestCase):
 
         self.DUT.select_all(1, 1, 1, 1, 5, 6)
 
-        _cell = self.DUT.dtf_matrix[2][2]
+        _cell = self.DUT.select(2, 2)
 
-        self.assertEqual(_cell, 1)
+        self.assertEqual(_cell, 0)
 
     @attr(all=True, unit=True)
     def test03a_insert_row(self):
