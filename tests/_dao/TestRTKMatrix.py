@@ -35,7 +35,7 @@ class TestRTKMatrix(unittest.TestCase):
     Class for testing the RTKMatrix class.
     """
 
-    _attributes = (1, 1, 0, 0, 0, 0, 0, 0, 10.0)
+    _attributes = (1, 1, 0, 1, 0, 0, 1, 0, 10.0)
 
     def setUp(self):
         """
@@ -66,10 +66,10 @@ class TestRTKMatrix(unittest.TestCase):
         self.assertEqual(self.DUT.revision_id, 1)
         self.assertEqual(self.DUT.matrix_id, 1)
         self.assertEqual(self.DUT.column_id, 0)
-        self.assertEqual(self.DUT.column_item_id, 0)
+        self.assertEqual(self.DUT.column_item_id, 1)
         self.assertEqual(self.DUT.parent_id, 0)
         self.assertEqual(self.DUT.row_id, 0)
-        self.assertEqual(self.DUT.row_item_id, 0)
+        self.assertEqual(self.DUT.row_item_id, 1)
         self.assertEqual(self.DUT.type_id, 0)
         self.assertEqual(self.DUT.value, 10.0)
 

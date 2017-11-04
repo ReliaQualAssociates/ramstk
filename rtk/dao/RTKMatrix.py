@@ -23,25 +23,28 @@ class RTKMatrix(RTK_BASE):
     Class to represent the rtk_matrix table in the RTK Program database.
     Matrix types are one of the following:
 
-    +------+------------+-------------+
-    | Type |    Rows    |   Columns   |
-    +======+============+=============+
-    |   0  | Function   | Hardware    |
-    +------+------------+-------------+
-    |   1  | Function   | Software    |
-    +------+------------+-------------+
-    |   2  | Function   | Testing     |
-    +------+------------+-------------+
-    |   3  | Requirement| Hardware    |
-    +------+------------+-------------+
-    |   4  | Requirement| Software    |
-    +------+------------+-------------+
-    |   5  | Requirement| Validation  |
-    +------+------------+-------------+
-    |   6  | Hardware   | Testing     |
-    +------+------------+-------------+
-    |   7  | Hardware   | Validation  |
-    +------+------------+-------------+
+    +-----------+------------+-------------+
+    | Matrix ID |    Rows    |   Columns   |
+    +===========+============+=============+
+    |     1     | Function   | Hardware    |
+    +-----------+------------+-------------+
+    |     2     | Function   | Software    |
+    +-----------+------------+-------------+
+    |     3     | Function   | Testing     |
+    +-----------+------------+-------------+
+    |    11     | Requirement| Hardware    |
+    +-----------+------------+-------------+
+    |    12     | Requirement| Software    |
+    +-----------+------------+-------------+
+    |    13     | Requirement| Validation  |
+    +-----------+------------+-------------+
+    |    21     | Hardware   | Testing     |
+    +-----------+------------+-------------+
+    |    22     | Hardware   | Validation  |
+    +-----------+------------+-------------+
+
+    The primary key for this table consists of the revision_id, matrix_id,
+    column_item_id, and row_item_id.
 
     This table shares a Many-to-One relationship with rtk_revision.
     """
@@ -51,7 +54,7 @@ class RTKMatrix(RTK_BASE):
 
     revision_id = Column('fld_revision_id', Integer,
                          ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
+                         primary_key=True, nullable=False)
     matrix_id = Column('fld_matrix_id', Integer, primary_key=True,
                        default=0)
 
