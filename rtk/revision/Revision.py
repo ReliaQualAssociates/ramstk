@@ -10,17 +10,12 @@ Revision Package Data Module
 ###############################################################################
 """
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
 from datamodels import RTKDataModel                 # pylint: disable=E0401
 from datamodels import RTKDataController            # pylint: disable=E0401
 from dao import RTKRevision                         # pylint: disable=E0401
-
-_ = gettext.gettext
 
 
 class Model(RTKDataModel):
@@ -87,6 +82,8 @@ class Model(RTKDataModel):
             self.tree.create_node(_revision.name, _revision.revision_id,
                                   parent=0, data=_revision)
 
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
             self.last_id = max(self.last_id, _revision.revision_id)
 
         _session.close()
@@ -107,7 +104,10 @@ class Model(RTKDataModel):
         if _error_code == 0:
             self.tree.create_node(_revision.name, _revision.revision_id,
                                   parent=0, data=_revision)
-            self.last_id = _revision.revision_id   # pylint: disable=W0201
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = _revision.revision_id
 
         return _error_code, _msg
 

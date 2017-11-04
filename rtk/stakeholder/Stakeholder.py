@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.stakeholder.Stakeholder.py is part of The RTK Project
@@ -22,7 +21,7 @@ from dao import RTKStakeholder                      # pylint: disable=E0401
 class Model(RTKDataModel):
     """
     The Stakeholder data model contains the attributes and methods of a
-    stakeholder input.  A :py :class:`rtk.requirement.Requirement` will consist
+    stakeholder input.  A :py:class:`rtk.requirement.Requirement` will consist
     of one or more Stakeholder inputs.  The attributes of a Stakeholder are:
 
     :ivar int _revision_id: the ID of the :py:class:`rtk.revision.Revision` the
@@ -87,6 +86,8 @@ class Model(RTKDataModel):
                                   _stakeholder.stakeholder_id,
                                   parent=0, data=_stakeholder)
 
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
             self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
 
         _session.close()
@@ -112,6 +113,9 @@ class Model(RTKDataModel):
             self.tree.create_node(_stakeholder.description,
                                   _stakeholder.stakeholder_id,
                                   parent=0, data=_stakeholder)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
             self.last_id = _stakeholder.stakeholder_id
 
         return _error_code, _msg
