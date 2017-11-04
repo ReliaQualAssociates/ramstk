@@ -51,6 +51,7 @@ class RTKDataModel(object):
         # Initialize public scalar attributes.
         self.dao = dao
         self.tree = Tree()
+        self.last_id = None
 
         # Add the root to the Tree().  This is neccessary to allow multiple
         # entries at the top level as there can only be one root in a treelib

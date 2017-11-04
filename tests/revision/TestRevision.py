@@ -128,7 +128,7 @@ class Test00RevisionModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                                'the RTK Program database.')
-        self.assertEqual(self.DUT._last_id, 12)
+        self.assertEqual(self.DUT.last_id, 12)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
@@ -428,7 +428,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertFalse(self.DUT.request_delete(5))
 
     @attr(all=True, unit=True)
-    def test04a_request_delete_non_existent_id(self):
+    def test04b_request_delete_non_existent_id(self):
         """
         (TestRevisionController) request_delete() should return True when attempting to delete a non-existent Revision.
         """

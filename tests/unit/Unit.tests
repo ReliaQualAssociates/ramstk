@@ -76,3 +76,4 @@ analyses.fmea.Control fmea/TestControl.py
 analyses.fmea.Action fmea/TestAction.py
 analyses.fmea.FMEA fmea/TestFMEA.py
 datamodels.RTKDataMatrix datamodels/TestRTKDataMatrix.py
+stakeholder.Stakeholder stakeholder/TestStakeholder.py
