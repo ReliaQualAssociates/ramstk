@@ -10,7 +10,7 @@ The RTKMatrix Table
 ===============================================================================
 """
 # pylint: disable=E0401
-from sqlalchemy import Column, Float, ForeignKey, Integer
+from sqlalchemy import Column, ForeignKey, Integer
 from sqlalchemy.orm import relationship               # pylint: disable=E0401
 
 # Import other RTK modules.

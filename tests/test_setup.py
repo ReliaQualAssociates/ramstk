@@ -221,6 +221,12 @@ def _create_program_database():
 
     _requirement = RTKRequirement()
     _requirement.revision_id = _revision.revision_id
+    _requirement.requirement_code = 'REL-0001'
+    session.add(_requirement)
+
+    _requirement = RTKRequirement()
+    _requirement.revision_id = _revision.revision_id
+    _requirement.requirement_code = 'PERF-0001'
     session.add(_requirement)
 
     _stakeholder = RTKStakeholder()
@@ -303,73 +309,25 @@ def _create_program_database():
     _mode.description = 'Test Failure Mode #1'
     session.add(_mode)
 
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 1
-    _matrix.column_item_id = 1
-    session.add(_matrix)
+    # Create test Function:Hardware matrix
+    for _row in [1, 2, 3]:
+        for _column in [1, 2, 3]:
+            _matrix = RTKMatrix()
+            _matrix.revision_id = _revision.revision_id
+            _matrix.matrix_id = 1
+            _matrix.row_item_id = _row
+            _matrix.column_item_id = _column
+            session.add(_matrix)
 
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 2
-    _matrix.column_item_id = 1
-    _matrix.value = 2
-    session.add(_matrix)
-
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 3
-    _matrix.column_item_id = 1
-    session.add(_matrix)
-
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 1
-    _matrix.column_item_id = 2
-    session.add(_matrix)
-
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 2
-    _matrix.column_item_id = 2
-    _matrix.value = 1
-    session.add(_matrix)
-
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 3
-    _matrix.column_item_id = 2
-    _matrix.value = 1
-    session.add(_matrix)
-
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 1
-    _matrix.column_item_id = 3
-    _matrix.value = 1
-    session.add(_matrix)
-
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 2
-    _matrix.column_item_id = 3
-    session.add(_matrix)
-
-    _matrix = RTKMatrix()
-    _matrix.revision_id = _revision.revision_id
-    _matrix.matrix_id = 1
-    _matrix.row_item_id = 3
-    _matrix.column_item_id = 3
-    _matrix.value = 1
-    session.add(_matrix)
+    # Create test Requirement:Hardware matrix
+    for _row in [1, 2]:
+        for _column in [1, 2, 3]:
+            _matrix = RTKMatrix()
+            _matrix.revision_id = _revision.revision_id
+            _matrix.matrix_id = 11
+            _matrix.row_item_id = _row
+            _matrix.column_item_id = _column
+            session.add(_matrix)
 
     session.commit()
 

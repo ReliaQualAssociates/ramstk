@@ -1,443 +1,459 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.requirement.Requirement.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
-###############################
+###############################################################################
 Requirement Package Data Module
-###############################
+###############################################################################
 """
 
-# Import modules for localization support.
-import gettext
-import locale
+from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-    import Utilities
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as Configuration
-    import rtk.Utilities as Utilities
-
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-try:
-    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
-    locale.setlocale(locale.LC_ALL, '')
-
-_ = gettext.gettext
+from datamodels import RTKDataModel             # pylint: disable=E0401
+from datamodels import RTKDataMatrix            # pylint: disable=E0401
+from datamodels import RTKDataController        # pylint: disable=E0401
+from dao import RTKRequirement, RTKHardware     # pylint: disable=E0401
 
 
-class Model(object):
+class Model(RTKDataModel):
     """
     The Requirement data model contains the attributes and methods of a
     requirement.  A :py:class:`rtk.revision.Revision` will consist of one or
     more Requirements.  The attributes of a Requirement are:
-
-    :ivar list lst_clear: list of answers to the Requirement clarity questions.
-    :ivar list lst_complete: list of answers to the Requirement completeness
-                             questions.
-    :ivar list lst_consistent: list of answers to the Requirement consistency
-                               questions.
-    :ivar list lst_verifiable: list of answers to the Requirement verifiability
-                               questions.
-    :ivar int revision_id: the ID of the Revision the Requirement belongs to.
-    :ivar int requirement_id: the ID of the Requirement.
-    :ivar str description: noun description of the Requirement.
-    :ivar str code: short code for the Requirement.
-    :ivar str requirement_type: the type of Requirement.
-    :ivar int priority: the priority of the Requirement.
-    :ivar str specification: governing specification, if any, for the
-                             Requirement.
-    :ivar str page_number: applicable page number in the governing
-                           specification.
-    :ivar str figure_number: applicable figure number in the governing
-                             specification.
-    :ivar int derived: indicates whether or not the Requirement is derived.
-    :ivar str owner: the owner of the Requirement.
-    :ivar int validated: indicates whether or not the Requirement has been
-                         validated.
-    :ivar int validated_date: the date the Requirement was validated.
-    :ivar int parent_id: the ID of the parent Requirement if the Requirement is
-                         a derived Requirement.
     """
 
-    def __init__(self):
+    _tag = 'requirement'
+
+    def __init__(self, dao):
         """
         Method to initialize a Requirement data model instance.
         """
 
-        # Define private dictionary attributes.
+        RTKDataModel.__init__(self, dao)
 
-        # Define private list attributes.
+        # Initialize private dictionary attributes.
 
-        # Define private scalar attributes.
+        # Initialize private list attributes.
 
-        # Define public dictionary attributes.
+        # Initialize private scalar attributes.
 
-        # Define public list attributes.
-        self.lst_clear = []
-        self.lst_complete = []
-        self.lst_consistent = []
-        self.lst_verifiable = []
+        # Initialize public dictionary attributes.
 
-        # Define public scalar attributes.
-        self.revision_id = None
-        self.requirement_id = None
-        self.description = ''
-        self.requirement_code = ''
-        self.requirement_type = ''
-        self.priority = 1
-        self.specification = ''
-        self.page_number = ''
-        self.figure_number = ''
-        self.derived = 0
-        self.owner = ''
-        self.validated = 0
-        self.validated_date = 719163
-        self.parent_id = -1
+        # Initialize public list attributes.
 
-    def pack_values(self, lstvalues):       # pylint: disable=R0201
+        # Initialize public scalar attributes.
+
+    def select(self, requirement_id):
         """
-        Method to pack the clear, complete, consistent, and verifiable answers
-        into a string for saving to the RTK Project database.
+        Method to retrieve the instance of the RTKRequirement data model for
+        the Requirement ID passed.
 
-        :param list lstvalues: a list of 0's and 1's indicating the answer to
-                               the set of clear, complete, consistent, or
-                               verifiable questions.
-        :return: _packed
-        :rtype: str
+        :param int requirement_id: the ID Of the Requirement to retrieve.
+        :return: the instance of the RTKRequirement class that was requested or
+                 None if the requested Requirement ID does not exist.
+        :rtype: :py:class:`rtk.dao.RTKRequirement.RTKRequirement`
         """
 
-        _packed = ''
-        for _value in lstvalues:
-            _packed = _packed + str(_value)
+        return RTKDataModel.select(self, requirement_id)
 
-        return _packed
-
-    def unpack_values(self, strvalues):     # pylint: disable=R0201
+    def select_all(self, revision_id):
         """
-        Method to unpack the clear, complete, consistent, and verifiable
-        answers into a list of integers for displaying in the GUI.
+        Method to retrieve all the Requirements from the RTK Program database.
+        Then add each to
 
-        :param str strvalues: a string of 0's and 1's indicating the answer to
-                              the set of clear, complete, consistent, or
-                              verifiable questions.
-        :return: _unpacked
-        :rtype: list
+        :param int revision_id: the Revision ID to select the Requirements for.
+        :return: tree; the Tree() of RTKRequirement data models.
+        :rtype: :py:class:`treelib.Tree`
         """
 
-        _unpacked = []
-        for __, _value in enumerate(strvalues):
-            _unpacked.append(int(_value))
+        _session = RTKDataModel.select_all(self)
 
-        return _unpacked
+        for _requirement in _session.query(RTKRequirement).filter(
+                RTKRequirement.revision_id == revision_id).all():
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _requirement.get_attributes()
+            _requirement.set_attributes(_attributes[2:])
+            self.tree.create_node(_requirement.requirement_code,
+                                  _requirement.requirement_id,
+                                  parent=_requirement.parent_id,
+                                  data=_requirement)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _requirement.requirement_id)
+
+        _session.close()
+
+        return self.tree
+
+    def insert(self, **kwargs):
+        """
+        Method to add a Requirement to the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _requirement = RTKRequirement()
+        _requirement.revision_id = kwargs['revision_id']
+        _requirement.parent_id = kwargs['parent_id']
+        _error_code, _msg = RTKDataModel.insert(self, [_requirement, ])
+
+        if _error_code == 0:
+            self.tree.create_node(_requirement.requirement_code,
+                                  _requirement.requirement_id,
+                                  parent=_requirement.parent_id,
+                                  data=_requirement)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = _requirement.requirement_id
+
+        return _error_code, _msg
+
+    def delete(self, requirement_id):
+        """
+        Method to remove the Requirement associated with Requirement ID.
+
+        :param int requirement_id: the ID of the Requirement to be removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        try:
+            _requirement = self.tree.get_node(requirement_id).data
+            _error_code, _msg = RTKDataModel.delete(self, _requirement)
+
+            if _error_code == 0:
+                self.tree.remove_node(requirement_id)
+
+        except AttributeError:
+            _error_code = 2005
+            _msg = 'RTK ERROR: Attempted to delete non-existent Requirement ' \
+                   'ID {0:d}.'.format(requirement_id)
+
+        return _error_code, _msg
+
+    def update(self, requirement_id):
+        """
+        Method to update the Requirement associated with Requirement ID to the
+        RTK Program database.
+
+        :param int requirement_id: the Requirement ID of the Requirement to
+                                   save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _error_code, _msg = RTKDataModel.update(self, requirement_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent Requirement ' \
+                   'ID {0:d}.'.format(requirement_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Method to save all Requirements to the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Saving all Requirements.'
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.data.requirement_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.requirement.Requirement.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.requirement.Requirement.Model.update_all().'
+
+        return _error_code, _msg
 
 
-class Requirement(object):
+class Requirement(RTKDataController):
     """
     The Requirement data controller provides an interface between the
     Requirement data model and an RTK view model.  A single Requirement
     controller can manage one or more Requirement data models.  The attributes
     of a Requirement data controller are:
 
-    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
-                the RTK Program database.
-    :ivar _last_id: the last Requirement ID used.
-    :ivar dicRequirements: Dictionary of the Requirement data models managed.
-                           Key is the Requirement ID; value is a pointer to the
-                           Requirement data model instance.
+    :ivar _dtm_requirement: the Requirement Data Model being used by this
+                            controller.
+    :ivar _dmx_rqmt_hw_matrix: the Requirement:Hardware Data Matrix being used
+                               by this controller.
     """
 
-    def __init__(self):
+    def __init__(self, dao, configuration, **kwargs):
         """
         Method to initialize a Requirement data controller instance.
+
+        :param dao: the RTK Program DAO instance to pass to the Requirement
+                    Data Model.
+        :type dao: :py:class:`rtk.dao.DAO`
+        :param configuration: the Configuration instance associated with the
+                              current instance of the RTK application.
+        :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
 
-        # Define private dictionary attributes.
+        RTKDataController.__init__(self, configuration, **kwargs)
 
-        # Define private list attributes.
+        # Initialize private dictionary attributes.
 
-        # Define private scalar attributes.
-        self._last_id = None
+        # Initialize private list attributes.
 
-        # Define public dictionary attributes.
-        self.dicRequirements = {}
+        # Initialize private scalar attributes.
+        self._dtm_requirement = Model(dao)
+        self._dmx_rqmt_hw_matrix = RTKDataMatrix(dao, RTKRequirement,
+                                                 RTKHardware)
 
-        # Define public list attributes.
+        # Initialize public dictionary attributes.
 
-        # Define public scalar attributes.
-        self.dao = None
+        # Initialize public list attributes.
 
-    def request_requirements(self, revision_id):
+        # Initialize public scalar attributes.
+
+    def request_select(self, requirement_id):
         """
-        Method to reads the RTK Project database and loads all the requirements
-        associated with the selected Revision.  For each requirement returned:
+        Method to request the Requirement Data Model to retrieve the
+        RTKRequirement model associated with the Requirement ID.
 
-        #. Retrieve the requirements from the RTK Project database.
-        #. Create a Requirement data model instance.
-        #. Set the attributes of the data model instance from the returned
-           results.
-        #. Add the instance to the dictionary of Requirements being managed
-           by this controller.
-
-        :param int revision_id: the Revision ID to select the requirements for.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int requirement_id: the Requirement ID to retrieve.
+        :return: the RTKRequirement model requested.
+        :rtype: `:py:class:rtk.dao.DAO.RTKRequirement` model
         """
 
-        self._last_id = self.dao.get_last_id('tbl_requirements')[0]
+        return self._dtm_requirement.select(requirement_id)
 
-        # Select everything from the function table.
-        _query = "SELECT * FROM tbl_requirements \
-                  WHERE fld_revision_id={0:d} \
-                  ORDER BY fld_parent_id".format(revision_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
-
-        try:
-            _n_requirements = len(_results)
-        except TypeError:
-            _n_requirements = 0
-
-        for i in range(_n_requirements):
-            _requirement = Model()
-            _requirement.set_attributes(_results[i])
-            self.dicRequirements[_requirement.requirement_id] = _requirement
-
-        return(_results, _error_code)
-
-    def add_requirement(self, revision_id, parent_id=None, opt_args=None):
+    def request_select_all(self, revision_id):
         """
-        Method to add a new Requirement to the RTK Project database for the
-        selected Revision.
+        Method to retrieve the Requirement tree from the Requirement Data
+        Model.
 
-        :param int revision_id: the Revision ID to add the new Requirement(s).
-        :keyword int parent_id: the Requirement ID of the parent requirement.
-        :param list *args: a list of optional arguments.  These are:
-                           [Requirement Description, Requirement Type,
-                            Specification, Page Number, Figure Number, Owner,
-                            Priority, Derived]
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int revision_id: the Revision ID to select the Requirements for.
+        :return: tree; the treelib Tree() of RTKRequirement models in the
+                 Requirement tree.
+        :rtype: dict
         """
 
-        # By default we add the new requirement as a top-level requirement.
-        if parent_id is None:
-            parent_id = -1
+        return self._dtm_requirement.select_all(revision_id)
 
-        # Set default values if no optional arguments are passed.
-        if opt_args is None:
-            opt_args = ['', '', '', '', '', '', 1, 0]
-
-        _query = "INSERT INTO tbl_requirements \
-                  (fld_revision_id, fld_parent_id, fld_description, \
-                   fld_requirement_type, fld_specification, fld_page_number, \
-                   fld_figure_number, fld_owner, fld_priority, fld_derived) \
-                  VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', '{4:s}', \
-                          '{5:s}', '{6:s}', '{7:s}', {8:d}, \
-                          {9:d})".format(revision_id, parent_id, opt_args[0],
-                                         opt_args[1], opt_args[2], opt_args[3],
-                                         opt_args[4], opt_args[5], opt_args[6],
-                                         opt_args[7])
-
-        (_results,
-         _error_code,
-         _requirement_id) = self.dao.execute(_query, commit=True)
-
-        # If the new requirement was added successfully to the RTK Project
-        # database:
-        #   1. Retrieve the ID of the newly inserted requirement.
-        #   2. Create a new Requirement model instance.
-        #   3. Set the attributes of the new Requirement model instance.
-        #   4. Add the new Requirement model to the controller dictionary.
-        if _results:
-            self._last_id = self.dao.get_last_id('tbl_requirements')[0]
-            _requirement = Model()
-            _requirement.set_attributes((revision_id, self._last_id, '', '',
-                                         '', 1, '', '', '', 0, '', 0, 719163,
-                                         parent_id))
-            self.dicRequirements[_requirement.requirement_id] = _requirement
-
-        return(_requirement, _error_code, _requirement_id)
-
-    def delete_requirement(self, requirement_id):
+    def request_select_all_matrix(self, revision_id, matrix_id):
         """
-        Method to delete the selected Requirement from the RTK Project
-        database.
+        Method to retrieve all the Matrices associated with the Requirement
+        module.
 
-        :param int function_id: the Requirement ID to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int revision_id: the Revision ID to select the matrices for.
+        :param int matrix_id: the ID of the Matrix to retrieve.  Current matrix
+                              IDs are:
+
+                              11 = Requirement:Hardware
+                              12 = Requirement:Software
+                              13 = Requirement:Validation
+
+        :return: (_matrix, _column_hdrs, _row_hdrs); the Pandas Dataframe,
+                 noun names to use for column headings, noun names to use for
+                 row headings.
+        :rtype: (:py:class:`pandas.DataFrame`, dict, dict)
         """
 
-        _error_codes = [0, 0]
+        _matrix = None
+        _column_hdrs = []
+        _row_hdrs = []
 
-        # Delete all the child requirements, if any.
-        _query = "DELETE FROM tbl_requirements \
-                  WHERE fld_parent_id={0:d}".format(requirement_id)
-        (_results, _error_codes[0], __) = self.dao.execute(_query,
-                                                            commit=True)
+        if matrix_id == 11:
+            self._dmx_rqmt_hw_matrix.select_all(revision_id, matrix_id,
+                                                rindex=1, cindex=1,
+                                                rheader=9, cheader=6)
+            _matrix = self._dmx_rqmt_hw_matrix.dtf_matrix
+            _column_hdrs = self._dmx_rqmt_hw_matrix.dic_column_hdrs
+            _row_hdrs = self._dmx_rqmt_hw_matrix.dic_row_hdrs
 
-        # Then delete the parent requirement.
-        _query = "DELETE FROM tbl_requirements \
-                  WHERE fld_requirement_id={0:d}".format(requirement_id)
-        (_results, _error_codes[1], __) = self.dao.execute(_query,
-                                                            commit=True)
-        self.dicRequirements.pop(requirement_id)
+        return (_matrix, _column_hdrs, _row_hdrs)
 
-        return(_results, _error_codes)
-
-    def copy_requirements(self, revision_id):
+    def request_insert(self, revision_id, parent_id, sibling=True):
         """
-        Method to copy a Requirement from the currently selected Revision to
-        the new Revision.
+        Method to request the Requirement Data Model to add a new Requirement
+        to the RTK Program database.
 
-        :param int revision_id: the ID of the newly created Revision.
+        :param int revision_id: the ID of the Revision to add the new
+                                Requirement to.
+        :param int parent_id: the ID of the parent Requirement to add the new
+                              Requirement to.
+        :keyword bool sibling: indicates whether or not to insert a sibling
+                               (default) or child (derived) Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        # Find the existing maximum Requirement ID already in the RTK Program
-        # database and increment it by one.  If there are no existing
-        # Requirements set the first Requirement ID to zero.
-        _query = "SELECT MAX(fld_requirement_id) FROM tbl_requirements"
-        (_requirement_id,
-         _error_code, __) = self.dao.execute(_query, commit=False)
+        (_error_code,
+         _msg) = self._dtm_requirement.insert(revision_id=revision_id,
+                                              parent_id=parent_id)
 
-        if _requirement_id[0][0] is not None:
-            _requirement_id = _requirement_id[0][0] + 1
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedRequirement',
+                            requirement_id=self._dtm_requirement.last_id,
+                            parent_id=parent_id,
+                            sibling=sibling)
         else:
-            _requirement_id = 0
+            _msg = _msg + '  Failed to add a new Function to the RTK ' \
+                'Program database.'
 
-        # Copy the Requirement hierarchy for the new Revision.
-        _dic_index_xref = {}
-        _dic_index_xref[-1] = -1
-        for _requirement in self.dicRequirements.values():
-            _query = "INSERT INTO tbl_requirements \
-                      (fld_revision_id, fld_requirement_id, \
-                       fld_description, fld_code, fld_derived, \
-                       fld_parent_id, fld_owner, fld_specification, \
-                       fld_page_number, fld_figure_number) \
-                      VALUES ({0:d}, {1:d}, '{2:s}', '{3:s}', {4:d}, \
-                              {5:d}, '{6:s}', '{7:s}', '{8:s}', \
-                              '{9:s}')".format(revision_id, _requirement_id,
-                                               _requirement.description,
-                                               _requirement.requirement_code,
-                                               _requirement.derived,
-                                               _requirement.parent_id,
-                                               _requirement.owner,
-                                               _requirement.specification,
-                                               _requirement.page_number,
-                                               _requirement.figure_number)
-            (_results, _error_code, __) = self.dao.execute(_query,
-                                                            commit=True)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
-            # Add an entry to the Requirement ID cross-reference dictionary for
-            # for the newly added Requirement.
-            _dic_index_xref[_requirement.requirement_id] = _requirement_id
-            _requirement_id += 1
-
-        # Update the parent IDs for the new Requirements using the index
-        # cross-reference dictionary that was created when adding the new
-        # Requirements.
-        for _key in _dic_index_xref.keys():
-            _query = "UPDATE tbl_requirements \
-                      SET fld_parent_id={0:d} \
-                      WHERE fld_parent_id={1:d} \
-                      AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
-                                                        _key, revision_id)
-            (_results, _error_code, __) = self.dao.execute(_query,
-                                                            commit=True)
-
-        return False
-
-    def save_requirement(self, requirement_id):
+    def request_insert_matrix(self, matrix_id, item_id, heading, row=True):
         """
-        Method to save the Requirement attributes to the RTK Project database.
+        Method to request the selected Requirement Data Matrix to add a new row
+        or column to the Matrix.
 
-        :param int requirement_id: the ID of the requirement to save.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int matrix_id: the ID of the Matrix to retrieve.  Current matrix
+                              IDs are:
+
+                              11 = Requirement:Hardware
+                              12 = Requirement:Software
+                              13 = Requirement:Validation
+
+        :param int item_id: the ID of the row or column item to insert into the
+                            Matrix.
+        :param str heading: the heading for the new row or column.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        _requirement = self.dicRequirements[requirement_id]
+        if matrix_id == 11:
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.insert(item_id,
+                                                                heading,
+                                                                row=row)
 
-        # Pack the answers to the analysis questions into a string for saving.
-        _clear = _requirement.pack_values(_requirement.lst_clear)
-        _complete = _requirement.pack_values(_requirement.lst_complete)
-        _consistent = _requirement.pack_values(_requirement.lst_consistent)
-        _verifiable = _requirement.pack_values(_requirement.lst_verifiable)
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedMatrix',
+                            matrix_id=matrix_id,
+                            item_id=item_id,
+                            row=row)
 
-        _query = "UPDATE tbl_requirements \
-                  SET fld_description='{1:s}', fld_code='{2:s}', \
-                      fld_requirement_type='{3:s}', fld_priority={4:d}, \
-                      fld_specification='{5:s}', fld_page_number='{6:s}', \
-                      fld_figure_number='{7:s}', fld_derived={8:d}, \
-                      fld_owner='{9:s}', fld_validated={10:d}, \
-                      fld_validated_date={11:d}, fld_parent_id={12:d}, \
-                      fld_clear='{13:s}', fld_complete='{14:s}', \
-                      fld_consistent='{15:s}', fld_verifiable='{16:s}' \
-                  WHERE fld_requirement_id={0:d}".format(
-                      _requirement.requirement_id, _requirement.description,
-                      _requirement.requirement_code,
-                      _requirement.requirement_type, _requirement.priority,
-                      _requirement.specification, _requirement.page_number,
-                      _requirement.figure_number, _requirement.derived,
-                      _requirement.owner, _requirement.validated,
-                      _requirement.validated_date, _requirement.parent_id,
-                      _clear, _complete, _consistent, _verifiable)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
-        return(_results, _error_code)
-
-    def save_all_requirements(self):
+    def request_delete(self, requirement_id):
         """
-        Method to save all Requirement data models managed by the controller.
+        Method to request the Requirement Data Model to delete a Requirement
+        from the RTK Program database.
+
+        :param int requirement_id: the Requirement ID to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code, _msg = self._dtm_requirement.delete(requirement_id)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'deletedRequirement')
+
+    def request_delete_matrix(self, matrix_id, item_id, row=True):
+        """
+        Method to request to remove a row or column from the selected
+        Requirement Data Matrix.
+
+        :param int matrix_id: the ID of the Matrix to retrieve.  Current matrix
+                              IDs are:
+
+                              11 = Requirement:Hardware
+                              12 = Requirement:Software
+                              13 = Requirement:Validation
+
+        :param int item_id: the ID of the row or column item to remove from the
+                            Matrix.
+        :keyword bool row: indicates whether to insert a row (default) or a
+                           column.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if matrix_id == 11:
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.delete(item_id,
+                                                                row=row)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'deletedMatrix')
+
+    def request_update(self, requirement_id):
+        """
+        Method to request the Requirement Data Model save the RTKRequirement
+        attributes to the RTK Program database.
+
+        :param int requirement_id: the ID of the Requirement to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code, _msg = self._dtm_requirement.update(requirement_id)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'savedRequirement')
+
+    def request_update_matrix(self, revision_id, matrix_id):
+        """
+        Method to request the Requirement Data Matrix save the RTKRequirement
+        attributes to the RTK Program database.
+
+        :param int revision_id: the ID of the Revision is the matrix to update
+                                is associated with.
+        :param int matrix_id: the ID of the Matrix to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        if matrix_id == 11:
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.update(revision_id,
+                                                                matrix_id)
+        else:
+            _error_code = 6
+            _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \
+                   '{0:d}.'.format(matrix_id)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'savedMatrix')
+
+    def request_update_all(self):
+        """
+        Method to request the Requirement Data Model to save all RTKRequirement
+        model attributes to the RTK Program database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        _error_codes = []
+        _error_code, _msg = self._dtm_requirement.update_all()
 
-        for _requirement in self.dicRequirements.values():
-            (_results,
-             _error_code) = self.save_requirement(_requirement.requirement_id)
-            _error_codes.append((_requirement.requirement_id, _error_code))
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
 
-        return _error_codes
+    def request_get_attributes(self, requirement_id):
+        """
+        Method to request the attributes from the selected Requirement data
+        model.
+
+        :param int requirement_id: the ID of the Requirement whose attributes
+                                   are being requested.
+        :return: _attributes
+        :rtype: list
+        """
+
+        _requirement = self.request_select(requirement_id)
+
+        return list(_requirement.get_attributes())

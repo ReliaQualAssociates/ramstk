@@ -38,7 +38,11 @@ class Test06RTKRequirement(unittest.TestCase):
     """
 
     _attributes = (1, 1, 0, 'Test Requirement', '', 0, '', 0, 0, 'Test Code',
-                   '', 0, 0, date.today())
+                   '', 0, 0, date.today(),
+                   0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0, 0, 0, 0, 0, 0,
+                   0, 0, 0, 0, 0, 0)
 
     def setUp(self):
         """
@@ -81,6 +85,40 @@ class Test06RTKRequirement(unittest.TestCase):
         self.assertEqual(self.DUT.type_id, 0)
         self.assertEqual(self.DUT.validated, 0)
         self.assertEqual(self.DUT.validated_date, date.today())
+        self.assertEqual(self.DUT.q_clarity_0, 0)
+        self.assertEqual(self.DUT.q_clarity_1, 0)
+        self.assertEqual(self.DUT.q_clarity_2, 0)
+        self.assertEqual(self.DUT.q_clarity_3, 0)
+        self.assertEqual(self.DUT.q_clarity_4, 0)
+        self.assertEqual(self.DUT.q_clarity_5, 0)
+        self.assertEqual(self.DUT.q_clarity_6, 0)
+        self.assertEqual(self.DUT.q_clarity_7, 0)
+        self.assertEqual(self.DUT.q_clarity_8, 0)
+        self.assertEqual(self.DUT.q_complete_0, 0)
+        self.assertEqual(self.DUT.q_complete_1, 0)
+        self.assertEqual(self.DUT.q_complete_2, 0)
+        self.assertEqual(self.DUT.q_complete_3, 0)
+        self.assertEqual(self.DUT.q_complete_4, 0)
+        self.assertEqual(self.DUT.q_complete_5, 0)
+        self.assertEqual(self.DUT.q_complete_6, 0)
+        self.assertEqual(self.DUT.q_complete_7, 0)
+        self.assertEqual(self.DUT.q_complete_8, 0)
+        self.assertEqual(self.DUT.q_complete_9, 0)
+        self.assertEqual(self.DUT.q_consistent_0, 0)
+        self.assertEqual(self.DUT.q_consistent_1, 0)
+        self.assertEqual(self.DUT.q_consistent_2, 0)
+        self.assertEqual(self.DUT.q_consistent_3, 0)
+        self.assertEqual(self.DUT.q_consistent_4, 0)
+        self.assertEqual(self.DUT.q_consistent_5, 0)
+        self.assertEqual(self.DUT.q_consistent_6, 0)
+        self.assertEqual(self.DUT.q_consistent_7, 0)
+        self.assertEqual(self.DUT.q_consistent_8, 0)
+        self.assertEqual(self.DUT.q_verifiable_0, 0)
+        self.assertEqual(self.DUT.q_verifiable_1, 0)
+        self.assertEqual(self.DUT.q_verifiable_2, 0)
+        self.assertEqual(self.DUT.q_verifiable_3, 0)
+        self.assertEqual(self.DUT.q_verifiable_4, 0)
+        self.assertEqual(self.DUT.q_verifiable_5, 0)
 
     @attr(all=True, unit=True)
     def test01_get_attributes(self):
@@ -96,10 +134,7 @@ class Test06RTKRequirement(unittest.TestCase):
         (TestRTKRequirement) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0, 'Test Requirement', '', 0, '', 0, 0, 'Test Code', '',
-                       0, 0, date.today())
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes[2:])
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKRequirement {0:d} " \
@@ -111,8 +146,12 @@ class Test06RTKRequirement(unittest.TestCase):
         (TestRTKRequirement) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0, 'Test Requirement', '', 0, '', 0, 0, 'Test Code', '',
-                       0, 'None', date.today())
+        _attributes = (1, 1, 0, 'Test Requirement', '', 0, '', 0, 0,
+                       'Test Code', '', 0, 0, date.today(),
+                       0, 0, 0, 0, 0, 0, 0, 0, 0,
+                       0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+                       0, 0, 0, 0, 0, 0, 0, 0, 0,
+                       None, 0, 0, 0, 0, 0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

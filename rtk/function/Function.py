@@ -10,18 +10,13 @@ Function Package Data Module
 ###############################################################################
 """
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub                          # pylint: disable=E0401
 
 # Import other RTK modules.
 from datamodels import RTKDataModel             # pylint: disable=E0401
-from datamodels import RTKDataMatrix             # pylint: disable=E0401
+from datamodels import RTKDataMatrix            # pylint: disable=E0401
 from datamodels import RTKDataController        # pylint: disable=E0401
 from dao import RTKFunction, RTKHardware        # pylint: disable=E0401
-
-_ = gettext.gettext
 
 
 class Model(RTKDataModel):
@@ -51,7 +46,6 @@ class Model(RTKDataModel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.last_id = None
 
     def select(self, function_id):
         """
@@ -87,6 +81,10 @@ class Model(RTKDataModel):
             self.tree.create_node(_function.name, _function.function_id,
                                   parent=_function.parent_id, data=_function)
 
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _function.function_id)
+
         _session.close()
 
         return self.tree
@@ -106,7 +104,10 @@ class Model(RTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(_function.name, _function.function_id,
-                                  parent=0, data=_function)
+                                  parent=_function.parent_id, data=_function)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
             self.last_id = _function.function_id
 
         return _error_code, _msg
@@ -275,12 +276,9 @@ class Function(RTKDataController):
     one or more Function data models.  The attributes of a Function data
     controller are:
 
-    :ivar last_id: the last Function ID used.  Default value = None.
-    :ivar dicFunctions: Dictionary of the Function data models controlled.  Key
-                        is the Function ID; value is a pointer to the Function
-                        data model instance.  Default value = {}.
-    :ivar dao: the :py:class:`rtk.dao.DAO` to use when communicating with the
-               RTK Project database.  Default value = None.
+    :ivar _dtm_function: the Function Data Model being used by this controller.
+    :ivar _dmx_fctn_hw_matrix: the Function:Hardware Data Matrix being used by
+                               this controller.
     """
 
     def __init__(self, dao, configuration, **kwargs):

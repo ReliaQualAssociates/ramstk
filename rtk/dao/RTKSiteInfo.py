@@ -28,7 +28,7 @@ class RTKSiteInfo(RTK_BASE):
     __table_args__ = {'extend_existing': True}
 
     site_id = Column('fld_site_id', Integer, primary_key=True,
-                        autoincrement=True, nullable=False)
+                     autoincrement=True, nullable=False)
     product_key = Column('fld_product_key', String(512), default='')
     expire_on = Column('fld_expire_on', Date,
                        default=date.today() + timedelta(30))

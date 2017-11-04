@@ -23,6 +23,7 @@ import pandas as pd
 
 import Utilities as Utilities
 from Configuration import Configuration
+from datamodels import RTKDataMatrix
 from function.Function import Model, Function
 from dao import DAO
 from dao import RTKFunction
@@ -345,6 +346,8 @@ class Test01FunctionController(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Function))
         self.assertTrue(isinstance(self.DUT._dtm_function, Model))
+        self.assertTrue(isinstance(self.DUT._dmx_fctn_hw_matrix,
+                                   RTKDataMatrix))
 
     @attr(all=True, unit=True)
     def test01a_request_select_all(self):
