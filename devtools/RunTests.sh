@@ -7,6 +7,7 @@ projPath=$HOME'/drive_d/projects/RTK'
 testPath=$curPath'/tests'
 testList=$testPath'/unit/Unit.tests'
 excludeList=$testPath'/Excluded.dirs'
+logFile=$curPath'/../RTK_test_error.log'
 
 noseOpts="-c $curPath/setup.cfg --exclude-dir-file=$excludedList"
 unitNoseOpts="$noseOpts --attr=unit=True --cover-package="
@@ -16,6 +17,8 @@ nosetest=$(which nosetests)
 coverage=$(which coverage)
 codacy=$(which python-codacy-coverage)
 
+echo "BEGIN RTK UNIT TEST EXECUTION ... " > $logFile
+
 # Execute all the unit tests.
 while read package file;
 do
@@ -24,8 +27,10 @@ do
     if [ "$?" = "0" ];
     then
         printf "UNIT TESTS FOR $package: SAT\n\n"
+        echo "UNIT TESTS FOR $package: SAT" >> $logFile
     else
         printf "UNIT TESTS FOR $package: UNSAT\n\n"
+        echo "UNIT TESTS FOR $package: UNSAT" >> $logFile
     fi
 done < $testList
 
