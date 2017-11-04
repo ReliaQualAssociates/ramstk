@@ -10,9 +10,6 @@ Revision Package Data Module
 ###############################################################################
 """
 
-# Import modules for localization support.
-import gettext
-
 from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
@@ -20,18 +17,12 @@ from datamodels import RTKDataModel                 # pylint: disable=E0401
 from datamodels import RTKDataController            # pylint: disable=E0401
 from dao import RTKRevision                         # pylint: disable=E0401
 
-_ = gettext.gettext
-
 
 class Model(RTKDataModel):
     """
     The Revision data model contains the attributes and methods of a revision.
     An RTK Project will consist of one or more Revisions.  The attributes of a
     Revision are:
-
-    :ivar int _last_id: the last Revision ID used in the RTK Program database.
-    :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
-               RTK Program database.
     """
 
     _tag = 'Revisions'
@@ -58,7 +49,6 @@ class Model(RTKDataModel):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.last_id = None
 
     def select(self, revision_id):
         """
@@ -92,6 +82,10 @@ class Model(RTKDataModel):
             self.tree.create_node(_revision.name, _revision.revision_id,
                                   parent=0, data=_revision)
 
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _revision.revision_id)
+
         _session.close()
 
         return self.tree
@@ -110,7 +104,10 @@ class Model(RTKDataModel):
         if _error_code == 0:
             self.tree.create_node(_revision.name, _revision.revision_id,
                                   parent=0, data=_revision)
-            self._last_id = _revision.revision_id   # pylint: disable=W0201
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = _revision.revision_id
 
         return _error_code, _msg
 
@@ -403,7 +400,7 @@ class Revision(RTKDataController):
             pub.sendMessage('insertedRevision',
                             revision_id=self.dtm_revision.last_id)
         else:
-            _msg = _msg + '  Failed to add a new Function to the RTK ' \
+            _msg = _msg + '  Failed to add a new Revision to the RTK ' \
                 'Program database.'
 
         return RTKDataController.handle_results(self, _error_code, _msg, None)

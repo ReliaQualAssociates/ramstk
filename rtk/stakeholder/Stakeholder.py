@@ -1,325 +1,350 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.stakeholder.Stakeholder.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
-###############################
+###############################################################################
 Stakeholder Package Data Module
-###############################
+###############################################################################
 """
 
-# Import modules for localization support.
-import gettext
-import locale
+from pubsub import pub                              # pylint: disable=E0401
 
 # Import other RTK modules.
-try:
-    import Configuration
-    import Utilities
-except ImportError:                         # pragma: no cover
-    import rtk.Configuration as Configuration
-    import rtk.Utilities as Utilities
+from datamodels import RTKDataModel                 # pylint: disable=E0401
+from datamodels import RTKDataController            # pylint: disable=E0401
+from dao import RTKStakeholder                      # pylint: disable=E0401
 
 
-__author__ = 'Andrew Rowland'
-__email__ = 'andrew.rowland@reliaqual.com'
-__organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
-
-try:
-    locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
-    locale.setlocale(locale.LC_ALL, '')
-
-_ = gettext.gettext
-
-
-class Model(object):
+class Model(RTKDataModel):
     """
     The Stakeholder data model contains the attributes and methods of a
-    stakeholder input.  A :py :class:`rtk.requirement.Requirement` will consist
+    stakeholder input.  A :py:class:`rtk.requirement.Requirement` will consist
     of one or more Stakeholder inputs.  The attributes of a Stakeholder are:
 
-    :ivar list lst_user_floats: default value: [0.0, 0.0, 0.0, 0.0, 0.0]
-
-    :ivar int revision_id: the ID of the :py:class:`rtk.revision.Revision` the
-                           Stakeholder input is associated with.
-    :ivar int input_id: the ID of the Stakeholder input.
-    :ivar str stakeholder: the stakeholder providing the input.
-    :ivar str description: the description of the Stakeholder input.
-    :ivar str group: the affinity group the Stakeholder input belongs to.
-    :ivar int priority: the priority of implementing the Stakeholder input.
-    :ivar int customer_rank: the customer ranking of the Stakeholder input.
-    :ivar int planned_rank: the planned custmer ranking of the Stakeholder
-                            input.
-    :ivar float improvement: the calculated improvement factor for the
-                             Stakeholder input.
-    :ivar float overall_weight: the weighting of the Stakeholder input relative
-                                to all the other Stakeholder inputs.
-    :ivar str requirement: the requirement that encompasses the Stakeholder
-                           input.
+    :ivar int _revision_id: the ID of the :py:class:`rtk.revision.Revision` the
+                            Stakeholder input is associated with.
     """
 
-    def __init__(self):
+    _tag = 'Stakeholders'
+
+    def __init__(self, dao):
         """
         Method to initialize a Stakeholder data model instance.
         """
 
-        # Define private dict attributes.
+        RTKDataModel.__init__(self, dao)
 
-        # Define private list attributes.
+        # Initialize private dictionary attributes.
 
-        # Define private scalar attributes.
+        # Initialize private list attributes.
 
-        # Define public dict attributes.
+        # Initialize private scalar attributes.
+        self._revision_id = None
 
-        # Define public list attributes.
-        self.lst_user_floats = [1.0, 1.0, 1.0, 1.0, 1.0]
+        # Initialize public dictionary attributes.
 
-        # Define public scalar attributes.
+        # Initialize public list attributes.
 
-        self.revision_id = None
-        self.input_id = None
-        self.stakeholder = ''
-        self.description = ''
-        self.group = ''
-        self.priority = 1
-        self.customer_rank = 1
-        self.planned_rank = 3
-        self.improvement = 1.0
-        self.overall_weight = 0.0
-        self.requirement = ''
+        # Initialize public scalar attributes.
 
-    def calculate_weight(self):
+    def select(self, stakeholder_id):
+        """
+        Method to retrieve the instance of the RTKStakeholder data model for
+        the Stakeholder ID passed.
+
+        :param int stakeholder_id: the ID Of the Stakeholder input to retrieve.
+        :return: the instance of the RTKStakeholder class that was requested or
+                 None if the requested Stakeholder ID does not exist.
+        :rtype: :py:class:`rtk.dao.RTKStakeholder.RTKStakeholder`
+        """
+
+        return RTKDataModel.select(self, stakeholder_id)
+
+    def select_all(self, revision_id):
+        """
+        Method to retrieve all the Stakeholders from the RTK Program database.
+        Then add each to the treelib Tree().
+
+        :param int revision_id: the ID of the Revision to retrieve all the
+                                Stakeholder inputs for.
+        :return: tree; the Tree() of RTKStakeholder data models.
+        :rtype: :py:class:`treelib.Tree`
+        """
+
+        _session = RTKDataModel.select_all(self)
+
+        for _stakeholder in _session.query(RTKStakeholder).filter(
+                RTKStakeholder.revision_id == revision_id).all():
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _stakeholder.get_attributes()
+            _stakeholder.set_attributes(_attributes[2:])
+            self.tree.create_node(_stakeholder.description,
+                                  _stakeholder.stakeholder_id,
+                                  parent=0, data=_stakeholder)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _stakeholder.stakeholder_id)
+
+        _session.close()
+
+        self._revision_id = revision_id
+
+        return self.tree
+
+    def insert(self):
+        """
+        Method to add a Stakeholder input to the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _stakeholder = RTKStakeholder()
+        _stakeholder.revision_id = self._revision_id
+
+        _error_code, _msg = RTKDataModel.insert(self, [_stakeholder, ])
+
+        if _error_code == 0:
+            self.tree.create_node(_stakeholder.description,
+                                  _stakeholder.stakeholder_id,
+                                  parent=0, data=_stakeholder)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = _stakeholder.stakeholder_id
+
+        return _error_code, _msg
+
+    def delete(self, stakeholder_id):
+        """
+        Method to remove the Stakeholder associated with Stakeholder ID.
+
+        :param int stakeholder_id: the ID of the Stakeholder to be removed.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        try:
+            _stakeholder = self.tree.get_node(stakeholder_id).data
+            _error_code, _msg = RTKDataModel.delete(self, _stakeholder)
+
+            if _error_code == 0:
+                self.tree.remove_node(stakeholder_id)
+
+        except AttributeError:
+            _error_code = 2005
+            _msg = 'RTK ERROR: Attempted to delete non-existent Stakeholder ' \
+                   'ID {0:d}.'.format(stakeholder_id)
+
+        return _error_code, _msg
+
+    def update(self, stakeholder_id):
+        """
+        Method to update the stakeholder input associated with Stakeholder ID
+        to the RTK Program database.
+
+        :param int stakeholder_id: the Stakeholder ID of the stakeholder input
+                                   to save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _error_code, _msg = RTKDataModel.update(self, stakeholder_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent Stakeholder ' \
+                   'ID {0:d}.'.format(stakeholder_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Method to save all Stakeholders to the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _error_code = 0
+        _msg = ''
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.data.revision_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.stakeholder.Stakeholder.Model.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.stakeholder.Stakeholder.Model.update_all().'
+
+        return _error_code, _msg
+
+    def calculate_weight(self, stakeholder_id):
         """
         Method to calculate the improvement factor and overall weighting of a
         Stakeholder input.
 
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
-        self.improvement = 1.0 + 0.2 * (self.planned_rank - self.customer_rank)
-        self.overall_weight = float(self.priority) * self.improvement * \
-                              self.lst_user_floats[0] * \
-                              self.lst_user_floats[1] * \
-                              self.lst_user_floats[2] * \
-                              self.lst_user_floats[3] * self.lst_user_floats[4]
+        _return = False
 
-        return False
+        _stakeholder = self.tree.get_node(stakeholder_id).data
+
+        _stakeholder.improvement = 1.0 + 0.2 * (_stakeholder.planned_rank -
+                                                _stakeholder.customer_rank)
+        _stakeholder.overall_weight = float(_stakeholder.priority) * \
+            _stakeholder.improvement * _stakeholder.user_float_1 * \
+            _stakeholder.user_float_2 * _stakeholder.user_float_3 * \
+            _stakeholder.user_float_4 * _stakeholder.user_float_5
+
+        return _return
 
 
-class Stakeholder(object):
+class Stakeholder(RTKDataController):
     """
     The Stakeholder data controller provides an interface between the
     Stakeholder data model and an RTK view model.  A single Stakeholder
     controller can manage one or more Stakeholder data models.  The attributes
     of a Stakeholder data controller are:
 
-    :ivar _dao: the :py:class:`rtk.dao.DAO.DAO` to use when communicating with
-                the RTK Project database.
-    :ivar int _last_id: the last Stakeholder ID used.
-    :ivar dict dicStakeholders: Dictionary of the Stakeholder data models
-                                managed.  Key is the Stakeholder ID; value is a
-                                pointer to the Stakeholder data model instance.
-
+    :ivar __test: control variable used to suppress certain code during
+                  testing.
+    :ivar _dtm_stakeholder: the :py:class:`rtk.Stakeholder.Model` associated
+                            with the Stakeholder Data Controller.
+    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
+                          instance associated with the current RTK instance.
     """
 
-    def __init__(self):
+    def __init__(self, dao, configuration, **kwargs):
         """
         Method to initialize a Stakeholder data controller instance.
         """
 
-        # Define private dictionary attributes.
+        RTKDataController.__init__(self, configuration, **kwargs)
 
-        # Define private list attributes.
+        # Initialize private dictionary attributes.
 
-        # Define private scalar attributes.
-        self._last_id = None
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._dtm_stakeholder = Model(dao)
 
         # Initialize public dictionary attributes.
-        self.dicStakeholders = {}
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.dao = None
 
-    def request_inputs(self, revision_id):
+    def request_select(self, stakeholder_id):
         """
-        Method to read the RTK Project database and load all the stakeholder
-        inputs associated with the selected Revision.  For each stakeholder
-        input returned:
+        Method to request the Stakeholder Data Model to retrieve the
+        RTKStakeholder model associated with the Stakeholder ID.
 
-        #. Retrieve the inputs from the RTK Project database.
-        #. Create a Stakeholder data model instance.
-        #. Set the attributes of the data model instance from the returned
-           results.
-        #. Add the instance to the dictionary of Stakeholders being managed
-           by this controller.
-
-        :param int revision_id: the Revision ID to select the stakeholders for.
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int revision_id: the Stakeholder ID to retrieve.
+        :return: the RTKStakeholder model requested.
+        :rtype: `:py:class:rtk.dao.DAO.RTKStakeholder` model
         """
 
-        self._last_id = self.dao.get_last_id('tbl_stakeholder_input')[0]
+        return self._dtm_stakeholder.select(stakeholder_id)
 
-        # Select everything from the function table.
-        _query = "SELECT * FROM tbl_stakeholder_input \
-                  WHERE fld_revision_id={0:d}".format(revision_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=False)
-
-        try:
-            _n_stakeholders = len(_results)
-        except TypeError:
-            _n_stakeholders = 0
-
-        for i in range(_n_stakeholders):
-            _stakeholder = Model()
-            _stakeholder.set_attributes(_results[i])
-            self.dicStakeholders[_stakeholder.input_id] = _stakeholder
-
-        return(_results, _error_code)
-
-    def add_input(self, revision_id):
+    def request_select_all(self, revision_id):
         """
-        Method to add a new Stakeholder input to the RTK Project for the
-        selected Revision.
+        Method to retrieve the Stakeholder tree from the Stakeholder Data
+        Model.
 
-        :param int revision_id: the Revision ID to add the new Stakeholder(s).
-        :return: (_results, _error_code)
-        :rtype: tuple
+        :param int revision_id: the ID of the Revision the requested
+                                Stakeholder inputs are associated with.
+        :return: tree; the treelib Tree() of RTKStakeholder models in the
+                 Stakeholder tree.
+        :rtype: dict
         """
 
-        _query = "INSERT INTO tbl_stakeholder_input \
-                  (fld_revision_id) \
-                  VALUES ({0:d})".format(revision_id)
-        (_results,
-         _error_code,
-         _stakeholder_id) = self.dao.execute(_query, commit=True)
+        return self._dtm_stakeholder.select_all(revision_id)
 
-        # If the new stakeholder was added successfully to the RTK Project
-        # database:
-        #   1. Retrieve the ID of the newly inserted stakeholder.
-        #   2. Create a new Stakeholder model instance.
-        #   3. Set the attributes of the new Stakeholder model instance.
-        #   4. Add the new Stakeholder model to the controller dictionary.
-        if _results:
-            self._last_id = self.dao.get_last_id('tbl_stakeholder_input')[0]
-            _stakeholder = Model()
-            _stakeholder.set_attributes((revision_id, self._last_id, '', '',
-                                         '', 1, 1, 3, 1.0, 0.0))
-            self.dicStakeholders[_stakeholder.input_id] = _stakeholder
-
-        return(_stakeholder, _error_code)
-
-    def delete_input(self, input_id):
+    def request_insert(self):
         """
-        Method to delete a Stakeholder input from the RTK Project database.
-
-        :param int input_id: the Stakeholder input ID to delete.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        # Then delete the parent stakeholder.
-        _query = "DELETE FROM tbl_stakeholder_input \
-                  WHERE fld_input_id={0:d}".format(input_id)
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        self.dicStakeholders.pop(input_id)
-
-        return(_results, _error_code)
-
-    def save_input(self, input_id):
-        """
-        Method to save the Stakeholder attributes to the RTK Project database.
-
-
-        :param int input_id: the ID of the stakeholder input to save.
-        :return: (_results, _error_code)
-        :rtype: tuple
-        """
-
-        _input = self.dicStakeholders[input_id]
-
-        _query = "UPDATE tbl_stakeholder_input \
-                  SET fld_stakeholder='{1:s}', fld_description='{2:s}', \
-                      fld_group='{3:s}', fld_priority={4:d}, \
-                      fld_customer_rank={5:d}, fld_planned_rank={6:d}, \
-                      fld_improvement={7:f}, fld_overall_weight={8:f}, \
-                      fld_requirement='{9:s}', fld_user_float_1={10:f}, \
-                      fld_user_float_2={11:f}, fld_user_float_3={12:f}, \
-                      fld_user_float_4={13:f}, fld_user_float_5={14:f} \
-                  WHERE fld_input_id={0:d}".format(
-                      _input.input_id, _input.stakeholder,
-                      _input.description, _input.group, _input.priority,
-                      _input.customer_rank, _input.planned_rank,
-                      _input.improvement, _input.overall_weight,
-                      _input.requirement, _input.lst_user_floats[0],
-                      _input.lst_user_floats[1], _input.lst_user_floats[2],
-                      _input.lst_user_floats[3], _input.lst_user_floats[4])
-        (_results, _error_code, __) = self.dao.execute(_query, commit=True)
-
-        return(_results, _error_code)
-
-    def save_all_inputs(self):
-        """
-        Method to save all Stakeholder data models managed by the controller.
-
+        Method to request the Stakeholder Data Model to add a new Stakeholder
+        to the RTK Program database.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
 
-        for _input in self.dicStakeholders.values():
-            (_results,
-             _error_code) = self.save_input(_input.input_id)
+        _return = False
 
-        return False
+        _error_code, _msg = self._dtm_stakeholder.insert()
 
-    def calculate_stakeholder(self, input_id):
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('insertedRevision',
+                            stakeholder_id=self.dtm_stakeholder.last_id)
+        else:
+            _msg = _msg + '  Failed to add a new Stakeholder to the RTK ' \
+                'Program database.'
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
+
+    def request_delete(self, stakeholder_id):
+        """
+        Method to request the Stakeholder Data Model to delete a Stakeholder
+        from the RTK Program database.
+
+        :param int stakeholder_id: the Stakeholder ID to delete.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code, _msg = self._dtm_stakeholder.delete(stakeholder_id)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'deletedStakeholder')
+
+    def request_update(self, stakeholder_id):
+        """
+        Method to request the Stakeholder Data Model save the RTKStakeholder
+        attributes to the RTK Program database.
+
+        :param int stakeholder_id: the ID of the Stakeholder to save.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code, _msg = self._dtm_stakeholder.update(stakeholder_id)
+
+        return RTKDataController.handle_results(self, _error_code, _msg,
+                                                'savedStakeholder')
+
+    def request_update_all(self):
+        """
+        Method to request the Stakeholder Data Model to save all RTKStakeholder
+        model attributes to the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+
+        _error_code, _msg = self._dtm_stakeholder.update_all()
+
+        return RTKDataController.handle_results(self, _error_code, _msg, None)
+
+    def request_calculate_weight(self, stakeholder_id):
         """
         Method to request the model calculate the Stakeholder input.
 
-
-        :param int input_id: the Stakholder ID to calculate.
-        :return: (improvement, overall_weight)
-        :rtype: tuple
+        :param int stakeholder_id: the Stakholder ID to calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
 
-        _stakeholder = self.dicStakeholders[input_id]
-        _stakeholder.calculate_weight()
-
-        return(_stakeholder.improvement, _stakeholder.overall_weight)
+        return self._dtm_stakeholder.calculate_weight(stakeholder_id)
