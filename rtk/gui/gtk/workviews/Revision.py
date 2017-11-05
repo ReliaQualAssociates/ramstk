@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
-Revision Package Work View Class
-###############################################################################
+Revision Work View
+-------------------------------------------------------------------------------
 """
 
 import locale
@@ -26,7 +25,7 @@ class GeneralData(RTKWorkView):
     The Revision General Data view displays all the general attributes for the
     selected Revision.  The attributes of a Revision General Data View are:
 
-    :ivar _dtc_revision: the :py:class:`rtk.revision.Revision.Revision` data
+    :ivar _dtc_data_controller: the :py:class:`rtk.revision.Revision.Revision` data
                          controller to use with this Work Book.
     :ivar int revision_id: the ID of the Revision currently being displayed.
     :ivar gtk.Entry txtCode: the gtk.Entry() to display/edit the Revision code.
@@ -57,7 +56,6 @@ class GeneralData(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_revision = None
 
         # Initialize public dictionary attributes.
 
@@ -67,16 +65,6 @@ class GeneralData(RTKWorkView):
         self._revision_id = None
 
         # General data tab widgets.
-        self.txtCode = rtk.RTKEntry(width=125,
-                                    tooltip=_(u"A unique code for the "
-                                              u"selected Revision."))
-        self.txtName = rtk.RTKEntry(width=125,
-                                    tooltip=_(u"The name of the selected "
-                                              u"Revision."))
-        self.txtTotalCost = rtk.RTKEntry(width=125, editable=False,
-                                         tooltip=_(u"Displays the total cost "
-                                                   u"of the selected "
-                                                   u"Revision."))
         self.txtCostFailure = rtk.RTKEntry(width=125, editable=False,
                                            tooltip=_(u"Displays the cost per "
                                                      u"failure of the "
@@ -85,14 +73,6 @@ class GeneralData(RTKWorkView):
                                         tooltip=_(u"Displays the failure cost "
                                                   u"per operating hour for "
                                                   u"the selected Revision."))
-        self.txtPartCount = rtk.RTKEntry(width=125, editable=False,
-                                         tooltip=_(u"Displays the total part "
-                                                   u"count for the selected "
-                                                   u"Revision."))
-        self.txtRemarks = rtk.RTKTextView(gtk.TextBuffer(), width=400,
-                                          tooltip=_(u"Enter any remarks "
-                                                    u"associated with the "
-                                                    u"selected Revision."))
 
         self._lst_handler_id.append(
             self.txtName.connect('focus-out-event',
@@ -128,17 +108,17 @@ class GeneralData(RTKWorkView):
         _error_code = 0
         _msg = ['', '', '']
 
-        if self._dtc_revision.request_calculate_reliability(
+        if self._dtc_data_controller.request_calculate_reliability(
                 self._revision_id, self._mission_time):
             _error_code = 1
             _msg[0] = 'Error calculating reliability attributes.'
 
-        if self._dtc_revision.request_calculate_availability(
+        if self._dtc_data_controller.request_calculate_availability(
                 self._revision_id):
             _error_code = 1
             _msg[1] = 'Error calculating availability attributes.'
 
-        if self._dtc_revision.request_calculate_costs(
+        if self._dtc_data_controller.request_calculate_costs(
                 self._revision_id, self._mission_time):
             _error_code = 1
             _msg[2] = 'Error calculating cost attributes.'
@@ -169,7 +149,7 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
 
-        return self._dtc_revision.request_update(self._revision_id)
+        return self._dtc_data_controller.request_update(self._revision_id)
 
     def _make_general_data_page(self):
         """
@@ -180,30 +160,7 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
 
-        _frame, _fixed = RTKWorkView._make_general_data_page()
-
-        _labels = [_(u"Revision Code:"), _(u"Revision Name:"),
-                   _(u"Total Cost:"), _(u"Cost/Failure:"),
-                   _(u"Cost/Hour:"), _(u"Total Part Count:"),
-                   _(u"Remarks:")]
-        _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
-        _x_pos += 50
-
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
-        _fixed.put(self.txtTotalCost, _x_pos, _y_pos[2])
-        _fixed.put(self.txtCostFailure, _x_pos, _y_pos[3])
-        _fixed.put(self.txtCostHour, _x_pos, _y_pos[4])
-        _fixed.put(self.txtPartCount, _x_pos, _y_pos[5])
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[6])
-
-        _fixed.show_all()
-
-        _label = rtk.RTKLabel(_(u"General\nData"), height=30, width=-1,
-                              justify=gtk.JUSTIFY_CENTER,
-                              tooltip=_(u"Displays general information for "
-                                        u"the selected Revision."))
-        self.hbx_tab_label.pack_start(_label)
+        (_frame, _fixed, _x_pos, _y_pos) = RTKWorkView._make_general_data_page(self)
 
         return _frame
 
@@ -279,8 +236,8 @@ class GeneralData(RTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_revision is not None:
-            _revision = self._dtc_revision.request_select(self._revision_id)
+        if self._dtc_data_controller is not None:
+            _revision = self._dtc_data_controller.request_select(self._revision_id)
 
             if index == 0:
                 _index = 17
@@ -317,8 +274,8 @@ class GeneralData(RTKWorkView):
 
         self._revision_id = module_id
 
-        self._dtc_revision = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_revision.request_select(self._revision_id)
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
+        _revision = self._dtc_data_controller.request_select(self._revision_id)
 
         self.txtTotalCost.set_text(str(locale.currency(_revision.cost)))
         self.txtCostFailure.set_text(
@@ -339,7 +296,7 @@ class AssessmentResults(RTKWorkView):
     The Revision General Data view displays all the general attributes for the
     selected Revision.  The attributes of a Revision General Data View are:
 
-    :ivar _dtc_revision: the :py:class:`rtk.revision.Revision.Revision` data
+    :ivar _dtc_data_controller: the :py:class:`rtk.revision.Revision.Revision` data
                          controller to use with this Work Book.
     :ivar int revision_id: the ID of the Revision currently being displayed.
     :ivar gtk.Entry txtActiveHt: the gtk.Entry() to display the Revision active
@@ -389,7 +346,6 @@ class AssessmentResults(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_revision = None
 
         # Initialize public dictionary attributes.
 
@@ -413,8 +369,7 @@ class AssessmentResults(RTKWorkView):
         :rtype: bool
         """
 
-        (_hbx_page,
-         __, __, __, __) = RTKWorkView._make_assessment_results_page(self)
+        (_hbx_page, __, __, __, __, __, __) = RTKWorkView._make_assessment_results_page(self)
 
         return _hbx_page
 
@@ -432,8 +387,8 @@ class AssessmentResults(RTKWorkView):
 
         self._revision_id = module_id
 
-        self._dtc_revision = self._mdcRTK.dic_controllers['revision']
-        _revision = self._dtc_revision.request_select(self._revision_id)
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
+        _revision = self._dtc_data_controller.request_select(self._revision_id)
 
         self.txtAvailability.set_text(
             str(self.fmt.format(_revision.availability_logistics)))

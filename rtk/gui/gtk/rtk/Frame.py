@@ -31,7 +31,7 @@ class RTKFrame(gtk.Frame):
 
         gtk.Frame.__init__(self)
 
-        _label = RTKLabel(label)
+        _label = RTKLabel(label, width=-1)
         _label.show_all()
 
         self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)

@@ -15,12 +15,98 @@ application.  This module is specific to RTK combo box widgets.
 from .Widget import gobject, gtk                    # pylint: disable=E0401
 
 
-class RTKComboBox(gtk.ComboBoxEntry):
+class RTKComboBox(gtk.ComboBox):
     """
     This is the RTK Entry class.
     """
 
-    def __init__(self, width=200, height=30, simple=True, has_entry=False,
+    def __init__(self, width=200, height=30, index=0, simple=True,
+                 tooltip='RTK WARNING: Missing tooltip.  '
+                         'Please register an Enhancement type bug.'):
+        """
+        Method to create RTK Combo widgets.
+
+        :keyword int width: width of the gtk.ComboBox() widget.  Default is
+                            200.
+        :keyword int height: height of the gtk.ComboBox() widget.  Default is
+                             30.
+        :keyword int index: the index in the RTKComboBox gtk.ListView() to
+                            display.  Default = 0.  Only needed with complex
+                            RTKComboBox.
+        :keyword bool simple: indicates whether this to make a simple (one
+                              item) or complex (three item) RTKComboBox.
+        :keyword str tooltip: the tooltip text to display for the
+        gtk.ComboBox().
+        """
+
+        gtk.ComboBox.__init__(self)
+
+        self.props.width_request = width
+        self.props.height_request = height
+
+        """
+        A simple (default) RTKComboBox contains and displays one field only.
+        A 'complex' RTKComboBox contains three str filed, but only displays the
+        first field.  The other two fields are hiddent and used to store
+        information associated with the items displayed in the RTKComboBox.
+        For example, if the name of an item is displayed, the other two fields
+        might contain a code and an index.  These could be extracted for use
+        in the RTK Views.
+        """
+        if not simple:
+            _list = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING)
+        else:
+            _list = gtk.ListStore(gobject.TYPE_STRING)
+
+        _cell = gtk.CellRendererText()
+        self.pack_start(_cell, True)
+        self.add_attribute(_cell, 'text', index)
+
+        self.set_model(_list)
+        self.set_tooltip_markup(tooltip)
+
+        self.show()
+
+    def do_load_combo(self, entries, index=0, simple=True):
+        """
+        Method to load gtk.ComboBox() widgets.
+
+        :param list entries: the information to load into the gtk.ComboBox().
+                             This is always a list of lists where each internal
+                             list contains the information to be displayed and
+                             there is one internal list for each RTKComboBox
+                             line.
+        :keyword int index: the index in the internal list to display.  Only
+                            used when doing a simple load.  Default is 0.
+        :keyword bool simple: indicates whether this is a simple (one item) or
+                              complex (three item) RTKComboBox.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _model = self.get_model()
+        _model.clear()
+
+        if not simple:
+            _model.append(["", "", ""])
+            for __, _entry in enumerate(entries):
+                _model.append(list(_entry))
+        else:
+            self.append_text("")
+            for __, _entry in enumerate(entries):
+                self.append_text(list(_entry)[index])
+
+        return _return
+
+
+class RTKComboBoxEntry(gtk.ComboBoxEntry):
+    """
+    This is the RTK Entry class.
+    """
+
+    def __init__(self, width=200, height=30,
                  tooltip='RTK WARNING: Missing tooltip.  '
                          'Please register an Enhancement type bug.'):
         """
@@ -38,46 +124,27 @@ class RTKComboBox(gtk.ComboBoxEntry):
                                  entries added by the user.
         :keyword str tooltip: the tooltip text to display for the
         gtk.ComboBox().
-        :return: _combobox
-        :rtype: gtk.ComboBox
         """
 
         gtk.ComboBoxEntry.__init__(self)
 
         self.props.width_request = width
-        self.props.height_request = height
 
-        if simple:
-            _list = gtk.ListStore(gobject.TYPE_STRING)
-        else:
-            _list = gtk.ListStore(gobject.TYPE_STRING,
-                                  gobject.TYPE_STRING,
-                                  gobject.TYPE_STRING)
-
-        _cell = gtk.CellRendererText()
-        self.pack_start(_cell, True)
-        self.set_attributes(_cell, text=0)
+        _list = gtk.ListStore(gobject.TYPE_STRING,
+                              gobject.TYPE_STRING,
+                              gobject.TYPE_STRING)
 
         self.set_model(_list)
-
-        if has_entry:
-            self.set_text_column(0)
-
+        self.set_text_column(0)
         self.set_tooltip_markup(tooltip)
 
         self.show()
 
-    def do_load_combo(self, entries, simple=True, index=0):
+    def do_load_combo(self, entries):
         """
         Method to load gtk.ComboBox() widgets.
 
         :param list entries: the information to load into the gtk.ComboBox().
-        :keyword bool simple: indicates whether the load is simple (single
-                              column) or complex (multiple columns).  For
-                              complex gtk.ComboBox(), the displayed value will
-                              be in column 0.
-        :keyword int index: the index in the list to display.  Only used when
-                            doing a simple load.  Default is 0.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -87,13 +154,8 @@ class RTKComboBox(gtk.ComboBoxEntry):
         _model = self.get_model()
         _model.clear()
 
-        if simple:
-            self.append_text("")
-            for __, entry in enumerate(entries):
-                self.append_text(entry[index])
-        else:
-            _model.append(None, ["", "", ""])
-            for __, entry in enumerate(entries):
-                _model.append(None, entry)
+        _model.append(None, ["", "", ""])
+        for __, entry in enumerate(entries):
+            _model.append(None, entry)
 
         return _return

@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-===============================================================================
-PyGTK Multi-Window Interface List Book
-===============================================================================
+Multi-Window Interface (MWI) List Book
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 """
 
 # Import modules for localization support.
@@ -50,7 +49,8 @@ class ListBook(RTKBook):                 # pylint: disable=R0904
                               [lvwUsageProfile(controller),
                                lvwFailureDefinition(controller)],
                               'function':
-                              [FunctionHardware(controller)]}
+                              [FunctionHardware(controller)],
+                              'requirement': []}
 
         # Initialize public list attributes.
 

@@ -212,3 +212,25 @@ class RTKRequirement(RTK_BASE):
                    "more RTKRequirement attributes."
 
         return _error_code, _msg
+
+    def create_code(self, prefix):
+        """
+        Method to create the Requirement code based on the requirement type and
+        it's ID.
+
+        :param str prefix: the prefix to use for the Requirement code.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        # Pad the suffix (Requirement ID) with zeros so the suffix is four
+        # characters wide and then create the code.
+        _zeds = 4 - len(str(self.requirement_id))
+        _pad = '0' * _zeds
+        _code = '{0:s}-{1:s}{2:d}'.format(prefix, _pad, self.requirement_id)
+
+        self.requirement_code = str(none_to_default(_code, ''))
+
+        return _return

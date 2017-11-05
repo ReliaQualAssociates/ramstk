@@ -8,8 +8,10 @@
 
 from .WorkView import RTKWorkView
 
-from .FMEA import FMEA as wvwFMEA
-from .Function import GeneralData as wvwFunctionGD
-from .Function import AssessmentResults as wvwFunctionAR
 from .Revision import GeneralData as wvwRevisionGD
 from .Revision import AssessmentResults as wvwRevisionAR
+from .Function import GeneralData as wvwFunctionGD
+from .Function import AssessmentResults as wvwFunctionAR
+from .FMEA import FMEA as wvwFMEA
+from .Requirement import GeneralData as wvwRequirementGD
+from .Requirement import RequirementAnalysis as wvwRequirementAnalysis

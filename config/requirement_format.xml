@@ -133,7 +133,7 @@ experience. -->
         <column>
             <defaulttitle>Validated Date</defaulttitle>
             <usertitle>Validated Date</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>13</position>
             <widget>text</widget>
             <editable>0</editable>

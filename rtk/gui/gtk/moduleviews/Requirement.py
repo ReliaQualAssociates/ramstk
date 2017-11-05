@@ -176,12 +176,13 @@ class ModuleView(RTKModuleView):
                 self._requirement_id)
             _attributes = list(_requirement.get_attributes())[2:]
             _attributes[self._lst_col_order[position] - 2] = str(new_text)
-            _requirement.set_attributes(_attributes)
+            _error_code, _msg = _requirement.set_attributes(_attributes)
 
-            pub.sendMessage(
-                'mvwEditedRequirement',
-                index=self._lst_col_order[position],
-                new_text=new_text)
+            if _error_code == 0:
+                pub.sendMessage(
+                    'mvwEditedRequirement',
+                    index=self._lst_col_order[position],
+                    new_text=new_text)
         else:
             _return = True
 
@@ -503,7 +504,7 @@ class ModuleView(RTKModuleView):
 
         _model, _row = self.treeview.get_selection().get_selected()
 
-        _model.set(_row, self._lst_col_order[position], new_text)
+        _model.set_value(_row, self._lst_col_order[position], new_text)
 
         return False
 

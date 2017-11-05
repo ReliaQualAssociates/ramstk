@@ -15,56 +15,6 @@ application.  This module is specific to RTK button widgets.
 from .Widget import _, gtk                           # pylint: disable=E0401
 
 
-class RTKCheckButton(gtk.CheckButton):
-    """
-    This is the RTK CheckButton class.
-    """
-
-    def __init__(self, label="", width=-1,
-                 tooltip='RTK WARNING: Missing tooltip.  '
-                         'Please register an Enhancement type bug.'):
-        """
-        Method to create CheckButton widgets.
-
-        :keyword str label: the text to display with the gtk.CheckButton().
-                            Default is an empty string.
-        :keyword int width: the desired width of the gtk.CheckButton().
-                            Default is -1 or a natural request.
-        :keyword str tooltip: the tooltip to display when hovering over the
-                              CheckButton.
-        :return: _checkbutton
-        :rtype: :py:class:`gtk.CheckButton`
-        """
-
-        gtk.CheckButton.__init__(self, label=label, use_underline=True)
-
-        self.set_tooltip_markup(tooltip)
-
-        self.get_child().set_use_markup(True)
-        self.get_child().set_line_wrap(True)
-        self.get_child().props.width_request = width
-
-
-class RTKOptionButton(gtk.RadioButton):
-    """
-    This is the RTK OptionButton class.
-    """
-
-    def __init__(self, btngroup=None, btnlabel=_(u"")):
-        """
-        Method to create OptionButton widgets.
-
-        :keyword str btngroup: the group the gtk.RadioButton() belongs to, if
-                               any.  Default is None.
-        :keyword str btnlabel: the text to place in the label on the
-                               gtk.RadioButton().  Default is an empty string.
-        :return: _optbutton
-        :rtype: :py:class:`gtk.RadioButton`
-        """
-
-        gtk.RadioButton.__init__(self, group=btngroup, label=btnlabel)
-
-
 class RTKButton(gtk.Button):
     """
     This is the RTK Button class.
@@ -101,3 +51,53 @@ class RTKButton(gtk.Button):
         self.props.height_request = height
 
         self.show_all()
+
+
+class RTKCheckButton(gtk.CheckButton):
+    """
+    This is the RTK Check Button class.
+    """
+
+    def __init__(self, label="", width=-1,
+                 tooltip='RTK WARNING: Missing tooltip.  '
+                         'Please register an Enhancement type bug.'):
+        """
+        Method to create CheckButton widgets.
+
+        :keyword str label: the text to display with the gtk.CheckButton().
+                            Default is an empty string.
+        :keyword int width: the desired width of the gtk.CheckButton().
+                            Default is -1 or a natural request.
+        :keyword str tooltip: the tooltip to display when hovering over the
+                              CheckButton.
+        :return: _checkbutton
+        :rtype: :py:class:`gtk.CheckButton`
+        """
+
+        gtk.CheckButton.__init__(self, label=label, use_underline=True)
+
+        self.set_tooltip_markup(tooltip)
+
+        self.get_child().set_use_markup(True)
+        self.get_child().set_line_wrap(True)
+        self.get_child().props.width_request = width
+
+
+class RTKOptionButton(gtk.RadioButton):
+    """
+    This is the RTK Option Button class.
+    """
+
+    def __init__(self, btngroup=None, btnlabel=_(u"")):
+        """
+        Method to create OptionButton widgets.
+
+        :keyword str btngroup: the group the gtk.RadioButton() belongs to, if
+                               any.  Default is None.
+        :keyword str btnlabel: the text to place in the label on the
+                               gtk.RadioButton().  Default is an empty string.
+        :return: _optbutton
+        :rtype: :py:class:`gtk.RadioButton`
+        """
+
+        gtk.RadioButton.__init__(self, group=btngroup, label=btnlabel)
