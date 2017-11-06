@@ -6,6 +6,9 @@ Develop Branch:
 [![Codacy Badge](https://api.codacy.com/project/badge/Coverage/f668feeaec0f46d5990a3c45aefc3923)](https://www.codacy.com/app/weibullguy/rtk?utm_source=github.com&utm_medium=referral&utm_content=weibullguy/rtk&utm_campaign=Badge_Coverage)  
 [![Documentation Status](https://readthedocs.org/projects/rtk/badge/?version=develop)](http://rtk.readthedocs.io/en/develop/?badge=develop)  
 
+# Documentation
+http://rtk.readthedocs.io/
+
 # rtk
 Reliability, Availability, Maintainability, Safety (RAMS) analysis program.
 
