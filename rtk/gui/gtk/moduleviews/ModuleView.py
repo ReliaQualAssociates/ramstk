@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
-RTK List View Package Meta Class
-###############################################################################
+RTKModuleView Meta-Class Module
+-------------------------------------------------------------------------------
 """
 
 from sortedcontainers import SortedDict  # pylint: disable=E0401

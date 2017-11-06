@@ -5,7 +5,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-Requirement Work View
+Requirement Work View Module
 -------------------------------------------------------------------------------
 """
 
@@ -25,7 +25,7 @@ class GeneralData(RTKWorkView):
     attributes of a Work View are:
 
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
-                               being controlled.
+                               being displayed.
     :ivar chkDerived = rtk.RTKCheckButton(
             label=_(u"Requirement is derived."),
             tooltip=_(u"Indicates whether or not the selected requirement is "
@@ -72,7 +72,7 @@ class GeneralData(RTKWorkView):
     +----------+-------------------------------------------+
     |     7    | cmbPriority `changed`                     |
     +----------+-------------------------------------------+
-    |     8    | cmbOwner `changd`                         |
+    |     8    | cmbOwner `changed`                        |
     +----------+-------------------------------------------+
     |     9    | chKValidated `toggled`                    |
     +----------+-------------------------------------------+
@@ -105,13 +105,13 @@ class GeneralData(RTKWorkView):
         self._lst_gendata_labels.pop(-1)
 
         # Initialize private scalar attributes.
+        self._requirement_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self._requirement_id = None
 
         # General data page widgets.
         self.btnValidateDate = rtk.RTKButton(height=25, width=25, label="...")
@@ -562,12 +562,28 @@ class GeneralData(RTKWorkView):
 
 class RequirementAnalysis(RTKWorkView):
     """
-    The Requirement Assessment Results Work View displays all the calculated
-    attributes for the selected Requirement. The attributes of a Requirement
-    Assessment Results Work View are:
+    The Requirement Analysis Work View displays all the analysis questions and
+    answers for the selected Requirement. The attributes of a Requirement
+    Analysis Work View are:
 
+    :ivar list _lst_clear_a: the list of integers [0, 1] corresponding to the
+                             answers to the Clarity questions.
+    :ivar list _lst_complete_a: the list of integers [0, 1] corresponding to
+                                the answers to the Completeness questions.
+    :ivar list _lst_consistent_a: the list of integers [0, 1] corresponding to
+                                  the answers to the Consistency questions.
+    :ivar list _lst_verifiable_a: the list of integers [0, 1] corresponding to
+                                  the answers to the Verifiability questions.
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
                                being controlled.
+    :ivar tvwClear: the :py:class:`gtk.RTKTreeView` listing all the Clarity
+                    questions and answers.
+    :ivar tvwComplete: the :py:class:`gtk.RTKTreeView` listing all the
+                       Completeness questions and answers.
+    :ivar tvwConsistent: the :py:class:`gtk.RTKTreeView` listing all the
+                         Consistency questions and answers.
+    :ivar tvwVerifiable: the :py:class:`gtk.RTKTreeView` listing all the
+                         Verifiability questions and answers.
     """
 
     def __init__(self, controller):

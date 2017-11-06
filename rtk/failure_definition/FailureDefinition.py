@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
-Failure Definition Module
-###############################################################################
+Failure Definition Package
+===============================================================================
 """
 
 # Import modules for localization support.

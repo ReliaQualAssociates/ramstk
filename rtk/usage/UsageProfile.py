@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
 Usage Profile Module
-###############################################################################
+-------------------------------------------------------------------------------
 """
 
 # Import modules for localization support.
@@ -33,25 +32,18 @@ class Model(RTKDataModel):
     the Mission, Phase, and Environment data models.  This is a hierarchical
     relationship, such as:
 
-          Mission 1
-          |
-          |_Mission Phase 11
-          |   |
-          |   |_Environment 111
-          |   |_Environment 112
-          |   |_Environment 113
-          |
-          |_Mission Phase 12
-          |   |
-          |   |_Environment 121
-          |   |_Environment 122
-          |
-          Mission 2
-          |
-          |_Mission Phase 21
-              |
-              |_Environment 211
-              |_Environment 212
+        * Mission 1
+            - Mission Phase 11
+                + Environment 111
+                + Environment 112
+                + Environment 113
+            - Mission Phase 12
+                + Environment 121
+                + Environment 122
+        * Mission 2
+            - Mission Phase 21
+                + Environment 211
+                + Environment 212
     """
 
     _tag = 'Usage Profiles'

@@ -1,5 +1,7 @@
-RTK Usage Profile Sub-Package
-=============================
+Usage Profile Package
+===============================================================================
+
+.. toctree::
 
 .. automodule:: rtk.usage.UsageProfile
     :members:
@@ -24,3 +26,4 @@ RTK Usage Profile Sub-Package
     :undoc-members:
     :private-members:
     :show-inheritance:
+

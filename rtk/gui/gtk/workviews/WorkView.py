@@ -5,7 +5,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-RTKWorkView Module
+RTKWorkView Meta-Class Module
 -------------------------------------------------------------------------------
 """
 
@@ -85,6 +85,11 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_gendata_labels = [
+            _(u"{0:s} Code:").format(self._module),
+            _(u"{0:s} Name:").format(self._module),
+            _(u"Remarks:")
+        ]
         """
         There are three labels that will appear on all General Data pages.
         Insert additional, WorkView specific labels into this list starting at
@@ -97,20 +102,7 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         of General Data page widgets.  This, then, ensures WorkView specific
         widgets don't overlap the Remarks widget.
         """
-        self._lst_gendata_labels = [
-            _(u"{0:s} Code:").format(self._module),
-            _(u"{0:s} Name:").format(self._module),
-            _(u"Remarks:")
-        ]
-        """
-        There are 10 labels that will appear in the left half and nine labels
-        that will appear in the right half of all Assessment Results pages.
-        Append additional, WorkView specific labels onto this list.  In the
-        __init__() method for the WorkView requiring specific labels, do
-        something like the following:
 
-            self._lst_assess_labels[0].append(_(u"Specific Label:"))
-        """
         self._lst_assess_labels = [[
             _(u"Active Failure Intensity [\u039B(t)]:"),
             _(u"Dormant \u039B(t):"),
@@ -133,6 +125,15 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
             _(u"Cost/Failure:"),
             _(u"Cost/Hour:")
         ]]
+        """
+        There are 10 labels that will appear in the left half and nine labels
+        that will appear in the right half of all Assessment Results pages.
+        Append additional, WorkView specific labels onto this list.  In the
+        __init__() method for the WorkView requiring specific labels, do
+        something like the following:
+
+            self._lst_assess_labels[0].append(_(u"Specific Label:"))
+        """
 
         # Initialize private scalar attributes.
 

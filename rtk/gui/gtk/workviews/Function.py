@@ -5,7 +5,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-Function Work View
+Function Work View Module
 -------------------------------------------------------------------------------
 """
 
@@ -21,48 +21,30 @@ from .WorkView import RTKWorkView
 
 class GeneralData(RTKWorkView):
     """
-    The Work View displays all the attributes for the selected Function. The
-    attributes of a Work View are:
+    The Work View displays all the general data attributes for the selected
+    Function. The attributes of a Function General Data Work View are:
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
-                           Function attribute.
+    :ivar int _function_id: the ID of the Function currently being displayed.
+    :ivar chkSafetyCritical: the :py:class:`rtk.gui.gtk.rtk.RTKCheckButton` to
+                             display/edit the Function's safety criticality.
+    :ivar txtTotalCost: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+                        Function cost.
+    :ivar txtModeCount: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+                        number of failure modes the function is susceptible to.
+
+    Callbacks signals in _lst_handler_id:
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
     +==========+===========================================+
-    |      0   | txtCode `focus_out_event`                 |
+    |     0    | txtCode `changed`                         |
     +----------+-------------------------------------------+
-    |      1   | txtName `focus_out_event`                 |
+    |     1    | txtName `changed`                         |
     +----------+-------------------------------------------+
-    |      2   | txtRemarks `focus_out_event`              |
+    |     2    | txtRemarks `changed`                      |
     +----------+-------------------------------------------+
-    |      3   | Mission gtk.CellRendererCombo() `edited`  |
+    |     3    | chkSafetyCritical `toggled`               |
     +----------+-------------------------------------------+
-    |      4   | Phase gtk.CellRendererCombo() `edited`    |
-    +----------+-------------------------------------------+
-    |      5   | btnAddMode `clicked`                      |
-    +----------+-------------------------------------------+
-    |      6   | btnRemoveMode `clicked`                   |
-    +----------+-------------------------------------------+
-    |      7   | btnSaveFMEA `clicked`                     |
-    +----------+-------------------------------------------+
-
-    :ivar _dtc_data_controller: the :class:`rtk.function.Function.Function` data
-                         controller to use with this Work Book.
-
-    :ivar chkSafetyCritical: the :class:`gtk.CheckButton` to display/edit the
-                             Function's safety criticality.
-
-    :ivar txtCode: the :class:`gtk.Entry` to display/edit the Function code.
-    :ivar txtName: the :class:`gtk.Entry` to display/edit the Function name.
-    :ivar txtTotalCost: the :class:`gtk.Entry` to display the Function cost.
-    :ivar txtModeCount: the :class:`gtk.Entry` to display the number of
-                        hardware failure modes the Function is susceptible to.
-    :ivar txtPartCount: the :class:`gtk.Entry` to display the number of
-                        hardware components comprising the Function.
-    :ivar txtRemarks: the :class:`gtk.Entry` to display/edit the Function
-                      remarks.
     """
 
     def __init__(self, controller):
@@ -80,13 +62,13 @@ class GeneralData(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._function_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self._function_id = None
 
         # General data page widgets.
         self.chkSafetyCritical = rtk.RTKCheckButton(
@@ -139,8 +121,8 @@ class GeneralData(RTKWorkView):
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" + _msg[1]
-                        + "\n\n").format(self._function_id)
+                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
+                        _msg[1] + "\n\n").format(self._function_id)
             _error_dialog = rtk.RTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
@@ -171,7 +153,8 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
 
-        (_frame, _fixed, _x_pos, _y_pos) = RTKWorkView._make_general_data_page(self)
+        (_frame, _fixed, _x_pos,
+         _y_pos) = RTKWorkView._make_general_data_page(self)
 
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
 
@@ -295,6 +278,8 @@ class GeneralData(RTKWorkView):
 
         self._function_id = module_id
 
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
         _function = self._dtc_data_controller.request_select(self._function_id)
 
@@ -316,31 +301,11 @@ class GeneralData(RTKWorkView):
 
 class AssessmentResults(RTKWorkView):
     """
-    The Work View displays all the attributes for the selected Function. The
-    attributes of a Work View are:
+    The Function Assessment Results view displays all the assessment results
+    for the selected Function.  The attributes of a Function Assessment Results
+    View are:
 
-    :ivar _dtc_data_controller: the :class:`rtk.function.Function.Function` data
-                         controller to use with this Work Book.
-    :ivar txtPredictedHt: the :class:`gtk.Entry` to display the Function
-                          logistics hazard rate.
-    :ivar txtMissionHt: the :class:`gtk.Entry` to display the Function mission
-                        hazard rate.
-    :ivar txtMTBF: the :class:`gtk.Entry` to display the Function logistics
-                   MTBF.
-    :ivar txtMissionMTBF: the :class:`gtk.Entry` to display the Function
-                          mission MTBF.
-    :ivar txtMPMT: the :class:`gtk.Entry` to display the Function mean
-                   preventive maintenance time.
-    :ivar txtMCMT: the :class:`gtk.Entry` to display the Function mean
-                   corrective maintenance time.
-    :ivar txtMTTR: the :class:`gtk.Entry` to display the Function mean time to
-                   repair.
-    :ivar txtMMT: the :class:`gtk.Entry` to display the Function mean
-                  maintenance time.
-    :ivar txtAvailability: the :class:`gtk.Entry` to display the Function
-                           logistics availability.
-    :ivar txtMissionAt: the :class:`gtk.Entry` to display the Function mission
-                        availability.
+    :ivar int _function_id: the ID of the Function currently being displayed.
     """
 
     def __init__(self, controller):
@@ -391,7 +356,8 @@ class AssessmentResults(RTKWorkView):
         :rtype: bool
         """
 
-        (_hbx_page, __, _fxd_right, ___, _x_pos_r, __, _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
+        (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
+         _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
 
         _fxd_right.put(self.txtModeCount, _x_pos_r, _y_pos_r[8] + 30)
         _fxd_right.show_all()
@@ -418,6 +384,8 @@ class AssessmentResults(RTKWorkView):
 
         self._function_id = module_id
 
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
         _function = self._dtc_data_controller.request_select(self._function_id)
 

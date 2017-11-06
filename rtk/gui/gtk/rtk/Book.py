@@ -5,9 +5,11 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-===============================================================================
-PyGTK Multi-Window Interface Book
-===============================================================================
+RTKBook Module
+-------------------------------------------------------------------------------
+
+This module contains the base class for all the RTK books.  It provides the
+basis for the RTKListBook, RTKModuleBook, and RTKWorkBook.
 """
 
 import sys

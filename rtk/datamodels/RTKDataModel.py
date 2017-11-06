@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
 RTKDataModel Module
-###############################################################################
+===============================================================================
 """
 
 from treelib import tree, Tree                  # pylint: disable=E0401

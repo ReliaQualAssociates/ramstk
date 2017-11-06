@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
-Revision Package Data Module
-###############################################################################
+Revision Package
+===============================================================================
 """
 
 from pubsub import pub                              # pylint: disable=E0401
@@ -325,12 +324,8 @@ class Revision(RTKDataController):
     one or more Revision data models.  The attributes of a Revision data
     controller are:
 
-    :ivar __test: control variable used to suppress certain code during
-                  testing.
-    :ivar _dtm_revision: the :py:class:`rtk.Revision.Model` associated with
-                         the Revision Data Controller.
-    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
-                          instance associated with the current RTK instance.
+    :ivar _dtm_revision: the :py:class:`rtk.revision.Revision.Model` associated
+                         with the Revision Data Controller.
     """
 
     def __init__(self, dao, configuration, **kwargs):
