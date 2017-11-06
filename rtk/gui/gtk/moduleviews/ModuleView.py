@@ -155,7 +155,7 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         _model.clear()
 
         self._do_load_tree(tree)
-
+s
         _row = _model.get_iter_root()
         self.treeview.expand_all()
         if _row is not None:

@@ -30,13 +30,16 @@ class RTKProgramInfo(RTK_BASE):
     program_id = Column('fld_program_id', Integer, primary_key=True,
                         autoincrement=True, nullable=False)
     revision_prefix = Column('fld_revision_prefix', String(512),
-                             default='REVISION')
+                             default='REVN')
     revision_next_id = Column('fld_revision_next_id', Integer, default=0)
     function_prefix = Column('fld_function_prefix', String(512),
-                             default='FUNCTION')
+                             default='FUNC')
     function_next_id = Column('fld_function_next_id', Integer, default=0)
+    requirement_prefix = Column('fld_requirement_prefix', String(512),
+                             default='RQMT')
+    requirement_next_id = Column('fld_requirement_next_id', Integer, default=0)
     assembly_prefix = Column('fld_assembly_prefix', String(512),
-                             default='ASSEMBLY')
+                             default='ASSY')
     assembly_next_id = Column('fld_assembly_next_id', Integer, default=0)
     part_prefix = Column('fld_part_prefix', String(512), default='PART')
     part_next_id = Column('fld_part_next_id', Integer, default=0)

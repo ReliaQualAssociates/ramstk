@@ -76,6 +76,8 @@ class GeneralData(RTKWorkView):
             tooltip=_(u"Indicates whether or not the selected function is "
                       u"safety critical."))
 
+        self.txtName.props.width_request = 800
+
         # Connect to callback functions for editable gtk.Widgets().
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 0))

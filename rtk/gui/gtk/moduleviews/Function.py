@@ -9,22 +9,20 @@ Function Module View Module
 -------------------------------------------------------------------------------
 """
 
-from pubsub import pub                          # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk import rtk                         # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk           # pylint: disable=E0401,W0611
-from .ModuleView import RTKModuleView           # pylint: disable=E0401
+from gui.gtk import rtk  # pylint: disable=E0401
+from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
+from .ModuleView import RTKModuleView  # pylint: disable=E0401
 
 
 class ModuleView(RTKModuleView):
     """
-    The Module Book view displays all the Functions associated with the RTK
-    Project in a flat list.  The attributes of a Module View are:
+    The Function Module Book view displays all the Functions associated with
+    the RTK Program in a flat list.  The attributes of the Function Module View
+    are:
 
-    :ivar _dtc_data_controller: the :py:class:`rtk.function.Function.Function`
-                                data controller to use for accessing the
-                                Function data models.
     :ivar _function_id: the ID of the currently selected Function.
     :ivar _revision_id: the ID of the currently selected Revision.
     """
@@ -63,8 +61,11 @@ class ModuleView(RTKModuleView):
             self.treeview.connect('button_press_event', self._on_button_press))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = rtk.RTKLabel(_(u"Functions"), width=-1, height=-1,
-                              tooltip=_(u"Displays the program functions."))
+        _label = rtk.RTKLabel(
+            _(u"Functions"),
+            width=-1,
+            height=-1,
+            tooltip=_(u"Displays the program functions."))
 
         self.hbx_tab_label.pack_start(self._img_tab)
         self.hbx_tab_label.pack_end(_label)
@@ -125,8 +126,8 @@ class ModuleView(RTKModuleView):
 
         _return = False
 
-        if not RTKModuleView._do_edit_cell(__cell, path, new_text,
-                                           position, model):
+        if not RTKModuleView._do_edit_cell(__cell, path, new_text, position,
+                                           model):
 
             _function = self._dtc_data_controller.request_select(
                 self._function_id)
@@ -134,9 +135,10 @@ class ModuleView(RTKModuleView):
             _attributes[self._lst_col_order[position] - 2] = str(new_text)
             _function.set_attributes(_attributes)
 
-            pub.sendMessage('mvwEditedFunction',
-                            index=self._lst_col_order[position],
-                            new_text=new_text)
+            pub.sendMessage(
+                'mvwEditedFunction',
+                index=self._lst_col_order[position],
+                new_text=new_text)
         else:
             _return = True
 
@@ -166,31 +168,35 @@ class ModuleView(RTKModuleView):
             if self._dtc_data_controller.request_delete(self._function_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Function {0:d}.").format(self._function_id)
-                _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                     self._dic_icons['error'],
-                                                     'error')
+                _error_dialog = rtk.RTKMessageDialog(
+                    _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == gtk.RESPONSE_OK:
                     _error_dialog.do_destroy()
 
                 _return = True
+            else:
+                _model, _row = self.treeview.get_selection().get_selected()
+                _prow = _model.iter_parent(_row)
+                _model.remove(_row)
+
+                if _prow is not None:
+                    _path = _model.get_path(_prow)
+                    _column = self.treeview.get_column(0)
+                    self.treeview.set_cursor(_path, None, False)
+                    ssself.treeview.row_activated(_path, _column)
+
         else:
             _dialog.do_destroy()
 
         return _return
 
-    def _do_request_insert(self, __button, sibling=True):
+    def _do_request_insert(self, sibling=True):
         """
         Method to send request to insert a new Function into the RTK Program
         database.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
-        :param str level: the level the new Function should have relative to
-                          the currently selected Function.  Values are:
-
-                          * sibling
-                          * child
-
+        :param bool sibling: indicates whether to insert a sibling (default)
+                             Function or a child Function.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -208,31 +214,33 @@ class ModuleView(RTKModuleView):
         if _parent_id is None:
             _parent_id = 0
 
-        if not self._dtc_data_controller.request_insert(self._revision_id,
-                                                        _parent_id, sibling):
+        if not self._dtc_data_controller.request_insert(
+                self._revision_id, _parent_id, sibling):
+            # TODO: Add code to the FMEA Class to respond to the 'insertedFunction' pubsub message and insert a set of functional failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
 
-            # Get the currently selected row, the level of the currently
-            # selected item, and it's parent row in the Function tree.
+            _last_id = self._dtc_data_controller.request_last_id()
+            _function = self._dtc_data_controller.request_select(_last_id)
+            _data = _function.get_attributes()
+
             _model, _row = self.treeview.get_selection().get_selected()
             _prow = _model.iter_parent(_row)
-
-            _data = _function.get_attributes()
-            if _parent_id == 0:
+            if _function.parent_id == 0:
                 _model.append(None, _data)
-            elif _parent_id != 0 and sibling:
+            elif _function.parent_id != 0 and sibling:
                 _model.append(_prow, _data)
-            else:
+            else:  # Inserting a child.
                 _model.append(_row, _data)
+                _path = _model.get_path(_row)
+                self.treeview.expand_row(_path, True)
 
             self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['function'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"function to Revision "
                         u"{0:d}.").format(self._revision_id)
-            _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                 self._dic_icons['error'],
-                                                 'error')
+            _error_dialog = rtk.RTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             self._mdcRTK.debug_log.error(_prompt)
 
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
@@ -241,6 +249,32 @@ class ModuleView(RTKModuleView):
             _return = True
 
         return _return
+
+    def _do_request_insert_child(self, __button):
+        """
+        Method to send request to insert a new Function into the RTK Program
+        database as child of the currently selected Function.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._do_request_insert(False)
+
+    def _do_request_insert_sibling(self, __button):
+        """
+        Method to send request to insert a new Function into the RTK Program
+        database as a sibling of the currently selected Function.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._do_request_insert(True)
 
     def _do_request_update(self, __button):
         """
@@ -276,20 +310,25 @@ class ModuleView(RTKModuleView):
         :rtype: :py:class:`gtk.ButtonBox`
         """
 
-        _tooltips = [_(u"Adds a new Function at the same hierarchy level as "
-                       u"the selected Function (i.e., a sibling Function)."),
-                     _(u"Adds a new Function one level subordinate to the "
-                       u"selected Function (i.e., a child function)."),
-                     _(u"Remove the currently selected Function."),
-                     _(u"Save the currently selected Function to the open "
-                       u"RTK Program database."),
-                     _(u"Saves all Functions to the open RTK Program "
-                       u"database.")]
-        _callbacks = [self._do_request_insert, self._do_request_insert,
-                      self._do_request_delete, self._do_request_update,
-                      self._do_request_update_all]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'save',
-                  'save-all']
+        _tooltips = [
+            _(u"Adds a new Function at the same hierarchy level as "
+              u"the selected Function (i.e., a sibling Function)."),
+            _(u"Adds a new Function one level subordinate to the "
+              u"selected Function (i.e., a child function)."),
+            _(u"Remove the currently selected Function."),
+            _(u"Save the currently selected Function to the open "
+              u"RTK Program database."),
+            _(u"Saves all Functions to the open RTK Program "
+              u"database.")
+        ]
+        _callbacks = [
+            self._do_request_insert_sibling, self._do_request_insert_child,
+            self._do_request_delete, self._do_request_update,
+            self._do_request_update_all
+        ]
+        _icons = [
+            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+        ]
 
         _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
                                                    _callbacks, 'vertical')
@@ -419,7 +458,7 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_select_revision(self, module_id):     # pylint: disable=W0221
+    def _on_select_revision(self, module_id):  # pylint: disable=W0221
         """
         Method to load the Function Module Book view gtk.TreeModel() with
         Function information when an RTK Program database is opened.

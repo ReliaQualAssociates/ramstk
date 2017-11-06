@@ -456,3 +456,14 @@ class Requirement(RTKDataController):
         _requirement = self.request_select(requirement_id)
 
         return list(_requirement.get_attributes())
+
+    def request_last_id(self):
+        """
+        Method to request the last Requirement ID used in the RTK Program
+        database.
+
+        :return: the last Requirement ID used.
+        :rtype: int
+        """
+
+        return self._dtm_requirement.last_id

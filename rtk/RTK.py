@@ -835,6 +835,9 @@ class RTK(object):
                 [_program_info.revision_prefix, _program_info.revision_next_id]
             self.RTK_CONFIGURATION.RTK_PREFIX['function'] = \
                 [_program_info.function_prefix, _program_info.function_next_id]
+            self.RTK_CONFIGURATION.RTK_PREFIX['requirement'] = \
+                [_program_info.requirement_prefix,
+                 _program_info.requirement_next_id]
             self.RTK_CONFIGURATION.RTK_PREFIX['assembly'] = \
                 [_program_info.assembly_prefix, _program_info.assembly_next_id]
             self.RTK_CONFIGURATION.RTK_PREFIX['part'] = \

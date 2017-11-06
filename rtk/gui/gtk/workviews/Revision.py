@@ -63,6 +63,7 @@ class GeneralData(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.txtName.props.width_request = 800
 
         self._lst_handler_id.append(
             self.txtName.connect('focus-out-event', self._on_focus_out, 0))

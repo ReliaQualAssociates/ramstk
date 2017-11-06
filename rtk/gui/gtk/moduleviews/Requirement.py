@@ -19,12 +19,10 @@ from .ModuleView import RTKModuleView  # pylint: disable=E0401
 
 class ModuleView(RTKModuleView):
     """
-    The Module Book view displays all the Requirements associated with the RTK
-    Project in a flat list.  The attributes of a Module View are:
+    The Requirement Module Book view displays all the Requirements associated
+    with the RTK Program in a hierarchical list.  The attributes of the
+    Requriements Module View are:
 
-    :ivar _dtc_data_controller: the :py:class:`rtk.requirement.Requirement.Requirement`
-                            data controller to use for accessing the
-                            Requirement data models.
     :ivar _requirement_id: the ID of the currently selected Requirement.
     :ivar _revision_id: the ID of the currently selected Revision.
     """
@@ -85,15 +83,15 @@ class ModuleView(RTKModuleView):
         pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_edit, 'wvwEditedRequirement')
 
-    def _do_change_cell(self, cell, path, new_iter, position):
+    def _do_change_cell(self, cell, __path, new_iter, position):
         """
         Method to handle edits of the Requirement package Module View
         gtk.Treeview() gtk.CellRendererCombo()s.
 
         :param __cell: the gtk.CellRendererCombo() that was edited.
         :type __cell: :py:class:`gtk.CellRendererCombo`
-        :param str path: the gtk.TreeView() path of the gtk.CellRendererCombo()
-                         that was edited.
+        :param str __path: the gtk.TreeView() path of the
+                           gtk.CellRendererCombo() that was edited.
         :param str new_iter: the new gtk.TreeITer() selected in the changed
                              gtk.CellRendererCombo().
         :param int position: the column position of the edited
@@ -218,24 +216,29 @@ class ModuleView(RTKModuleView):
                     _error_dialog.do_destroy()
 
                 _return = True
+            else:
+                _model, _row = self.treeview.get_selection().get_selected()
+                _prow = _model.iter_parent(_row)
+                _model.remove(_row)
+
+                if _prow is not None:
+                    _path = _model.get_path(_prow)
+                    _column = self.treeview.get_column(0)
+                    self.treeview.set_cursor(_path, None, False)
+                    ssself.treeview.row_activated(_path, _column)
+
         else:
             _dialog.do_destroy()
 
         return _return
 
-    def _do_request_insert(self, __button, sibling=True):
+    def _do_request_insert(self, sibling=True):
         """
         Method to send request to insert a new Requirement into the RTK Program
         database.
 
-        :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
-        :param str level: the level the new Requirement should have relative to
-                          the currently selected Requirement.  Values are:
-
-                          * sibling
-                          * child
-
+        :param bool sibling: indicates whether to insert a sibling (default)
+                             Requirement or a child Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -258,18 +261,20 @@ class ModuleView(RTKModuleView):
                 self._revision_id, _parent_id, sibling):
             # TODO: Add code to the Matrix Class to respond to the 'insertedRequirement' pubsub message and insert a record into each of the Requirement-X matrices.
 
-            # Get the currently selected row, the level of the currently
-            # selected item, and it's parent row in the Requirement tree.
+            _last_id = self._dtc_data_controller.request_last_id()
+            _requirement = self._dtc_data_controller.request_select(_last_id)
+            _data = _requirement.get_attributes()
+
             _model, _row = self.treeview.get_selection().get_selected()
             _prow = _model.iter_parent(_row)
-
-            _data = _requirement.get_attributes()
             if _parent_id == 0:
                 _model.append(None, _data)
             elif _parent_id != 0 and sibling:
                 _model.append(_prow, _data)
-            else:
+            else:  # Inserting a child.
                 _model.append(_row, _data)
+                _path = _model.get_path(_row)
+                self.treeview.expand_row(_path, True)
 
             self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['requirement'][1] += 1
         else:
@@ -286,6 +291,32 @@ class ModuleView(RTKModuleView):
             _return = True
 
         return _return
+
+    def _do_request_insert_child(self, __button):
+        """
+        Method to send request to insert a new Requirement into the RTK Program
+        database as child of the currently selected Requirement.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._do_request_insert(False)
+
+    def _do_request_insert_sibling(self, __button):
+        """
+        Method to send request to insert a new Requirement into the RTK Program
+        database as a sibling of the currently selected Requirement.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :py:class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        return self._do_request_insert(True)
 
     def _do_request_update(self, __button):
         """
@@ -332,7 +363,7 @@ class ModuleView(RTKModuleView):
             _(u"Saves all Requirements to the open RTK Program database.")
         ]
         _callbacks = [
-            self._do_request_insert, self._do_request_insert,
+            self._do_request_insert_sibling, self._do_request_insert_child,
             self._do_request_delete, self._do_request_update,
             self._do_request_update_all
         ]

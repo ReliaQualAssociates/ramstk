@@ -112,8 +112,6 @@ class GeneralData(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-
-        # General data page widgets.
         self.btnValidateDate = rtk.RTKButton(height=25, width=25, label="...")
         self.chkDerived = rtk.RTKCheckButton(
             label=_(u"Requirement is derived."),
@@ -482,6 +480,7 @@ class GeneralData(RTKWorkView):
 
         self.cmbRequirementType.handler_block(self._lst_handler_id[2])
         _types = self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE
+        self.cmbRequirementType.set_active(0)
         for _key, _type in _types.iteritems():
             if _type[1] == _requirement.requirement_type:
                 self.cmbRequirementType.set_active(int(_key))
@@ -505,6 +504,7 @@ class GeneralData(RTKWorkView):
 
         self.cmbOwner.handler_block(self._lst_handler_id[8])
         _groups = self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS
+        self.cmbOwner.set_active(0)
         for _key, _group in _groups.iteritems():
             if _group[0] == _requirement.owner:
                 self.cmbOwner.set_property('active', int(_key))
