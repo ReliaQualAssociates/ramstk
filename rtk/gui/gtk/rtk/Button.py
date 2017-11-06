@@ -15,7 +15,7 @@ application.
 """
 
 # Import the rtk.Widget base class.
-from .Widget import _, gtk                           # pylint: disable=E0401
+from .Widget import _, gtk  # pylint: disable=E0401
 
 
 class RTKButton(gtk.Button):
@@ -46,8 +46,6 @@ class RTKButton(gtk.Button):
             _image = gtk.Image()
             _icon = gtk.gdk.pixbuf_new_from_file_at_size(icon, height, width)
             _image.set_from_pixbuf(_icon)
-
-            #_image.set_from_file(icon)
             self.set_image(_image)
 
         self.props.width_request = width
@@ -61,9 +59,11 @@ class RTKCheckButton(gtk.CheckButton):
     This is the RTK Check Button class.
     """
 
-    def __init__(self, label="", width=-1,
+    def __init__(self,
+                 label="",
+                 width=-1,
                  tooltip='RTK WARNING: Missing tooltip.  '
-                         'Please register an Enhancement type bug.'):
+                 'Please register an Enhancement type bug.'):
         """
         Method to create CheckButton widgets.
 

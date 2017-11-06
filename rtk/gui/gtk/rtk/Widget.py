@@ -17,18 +17,18 @@ import sys
 import gettext
 
 # Modules required for the GUI.
-import pango                                    # pylint: disable=E0401,W0611
+import pango  # pylint: disable=E0401,W0611
 try:
-    import pygtk                                # pylint: disable=W0611
+    import pygtk  # pylint: disable=W0611
     pygtk.require('2.0')
 except ImportError:
     sys.exit(1)
 try:
-    import gtk                                  # pylint: disable=W0611
+    import gtk  # pylint: disable=W0611
 except ImportError:
     sys.exit(1)
 try:
-    import gobject                              # pylint: disable=W0611
+    import gobject  # pylint: disable=W0611
 except ImportError:
     sys.exit(1)
 
@@ -80,9 +80,12 @@ def set_cursor(controller, cursor):
                                   - gtk.gdk.XTERM - selection bar
     """
 
-    controller.dic_books['listbook'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.dic_books['modulebook'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
-    controller.dic_books['workbook'].get_window().set_cursor(gtk.gdk.Cursor(cursor))
+    controller.dic_books['listbook'].get_window().set_cursor(
+        gtk.gdk.Cursor(cursor))
+    controller.dic_books['modulebook'].get_window().set_cursor(
+        gtk.gdk.Cursor(cursor))
+    controller.dic_books['workbook'].get_window().set_cursor(
+        gtk.gdk.Cursor(cursor))
 
     gtk.gdk.flush()
 

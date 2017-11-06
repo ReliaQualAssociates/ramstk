@@ -183,7 +183,7 @@ class ModuleView(RTKModuleView):
                     _path = _model.get_path(_prow)
                     _column = self.treeview.get_column(0)
                     self.treeview.set_cursor(_path, None, False)
-                    ssself.treeview.row_activated(_path, _column)
+                    self.treeview.row_activated(_path, _column)
 
         else:
             _dialog.do_destroy()

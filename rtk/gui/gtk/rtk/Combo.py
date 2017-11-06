@@ -15,7 +15,7 @@ widgets in the RTK application.
 """
 
 # Import the rtk.Widget base class.
-from .Widget import gobject, gtk                    # pylint: disable=E0401
+from .Widget import gobject, gtk  # pylint: disable=E0401
 
 
 class RTKComboBox(gtk.ComboBox):
@@ -23,9 +23,13 @@ class RTKComboBox(gtk.ComboBox):
     This is the RTK Entry class.
     """
 
-    def __init__(self, width=200, height=30, index=0, simple=True,
+    def __init__(self,
+                 width=200,
+                 height=30,
+                 index=0,
+                 simple=True,
                  tooltip='RTK WARNING: Missing tooltip.  '
-                         'Please register an Enhancement type bug.'):
+                 'Please register an Enhancement type bug.'):
         """
         Method to create RTK Combo widgets.
 
@@ -47,17 +51,9 @@ class RTKComboBox(gtk.ComboBox):
         self.props.width_request = width
         self.props.height_request = height
 
-        """
-        A simple (default) RTKComboBox contains and displays one field only.
-        A 'complex' RTKComboBox contains three str filed, but only displays the
-        first field.  The other two fields are hiddent and used to store
-        information associated with the items displayed in the RTKComboBox.
-        For example, if the name of an item is displayed, the other two fields
-        might contain a code and an index.  These could be extracted for use
-        in the RTK Views.
-        """
         if not simple:
-            _list = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING)
+            _list = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
+                                  gobject.TYPE_STRING)
         else:
             _list = gtk.ListStore(gobject.TYPE_STRING)
 
@@ -82,7 +78,17 @@ class RTKComboBox(gtk.ComboBox):
         :keyword int index: the index in the internal list to display.  Only
                             used when doing a simple load.  Default is 0.
         :keyword bool simple: indicates whether this is a simple (one item) or
-                              complex (three item) RTKComboBox.
+                              complex (three item) RTKComboBox.  A
+                              simple (default) RTKComboBox contains and
+                              displays one field only.  A 'complex' RTKComboBox
+                              contains three str fields, but only displays the
+                              first field.  The other two fields are hidden and
+                              used to store information associated with the
+                              items displayed in the RTKComboBox.  For example,
+                              if the name of an item is displayed, the other
+                              two fields might contain a code and an index.
+                              These could be extracted for use in the RTK
+                              Views.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -109,9 +115,11 @@ class RTKComboBoxEntry(gtk.ComboBoxEntry):
     This is the RTK Entry class.
     """
 
-    def __init__(self, width=200, height=30,
+    def __init__(self,
+                 width=200,
+                 height=30,
                  tooltip='RTK WARNING: Missing tooltip.  '
-                         'Please register an Enhancement type bug.'):
+                 'Please register an Enhancement type bug.'):
         """
         Method to create RTK Combo widgets.
 
@@ -132,9 +140,9 @@ class RTKComboBoxEntry(gtk.ComboBoxEntry):
         gtk.ComboBoxEntry.__init__(self)
 
         self.props.width_request = width
+        self.props.height_request = height
 
-        _list = gtk.ListStore(gobject.TYPE_STRING,
-                              gobject.TYPE_STRING,
+        _list = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_STRING,
                               gobject.TYPE_STRING)
 
         self.set_model(_list)

@@ -15,8 +15,8 @@ application.
 """
 
 # Import other RTK Widget classes.
-from .Widget import _, gtk                          # pylint: disable=E0401
-from .Label import RTKLabel                         # pylint: disable=E0401
+from .Widget import _, gtk  # pylint: disable=E0401
+from .Label import RTKLabel  # pylint: disable=E0401
 
 
 class RTKFrame(gtk.Frame):

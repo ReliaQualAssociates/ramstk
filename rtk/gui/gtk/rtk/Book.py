@@ -56,7 +56,7 @@ def destroy(__widget, __event=None):
     return False
 
 
-class RTKBook(gtk.Window):               # pylint: disable=R0904
+class RTKBook(gtk.Window):  # pylint: disable=R0904
     """
     This is the base view for the pyGTK multiple window interface List Book,
     Module Book, and Work Book.  Attributes of the RTKBook are:
@@ -139,7 +139,7 @@ class RTKBook(gtk.Window):               # pylint: disable=R0904
         # selected.
         _n_pages = self.notebook.get_n_pages()
         if _n_pages > 0:
-            for _page in list(xrange(_n_pages)):    # pylint: disable=E0602
+            for _page in list(xrange(_n_pages)):  # pylint: disable=E0602
                 self.notebook.remove_page(-1)
 
         return _return

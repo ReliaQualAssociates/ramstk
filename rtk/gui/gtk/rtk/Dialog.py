@@ -19,7 +19,7 @@ import os
 from datetime import datetime
 
 # Import the rtk.Widget base class.
-from .Widget import _, gtk                          # pylint: disable=E0401
+from .Widget import _, gtk  # pylint: disable=E0401
 
 
 class RTKDialog(gtk.Dialog):
@@ -27,10 +27,12 @@ class RTKDialog(gtk.Dialog):
     This is the RTK Dialog class.
     """
 
-    def __init__(self, dlgtitle, dlgparent=None,
+    def __init__(self,
+                 dlgtitle,
+                 dlgparent=None,
                  dlgflags=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
-                 dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_OK,
-                             gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)):
+                 dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_OK, gtk.STOCK_CANCEL,
+                             gtk.RESPONSE_CANCEL)):
         """
         Method to create a RTK Dialog widget.
 
@@ -48,8 +50,12 @@ class RTKDialog(gtk.Dialog):
         :rtype: gtk.Dialog
         """
 
-        gtk.Dialog.__init__(self, title=dlgtitle, parent=dlgparent,
-                            flags=dlgflags, buttons=dlgbuttons)
+        gtk.Dialog.__init__(
+            self,
+            title=dlgtitle,
+            parent=dlgparent,
+            flags=dlgflags,
+            buttons=dlgbuttons)
 
         self.set_has_separator(True)
 
@@ -163,13 +169,15 @@ class RTKDateSelect(gtk.Dialog):
         :type entry: :py:class:`gtk.Entry`
         """
 
-        gtk.Dialog.__init__(self, _(u"Select Date"),
-                            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+        gtk.Dialog.__init__(
+            self,
+            _(u"Select Date"),
+            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
         self._entry = entry
         self._calendar = gtk.Calendar()
-        self.vbox.pack_start(self._calendar)    # pylint: disable=E1101
-        self.vbox.show_all()                    # pylint: disable=E1101
+        self.vbox.pack_start(self._calendar)  # pylint: disable=E1101
+        self.vbox.show_all()  # pylint: disable=E1101
 
     def do_run(self):
         """
@@ -205,11 +213,11 @@ class RTKFileChooser(gtk.FileChooserDialog):
         :param str cwd: the absolute path to the file to open.
         """
 
-        gtk.FileChooserDialog.__init__(self, title, None,
-                                       gtk.DIALOG_MODAL |
-                                       gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        gtk.FileChooserDialog.__init__(
+            self, title, None,
+            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+             gtk.RESPONSE_REJECT))
 
         self.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
         self.set_current_folder(cwd)

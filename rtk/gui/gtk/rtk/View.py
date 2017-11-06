@@ -15,7 +15,7 @@ provides the basis for the RTKListView, RTKModuleView, and RTKWorkView.
 import locale
 
 # Import other RTK Widget classes.
-from .Widget import gtk                         # pylint: disable=E0401
+from .Widget import gtk  # pylint: disable=E0401
 
 
 class RTKBaseView(object):
@@ -51,36 +51,30 @@ class RTKBaseView(object):
         """
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {'calculate':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/calculate.png',
-                           'add':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/add.png',
-                           'remove':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/remove.png',
-                           'reports':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/reports.png',
-                           'save':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save.png',
-                           'save-all':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save-all.png',
-                           'error':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/error.png',
-                           'question':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/question.png',
-                           'insert_sibling':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_sibling.png',
-                           'insert_child':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/insert_child.png'}
+        self._dic_icons = {
+            'calculate':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/calculate.png',
+            'add':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/add.png',
+            'remove':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/remove.png',
+            'reports':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/reports.png',
+            'save':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save.png',
+            'save-all':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save-all.png',
+            'error':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/error.png',
+            'question':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/question.png',
+            'insert_sibling':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            '/32x32/insert_sibling.png',
+            'insert_child':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR +
+            '/32x32/insert_child.png'
+        }
 
         # Initialize private list attributes.
         self._lst_handler_id = []
@@ -107,8 +101,13 @@ class RTKBaseView(object):
             locale.setlocale(locale.LC_ALL, '')
 
     # pylint: disable=too-many-arguments
-    def _make_buttonbox(self, icons, tooltips, callbacks,
-                        orientation='horizontal', height=-1, width=-1):
+    def _make_buttonbox(self,
+                        icons,
+                        tooltips,
+                        callbacks,
+                        orientation='horizontal',
+                        height=-1,
+                        width=-1):
         """
         Method to create the buttonbox for RTK Views.  This method creates the
         base buttonbox used by all RTK View.  Use a buttonbox for an RTK View
@@ -156,7 +155,10 @@ class RTKBaseView(object):
 
         return _buttonbox
 
-    def _make_toolbar(self, icons, orientation='horizontal', height=60,
+    def _make_toolbar(self,
+                      icons,
+                      orientation='horizontal',
+                      height=60,
                       width=60):
         """
         Method to create the toolbar for RTK Views.  This method creates the
@@ -185,8 +187,8 @@ class RTKBaseView(object):
             else:
                 _image = gtk.Image()
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self._dic_icons[_icon], int(_scale * height),
-                    int(_scale * width))
+                    self._dic_icons[_icon],
+                    int(_scale * height), int(_scale * width))
                 _image.set_from_pixbuf(_icon)
 
                 _button = gtk.ToolButton()

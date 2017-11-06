@@ -14,20 +14,27 @@ property values and methods.  This ensures a consistent look and feel to
 widgets in the RTK application.
 """
 
-import defusedxml.lxml as lxml                      # pylint: disable=E0401
+import defusedxml.lxml as lxml  # pylint: disable=E0401
 
 # Import other RTK Widget classes.
-from .Widget import gobject, gtk, pango             # pylint: disable=E0401
-from .Label import RTKLabel                         # pylint: disable=E0401
+from .Widget import gobject, gtk, pango  # pylint: disable=E0401
+from .Label import RTKLabel  # pylint: disable=E0401
 
 
 class RTKTreeView(gtk.TreeView):
     """
     This is the RTKTreeView class.
     """
+
     # pylint: disable=R0913, R0914
-    def __init__(self, fmt_path, fmt_idx, fmt_file, bg_col='white',
-                 fg_col='black', pixbuf=False, indexed=False):
+    def __init__(self,
+                 fmt_path,
+                 fmt_idx,
+                 fmt_file,
+                 bg_col='white',
+                 fg_col='black',
+                 pixbuf=False,
+                 indexed=False):
         """
         Method to create RTK TreeView widgets.
 
@@ -77,7 +84,7 @@ class RTKTreeView(gtk.TreeView):
 
         # Create a list of GObject datatypes to pass to the model.
         _types = []
-        for i in range(len(_datatypes)):            # pylint: disable=C0200
+        for i in range(len(_datatypes)):  # pylint: disable=C0200
             _datatypes[i] = _datatypes[i].text
             _headings[i] = _headings[i].text.replace("  ", "\n")
             _widgets[i] = _widgets[i].text
@@ -152,8 +159,9 @@ class RTKTreeView(gtk.TreeView):
                                                _headings[i])
                 _column.set_attributes(_pbcell, pixbuf=_n_cols)
             else:
-                _column = self._do_make_column([_cell, ], _visible[i],
-                                               _headings[i])
+                _column = self._do_make_column([
+                    _cell,
+                ], _visible[i], _headings[i])
             _column.set_cell_data_func(_cell, self._format_cell,
                                        (_position[i], _datatypes[i]))
 
@@ -170,7 +178,9 @@ class RTKTreeView(gtk.TreeView):
         # Finally, we want to add a column to hold indexing information for
         # program control.
         _cell = gtk.CellRendererText()
-        _column = self._do_make_column([_cell, ], False, "")
+        _column = self._do_make_column([
+            _cell,
+        ], False, "")
         _column.pack_start(_cell, False)
         _column.set_attributes(_cell, text=_n_cols + 1)
         self.append_column(_column)
@@ -208,8 +218,8 @@ class RTKTreeView(gtk.TreeView):
                 _column.pack_start(_cell, True)
                 _column.connect('notify::width', self._resize_wrap, _cell)
 
-        _label = RTKLabel(heading, width=-1, height=-1,
-                          justify=gtk.JUSTIFY_CENTER)
+        _label = RTKLabel(
+            heading, width=-1, height=-1, justify=gtk.JUSTIFY_CENTER)
         _column.set_widget(_label)
         _column.set_resizable(True)
         _column.set_alignment(0.5)
@@ -553,6 +563,7 @@ class CellRendererML(gtk.CellRendererText):
         if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and \
                 _keyname == 'Return':
             self.textedit_window.response(gtk.RESPONSE_OK)
+
 
 # Register the new widget types.
 gobject.type_register(RTKTreeView)

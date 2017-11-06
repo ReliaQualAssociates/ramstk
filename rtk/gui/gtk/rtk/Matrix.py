@@ -16,8 +16,8 @@ import gettext
 import locale
 
 # Import other RTK modules.
-from gui.gtk.rtk import RTKLabel                    # pylint: disable=E0401
-from .Widget import gobject, gtk, pango             # pylint: disable=E0401
+from gui.gtk.rtk import RTKLabel  # pylint: disable=E0401
+from .Widget import gobject, gtk, pango  # pylint: disable=E0401
 
 _ = gettext.gettext
 
@@ -45,21 +45,18 @@ class RTKBaseMatrix(object):
         """
 
         # Initialize private dictionary attributes.
-        self._dic_icons = {0:
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/none.png',
-                           1:
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/partial.png',
-                           2:
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/complete.png',
-                           'save':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save.png',
-                           'save-all':
-                           controller.RTK_CONFIGURATION.RTK_ICON_DIR +
-                           '/32x32/save-all.png'}
+        self._dic_icons = {
+            0:
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/none.png',
+            1:
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/partial.png',
+            2:
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/complete.png',
+            'save':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save.png',
+            'save-all':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save-all.png'
+        }
 
         # Initialize private list attributes.
 
@@ -121,7 +118,10 @@ class RTKBaseMatrix(object):
         # The first column will contain the Function ID and Function Code.
         _cell = gtk.CellRendererText()
         _cell.set_property('background', 'light gray')
-        _column = self._make_column([_cell, ], '', visible=False)
+        _column = self._make_column(
+            [
+                _cell,
+            ], '', visible=False)
         _column.set_attributes(_cell, text=0)
         _cell = gtk.CellRendererText()
         _cell.set_alignment(0.9, 0.5)
@@ -130,14 +130,16 @@ class RTKBaseMatrix(object):
         _cell.set_property('foreground', '#000000')
         _cell.set_property('wrap-width', 250)
         _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-        _column = self._make_column([_cell, ], rows)
+        _column = self._make_column([
+            _cell,
+        ], rows)
         _column.set_attributes(_cell, markup=1)
         self.matrix.append_column(_column)
 
         # The remaining columns will be gtk.CellRendererCombo()'s for
         # displaying the interaction between Function and Hardware.
         j = 2
-        for i in xrange(self._n_columns):           # pylint: disable=E0602
+        for i in xrange(self._n_columns):  # pylint: disable=E0602
             _cell = self._make_combo_cell()
             self._do_set_properties(_cell, True, i + j + 1,
                                     self._rtk_matrix.columns[i], _model)
@@ -152,7 +154,9 @@ class RTKBaseMatrix(object):
             j += 1
 
         # Add one more column so the last column will not be extra wide.
-        _column = self._make_column([gtk.CellRendererText(), ], '')
+        _column = self._make_column([
+            gtk.CellRendererText(),
+        ], '')
         # pylint: disable=undefined-loop-variable
         _column.set_attributes(_cell, text=i + j + 1)
         self.matrix.append_column(_column)
@@ -237,8 +241,13 @@ class RTKBaseMatrix(object):
         cell.connect('changed', self._do_edit_cell, position, col_index, model)
 
     # pylint: disable=too-many-arguments
-    def _make_buttonbox(self, icons, tooltips, callbacks,
-                        orientation='horizontal', height=-1, width=-1):
+    def _make_buttonbox(self,
+                        icons,
+                        tooltips,
+                        callbacks,
+                        orientation='horizontal',
+                        height=-1,
+                        width=-1):
         """
         Method to create the buttonbox for RTK Matrix Views.  This method
         creates the base buttonbox used by all RTK Matrix Views.  Use a
@@ -326,8 +335,8 @@ class RTKBaseMatrix(object):
                 _column.pack_start(_cell, True)
                 _column.connect('notify::width', self._on_resize_wrap, _cell)
 
-        _label = RTKLabel(heading, width=-1, height=-1,
-                          justify=gtk.JUSTIFY_CENTER)
+        _label = RTKLabel(
+            heading, width=-1, height=-1, justify=gtk.JUSTIFY_CENTER)
         _label.set_angle(90)
         _column.set_widget(_label)
         _column.set_resizable(True)

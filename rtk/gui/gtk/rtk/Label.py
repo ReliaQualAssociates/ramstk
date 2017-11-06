@@ -15,7 +15,7 @@ RTK application.
 """
 
 # Import the rtk.Widget base class.
-from .Widget import gtk, pango                      # pylint: disable=E0401
+from .Widget import gtk, pango  # pylint: disable=E0401
 
 
 def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
@@ -50,8 +50,12 @@ def make_label_group(text, container, x_pos, y_pos, y_inc=25, wrap=True):
     _char_width = max([len(_label_text) for _label_text in text])
 
     for __, _label_text in enumerate(text):
-        _label = RTKLabel(_label_text, width=-1, height=-1, wrap=wrap,
-                          justify=gtk.JUSTIFY_RIGHT)
+        _label = RTKLabel(
+            _label_text,
+            width=-1,
+            height=-1,
+            wrap=wrap,
+            justify=gtk.JUSTIFY_RIGHT)
         _label.set_width_chars(_char_width)
         _max_x = max(_max_x, _label.size_request()[0])
         container.put(_label, x_pos, y_pos)
@@ -65,11 +69,17 @@ class RTKLabel(gtk.Label):
     """
     This is the RTK Label class.
     """
+
     # pylint: disable=R0913
-    def __init__(self, text, width=190, height=25, bold=True, wrap=False,
+    def __init__(self,
+                 text,
+                 width=190,
+                 height=25,
+                 bold=True,
+                 wrap=False,
                  justify=gtk.JUSTIFY_LEFT,
                  tooltip='RTK WARNING: Missing tooltip.  '
-                         'Please register an Enhancement type bug.'):
+                 'Please register an Enhancement type bug.'):
         """
         Method to create Label() widgets.
 
