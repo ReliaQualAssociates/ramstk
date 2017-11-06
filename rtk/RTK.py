@@ -57,12 +57,12 @@ from dao.RTKType import RTKType
 from dao.RTKUnit import RTKUnit
 from dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
-from revision.Revision import Revision
-from usage.UsageProfile import UsageProfile
-from failure_definition.FailureDefinition import FailureDefinition
-from function.Function import Function
+from Revision import Revision
+from FailureDefinition import FailureDefinition
+from Function import Function
+from Requirement import Requirement
 from analyses.fmea.FMEA import FMEA
-from requirement.Requirement import Requirement
+from usage.UsageProfile import UsageProfile
 # from stakeholder.Stakeholder import Stakeholder
 # from hardware.BoM import BoM as HardwareBoM
 # from analyses.allocation.Allocation import Allocation
