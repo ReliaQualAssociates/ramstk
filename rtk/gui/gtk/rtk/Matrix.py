@@ -36,7 +36,7 @@ class RTKBaseMatrix(object):
     :type matrix: :py:class:`gtk.TreeView`
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, controller):
         """
         Method to initialize an instance of the RTKMatrix widget class.
 
