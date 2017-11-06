@@ -5,11 +5,13 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-This module contains functions for creating, populating, destroying, and
-interacting with pyGTK widgets.  Import this module in other modules that
-create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to RTK data entry and RTK data display
-widgets.
+Entry Module
+-------------------------------------------------------------------------------
+
+This module contains RTK entry and textview classes.  These classes are derived
+from the applicable pyGTK entry and textview, but are provided with RTK
+specific property values and methods.  This ensures a consistent look and feel
+to widgets in the RTK application.
 """
 
 # Import the rtk.Widget base class.

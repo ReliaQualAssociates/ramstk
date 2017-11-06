@@ -5,10 +5,13 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-This module contains functions for creating, populating, destroying, and
-interacting with pyGTK widgets.  Import this module in other modules that
-create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to RTK frame widgets.
+Frame Module
+-------------------------------------------------------------------------------
+
+This module contains RTK frame classes.  These classes are derived from the
+applicable pyGTK frame, but are provided with RTK specific property values
+and methods.  This ensures a consistent look and feel to widgets in the RTK
+application.
 """
 
 # Import other RTK Widget classes.
@@ -31,7 +34,7 @@ class RTKFrame(gtk.Frame):
 
         gtk.Frame.__init__(self)
 
-        _label = RTKLabel(label)
+        _label = RTKLabel(label, width=-1)
         _label.show_all()
 
         self.set_shadow_type(gtk.SHADOW_ETCHED_OUT)

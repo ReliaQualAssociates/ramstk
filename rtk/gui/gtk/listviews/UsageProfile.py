@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
-Usage Profile Package List Book View
-###############################################################################
+Usage Profile List View Module
+-------------------------------------------------------------------------------
 """
 
 from pubsub import pub                          # pylint: disable=E0401

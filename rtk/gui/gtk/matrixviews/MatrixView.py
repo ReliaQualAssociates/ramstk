@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
-RTK Matrix View Package Meta Class
-###############################################################################
+RTKMatrixView Meta-Class Module
+-------------------------------------------------------------------------------
 """
 
 # Import other RTK modules.

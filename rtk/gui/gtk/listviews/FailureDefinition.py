@@ -4,9 +4,8 @@
 #
 # All rights reserved.
 """
-###############################################################################
-Failure Definition Package List Book View
-###############################################################################
+Failure Definition List View Module
+-------------------------------------------------------------------------------
 """
 
 from pubsub import pub                          # pylint: disable=E0401

@@ -5,10 +5,13 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-This module contains functions for creating, populating, destroying, and
-interacting with pyGTK widgets.  Import this module in other modules that
-create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to RTK dialog widgets.
+Dialog Module
+-------------------------------------------------------------------------------
+
+This module contains RTK dialog classes.  These classes are derived from the
+applicable pyGTK dialogs, but are provided with RTK specific property values
+and methods.  This ensures a consistent look and feel to widgets in the RTK
+application.
 """
 
 import os
@@ -147,6 +150,49 @@ class RTKMessageDialog(gtk.MessageDialog):
         self.destroy()
 
 
+class RTKDateSelect(gtk.Dialog):
+    """
+    This is the RTK Date Select Dialog class.
+    """
+
+    def __init__(self, entry=None):
+        """
+        Method to initialize an instance of the RTKDateSelect class.
+
+        :param entry: the gtk.Entry() in which to place the date, if any.
+        :type entry: :py:class:`gtk.Entry`
+        """
+
+        gtk.Dialog.__init__(self, _(u"Select Date"),
+                            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
+
+        self._entry = entry
+        self._calendar = gtk.Calendar()
+        self.vbox.pack_start(self._calendar)    # pylint: disable=E1101
+        self.vbox.show_all()                    # pylint: disable=E1101
+
+    def do_run(self):
+        """
+        Method to run the RTKDateSelect dialog.
+        """
+
+        if self.run() == gtk.RESPONSE_ACCEPT:
+            _date = self._calendar.get_date()
+            _date = datetime(_date[0], _date[1] + 1,
+                             _date[2]).date().strftime("%Y-%m-%d")
+        else:
+            _date = "1970-01-01"
+
+        return _date
+
+    def do_destroy(self):
+        """
+        Method to destroy the RTKDateSelect dialog.
+        """
+
+        self.destroy()
+
+
 class RTKFileChooser(gtk.FileChooserDialog):
     """
     This is the RTK File Chooser Dialog class.
@@ -232,53 +278,6 @@ class RTKFileChooser(gtk.FileChooserDialog):
     def do_destroy(self):
         """
         Method to destroy the RTKFileChooser dialog.
-        """
-
-        self.destroy()
-
-
-class RTKDateSelect(gtk.Dialog):
-    """
-    This is the RTK Date Select Dialog class.
-    """
-
-    def __init__(self, entry=None):
-        """
-        Method to initialize an instance of the RTKDateSelect class.
-
-        :param entry: the gtk.Entry() in which to place the date, if any.
-        :type entry: :py:class:`gtk.Entry`
-        """
-
-        gtk.Dialog.__init__(self, _(u"Select Date"),
-                            dlgbuttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
-
-        self._entry = entry
-        self._calendar = gtk.Calendar()
-        self.vbox.pack_start(self._calendar)    # pylint: disable=E1101
-        self.vbox.show_all()                    # pylint: disable=E1101
-
-    def do_run(self):
-        """
-        Method to run the RTKDateSelect dialog.
-        """
-
-        if self.run() == gtk.RESPONSE_ACCEPT:
-            _date = self._calendar.get_date()
-            _date = datetime(_date[0], _date[1] + 1,
-                             _date[2]).date().strftime("%Y-%m-%d")
-        else:
-            _date = "1970-01-01"
-
-        if self._entry is not None:
-            self._entry.set_text(_date)
-            self._entry.grab_focus()
-
-        return _date
-
-    def do_destroy(self):
-        """
-        Method to destroy the RTKDateSelect dialog.
         """
 
         self.destroy()

@@ -175,7 +175,7 @@ class Test00RequirementModel(unittest.TestCase):
                                'Requirement ID 300.')
 
     @attr(all=True, unit=True)
-    def test_05a_update(self):
+    def test05a_update(self):
         """
         (TestRequirementModel): update() should return a zero error code on success.
         """
@@ -192,7 +192,7 @@ class Test00RequirementModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test_05b_update_non_existent_id(self):
+    def test05b_update_non_existent_id(self):
         """
         (TestRequirementModel): update() should return a non-zero error code when passed a Requirement ID that doesn't exist.
         """
@@ -206,7 +206,7 @@ class Test00RequirementModel(unittest.TestCase):
                                'Requirement ID 100.')
 
     @attr(all=True, unit=True)
-    def test_06a_update_all(self):
+    def test06a_update_all(self):
         """
         (TestRequirementModel): update_all() should return a zero error code on success.
         """

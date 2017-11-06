@@ -1,36 +1,9 @@
-#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
 #       rtk.Utilities.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 Contains utility functions for interacting with the RTK application.  Import
 this module in other modules that need to interact with the RTK application.
@@ -47,7 +20,7 @@ _ = gettext.gettext
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2007 - 2017 Andrew "weibullguy" Rowland'
 
 
 class OutOfRangeError(Exception):
@@ -80,6 +53,7 @@ class NoMatrixError(Exception):
     Error to raise when no Matrices are returned.
     """
     pass
+
 
 def create_logger(log_name, log_level, log_file, to_tty=False):
     """
@@ -274,22 +248,38 @@ def split_string(string):
     return _strlist
 
 
-def string_to_boolean(string):
+def boolean_to_integer(boolean):
     """
-    Converts string representations of TRUE/FALSE to an integer value for use
-    in the database.
+    Converts string representations of TRUE/FALSE to an integer value.
 
-    :param str string: the string to convert.
+    :param bool boolean: the boolean to convert.
     :return: _result
     :rtype: int
     """
 
     _result = 0
 
+    if boolean:
+        _result = 1
+
+    return _result
+
+
+def string_to_boolean(string):
+    """
+    Converts string representations of TRUE/FALSE to an boolean value.
+
+    :param str string: the string to convert.
+    :return: _result
+    :rtype: bool
+    """
+
+    _result = False
+
     _string = str(string)
 
     if(_string.lower() == 'true' or _string.lower() == 'yes' or
        _string.lower() == 't' or _string.lower() == 'y'):
-        _result = 1
+        _result = True
 
     return _result

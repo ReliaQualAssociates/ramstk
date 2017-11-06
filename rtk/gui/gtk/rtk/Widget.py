@@ -5,10 +5,11 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-This module contains functions for creating, populating, destroying, and
-interacting with pyGTK widgets.  Import this module in other modules that
-create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is the base class for all RTK widgets.
+Widget Module
+-------------------------------------------------------------------------------
+
+This module contains functions for interacting with RTK widgets.  This module
+is the base class for all RTK widgets.
 """
 
 import sys

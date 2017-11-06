@@ -5,65 +5,46 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
-Function Package Work View
-###############################################################################
+Function Work View Module
+-------------------------------------------------------------------------------
 """
 
 import locale
 
-from pubsub import pub                          # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk import rtk                         # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk           # pylint: disable=E0401,W0611
+from gui.gtk import rtk  # pylint: disable=E0401
+from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
 
 
 class GeneralData(RTKWorkView):
     """
-    The Work View displays all the attributes for the selected Function. The
-    attributes of a Work View are:
+    The Work View displays all the general data attributes for the selected
+    Function. The attributes of a Function General Data Work View are:
 
-    :ivar _lst_handler_id: list containing the ID's of the callback signals for
-                           each gtk.Widget() associated with an editable
-                           Function attribute.
+    :ivar int _function_id: the ID of the Function currently being displayed.
+    :ivar chkSafetyCritical: the :py:class:`rtk.gui.gtk.rtk.RTKCheckButton` to
+                             display/edit the Function's safety criticality.
+    :ivar txtTotalCost: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+                        Function cost.
+    :ivar txtModeCount: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+                        number of failure modes the function is susceptible to.
+
+    Callbacks signals in _lst_handler_id:
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
     +==========+===========================================+
-    |      0   | txtCode `focus_out_event`                 |
+    |     0    | txtCode `changed`                         |
     +----------+-------------------------------------------+
-    |      1   | txtName `focus_out_event`                 |
+    |     1    | txtName `changed`                         |
     +----------+-------------------------------------------+
-    |      2   | txtRemarks `focus_out_event`              |
+    |     2    | txtRemarks `changed`                      |
     +----------+-------------------------------------------+
-    |      3   | Mission gtk.CellRendererCombo() `edited`  |
+    |     3    | chkSafetyCritical `toggled`               |
     +----------+-------------------------------------------+
-    |      4   | Phase gtk.CellRendererCombo() `edited`    |
-    +----------+-------------------------------------------+
-    |      5   | btnAddMode `clicked`                      |
-    +----------+-------------------------------------------+
-    |      6   | btnRemoveMode `clicked`                   |
-    +----------+-------------------------------------------+
-    |      7   | btnSaveFMEA `clicked`                     |
-    +----------+-------------------------------------------+
-
-    :ivar _dtc_function: the :class:`rtk.function.Function.Function` data
-                         controller to use with this Work Book.
-
-    :ivar chkSafetyCritical: the :class:`gtk.CheckButton` to display/edit the
-                             Function's safety criticality.
-
-    :ivar txtCode: the :class:`gtk.Entry` to display/edit the Function code.
-    :ivar txtName: the :class:`gtk.Entry` to display/edit the Function name.
-    :ivar txtTotalCost: the :class:`gtk.Entry` to display the Function cost.
-    :ivar txtModeCount: the :class:`gtk.Entry` to display the number of
-                        hardware failure modes the Function is susceptible to.
-    :ivar txtPartCount: the :class:`gtk.Entry` to display the number of
-                        hardware components comprising the Function.
-    :ivar txtRemarks: the :class:`gtk.Entry` to display/edit the Function
-                      remarks.
     """
 
     def __init__(self, controller):
@@ -81,14 +62,13 @@ class GeneralData(RTKWorkView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_function = None
+        self._function_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self._function_id = None
 
         # General data page widgets.
         self.chkSafetyCritical = rtk.RTKCheckButton(
@@ -96,40 +76,13 @@ class GeneralData(RTKWorkView):
             tooltip=_(u"Indicates whether or not the selected function is "
                       u"safety critical."))
 
-        self.txtCode = rtk.RTKEntry(width=125,
-                                    tooltip=_(u"Enter a unique code for the "
-                                              u"selected Function."))
-        self.txtTotalCost = rtk.RTKEntry(width=125, editable=False, bold=True,
-                                         tooltip=_(u"Displays the total cost "
-                                                   u"of the selected "
-                                                   u"Function."))
-        self.txtName = rtk.RTKEntry(width=400, tooltip=_(u"Enter the name of "
-                                                         u"the selected "
-                                                         u"Function."))
-        self.txtModeCount = rtk.RTKEntry(width=125, editable=False, bold=True,
-                                         tooltip=_(u"Displays the total "
-                                                   u"number of failure modes "
-                                                   u"associated with the "
-                                                   u"selected Function."))
-        self.txtPartCount = rtk.RTKEntry(width=125, editable=False, bold=True,
-                                         tooltip=_(u"Displays the total "
-                                                   u"number of components "
-                                                   u"associated with the "
-                                                   u"selected Function."))
-        self.txtRemarks = rtk.RTKTextView(txvbuffer=gtk.TextBuffer(),
-                                          width=400,
-                                          tooltip=_(u"Enter any remarks "
-                                                    u"related to the selected "
-                                                    u"Function."))
-
         # Connect to callback functions for editable gtk.Widgets().
         self._lst_handler_id.append(
             self.txtCode.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
             self.txtName.connect('changed', self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtRemarks.do_get_buffer().connect(
-                'changed', self._on_focus_out, 2))
+        self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
+            'changed', self._on_focus_out, 2))
 
         # FIXME: The general data page should be the page shown after launching.
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
@@ -156,11 +109,12 @@ class GeneralData(RTKWorkView):
         _error_code = 0
         _msg = ['', '']
 
-        if self._dtc_function.request_calculate_reliability(self._function_id):
+        if self._dtc_data_controller.request_calculate_reliability(
+                self._function_id):
             _error_code = 1
             _msg[0] = 'Error calculating reliability attributes.'
 
-        if self._dtc_function.request_calculate_availability(
+        if self._dtc_data_controller.request_calculate_availability(
                 self._function_id):
             _error_code = 1
             _msg[1] = 'Error calculating availability attributes.'
@@ -169,9 +123,8 @@ class GeneralData(RTKWorkView):
             _prompt = _(u"An error occurred when attempting to calculate "
                         u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
                         _msg[1] + "\n\n").format(self._function_id)
-            _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                 self._dic_icons['error'],
-                                                 'error')
+            _error_dialog = rtk.RTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
 
@@ -189,7 +142,7 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
 
-        return self._dtc_function.request_update(self._function_id)
+        return self._dtc_data_controller.request_update(self._function_id)
 
     def _make_general_data_page(self):
         """
@@ -200,29 +153,12 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
 
-        _frame, _fixed = RTKWorkView._make_general_data_page()
+        (_frame, _fixed, _x_pos,
+         _y_pos) = RTKWorkView._make_general_data_page(self)
 
-        _labels = [_(u"Function Code:"), _(u"Function Name:"),
-                   _(u"Total Cost:"), _(u"Total Mode Count:"),
-                   _(u"Total Part Count:"), _(u"Remarks:")]
-        _x_pos, _y_pos = rtk.make_label_group(_labels, _fixed, 5, 5)
-        _x_pos = _x_pos + 50
-
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
-        _fixed.put(self.txtTotalCost, _x_pos, _y_pos[2])
-        _fixed.put(self.txtModeCount, _x_pos, _y_pos[3])
-        _fixed.put(self.txtPartCount, _x_pos, _y_pos[4])
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[5])
-        _fixed.put(self.chkSafetyCritical, 5, _y_pos[5] + 110)
+        _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
 
         _fixed.show_all()
-
-        _label = rtk.RTKLabel(_(u"General\nData"), height=30, width=-1,
-                              justify=gtk.JUSTIFY_CENTER,
-                              tooltip=_(u"Displays general information for "
-                                        u"the selected Function."))
-        self.hbx_tab_label.pack_start(_label)
 
         return _frame
 
@@ -235,9 +171,11 @@ class GeneralData(RTKWorkView):
         :rtype: :py:class:`gtk.ButtonBox`
         """
 
-        _tooltips = [_(u"Calculate the currently selected Function."),
-                     _(u"Saves the currently selected Function to the open "
-                       u"RTK Project database.")]
+        _tooltips = [
+            _(u"Calculate the currently selected Function."),
+            _(u"Saves the currently selected Function to the open "
+              u"RTK Project database.")
+        ]
         _callbacks = [self._do_request_calculate, self._do_request_update]
 
         _icons = ['calculate', 'save']
@@ -302,8 +240,9 @@ class GeneralData(RTKWorkView):
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if self._dtc_function is not None:
-            _function = self._dtc_function.request_select(self._function_id)
+        if self._dtc_data_controller is not None:
+            _function = self._dtc_data_controller.request_select(
+                self._function_id)
 
             if index == 0:
                 _index = 5
@@ -318,8 +257,8 @@ class GeneralData(RTKWorkView):
                 _text = self.txtRemarks.do_get_text()
                 _function.remarks = _text
 
-            pub.sendMessage('wvwEditedFunction', position=_index,
-                            new_text=_text)
+            pub.sendMessage(
+                'wvwEditedFunction', position=_index, new_text=_text)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -339,8 +278,10 @@ class GeneralData(RTKWorkView):
 
         self._function_id = module_id
 
-        self._dtc_function = self._mdcRTK.dic_controllers['function']
-        _function = self._dtc_function.request_select(self._function_id)
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
+        _function = self._dtc_data_controller.request_select(self._function_id)
 
         self.txtCode.handler_block(self._lst_handler_id[0])
         self.txtCode.set_text(str(_function.function_code))
@@ -355,43 +296,16 @@ class GeneralData(RTKWorkView):
         _textbuffer.set_text(_function.remarks)
         _textbuffer.handler_unblock(self._lst_handler_id[2])
 
-        self.txtTotalCost.set_text(
-            str(locale.currency(_function.cost)))
-        self.txtModeCount.set_text(
-            str('{0:d}'.format(_function.total_mode_count)))
-        self.txtPartCount.set_text(
-            str('{0:d}'.format(_function.total_part_count)))
-
         return _return
 
 
 class AssessmentResults(RTKWorkView):
     """
-    The Work View displays all the attributes for the selected Function. The
-    attributes of a Work View are:
+    The Function Assessment Results view displays all the assessment results
+    for the selected Function.  The attributes of a Function Assessment Results
+    View are:
 
-    :ivar _dtc_function: the :class:`rtk.function.Function.Function` data
-                         controller to use with this Work Book.
-    :ivar txtPredictedHt: the :class:`gtk.Entry` to display the Function
-                          logistics hazard rate.
-    :ivar txtMissionHt: the :class:`gtk.Entry` to display the Function mission
-                        hazard rate.
-    :ivar txtMTBF: the :class:`gtk.Entry` to display the Function logistics
-                   MTBF.
-    :ivar txtMissionMTBF: the :class:`gtk.Entry` to display the Function
-                          mission MTBF.
-    :ivar txtMPMT: the :class:`gtk.Entry` to display the Function mean
-                   preventive maintenance time.
-    :ivar txtMCMT: the :class:`gtk.Entry` to display the Function mean
-                   corrective maintenance time.
-    :ivar txtMTTR: the :class:`gtk.Entry` to display the Function mean time to
-                   repair.
-    :ivar txtMMT: the :class:`gtk.Entry` to display the Function mean
-                  maintenance time.
-    :ivar txtAvailability: the :class:`gtk.Entry` to display the Function
-                           logistics availability.
-    :ivar txtMissionAt: the :class:`gtk.Entry` to display the Function mission
-                        availability.
+    :ivar int _function_id: the ID of the Function currently being displayed.
     """
 
     def __init__(self, controller):
@@ -407,9 +321,9 @@ class AssessmentResults(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_assess_labels[1].append(_(u"Total Mode Count:"))
 
         # Initialize private scalar attributes.
-        self._dtc_function = None
 
         # Initialize public dictionary attributes.
 
@@ -418,8 +332,17 @@ class AssessmentResults(RTKWorkView):
         # Initialize public scalar attributes.
         self._function_id = None
 
-        self.pack_start(self._make_assessment_results_page(), expand=True,
-                        fill=True)
+        self.txtModeCount = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the total "
+                      u"number of failure modes "
+                      u"associated with the "
+                      u"selected Function."))
+
+        self.pack_start(
+            self._make_assessment_results_page(), expand=True, fill=True)
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
@@ -433,8 +356,11 @@ class AssessmentResults(RTKWorkView):
         :rtype: bool
         """
 
-        (_hbx_page,
-         __, __, __, __) = RTKWorkView._make_assessment_results_page(self)
+        (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
+         _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
+
+        _fxd_right.put(self.txtModeCount, _x_pos_r, _y_pos_r[8] + 30)
+        _fxd_right.show_all()
 
         self.txtActiveHt.set_sensitive(False)
         self.txtDormantHt.set_sensitive(False)
@@ -458,8 +384,10 @@ class AssessmentResults(RTKWorkView):
 
         self._function_id = module_id
 
-        self._dtc_function = self._mdcRTK.dic_controllers['function']
-        _function = self._dtc_function.request_select(self._function_id)
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['function']
+        _function = self._dtc_data_controller.request_select(self._function_id)
 
         self.txtAvailability.set_text(
             str(self.fmt.format(_function.availability_logistics)))
@@ -476,8 +404,13 @@ class AssessmentResults(RTKWorkView):
 
         self.txtMissionMTBF.set_text(
             str(self.fmt.format(_function.mtbf_mission)))
-        self.txtMTBF.set_text(
-            str(self.fmt.format(_function.mtbf_logistics)))
+        self.txtMTBF.set_text(str(self.fmt.format(_function.mtbf_logistics)))
         self.txtMTTR.set_text(str(self.fmt.format(_function.mttr)))
+
+        self.txtTotalCost.set_text(str(locale.currency(_function.cost)))
+        self.txtModeCount.set_text(
+            str('{0:d}'.format(_function.total_mode_count)))
+        self.txtPartCount.set_text(
+            str('{0:d}'.format(_function.total_part_count)))
 
         return _return

@@ -5,8 +5,10 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-This is the base class for all the RTK matrix views.  It provides the basis for
-the MatrixView.
+RTKBaseMatrix Module
+-------------------------------------------------------------------------------
+
+This module contains the base class for all the RTK data matrix views.
 """
 
 # Import modules for localization support.

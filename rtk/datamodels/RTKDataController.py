@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-###############################################################################
 RTKDataController Module
-###############################################################################
+===============================================================================
 """
 
 from pubsub import pub                              # pylint: disable=E0401

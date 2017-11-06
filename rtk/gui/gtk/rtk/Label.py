@@ -5,10 +5,13 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-This module contains functions for creating, populating, destroying, and
-interacting with pyGTK widgets.  Import this module in other modules that
-create, populate, destroy, or interact with pyGTK widgets in the RTK
-application.  This module is specific to RTK label widgets.
+Label Module
+-------------------------------------------------------------------------------
+
+This module contains RTK label classes and function.  These classes are derived
+from the applicable pyGTK label, but are provided with RTK specific property
+values and methods.  This ensures a consistent look and feel to widgets in the
+RTK application.
 """
 
 # Import the rtk.Widget base class.

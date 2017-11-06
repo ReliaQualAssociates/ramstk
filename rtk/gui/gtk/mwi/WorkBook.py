@@ -5,9 +5,8 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-===============================================================================
-PyGTK Multi-Window Interface Work Book
-===============================================================================
+RTKWorkBook Module
+-------------------------------------------------------------------------------
 """
 
 # Import modules for localization support.
@@ -21,6 +20,7 @@ from gui.gtk.rtk import RTKBook
 from gui.gtk.workviews import wvwFMEA
 from gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
 from gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
+from gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
 
 _ = gettext.gettext
 
@@ -51,7 +51,9 @@ class WorkBook(RTKBook):                 # pylint: disable=R0904
                                            wvwRevisionAR(controller)],
                                'function':[wvwFunctionGD(controller),
                                            wvwFMEA(controller),
-                                           wvwFunctionAR(controller)]}
+                                           wvwFunctionAR(controller)],
+                               'requirement':[wvwRequirementGD(controller),
+                                              wvwRequirementAnalysis(controller)]}
 
         # Initialize public list attributes.
 

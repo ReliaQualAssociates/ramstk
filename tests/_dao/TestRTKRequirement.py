@@ -163,7 +163,7 @@ class Test06RTKRequirement(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02c_set_attributes_too_few_passed(self):
         """
-        (TestRTKRequirement) set_attributes should return a 40 error code when passed too few attributes
+        (TestRTKRequirement) set_attributes() should return a 40 error code when passed too few attributes
         """
 
         _attributes = (0, 'Test Requirement', '', '', '', 0, 0, 'Test Code',
@@ -174,3 +174,12 @@ class Test06RTKRequirement(unittest.TestCase):
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
                                "values to RTKRequirement.set_attributes().")
+
+    @attr(all=True, unit=True)
+    def test03a_create_code(self):
+        """
+        (TestRTKRequirement) create_code should return False on success.
+        """
+
+        self.assertFalse(self.DUT.create_code('PERF'))
+        self.assertEqual(self.DUT.requirement_code, 'PERF-0001')

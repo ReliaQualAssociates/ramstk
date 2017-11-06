@@ -1,6 +1,3 @@
-RTK Revision
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
 .. toctree::
 
 .. automodule:: rtk.revision.Revision
