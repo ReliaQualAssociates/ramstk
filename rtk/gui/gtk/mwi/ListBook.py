@@ -12,18 +12,18 @@ RTKListBook Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub                              # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
 # pylint: disable=E0401
 from gui.gtk.rtk import RTKBook
 from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition
-from gui.gtk.matrixviews import FunctionHardware
+from gui.gtk.matrixviews import FunctionHardware, RequirementHardware, RequirementSoftware, RequirementValidation
 
 _ = gettext.gettext
 
 
-class ListBook(RTKBook):                 # pylint: disable=R0904
+class ListBook(RTKBook):  # pylint: disable=R0904
     """
     This is the List View class for the pyGTK multiple window interface.
     """
@@ -45,12 +45,15 @@ class ListBook(RTKBook):                 # pylint: disable=R0904
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_list_view = {'revision':
-                              [lvwUsageProfile(controller),
-                               lvwFailureDefinition(controller)],
-                              'function':
-                              [FunctionHardware(controller)],
-                              'requirement': []}
+        self.dic_list_view = {
+            'revision':
+            [lvwUsageProfile(controller),
+             lvwFailureDefinition(controller)],
+            'function': [FunctionHardware(controller, matrix_id=1)],
+            'requirement': [RequirementHardware(controller, matrix_id=11),
+                            RequirementSoftware(controller, matrix_id=12),
+                            RequirementValidation(controller, matrix_id=13)]
+        }
 
         # Initialize public list attributes.
 

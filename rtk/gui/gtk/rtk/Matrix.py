@@ -29,14 +29,14 @@ class RTKBaseMatrix(object):
 
     :ivar list _dic_icons: dictionary of icons to use in the various RTKMatrix
                            views.
-    :ivar _rtk_matrix:
-    :ivar int _n_columns:
-    :ivar int _n_rows:
-    :ivar matrix:
+    :ivar _rtk_matrix: the RTKDataMatrix to display in the Matrix View.
+    :ivar int _n_columns: the number of columns in the matrix.
+    :ivar int _n_rows: the number rows in the matrix.
+    :ivar matrix: the gtk.TreeView() displaying the RTKDataMatrix.
     :type matrix: :py:class:`gtk.TreeView`
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, **kwargs):
         """
         Method to initialize an instance of the RTKMatrix widget class.
 
@@ -157,8 +157,14 @@ class RTKBaseMatrix(object):
         _column = self._make_column([
             gtk.CellRendererText(),
         ], '')
-        # pylint: disable=undefined-loop-variable
-        _column.set_attributes(_cell, text=i + j + 1)
+
+
+        try:
+            # pylint: disable=undefined-loop-variable
+            _column.set_attributes(_cell, text=i + j + 1)
+        except UnboundLocalError:
+            _column.set_visible(False)
+
         self.matrix.append_column(_column)
 
         # Now we load the data into the RTK Matrix View.

@@ -9,13 +9,13 @@ Requirement Package
 ===============================================================================
 """
 
-from pubsub import pub                          # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel             # pylint: disable=E0401
-from datamodels import RTKDataMatrix            # pylint: disable=E0401
-from datamodels import RTKDataController        # pylint: disable=E0401
-from dao import RTKRequirement, RTKHardware     # pylint: disable=E0401
+from datamodels import RTKDataModel  # pylint: disable=E0401
+from datamodels import RTKDataMatrix  # pylint: disable=E0401
+from datamodels import RTKDataController  # pylint: disable=E0401
+from dao import RTKRequirement, RTKHardware, RTKSoftware, RTKValidation  # pylint: disable=E0401
 
 
 class Model(RTKDataModel):
@@ -77,10 +77,11 @@ class Model(RTKDataModel):
             # (NULL fields in the database) with their default value.
             _attributes = _requirement.get_attributes()
             _requirement.set_attributes(_attributes[2:])
-            self.tree.create_node(_requirement.requirement_code,
-                                  _requirement.requirement_id,
-                                  parent=_requirement.parent_id,
-                                  data=_requirement)
+            self.tree.create_node(
+                _requirement.requirement_code,
+                _requirement.requirement_id,
+                parent=_requirement.parent_id,
+                data=_requirement)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -101,13 +102,16 @@ class Model(RTKDataModel):
         _requirement = RTKRequirement()
         _requirement.revision_id = kwargs['revision_id']
         _requirement.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.insert(self, [_requirement, ])
+        _error_code, _msg = RTKDataModel.insert(self, [
+            _requirement,
+        ])
 
         if _error_code == 0:
-            self.tree.create_node(_requirement.requirement_code,
-                                  _requirement.requirement_id,
-                                  parent=_requirement.parent_id,
-                                  data=_requirement)
+            self.tree.create_node(
+                _requirement.requirement_code,
+                _requirement.requirement_id,
+                parent=_requirement.parent_id,
+                data=_requirement)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -220,6 +224,10 @@ class Requirement(RTKDataController):
         self._dtm_requirement = Model(dao)
         self._dmx_rqmt_hw_matrix = RTKDataMatrix(dao, RTKRequirement,
                                                  RTKHardware)
+        self._dmx_rqmt_sw_matrix = RTKDataMatrix(dao, RTKRequirement,
+                                                 RTKSoftware)
+        self._dmx_rqmt_val_matrix = RTKDataMatrix(dao, RTKRequirement,
+                                                  RTKValidation)
 
         # Initialize public dictionary attributes.
 
@@ -276,12 +284,40 @@ class Requirement(RTKDataController):
         _row_hdrs = []
 
         if matrix_id == 11:
-            self._dmx_rqmt_hw_matrix.select_all(revision_id, matrix_id,
-                                                rindex=1, cindex=1,
-                                                rheader=9, cheader=6)
+            self._dmx_rqmt_hw_matrix.select_all(
+                revision_id,
+                matrix_id,
+                rindex=1,
+                cindex=1,
+                rheader=9,
+                cheader=6)
             _matrix = self._dmx_rqmt_hw_matrix.dtf_matrix
             _column_hdrs = self._dmx_rqmt_hw_matrix.dic_column_hdrs
             _row_hdrs = self._dmx_rqmt_hw_matrix.dic_row_hdrs
+
+        elif matrix_id == 12:
+            self._dmx_rqmt_sw_matrix.select_all(
+                revision_id,
+                matrix_id,
+                rindex=1,
+                cindex=1,
+                rheader=9,
+                cheader=3)
+            _matrix = self._dmx_rqmt_sw_matrix.dtf_matrix
+            _column_hdrs = self._dmx_rqmt_sw_matrix.dic_column_hdrs
+            _row_hdrs = self._dmx_rqmt_sw_matrix.dic_row_hdrs
+
+        elif matrix_id == 13:
+            self._dmx_rqmt_val_matrix.select_all(
+                revision_id,
+                matrix_id,
+                rindex=1,
+                cindex=1,
+                rheader=9,
+                cheader=3)
+            _matrix = self._dmx_rqmt_val_matrix.dtf_matrix
+            _column_hdrs = self._dmx_rqmt_val_matrix.dic_column_hdrs
+            _row_hdrs = self._dmx_rqmt_val_matrix.dic_row_hdrs
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
@@ -300,15 +336,15 @@ class Requirement(RTKDataController):
         :rtype: bool
         """
 
-        (_error_code,
-         _msg) = self._dtm_requirement.insert(revision_id=revision_id,
-                                              parent_id=parent_id)
+        (_error_code, _msg) = self._dtm_requirement.insert(
+            revision_id=revision_id, parent_id=parent_id)
 
         if _error_code == 0 and not self._test:
-            pub.sendMessage('insertedRequirement',
-                            requirement_id=self._dtm_requirement.last_id,
-                            parent_id=parent_id,
-                            sibling=sibling)
+            pub.sendMessage(
+                'insertedRequirement',
+                requirement_id=self._dtm_requirement.last_id,
+                parent_id=parent_id,
+                sibling=sibling)
         else:
             _msg = _msg + '  Failed to add a new Function to the RTK ' \
                 'Program database.'
@@ -337,15 +373,15 @@ class Requirement(RTKDataController):
         """
 
         if matrix_id == 11:
-            _error_code, _msg = self._dmx_rqmt_hw_matrix.insert(item_id,
-                                                                heading,
-                                                                row=row)
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.insert(
+                item_id, heading, row=row)
 
         if _error_code == 0 and not self._test:
-            pub.sendMessage('insertedMatrix',
-                            matrix_id=matrix_id,
-                            item_id=item_id,
-                            row=row)
+            pub.sendMessage(
+                'insertedMatrix',
+                matrix_id=matrix_id,
+                item_id=item_id,
+                row=row)
 
         return RTKDataController.handle_results(self, _error_code, _msg, None)
 
@@ -385,8 +421,8 @@ class Requirement(RTKDataController):
         """
 
         if matrix_id == 11:
-            _error_code, _msg = self._dmx_rqmt_hw_matrix.delete(item_id,
-                                                                row=row)
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.delete(
+                item_id, row=row)
 
         return RTKDataController.handle_results(self, _error_code, _msg,
                                                 'deletedMatrix')
@@ -419,8 +455,8 @@ class Requirement(RTKDataController):
         """
 
         if matrix_id == 11:
-            _error_code, _msg = self._dmx_rqmt_hw_matrix.update(revision_id,
-                                                                matrix_id)
+            _error_code, _msg = self._dmx_rqmt_hw_matrix.update(
+                revision_id, matrix_id)
         else:
             _error_code = 6
             _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \

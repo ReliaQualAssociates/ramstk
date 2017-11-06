@@ -26,7 +26,12 @@ pyGTK-2.0
 
 .. toctree::
 
-    rtk.gui.gtk
+    rtk.gui.gtk.mwi
+    rtk.gui.gtk.listview
+    rtk.gui.gtk.matrixview
+    rtk.gui.gtk.moduleview
+    rtk.gui.gtk.workview
+    rtk.gui.gtk.widgets
 
 -------------------------------------------------------------------------------
 RTK Database Package
