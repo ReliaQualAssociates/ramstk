@@ -251,6 +251,7 @@ def _create_program_database():
     session.commit()
 
     _revision = RTKRevision()
+    _revision.revision_id = 1
     session.add(_revision)
     session.commit()
 
@@ -503,8 +504,8 @@ def setUp():
 
 def tearDown():
 
-    #if os.path.isfile('/tmp/TestDB.rtk'):
-    #    os.remove('/tmp/TestDB.rtk')
+    if os.path.isfile('/tmp/TestDB.rtk'):
+        os.remove('/tmp/TestDB.rtk')
 
     #if os.path.isfile('/tmp/TestCommonDB.rtk'):
     #    os.remove('/tmp/TestCommonDB.rtk')

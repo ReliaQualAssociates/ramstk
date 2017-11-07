@@ -62,13 +62,13 @@ dao.RTKType _dao/TestRTKType.py
 dao.RTKUnit _dao/TestRTKUnit.py
 dao.RTKUser _dao/TestRTKUser.py
 dao.RTKValidation _dao/TestRTKValidation.py
-revision.Revision revision/TestRevision.py
-failure_definition.FailureDefinition failure_definition/TestFailureDefinition.py
+Revision TestRevision.py
+FailureDefinition TestFailureDefinition.py
 usage.Mission usage/TestMission.py
 usage.Phase usage/TestMissionPhase.py
 usage.Environment usage/TestEnvironment.py
 usage.UsageProfile usage/TestProfile.py
-function.Function function/TestFunction.py
+Function TestFunction.py
 analyses.fmea.Mode fmea/TestMode.py
 analyses.fmea.Mechanism fmea/TestMechanism.py
 analyses.fmea.Cause fmea/TestCause.py
@@ -76,5 +76,5 @@ analyses.fmea.Control fmea/TestControl.py
 analyses.fmea.Action fmea/TestAction.py
 analyses.fmea.FMEA fmea/TestFMEA.py
 datamodels.RTKDataMatrix datamodels/TestRTKDataMatrix.py
-stakeholder.Stakeholder stakeholder/TestStakeholder.py
-requirement.Requirement requirement/TestRequirement.py
+Stakeholder TestStakeholder.py
+Requirement TestRequirement.py

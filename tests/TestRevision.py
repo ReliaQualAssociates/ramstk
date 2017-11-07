@@ -13,7 +13,7 @@ Controller algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(0, dirname(dirname(__file__)) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -23,7 +23,7 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from revision.Revision import Model, Revision
+from Revision import Model, Revision
 from dao import DAO
 from dao import RTKRevision
 
@@ -66,7 +66,6 @@ class Test00RevisionModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKRevision(), ], self.session)
         self.dao.db_add([RTKRevision(), ], self.session)
 
         self.DUT = Model(self.dao)
@@ -128,7 +127,7 @@ class Test00RevisionModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                                'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 12)
+        self.assertEqual(self.DUT.last_id, 7)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):

@@ -24,7 +24,7 @@ import pandas as pd
 import Utilities as Utilities
 from Configuration import Configuration
 from datamodels import RTKDataMatrix
-from function.Function import Model, Function
+from Function import Model, Function
 from dao import DAO
 from dao import RTKFunction
 

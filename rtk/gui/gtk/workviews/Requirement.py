@@ -664,21 +664,31 @@ class RequirementAnalysis(RTKWorkView):
 
         _return = False
 
-        if index == 0:
-            _list = self._lst_clear_a
-        elif index == 1:
-            _list = self._lst_complete_a
-        elif index == 2:
-            _list = self._lst_consistent_a
-        elif index == 3:
-            _list = self._lst_verifiable_a
+        _requirement = self._dtc_data_controller.request_select(self._requirement_id)
 
         _answer = boolean_to_integer(not cell.get_active())
         model[path][2] = _answer
 
         _position = model[path][0]
+
         try:
-            _list[_position] = _answer
+            if index == 0:
+                self._lst_clear_a[_position] = _answer
+                _requirement.q_clarity_0 = self._lst_clear_a[0]
+                _requirement.q_clarity_1 = self._lst_clear_a[1]
+                _requirement.q_clarity_2 = self._lst_clear_a[2]
+                _requirement.q_clarity_3 = self._lst_clear_a[3]
+                _requirement.q_clarity_4 = self._lst_clear_a[4]
+                _requirement.q_clarity_5 = self._lst_clear_a[5]
+                _requirement.q_clarity_6 = self._lst_clear_a[6]
+                _requirement.q_clarity_7 = self._lst_clear_a[7]
+                _requirement.q_clarity_8 = self._lst_clear_a[8]
+            elif index == 1:
+                self._lst_complete_a[_position] = _answer
+            elif index == 2:
+                self._lst_consistent_a[_position] = _answer
+            elif index == 3:
+                self._lst_verifiable_a[_position] = _answer
         except IndexError:
             print 'FIXME: Handle IndexError in ' \
                   'rtk.gui.gtk.workview.Requirement.RequirementAnalysis._do_toggle_cell'

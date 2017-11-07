@@ -12,7 +12,7 @@ This is the test class for testing Stakeholder module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(0, dirname(dirname(__file__)) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -22,7 +22,7 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from stakeholder.Stakeholder import Model, Stakeholder
+from Stakeholder import Model, Stakeholder
 from dao import DAO
 from dao import RTKStakeholder
 

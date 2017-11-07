@@ -24,7 +24,7 @@ import pandas as pd
 import Utilities as Utilities
 from Configuration import Configuration
 from datamodels import RTKDataMatrix
-from requirement.Requirement import Model, Requirement
+from Requirement import Model, Requirement
 from dao import DAO
 from dao import RTKRequirement
 

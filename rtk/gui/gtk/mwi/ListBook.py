@@ -17,7 +17,7 @@ from pubsub import pub  # pylint: disable=E0401
 # Import other RTK modules.
 # pylint: disable=E0401
 from gui.gtk.rtk import RTKBook
-from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition
+from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, lvwStakeholder
 from gui.gtk.matrixviews import FunctionHardware, RequirementHardware, RequirementSoftware, RequirementValidation
 
 _ = gettext.gettext
@@ -50,7 +50,8 @@ class ListBook(RTKBook):  # pylint: disable=R0904
             [lvwUsageProfile(controller),
              lvwFailureDefinition(controller)],
             'function': [FunctionHardware(controller, matrix_id=1)],
-            'requirement': [RequirementHardware(controller, matrix_id=11),
+            'requirement': [lvwStakeholder(controller),
+                            RequirementHardware(controller, matrix_id=11),
                             RequirementSoftware(controller, matrix_id=12),
                             RequirementValidation(controller, matrix_id=13)]
         }
