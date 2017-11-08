@@ -9,8 +9,6 @@ RTKModuleView Meta-Class Module
 -------------------------------------------------------------------------------
 """
 
-from sortedcontainers import SortedDict  # pylint: disable=E0401
-
 # Import other RTK modules.
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
 from gui.gtk import rtk  # pylint: disable=E0401,W0611

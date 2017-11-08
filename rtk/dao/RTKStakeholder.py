@@ -11,11 +11,11 @@ The RTKStakeholder Table
 """
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKStakeholder(RTK_BASE):
@@ -29,11 +29,17 @@ class RTKStakeholder(RTK_BASE):
     __tablename__ = 'rtk_stakeholder'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column('fld_revision_id', Integer,
-                         ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
-    stakeholder_id = Column('fld_stakeholder_id', Integer, primary_key=True,
-                            autoincrement=True, nullable=False)
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    stakeholder_id = Column(
+        'fld_stakeholder_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     customer_rank = Column('fld_customer_rank', Integer, default=1)
     description = Column('fld_description', BLOB, default='Stakeholder Input')

@@ -49,7 +49,7 @@ class GeneralData(RTKWorkView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        RTKWorkView.__init__(self, controller, module='Revision')
+        RTKWorkView.__init__(self, controller, module='revision')
 
         # Initialize private dictionary attributes.
 

@@ -10,12 +10,12 @@ Stakeholder Package Data Module
 ###############################################################################
 """
 
-from pubsub import pub                              # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel                 # pylint: disable=E0401
-from datamodels import RTKDataController            # pylint: disable=E0401
-from dao import RTKStakeholder                      # pylint: disable=E0401
+from datamodels import RTKDataModel  # pylint: disable=E0401
+from datamodels import RTKDataController  # pylint: disable=E0401
+from dao import RTKStakeholder  # pylint: disable=E0401
 
 
 class Model(RTKDataModel):
@@ -42,6 +42,7 @@ class Model(RTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
+        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -81,9 +82,11 @@ class Model(RTKDataModel):
             # (NULL fields in the database) with their default value.
             _attributes = _stakeholder.get_attributes()
             _stakeholder.set_attributes(_attributes[2:])
-            self.tree.create_node(_stakeholder.description,
-                                  _stakeholder.stakeholder_id,
-                                  parent=0, data=_stakeholder)
+            self.tree.create_node(
+                _stakeholder.description,
+                _stakeholder.stakeholder_id,
+                parent=0,
+                data=_stakeholder)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -106,12 +109,16 @@ class Model(RTKDataModel):
         _stakeholder = RTKStakeholder()
         _stakeholder.revision_id = kwargs['revision_id']
 
-        _error_code, _msg = RTKDataModel.insert(self, [_stakeholder, ])
+        _error_code, _msg = RTKDataModel.insert(self, [
+            _stakeholder,
+        ])
 
         if _error_code == 0:
-            self.tree.create_node(_stakeholder.description,
-                                  _stakeholder.stakeholder_id,
-                                  parent=0, data=_stakeholder)
+            self.tree.create_node(
+                _stakeholder.description,
+                _stakeholder.stakeholder_id,
+                parent=0,
+                data=_stakeholder)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -201,8 +208,8 @@ class Model(RTKDataModel):
 
         _stakeholder = self.tree.get_node(stakeholder_id).data
 
-        _stakeholder.improvement = 1.0 + 0.2 * (_stakeholder.planned_rank -
-                                                _stakeholder.customer_rank)
+        _stakeholder.improvement = 1.0 + 0.2 * (
+            _stakeholder.planned_rank - _stakeholder.customer_rank)
         _stakeholder.overall_weight = float(_stakeholder.priority) * \
             _stakeholder.improvement * _stakeholder.user_float_1 * \
             _stakeholder.user_float_2 * _stakeholder.user_float_3 * \
@@ -283,11 +290,13 @@ class Stakeholder(RTKDataController):
 
         _return = False
 
-        _error_code, _msg = self._dtm_stakeholder.insert(revision_id=revision_id)
+        _error_code, _msg = self._dtm_stakeholder.insert(
+            revision_id=revision_id)
 
         if _error_code == 0 and not self._test:
-            pub.sendMessage('insertedStakeholder',
-                            stakeholder_id=self._dtm_stakeholder.last_id)
+            pub.sendMessage(
+                'insertedStakeholder',
+                stakeholder_id=self._dtm_stakeholder.last_id)
         else:
             _msg = _msg + '  Failed to add a new Stakeholder to the RTK ' \
                 'Program database.'

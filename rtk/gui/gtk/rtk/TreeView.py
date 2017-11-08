@@ -147,24 +147,19 @@ class RTKTreeView(gtk.TreeView):
 
             if _widgets[i] == 'combo':
                 _cell = self._do_make_combo_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i])
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
             elif _widgets[i] == 'spin':
                 _cell = self._do_make_spin_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i])
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
             elif _widgets[i] == 'toggle':
                 _cell = self._do_make_toggle_cell(_editable[i])
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i])
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
             elif _widgets[i] == 'blob':
                 _cell = self._do_make_text_cell(True)
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i])
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
             else:
                 _cell = self._do_make_text_cell()
-                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i])
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i])
 
             if pixbuf and i == 0:
                 _pbcell = gtk.CellRendererPixbuf()
@@ -351,7 +346,7 @@ class RTKTreeView(gtk.TreeView):
 
         return _cell
 
-    def _do_set_properties(self, cell, bg_color, fg_color, editable, position):
+    def _do_set_properties(self, cell, bg_color, fg_color, editable):
         """
         Method to set common properties of gtk.CellRenderers().
 
@@ -360,8 +355,6 @@ class RTKTreeView(gtk.TreeView):
         :param str bg_color: the cell background color.
         :param str fg_color: the cell foreground color.
         :param int editable: indicates whether the cell is editable.
-        :param int position: the position in the gtk.TreeModel() that this
-                             cell falls.
         """
 
         if editable == 0:

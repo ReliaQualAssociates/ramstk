@@ -10,9 +10,6 @@ Stakeholder List View Module
 
 from pubsub import pub  # pylint: disable=E0401
 
-# Modules required for the GUI.
-import pango  # pylint: disable=E0401
-
 # Import other RTK modules.
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
@@ -21,14 +18,14 @@ from .ListView import RTKListView
 
 class ListView(RTKListView):
     """
-    The Stakeholder List View displays all the failure definitions
-    associated with the selected Revision.  The attributes of the Failure
-    Definition List View are:
+    The Stakeholder List View displays all the stakeholder inputs
+    associated with the selected Revision.  The attributes of the Stakeholder
+    List View are:
 
-    :ivar _dtc_stakeholder: the
+    :ivar _dtc_data_controller: the
     :py:class:`rtk.stakeholder.Stakeholder.Stakeholder`
     data controller associated with this List View.
-    :ivar _revision_id: the Revision ID whose failure definitions are being
+    :ivar _revision_id: the Revision ID whose stakeholder inputs are being
                         displayed in the List View.
     """
 
@@ -47,9 +44,8 @@ class ListView(RTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_stakeholder = None
         self._revision_id = None
-        self._definition_id = None
+        self._stakeholder_id = None
 
         # Initialize public dictionary attributes.
 
@@ -113,7 +109,7 @@ class ListView(RTKListView):
 
         _model, _row = treeview.get_selection().get_selected()
 
-        self._definition_id = _model.get_value(_row, 0)
+        self._stakeholder_id = _model.get_value(_row, 1)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -136,15 +132,36 @@ class ListView(RTKListView):
         :rtype: boolean
         """
 
-        RTKListView._do_edit_cell(__cell, path, new_text, position, model)
+        _return = False
 
-        # Update the Stakeholder data model.
-        _definition_id = model[path][0]
-        _definition = \
-            self._dtc_stakeholder.request_select(_definition_id)
-        _definition.definition = str(new_text)
+        if not self.treeview.do_edit_cell(__cell, path, new_text,
+                                          position, model):
 
-        return False
+            _stakeholder = self._dtc_data_controller.request_select(
+                self._stakeholder_id)
+
+            # Build a list of attributes based on the type of data package.
+            _attributes = [None] * 15
+            for i in xrange(15):
+                _attributes.insert(i, model[path][i])
+                #_attributes.append(model[path][i])
+                print i, self._lst_col_order[i], _attributes
+            _stakeholder.set_attributes(_attributes[2:])
+
+            if position == 4:
+                try:
+                    _key = max(self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS.keys()) + 1
+                except ValueError:
+                    _key = 1
+                self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS[_key] = _stakeholder.group
+            print _stakeholder.get_attributes()
+            pub.sendMessage('EditedStakeholder',
+                            index=self._lst_col_order[position],
+                            new_text=new_text)
+        else:
+            _return = True
+
+        return _return
 
     def _do_request_delete(self, __button):
         """
@@ -159,14 +176,14 @@ class ListView(RTKListView):
         _return = False
 
         _model, _row = self.treeview.get_selection().get_selected()
-        _definition_id = _model.get_value(_row, 0)
+        _stakeholder_id = _model.get_value(_row, 0)
 
-        if not self._dtc_stakeholder.request_delete(_definition_id):
+        if not self._dtc_data_controller.request_delete(_stakeholder_id):
             self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to delete failure "
-                        u"definition {0:d} to Revision {1:d}.").\
-                format(_definition_id, self._revision_id)
+                        u"stakeholder {0:d} to Revision {1:d}.").\
+                format(_stakeholder_id, self._revision_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
@@ -185,11 +202,11 @@ class ListView(RTKListView):
 
         _return = False
 
-        if not self._dtc_stakeholder.request_insert(self._revision_id):
+        if not self._dtc_data_controller.request_insert(self._revision_id):
             self._on_select_revision(self._revision_id)
         else:
-            _prompt = _(u"An error occurred attempting to add a failure "
-                        u"definition to Revision {0:d}.").\
+            _prompt = _(u"An error occurred attempting to add a stakeholder " \
+                        u"input to Revision {0:d}.").\
                 format(self._revision_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
@@ -207,7 +224,7 @@ class ListView(RTKListView):
         :rtype: bool
         """
 
-        return self._dtc_stakeholder.request_update(self._definition_id)
+        return self._dtc_data_controller.request_update(self._stakeholder_id)
 
     def _do_request_update_all(self, __button):
         """
@@ -221,11 +238,11 @@ class ListView(RTKListView):
 
         _return = False
 
-        if not self._dtc_stakeholder.request_update_all():
+        if not self._dtc_data_controller.request_update_all():
             self._on_select_revision(self._revision_id)
         else:
-            _prompt = _(u"An error occurred attempting to save the failure "
-                        u"definitions for Revision {0:d}.").\
+            _prompt = _(u"An error occurred attempting to save the " \
+                        u"stakeholder inputs for Revision {0:d}.").\
                 format(self._revision_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
@@ -272,12 +289,42 @@ class ListView(RTKListView):
 
         _return = False
 
+        # Load the Affinity Group gtk.CellRendererCombo()
+        _cell = self.treeview.get_column(3).get_cell_renderers()[0]
+        _cell.set_property('has-entry', True)
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        _cellmodel.append([""])
+        # Each _owner is (Description, Group Type).
+        for _index, _key in enumerate(
+                self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS):
+            _group = self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS[_key]
+            _cellmodel.append([_group[0]])
+
+        # Load the Stakeholder gtk.CellRendererCombo()
+        _cell = self.treeview.get_column(10).get_cell_renderers()[0]
+        _cell.set_property('has-entry', True)
+        _cellmodel = _cell.get_property('model')
+        _cellmodel.clear()
+        _cellmodel.append([""])
+        # Each _owner is (Description, Group Type).
+        for _index, _key in enumerate(
+                self._mdcRTK.RTK_CONFIGURATION.RTK_STAKEHOLDERS):
+            _group = self._mdcRTK.RTK_CONFIGURATION.RTK_STAKEHOLDERS[_key]
+            _cellmodel.append([_group[0]])
+
         # Set the CellRendererSpin() columns to [1, 5] step 1.
         for i in [2, 7, 8]:
             _column = self.treeview.get_column(self._lst_col_order[i])
             _cell = _column.get_cell_renderers()[0]
             _adjustment = _cell.get_property('adjustment')
             _adjustment.set_all(1, 1, 5, 1)
+
+        for i in xrange(2, 14):
+            _cell = self.treeview.get_column(
+                self._lst_col_order[i]).get_cell_renderers()
+            _cell[0].connect('edited', self._do_edit_cell, i,
+                             self.treeview.get_model())
 
         self.treeview.set_rubber_banding(True)
 
@@ -319,7 +366,7 @@ class ListView(RTKListView):
             _menu_item = gtk.ImageMenuItem()
             _image = gtk.Image()
             _image.set_from_file(self._dic_icons['add'])
-            _menu_item.set_label(_(u"Add New Definition"))
+            _menu_item.set_label(_(u"Add New Stakeholder Input"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_insert)
@@ -329,7 +376,7 @@ class ListView(RTKListView):
             _menu_item = gtk.ImageMenuItem()
             _image = gtk.Image()
             _image.set_from_file(self._dic_icons['remove'])
-            _menu_item.set_label(_(u"Remove Selected Definition"))
+            _menu_item.set_label(_(u"Remove Selected Stakeholder Input"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_delete)
@@ -339,7 +386,7 @@ class ListView(RTKListView):
             _menu_item = gtk.ImageMenuItem()
             _image = gtk.Image()
             _image.set_from_file(self._dic_icons['save'])
-            _menu_item.set_label(_(u"Save Selected Definition"))
+            _menu_item.set_label(_(u"Save Selected Stakeholder Input"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update)
@@ -349,7 +396,7 @@ class ListView(RTKListView):
             _menu_item = gtk.ImageMenuItem()
             _image = gtk.Image()
             _image.set_from_file(self._dic_icons['save-all'])
-            _menu_item.set_label(_(u"Save All Definitions"))
+            _menu_item.set_label(_(u"Save All Stakeholder Inputs"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_update_all)
@@ -375,10 +422,10 @@ class ListView(RTKListView):
 
         self._revision_id = module_id
 
-        self._dtc_stakeholder = \
+        self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['stakeholder']
         _stakeholders = \
-            self._dtc_stakeholder.request_select_all(self._revision_id)
+            self._dtc_data_controller.request_select_all(self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()

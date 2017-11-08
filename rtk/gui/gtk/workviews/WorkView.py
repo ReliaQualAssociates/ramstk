@@ -69,18 +69,22 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
                        cost/operating hour for the RTK module.
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, controller, module=None):
         """
         Method to initialize the RTKWorkView meta-class.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
+        :keyword str module: the RTK Module this RTKWorkView is the bassis for.
         """
 
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller)
+        rtk.RTKBaseView.__init__(self, controller, module=module)
 
-        self._module = kwargs['module']
+        self._module = None
+        for i, char in enumerate(module):
+            if char.isalpha():
+                self._module = module.capitalize()
 
         # Initialize private dictionary attributes.
 
