@@ -35,13 +35,14 @@ class ListView(RTKListView):
 
     def __init__(self, controller):
         """
-        Method to initialize the List View for the Revision package.
+        Method to initialize the Usage Profile List View for the Revision
+        package.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        RTKListView.__init__(self, controller)
+        RTKListView.__init__(self, controller, module='usage_profile')
 
         # Initialize private dictionary attributes.
         self._dic_icons['mission'] = \
@@ -394,6 +395,36 @@ class ListView(RTKListView):
 
         return _buttonbox
 
+    def _make_cell(self, cell, editable, position, model):
+        """
+        Method to create a gtk.CellRenderer() and set it's properties.
+
+        :param str cell: the type of gtk.CellRenderer() to create.
+        :param bool editable: indicates whether or not the cell should be
+                              editable.
+        :param int position: the position of the cell in the gtk.Model().
+        :return: _cell
+        :rtype: :py:class:`gtk.CellRenderer`
+        """
+
+        _cellrenderers = {'pixbuf':gtk.CellRendererPixbuf(),
+                          'text':gtk.CellRendererText()}
+
+        _cell = _cellrenderers[cell]
+
+        if not editable:
+            _cell.set_property('cell-background', 'light gray')
+        else:
+            _cell.connect('edited', self._do_edit_cell, position, model)
+
+        if cell == 'text':
+            _cell.set_property('editable', editable)
+            _cell.set_property('wrap-width', 250)
+            _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+            _cell.set_property('yalign', 0.1)
+
+        return _cell
+
     def _make_treeview(self):
         """
         Method for setting up the gtk.TreeView() for Failure Definitions.
@@ -415,92 +446,46 @@ class ListView(RTKListView):
         for i in range(10):
             _column = gtk.TreeViewColumn()
             if i == 0:
-                _cell = gtk.CellRendererPixbuf()
+                _cell = self._make_cell('pixbuf', False, 0, _model)
                 _cell.set_property('xalign', 0.5)
                 _column.pack_start(_cell, False)
                 _column.set_attributes(_cell, pixbuf=0)
 
-                _cell = gtk.CellRendererText()
-                _cell.set_property('background', 'light gray')
-                _cell.set_property('editable', 0)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
+                _cell = self._make_cell('text', False, 1, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=1)
-
                 _column.set_visible(True)
             elif i == 1:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._do_edit_cell, 2, _model)
+                _cell = self._make_cell('text', True, 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=2)
 
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._do_edit_cell, 3, _model)
+                _cell = self._make_cell('text', True, 3, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=3, visible=11)
-
                 _column.set_visible(True)
-            elif i == 2:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._do_edit_cell, 4, _model)
-                _column.pack_start(_cell, True)
-                _column.set_attributes(_cell, text=4)
-                _column.set_visible(True)
-            elif i == 3 or i == 4:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
-                _cell.connect('edited', self._do_edit_cell, i + 2,
-                              _model)
+            elif i in [2, 3, 4]:
+                _cell = self._make_cell('text', True, i + 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2)
                 _column.set_visible(True)
-            elif i == 5 or i == 6:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 1)
-                _cell.set_property('wrap-width', 250)
-                _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-                _cell.set_property('yalign', 0.1)
+            elif i in [5, 6]:
+                _cell = self._make_cell('text', True, i + 2, _model)
                 _cell.connect('edited', self._do_edit_cell, i + 2,
                               _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2, visible=10)
                 _column.set_visible(True)
             else:
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
+                _cell = self._make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
+                _cell = self._make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
+                _cell = self._make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
+                _cell = self._make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
-
-                _cell = gtk.CellRendererText()
-                _cell.set_property('editable', 0)
+                _cell = self._make_cell('text', False, i + 2, _model)
                 _column.pack_start(_cell, True)
 
                 _column.set_visible(False)
@@ -533,7 +518,7 @@ class ListView(RTKListView):
         :rtype: bool
         """
 
-        treeview.handler_block(self._lst_handler_id[0])
+        treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
         # _on_change_row is called from here, it gets called twice.  Once on

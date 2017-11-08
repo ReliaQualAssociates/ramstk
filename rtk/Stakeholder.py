@@ -42,7 +42,6 @@ class Model(RTKDataModel):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._revision_id = None
 
         # Initialize public dictionary attributes.
 
@@ -96,7 +95,7 @@ class Model(RTKDataModel):
 
         return self.tree
 
-    def insert(self):
+    def insert(self, **kwargs):
         """
         Method to add a Stakeholder input to the RTK Program database.
 
@@ -105,7 +104,7 @@ class Model(RTKDataModel):
         """
 
         _stakeholder = RTKStakeholder()
-        _stakeholder.revision_id = self._revision_id
+        _stakeholder.revision_id = kwargs['revision_id']
 
         _error_code, _msg = RTKDataModel.insert(self, [_stakeholder, ])
 
@@ -273,7 +272,7 @@ class Stakeholder(RTKDataController):
 
         return self._dtm_stakeholder.select_all(revision_id)
 
-    def request_insert(self):
+    def request_insert(self, revision_id):
         """
         Method to request the Stakeholder Data Model to add a new Stakeholder
         to the RTK Program database.
@@ -284,11 +283,11 @@ class Stakeholder(RTKDataController):
 
         _return = False
 
-        _error_code, _msg = self._dtm_stakeholder.insert()
+        _error_code, _msg = self._dtm_stakeholder.insert(revision_id=revision_id)
 
         if _error_code == 0 and not self._test:
-            pub.sendMessage('insertedRevision',
-                            stakeholder_id=self.dtm_stakeholder.last_id)
+            pub.sendMessage('insertedStakeholder',
+                            stakeholder_id=self._dtm_stakeholder.last_id)
         else:
             _msg = _msg + '  Failed to add a new Stakeholder to the RTK ' \
                 'Program database.'

@@ -36,7 +36,7 @@ class RTKStakeholder(RTK_BASE):
                             autoincrement=True, nullable=False)
 
     customer_rank = Column('fld_customer_rank', Integer, default=1)
-    description = Column('fld_description', BLOB, default='')
+    description = Column('fld_description', BLOB, default='Stakeholder Input')
     group = Column('fld_group', String(128), default='')
     improvement = Column('fld_improvement', Float, default=0.0)
     overall_weight = Column('fld_overall_weight', Float, default=0.0)

@@ -27,7 +27,7 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
                     in the selected module.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, module=None):
         """
         Method to initialize the List View.
 
@@ -36,12 +36,11 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         """
 
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller)
+        rtk.RTKBaseView.__init__(self, controller, module=module)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_col_order = []
 
         # Initialize private scalar attributes.
 
@@ -51,7 +50,6 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
 
         # Initialize public scalar attributes.
         self.hbx_tab_label = gtk.HBox()
-        self.treeview = gtk.TreeView()
 
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):

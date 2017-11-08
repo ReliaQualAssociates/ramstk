@@ -58,12 +58,12 @@ from dao.RTKUnit import RTKUnit
 from dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
 from Revision import Revision
+from usage.UsageProfile import UsageProfile
 from FailureDefinition import FailureDefinition
 from Function import Function
-from Requirement import Requirement
 from analyses.fmea.FMEA import FMEA
-from usage.UsageProfile import UsageProfile
-# from stakeholder.Stakeholder import Stakeholder
+from Requirement import Requirement
+from Stakeholder import Stakeholder
 # from hardware.BoM import BoM as HardwareBoM
 # from analyses.allocation.Allocation import Allocation
 # from analyses.hazard.Hazard import Hazard
@@ -821,7 +821,10 @@ class RTK(object):
                                                  self.RTK_CONFIGURATION,
                                                  test=False, functional=True)
             # self.dic_controllers['fmea'] = FMEA()
-            # self.dic_controllers['stakeholder'] = Stakeholder()
+            self.dic_controllers['stakeholder'] = Stakeholder(
+                self.rtk_model.program_dao,
+                self.RTK_CONFIGURATION,
+                test=False)
             # self.dic_controllers['allocation'] = Allocation()
             # self.dic_controllers['hazard'] = Hazard()
             # self.dic_controllers['similaritem'] = SimilarItem()
@@ -903,7 +906,7 @@ class RTK(object):
         else:
             self.RTK_CONFIGURATION.RTK_DEBUG_LOG.error(_msg)
             _return = True
-        print self.dic_controllers
+
         return _return
 
     def request_close_program(self):

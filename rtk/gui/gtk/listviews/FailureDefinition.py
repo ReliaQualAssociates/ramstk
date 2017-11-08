@@ -40,7 +40,7 @@ class ListView(RTKListView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        RTKListView.__init__(self, controller)
+        RTKListView.__init__(self, controller, module='failure_definition')
 
         # Initialize private dictionary attributes.
 

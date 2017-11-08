@@ -40,7 +40,7 @@ class ListView(RTKListView):
         :type controller: :py:class:`rtk.RTK.RTK`
         """
 
-        RTKListView.__init__(self, controller)
+        RTKListView.__init__(self, controller, module='stakeholder')
 
         # Initialize private dictionary attributes.
 
@@ -56,18 +56,10 @@ class ListView(RTKListView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        _bg_color = '#FFFFFF'
-        _fg_color = '#000000'
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE['stakeholder']
-        _fmt_path = "/root/tree[@name='Stakeholder']/column"
 
-        self.treeview = rtk.RTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
-                                        _fg_color)
-
-        self.treeview.set_rubber_banding(True)
+        self._make_treeview()
         self.treeview.set_tooltip_text(
-            _(u"Displays the list of failure definitions for the selected "
+            _(u"Displays the list of stakeholder inputs for the selected "
               u"revision."))
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))
@@ -86,7 +78,7 @@ class ListView(RTKListView):
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
         _label.set_tooltip_text(
-            _(u"Displays failure definitions for the "
+            _(u"Displays stakeholder inputs for the "
               u"selected revision."))
 
         # self.hbx_tab_label.pack_start(_image)
@@ -270,6 +262,27 @@ class ListView(RTKListView):
 
         return _buttonbox
 
+    def _make_treeview(self):
+        """
+        Method for setting up the gtk.TreeView() for Stakeholders.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        # Set the CellRendererSpin() columns to [1, 5] step 1.
+        for i in [2, 7, 8]:
+            _column = self.treeview.get_column(self._lst_col_order[i])
+            _cell = _column.get_cell_renderers()[0]
+            _adjustment = _cell.get_property('adjustment')
+            _adjustment.set_all(1, 1, 5, 1)
+
+        self.treeview.set_rubber_banding(True)
+
+        return _return
+
     def _on_button_press(self, treeview, event):
         """
         Method for handling mouse clicks on the Stakeholder package
@@ -363,21 +376,21 @@ class ListView(RTKListView):
         self._revision_id = module_id
 
         self._dtc_stakeholder = \
-            self._mdcRTK.dic_controllers['definition']
-        _definitions = \
+            self._mdcRTK.dic_controllers['stakeholder']
+        _stakeholders = \
             self._dtc_stakeholder.request_select_all(self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()
 
-        for _key in _definitions.nodes.keys():
-            try:
-                _model.append([
-                    _definitions[_key].data.definition_id,
-                    _definitions[_key].data.definition
-                ])
-            except AttributeError:
-                print "FIXME: Handle AttributeError in " \
-                      "gtk.gui.listviews.Stakeholder._on_select_revision"
+        self.treeview.do_load_tree(_stakeholders)
+
+        _row = _model.get_iter_root()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
 
         return _return

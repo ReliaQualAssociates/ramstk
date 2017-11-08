@@ -416,7 +416,8 @@ class Configuration(object):
                             'revisionbg', 'functionbg', 'requirementbg',
                             'assemblybg', 'partbg', 'overstressbg', 'taggedbg',
                             'softwarebg', 'incidentbg', 'validationbg',
-                            'testbg', 'survivalbg']
+                            'testbg', 'survivalbg', 'stakeholderbg',
+                            'stakeholderfg']
         self._lst_format_files = ['revision', 'function', 'requirement',
                                   'hardware', 'software', 'incident',
                                   'validation', 'testing', 'part', 'sia',

@@ -61,7 +61,7 @@ class ListBook(RTKBook):  # pylint: disable=R0904
         # Initialize public scalar attributes.
 
         # Set the properties for the ListBook and it's widgets.
-        self.set_title(_(u"RTK Matrices & Lists"))
+        self.set_title(_(u"RTK Matrices and Lists"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)
