@@ -15,6 +15,7 @@ widgets in the RTK application.
 """
 
 import defusedxml.lxml as lxml  # pylint: disable=E0401
+from sortedcontainers import SortedDict  # pylint: disable=E0401
 
 # Import other RTK Widget classes.
 from .Widget import gobject, gtk, pango  # pylint: disable=E0401
@@ -91,9 +92,20 @@ class RTKTreeView(gtk.TreeView):
             _editable[i] = int(_editable[i].text)
             _position[i] = int(_position[i].text)
             _visible[i] = int(_visible[i].text)
-
             _types.append(gobject.type_from_name(_datatypes[i]))
 
+        # Sort each of the lists according to the desired sequence provided in
+        # the _position list.  This is necessary to all for user-specific
+        # ordering of columns in the RTKTreeView.
+        _datatypes = [x for _, x in sorted(zip(_position, _datatypes))]
+        _headings = [x for _, x in sorted(zip(_position, _headings))]
+        _widgets = [x for _, x in sorted(zip(_position, _widgets))]
+        _editable = [x for _, x in sorted(zip(_position, _editable))]
+        _visible = [x for _, x in sorted(zip(_position, _visible))]
+        _types = [x for _, x in sorted(zip(_position, _types))]
+
+        # Append entries to each list if this RTKTreeView is to display an
+        # icon at the beginning of the row (Usage Profile, Hardware, etc.)
         if pixbuf:
             _datatypes.append('pixbuf')
             _headings.append('')
@@ -112,6 +124,7 @@ class RTKTreeView(gtk.TreeView):
 
         # We may want to add a column to hold indexing information for program
         # control.
+        # FIXME: Are we using this?  If not, we need to eliminate.
         if indexed:
             _datatypes.append('text')
             _headings.append('')
@@ -135,22 +148,23 @@ class RTKTreeView(gtk.TreeView):
             if _widgets[i] == 'combo':
                 _cell = self._do_make_combo_cell()
                 self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i], _model)
+                                        _position[i])
             elif _widgets[i] == 'spin':
                 _cell = self._do_make_spin_cell()
                 self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i], _model)
+                                        _position[i])
             elif _widgets[i] == 'toggle':
-                _cell = self._do_make_toggle_cell(_editable[i], _position[i],
-                                                  _model)
+                _cell = self._do_make_toggle_cell(_editable[i])
+                self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
+                                        _position[i])
             elif _widgets[i] == 'blob':
                 _cell = self._do_make_text_cell(True)
                 self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i], _model)
+                                        _position[i])
             else:
                 _cell = self._do_make_text_cell()
                 self._do_set_properties(_cell, bg_col, fg_col, _editable[i],
-                                        _position[i], _model)
+                                        _position[i])
 
             if pixbuf and i == 0:
                 _pbcell = gtk.CellRendererPixbuf()
@@ -196,6 +210,42 @@ class RTKTreeView(gtk.TreeView):
             self.append_column(column)
 
         self.set_model(_model)
+
+    def do_load_tree(self, tree, row=None):
+        """
+        Method to recursively load the Module View's gtk.TreeModel with the
+        Module's tree.
+
+        :param tree: the Module's treelib Tree().
+        :type tree: :py:class:`treelib.Tree`
+        :param row: the parent row in the gtk.TreeView() to add the new item.
+        :type row: :py:class:`gtk.TreeIter`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+        _row = None
+        _model = self.get_model()
+
+        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
+        _entity = _node.data
+
+        try:
+            _attributes = _entity.get_attributes()
+            try:
+                _row = _model.append(row, _attributes)
+            except TypeError:
+                print "FIXME: Handle TypeError in " \
+                      "gtk.gui.rtk.TreeView.RTKTreeView.do_load_tree"
+        except AttributeError:
+            _row = None
+
+        for _n in tree.children(_node.identifier):
+            _child_tree = tree.subtree(_n.identifier)
+            self.do_load_tree(_child_tree, _row)
+
+        return _return
 
     def _do_make_column(self, cells, visible, heading):
         """
@@ -287,27 +337,21 @@ class RTKTreeView(gtk.TreeView):
 
         return _cell
 
-    def _do_make_toggle_cell(self, editable, position, model):
+    def _do_make_toggle_cell(self, editable):
         """
         Method to make a gtk.CellRendererCombo().
 
         :param int editable: indicates whether the cell is editable.
-        :param int position: the position in the gtk.TreeModel() that this
-                             cell falls.
-        :param model: the gtk.TreeModel() the cell belongs to.
-        :type model: :py:class:`gtk.TreeModel`
         :return: _cell
         :rtype: :py:class:`gtk.CellRendererCombo`
         """
 
         _cell = gtk.CellRendererToggle()
         _cell.set_property('activatable', editable)
-        _cell.connect('toggled', self._on_cell_toggled, position, model)
 
         return _cell
 
-    def _do_set_properties(self, cell, bg_color, fg_color, editable, position,
-                           model):
+    def _do_set_properties(self, cell, bg_color, fg_color, editable, position):
         """
         Method to set common properties of gtk.CellRenderers().
 
@@ -318,44 +362,25 @@ class RTKTreeView(gtk.TreeView):
         :param int editable: indicates whether the cell is editable.
         :param int position: the position in the gtk.TreeModel() that this
                              cell falls.
-        :param model: the `:py:class:gtk.TreeModel` associated with the
-                      treeview.
         """
-
-        cell.set_property('background', bg_color)
-        cell.set_property('editable', editable)
-        cell.set_property('foreground', fg_color)
-        cell.set_property('wrap-width', 250)
-        cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
-        cell.set_property('yalign', 0.1)
-        cell.connect('edited', self._on_edit_tree, position, model)
 
         if editable == 0:
-            cell.set_property('background', 'light gray')
+            cell.set_property('cell-background', 'light gray')
+        else:
+            cell.set_property('cell-background', bg_color)
+
+        if not isinstance(cell, gtk.CellRendererToggle):
+            cell.set_property('editable', editable)
+            cell.set_property('foreground', fg_color)
+            cell.set_property('wrap-width', 250)
+            cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
+        else:
+            cell.set_property('activatable', editable)
+
+        cell.set_property('yalign', 0.1)
 
     @staticmethod
-    def _on_cell_toggled(cell, path, position, model):
-        """
-        Method called when a gtk.TreeView() gtk.CellRendererToggle() is edited.
-
-        :param gtk.CellRendererToggle cell: the gtk.CellRendererToggle() that
-                                            was edited.
-        :param str path: the gtk.TreeView() path of the
-                         gtk.CellRendererToggle() that was edited.
-        :param int position: the column position of the edited
-                             gtk.CellRendererToggle().
-        :param gtk.TreeModel model: the gtk.TreeModel() the
-                                    gtk.CellRendererToggle() belongs to.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        model[path][position] = not cell.get_active()
-
-        return False
-
-    @staticmethod
-    def _on_edit_tree(cell, path, new_text, position, model):
+    def do_edit_cell(cell, path, new_text, position, model):
         """
         Method called when a gtk.TreeView() gtk.CellRenderer() is edited.
 
@@ -371,18 +396,23 @@ class RTKTreeView(gtk.TreeView):
         :rtype: bool
         """
 
+        _return = False
+
         _convert = gobject.type_name(model.get_column_type(position))
 
-        if new_text is None:
+        if isinstance(cell, gtk.CellRendererToggle):
             model[path][position] = not cell.get_active()
         elif _convert == 'gchararray':
             model[path][position] = str(new_text)
         elif _convert == 'gint':
-            model[path][position] = int(new_text)
+            try:
+                model[path][position] = int(new_text)
+            except ValueError:
+                model[path][position] = int(float(new_text))
         elif _convert == 'gfloat':
             model[path][position] = float(new_text)
 
-        return False
+        return _return
 
     @staticmethod
     def _format_cell(__column, cell, model, row, data):
