@@ -30,7 +30,7 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
                     in the selected module.
     """
 
-    def __init__(self, controller, module=''):
+    def __init__(self, controller, module=None):
         """
         Method to initialize the Module View.
 
@@ -40,12 +40,11 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         """
 
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller)
+        rtk.RTKBaseView.__init__(self, controller, module)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_col_order = []
 
         # Initialize private scalar attributes.
         self._img_tab = gtk.Image()
@@ -55,17 +54,6 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.treeview = None
-
-        _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module + 'bg']
-        _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module + 'fg']
-        _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
-            '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[module]
-        _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
-
-        self.treeview = rtk.RTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
-                                        _fg_color)
-        self._lst_col_order = self.treeview.order
 
         _scrolledwindow = gtk.ScrolledWindow()
         _scrolledwindow.add(self.treeview)
@@ -100,68 +88,5 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
             model[path][position] = int(new_text)
         elif _type == 'gfloat':
             model[path][position] = float(new_text)
-
-        return _return
-
-    def _do_load_tree(self, tree, row=None):
-        """
-        Method to recursively load the Module View's gtk.TreeModel with the
-        Module's tree.
-
-        :param tree: the Module's treelib Tree().
-        :type tree: :py:class:`treelib.Tree`
-        :param row: the parent row in the gtk.TreeView() to add the new item.
-        :type row: :py:class:`gtk.TreeIter`
-        :return: None
-        :rtype: None
-        """
-
-        _row = None
-        _model = self.treeview.get_model()
-
-        _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
-        _entity = _node.data
-
-        try:
-            _data = _entity.get_attributes()
-            try:
-                _row = _model.append(row, _data)
-            except TypeError:
-                print "FIXME: Handle TypeError in " \
-                      "gtk.gui.moduleviews.ModuleView._do_load_tree"
-        except AttributeError:
-            _row = None
-
-        for _n in tree.children(_node.identifier):
-            _child_tree = tree.subtree(_n.identifier)
-            self._do_load_tree(_child_tree, _row)
-
-        return None
-
-    def _on_select_revision(self, tree):
-        """
-        Method to load the Module View gtk.TreeModel() with information when an
-        RTK Program database is opened.
-
-        :param tree: the Treelib tree that should be loaded into the Module
-                     View.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-
-        _return = False
-
-        _model = self.treeview.get_model()
-        _model.clear()
-
-        self._do_load_tree(tree)
-
-        _row = _model.get_iter_root()
-        self.treeview.expand_all()
-        if _row is not None:
-            _path = _model.get_path(_row)
-            _column = self.treeview.get_column(0)
-            self.treeview.set_cursor(_path, None, False)
-            self.treeview.row_activated(_path, _column)
 
         return _return

@@ -126,8 +126,8 @@ class ModuleView(RTKModuleView):
 
         _return = False
 
-        if not RTKModuleView._do_edit_cell(__cell, path, new_text, position,
-                                           model):
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
 
             _function = self._dtc_data_controller.request_select(
                 self._function_id)
