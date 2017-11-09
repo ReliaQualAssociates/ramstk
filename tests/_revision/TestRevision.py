@@ -13,7 +13,7 @@ Controller algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk", )
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
