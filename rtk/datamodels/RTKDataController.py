@@ -9,7 +9,7 @@ RTKDataController Module
 ===============================================================================
 """
 
-from pubsub import pub                              # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -23,9 +23,11 @@ class RTKDataController(object):
 
     :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
                           instance associated with the current RTK instance.
+    :ivar _dtm_data_model:
+    :ivar bool _test:
     """
 
-    def __init__(self, configuration, **kwargs):
+    def __init__(self, configuration, module=None, **kwargs):
         """
         Base method to initialize a RTK data controller instance.
 
@@ -39,8 +41,9 @@ class RTKDataController(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._test = kwargs['test']
         self._configuration = configuration
+        self._dtm_data_model = module
+        self._test = kwargs['test']
 
         # Initialize public dictionary attributes.
 
@@ -48,7 +51,32 @@ class RTKDataController(object):
 
         # Initialize public scalar attributes.
 
-    def handle_results(self, error_code, error_msg, pub_msg=None):
+    def request_select(self, node_id):
+        """
+        Method to request the Requirement Data Model to retrieve the
+        RTKRequirement model associated with the Requirement ID.
+
+        :param int requirement_id: the Requirement ID to retrieve.
+        :return: the RTKRequirement model requested.
+        :rtype: `:class:rtk.dao.DAO.RTKRequirement` model
+        """
+
+        return self._dtm_data_model.select(node_id)
+
+    def request_select_all(self, revision_id):
+        """
+        Method to retrieve the Requirement tree from the Requirement Data
+        Model.
+
+        :param int revision_id: the Revision ID to select the Requirements for.
+        :return: tree; the treelib Tree() of RTKRequirement models in the
+                 Requirement tree.
+        :rtype: dict
+        """
+
+        return self._dtm_data_model.select_all(revision_id)
+
+    def do_handle_results(self, error_code, error_msg, pub_msg=None):
         """
         Method to handle the error code and error message from the insert,
         delete, update, and calculate methods.
@@ -76,3 +104,50 @@ class RTKDataController(object):
             _return = True
 
         return _return
+
+    def handle_results(self, error_code, error_msg, pub_msg=None):
+
+        return self.do_handle_results(
+            self, error_code, error_msg, pub_msg=None)
+
+    def request_get_attributes(self, node_id):
+        """
+        Method to request the attributes from the record in the RTK Program
+        database table associated with node_id.
+
+        :param int node_id: the ID of the record in the RTK Program database
+                            whose attributes are being requested.
+        :return: _attributes
+        :rtype: dict
+        """
+
+        _entity = self.request_select(node_id)
+
+        return _entity.get_attributes()
+
+    def request_set_attributes(self, node_id, attributes):
+        """
+        Method to set the attributes of the RTK Program database table record
+        data model associated with node_id.
+
+        :param int node_id: the ID of the record in the RTK Program database
+                            table whose attributes are to be set.
+        :param dict attributes: the dictionary of attributes and values.
+        :return:
+        :rtype:
+        """
+
+        _entity = self.request_select(node_id)
+
+        return _entity.set_attributes(attributes)
+
+    def request_last_id(self):
+        """
+        Method to request the last Requirement ID used in the RTK Program
+        database.
+
+        :return: the last Requirement ID used.
+        :rtype: int
+        """
+
+        return self._dtm_data_model.last_id

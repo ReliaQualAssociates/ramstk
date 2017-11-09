@@ -21,9 +21,9 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
 
     :ivar _lst_col_order: list containing the order of the columns in the
                           List View gtk.TreeView().
-    :ivar hbx_tab_label: the :py:class:`gtk.HBox` used for the label in the
+    :ivar hbx_tab_label: the :class:`gtk.HBox` used for the label in the
                          ListBook.
-    :ivar treeview: the :py:class:`gtk.TreeView` displaying the list of items
+    :ivar treeview: the :class:`gtk.TreeView` displaying the list of items
                     in the selected module.
     """
 
@@ -32,7 +32,7 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         Method to initialize the List View.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
 
         gtk.HBox.__init__(self)

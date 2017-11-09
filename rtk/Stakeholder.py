@@ -21,10 +21,10 @@ from dao import RTKStakeholder  # pylint: disable=E0401
 class Model(RTKDataModel):
     """
     The Stakeholder data model contains the attributes and methods of a
-    stakeholder input.  A :py:class:`rtk.requirement.Requirement` will consist
+    stakeholder input.  A :class:`rtk.requirement.Requirement` will consist
     of one or more Stakeholder inputs.  The attributes of a Stakeholder are:
 
-    :ivar int _revision_id: the ID of the :py:class:`rtk.revision.Revision` the
+    :ivar int _revision_id: the ID of the :class:`rtk.revision.Revision` the
                             Stakeholder input is associated with.
     """
 
@@ -58,7 +58,7 @@ class Model(RTKDataModel):
         :param int stakeholder_id: the ID Of the Stakeholder input to retrieve.
         :return: the instance of the RTKStakeholder class that was requested or
                  None if the requested Stakeholder ID does not exist.
-        :rtype: :py:class:`rtk.dao.RTKStakeholder.RTKStakeholder`
+        :rtype: :class:`rtk.dao.RTKStakeholder.RTKStakeholder`
         """
 
         return RTKDataModel.select(self, stakeholder_id)
@@ -71,7 +71,7 @@ class Model(RTKDataModel):
         :param int revision_id: the ID of the Revision to retrieve all the
                                 Stakeholder inputs for.
         :return: tree; the Tree() of RTKStakeholder data models.
-        :rtype: :py:class:`treelib.Tree`
+        :rtype: :class:`treelib.Tree`
         """
 
         _session = RTKDataModel.select_all(self)
@@ -227,9 +227,9 @@ class Stakeholder(RTKDataController):
 
     :ivar __test: control variable used to suppress certain code during
                   testing.
-    :ivar _dtm_stakeholder: the :py:class:`rtk.Stakeholder.Model` associated
+    :ivar _dtm_stakeholder: the :class:`rtk.Stakeholder.Model` associated
                             with the Stakeholder Data Controller.
-    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
+    :ivar _configuration: the :class:`rtk.Configuration.Configuration`
                           instance associated with the current RTK instance.
     """
 
@@ -260,7 +260,7 @@ class Stakeholder(RTKDataController):
 
         :param int revision_id: the Stakeholder ID to retrieve.
         :return: the RTKStakeholder model requested.
-        :rtype: `:py:class:rtk.dao.DAO.RTKStakeholder` model
+        :rtype: `:class:rtk.dao.DAO.RTKStakeholder` model
         """
 
         return self._dtm_stakeholder.select(stakeholder_id)

@@ -212,9 +212,9 @@ class RTKTreeView(gtk.TreeView):
         Module's tree.
 
         :param tree: the Module's treelib Tree().
-        :type tree: :py:class:`treelib.Tree`
+        :type tree: :class:`treelib.Tree`
         :param row: the parent row in the gtk.TreeView() to add the new item.
-        :type row: :py:class:`gtk.TreeIter`
+        :type row: :class:`gtk.TreeIter`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -251,7 +251,7 @@ class RTKTreeView(gtk.TreeView):
         :param int visible: indicates whether the column will be visible.
         :param str heading: the column heading text.
         :return: _column
-        :rtype: :py:class:`gtk.TreeViewColumn`
+        :rtype: :class:`gtk.TreeViewColumn`
         """
 
         _column = gtk.TreeViewColumn("")
@@ -278,7 +278,7 @@ class RTKTreeView(gtk.TreeView):
         Method to make a gtk.CellRendererCombo().
 
         :return: _cell
-        :rtype: :py:class:`gtk.CellRendererCombo`
+        :rtype: :class:`gtk.CellRendererCombo`
         """
 
         _cell = gtk.CellRendererCombo()
@@ -301,9 +301,9 @@ class RTKTreeView(gtk.TreeView):
         :param int position: the position in the gtk.TreeModel() that this
                              cell falls.
         :param model: the gtk.TreeModel() the cell belongs to.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :return: _cell
-        :rtype: :py:class:`gtk.CellRendererCombo`
+        :rtype: :class:`gtk.CellRendererCombo`
         """
 
         _cell = gtk.CellRendererSpin()
@@ -320,9 +320,9 @@ class RTKTreeView(gtk.TreeView):
 
         :param bool blob: indicates whether the cell will be displaying a BLOB
                           field.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :return: _cell
-        :rtype: :py:class:`gtk.CellRendererCombo`
+        :rtype: :class:`gtk.CellRendererCombo`
         """
 
         if not blob:
@@ -338,7 +338,7 @@ class RTKTreeView(gtk.TreeView):
 
         :param int editable: indicates whether the cell is editable.
         :return: _cell
-        :rtype: :py:class:`gtk.CellRendererCombo`
+        :rtype: :class:`gtk.CellRendererCombo`
         """
 
         _cell = gtk.CellRendererToggle()
@@ -351,7 +351,7 @@ class RTKTreeView(gtk.TreeView):
         Method to set common properties of gtk.CellRenderers().
 
         :param cell: the cell whose properties are to be set.
-        :type cell: :py:class:`gtk.CellRenderer`
+        :type cell: :class:`gtk.CellRenderer`
         :param str bg_color: the cell background color.
         :param str fg_color: the cell foreground color.
         :param int editable: indicates whether the cell is editable.
@@ -414,14 +414,14 @@ class RTKTreeView(gtk.TreeView):
 
         :param __column: the gtk.TreeViewColumn() containing the
                          gtk.CellRenderer() to format.
-        :type __column: :py:class:`gtk.TreeViewColumn`
+        :type __column: :class:`gtk.TreeViewColumn`
         :param cell: the gtk.CellRenderer() to format.
-        :type cell: :py:class:`gtk.CellRenderer`
+        :type cell: :class:`gtk.CellRenderer`
         :param model: the gtk.TreeModel() containing the gtk.TreeViewColumn().
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :param row: the gtk.TreeIter() pointing to the row containing the
                     gtk.CellRenderer() to format.
-        :type row: :py:class:`gtk.TreeIter`
+        :type row: :class:`gtk.TreeIter`
         :param tuple data: a tuple containing the position and the data type.
         """
 
@@ -451,10 +451,10 @@ class RTKTreeView(gtk.TreeView):
         resized.
 
         :param column: the gtk.TreeViewColumn() being resized.
-        :type column: :py:class:`gtk.TreeViewColumn`
+        :type column: :class:`gtk.TreeViewColumn`
         :param GParamInt __param: the triggering parameter.
         :param cell: the gtk.CellRenderer() that needs to be resized.
-        :type cell: :py:class:`gtk.CellRenderer`
+        :type cell: :class:`gtk.CellRenderer`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

@@ -32,7 +32,7 @@ class ModuleView(RTKModuleView):
         Method to initialize the Module View for the Requirement package.
 
         :param controller: the RTK Master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
 
         RTKModuleView.__init__(self, controller, module='requirement')
@@ -89,7 +89,7 @@ class ModuleView(RTKModuleView):
         gtk.Treeview() gtk.CellRendererCombo()s.
 
         :param __cell: the gtk.CellRendererCombo() that was edited.
-        :type __cell: :py:class:`gtk.CellRendererCombo`
+        :type __cell: :class:`gtk.CellRendererCombo`
         :param str __path: the gtk.TreeView() path of the
                            gtk.CellRendererCombo() that was edited.
         :param str new_iter: the new gtk.TreeITer() selected in the changed
@@ -152,14 +152,14 @@ class ModuleView(RTKModuleView):
         gtk.Treeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :py:class:`gtk.CellRenderer`
+        :type __cell: :class:`gtk.CellRenderer`
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
         :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -190,7 +190,7 @@ class ModuleView(RTKModuleView):
         Method to delete the selected Requirement and it's children.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -298,7 +298,7 @@ class ModuleView(RTKModuleView):
         database as child of the currently selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -311,7 +311,7 @@ class ModuleView(RTKModuleView):
         database as a sibling of the currently selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -323,7 +323,7 @@ class ModuleView(RTKModuleView):
         Method to save the currently selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -335,7 +335,7 @@ class ModuleView(RTKModuleView):
         Method to save all the Requirements.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -349,7 +349,7 @@ class ModuleView(RTKModuleView):
 
         :return: _buttonbox; the gtk.ButtonBox() for the Requirement class
                  Module View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
 
         _tooltips = [
@@ -439,7 +439,7 @@ class ModuleView(RTKModuleView):
         gtk.TreeView().
 
         :param treeview: the Requirement class gtk.TreeView().
-        :type treeview: :py:class:`gtkTreeView`
+        :type treeview: :class:`gtkTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -451,7 +451,7 @@ class ModuleView(RTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :py:class:`gtk.gdk.Event`
+        :type event: :class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

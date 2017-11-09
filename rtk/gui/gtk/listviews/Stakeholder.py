@@ -23,7 +23,7 @@ class ListView(RTKListView):
     List View are:
 
     :ivar _dtc_data_controller: the
-    :py:class:`rtk.stakeholder.Stakeholder.Stakeholder`
+    :class:`rtk.stakeholder.Stakeholder.Stakeholder`
     data controller associated with this List View.
     :ivar _revision_id: the Revision ID whose stakeholder inputs are being
                         displayed in the List View.
@@ -34,7 +34,7 @@ class ListView(RTKListView):
         Method to initialize the List View for the Revision package.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
 
         RTKListView.__init__(self, controller, module='stakeholder')
@@ -98,7 +98,7 @@ class ListView(RTKListView):
         gtk.TreeView() row is activated.
 
         :param treeview: the Stakeholder List View gtk.TreeView().
-        :type treeview: :py:class:`gtk.TreeView`
+        :type treeview: :class:`gtk.TreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -168,7 +168,7 @@ class ListView(RTKListView):
         Method to delete the selected Stakeholder.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -195,7 +195,7 @@ class ListView(RTKListView):
         Method to add a Stakeholder.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -219,7 +219,7 @@ class ListView(RTKListView):
         Method to save the currently selected Stakeholder.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -231,7 +231,7 @@ class ListView(RTKListView):
         Method to save all the Stakeholders.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -256,7 +256,7 @@ class ListView(RTKListView):
 
         :return: _buttonbox; the gtk.ButtonBox() for the Stakeholder
                              List View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
 
         _tooltips = [
@@ -336,7 +336,7 @@ class ListView(RTKListView):
         ListView gtk.TreeView().
 
         :param treeview: the Stakeholder ListView gtk.TreeView().
-        :type treeview: :py:class:`gtk.TreeView`.
+        :type treeview: :class:`gtk.TreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -348,7 +348,7 @@ class ListView(RTKListView):
                       * 8 =
                       * 9 =
 
-        :type event: :py:class:`gtk.gdk.Event`
+        :type event: :class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
