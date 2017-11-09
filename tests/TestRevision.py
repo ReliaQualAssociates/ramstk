@@ -23,7 +23,7 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from Revision import Model, Revision
+from revision import dtmRevision, dtcRevision
 from dao import DAO
 from dao import RTKRevision
 
@@ -68,7 +68,7 @@ class Test00RevisionModel(unittest.TestCase):
         self.session = scoped_session(self.dao.RTK_SESSION)
         self.dao.db_add([RTKRevision(), ], self.session)
 
-        self.DUT = Model(self.dao)
+        self.DUT = dtmRevision(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
@@ -76,7 +76,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel) __init__ should return a Revision model
         """
 
-        self.assertTrue(isinstance(self.DUT, Model))
+        self.assertTrue(isinstance(self.DUT, dtmRevision))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
 
@@ -364,7 +364,7 @@ class Test01RevisionController(unittest.TestCase):
         self.dao.db_add([RTKRevision(), ], self.session)
         self.dao.db_add([RTKRevision(), ], self.session)
 
-        self.DUT = Revision(self.dao, self.Configuration, test='True')
+        self.DUT = dtcRevision(self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):
@@ -372,8 +372,8 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) __init__ should return a Revision Data Controller
         """
 
-        self.assertTrue(isinstance(self.DUT, Revision))
-        self.assertTrue(isinstance(self.DUT._dtm_data_model, Model))
+        self.assertTrue(isinstance(self.DUT, dtcRevision))
+        self.assertTrue(isinstance(self.DUT._dtm_data_model, dtmRevision))
 
     @attr(all=True, unit=True)
     def test01a_request_select_all(self):
