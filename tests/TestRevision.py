@@ -86,7 +86,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): select_all() should return a Tree() object populated with RTKRevision instances on success.
         """
 
-        _tree = self.DUT.select_all()
+        _tree = self.DUT.select_all(None)
 
         self.assertTrue(isinstance(_tree, Tree))
         self.assertTrue(isinstance(_tree.get_node(1).data, RTKRevision))
@@ -97,7 +97,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): select() should return an instance of the RTKRevision data model on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
         _revision = self.DUT.select(1)
 
         self.assertTrue(isinstance(_revision, RTKRevision))
@@ -120,9 +120,9 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): insert() should return False on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
-        _error_code, _msg = self.DUT.insert()
+        _error_code, _msg = self.DUT.insert(None)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
@@ -135,7 +135,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): delete() should return a zero error code on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _error_code, _msg = self.DUT.delete(3)
 
@@ -149,12 +149,12 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): delete() should return a non-zero error code when passed a Revision ID that doesn't exist.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _error_code, _msg = self.DUT.delete(3)
 
         self.assertEqual(_error_code, 2005)
-        self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
+        self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
                                'Revision ID 3.')
 
     @attr(all=True, unit=True)
@@ -163,7 +163,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): update() should return a zero error code on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
         _revision.availability_logistics = 0.9832
@@ -180,7 +180,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): update() should return a non-zero error code when passed a Revision ID that doesn't exist.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _error_code, _msg = self.DUT.update(100)
 
@@ -194,7 +194,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel): update_all() should return a zero error code on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _error_code, _msg = self.DUT.update_all()
 
@@ -208,7 +208,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel) calculate_reliability should return a zero error code on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
         _revision.hazard_rate_active = 0.00000151
@@ -232,7 +232,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel) calculate_reliability should return a non-zero error code when attempting to divide by zero.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
         _revision.hazard_rate_mission = 0.0
@@ -250,7 +250,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel) calculate_availability should return a zero error code on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
         _revision.mpmt = 0.5
@@ -273,7 +273,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel) calculate_availability should return a non-zero error code when attempting to divide by zero.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
         _revision.mttr = 0.0
@@ -293,7 +293,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRevisionModel) calculate_costs should return a zero error code on success.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
         _revision.cost = 1252.78
@@ -312,7 +312,7 @@ class Test00RevisionModel(unittest.TestCase):
         (TestRTKRevision) calculate_costs should return a non-zero error code when attempting to divide by zero.
         """
 
-        self.DUT.select_all()
+        self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
         _revision.cost = 1252.78
@@ -373,15 +373,15 @@ class Test01RevisionController(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Revision))
-        self.assertTrue(isinstance(self.DUT._dtm_revision, Model))
+        self.assertTrue(isinstance(self.DUT._dtm_data_model, Model))
 
     @attr(all=True, unit=True)
-    def test01_request_select_all(self):
+    def test01a_request_select_all(self):
         """
         (TestRevisionController) request_select_all() should return a Tree of RTKRevision models.
         """
 
-        _tree = self.DUT.request_select_all()
+        _tree = self.DUT.request_select_all(1)
 
         self.assertTrue(isinstance(_tree.get_node(1).data, RTKRevision))
 
@@ -391,7 +391,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_select() should return an RTKRevision model.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
         _revision = self.DUT.request_select(1)
 
@@ -413,7 +413,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_insert() should return False on success.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
         self.assertFalse(self.DUT.request_insert())
 
     @attr(all=True, unit=True)
@@ -422,7 +422,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_delete() should return False on success.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_delete(5))
 
@@ -432,7 +432,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_delete() should return True when attempting to delete a non-existent Revision.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
         self.assertTrue(self.DUT.request_delete(100))
 
@@ -442,7 +442,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_update() should return False on success.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_update(2))
 
@@ -452,7 +452,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_update() should return True when attempting to save a non-existent Revision.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
         self.assertTrue(self.DUT.request_update(100))
 
@@ -462,7 +462,7 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_update_all() should return False on success.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_update_all())
 
@@ -472,9 +472,9 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_calculate_reliability() should return False on success.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
-        _revision = self.DUT._dtm_revision.tree.get_node(1).data
+        _revision = self.DUT._dtm_data_model.tree.get_node(1).data
         _revision.hazard_rate_active = 0.00000151
         _revision.hazard_rate_dormant = 0.0000000152
         _revision.hazard_rate_software = 0.0000003
@@ -501,9 +501,9 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_calculate_availability() should return False on success.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
-        _revision = self.DUT._dtm_revision.tree.get_node(1).data
+        _revision = self.DUT._dtm_data_model.tree.get_node(1).data
         _revision.hazard_rate_active = 0.00000151
         _revision.hazard_rate_dormant = 0.0000000152
         _revision.hazard_rate_software = 0.0000003
@@ -527,9 +527,9 @@ class Test01RevisionController(unittest.TestCase):
         (TestRevisionController) request_calculate_cost() should return False on success.
         """
 
-        self.DUT.request_select_all()
+        self.DUT.request_select_all(1)
 
-        _revision = self.DUT._dtm_revision.tree.get_node(1).data
+        _revision = self.DUT._dtm_data_model.tree.get_node(1).data
         _revision.hazard_rate_active = 0.00000151
         _revision.hazard_rate_dormant = 0.0000000152
         _revision.hazard_rate_software = 0.0000003

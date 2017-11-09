@@ -82,10 +82,12 @@ class RTKDataModel(object):
 
         return _entity
 
-    def select_all(self):
+    def select_all(self, revision_id):
         """
         Base method to retrieve and build the RTK Module tree.
 
+        :param int revision_id: the Revision ID Of the data package to
+                                retrieve.
         :return: an SQLAlchemy session instance.
         :rtype:
         """
@@ -117,21 +119,31 @@ class RTKDataModel(object):
 
         return _error_code, _msg
 
-    def delete(self, entity):
+    def delete(self, node_id):
         """
         Base method to remove the instance of RTK<Module> from the RTK Program
         database.
 
-        :param entity: the instance of the RTK<Module> to be removed from the
-                       RTK Program database.
+        :param int node_id entity: the ID of the RTK<Module> record to be
+                                   removed from the RTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
 
+        _msg = ''
+
         _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
                                         expire_on_commit=False)
 
-        _error_code, _msg = self.dao.db_delete(entity, _session)
+        try:
+            _entity = self.tree.get_node(node_id).data
+            _error_code, _msg = self.dao.db_delete(_entity, _session)
+
+            if _error_code == 0:
+                self.tree.remove_node(node_id)
+
+        except AttributeError:
+            _error_code = 2005
 
         _session.close()
 

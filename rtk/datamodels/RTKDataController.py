@@ -63,7 +63,7 @@ class RTKDataController(object):
 
         return self._dtm_data_model.select(node_id)
 
-    def request_select_all(self, revision_id):
+    def request_select_all(self, node_id):
         """
         Method to retrieve the Requirement tree from the Requirement Data
         Model.
@@ -74,7 +74,7 @@ class RTKDataController(object):
         :rtype: dict
         """
 
-        return self._dtm_data_model.select_all(revision_id)
+        return self._dtm_data_model.select_all(node_id)
 
     def do_handle_results(self, error_code, error_msg, pub_msg=None):
         """
@@ -108,7 +108,7 @@ class RTKDataController(object):
     def handle_results(self, error_code, error_msg, pub_msg=None):
 
         return self.do_handle_results(
-            self, error_code, error_msg, pub_msg=None)
+            error_code, error_msg, pub_msg=None)
 
     def request_get_attributes(self, node_id):
         """
@@ -151,3 +151,59 @@ class RTKDataController(object):
         """
 
         return self._dtm_data_model.last_id
+
+    def request_calculate_reliability(self,
+                                      revision_id,
+                                      mission_time,
+                                      multiplier=1.0):
+        """
+        Method to request reliability attributes be calculated for the
+        Revision ID passed.
+
+        :param int revision_id: the Revision ID to calculate.
+        :param float mission_time: the time to use in the calculations.
+        :keyword float multiplier: the hazard rate multiplier.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code, \
+            _msg = self._dtm_data_model.calculate_reliability(revision_id,
+                                                              mission_time,
+                                                              multiplier)
+
+        return self.handle_results(_error_code, _msg,
+                                   'calculatedRevision')
+
+    def request_calculate_availability(self, revision_id):
+        """
+        Method to request availability attributes be calculated for the
+        Revision ID passed.
+
+        :param int revision_id: the Revision ID to calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code, \
+            _msg = self._dtm_data_model.calculate_availability(revision_id)
+
+        return self.handle_results(_error_code, _msg,
+                                   'calculatedRevision')
+
+    def request_calculate_costs(self, revision_id, mission_time):
+        """
+        Method to request cost attributes be calculated for the Revision ID
+        passed.
+
+        :param int revision_id: the Revision ID to calculate.
+        :param float mission_time: the time to use in the calculations.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _error_code, _msg = self._dtm_data_model.calculate_costs(
+            revision_id, float(mission_time))
+
+        return self.handle_results(_error_code, _msg,
+                                   'calculatedRevision')

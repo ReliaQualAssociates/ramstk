@@ -399,7 +399,7 @@ class ModuleView(RTKModuleView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
-        _revisions = self._dtc_data_controller.request_select_all()
+        _revisions = self._dtc_data_controller.request_select_all(None)
 
         _return = RTKModuleView._on_select_revision(self, _revisions)
         if _return:
