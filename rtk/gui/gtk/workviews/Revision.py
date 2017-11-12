@@ -23,6 +23,8 @@ from .WorkView import RTKWorkView
 
 class GeneralData(RTKWorkView):
     """
+    Display general Revision attribute data in the RTK Work Book.
+
     The Revision Work View displays all the general data attributes for the
     selected Revision. The attributes of a Revision General Data Work View are:
 
@@ -43,12 +45,11 @@ class GeneralData(RTKWorkView):
 
     def __init__(self, controller):
         """
-        Method to initialize the Work Book view for the Revision package.
+        Initialize the Revision Work View general data page.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         RTKWorkView.__init__(self, controller, module='revision')
 
         # Initialize private dictionary attributes.
@@ -81,15 +82,13 @@ class GeneralData(RTKWorkView):
 
     def _do_request_calculate(self, __button):
         """
-        Method to send request to calculate the selected revision to the
-        Revision data controller.
+        Request to calculate the selected RTKRevision table record.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _error_code = 0
@@ -114,7 +113,7 @@ class GeneralData(RTKWorkView):
             _prompt = _(u"An error occurred when attempting to calculate "
                         u"Revision {0:d}. \n\n\t" + _msg[0] + "\n\t" +
                         _msg[1] + "\n\t" + _msg[2] + "\n\n").\
-                        format(self._revision_id)
+                format(self._revision_id)
             _error_dialog = rtk.RTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
@@ -126,25 +125,22 @@ class GeneralData(RTKWorkView):
 
     def _do_request_update(self, __button):
         """
-        Method to save all the Functions.
+        Request to save all records to the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._revision_id)
 
     def _make_general_data_page(self):
         """
-        Method to create the Revision Work Book page for displaying general
-        data about the selected Revision.
+        Create the Revision Work View general data page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         (_frame, _fixed, _x_pos,
          _y_pos) = RTKWorkView._make_general_data_page(self)
 
@@ -152,13 +148,12 @@ class GeneralData(RTKWorkView):
 
     def _make_buttonbox(self):
         """
-        Method to create the gtk.ButtonBox() for the Revision class Work View.
+        Create the Revision Work View gtk.ButtonBox().
 
         :return: _buttonbox; the gtk.ButtonBox() for the Revision class Work
                  View.
         :rtype: :py:class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             _(u"Calculate the currently selected Revision."),
             _(u"Saves the currently selected Revision to the open "
@@ -174,9 +169,11 @@ class GeneralData(RTKWorkView):
 
     def _on_edit(self, index, new_text):
         """
-        Method to update the Work View gtk.Widgets() with changes to the
-        Revision data model attributes.  This method is called whenever an
-        attribute is edited in a different view.
+        Update the Revision Work View gtk.Widgets().
+
+        This method updates the Revision Work View gtk.Widgets() with changes
+        to the Revision data model attributes.  This method is called whenever
+        an attribute is edited in a different RTK View.
 
         :param int index: the index in the Revision attributes list of the
                           attribute that was edited.
@@ -184,7 +181,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         if index == 17:
@@ -205,8 +201,10 @@ class GeneralData(RTKWorkView):
 
     def _on_focus_out(self, entry, __event, index):
         """
-        Method to retrieve gtk.Entry() changes and assign the new data to the
-        appropriate Revision data model attribute.
+        Retrieve gtk.Entry() changes and assign the new data.
+
+        This method takes the new data from the gtk.Entry() and assigns it to
+        the appropriate Revision data model attribute.
 
         :param gtk.Entry entry: the gtk.Entry() that called the method.
         :param gtk.gdk.Event __event: the gtk.gdk.Event() that called this
@@ -217,7 +215,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _index = -1
         _return = False
         _text = ''
@@ -250,15 +247,13 @@ class GeneralData(RTKWorkView):
 
     def _on_select(self, module_id, **kwargs):
         """
-        Method to load the Revision class gtk.Notebook() General Data page
-        widgets.
+        Load the Revision Work View General Data page gtk.Widget()s.
 
         :param int revision_id: the ID of the newly selected Revision.
         :param str title: the title to display on the Work Book titlebar.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._revision_id = module_id
@@ -284,6 +279,8 @@ class GeneralData(RTKWorkView):
 
 class AssessmentResults(RTKWorkView):
     """
+    Display assessment results Revision attribute data in the RTK Work Book.
+
     The Revision Assessment Results view displays all the assessment results
     for the selected Revision.  The attributes of a Revision Assessment Results
     View are:
@@ -293,12 +290,11 @@ class AssessmentResults(RTKWorkView):
 
     def __init__(self, controller):
         """
-        Method to initialize the Work Book view for the Revision package.
+        Initialize the Revision Work View assessment results page.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         RTKWorkView.__init__(self, controller, module='Revision')
 
         # Initialize private dictionary attributes.
@@ -322,13 +318,11 @@ class AssessmentResults(RTKWorkView):
 
     def _make_assessment_results_page(self):
         """
-        Method to create the Revision Work View page for displaying assessment
-        results for the selected Revision.
+        Create the Revision Work View assessment results page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         (_hbx_page, __, __, __, __, __,
          __) = RTKWorkView._make_assessment_results_page(self)
 
@@ -336,14 +330,13 @@ class AssessmentResults(RTKWorkView):
 
     def _on_select(self, module_id, **kwargs):
         """
-        Method to load the Revision class gtk.Notebook() widgets.
+        Load the Revision Work View assessment results page gtk.Widget()s.
 
         :param int revision_id: the ID of the newly selected Revision.
         :param str title: the title to display on the Work Book titlebar.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._revision_id = module_id

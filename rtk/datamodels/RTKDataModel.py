@@ -9,7 +9,7 @@ RTKDataModel Module
 ===============================================================================
 """
 
-from treelib import tree, Tree                  # pylint: disable=E0401
+from treelib import tree, Tree  # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -57,19 +57,18 @@ class RTKDataModel(object):
         # Tree().  Manipulation and viewing of a RTK module tree needs to
         # ignore the root of the tree.
         try:
-            self.tree.create_node(tag=self._tag, identifier=0,
-                                  parent=None)
-        except(tree.MultipleRootError, tree.NodeIDAbsentError,
-               tree.DuplicatedNodeIdError):
+            self.tree.create_node(tag=self._tag, identifier=0, parent=None)
+        except (tree.MultipleRootError, tree.NodeIDAbsentError,
+                tree.DuplicatedNodeIdError):
             pass
 
     def select(self, node_id):
         """
-        Base method to retrieve the instance of the RTK<Module> model for the
+        Base method to retrieve the instance of the RTK<MODULE> model for the
         Node ID passed.
 
         :param int node_id: the Node ID Of the data package to retrieve.
-        :return: the instance of the RTK<Module> class that was requested
+        :return: the instance of the RTK<MODULE> class that was requested
                  or None if the requested Node ID does not exist.
         """
 
@@ -82,12 +81,10 @@ class RTKDataModel(object):
 
         return _entity
 
-    def select_all(self, revision_id):
+    def select_all(self):
         """
         Base method to retrieve and build the RTK Module tree.
 
-        :param int revision_id: the Revision ID Of the data package to
-                                retrieve.
         :return: an SQLAlchemy session instance.
         :rtype:
         """
@@ -96,22 +93,22 @@ class RTKDataModel(object):
         for _node in self.tree.children(_root):
             self.tree.remove_node(_node.identifier)
 
-        return self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                    expire_on_commit=False)
+        return self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
     def insert(self, entities):
         """
-        Base method to add the list of RTK<Module> instance to the RTK Program
+        Base method to add the list of RTK<MODULE> instance to the RTK Program
         database.
 
-        :param list entities: the list of RTK<Module> entities to add to the
+        :param list entities: the list of RTK<MODULE> entities to add to the
                               RTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         _error_code, _msg = self.dao.db_add(entities, _session)
 
@@ -121,10 +118,10 @@ class RTKDataModel(object):
 
     def delete(self, node_id):
         """
-        Base method to remove the instance of RTK<Module> from the RTK Program
+        Base method to remove the instance of RTK<MODULE> from the RTK Program
         database.
 
-        :param int node_id entity: the ID of the RTK<Module> record to be
+        :param int node_id entity: the ID of the RTK<MODULE> record to be
                                    removed from the RTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -132,8 +129,8 @@ class RTKDataModel(object):
 
         _msg = ''
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine, autoflush=False,
-                                        expire_on_commit=False)
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         try:
             _entity = self.tree.get_node(node_id).data
@@ -151,10 +148,10 @@ class RTKDataModel(object):
 
     def update(self, node_id):
         """
-        Base method to update the RTK<Module> instance in the RTK Program
+        Base method to update the RTK<MODULE> instance in the RTK Program
         database.
 
-        :param entity: the RTK<Module> instance to update in the RTK Program
+        :param entity: the RTK<MODULE> instance to update in the RTK Program
                        database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -163,10 +160,11 @@ class RTKDataModel(object):
         _error_code = 0
         _msg = ''
 
-        _session = self.dao.RTK_SESSION(bind=self.dao.engine,
-                                        autoflush=True,
-                                        autocommit=False,
-                                        expire_on_commit=False)
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine,
+            autoflush=True,
+            autocommit=False,
+            expire_on_commit=False)
 
         try:
             _entity = self.tree.get_node(node_id).data

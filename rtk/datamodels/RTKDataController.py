@@ -27,7 +27,7 @@ class RTKDataController(object):
     :ivar bool _test:
     """
 
-    def __init__(self, configuration, module=None, **kwargs):
+    def __init__(self, configuration, module=None, rtk_module=None, **kwargs):
         """
         Base method to initialize a RTK data controller instance.
 
@@ -45,36 +45,16 @@ class RTKDataController(object):
         self._dtm_data_model = module
         self._test = kwargs['test']
 
+        self._module = None
+        for __, char in enumerate(rtk_module):
+            if char.isalpha():
+                self._module = rtk_module.capitalize()
+
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-
-    def request_select(self, node_id):
-        """
-        Method to request the Requirement Data Model to retrieve the
-        RTKRequirement model associated with the Requirement ID.
-
-        :param int requirement_id: the Requirement ID to retrieve.
-        :return: the RTKRequirement model requested.
-        :rtype: `:class:rtk.dao.DAO.RTKRequirement` model
-        """
-
-        return self._dtm_data_model.select(node_id)
-
-    def request_select_all(self, node_id):
-        """
-        Method to retrieve the Requirement tree from the Requirement Data
-        Model.
-
-        :param int revision_id: the Revision ID to select the Requirements for.
-        :return: tree; the treelib Tree() of RTKRequirement models in the
-                 Requirement tree.
-        :rtype: dict
-        """
-
-        return self._dtm_data_model.select_all(node_id)
 
     def do_handle_results(self, error_code, error_msg, pub_msg=None):
         """
@@ -110,6 +90,31 @@ class RTKDataController(object):
         return self.do_handle_results(
             error_code, error_msg, pub_msg=None)
 
+    def request_select(self, node_id):
+        """
+        Method to request the Requirement Data Model to retrieve the
+        RTKRequirement model associated with the Requirement ID.
+
+        :param int requirement_id: the Requirement ID to retrieve.
+        :return: the RTKRequirement model requested.
+        :rtype: `:class:rtk.dao.DAO.RTKRequirement` model
+        """
+
+        return self._dtm_data_model.select(node_id)
+
+    def request_select_all(self, node_id):
+        """
+        Method to retrieve the Requirement tree from the Requirement Data
+        Model.
+
+        :param int revision_id: the Revision ID to select the Requirements for.
+        :return: tree; the treelib Tree() of RTKRequirement models in the
+                 Requirement tree.
+        :rtype: dict
+        """
+
+        return self._dtm_data_model.select_all(node_id)
+
     def request_get_attributes(self, node_id):
         """
         Method to request the attributes from the record in the RTK Program
@@ -133,8 +138,8 @@ class RTKDataController(object):
         :param int node_id: the ID of the record in the RTK Program database
                             table whose attributes are to be set.
         :param dict attributes: the dictionary of attributes and values.
-        :return:
-        :rtype:
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
         """
 
         _entity = self.request_select(node_id)
@@ -153,27 +158,26 @@ class RTKDataController(object):
         return self._dtm_data_model.last_id
 
     def request_calculate_reliability(self,
-                                      revision_id,
+                                      node_id,
                                       mission_time,
                                       multiplier=1.0):
         """
-        Method to request reliability attributes be calculated for the
-        Revision ID passed.
+        Request reliability attributes be calculated for the Node ID passed.
 
-        :param int revision_id: the Revision ID to calculate.
+        :param int node_id: the ID of the entity in the treelib.Tree() to
+                            calculate.
         :param float mission_time: the time to use in the calculations.
         :keyword float multiplier: the hazard rate multiplier.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _error_code, \
-            _msg = self._dtm_data_model.calculate_reliability(revision_id,
+            _msg = self._dtm_data_model.calculate_reliability(node_id,
                                                               mission_time,
                                                               multiplier)
 
         return self.handle_results(_error_code, _msg,
-                                   'calculatedRevision')
+                                   'calculated' + self._module)
 
     def request_calculate_availability(self, revision_id):
         """

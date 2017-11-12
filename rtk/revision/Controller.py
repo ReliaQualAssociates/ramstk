@@ -5,8 +5,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-Revision Package
-===============================================================================
+Revision Package Data Controller Module
 """
 
 from pubsub import pub  # pylint: disable=E0401
@@ -18,18 +17,18 @@ from . import dtmRevision
 
 class RevisionDataController(RTKDataController):
     """
-    The Revision data controller provides an interface between the Revision
-    data model and an RTK view model.  A single Revision controller can manage
-    one or more Revision data models.  The attributes of a Revision data
-    controller are:
+    Provide an interface between the Revision data model and an RTK view model.
 
-    :ivar _dtm_revision: the :py:class:`rtk.revision.Revision.Model` associated
-                         with the Revision Data Controller.
+    A single Revision controller can manage one or more Revision data models.
+    The attributes of a Revision data controller are:
+
+    :ivar _dtm_revision: the :class:`rtk.revision.Model` associated with the
+                         Revision Data Controller.
     """
 
     def __init__(self, dao, configuration, **kwargs):
         """
-        Method to initialize a Revision data controller instance.
+        Initialize a Revision data controller instance.
 
         :param dao: the RTK Program DAO instance to pass to the Revision Data
                     Model.
@@ -38,9 +37,12 @@ class RevisionDataController(RTKDataController):
                               current instance of the RTK application.
         :type configuration: :py:class:`rtk.Configuration.Configuration`
         """
-
         RTKDataController.__init__(
-            self, configuration, module=dtmRevision(dao), **kwargs)
+            self,
+            configuration,
+            module=dtmRevision(dao),
+            rtk_module='revision',
+            **kwargs)
 
         # Initialize private dictionary attributes.
 
@@ -56,15 +58,11 @@ class RevisionDataController(RTKDataController):
 
     def request_insert(self):
         """
-        Method to request the Revision Data Model to add a new Revision to the
-        RTK Program database.
+        Request to add an RTKRevision table record.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        _return = False
-
         _error_code, _msg = self._dtm_data_model.insert(None)
 
         if _error_code == 0 and not self._test:
@@ -79,14 +77,12 @@ class RevisionDataController(RTKDataController):
 
     def request_delete(self, revision_id):
         """
-        Method to request the Revision Data Model to delete a Revision from the
-        RTK Program database.
+        Request to delete an RTKRevision table record.
 
         :param int revision_id: the Revision ID to delete.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _error_code, _msg = self._dtm_data_model.delete(revision_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
@@ -94,14 +90,12 @@ class RevisionDataController(RTKDataController):
 
     def request_update(self, revision_id):
         """
-        Method to request the Revision Data Model save the RTKRevision
-        attributes to the RTK Program database.
+        Request to update an RTKRevision table record.
 
         :param int revision_id: the ID of the revision to save.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _error_code, _msg = self._dtm_data_model.update(revision_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
@@ -109,13 +103,11 @@ class RevisionDataController(RTKDataController):
 
     def request_update_all(self):
         """
-        Method to request the Revision Data Model to save all RTKRevision
-        model attributes to the RTK Program database.
+        Request to update all records in the RTKRevision table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-
         _error_code, _msg = self._dtm_data_model.update_all()
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,

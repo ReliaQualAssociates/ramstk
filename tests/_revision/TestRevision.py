@@ -13,7 +13,9 @@ Controller algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -46,11 +48,13 @@ class Test00RevisionModel(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
@@ -63,10 +67,12 @@ class Test00RevisionModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKRevision(), ], self.session)
+        self.dao.db_add([
+            RTKRevision(),
+        ], self.session)
 
         self.DUT = dtmRevision(self.dao)
 
@@ -83,7 +89,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01_select_all(self):
         """
-        (TestRevisionModel): select_all() should return a Tree() object populated with RTKRevision instances on success.
+        (TestRevisionModel): select_all(None) should return a Tree() object populated with RTKRevision instances on success.
         """
 
         _tree = self.DUT.select_all(None)
@@ -126,7 +132,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                               'the RTK Program database.')
+                         'the RTK Program database.')
         self.assertEqual(self.DUT.last_id, 7)
 
     @attr(all=True, unit=True)
@@ -141,7 +147,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
-                               'Program database.')
+                         'Program database.')
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
@@ -155,7 +161,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                               'Revision ID 3.')
+                         'Revision ID 3.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
@@ -186,7 +192,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Revision ID 100.')
+                         'Revision ID 100.')
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):
@@ -203,28 +209,46 @@ class Test00RevisionModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test07a_calculate_reliability(self):
+    def test07a_calculate_hazard_rate(self):
         """
-        (TestRevisionModel) calculate_reliability should return a zero error code on success.
+        (TestRTKRevision) calculate_hazard_rate should return a zero error code on success.
         """
 
         self.DUT.select_all(None)
 
-        _revision = self.DUT.tree.get_node(1).data
+        _revision = self.DUT.select(1)
         _revision.hazard_rate_active = 0.00000151
         _revision.hazard_rate_dormant = 0.0000000152
         _revision.hazard_rate_software = 0.0000003
         _revision.hazard_rate_mission = 0.000002
 
-        _error_code, _msg = self.DUT.calculate_reliability(1, 100.0, 1.0)
+        _error_code, _msg = self.DUT.calculate_hazard_rate(1)
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Calculating reliability ' \
-                               'metrics for Revision ID 1.')
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating hazard rates for '
+                         'Revision ID 1.')
         self.assertAlmostEqual(_revision.hazard_rate_logistics, 1.8252e-06)
+
+    @attr(all=True, unit=True)
+    def test07b_calculate_mtbf(self):
+        """
+        (TestRTKRevision) calculate_mtbf should return a zero error code on success.
+        """
+
+        self.DUT.select_all(None)
+
+        _revision = self.DUT.select(1)
+        _revision.hazard_rate_active = 0.00000151
+        _revision.hazard_rate_dormant = 0.0000000152
+        _revision.hazard_rate_software = 0.0000003
+        _revision.hazard_rate_mission = 0.000002
+        _revision.calculate_hazard_rate()
+
+        _error_code, _msg = self.DUT.calculate_mtbf(1)
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Calculating MTBFs for Revision ID 1.')
         self.assertAlmostEqual(_revision.mtbf_logistics, 547885.1632698)
         self.assertAlmostEqual(_revision.mtbf_mission, 500000.0)
-        self.assertAlmostEqual(_revision.reliability_logistics, 0.9998175)
-        self.assertAlmostEqual(_revision.reliability_mission, 0.9998000)
 
     @attr(all=True, unit=True)
     def test07b_calculate_reliability_divide_by_zero(self):
@@ -234,15 +258,19 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.DUT.select_all(None)
 
-        _revision = self.DUT.tree.get_node(1).data
-        _revision.hazard_rate_mission = 0.0
+        _revision = self.DUT.select(1)
+        _revision.hazard_rate_active = 0.00000151
+        _revision.hazard_rate_dormant = 0.0000000152
+        _revision.hazard_rate_software = 0.0000003
+        _revision.hazard_rate_mission = 0.000002
 
-        _error_code, _msg = self.DUT.calculate_reliability(1, 100.0, 1.0)
-        self.assertEqual(_error_code, 2008)
-        self.assertEqual(_msg, 'RTK ERROR: Zero Division or Overflow Error ' \
-                               'when calculating the mission MTBF for ' \
-                               'Revision ID 1.  Mission hazard rate: ' \
-                               '0.000000.')
+        _error_code, _msg = self.DUT.calculate_reliability(1, 100.0, 0.0)
+        self.assertEqual(_error_code, 102)
+        self.assertEqual(
+            _msg,
+            'RTK ERROR: Zero Division Error when calculating the mission '
+            'reliability for Revision ID 1.  Hazard rate multiplier: 0.000000.'
+        )
 
     @attr(all=True, unit=True)
     def test08a_calculate_availability(self):
@@ -252,7 +280,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.DUT.select_all(None)
 
-        _revision = self.DUT.tree.get_node(1).data
+        _revision = self.DUT.select(1)
         _revision.mpmt = 0.5
         _revision.mcmt = 1.2
         _revision.mttr = 5.8
@@ -275,17 +303,19 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.DUT.select_all(None)
 
-        _revision = self.DUT.tree.get_node(1).data
+        _revision = self.DUT.select(1)
         _revision.mttr = 0.0
         _revision.mtbf_logistics = 547885.1632698
         _revision.mtbf_mission = 0.0
 
         _error_code, _msg = self.DUT.calculate_availability(1)
-        self.assertEqual(_error_code, 2009)
-        self.assertEqual(_msg, 'RTK ERROR: Zero Division or Overflow Error ' \
-                               'when calculating the mission availability ' \
-                               'for Revision ID 1.  Mission MTBF: 0.000000 ' \
-                               'and MTTR: 0.000000.')
+        self.assertEqual(_error_code, 102)
+        self.assertEqual(
+            _msg,
+            'RTK ERROR: Zero Division Error when calculating the mission ' \
+            'availability for Revision ID 1.  Mission MTBF: 0.000000 MTTR: ' \
+            '0.000000.'
+        )
 
     @attr(all=True, unit=True)
     def test09a_calculate_costs(self):
@@ -295,7 +325,7 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.DUT.select_all(None)
 
-        _revision = self.DUT.tree.get_node(1).data
+        _revision = self.DUT.select(1)
         _revision.cost = 1252.78
         _revision.hazard_rate_logistics = 1.0 / 547885.1632698
 
@@ -314,14 +344,14 @@ class Test00RevisionModel(unittest.TestCase):
 
         self.DUT.select_all(None)
 
-        _revision = self.DUT.tree.get_node(1).data
+        _revision = self.DUT.select(1)
         _revision.cost = 1252.78
         _revision.hazard_rate_logistics = 1.0 / 547885.1632698
 
         _error_code, _msg = self.DUT.calculate_costs(1, 0.0)
-        self.assertEqual(_error_code, 2010)
-        self.assertEqual(_msg, 'RTK ERROR: Zero Division Error or Overflow ' \
-                               'Error when calculating the cost per mission ' \
+        self.assertEqual(_error_code, 102)
+        self.assertEqual(_msg, 'RTK ERROR: Zero Division Error ' \
+                               'when calculating the cost per mission ' \
                                'hour for Revision ID 1.  Mission time: ' \
                                '0.000000.')
 
@@ -339,11 +369,13 @@ class Test01RevisionController(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.RTK_DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG',
@@ -358,11 +390,15 @@ class Test01RevisionController(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKRevision(), ], self.session)
-        self.dao.db_add([RTKRevision(), ], self.session)
+        self.dao.db_add([
+            RTKRevision(),
+        ], self.session)
+        self.dao.db_add([
+            RTKRevision(),
+        ], self.session)
 
         self.DUT = dtcRevision(self.dao, self.Configuration, test='True')
 
@@ -378,7 +414,7 @@ class Test01RevisionController(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01a_request_select_all(self):
         """
-        (TestRevisionController) request_select_all() should return a Tree of RTKRevision models.
+        (TestRevisionController) request_select_all(None) should return a Tree of RTKRevision models.
         """
 
         _tree = self.DUT.request_select_all(1)
@@ -408,7 +444,78 @@ class Test01RevisionController(unittest.TestCase):
         self.assertEqual(_revision, None)
 
     @attr(all=True, unit=True)
-    def test03a_request_insert(self):
+    def test03a_request_get_attributes(self):
+        """
+        (TestRevisionController) request_get_attributes() should return a dict of {attribute name:attribute value} pairs.
+        """
+
+        self.DUT.request_select_all(None)
+
+        _attributes = self.DUT.request_get_attributes(1)
+
+        self.assertTrue(isinstance(_attributes, dict))
+        self.assertEqual(_attributes['revision_code'], '')
+
+    @attr(all=True, unit=True)
+    def test03b_request_set_attributes(self):
+        """
+        (TestRevisionController) request_set_attributes() should return a dict of {attribute name:attribute value} pairs.
+        """
+
+        self.DUT.request_select_all(None)
+
+        _attributes = {
+            'revision_id': 1,
+            'availability_logistics': 0.9986,
+            'availability_mission': 0.99934,
+            'cost': 12532.15,
+            'cost_per_failure': 0.0000352,
+            'cost_per_hour': 1.2532,
+            'hazard_rate_active': 0.0,
+            'hazard_rate_dormant': 0.0,
+            'hazard_rate_logistics': 0.0,
+            'hazard_rate_mission': 0.0,
+            'hazard_rate_software': 0.0,
+            'mmt': 0.0,
+            'mcmt': 0.0,
+            'mpmt': 0.0,
+            'mtbf_logistics': 0.0,
+            'mtbf_mission': 0.0,
+            'mttr': 0.0,
+            'name': 'Original Revision',
+            'reliability_logistics': 0.99986,
+            'reliability_mission': 0.99992,
+            'remarks': 'This is the original revision.',
+            'n_parts': 128,
+            'revision_code': 'Rev. -',
+            'program_time': 2562,
+            'program_time_sd': 26.83,
+            'program_cost': 26492.83,
+            'program_cost_sd': 15.62
+        }
+
+        _error_code, _msg = self.DUT.request_set_attributes(1, _attributes)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Updating RTKRevision 1 attributes.')
+
+    @attr(all=True, unit=True)
+    def test03c_request_last_id(self):
+        """
+        (TestRevisionController) request_last_id() should return the last Revision ID used in the RTK Program database.
+        """
+
+        self.DUT.request_select_all(None)
+
+        _last_id = self.DUT.request_last_id()
+
+        # FIXME: This test fails if just running the Controller tests.  The
+        # last ID in that case is 15.
+        self.assertEqual(_last_id, 33)
+
+    @attr(all=True, unit=True)
+    def test04a_request_insert(self):
         """
         (TestRevisionController) request_insert() should return False on success.
         """
@@ -417,7 +524,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertFalse(self.DUT.request_insert())
 
     @attr(all=True, unit=True)
-    def test04a_request_delete(self):
+    def test05a_request_delete(self):
         """
         (TestRevisionController) request_delete() should return False on success.
         """
@@ -427,7 +534,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertFalse(self.DUT.request_delete(5))
 
     @attr(all=True, unit=True)
-    def test04b_request_delete_non_existent_id(self):
+    def test05b_request_delete_non_existent_id(self):
         """
         (TestRevisionController) request_delete() should return True when attempting to delete a non-existent Revision.
         """
@@ -437,7 +544,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertTrue(self.DUT.request_delete(100))
 
     @attr(all=True, unit=True)
-    def test05a_request_update(self):
+    def test06a_request_update(self):
         """
         (TestRevisionController) request_update() should return False on success.
         """
@@ -447,7 +554,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertFalse(self.DUT.request_update(2))
 
     @attr(all=True, unit=True)
-    def test05b_request_update_non_existent_id(self):
+    def test06b_request_update_non_existent_id(self):
         """
         (TestRevisionController) request_update() should return True when attempting to save a non-existent Revision.
         """
@@ -457,7 +564,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertTrue(self.DUT.request_update(100))
 
     @attr(all=True, unit=True)
-    def test06a_request_update_all(self):
+    def test07a_request_update_all(self):
         """
         (TestRevisionController) request_update_all() should return False on success.
         """
@@ -467,7 +574,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertFalse(self.DUT.request_update_all())
 
     @attr(all=True, unit=True)
-    def test07a_request_calculate_reliability(self):
+    def test08a_request_calculate_reliability(self):
         """
         (TestRevisionController) request_calculate_reliability() should return False on success.
         """
@@ -478,6 +585,7 @@ class Test01RevisionController(unittest.TestCase):
         _revision.hazard_rate_active = 0.00000151
         _revision.hazard_rate_dormant = 0.0000000152
         _revision.hazard_rate_software = 0.0000003
+        _revision.hazard_rate_logistics = 1.8252e-06
         _revision.hazard_rate_mission = 0.000002
         _revision.mpmt = 0.5
         _revision.mcmt = 1.2
@@ -496,7 +604,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertAlmostEqual(_revision.reliability_mission, 0.99980002)
 
     @attr(all=True, unit=True)
-    def test07b_request_calculate_availability(self):
+    def test08b_request_calculate_availability(self):
         """
         (TestRevisionController) request_calculate_availability() should return False on success.
         """
@@ -522,7 +630,7 @@ class Test01RevisionController(unittest.TestCase):
         self.assertAlmostEqual(_revision.availability_mission, 0.9999884)
 
     @attr(all=True, unit=True)
-    def test07b_request_calculate_cost(self):
+    def test08c_request_calculate_cost(self):
         """
         (TestRevisionController) request_calculate_cost() should return False on success.
         """

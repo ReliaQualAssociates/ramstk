@@ -16,6 +16,8 @@ from gui.gtk import rtk  # pylint: disable=E0401,W0611
 
 class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
     """
+    Display data in the RTK Work Book.
+
     This is the meta class for all RTK Work View classes.  Attributes of the
     RTKWorkView are:
 
@@ -71,13 +73,12 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
     def __init__(self, controller, module=None):
         """
-        Method to initialize the RTKWorkView meta-class.
+        Initialize the RTKWorkView meta-class.
 
         :param controller: the RTK master data controller instance.
         :type controller: :class:`rtk.RTK.RTK`
         :keyword str module: the RTK Module this RTKWorkView is the bassis for.
         """
-
         gtk.HBox.__init__(self)
         rtk.RTKBaseView.__init__(self, controller, module=module)
 
@@ -302,13 +303,11 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
     def _make_assessment_results_page(self):
         """
-        Method to create the gtk.Notebook() page for displaying assessment
-        results.
+        Create the gtk.Notebook() page for displaying assessment results.
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
         _hbox = gtk.HBox()
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -382,12 +381,11 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
     def _make_general_data_page(self):
         """
-        Method to create the gtk.Notebook() page for displaying general data.
+        Create the gtk.Notebook() page for displaying general data.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _fixed = gtk.Fixed()
 
         _scrollwindow = rtk.RTKScrolledWindow(_fixed)
@@ -417,14 +415,13 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
     def _on_select(self, module_id, **kwargs):  # pylint: disable=W0613
         """
-        Method to respond load the Work View gtk.Notebook() widgets.
+        Respond to load the Work View gtk.Notebook() widgets.
 
         :param int revision_id: the ID of the newly selected Revision.
         :param str title: the title to display on the Work Book titlebar.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _title = kwargs['title']

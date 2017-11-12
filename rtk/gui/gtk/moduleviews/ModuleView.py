@@ -16,6 +16,8 @@ from gui.gtk import rtk  # pylint: disable=E0401,W0611
 
 class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
     """
+    Display data in the RTK Module Book.
+
     This is the meta class for all RTK Module View classes.  Attributes of the
     RTKModuleView are:
 
@@ -30,13 +32,12 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
 
     def __init__(self, controller, module=None):
         """
-        Method to initialize the Module View.
+        Initialize the Module View.
 
         :param controller: the RTK master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         :param str module: the module that is being loaded.
         """
-
         gtk.HBox.__init__(self)
         rtk.RTKBaseView.__init__(self, controller, module)
 
@@ -61,7 +62,7 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):
         """
-        Method to handle edits of the Module View gtk.Treeview().
+        Handle edits of the Module View gtk.Treeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: :py:class:`gtk.CellRenderer`
@@ -75,7 +76,6 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _type = gobject.type_name(model.get_column_type(position))

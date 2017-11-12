@@ -57,7 +57,7 @@ from dao.RTKType import RTKType
 from dao.RTKUnit import RTKUnit
 from dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
-from Revision import Revision
+from revision import dtcRevision
 from usage.UsageProfile import UsageProfile
 from FailureDefinition import FailureDefinition
 from Function import Function
@@ -789,7 +789,7 @@ class RTK(object):
         _error_code, _msg = self.rtk_model.open_program(_database)
         if _error_code == 0:
             pub.sendMessage('requestOpen')
-            self.dic_controllers['revision'] = Revision(
+            self.dic_controllers['revision'] = dtcRevision(
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)

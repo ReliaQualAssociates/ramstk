@@ -12,35 +12,34 @@ Revision Module View Module
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub                          # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk import rtk                         # pylint: disable=E0401
+from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
-from .ModuleView import RTKModuleView           # pylint: disable=E0401
+from .ModuleView import RTKModuleView  # pylint: disable=E0401
 
 _ = gettext.gettext
 
 
 class ModuleView(RTKModuleView):
     """
-    The Module Book view displays all the Revisions associated with the RTK
-    Project in a flat list.  The attributes of a Module View are:
+    Display Revision attribute data in the RTK Module Book.
 
-    :ivar _dtc_data_controller: the :py:class:`rtk.revision.Revision.Revision`
-                                data controller to use for accessing the
-                                Revision data models.
+    The Revision Module View displays all the Revisions associated with the
+    connected RTK Program in a flat list.  The attributes of a Revision Module
+    View are:
+
     :ivar _revision_id: the ID of the currently selected Revision.
     """
 
     def __init__(self, controller):
         """
-        Method to initialize the Module Book view for the Revision package.
+        Initialize the Revision Module View.
 
         :param controller: the RTK Master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         RTKModuleView.__init__(self, controller, module='revision')
 
         # Initialize private dictionary attributes.
@@ -66,8 +65,11 @@ class ModuleView(RTKModuleView):
             self.treeview.connect('button_press_event', self._on_button_press))
 
         self._img_tab.set_from_file(self._dic_icons['tab'])
-        _label = rtk.RTKLabel(_(u"Revisions"), width=-1, height=-1,
-                              tooltip=_(u"Displays the program revisions."))
+        _label = rtk.RTKLabel(
+            _(u"Revisions"),
+            width=-1,
+            height=-1,
+            tooltip=_(u"Displays the program revisions."))
 
         self.hbx_tab_label.pack_start(self._img_tab)
         self.hbx_tab_label.pack_end(_label)
@@ -87,16 +89,16 @@ class ModuleView(RTKModuleView):
 
     def _do_change_row(self, treeview):
         """
-        Method to handle events for the Revision package Module Book
-        gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
-        row is activated.
+        Handle events for the Revision package Module View RTKTreeView().
+
+        This method is called whenever a Revision Module View RTKTreeView() row
+        is activated/changed.
 
         :param treeview: the Revision class gtk.TreeView().
         :type treeview: :py:class:`gtk.TreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         treeview.handler_block(self._lst_handler_id[0])
@@ -113,8 +115,7 @@ class ModuleView(RTKModuleView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Method to handle edits of the Revision package Module View
-        gtk.Treeview().
+        Handle edits of the Revision package Module View RTKTreeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
         :type __cell: :py:class:`gtk.CellRenderer`
@@ -128,21 +129,28 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        if not self.treeview.do_edit_cell(__cell, path, new_text,
-                                          position, model):
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
 
             _revision = self._dtc_data_controller.request_select(
                 self._revision_id)
-            _attributes = list(_revision.get_attributes())[2:]
-            _attributes[self._lst_col_order[position] - 2] = str(new_text)
+            _attributes = _revision.get_attributes()
+
+            if self._lst_col_order[position] == 17:
+                _attributes['name'] = str(new_text)
+            elif self._lst_col_order[position] == 20:
+                _attributes['remarks'] = str(new_text)
+            elif self._lst_col_order[position] == 22:
+                _attributes['revision_code'] = str(new_text)
+
             _revision.set_attributes(_attributes)
 
-            pub.sendMessage('mvwEditedRevision',
-                            index=self._lst_col_order[position],
-                            new_text=new_text)
+            pub.sendMessage(
+                'mvwEditedRevision',
+                index=self._lst_col_order[position],
+                new_text=new_text)
         else:
             _return = True
 
@@ -150,14 +158,13 @@ class ModuleView(RTKModuleView):
 
     def _do_request_delete(self, __button):
         """
-        Method to delete the selected Revision.
+        Send request to delete the selected record from the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _prompt = _(u"You are about to delete Revision {0:d} and all data "
@@ -172,9 +179,8 @@ class ModuleView(RTKModuleView):
             if self._dtc_function.request_delete(self._function_id):
                 _prompt = _(u"An error occurred when attempting to delete "
                             u"Revision {0:d}.").format(self._revision_id)
-                _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                     self._dic_icons['error'],
-                                                     'error')
+                _error_dialog = rtk.RTKMessageDialog(
+                    _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == gtk.RESPONSE_OK:
                     _error_dialog.do_destroy()
 
@@ -186,15 +192,13 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert(self, __button):
         """
-        Method to send request to insert a new Revision into the RTK Program
-        database.
+        Send request to insert a new record to the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _revision = self._dtc_data_controller.request_select(self._revision_id)
@@ -212,9 +216,8 @@ class ModuleView(RTKModuleView):
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"Revision.")
-            _error_dialog = rtk.RTKMessageDialog(_prompt,
-                                                 self._dic_icons['error'],
-                                                 'error')
+            _error_dialog = rtk.RTKMessageDialog(
+                _prompt, self._dic_icons['error'], 'error')
             self._mdcRTK.debug_log.error(_prompt)
 
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
@@ -226,46 +229,46 @@ class ModuleView(RTKModuleView):
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Revision.
+        Send request to update the selected record to the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._revision_id)
 
     def _do_request_update_all(self, __button):
         """
-        Method to save all the Revisions.
+        Send request to save all the records to the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update_all()
 
     def _make_buttonbox(self):
         """
-        Method to create the gtk.ButtonBox() for the Revision class Module
-        View.
+        Create the gtk.ButtonBox() for the Revision Module View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Revision class Module
                  View.
         :rtype: :py:class:`gtk.ButtonBox`
         """
-
-        _tooltips = [_(u"Add a new Revision."),
-                     _(u"Remove the currently selected Revision."),
-                     _(u"Save the currently selected Revision to the open "
-                       u"RTK Program database."),
-                     _(u"Saves all Revisions to the open RTK Program "
-                       u"database.")]
-        _callbacks = [self._do_request_insert, self._do_request_delete,
-                      self._do_request_update, self._do_request_update_all]
+        _tooltips = [
+            _(u"Add a new Revision."),
+            _(u"Remove the currently selected Revision."),
+            _(u"Save the currently selected Revision to the open "
+              u"RTK Program database."),
+            _(u"Saves all Revisions to the open RTK Program "
+              u"database.")
+        ]
+        _callbacks = [
+            self._do_request_insert, self._do_request_delete,
+            self._do_request_update, self._do_request_update_all
+        ]
         _icons = ['add', 'remove', 'save', 'save-all']
 
         _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
@@ -275,12 +278,11 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Method for setting up the gtk.TreeView() for Functions.
+        Set up the Revision RTKTreeView().
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         for i in [17, 20, 22]:
@@ -293,8 +295,7 @@ class ModuleView(RTKModuleView):
 
     def _on_button_press(self, treeview, event):
         """
-        Method for handling mouse clicks on the Revision package Module View
-        gtk.TreeView().
+        Handle mouse clicks on the Revision Module View RTKTreeView().
 
         :param treeview: the Revision class gtk.TreeView().
         :type treeview: :py:class:`gtkTreeView`
@@ -313,7 +314,6 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
@@ -370,9 +370,10 @@ class ModuleView(RTKModuleView):
 
     def _on_edit(self, position, new_text):
         """
-        Method to update the Module Book gtk.TreeView() with changes to the
-        Revision data model attributes.  Called by other views when the
-        Revision data model attributes are edited via their gtk.Widgets().
+        Update the Module View RTKTreeView() with Revision attribute changes.
+
+        This method is called by other views when the Revision data model
+        attributes are edited via their gtk.Widgets().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -380,22 +381,22 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _model, _row = self.treeview.get_selection().get_selected()
 
         _model.set(_row, self._lst_col_order[position], new_text)
 
         return False
 
-    def _on_select_revision(self):                  # pylint: disable=W0221
+    def _on_select_revision(self):  # pylint: disable=W0221
         """
-        Method to load the Revision Module Book view gtk.TreeModel() with
-        Revision information when an RTK Program database is opened.
+        Load the Revision Module View RTKTreeView().
+
+        This method loads the RTKTreeView() with Revision attribute data when
+        an RTK Program database is opened.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['revision']
