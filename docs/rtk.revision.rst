@@ -3,7 +3,7 @@ Revision Package
 
 .. toctree::
 
-Revision Package Data Model Module
+Revision Data Model
 -------------------------------------------------------------------------------
 
 .. automodule:: rtk.revision.Model
@@ -12,7 +12,7 @@ Revision Package Data Model Module
     :undoc-members:
     :show-inheritance:
 
-Revision Package Data Controller Module
+Revision Data Controller
 -------------------------------------------------------------------------------
 
 .. automodule:: rtk.revision.Controller

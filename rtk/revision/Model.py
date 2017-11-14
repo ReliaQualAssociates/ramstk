@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.revision.Revision.py is part of The RTK Project
+#       rtk.revision.Model.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -156,11 +156,11 @@ class RevisionDataModel(RTKDataModel):
                 # Break if something goes wrong and return.
                 if _error_code != 0:
                     print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.revision.Revision.Model.update_all().'
+                          'rtk.revision.Model.update_all().'
 
             except AttributeError:
                 print 'FIXME: Handle AttributeError in ' \
-                      'rtk.revision.Revision.Model.update_all().'
+                      'rtk.revision.Model.update_all().'
 
         return _error_code, _msg
 

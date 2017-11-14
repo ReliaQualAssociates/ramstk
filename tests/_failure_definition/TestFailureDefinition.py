@@ -14,7 +14,9 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
@@ -24,7 +26,7 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from FailureDefinition import Model, FailureDefinition
+from failure_definition import dtmFailureDefinition, dtcFailureDefinition
 from dao import DAO
 from dao import RTKFailureDefinition
 
@@ -34,7 +36,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestFailureDefinitionModel(unittest.TestCase):
+class Test00FailureDefinitionModel(unittest.TestCase):
     """
     Class for testing the Failure Definition model class.
     """
@@ -47,11 +49,13 @@ class TestFailureDefinitionModel(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
@@ -64,21 +68,25 @@ class TestFailureDefinitionModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKFailureDefinition(), ], self.session)
-        self.dao.db_add([RTKFailureDefinition(), ], self.session)
+        self.dao.db_add([
+            RTKFailureDefinition(),
+        ], self.session)
+        self.dao.db_add([
+            RTKFailureDefinition(),
+        ], self.session)
 
-        self.DUT = Model(self.dao)
+        self.DUT = dtmFailureDefinition(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
         """
-        (TestFailureDefinition): __init__ should return instance of a FailureDefition data model
+        (TestFailureDefinitionModel): __init__ should return instance of a FailureDefition data model
         """
 
-        self.assertTrue(isinstance(self.DUT, Model))
+        self.assertTrue(isinstance(self.DUT, dtmFailureDefinition))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
 
@@ -91,8 +99,8 @@ class TestFailureDefinitionModel(unittest.TestCase):
         _tree = self.DUT.select_all(1)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data,
-                                   RTKFailureDefinition))
+        self.assertTrue(
+            isinstance(_tree.get_node(1).data, RTKFailureDefinition))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
@@ -129,7 +137,7 @@ class TestFailureDefinitionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                               'the RTK Program database.')
+                         'the RTK Program database.')
         self.assertEqual(self.DUT._last_id, 2)
 
     @attr(all=True, unit=True)
@@ -144,7 +152,7 @@ class TestFailureDefinitionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
-                               'Program database.')
+                         'Program database.')
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
@@ -157,8 +165,11 @@ class TestFailureDefinitionModel(unittest.TestCase):
         _error_code, _msg = self.DUT.delete(300)
 
         self.assertEqual(_error_code, 2005)
-        self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
-                               'Failure Definition ID 300.')
+        self.assertEqual(
+            _msg,
+            '  RTK ERROR: Attempted to delete non-existent Failure ' \
+            'Definition ID 300.'
+        )
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
@@ -189,7 +200,7 @@ class TestFailureDefinitionModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2207)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Failure Definition ID 100.')
+                         'Failure Definition ID 100.')
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):
@@ -206,7 +217,7 @@ class TestFailureDefinitionModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
 
-class TestUsageProfileController(unittest.TestCase):
+class Test01UsageProfileController(unittest.TestCase):
     """
     Class for testing the Usage Profile controller class.
     """
@@ -219,11 +230,13 @@ class TestUsageProfileController(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.RTK_DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG',
@@ -238,13 +251,18 @@ class TestUsageProfileController(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKFailureDefinition(), ], self.session)
-        self.dao.db_add([RTKFailureDefinition(), ], self.session)
+        self.dao.db_add([
+            RTKFailureDefinition(),
+        ], self.session)
+        self.dao.db_add([
+            RTKFailureDefinition(),
+        ], self.session)
 
-        self.DUT = FailureDefinition(self.dao, self.Configuration, test='True')
+        self.DUT = dtcFailureDefinition(
+            self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):
@@ -252,8 +270,9 @@ class TestUsageProfileController(unittest.TestCase):
         (TestFailureDefinitionController) __init__ should return a Failure Definition Data Controller
         """
 
-        self.assertTrue(isinstance(self.DUT, FailureDefinition))
-        self.assertTrue(isinstance(self.DUT._dtm_failure_definition, Model))
+        self.assertTrue(isinstance(self.DUT, dtcFailureDefinition))
+        self.assertTrue(
+            isinstance(self.DUT._dtm_data_model, dtmFailureDefinition))
 
     @attr(all=True, unit=True)
     def test01_request_select_all(self):
@@ -263,8 +282,8 @@ class TestUsageProfileController(unittest.TestCase):
 
         _tree = self.DUT.request_select_all(1)
 
-        self.assertTrue(isinstance(_tree.get_node(1).data,
-                                   RTKFailureDefinition))
+        self.assertTrue(
+            isinstance(_tree.get_node(1).data, RTKFailureDefinition))
 
     @attr(all=True, unit=True)
     def test02a_request_select(self):
@@ -274,8 +293,8 @@ class TestUsageProfileController(unittest.TestCase):
 
         self.DUT.request_select_all(1)
 
-        self.assertTrue(isinstance(self.DUT.request_select(1),
-                                   RTKFailureDefinition))
+        self.assertTrue(
+            isinstance(self.DUT.request_select(1), RTKFailureDefinition))
 
     @attr(all=True, unit=True)
     def test02b_request_non_existent_id(self):

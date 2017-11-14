@@ -3,43 +3,38 @@
 #       rtk.gui.gtk.listviews.FailureDefinition.py is part of the RTK Project
 #
 # All rights reserved.
-"""
-Failure Definition List View Module
--------------------------------------------------------------------------------
-"""
+"""Failure Definition List View Module."""
 
-from pubsub import pub                          # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Modules required for the GUI.
-import pango                                    # pylint: disable=E0401
+import pango  # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk import rtk                         # pylint: disable=E0401
+from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
 from .ListView import RTKListView
 
 
 class ListView(RTKListView):
     """
-    The Failure Definition List View displays all the failure definitions
-    associated with the selected Revision.  The attributes of the Failure
-    Definition List View are:
+    Display all the Failure Definitions associated with the selected Revision.
 
-    :ivar _dtc_failure_definition: the
-    :py:class:`rtk.failure_definition.FailureDefinition.FailureDefinition`
-    data controller associated with this List View.
-    :ivar _revision_id: the Revision ID whose failure definitions are being
-                        displayed in the List View.
+    The attributes of the Failure Definition List View are:
+
+    :ivar int _revision_id: the Revision ID whose failure definitions are being
+                            displayed in the List View.
+    :ivar int _definition_id: the Failure Definition ID of the definition being
+                              displayed in the List View.
     """
 
     def __init__(self, controller):
         """
-        Method to initialize the List View for the Revision package.
+        Initialize the List View for the Failure Definition package.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKListView.__init__(self, controller, module='failure_definition')
 
         # Initialize private dictionary attributes.
@@ -47,7 +42,6 @@ class ListView(RTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_failure_definition = None
         self._revision_id = None
         self._definition_id = None
 
@@ -67,22 +61,16 @@ class ListView(RTKListView):
         self._lst_handler_id.append(
             self.treeview.connect('button_press_event', self._on_button_press))
 
-
-        # _icon = gtk.gdk.pixbuf_new_from_file_at_size(self._dic_icons['tab'],
-        #                                              22, 22)
-        # _image = gtk.Image()
-        # _image.set_from_pixbuf(_icon)
-
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Failure\nDefinitions") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Failure\nDefinitions") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays failure definitions for the "
-                                  u"selected revision."))
+        _label.set_tooltip_text(
+            _(u"Displays failure definitions for the "
+              u"selected revision."))
 
-        # self.hbx_tab_label.pack_start(_image)
         self.hbx_tab_label.pack_end(_label)
         self.hbx_tab_label.show_all()
 
@@ -98,16 +86,16 @@ class ListView(RTKListView):
 
     def _do_change_row(self, treeview):
         """
-        Method to handle events for the Failure Defition package List View
-        gtk.TreeView().  It is called whenever a Failure Definition List View
-        gtk.TreeView() row is activated.
+        Handle row changes for the Failure Definition package List View.
 
-        :param treeview: the Failure Definition List View gtk.TreeView().
-        :type treeview: :py:class:`gtk.TreeView`
+        This method is called whenever a Failure Definition List View
+        RTKTreeView() row is activated or changed.
+
+        :param treeview: the Failure Definition List View RTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         treeview.handler_block(self._lst_handler_id[0])
@@ -122,8 +110,7 @@ class ListView(RTKListView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Method to handle edits of the Failure Definition List View
-        gtk.Treeview().
+        Handle edits of the Failure Definition List View RTKTreeview().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
@@ -134,35 +121,33 @@ class ListView(RTKListView):
         :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
-
         RTKListView._do_edit_cell(__cell, path, new_text, position, model)
 
         # Update the Failure Definition data model.
         _definition_id = model[path][0]
         _definition = \
-            self._dtc_failure_definition.request_select(_definition_id)
+            self._dtc_data_controller.request_select(_definition_id)
         _definition.definition = str(new_text)
 
         return False
 
     def _do_request_delete(self, __button):
         """
-        Method to delete the selected Failure Definition.
+        Request to delete the selected Failure Definition record.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _model, _row = self.treeview.get_selection().get_selected()
         _definition_id = _model.get_value(_row, 0)
 
-        if not self._dtc_failure_definition.request_delete(_definition_id):
+        if not self._dtc_data_controller.request_delete(_definition_id):
             self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to delete failure "
@@ -176,17 +161,16 @@ class ListView(RTKListView):
 
     def _do_request_insert(self, __button):
         """
-        Method to add a Failure Definition.
+        Request to add a Failure Definition record.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        if not self._dtc_failure_definition.request_insert(self._revision_id):
+        if not self._dtc_data_controller.request_insert(self._revision_id):
             self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to add a failure "
@@ -200,30 +184,27 @@ class ListView(RTKListView):
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Failure Definition.
+        Request to update the currently selected Failure Definition record.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        return self._dtc_failure_definition.request_update(
-            self._definition_id)
+        return self._dtc_data_controller.request_update(self._definition_id)
 
     def _do_request_update_all(self, __button):
         """
-        Method to save all the Failure Definitions.
+        Request to update all Failure Definitions records.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        if not self._dtc_failure_definition.request_update_all():
+        if not self._dtc_data_controller.request_update_all():
             self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to save the failure "
@@ -237,22 +218,25 @@ class ListView(RTKListView):
 
     def _make_buttonbox(self):
         """
-        Method to create the buttonbox for the Failure Definition List View.
+        Create the buttonbox for the Failure Definition List View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Failure Definition
                              List View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
-
-        _tooltips = [_(u"Add a new Failure Definition."),
-                     _(u"Remove the currently selected Failure Definition."),
-                     _(u"Save the currently selected Failure Definition to "
-                       u"the open RTK Program database."),
-                     _(u"Save all of the Failure Definitions to the open RTK "
-                       u"Program database."),
-                     _(u"Create the Failure Definition report.")]
-        _callbacks = [self._do_request_insert, self._do_request_delete,
-                      self._do_request_update, self._do_request_update_all]
+        _tooltips = [
+            _(u"Add a new Failure Definition."),
+            _(u"Remove the currently selected Failure Definition."),
+            _(u"Save the currently selected Failure Definition to "
+              u"the open RTK Program database."),
+            _(u"Save all of the Failure Definitions to the open RTK "
+              u"Program database."),
+            _(u"Create the Failure Definition report.")
+        ]
+        _callbacks = [
+            self._do_request_insert, self._do_request_delete,
+            self._do_request_update, self._do_request_update_all
+        ]
         _icons = ['add', 'remove', 'save', 'save-all', 'reports']
 
         _buttonbox = RTKListView._make_buttonbox(self, _icons, _tooltips,
@@ -262,12 +246,11 @@ class ListView(RTKListView):
 
     def _make_treeview(self):
         """
-        Method for setting up the gtk.TreeView() for Failure Definitions.
+        Set up the RTKTreeView() for Failure Definitions.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING)
@@ -318,11 +301,10 @@ class ListView(RTKListView):
 
     def _on_button_press(self, treeview, event):
         """
-        Method for handling mouse clicks on the Failure Definition package
-        ListView gtk.TreeView().
+        Handle mouse clicks on the Failure Definition package RTKTreeView().
 
         :param treeview: the Failure Definition ListView gtk.TreeView().
-        :type treeview: :py:class:`gtk.TreeView`.
+        :type treeview: :class:`rtk.gui.rtk.TreeView.RTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -337,7 +319,6 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
@@ -394,31 +375,36 @@ class ListView(RTKListView):
 
     def _on_select_revision(self, module_id):
         """
-        Method to load the Failure Definition List View gtk.TreeModel() with
-        Failure Definition information whenever a new Revision is selected.
+        Load the Failure Definition List View gtk.TreeModel().
 
-        :param int revision_id: the Revision ID to select the Failure
-                                Definitions for.
+        This method is called whenever a new Revision is selected in the RTK
+        Module View.
+
+        :param int module_id: the Revision ID to select the Failure
+                              Definitions for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._revision_id = module_id
 
-        self._dtc_failure_definition = \
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['definition']
         _definitions = \
-            self._dtc_failure_definition.request_select_all(self._revision_id)
+            self._dtc_data_controller.request_select_all(self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()
 
         for _key in _definitions.nodes.keys():
             try:
-                _model.append([_definitions[_key].data.definition_id,
-                               _definitions[_key].data.definition])
+                _model.append([
+                    _definitions[_key].data.definition_id,
+                    _definitions[_key].data.definition
+                ])
             except AttributeError:
                 print "FIXME: Handle AttributeError in " \
                       "gtk.gui.listviews.FailureDefinition._on_select_revision"

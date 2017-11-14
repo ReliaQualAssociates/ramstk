@@ -65,12 +65,16 @@ class RevisionDataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.insert(None)
 
-        if _error_code == 0 and not self._test:
-            pub.sendMessage(
+        if _error_code == 0:
+            self._configuration.RTK_USER_LOG.info(_msg)
+
+            if not self._test:
+                pub.sendMessage(
                 'insertedRevision', revision_id=self.dtm_revision.last_id)
         else:
             _msg = _msg + '  Failed to add a new Revision to the RTK ' \
                 'Program database.'
+            self._configuration.RTK_DEBUG_LOG.error(_msg)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)

@@ -5,9 +5,7 @@
 # All rights reserved.
 # Copyright 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-===============================================================================
-The RTKRevision Table
-===============================================================================
+RTKRevision Table Module
 """
 
 # pylint: disable=E0401

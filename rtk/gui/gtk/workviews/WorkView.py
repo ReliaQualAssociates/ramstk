@@ -16,7 +16,7 @@ from gui.gtk import rtk  # pylint: disable=E0401,W0611
 
 class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
     """
-    Display data in the RTK Work Book.
+    class to display data in the RTK Work Book.
 
     This is the meta class for all RTK Work View classes.  Attributes of the
     RTKWorkView are:

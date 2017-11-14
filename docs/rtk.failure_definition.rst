@@ -1,6 +1,21 @@
+Failure Definition Package
+===============================================================================
+
 .. toctree::
 
-.. automodule:: rtk.failure_definition.FailureDefinition
+Failure Definition Data Model
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.failure_definition.Model
+    :members:
+    :undoc-members:
+    :private-members:
+    :show-inheritance:
+
+Failure Definition Data Controller
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.failure_definition.Controller
     :members:
     :undoc-members:
     :private-members:

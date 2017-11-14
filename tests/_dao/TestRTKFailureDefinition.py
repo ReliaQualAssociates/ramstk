@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKFailureDefinition module algorithms
 and models.
@@ -14,7 +13,9 @@ and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,7 +36,11 @@ class Test05RTKFailureDefinition(unittest.TestCase):
     Class for testing the RTKFailureDefinition class.
     """
 
-    _attributes = (1, 1, 'Test Failure Definition')
+    _attributes = {
+        'revision_id': 1,
+        'definition_id': 1,
+        'definition': 'Test Failure Definition'
+    }
 
     def setUp(self):
         """
@@ -49,7 +54,7 @@ class Test05RTKFailureDefinition(unittest.TestCase):
         session.configure(bind=engine, autoflush=False, expire_on_commit=False)
 
         self.DUT = session.query(RTKFailureDefinition).first()
-        self.DUT.definition = self._attributes[2]
+        self.DUT.definition = self._attributes['definition']
 
         session.commit()
 
@@ -73,8 +78,7 @@ class Test05RTKFailureDefinition(unittest.TestCase):
         (TestRTKFailureDefinition) get_attributes should return a tuple of attribute values.
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (1, 1, 'Test Failure Definition'))
+        self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):
@@ -82,9 +86,9 @@ class Test05RTKFailureDefinition(unittest.TestCase):
         (TestRTKFailureDefinition) set_attributes should return a zero error code on success
         """
 
-        _attributes = ('Failure Def.')
+        self._attributes['definition'] = 'Failure Def.'
 
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKFailureDefinition " \
@@ -97,26 +101,28 @@ class Test05RTKFailureDefinition(unittest.TestCase):
         (TestRTKFailureDefinition) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = [None]
+        self._attributes['definition'] = {}
 
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 10)
         self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKEFailureDefinition " \
+                               "converting one or more RTKFailureDefinition " \
                                "attributes.")
 
     @attr(all=True, unit=True)
-    def test02c_set_attributes_too_few_passed(self):
+    def test02c_set_attributes_missing_key(self):
         """
         (TestRTKFailureDefinition) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = ()
+        self._attributes.pop('definition')
 
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to " \
-                               "RTKFailureDefinition.set_attributes().")
+        self.assertEqual(
+            _msg,
+            "RTK ERROR: Missing attribute 'definition' in attribute " \
+            "dictionary passed to RTKFailureDefinition.set_attributes()."
+        )

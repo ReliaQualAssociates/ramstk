@@ -21,12 +21,12 @@ class RTKModuleView(gtk.HBox, rtk.RTKBaseView):
     This is the meta class for all RTK Module View classes.  Attributes of the
     RTKModuleView are:
 
-    :ivar _img_tab: the :py:class:`gtk.Image` to display on the tab.
+    :ivar _img_tab: the :class:`gtk.Image` to display on the tab.
     :ivar _lst_col_order: list containing the order of the columns in the
                           Module View gtk.TreeView().
-    :ivar hbx_tab_label: the :py:class:`gtk.HBox` used for the label in the
+    :ivar hbx_tab_label: the :class:`gtk.HBox` used for the label in the
                          ModuleBook.
-    :ivar treeview: the :py:class:`gtk.TreeView` displaying the list of items
+    :ivar treeview: the :class:`gtk.TreeView` displaying the list of items
                     in the selected module.
     """
 

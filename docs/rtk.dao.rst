@@ -1,4 +1,4 @@
-RTK Data Access Object Sub-Package
+RTK Data Access Object Package
 ==================================
 
 .. toctree::
@@ -12,6 +12,8 @@ RTK Data Access Object Sub-Package
 
 RTK Common Database Tables
 --------------------------
+
+.. toctree::
 
 .. automodule:: rtk.dao.RTKApplication
     :members:
@@ -155,6 +157,8 @@ RTK Common Database Tables
 RTK Program Database Tables
 ---------------------------
 
+.. toctree::
+
 .. automodule:: rtk.dao.RTKAction
     :members:
     :undoc-members:
@@ -197,6 +201,9 @@ RTK Program Database Tables
     :private-members:
     :show-inheritance:
 
+===============================================================================
+RTKFailureDefinition Table Module
+===============================================================================
 .. automodule:: rtk.dao.RTKFailureDefinition
     :members:
     :undoc-members:
@@ -311,6 +318,9 @@ RTK Program Database Tables
     :private-members:
     :show-inheritance:
 
+===============================================================================
+RTKRevision Table Module
+===============================================================================
 .. automodule:: rtk.dao.RTKRevision
     :members:
     :undoc-members:

@@ -45,10 +45,10 @@ class RTKBaseView(object):
 
     def __init__(self, controller, module=None):
         """
-        Method to initialize the Work View.
+        Initialize the RTK Base View.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
 
         # Initialize private dictionary attributes.

@@ -164,7 +164,7 @@ class Test00RevisionModel(unittest.TestCase):
                          'Revision ID 3.')
 
     @attr(all=True, unit=True)
-    def test_05a_update(self):
+    def test05a_update(self):
         """
         (TestRevisionModel): update() should return a zero error code on success.
         """
@@ -181,7 +181,7 @@ class Test00RevisionModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test_05b_update_non_existent_id(self):
+    def test05b_update_non_existent_id(self):
         """
         (TestRevisionModel): update() should return a non-zero error code when passed a Revision ID that doesn't exist.
         """
@@ -195,7 +195,7 @@ class Test00RevisionModel(unittest.TestCase):
                          'Revision ID 100.')
 
     @attr(all=True, unit=True)
-    def test_06a_update_all(self):
+    def test06a_update_all(self):
         """
         (TestRevisionModel): update_all() should return a zero error code on success.
         """
