@@ -3,25 +3,19 @@ Usage Profile Package
 
 .. toctree::
 
-.. automodule:: rtk.usage.UsageProfile
+Usage Profile Data Models
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.usage.Model
     :members:
     :undoc-members:
     :private-members:
     :show-inheritance:
 
-.. automodule:: rtk.usage.Mission
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
+Usage Profile Data Controller
+-------------------------------------------------------------------------------
 
-.. automodule:: rtk.usage.Phase
-    :members:
-    :undoc-members:
-    :private-members:
-    :show-inheritance:
-
-.. automodule:: rtk.usage.Environment
+.. automodule:: rtk.usage.Controller
     :members:
     :undoc-members:
     :private-members:

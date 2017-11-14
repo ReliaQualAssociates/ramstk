@@ -332,9 +332,10 @@ class RTKTreeView(gtk.TreeView):
 
         return _cell
 
-    def _do_make_toggle_cell(self, editable):
+    @staticmethod
+    def _do_make_toggle_cell(editable):
         """
-        Method to make a gtk.CellRendererCombo().
+        Make a gtk.CellRendererCombo().
 
         :param int editable: indicates whether the cell is editable.
         :return: _cell
@@ -346,9 +347,10 @@ class RTKTreeView(gtk.TreeView):
 
         return _cell
 
-    def _do_set_properties(self, cell, bg_color, fg_color, editable):
+    @staticmethod
+    def _do_set_properties(cell, bg_color, fg_color, editable):
         """
-        Method to set common properties of gtk.CellRenderers().
+        Set common properties of gtk.CellRenderers().
 
         :param cell: the cell whose properties are to be set.
         :type cell: :class:`gtk.CellRenderer`

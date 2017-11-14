@@ -118,8 +118,8 @@ class ListView(RTKListView):
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
-                                    belongs to.
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -218,7 +218,7 @@ class ListView(RTKListView):
 
     def _make_buttonbox(self):
         """
-        Create the buttonbox for the Failure Definition List View.
+        Make the buttonbox for the Failure Definition List View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Failure Definition
                              List View.
@@ -301,7 +301,7 @@ class ListView(RTKListView):
 
     def _on_button_press(self, treeview, event):
         """
-        Handle mouse clicks on the Failure Definition package RTKTreeView().
+        Handle mouse clicks on the Failure Definition List View RTKTreeView().
 
         :param treeview: the Failure Definition ListView gtk.TreeView().
         :type treeview: :class:`rtk.gui.rtk.TreeView.RTKTreeView`.

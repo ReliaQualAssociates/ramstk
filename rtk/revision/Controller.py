@@ -4,9 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Revision Package Data Controller Module
-"""
+"""Revision Package Data Controller."""
 
 from pubsub import pub  # pylint: disable=E0401
 
@@ -21,9 +19,6 @@ class RevisionDataController(RTKDataController):
 
     A single Revision controller can manage one or more Revision data models.
     The attributes of a Revision data controller are:
-
-    :ivar _dtm_revision: the :class:`rtk.revision.Model` associated with the
-                         Revision Data Controller.
     """
 
     def __init__(self, dao, configuration, **kwargs):
@@ -40,7 +35,7 @@ class RevisionDataController(RTKDataController):
         RTKDataController.__init__(
             self,
             configuration,
-            module=dtmRevision(dao),
+            model=dtmRevision(dao),
             rtk_module='revision',
             **kwargs)
 
@@ -70,7 +65,7 @@ class RevisionDataController(RTKDataController):
 
             if not self._test:
                 pub.sendMessage(
-                'insertedRevision', revision_id=self.dtm_revision.last_id)
+                    'insertedRevision', revision_id=self.dtm_revision.last_id)
         else:
             _msg = _msg + '  Failed to add a new Revision to the RTK ' \
                 'Program database.'

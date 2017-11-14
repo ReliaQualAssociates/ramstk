@@ -4,44 +4,37 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Usage Profile List View Module
--------------------------------------------------------------------------------
-"""
+"""Usage Profile List View Module."""
 
-from pubsub import pub                          # pylint: disable=E0401
-from sortedcontainers import SortedDict         # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
+from sortedcontainers import SortedDict  # pylint: disable=E0401
 
 # Modules required for the GUI.
-import pango                                    # pylint: disable=E0401
+import pango  # pylint: disable=E0401
 
 # Import other RTK modules.
-from gui.gtk import rtk                         # pylint: disable=E0401
+from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
 from .ListView import RTKListView
 
 
 class ListView(RTKListView):
     """
-    The Usage Profile List View displays all the usage profiles associated with
-    the selected Revision.  The attributes of a Usage Profile List View are:
+    Display all the Usage Profiles associated with the selected Revision.
 
-    :ivar _dtc_usage_profile: the
-                              :py:class:`rtk.usage.UsageProfile.UsageProfile`
-                              data controller associated with this List View.
+    The attributes of a Usage Profile List View are:
+
     :ivar _revision_id: the Revision ID whose Usage Profiles are being
                         displayed in the List View.
     """
 
     def __init__(self, controller):
         """
-        Method to initialize the Usage Profile List View for the Revision
-        package.
+        Initialize the List View for the Usage Profile.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKListView.__init__(self, controller, module='usage_profile')
 
         # Initialize private dictionary attributes.
@@ -56,7 +49,6 @@ class ListView(RTKListView):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        self._dtc_usage_profile = None
         self._revision_id = None
 
         # Initialize public dictionary attributes.
@@ -71,11 +63,9 @@ class ListView(RTKListView):
             _(u"Displays the list of usage profiles for the selected "
               u"revision."))
         self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed',
-                                  self._do_change_row))
+            self.treeview.connect('cursor_changed', self._do_change_row))
         self._lst_handler_id.append(
-            self.treeview.connect('button_press_event',
-                                  self._on_button_press))
+            self.treeview.connect('button_press_event', self._on_button_press))
 
         # _icon = gdk.pixbuf_new_from_file_at_size(self._dic_icons['tab'],
         #                                          22, 22)
@@ -83,13 +73,14 @@ class ListView(RTKListView):
         # _image.set_from_pixbuf(_icon)
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Usage\nProfiles") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Usage\nProfiles") +
+                          "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays usage profiles for the selected "
-                                  u"revision."))
+        _label.set_tooltip_text(
+            _(u"Displays usage profiles for the selected "
+              u"revision."))
 
         # self.hbx_tab_label.pack_start(_image)
         self.hbx_tab_label.pack_end(_label)
@@ -107,16 +98,16 @@ class ListView(RTKListView):
 
     def _do_change_row(self, treeview):
         """
-        Method to handle events for the Usage Profile List View
-        gtk.TreeView().  It is called whenever a List View gtk.TreeView()
-        row is activated.
+        Handle row changes for the Usage Profile package List View.
 
-        :param treeview: the Usage Profile ListView class gtk.TreeView().
-        :type treeview: :py:class:`gtk.TreeView`
+        This method is called whenever a Usage Profile List View
+        RTKTreeView() row is activated or changed.
+
+        :param treeview: the Usage Profile List View class RTK.TreeView().
+        :type treeview: :class:`rtk.gui.gtk.TreeView.RTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self.treeview.handler_block(self._lst_handler_id[0])
@@ -131,17 +122,38 @@ class ListView(RTKListView):
 
         # Change the column headings depending on what is being selected.
         if _level == 'mission':
-            _headings = [_(u"Mission ID"), _(u"Description"), _(u"Units"),
-                         _(u"Start Time"), _(u"End Time"), _(u""), _(u""),
-                         _(u"")]
+            _headings = [
+                _(u"Mission ID"),
+                _(u"Description"),
+                _(u"Units"),
+                _(u"Start Time"),
+                _(u"End Time"),
+                _(u""),
+                _(u""),
+                _(u"")
+            ]
         elif _level == 'phase':
-            _headings = [_(u"Phase ID"), _(u"  Code\t\tDescription"),
-                         _(u"Units"), _(u"Start Time"), _(u"End Time"), _(u""),
-                         _(u""), _(u"")]
+            _headings = [
+                _(u"Phase ID"),
+                _(u"  Code\t\tDescription"),
+                _(u"Units"),
+                _(u"Start Time"),
+                _(u"End Time"),
+                _(u""),
+                _(u""),
+                _(u"")
+            ]
         elif _level == 'environment':
-            _headings = [_(u"Environment ID"), _(u"Condition"), _(u"Units"),
-                         _(u"Minimum Value"), _(u"Maximum Value"),
-                         _(u"Mean Value"), _(u"Variance"), _(u"")]
+            _headings = [
+                _(u"Environment ID"),
+                _(u"Condition"),
+                _(u"Units"),
+                _(u"Minimum Value"),
+                _(u"Maximum Value"),
+                _(u"Mean Value"),
+                _(u"Variance"),
+                _(u"")
+            ]
         else:
             _headings = []
 
@@ -151,8 +163,7 @@ class ListView(RTKListView):
             _label.set_line_wrap(True)
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
-            _label.set_markup("<span weight='bold'>" + _heading +
-                              "</span>")
+            _label.set_markup("<span weight='bold'>" + _heading + "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _columns[i].set_widget(_label)
@@ -165,7 +176,7 @@ class ListView(RTKListView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Method to handle edits of the Usage Profile List View gtk.Treeview().
+        Handle edits of the Usage Profile List View RTKTreeView().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
@@ -173,12 +184,11 @@ class ListView(RTKListView):
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
-        :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
-                                    belongs to.
+        :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
         _return = False
 
         if not RTKListView._do_edit_cell(__cell, path, new_text, position,
@@ -187,7 +197,7 @@ class ListView(RTKListView):
             # Retrieve the Usage Profile data package.
             _node_id = model[path][9]
             _entity = \
-                self._dtc_usage_profile.request_select(_node_id)
+                self._dtc_data_controller.request_select(_node_id)
 
             # Build a list of attributes based on the type of data package.
             _attributes = []
@@ -214,18 +224,16 @@ class ListView(RTKListView):
 
     def _do_load_tree(self, tree, row=None):
         """
-        Method to recursively load the Usage Profile List View's gtk.TreeModel
-        with the Usage Profile tree.
+        Recursively load the Usage Profile List View's gtk.TreeModel.
 
         :param tree: the Usage Profile treelib Tree().
-        :type tree: :py:class:`treelib.Tree`
+        :type tree: :class:`treelib.Tree`
         :param row: the parent row in the Usage Profile gtk.TreeView() to
                     add the new item.
-        :type row: :py:class:`gtk.TreeIter`
+        :type row: :class:`gtk.TreeIter`
         :return: None
         :rtype: None
         """
-
         _data = []
         _model = self.treeview.get_model()
 
@@ -236,26 +244,31 @@ class ListView(RTKListView):
             if _entity.is_mission:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['mission'], 22, 22)
-                _data = [_icon, _entity.mission_id, _entity.description, '',
-                         _entity.time_units, 0.0, _entity.mission_time, 0.0,
-                         0.0, _node.identifier, 0, 'mission']
+                _data = [
+                    _icon, _entity.mission_id, _entity.description, '',
+                    _entity.time_units, 0.0, _entity.mission_time, 0.0, 0.0,
+                    _node.identifier, 0, 'mission'
+                ]
                 _row = None
 
             elif _entity.is_phase:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['phase'], 22, 22)
-                _data = [_icon, _entity.phase_id, _entity.name,
-                         _entity.description, '', _entity.phase_start,
-                         _entity.phase_end, 0.0, 0.0, _node.identifier, 0,
-                         'phase']
+                _data = [
+                    _icon, _entity.phase_id, _entity.name, _entity.description,
+                    '', _entity.phase_start, _entity.phase_end, 0.0, 0.0,
+                    _node.identifier, 0, 'phase'
+                ]
 
             elif _entity.is_env:
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
                     self._dic_icons['environment'], 22, 22)
-                _data = [_icon, _entity.environment_id, _entity.name, '',
-                         _entity.units, _entity.minimum, _entity.maximum,
-                         _entity.mean, _entity.variance, _node.identifier,
-                         1, 'environment']
+                _data = [
+                    _icon, _entity.environment_id, _entity.name, '',
+                    _entity.units, _entity.minimum, _entity.maximum,
+                    _entity.mean, _entity.variance, _node.identifier, 1,
+                    'environment'
+                ]
 
             try:
                 _row = _model.append(row, _data)
@@ -274,22 +287,20 @@ class ListView(RTKListView):
 
     def _do_request_delete(self, __button):
         """
-        Method to delete the selected Mission, Mission Phase, or Environment
-        and any children from the Usage Profile.
+        Request to delete the selected Usage Profile record.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _model, _row = self.treeview.get_selection().get_selected()
         _node_id = _model.get_value(_row, 9)
         _level = _model.get_value(_row, 11)
 
-        if not self._dtc_usage_profile.request_delete(_node_id):
+        if not self._dtc_data_controller.request_delete(_node_id):
             self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"A problem occurred while attempting to delete {0:s} "
@@ -302,18 +313,16 @@ class ListView(RTKListView):
 
     def _do_request_insert(self, __button, sibling=True):
         """
-        Method to add a Mission, Mission Phase, or Environment to the Usage
-        Profile.
+        Request to add an entity to the Usage Profile.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :param bool sibling: indicator variable that determines whether a
                              sibling entity be added (default) or a child
                              entity be added to the currently selected entity.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # Get the currently selected row, the level of the currently selected
@@ -345,10 +354,8 @@ class ListView(RTKListView):
 
             _return = True
 
-        if (not _return and
-                not self._dtc_usage_profile.request_insert(_entity_id,
-                                                           _parent_id,
-                                                           _level)):
+        if (not _return and not self._dtc_data_controller.request_insert(
+                _entity_id, _parent_id, _level)):
             self._on_select_revision(self._revision_id)
         else:
             _return = True
@@ -357,38 +364,41 @@ class ListView(RTKListView):
 
     def _do_request_update_all(self, __button):
         """
-        Method to save all the Usage Profiles.
+        Request to update all the Usage Profile records.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
-        return self._dtc_usage_profile.request_update_all()
+        return self._dtc_data_controller.request_update_all()
 
     def _make_buttonbox(self):
         """
-        Method to create the buttonbox for the Usage Profile List View.
+        Make the buttonbox for the Usage Profile List View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Usage Profile List
                              View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
-
-        _tooltips = [_(u"Add a new Usage Profile entity at the same level "
-                       u"as the currently selected entity."),
-                     _(u"Add a new Usage Profile entity one level below the "
-                       u"currently selected entity."),
-                     _(u"Remove the curently selected entity from the Usage "
-                       u"Profile."),
-                     _(u"Save the Usage Profile to the open RTK Program "
-                       u"database."),
-                     _(u"Create the Mission and Usage Profile report.")]
-        _callbacks = [self._do_request_insert, self._do_request_insert,
-                      self._do_request_delete, self._do_request_update_all]
-        _icons = ['insert_sibling', 'insert_child', 'remove', 'save',
-                  'reports']
+        _tooltips = [
+            _(u"Add a new Usage Profile entity at the same level "
+              u"as the currently selected entity."),
+            _(u"Add a new Usage Profile entity one level below the "
+              u"currently selected entity."),
+            _(u"Remove the curently selected entity from the Usage "
+              u"Profile."),
+            _(u"Save the Usage Profile to the open RTK Program "
+              u"database."),
+            _(u"Create the Mission and Usage Profile report.")
+        ]
+        _callbacks = [
+            self._do_request_insert, self._do_request_insert,
+            self._do_request_delete, self._do_request_update_all
+        ]
+        _icons = [
+            'insert_sibling', 'insert_child', 'remove', 'save', 'reports'
+        ]
 
         _buttonbox = RTKListView._make_buttonbox(self, _icons, _tooltips,
                                                  _callbacks, 'vertical')
@@ -397,18 +407,19 @@ class ListView(RTKListView):
 
     def _make_cell(self, cell, editable, position, model):
         """
-        Method to create a gtk.CellRenderer() and set it's properties.
+        Make a gtk.CellRenderer() and set it's properties.
 
         :param str cell: the type of gtk.CellRenderer() to create.
         :param bool editable: indicates whether or not the cell should be
                               editable.
         :param int position: the position of the cell in the gtk.Model().
         :return: _cell
-        :rtype: :py:class:`gtk.CellRenderer`
+        :rtype: :class:`gtk.CellRenderer`
         """
-
-        _cellrenderers = {'pixbuf':gtk.CellRendererPixbuf(),
-                          'text':gtk.CellRendererText()}
+        _cellrenderers = {
+            'pixbuf': gtk.CellRendererPixbuf(),
+            'text': gtk.CellRendererText()
+        }
 
         _cell = _cellrenderers[cell]
 
@@ -427,20 +438,18 @@ class ListView(RTKListView):
 
     def _make_treeview(self):
         """
-        Method for setting up the gtk.TreeView() for Failure Definitions.
+        Set up the RTKTreeView() for the Usage Profile.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        _model = gtk.TreeStore(gtk.gdk.Pixbuf, gobject.TYPE_INT,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_STRING)
+        _model = gtk.TreeStore(
+            gtk.gdk.Pixbuf, gobject.TYPE_INT, gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_STRING)
         self.treeview.set_model(_model)
 
         for i in range(10):
@@ -471,8 +480,7 @@ class ListView(RTKListView):
                 _column.set_visible(True)
             elif i in [5, 6]:
                 _cell = self._make_cell('text', True, i + 2, _model)
-                _cell.connect('edited', self._do_edit_cell, i + 2,
-                              _model)
+                _cell.connect('edited', self._do_edit_cell, i + 2, _model)
                 _column.pack_start(_cell, True)
                 _column.set_attributes(_cell, text=i + 2, visible=10)
                 _column.set_visible(True)
@@ -497,11 +505,10 @@ class ListView(RTKListView):
 
     def _on_button_press(self, treeview, event):
         """
-        Method for handling mouse clicks on the Usage Profile package
-        ListView gtk.TreeView().
+        Handle mouse clicks on the Usage Profile List View RTKTreeView().
 
         :param treeview: the Usage Profile ListView gtk.TreeView().
-        :type treeview: :py:class:`gtk.TreeView`.
+        :type treeview: :class:`gtk.TreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -513,11 +520,10 @@ class ListView(RTKListView):
                       * 8 =
                       * 9 =
 
-        :type event: :py:class:`gtk.gdk.Event`
+        :type event: :class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
@@ -570,26 +576,24 @@ class ListView(RTKListView):
 
         treeview.handler_unblock(self._lst_handler_id[1])
 
-
         return False
 
     def _on_select_revision(self, module_id):
         """
-        Method to load the Usage Profile List View gtk.TreeModel() with
-        Usage Profile information whenever a new Revision is selected.
+        Load the Usage Profile List View gtk.TreeModel().
 
-        :param int revision_id: the Revision ID to select the Usage Profiles
-                                for.
+        :param int module_id: the Revision ID to select the Usage Profiles for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._revision_id = module_id
 
-        self._dtc_usage_profile = self._mdcRTK.dic_controllers['profile']
-        _profile = self._dtc_usage_profile.request_select_all(
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['profile']
+        _profile = self._dtc_data_controller.request_select_all(
             self._revision_id)
 
         _model = self.treeview.get_model()

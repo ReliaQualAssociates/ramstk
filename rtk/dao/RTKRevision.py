@@ -4,16 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKRevision Table Module
-"""
+"""RTKRevision Table Module."""
 
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, Integer, String
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
@@ -107,14 +105,14 @@ class RTKRevision(RTK_BASE):
         """
         Retrieve the current values of the RTKRevision data model attributes.
 
-        :return: (revision_id, availability, mission_availability, cost,
+        :return: {revision_id, availability, mission_availability, cost,
                   cost_per_failure, cost_per_hour, active_hazard_rate,
                   dormant_hazard_rate, mission_hazard_rate, hazard_rate,
                   software_hazard_rate, mmt, mcmt, mpmt, mission_mtbf, mtbf,
                   mttr, name, mission_reliability, reliability, remarks,
                   n_parts, code, program_time, program_time_se, program_cost,
-                  program_cost_se)
-        :rtype: tuple
+                  program_cost_se} pairs.
+        :rtype: dict
         """
         _attributes = {
             'revision_id': self.revision_id,
@@ -212,10 +210,6 @@ class RTKRevision(RTK_BASE):
             _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
                    "RTKRevision.set_attributes().".format(_err)
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKRevision attributes."
 
         return _error_code, _msg
 
@@ -318,7 +312,7 @@ class RTKRevision(RTK_BASE):
             _msg = 'RTK ERROR: Zero Division Error when calculating the ' \
                    'logistics reliability for Revision ID {0:d}.  Hazard ' \
                    'rate multiplier: {1:f}.'.format(self.revision_id,
-                                                   multiplier)
+                                                    multiplier)
         try:
             self.reliability_mission = exp(
                 -1.0 * self.hazard_rate_mission * mission_time / multiplier)
@@ -328,7 +322,7 @@ class RTKRevision(RTK_BASE):
             _msg = 'RTK ERROR: Zero Division Error when calculating the ' \
                    'mission reliability for Revision ID {0:d}.  Hazard ' \
                    'rate multiplier: {1:f}.'.format(self.revision_id,
-                                                   multiplier)
+                                                    multiplier)
 
         return _error_code, _msg
 

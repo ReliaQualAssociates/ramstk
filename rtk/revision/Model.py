@@ -5,7 +5,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-Revision Package Data Model Module
+Revision Package Data Model.
 """
 
 # Import other RTK modules.
@@ -81,7 +81,7 @@ class RevisionDataModel(RTKDataModel):
 
     def insert(self, entities):  # pylint: disable=unused-argument
         """
-        Add a record to the RTKRevision table in the RTK Program database.
+        Add a record to the RTKRevision table.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
@@ -106,7 +106,7 @@ class RevisionDataModel(RTKDataModel):
 
     def delete(self, node_id):
         """
-        Remove a record from the RTKRevision table in the RTK Program database.
+        Remove a record from the RTKRevision table.
 
         :param int node_id entity: the ID of the RTKRevision record to be
                                    removed from the RTK Program database.

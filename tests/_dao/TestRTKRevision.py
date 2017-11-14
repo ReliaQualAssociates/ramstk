@@ -174,20 +174,6 @@ class TestRTKRevision(unittest.TestCase):
                                "attributes.".format(self.DUT.revision_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
-        """
-        (TestRTKRevision) set_attributes should return a 0 error code when passed an attribute with the wrong type.
-        """
-
-        self._attributes['hazard_rate_logistics'] = None
-
-        _error_code, _msg = self.DUT.set_attributes(self._attributes)
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg,
-                         "RTK SUCCESS: Updating RTKRevision 1 attributes.")
-
-    @attr(all=True, unit=True)
     def test02c_set_attributes_too_few_passed(self):
         """
         (TestRTKRevision) set_attributes should return a 40 error code when passed an attribute dict with a missing key

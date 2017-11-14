@@ -19,12 +19,6 @@ class FailureDefinitionDataController(RTKDataController):
 
     A single Failure Definition data controller can manage one or more Failure
     Definition data models.
-
-    :ivar _dtm_revision: the
-    :py:class:`rtk.failure_definition.Model.FailureDefinitionDataModel`
-                         associated with the Revision Data Controller.
-    :ivar _configuration: the :py:class:`rtk.Configuration.Configuration`
-                          instance associated with the current RTK instance.
     """
 
     def __init__(self, dao, configuration, **kwargs):
@@ -40,7 +34,7 @@ class FailureDefinitionDataController(RTKDataController):
         RTKDataController.__init__(
             self,
             configuration,
-            module=dtmFailureDefinition(dao),
+            model=dtmFailureDefinition(dao),
             rtk_module='failure_definition',
             **kwargs)
 
