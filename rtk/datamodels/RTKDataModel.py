@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKDataModel Module
-===============================================================================
-"""
+"""Datamodels Package RTKDataModel."""
 
 from treelib import tree, Tree  # pylint: disable=E0401
 
@@ -33,7 +30,7 @@ class RTKDataModel(object):
 
         :param dao: the data access object for communicating with the RTK
                     Program database.
-        :type dao: :py:class:`rtk.dao.DAO.DAO`
+        :type dao: :class:`rtk.dao.DAO.DAO`
         """
 
         # Initialize private dictionary attributes.
@@ -96,7 +93,7 @@ class RTKDataModel(object):
         return self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-    def insert(self, entities):
+    def insert(self, **kwargs):
         """
         Base method to add the list of RTK<MODULE> instance to the RTK Program
         database.
@@ -106,11 +103,11 @@ class RTKDataModel(object):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-
+        _entities = kwargs['entities']
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        _error_code, _msg = self.dao.db_add(entities, _session)
+        _error_code, _msg = self.dao.db_add(_entities, _session)
 
         _session.close()
 

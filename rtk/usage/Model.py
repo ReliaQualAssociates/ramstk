@@ -43,7 +43,7 @@ class UsageProfileDataModel(RTKDataModel):
 
         :param dao: the data access object for communicating with the RTK
                     Program database.
-        :type dao: :py:class:`rtk.dao.DAO.DAO`
+        :type dao: :class:`rtk.dao.DAO.DAO`
         """
         RTKDataModel.__init__(self, dao)
 

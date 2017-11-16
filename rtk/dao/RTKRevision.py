@@ -247,7 +247,6 @@ class RTKRevision(RTK_BASE):
         _msg = 'RTK SUCCESS: Calculating MTBFs for Revision ID ' \
                '{0:d}.'.format(self.revision_id)
 
-        # Calculate the logistics MTBF.
         try:
             self.mtbf_logistics = 1.0 / self.hazard_rate_logistics
         except OverflowError:
@@ -265,7 +264,6 @@ class RTKRevision(RTK_BASE):
                    'rate: {1:f}.'.format(self.revision_id,
                                          self.hazard_rate_logistics)
 
-        # Calculate the mission MTBF.
         try:
             self.mtbf_mission = 1.0 / self.hazard_rate_mission
         except OverflowError:
@@ -344,14 +342,14 @@ class RTKRevision(RTK_BASE):
             self.availability_logistics = (self.mtbf_logistics /
                                            (self.mtbf_logistics + self.mttr))
         except OverflowError:
-            self.reliability_logistics = 0.0
+            self.availability_logistics = 0.0
             _error_code = 101
             _msg = 'RTK ERROR: Overflow Error when calculating the ' \
                    'logistics availability for Revision ID {0:d}.  ' \
                    'Logistics MTBF: {1:f} MTTR: {2:f}.'.\
                    format(self.revision_id, self.mtbf_logistics, self.mttr)
         except ZeroDivisionError:
-            self.reliability_logistics = 0.0
+            self.availability_logistics = 0.0
             _error_code = 102
             _msg = 'RTK ERROR: Zero Division Error when calculating the ' \
                    'logistics availability for Revision ID {0:d}.  ' \
@@ -362,7 +360,7 @@ class RTKRevision(RTK_BASE):
             self.availability_mission = (self.mtbf_mission /
                                          (self.mtbf_mission + self.mttr))
         except OverflowError:
-            self.reliability_logistics = 0.0
+            self.availability_mission = 0.0
             _error_code = 101
             _msg = 'RTK ERROR: Overflow Error when calculating the ' \
                    'mission availability for Revision ID {0:d}.  ' \
@@ -370,7 +368,7 @@ class RTKRevision(RTK_BASE):
                                                              self.mtbf_mission,
                                                              self.mttr)
         except ZeroDivisionError:
-            self.reliability_logistics = 0.0
+            self.availability_mission = 0.0
             _error_code = 102
             _msg = 'RTK ERROR: Zero Division Error when calculating the ' \
                    'mission availability for Revision ID {0:d}.  ' \

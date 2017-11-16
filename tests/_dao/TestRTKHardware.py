@@ -36,16 +36,47 @@ class TestRTKHardware(unittest.TestCase):
     """
     Class for testing the RTKHardware class.
     """
-
-    _attributes = (1, 1, '', '', '', 0, '', 0.0, 0.0, 0.0, 0, 'Description',
-                   100.0, '', '', 0, 0, 100.0, '', '', '', 0, 0, '', 1, '', '',
-                   0, '', 0, 0, 0, 0.0, date.today().year)
+    _attributes = {
+            'revision_id': 1,
+            'hardware_id': 1,
+            'alt_part_num': '',
+            'attachments': '',
+            'cage_code': '',
+            'category_id': 0,
+            'comp_ref_des': 'S1',
+            'cost': 0.0,
+            'cost_failure': 0.0,
+            'cost_hour': 0.0,
+            'cost_type_id': 0,
+            'description': 'Description',
+            'duty_cycle': 100.0,
+            'figure_number': '',
+            'lcn': '',
+            'level': 0,
+            'manufacturer_id': 0,
+            'mission_time': 100.0,
+            'name': '',
+            'nsn': '',
+            'page_number': '',
+            'parent_id': 0,
+            'part': 0,
+            'part_number': '',
+            'quantity': 1,
+            'ref_des': '',
+            'remarks': '',
+            'repairable': 0,
+            'specification_number': '',
+            'subcategory_id': 0,
+            'tagged_part': 0,
+            'total_part_count': 0,
+            'total_power_dissipation': 0,
+            'year_of_manufacture': date.today().year
+        }
 
     def setUp(self):
         """
         Sets up the test fixture for the RTKHardware class.
         """
-
         engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
         session = scoped_session(sessionmaker())
 
@@ -53,7 +84,7 @@ class TestRTKHardware(unittest.TestCase):
         session.configure(bind=engine, autoflush=False, expire_on_commit=False)
 
         self.DUT = session.query(RTKHardware).first()
-        self.DUT.description = self._attributes[11]
+        self.DUT.description = self._attributes['description']
 
         session.commit()
 
@@ -62,7 +93,6 @@ class TestRTKHardware(unittest.TestCase):
         """
         (TestRTKHardware) __init__ should create an RTKHardware model.
         """
-
         self.assertTrue(isinstance(self.DUT, RTKHardware))
 
         # Verify class attributes are properly initialized.
@@ -72,7 +102,7 @@ class TestRTKHardware(unittest.TestCase):
         self.assertEqual(self.DUT.alt_part_number, '')
         self.assertEqual(self.DUT.attachments, '')
         self.assertEqual(self.DUT.cage_code, '')
-        self.assertEqual(self.DUT.comp_ref_des, '')
+        self.assertEqual(self.DUT.comp_ref_des, 'S1')
         self.assertEqual(self.DUT.category_id, 0)
         self.assertEqual(self.DUT.cost, 0.0)
         self.assertEqual(self.DUT.cost_failure, 0.0)
@@ -107,7 +137,6 @@ class TestRTKHardware(unittest.TestCase):
         """
         (TestRTKHardware) get_attributes should return a tuple of attribute values.
         """
-
         self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
@@ -115,46 +144,22 @@ class TestRTKHardware(unittest.TestCase):
         """
         (TestRTKHardware) set_attributes should return a zero error code on success
         """
-
-        _attributes = ('', '', '', 0, '', 0.0, 0.0, 0.0, 0, 'Description',
-                       100.0, '', '', 0, 0, 100.0, '', '', '', 0, 0, '', 1, '',
-                       '', 0, '', 0, 0, 0, 0.0, date.today().year)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKHardware {0:d} " \
                                "attributes.".format(self.DUT.hardware_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
-        """
-        (TestRTKHardware) set_attributes should return a 10 error code when passed the wrong type
-        """
-
-        _attributes = ('', '', '', '', 0, 'zero', 0.0, 0.0, 0, 'Description',
-                       100.0, '', '', 0, 0, 100.0, '', '', '', 0, 0, '', 1, '',
-                       '', 0, '', 0, 0, 0, 0.0, date.today().year)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKHardware " \
-                               "attributes.")
-
-    @attr(all=True, unit=True)
-    def test02c_set_attributes_too_few_passed(self):
+    def test02b_set_attributes_too_few_passed(self):
         """
         (TestRTKHardware) set_attributes should return a 40 error code when passed too few attributes
         """
+        self._attributes.pop('name')
 
-        _attributes = ('', '', '', 0, '', 0.0, 0.0, 0.0, 0, 'Description',
-                       100.0, '', '', 0, 0, 100.0, '', '', '', 0, 0, '', 1, '',
-                       '', 0, '', 0, 0, 0, 0.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to RTKHardware.set_attributes().")
+        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'name' in "
+                               "attribute dictionary passed to "
+                               "RTKHardware.set_attributes().")

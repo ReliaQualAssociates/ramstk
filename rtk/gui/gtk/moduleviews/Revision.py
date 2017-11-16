@@ -134,9 +134,7 @@ class ModuleView(RTKModuleView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _revision = self._dtc_data_controller.request_select(
-                self._revision_id)
-            _attributes = _revision.get_attributes()
+            _attributes = self._dtc_data_controller.request_get_attributes()
 
             if self._lst_col_order[position] == 17:
                 _attributes['name'] = str(new_text)
@@ -145,7 +143,7 @@ class ModuleView(RTKModuleView):
             elif self._lst_col_order[position] == 22:
                 _attributes['revision_code'] = str(new_text)
 
-            _revision.set_attributes(_attributes)
+            self._dtc_data_controller.request_set_attributes(_attributes)
 
             pub.sendMessage(
                 'mvwEditedRevision',
@@ -204,14 +202,7 @@ class ModuleView(RTKModuleView):
         _revision = self._dtc_data_controller.request_select(self._revision_id)
 
         if not self._dtc_data_controller.request_insert():
-            # Get the currently selected row, the level of the currently
-            # selected item, and it's parent row in the Function tree.
-            _model, _row = self.treeview.get_selection().get_selected()
-            _prow = _model.iter_parent(_row)
-
-            _data = _revision.get_attributes()
-            _model.append(None, _data)
-
+            self._on_select_revision()
             self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['revision'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "

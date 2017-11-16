@@ -4,9 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Revision Package Data Model.
-"""
+"""Revision Package Data Model."""
 
 # Import other RTK modules.
 from datamodels import RTKDataModel  # pylint: disable=E0401

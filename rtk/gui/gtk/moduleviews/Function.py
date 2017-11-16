@@ -34,7 +34,6 @@ class ModuleView(RTKModuleView):
         :param controller: the RTK Master data controller instance.
         :type controller: :py:class:`rtk.RTK.RTK`
         """
-
         RTKModuleView.__init__(self, controller, module='function')
 
         # Initialize private dictionary attributes.
@@ -129,11 +128,20 @@ class ModuleView(RTKModuleView):
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
                                           model):
 
-            _function = self._dtc_data_controller.request_select(
+            _attributes = self._dtc_data_controller.request_get_attributes(
                 self._function_id)
-            _attributes = list(_function.get_attributes())[2:]
-            _attributes[self._lst_col_order[position] - 2] = str(new_text)
-            _function.set_attributes(_attributes)
+
+            if self._lst_col_order[position] == 5:
+                _attributes['function_code'] = str(new_text)
+            elif self._lst_col_order[position] == 15:
+                _attributes['name'] = str(new_text)
+            elif self._lst_col_order[position] == 17:
+                _attributes['remarks'] = str(new_text)
+            elif self._lst_col_order[position] == 18:
+                _attributes['safety_critical'] = int(new_text)
+
+            self._dtc_data_controller.request_set_attributes(
+                self._function_id, _attributes)
 
             pub.sendMessage(
                 'mvwEditedFunction',
@@ -210,30 +218,11 @@ class ModuleView(RTKModuleView):
         else:
             _parent_id = _function.function_id
 
-        # By default we add the new function as a top-level function.
-        if _parent_id is None:
-            _parent_id = 0
-
         if not self._dtc_data_controller.request_insert(
-                self._revision_id, _parent_id, sibling):
+                self._revision_id, _parent_id):
             # TODO: Add code to the FMEA Class to respond to the 'insertedFunction' pubsub message and insert a set of functional failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedFunction' pubsub message and insert a record into each of the Function-X matrices.
-
-            _last_id = self._dtc_data_controller.request_last_id()
-            _function = self._dtc_data_controller.request_select(_last_id)
-            _data = _function.get_attributes()
-
-            _model, _row = self.treeview.get_selection().get_selected()
-            _prow = _model.iter_parent(_row)
-            if _function.parent_id == 0:
-                _model.append(None, _data)
-            elif _function.parent_id != 0 and sibling:
-                _model.append(_prow, _data)
-            else:  # Inserting a child.
-                _model.append(_row, _data)
-                _path = _model.get_path(_row)
-                self.treeview.expand_row(_path, True)
-
+            self._on_select_revision(self._revision_id)
             self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['function'][1] += 1
         else:
             _prompt = _(u"An error occurred while attempting to add a "
@@ -466,7 +455,6 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init

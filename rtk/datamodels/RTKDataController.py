@@ -150,28 +150,6 @@ class RTKDataController(object):
         """
         return self._dtm_data_model.last_id
 
-    def request_calculate_reliability(self,
-                                      node_id,
-                                      mission_time,
-                                      multiplier=1.0):
-        """
-        Request reliability attributes be calculated for the Node ID passed.
-
-        :param int node_id: the ID of the entity in the treelib.Tree() to
-                            calculate.
-        :param float mission_time: the time to use in the calculations.
-        :keyword float multiplier: the hazard rate multiplier.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _error_code, \
-            _msg = self._dtm_data_model.calculate_reliability(node_id,
-                                                              mission_time,
-                                                              multiplier)
-
-        return self.handle_results(_error_code, _msg,
-                                   'calculated' + self._module)
-
     def request_calculate_availability(self, node_id):
         """
         Request availability attributes be calculated for the Node ID passed.
@@ -199,6 +177,58 @@ class RTKDataController(object):
         """
         _error_code, _msg = self._dtm_data_model.calculate_costs(
             node_id, float(mission_time))
+
+        return self.handle_results(_error_code, _msg,
+                                   'calculated' + self._module)
+
+    def request_calculate_hazard_rate(self, node_id):
+        """
+        Request hazard rate attributes be calculated for the Node ID passed.
+
+        :param int node_id: the ID of the entity in the treelib.Tree() to
+                            calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, \
+            _msg = self._dtm_data_model.calculate_hazard_rate(node_id)
+
+        return self.handle_results(_error_code, _msg,
+                                   'calculated' + self._module)
+
+    def request_calculate_mtbf(self, node_id):
+        """
+        Request MTBF attributes be calculated for the Node ID passed.
+
+        :param int node_id: the ID of the entity in the treelib.Tree() to
+                            calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, \
+            _msg = self._dtm_data_model.calculate_mtbf(node_id)
+
+        return self.handle_results(_error_code, _msg,
+                                   'calculated' + self._module)
+
+    def request_calculate_reliability(self,
+                                      node_id,
+                                      mission_time,
+                                      multiplier=1.0):
+        """
+        Request reliability attributes be calculated for the Node ID passed.
+
+        :param int node_id: the ID of the entity in the treelib.Tree() to
+                            calculate.
+        :param float mission_time: the time to use in the calculations.
+        :keyword float multiplier: the hazard rate multiplier.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, \
+            _msg = self._dtm_data_model.calculate_reliability(node_id,
+                                                              mission_time,
+                                                              multiplier)
 
         return self.handle_results(_error_code, _msg,
                                    'calculated' + self._module)

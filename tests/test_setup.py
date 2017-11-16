@@ -10,13 +10,15 @@ This is the test package for testing RTK.
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                '../rtk/')))
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy_utils import create_database
 
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../rtk/')))
+
+# pylint: disable=import-error, wrong-import-position
 import Configuration
 import Utilities
 
@@ -375,6 +377,7 @@ def _create_program_database():
             _matrix = RTKMatrix()
             _matrix.revision_id = _revision.revision_id
             _matrix.matrix_id = 1
+            _matrix.matrix_type = 'fnctn_hrdwr'
             _matrix.row_item_id = _row
             _matrix.column_item_id = _column
             session.add(_matrix)
@@ -385,6 +388,7 @@ def _create_program_database():
             _matrix = RTKMatrix()
             _matrix.revision_id = _revision.revision_id
             _matrix.matrix_id = 11
+            _matrix.matrix_type = 'rqrmnt_hrdwr'
             _matrix.row_item_id = _row
             _matrix.column_item_id = _column
             session.add(_matrix)
@@ -473,6 +477,7 @@ def _create_program_database():
 
     session.commit()
 
+
 def setUp():
 
     # Clean up from previous runs.
@@ -494,12 +499,10 @@ def setUp():
     _create_program_database()
 
     Configuration.RTK_HR_MULTIPLIER = 1.0
-    Configuration.RTK_DEBUG_LOG = Utilities.create_logger("RTK.debug",
-                                                          'DEBUG',
-                                                          '/tmp/RTK_debug.log')
-    Configuration.RTK_USER_LOG = Utilities.create_logger("RTK.user",
-                                                         'INFO',
-                                                         '/tmp/RTK_user.log')
+    Configuration.RTK_DEBUG_LOG = Utilities.create_logger(
+        "RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
+    Configuration.RTK_USER_LOG = Utilities.create_logger(
+        "RTK.user", 'INFO', '/tmp/RTK_user.log')
 
 
 def tearDown():

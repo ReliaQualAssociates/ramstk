@@ -42,6 +42,7 @@ if __name__ == '__main__':
             'rtk.dao',
             'rtk.datamodels',
             'rtk.failure_definition',
+            'rtk.function',
             'rtk.gui',
             'rtk.gui.gtk',
             'rtk.gui.gtk.assistants',
@@ -108,7 +109,6 @@ if __name__ == '__main__':
         py_modules=[
             'rtk.__init__',
             'rtk.Configuration',
-            'rtk.Function',
             'rtk.Requirement',
             'rtk.RTK',
             'rtk.Stakeholder',
