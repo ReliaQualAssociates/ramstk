@@ -87,9 +87,10 @@ class FunctionDataModel(RTKDataModel):
         _function = RTKFunction()
         _function.revision_id = kwargs['revision_id']
         _function.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.insert(self, entities=[
-            _function,
-        ])
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _function,
+            ])
 
         if _error_code == 0:
             self.tree.create_node(

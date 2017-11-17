@@ -29,10 +29,10 @@ class FunctionDataController(RTKDataController):
 
         :param dao: the RTK Program DAO instance to pass to the Function Data
                     Model.
-        :type dao: :py:class:`rtk.dao.DAO`
+        :type dao: :class:`rtk.dao.DAO`
         :param configuration: the Configuration instance associated with the
                               current instance of the RTK application.
-        :type configuration: :py:class:`rtk.Configuration.Configuration`
+        :type configuration: :class:`rtk.Configuration.Configuration`
         """
         RTKDataController.__init__(
             self,

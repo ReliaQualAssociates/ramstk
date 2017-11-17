@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Revision Module View Module
--------------------------------------------------------------------------------
-"""
+"""Revision Module View."""
 
 # Import modules for localization support.
 import gettext
@@ -30,7 +27,7 @@ class ModuleView(RTKModuleView):
     connected RTK Program in a flat list.  The attributes of a Revision Module
     View are:
 
-    :ivar _revision_id: the ID of the currently selected Revision.
+    :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
     def __init__(self, controller):
@@ -38,7 +35,7 @@ class ModuleView(RTKModuleView):
         Initialize the Revision Module View.
 
         :param controller: the RTK Master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
         RTKModuleView.__init__(self, controller, module='revision')
 
@@ -95,7 +92,7 @@ class ModuleView(RTKModuleView):
         is activated/changed.
 
         :param treeview: the Revision class gtk.TreeView().
-        :type treeview: :py:class:`gtk.TreeView`
+        :type treeview: :class:`gtk.TreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -118,14 +115,14 @@ class ModuleView(RTKModuleView):
         Handle edits of the Revision package Module View RTKTreeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :py:class:`gtk.CellRenderer`
+        :type __cell: :class:`gtk.CellRenderer`
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
         :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -159,7 +156,7 @@ class ModuleView(RTKModuleView):
         Send request to delete the selected record from the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -193,7 +190,7 @@ class ModuleView(RTKModuleView):
         Send request to insert a new record to the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -223,7 +220,7 @@ class ModuleView(RTKModuleView):
         Send request to update the selected record to the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -234,7 +231,7 @@ class ModuleView(RTKModuleView):
         Send request to save all the records to the RTKRevision table.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -246,7 +243,7 @@ class ModuleView(RTKModuleView):
 
         :return: _buttonbox; the gtk.ButtonBox() for the Revision class Module
                  View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
             _(u"Add a new Revision."),
@@ -289,7 +286,7 @@ class ModuleView(RTKModuleView):
         Handle mouse clicks on the Revision Module View RTKTreeView().
 
         :param treeview: the Revision class gtk.TreeView().
-        :type treeview: :py:class:`gtkTreeView`
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -301,7 +298,7 @@ class ModuleView(RTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :py:class:`gtk.gdk.Event`
+        :type event: :class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

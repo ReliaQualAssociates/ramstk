@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Function Module View Module
--------------------------------------------------------------------------------
-"""
+"""Function Module View."""
 
 from pubsub import pub  # pylint: disable=E0401
 
@@ -19,20 +16,22 @@ from .ModuleView import RTKModuleView  # pylint: disable=E0401
 
 class ModuleView(RTKModuleView):
     """
+    Display Function attribute data in the RTK Module Book.
+
     The Function Module Book view displays all the Functions associated with
     the RTK Program in a flat list.  The attributes of the Function Module View
     are:
 
-    :ivar _function_id: the ID of the currently selected Function.
-    :ivar _revision_id: the ID of the currently selected Revision.
+    :ivar int _function_id: the ID of the currently selected Function.
+    :ivar int _revision_id: the ID of the currently selected Revision.
     """
 
     def __init__(self, controller):
         """
-        Method to initialize the Module View for the Function package.
+        Initialize the Module View for the Function package.
 
         :param controller: the RTK Master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
         RTKModuleView.__init__(self, controller, module='function')
 
@@ -82,15 +81,16 @@ class ModuleView(RTKModuleView):
 
     def _do_change_row(self, treeview):
         """
-        Method to handle events for the Function package Module Book
-        gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
-        row is activated.
+        Handle events for the Function package Module Book RTKTreeView().
 
-        :param gtk.TreeView treeview: the Function class gtk.TreeView().
+        This method is called whenever a Module Book RTKTreeView() row is
+        activated.
+
+        :param treeview: the Function Module View RTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         treeview.handler_block(self._lst_handler_id[0])
@@ -107,22 +107,20 @@ class ModuleView(RTKModuleView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Method to handle edits of the Function package Module View
-        gtk.Treeview().
+        Handle edits of the Function package Module View RTKTreeview().
 
         :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :py:class:`gtk.CellRenderer`
+        :type __cell: :class:`gtk.CellRenderer`
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
         :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         if not self.treeview.do_edit_cell(__cell, path, new_text, position,
@@ -154,14 +152,13 @@ class ModuleView(RTKModuleView):
 
     def _do_request_delete(self, __button):
         """
-        Method to delete the selected Function and it's children.
+        Send request to delete the selected Function and it's children.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _prompt = _(u"You are about to delete Function {0:d} and all data "
@@ -200,15 +197,13 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert(self, sibling=True):
         """
-        Method to send request to insert a new Function into the RTK Program
-        database.
+        Send request to insert a new Function into the RTK Program database.
 
         :param bool sibling: indicates whether to insert a sibling (default)
                              Function or a child Function.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _function = self._dtc_data_controller.request_select(self._function_id)
@@ -241,64 +236,56 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert_child(self, __button):
         """
-        Method to send request to insert a new Function into the RTK Program
-        database as child of the currently selected Function.
+        Send request to insert a new chid Function.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._do_request_insert(False)
 
     def _do_request_insert_sibling(self, __button):
         """
-        Method to send request to insert a new Function into the RTK Program
-        database as a sibling of the currently selected Function.
+        Send request to insert a new sibling Function.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._do_request_insert(True)
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Function.
+        Send request to save the currently selected Function.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._function_id)
 
     def _do_request_update_all(self, __button):
         """
-        Method to save all the Functions.
+        Send request to save all the Functions.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update_all()
 
     def _make_buttonbox(self):
         """
-        Method to create the gtk.ButtonBox() for the Function class Module
-        View.
+        Make the gtk.ButtonBox() for the Function class Module View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Function class Module
                  View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             _(u"Adds a new Function at the same hierarchy level as "
               u"the selected Function (i.e., a sibling Function)."),
@@ -326,12 +313,14 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Method for setting up the gtk.TreeView() for Functions.
+        Set up the Function Module View RTKTreeView().
+
+        This method is used to "personalize" the basic RTKTreeView for the
+        Function Module View.  Primarily which columns are editable.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         for i in [5, 15, 17]:
@@ -344,11 +333,10 @@ class ModuleView(RTKModuleView):
 
     def _on_button_press(self, treeview, event):
         """
-        Method for handling mouse clicks on the Function package Module View
-        gtk.TreeView().
+        Handle mouse clicks on the Function package Module View RTKTreeView().
 
-        :param treeview: the Function class gtk.TreeView().
-        :type treeview: :py:class:`gtkTreeView`
+        :param treeview: the Function Module View RTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -360,11 +348,10 @@ class ModuleView(RTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :py:class:`gtk.gdk.Event`
+        :type event: :class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
@@ -431,8 +418,7 @@ class ModuleView(RTKModuleView):
 
     def _on_edit(self, position, new_text):
         """
-        Method to update the Module View RTKTreeView with changes to the
-        Function data model attributes.
+        Update the Module View RTKTreeView().
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -440,7 +426,6 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _model, _row = self.treeview.get_selection().get_selected()
 
         _model.set(_row, self._lst_col_order[position], new_text)
@@ -449,8 +434,9 @@ class ModuleView(RTKModuleView):
 
     def _on_select_revision(self, module_id):  # pylint: disable=W0221
         """
-        Method to load the Function Module Book view gtk.TreeModel() with
-        Function information when an RTK Program database is opened.
+        Load the Function Module View RTKTreeView().
+
+        This method is called whenever an RTK Program database is opened.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
