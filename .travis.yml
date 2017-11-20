@@ -3,11 +3,11 @@ python:
     - "2.7"
 
 # Command to install dependencies.
-install: 
+install:
     - "pip install -U pip"
     - "pip install ."
     - "pip install --only-binary=numpy,scipy -r requirements.txt"
 
 # Command to run tests.
-script: 
-    - sh devtools/RunTests.sh
+script:
+    - sh tests/TestAll.sh
