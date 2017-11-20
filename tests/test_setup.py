@@ -196,6 +196,19 @@ def _create_common_database():
 
 
 def _create_program_database():
+    bcolors = {
+        'HEADER': '\033[35m',
+        'OKBLUE': '\033[34m',
+        'OKGREEN': '\033[32m',
+        'WARNING': '\033[33m',
+        'FAIL': '\033[31m',
+        'ENDC': '\033[0m',
+        'BOLD': '\033[1m',
+        'UNDERLINE': '\033[4m'
+    }
+
+    print "\n" + bcolors['OKBLUE'] + bcolors['BOLD'] + \
+          "  Creating RTK Program test database...." + bcolors['ENDC'] + "\n"
 
     # Create the RTK Program test database.
     create_database('sqlite:////tmp/TestDB.rtk')
@@ -365,12 +378,6 @@ def _create_program_database():
     _reliability.hardware_id = _hardware.hardware_id
     session.add(_reliability)
 
-    _mode = RTKMode()
-    _mode.function_id = _function.function_id
-    _mode.hardware_id = _hardware.hardware_id
-    _mode.description = 'Test Failure Mode #1'
-    session.add(_mode)
-
     # Create test Function:Hardware matrix
     for _row in [1, 2, 3]:
         for _column in [1, 2, 3]:
@@ -407,6 +414,13 @@ def _create_program_database():
     session.add(_environment)
     session.commit()
 
+    _mode = RTKMode()
+    _mode.function_id = _function.function_id
+    _mode.hardware_id = _hardware.hardware_id
+    _mode.description = 'Test Failure Mode #1'
+    session.add(_mode)
+    session.commit()
+
     _mechanism = RTKMechanism()
     _mechanism.mode_id = _mode.mode_id
     _mechanism.description = 'Test Failure Mechanism #1'
@@ -424,12 +438,14 @@ def _create_program_database():
     _control.cause_id = _cause.cause_id
     _control.description = 'Test Control for Failure Cause #1'
     session.add(_control)
+    session.commit()
 
     _action = RTKAction()
     _action.mode_id = _mode.mode_id
     _action.cause_id = _cause.cause_id
     _action.action_recommended = 'Recommended action for Failure Cause #1'
     session.add(_action)
+    session.commit()
 
     _op_load = RTKOpLoad()
     _op_load.mechanism_id = _mechanism.mechanism_id
@@ -507,8 +523,8 @@ def setUp():
 
 def tearDown():
 
-    if os.path.isfile('/tmp/TestDB.rtk'):
-        os.remove('/tmp/TestDB.rtk')
+    #if os.path.isfile('/tmp/TestDB.rtk'):
+    #    os.remove('/tmp/TestDB.rtk')
 
     #if os.path.isfile('/tmp/TestCommonDB.rtk'):
     #    os.remove('/tmp/TestCommonDB.rtk')

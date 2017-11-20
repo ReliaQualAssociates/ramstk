@@ -21,17 +21,17 @@ from treelib import Tree
 
 import Utilities as Utilities
 from Configuration import Configuration
-from analyses.fmea.Control import Model, Control
+from analyses.fmea import dtmControl
 from dao import DAO
 from dao import RTKControl
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
-class Test00ControlModel(unittest.TestCase):
+class TestControlDataModel(unittest.TestCase):
     """
     Class for testing the Control model class.
     """
@@ -40,7 +40,6 @@ class Test00ControlModel(unittest.TestCase):
         """
         Method to setup the test fixture for the Control model class.
         """
-
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -67,15 +66,14 @@ class Test00ControlModel(unittest.TestCase):
         self.dao.db_add([RTKControl(), ], self.session)
         self.dao.db_add([RTKControl(), ], self.session)
 
-        self.DUT = Model(self.dao)
+        self.DUT = dtmControl(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
         """
         (TestControlModel) __init__ should return instance of Control data model
         """
-
-        self.assertTrue(isinstance(self.DUT, Model))
+        self.assertTrue(isinstance(self.DUT, dtmControl))
         self.assertEqual(self.DUT.last_id, None)
 
     @attr(all=True, unit=True)
@@ -83,8 +81,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): select_all() should return a Tree() object populated with RTKControl instances on success.
         """
-
-        _tree = self.DUT.select_all(1, True)
+        _tree = self.DUT.select_all(1, functional=True)
 
         self.assertTrue(isinstance(_tree, Tree))
         self.assertTrue(isinstance(_tree.get_node(1).data, RTKControl))
@@ -94,8 +91,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): select_all() should return a Tree() object populated with RTKControl instances on success.
         """
-
-        _tree = self.DUT.select_all(1)
+        _tree = self.DUT.select_all(1, functional=False)
 
         self.assertTrue(isinstance(_tree, Tree))
         self.assertTrue(isinstance(_tree.get_node(1).data, RTKControl))
@@ -105,8 +101,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): select() should return an instance of the RTKControl data model on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=False)
         _control = self.DUT.select(1)
 
         self.assertTrue(isinstance(_control, RTKControl))
@@ -117,8 +112,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): select() should return None when a non-existent Control ID is requested.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=False)
         _control = self.DUT.select(100)
 
         self.assertEqual(_control, None)
@@ -128,8 +122,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): insert() should return False on success when inserting a Control into a functional FMEA.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=True)
 
         _error_code, _msg = self.DUT.insert(mode_id=1, cause_id=-1)
 
@@ -142,8 +135,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): insert() should return False on success when inserting a Control into a hardware FMEA.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=False)
 
         _error_code, _msg = self.DUT.insert(mode_id=-1, cause_id=1)
 
@@ -156,8 +148,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): delete() should return a zero error code on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=False)
 
         _error_code, _msg = self.DUT.delete(self.DUT.last_id)
 
@@ -170,13 +161,12 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): delete() should return a non-zero error code when passed a Control ID that doesn't exist.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=False)
 
         _error_code, _msg = self.DUT.delete(300)
 
         self.assertEqual(_error_code, 2005)
-        self.assertEqual(_msg, 'RTK ERROR: Attempted to delete non-existent '
+        self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
                                'Control ID 300.')
 
     @attr(all=True, unit=True)
@@ -184,10 +174,9 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): update() should return a zero error code on success.
         """
+        self.DUT.select_all(1, functional=False)
 
-        self.DUT.select_all(1)
-
-        _control = self.DUT.tree.get_node(1).data
+        _control = self.DUT.select(1)
         _control.description = 'Functional FMEA control.'
 
         _error_code, _msg = self.DUT.update(1)
@@ -201,8 +190,7 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): update() should return a non-zero error code when passed a Control ID that doesn't exist.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=False)
 
         _error_code, _msg = self.DUT.update(100)
 
@@ -215,167 +203,10 @@ class Test00ControlModel(unittest.TestCase):
         """
         (TestControlModel): update_all() should return a zero error code on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=False)
 
         _error_code, _msg = self.DUT.update_all()
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          'RTK SUCCESS: Updating the RTK Program database.')
-
-
-class Test01ControlController(unittest.TestCase):
-    """
-    Class for testing the Control Data Controller class.
-    """
-
-    def setUp(self):
-        """
-        Method to setup the test fixture for the Control Data Controller.
-        """
-
-        self.Configuration = Configuration()
-
-        self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
-
-        self.Configuration.RTK_DEBUG_LOG = \
-            Utilities.create_logger("RTK.debug", 'DEBUG',
-                                    '/tmp/RTK_debug.log')
-        self.Configuration.RTK_USER_LOG = \
-            Utilities.create_logger("RTK.user", 'INFO',
-                                    '/tmp/RTK_user.log')
-
-        # Create a data access object and connect to a test database.
-        self.dao = DAO()
-        _database = self.Configuration.RTK_BACKEND + ':///' + \
-                    self.Configuration.RTK_PROG_INFO['database']
-        self.dao.db_connect(_database)
-
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
-        self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKControl(), ], self.session)
-        self.dao.db_add([RTKControl(), ], self.session)
-
-        self.DUT = Control(self.dao, self.Configuration, test='True')
-
-    @attr(all=True, unit=True)
-    def test00_controller_create(self):
-        """
-        (TestControlController) __init__ should return a Control Data Controller
-        """
-
-        self.assertTrue(isinstance(self.DUT, Control))
-        self.assertTrue(isinstance(self.DUT._dtm_control, Model))
-
-    @attr(all=True, unit=True)
-    def test01_request_select_all(self):
-        """
-        (TestControlController) request_select_all() should return a Tree of RTKControl models.
-        """
-
-        _tree = self.DUT.request_select_all(1)
-
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKControl))
-
-    @attr(all=True, unit=True)
-    def test02a_request_select(self):
-        """
-        (TestControlController) request_select() should return an RTKControl model.
-        """
-
-        self.DUT.request_select_all(1)
-
-        _control = self.DUT.request_select(1)
-
-        self.assertTrue(isinstance(_control, RTKControl))
-
-    @attr(all=True, unit=True)
-    def test02b_request_select_non_existent_id(self):
-        """
-        (TestControlController) request_select() should return None when requesting a Control that doesn't exist.
-        """
-
-        _control = self.DUT.request_select(100)
-
-        self.assertEqual(_control, None)
-
-    @attr(all=True, unit=True)
-    def test03a_request_insert_functional(self):
-        """
-        (TestControlController) request_insert() should return False on success.
-        """
-
-        self.DUT.request_select_all(1, True)
-
-        self.assertFalse(self.DUT.request_insert(mode_id=1,
-                                                 cause_id=-1))
-
-    @attr(all=True, unit=True)
-    def test03a_request_insert_hardware(self):
-        """
-        (TestControlController) request_insert() should return False on success.
-        """
-
-        self.DUT.request_select_all(1)
-
-        self.assertFalse(self.DUT.request_insert(mode_id=-1,
-                                                 cause_id=1))
-
-    @attr(all=True, unit=True)
-    def test04a_request_delete(self):
-        """
-        (TestControlController) request_delete() should return False on success.
-        """
-
-        self.DUT.request_select_all(1, True)
-        self.DUT.request_insert(mode_id=1, cause_id=-1)
-
-        self.assertFalse(self.DUT.request_delete(
-                self.DUT._dtm_control.last_id))
-
-    @attr(all=True, unit=True)
-    def test04a_request_delete_non_existent_id(self):
-        """
-        (TestControlController) request_delete() should return True when attempting to delete a non-existent Control.
-        """
-
-        self.DUT.request_select_all(1)
-
-        self.assertTrue(self.DUT.request_delete(100))
-
-    @attr(all=True, unit=True)
-    def test05a_request_update(self):
-        """
-        (TestControlController) request_update() should return False on success.
-        """
-
-        self.DUT.request_select_all(1)
-
-        self.assertFalse(self.DUT.request_update(1))
-
-    @attr(all=True, unit=True)
-    def test05b_request_update_non_existent_id(self):
-        """
-        (TestControlController) request_update() should return True when attempting to save a non-existent Mode.
-        """
-
-        self.DUT.request_select_all(1)
-
-        self.assertTrue(self.DUT.request_update(100))
-
-    @attr(all=True, unit=True)
-    def test06a_request_update_all(self):
-        """
-        (TestControlController) request_update_all() should return False on success.
-        """
-
-        self.DUT.request_select_all(1)
-
-        self.assertFalse(self.DUT.request_update_all())

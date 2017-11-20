@@ -15,7 +15,7 @@ from dao import RTKEnvironment, \
 
 class UsageProfileDataModel(RTKDataModel):
     """
-    Contain the attributes and methods of a Mission.
+    Contain the attributes and methods of a Usage Profile.
 
     Class for Usage Profile data model.  This model builds a Usage Profile from
     the Mission, Phase, and Environment data models.  This is a hierarchical

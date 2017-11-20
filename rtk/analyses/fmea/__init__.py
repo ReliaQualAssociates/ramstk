@@ -1,6 +1,7 @@
-from .Action import Action
-from .Cause import Cause
-from .Control import Control
-from .FMEA import FMEA
-from .Mechanism import Mechanism
-from .Mode import Mode
+from .Model import ActionDataModel as dtmAction
+from .Model import CauseDataModel as dtmCause
+from .Model import ControlDataModel as dtmControl
+from .Model import FMEADataModel as dtmFMEA
+from .Model import MechanismDataModel as dtmMechanism
+from .Model import ModeDataModel as dtmMode
+from .Controller import FMEADataController as dtcFMEA

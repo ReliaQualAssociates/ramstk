@@ -1,8 +1,4 @@
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))) +
-                '/../', )
-
-from test_setup import setUp
-
-setUp()
+from .TestRTKFunction import TestRTKFunction
+from .TestRTKAction import TestRTKAction
+from .TestRTKControl import TestRTKControl
+from .TestRTKMode import TestRTKMode

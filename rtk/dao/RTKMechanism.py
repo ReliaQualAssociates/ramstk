@@ -4,21 +4,17 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKMechanism Table
-===============================================================================
-"""
+"""RTKMechanism Table Module."""
 
 import gettext
 # pylint: disable=E0401
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship         # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 # pylint: disable=E0401
-from Utilities import error_handler, none_to_default, OutOfRangeError
-from dao.RTKCommonDB import RTK_BASE            # pylint: disable=E0401
+from Utilities import none_to_default, OutOfRangeError
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -40,11 +36,17 @@ class RTKMechanism(RTK_BASE):
     __tablename__ = 'rtk_mechanism'
     __table_args__ = {'extend_existing': True}
 
-    mode_id = Column('fld_mode_id', Integer,
-                     ForeignKey('rtk_mode.fld_mode_id'),
-                     nullable=False)
-    mechanism_id = Column('fld_mechanism_id', Integer, primary_key=True,
-                          autoincrement=True, nullable=False)
+    mode_id = Column(
+        'fld_mode_id',
+        Integer,
+        ForeignKey('rtk_mode.fld_mode_id'),
+        nullable=False)
+    mechanism_id = Column(
+        'fld_mechanism_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     description = Column('fld_description', String(512), default='')
     pof_include = Column('fld_pof_include', Integer, default=1)
@@ -68,58 +70,66 @@ class RTKMechanism(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the Mechanism data model
-        attributes.
+        Retrieve the current values of the Mechanism data model attributes.
 
         :return: (mode_id, mechanism_id, description, pof_include, rpn,
                   rpn_detection, rpn_detection_new, rpn_new, rpn_occurrence,
                   rpn_occurrence_new)
         :rtype: tuple
         """
-
-        _attributes = (self.mode_id, self.mechanism_id, self.description,
-                       self.pof_include, self.rpn, self.rpn_detection,
-                       self.rpn_detection_new, self.rpn_new,
-                       self.rpn_occurrence, self.rpn_occurrence_new)
+        _attributes = {
+            'mode_id': self.mode_id,
+            'mechanism_id': self.mechanism_id,
+            'description': self.description,
+            'pof_include': self.pof_include,
+            'rpn': self.rpn,
+            'rpn_detection': self.rpn_detection,
+            'rpn_detection_new': self.rpn_detection_new,
+            'rpn_new': self.rpn_new,
+            'rpn_occurrence': self.rpn_occurrence,
+            'rpn_occurrence_new': self.rpn_occurrence_new
+        }
 
         return _attributes
 
-    def set_attributes(self, values):
+    def set_attributes(self, attributes):
         """
-        Method to set the Mechanism data model attributes.
+        Set the current values of the Mechanism data model attributes.
 
-        :param tuple values: values to assign to instance attributes.
+        :param dict attributes: values to assign to instance attributes.
         :return: (_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKMechanism {0:d} attributes.". \
                format(self.mechanism_id)
 
         try:
-            self.description = str(none_to_default(values[0], ''))
-            self.pof_include = int(none_to_default(values[1], 1))
-            self.rpn = int(none_to_default(values[2], 0))
-            self.rpn_detection = int(none_to_default(values[3], 1))
-            self.rpn_detection_new = int(none_to_default(values[4], 1))
-            self.rpn_new = int(none_to_default(values[5], 0))
-            self.rpn_occurrence = int(none_to_default(values[6], 1))
-            self.rpn_occurrence_new = int(none_to_default(values[7], 1))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKMechanism.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKMechanism attributes."
+            self.description = str(
+                none_to_default(attributes['description'], ''))
+            self.pof_include = int(
+                none_to_default(attributes['pof_include'], 1))
+            self.rpn = int(none_to_default(attributes['rpn'], 0))
+            self.rpn_detection = int(
+                none_to_default(attributes['rpn_detection'], 1))
+            self.rpn_detection_new = int(
+                none_to_default(attributes['rpn_detection_new'], 1))
+            self.rpn_new = int(none_to_default(attributes['rpn_new'], 0))
+            self.rpn_occurrence = int(
+                none_to_default(attributes['rpn_occurrence'], 1))
+            self.rpn_occurrence_new = int(
+                none_to_default(attributes['rpn_occurrence_new'], 1))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKMechanism.set_attributes().".format(_err)
 
         return _error_code, _msg
 
     def calculate_rpn(self, severity, severity_new):
         """
-        Method to calculate the Risk Priority Number (RPN) for the Mechanism.
+        Calculate the Risk Priority Number (RPN) for the Mechanism.
 
             RPN = S * O * D
 
@@ -129,7 +139,6 @@ class RTKMechanism(RTK_BASE):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _error_code = 0
         _msg = 'RTK SUCCESS: Calculating failure mechanism {0:d} RPN.'.\
             format(self.mechanism_id)
@@ -137,33 +146,27 @@ class RTKMechanism(RTK_BASE):
         if not 0 < severity < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _(u"RPN severity is outside the range "
-                  u"[1, 10]."))
+                _(u"RPN severity is outside the range [1, 10]."))
         if not 0 < self.rpn_occurrence < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _(u"RPN occurrence is outside the range "
-                  u"[1, 10]."))
+                _(u"RPN occurrence is outside the range [1, 10]."))
         if not 0 < self.rpn_detection < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _(u"RPN detection is outside the range "
-                  u"[1, 10]."))
+                _(u"RPN detection is outside the range [1, 10]."))
         if not 0 < severity_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _(u"RPN new severity is outside the range "
-                  u"[1, 10]."))
+                _(u"RPN new severity is outside the range [1, 10]."))
         if not 0 < self.rpn_occurrence_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _(u"RPN new occurrence is outside the range "
-                  u"[1, 10]."))
+                _(u"RPN new occurrence is outside the range [1, 10]."))
         if not 0 < self.rpn_detection_new < 11:
             _error_code = 2020
             raise OutOfRangeError(
-                _(u"RPN new detection is outside the range "
-                  u"[1, 10]."))
+                _(u"RPN new detection is outside the range [1, 10]."))
 
         self.rpn = int(severity) \
             * int(self.rpn_occurrence) \

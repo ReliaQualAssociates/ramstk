@@ -1,11 +1,9 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.unit._dao.TestRTKControl.py is part of The RTK Project
-
+#       tests._dao.TestRTKControl.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKControl module algorithms and
 models.
@@ -35,11 +33,12 @@ class TestRTKControl(unittest.TestCase):
     Class for testing the RTKControl class.
     """
 
+    _attributes = {'cause_id': 1, 'mode_id': 1, 'description': 'Test Control', 'control_id': 1, 'type_id': 0}
+
     def setUp(self):
         """
         Sets up the test fixture for the RTKControl class.
         """
-
         engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
         session = scoped_session(sessionmaker())
 
@@ -56,7 +55,6 @@ class TestRTKControl(unittest.TestCase):
         """
         (TestRTKControl) __init__ should create an RTKControl model.
         """
-
         self.assertTrue(isinstance(self.DUT, RTKControl))
 
         # Verify class attributes are properly initialized.
@@ -72,52 +70,31 @@ class TestRTKControl(unittest.TestCase):
         """
         (TestRTKControl) get_attributes should return a tuple of attribute values.
         """
-
-        self.assertEqual(self.DUT.get_attributes(),
-                         (1, 1, 1, 'Test Control', 0))
+        self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):
         """
         (TestRTKControl) set_attributes should return a zero error code on success
         """
-
-        _attributes = ('Test Control', 0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKControl {0:d} " \
                                "attributes.".format(self.DUT.control_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
+    def test02b_set_attributes_missing_key(self):
         """
-        (TestRTKControl) set_attributes should return a 10 error code when passed the wrong type
+        (TestRTKControl) set_attributes should return a 40 error code when passed a dict with a missing key.
         """
+        self._attributes.pop('type_id')
 
-        _attributes = ('Test Control', 'zero')
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKControl " \
-                               "attributes.")
-
-    @attr(all=True, unit=True)
-    def test02c_set_attributes_too_few_passed(self):
-        """
-        (TestRTKControl) set_attributes should return a 40 error code when passed too few attributes
-        """
-
-
-        _attributes = ('Test Control', )
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to RTKControl.set_attributes().")
+        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'type_id' in "
+                               "attribute dictionary passed to "
+                               "RTKControl.set_attributes().")
 
 

@@ -1,40 +1,23 @@
-RTK FMEA Sub-Package
-====================
+FMEA Package
+===============================================================================
 
 .. toctree::
 
-.. automodule:: rtk.analyses.fmea.FMEA
+FMEA Data Models
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.analyses.fmea.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.analyses.fmea.Mode
+FMEA Data Controller
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.analyses.fmea.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.analyses.fmea.Mechanism
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.analyses.fmea.Cause
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.analyses.fmea.Control
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.analyses.fmea.Action
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:

@@ -90,10 +90,6 @@ class RTKDataController(object):
 
         return _return
 
-    def handle_results(self, error_code, error_msg, pub_msg=None):
-
-        return self.do_handle_results(error_code, error_msg, pub_msg=None)
-
     def request_select(self, node_id):
         """
         Request the RTK Program database record associated with Node ID.
@@ -103,7 +99,7 @@ class RTKDataController(object):
         """
         return self._dtm_data_model.select(node_id)
 
-    def request_select_all(self, parent_id):
+    def request_select_all(self, parent_id, **kwargs):
         """
         Retrieve the treelib Tree() from the Data Model.
 
@@ -112,7 +108,7 @@ class RTKDataController(object):
                  Requirement tree.
         :rtype: dict
         """
-        return self._dtm_data_model.select_all(parent_id)
+        return self._dtm_data_model.select_all(parent_id, **kwargs)
 
     def request_get_attributes(self, node_id):
         """
@@ -162,8 +158,8 @@ class RTKDataController(object):
         _error_code, \
             _msg = self._dtm_data_model.calculate_availability(node_id)
 
-        return self.handle_results(_error_code, _msg,
-                                   'calculated' + self._module)
+        return self.do_handle_results(_error_code, _msg,
+                                      'calculated' + self._module)
 
     def request_calculate_costs(self, node_id, mission_time):
         """
@@ -178,8 +174,8 @@ class RTKDataController(object):
         _error_code, _msg = self._dtm_data_model.calculate_costs(
             node_id, float(mission_time))
 
-        return self.handle_results(_error_code, _msg,
-                                   'calculated' + self._module)
+        return self.do_handle_results(_error_code, _msg,
+                                      'calculated' + self._module)
 
     def request_calculate_hazard_rate(self, node_id):
         """
@@ -193,8 +189,8 @@ class RTKDataController(object):
         _error_code, \
             _msg = self._dtm_data_model.calculate_hazard_rate(node_id)
 
-        return self.handle_results(_error_code, _msg,
-                                   'calculated' + self._module)
+        return self.do_handle_results(_error_code, _msg,
+                                      'calculated' + self._module)
 
     def request_calculate_mtbf(self, node_id):
         """
@@ -208,8 +204,8 @@ class RTKDataController(object):
         _error_code, \
             _msg = self._dtm_data_model.calculate_mtbf(node_id)
 
-        return self.handle_results(_error_code, _msg,
-                                   'calculated' + self._module)
+        return self.do_handle_results(_error_code, _msg,
+                                      'calculated' + self._module)
 
     def request_calculate_reliability(self,
                                       node_id,
@@ -230,5 +226,5 @@ class RTKDataController(object):
                                                               mission_time,
                                                               multiplier)
 
-        return self.handle_results(_error_code, _msg,
-                                   'calculated' + self._module)
+        return self.do_handle_results(_error_code, _msg,
+                                      'calculated' + self._module)

@@ -80,12 +80,11 @@ class RTKDataModel(object):
 
     def select_all(self):
         """
-        Base method to retrieve and build the RTK Module tree.
+        Retrieve and build the RTK Module tree.
 
         :return: an SQLAlchemy session instance.
         :rtype:
         """
-
         _root = self.tree.root
         for _node in self.tree.children(_root):
             self.tree.remove_node(_node.identifier)
@@ -95,8 +94,7 @@ class RTKDataModel(object):
 
     def insert(self, **kwargs):
         """
-        Base method to add the list of RTK<MODULE> instance to the RTK Program
-        database.
+        Add the list of RTK<MODULE> instance to the RTK Program database.
 
         :param list entities: the list of RTK<MODULE> entities to add to the
                               RTK Program database.

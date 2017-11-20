@@ -16,7 +16,9 @@ from nose.plugins.attrib import attr
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk", )
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
@@ -29,12 +31,7 @@ from dao import RTKMechanism
 from dao import RTKCause
 from dao import RTKControl
 from dao import RTKAction
-from analyses.fmea.FMEA import Model, FMEA
-from analyses.fmea.Mode import Model as Mode
-from analyses.fmea.Mechanism import Model as Mechanism
-from analyses.fmea.Cause import Model as Cause
-from analyses.fmea.Control import Model as Control
-from analyses.fmea.Action import Model as Action
+from analyses.fmea import dtcFMEA, dtmFMEA, dtmAction, dtmControl, dtmMode, dtmMechanism, dtmCause
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -42,7 +39,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class Test00FMEAModel(unittest.TestCase):
+class TestFMEADataModel(unittest.TestCase):
     """
     Class for testing the FMEA model class.
     """
@@ -51,15 +48,16 @@ class Test00FMEAModel(unittest.TestCase):
         """
         Sets up the test fixture for the FMEA model class.
         """
-
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
@@ -72,72 +70,49 @@ class Test00FMEAModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        _mode = RTKMode()
-        self.dao.db_add([_mode, ], self.session)
-        _mechanism = RTKMechanism()
-        _mechanism.mode_id = _mode.mode_id
-        self.dao.db_add([_mechanism, ], self.session)
-        _cause = RTKCause()
-        _cause.mechanism_id = _mechanism.mechanism_id
-        self.dao.db_add([_cause, ], self.session)
-        _control = RTKControl()
-        _control.mode_id = _mode.mode_id
-        _control.cause_id = _cause.cause_id
-        _action = RTKAction()
-        _action.mode_id = _mode.mode_id
-        _action.cause_id = _cause.cause_id
-        self.dao.db_add([_control, ], self.session)
-        self.dao.db_add([_action, ], self.session)
 
-        self.DUT = Model(self.dao)
+        self.DUT = dtmFMEA(self.dao)
 
     @attr(all=True, unit=True)
     def test00_FMEA_create(self):
         """
         (TestFMEAModel) __init__ should return instance of FMEA data model
         """
-
-        self.assertTrue(isinstance(self.DUT, Model))
-        self.assertTrue(isinstance(self.DUT._dtm_mode, Mode))
-        self.assertTrue(isinstance(self.DUT._dtm_mechanism, Mechanism))
-        self.assertTrue(isinstance(self.DUT._dtm_cause, Cause))
-        self.assertTrue(isinstance(self.DUT._dtm_control, Control))
-        self.assertTrue(isinstance(self.DUT._dtm_action, Action))
+        self.assertTrue(isinstance(self.DUT, dtmFMEA))
+        self.assertTrue(isinstance(self.DUT.dtm_mode, dtmMode))
+        # self.assertTrue(isinstance(self.DUT.dtm_mechanism, Mechanism))
+        # self.assertTrue(isinstance(self.DUT.dtm_cause, Cause))
+        self.assertTrue(isinstance(self.DUT.dtm_control, dtmControl))
+        self.assertTrue(isinstance(self.DUT.dtm_action, dtmAction))
 
     @attr(all=True, unit=True)
     def test01a_select_all_functional(self):
         """
-        (TestFMEAModel) select_all() should return a treelib Tree() on success when
-        selecting a Functional FMEA
+        (TestFMEAModel) select_all() should return a treelib Tree() on success when selecting a Functional FMEA
         """
-
-        _tree = self.DUT.select_all(1, True)
+        _tree = self.DUT.select_all(3, functional=True)
 
         self.assertTrue(isinstance(_tree, Tree))
 
     @attr(all=True, unit=True)
     def test01b_select_all_hardware(self):
         """
-        (TestFMEAModel) select_all() should return a treelib Tree() on success when
-        selecting a Hardware FMEA
+        (TestFMEAModel) select_all() should return a treelib Tree() on success when selecting a Hardware FMEA
         """
-
-        _tree = self.DUT.select_all(1)
-        _tree.show()
+        _tree = self.DUT.select_all(3, functional=False)
 
         self.assertTrue(isinstance(_tree, Tree))
 
     @attr(all=True, unit=True)
     def test01c_select_all_non_existent_hardware_id(self):
         """
-        (TestFMEAModel): select_all() should return an empty Tree() when passed
-        a Hardware ID that doesn't exist.
+        (TestFMEAModel) select_all() should return an empty Tree() when passed a Hardware ID that doesn't exist.
         """
 
-        _tree = self.DUT.select_all(100)
+        _tree = self.DUT.select_all(100, functional=False)
 
         self.assertTrue(isinstance(_tree, Tree))
         self.assertEqual(_tree.get_node(0).tag, 'FMEA')
@@ -146,11 +121,10 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01d_select_all_non_existent_function_id(self):
         """
-        (TestFMEAModel): select_all() should return an empty Tree() when passed
+        (TestFMEAModel) select_all() should return an empty Tree() when passed
         a Function ID that doesn't exist.
         """
-
-        _tree = self.DUT.select_all(100, True)
+        _tree = self.DUT.select_all(100, functional=True)
 
         self.assertTrue(isinstance(_tree, Tree))
         self.assertEqual(_tree.get_node(0).tag, 'FMEA')
@@ -159,23 +133,20 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02a_select_mode(self):
         """
-        (TestFMEAModel): select() should return an instance of RTKMode on success.
+        (TestFMEAModel) select() should return an instance of RTKMode on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=True)
 
         _entity = self.DUT.select('0.1')
-
         self.assertTrue(isinstance(_entity, RTKMode))
         self.assertEqual(_entity.description, 'Test Failure Mode #1')
 
     @attr(all=True, unit=True)
     def test02b_select_mechanism(self):
         """
-        (TestFMEAModel): select() should return an instance of RTKMechanism on success.
+        (TestFMEAModel) select() should return an instance of RTKMechanism on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=False)
 
         _entity = self.DUT.select('0.1.1')
 
@@ -185,10 +156,9 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02c_select_cause(self):
         """
-        (TestFMEAModel): select() should return an instance of RTKCause on success.
+        (TestFMEAModel) select() should return an instance of RTKCause on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=False)
 
         _entity = self.DUT.select('0.1.1.1')
 
@@ -196,48 +166,70 @@ class Test00FMEAModel(unittest.TestCase):
         self.assertEqual(_entity.description, 'Test Failure Cause #1')
 
     @attr(all=True, unit=True)
-    def test02d_select_control(self):
+    def test02d_select_control_functional(self):
         """
-        (TestFMEAModel): select() should return an instance of RTKControl on success.
+        (TestFMEAModel) select() should return an instance of RTKControl when selecting from a functional FMEA on success.
         """
+        self.DUT.select_all(3, functional=True)
 
-        self.DUT.select_all(1)
+        _entity = self.DUT.select('0.1.01')
+
+        self.assertTrue(isinstance(_entity, RTKControl))
+        self.assertEqual(_entity.description, 'Functional FMEA control.')
+
+    @attr(all=True, unit=True)
+    def test02e_select_control_hardware(self):
+        """
+        (TestFMEAModel) select() should return an instance of RTKControl when selecting from a hardware FMEA on success.
+        """
+        self.DUT.select_all(3, functional=False)
 
         _entity = self.DUT.select('0.1.1.1.01')
 
         self.assertTrue(isinstance(_entity, RTKControl))
-        self.assertEqual(_entity.description,
-                         'Test Control for Failure Cause #1')
+        self.assertEqual(_entity.description, 'Functional FMEA control.')
 
     @attr(all=True, unit=True)
-    def test02e_select_action(self):
+    def test02f_select_action_functional(self):
         """
-        (TestFMEAModel): select() should return an instance of RTKAction on success.
+        (TestFMEAModel) select() should return an instance of RTKAction when selecting from a functional FMEA on success.
         """
+        self.DUT.select_all(3, functional=True)
 
-        self.DUT.select_all(1)
+        _entity = self.DUT.select('0.1.1')
+
+        self.assertTrue(isinstance(_entity, RTKAction))
+        self.assertEqual(_entity.action_recommended,
+                         'Do this stuff and do it now!!')
+
+    @attr(all=True, unit=True)
+    def test02g_select_action_hardware(self):
+        """
+        (TestFMEAModel) select() should return an instance of RTKAction when selecting from a hardware FMEA on success.
+        """
+        self.DUT.select_all(3, functional=False)
 
         _entity = self.DUT.select('0.1.1.1.1')
 
         self.assertTrue(isinstance(_entity, RTKAction))
         self.assertEqual(_entity.action_recommended,
-                         'Recommended action for Failure Cause #1')
+                         'Do this stuff and do it now!!')
 
     @attr(all=True, unit=True)
-    def test03a_insert_mode_functional(self):
+    def test03a_insert_mode_functional(self, functional=True):
         """
-        (TestFMEAModel): insert() should return a zero error code on success when adding a new Mode to a Functional FMEA.
+        (TestFMEAModel) insert() should return a zero error code on success when adding a new Mode to a Functional FMEA.
         """
+        self.DUT.select_all(1, functional=True)
 
-        self.DUT.select_all(1, True)
-
-        _error_code, _msg = self.DUT.insert(1, 0, 'mode')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id=0, level='mode')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.' + str(self.DUT._dtm_mode.last_id)
+        _node_id = '0.' + str(self.DUT.dtm_mode.last_id)
 
         _mode = self.DUT.select(_node_id)
 
@@ -250,21 +242,18 @@ class Test00FMEAModel(unittest.TestCase):
         self.assertEqual(_mode, _tree_mode.data)
 
     @attr(all=True, unit=True)
-    def test03b_insert_mode_hardware(self):
-        """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Mode to a Hardware FMEA.
-        """
+    def test03b_insert_mode_hardware(self, functional=False):
+        """(TestFMEAModel) insert() should return a zero error code on success when adding a new Mode to a Hardware FMEA."""
+        self.DUT.select_all(3, functional=False)
 
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(1, 0, 'mode')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id=0, level='mode')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.' + str(self.DUT._dtm_mode.last_id)
+        _node_id = '0.' + str(self.DUT.dtm_mode.last_id)
 
         _mode = self.DUT.select(_node_id)
 
@@ -278,14 +267,11 @@ class Test00FMEAModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test03c_insert_mode_hardware_non_existant_level(self):
-        """
-        (TestFMEAModel): insert() should return a non-zero error code when
-        trying to add a non-existant level.
-        """
+        """(TestFMEAModel) insert() should return a non-zero error code when trying to add a non-existant level."""
+        self.DUT.select_all(1, functional=False)
 
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(1, 0, 'juice')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id=0, level='juice')
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg,
@@ -297,25 +283,25 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03d_insert_mechanism(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success when adding a new Mechanism to a Hardware FMEA.
+        (TestFMEAModel) insert() should return a zero error code on success when adding a new Mechanism to a Hardware FMEA.
         """
+        self.DUT.select_all(1, functional=False)
 
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(1, '0.1', 'mechanism')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id='0.3', level='mechanism')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.1.' + str(self.DUT._dtm_mechanism.last_id)
+        _node_id = '0.3.' + str(self.DUT.dtm_mechanism.last_id)
 
         _mechanism = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_mechanism, RTKMechanism))
         self.assertEqual(_mechanism.mode_id, 1)
         self.assertEqual(_mechanism.mechanism_id,
-                         self.DUT._dtm_mechanism.last_id)
+                         self.DUT.dtm_mechanism.last_id)
 
         _tree_mechanism = self.DUT.tree.get_node(_node_id)
         self.assertTrue(isinstance(_tree_mechanism.data, RTKMechanism))
@@ -324,25 +310,24 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03e_insert_cause(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success
-        when adding a new Cause to a Hardware FMEA.
+        (TestFMEAModel) insert() should return a zero error code on success when adding a new Cause to a Hardware FMEA.
         """
+        self.DUT.select_all(3, functional=False)
 
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(1, '0.1.1', 'cause')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id='0.1.1', level='cause')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.1.1.' + str(self.DUT._dtm_cause.last_id)
+        _node_id = '0.1.1.' + str(self.DUT.dtm_cause.last_id)
 
         _cause = self.DUT.select(_node_id)
 
         self.assertTrue(isinstance(_cause, RTKCause))
         self.assertEqual(_cause.mechanism_id, 1)
-        self.assertEqual(_cause.cause_id, self.DUT._dtm_cause.last_id)
+        self.assertEqual(_cause.cause_id, self.DUT.dtm_cause.last_id)
 
         _tree_cause = self.DUT.tree.get_node(_node_id)
         self.assertTrue(isinstance(_tree_cause.data, RTKCause))
@@ -351,18 +336,18 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03f_insert_control_functional(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success when adding a new Control to a Functional FMEA.
+        (TestFMEAModel) insert() should return a zero error code on success when adding a new Control to a Functional FMEA.
         """
+        self.DUT.select_all(1, functional=True)
 
-        self.DUT.select_all(1, True)
-
-        _error_code, _msg = self.DUT.insert(1, '0.1', 'control')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id='0.2', level='control')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.1.0' + str(self.DUT._dtm_control.last_id)
+        _node_id = '0.2.0' + str(self.DUT.dtm_control.last_id)
 
         _control = self.DUT.select(_node_id)
 
@@ -377,18 +362,18 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03g_insert_control_hardware(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success when adding a new Control to a Hardware FMEA.
+        (TestFMEAModel) insert() should return a zero error code on success when adding a new Control to a Hardware FMEA.
         """
+        self.DUT.select_all(3, functional=False)
 
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(2, '0.1.1.1', 'control')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=2, parent_id='0.1.1.1', level='control')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.1.1.1.0' + str(self.DUT._dtm_control.last_id)
+        _node_id = '0.1.1.1.0' + str(self.DUT.dtm_control.last_id)
 
         _control = self.DUT.select(_node_id)
 
@@ -403,18 +388,18 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03h_insert_action_functional(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success when adding a new Action to a Functional FMEA.
+        (TestFMEAModel) insert() should return a zero error code on success when adding a new Action to a Functional FMEA.
         """
+        self.DUT.select_all(1, functional=True)
 
-        self.DUT.select_all(1, True)
-
-        _error_code, _msg = self.DUT.insert(1, '0.1', 'action')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id='0.2', level='action')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.1.' + str(self.DUT._dtm_action.last_id)
+        _node_id = '0.2.' + str(self.DUT.dtm_action.last_id)
 
         _action = self.DUT.select(_node_id)
 
@@ -429,18 +414,18 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03i_insert_action_hardware(self):
         """
-        (TestFMEAModel): insert() should return a zero error code on success when adding a new Action to a Hardware FMEA.
+        (TestFMEAModel) insert() should return a zero error code on success when adding a new Action to a Hardware FMEA.
         """
+        self.DUT.select_all(3, functional=False)
 
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(1, '0.1.1.1', 'action')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id='0.1.1.1', level='action')
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          "RTK SUCCESS: Adding one or more items to the RTK "
                          "Program database.")
-        _node_id = '0.1.1.1.' + str(self.DUT._dtm_action.last_id)
+        _node_id = '0.1.1.1.' + str(self.DUT.dtm_action.last_id)
 
         _action = self.DUT.select(_node_id)
 
@@ -455,12 +440,12 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test03j_insert_non_existent_type(self):
         """
-        (TestFMEAModel): insert() should return a 2005 error code when attempting to add something other than a Mode, Mechanism, Cause, Control, or Action.
+        (TestFMEAModel) insert() should return a 2005 error code when attempting to add something other than a Mode, Mechanism, Cause, Control, or Action.
         """
+        self.DUT.select_all(1, functional=False)
 
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(100, 0, 'scadamoosh')
+        _error_code, _msg = self.DUT.insert(
+            entity_id=100, parent_id=0, level='scadamoosh')
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg,
@@ -469,29 +454,28 @@ class Test00FMEAModel(unittest.TestCase):
                          "scadamoosh was requested.  Must be one of "
                          "mode, mechanism, cause, control, or action.")
 
-    @attr(all=True, unit=False)
+    @attr(all=True, unit=True)
     def test03k_insert_no_parent_in_tree(self):
         """
-        (TestFMEAModel): insert() should return a 3002 error code when attempting to add something to a non-existant parent Node.
+        (TestFMEAModel) insert() should return a 2005 error code when attempting to add something to a non-existant parent Node.
         """
+        self.DUT.select_all(3, functional=False)
 
-        self.DUT.select_all(1)
+        _error_code, _msg = self.DUT.insert(
+            entity_id=1, parent_id='mode_1', level='action')
 
-        _error_code, _msg = self.DUT.insert(100, 'mode_1', 'action')
-
-        self.assertEqual(_error_code, 3002)
-        self.assertEqual(_msg,
-                         "RTK ERROR: Creating a new node in the Usage " \
-                         "Profile Tree.")
+        self.assertEqual(_error_code, 2005)
+        self.assertEqual(_msg, "RTK ERROR: Attempted to add an item under "
+                         "non-existent Node ID: mode_1.")
 
     @attr(all=True, unit=True)
-    def test04a_delete_control(self):
+    def test04a_delete_control_functional(self):
         """
-        (TestFMEAModel): delete() should return a zero error code on success when removing a Control.
+        (TestFMEAModel) delete() should return a zero error code on success when removing a Control.
         """
-
-        self.DUT.select_all(1)
-        _node_id = '0.1.1.2.0' + str(self.DUT._dtm_control.last_id)
+        self.DUT.select_all(1, functional=True)
+        self.DUT.insert(entity_id=1, parent_id='0.2', level='control')
+        _node_id = '0.2.0' + str(self.DUT.dtm_control.last_id)
 
         _error_code, _msg = self.DUT.delete(_node_id)
 
@@ -503,25 +487,22 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_node_id(self):
         """
-        (TestFMEAModel): delete() should return a 2105 error code when attempting to remove a non-existant item from the FMEA.
+        (TestFMEAModel) delete() should return a 2105 error code when attempting to remove a non-existant item from the FMEA.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(1, functional=True)
 
         _error_code, _msg = self.DUT.delete('scadamoosh_1')
 
         self.assertEqual(_error_code, 2005)
-        self.assertEqual(_msg,
-                         "RTK ERROR: Attempted to delete a non-existent "
+        self.assertEqual(_msg, "  RTK ERROR: Attempted to delete non-existent "
                          "entity with Node ID scadamoosh_1 from the FMEA.")
 
     @attr(all=True, unit=True)
     def test05a_update(self):
         """
-        (TestFMEAModel): update() should return a zero error code on success.
+        (TestFMEAModel) update() should return a zero error code on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=True)
 
         _error_code, _msg = self.DUT.update('0.1')
 
@@ -532,25 +513,23 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test05b_update_non_existent_node_id(self):
         """
-        (TestFMEAModel): update() should return a 2106 error code when attempting to update a non-existent Node ID.
+        (TestFMEAModel) update() should return a 2106 error code when attempting to update a non-existent Node ID from a functional FMEA.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=True)
 
         _error_code, _msg = self.DUT.update('mode_1000')
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg,
-                         "RTK ERROR: Attempted to save non-existent FMEA "
-                         "entity with Node ID mode_1000.")
+                         "RTK ERROR: Attempted to save non-existent entity "
+                         "with Node ID mode_1000.")
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
         """
-        (TestFMEAModel): update_all() should return a zero error code on success.
+        (TestFMEAModel) update_all() should return a zero error code on success.
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=True)
 
         _error_code, _msg = self.DUT.update_all()
 
@@ -561,43 +540,41 @@ class Test00FMEAModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test07a_calculate_criticality(self):
         """
-        (TestFMEAModel) _calculate_criticality returns a zero error code on success
+        (TestFMEAModel) calculate_criticality() returns a zero error code on success
         """
-
-        self.DUT.select_all(1)
-        _mode = self.DUT.select('0.1')
+        self.DUT.select_all(1, functional=False)
+        _mode = self.DUT.select('0.3')
         _mode.mode_ratio = 0.4
         _mode.mode_op_time = 100.0
         _mode.effect_probability = 1.0
-        _mode = self.DUT.select('0.3')
+        _mode = self.DUT.select('0.5')
         _mode.mode_ratio = 0.5
         _mode.mode_op_time = 100.0
         _mode.effect_probability = 1.0
         _error_code, _msg = self.DUT.calculate_criticality(0.00001)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mode 3 '
-                               'criticality.')
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mode 5 '
+                         'criticality.')
         self.assertEqual(_mode.mode_criticality, 0.0005)
 
-        self.DUT.update('0.1')
         self.DUT.update('0.3')
+        self.DUT.update('0.5')
 
     @attr(all=True, unit=True)
     def test08a_calculate_mechanism_rpn(self):
         """
         (TestFMEAModel) calculate_mechanism_rpn returns a zero error code on success
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=False)
 
         for _node in self.DUT.tree.children('0.1'):
             _mechanism = _node.data
-            _attributes = list(_mechanism.get_attributes()[2:])
-            _attributes[3] = 4
-            _attributes[4] = 3
-            _attributes[6] = 7
-            _attributes[7] = 5
+            _attributes = _mechanism.get_attributes()
+            _attributes['rpn_detection'] = 4
+            _attributes['rpn_occurrence'] = 7
+            _attributes['rpn_detection_new'] = 3
+            _attributes['rpn_occurrence_new'] = 5
             _mechanism.set_attributes(_attributes)
 
         _error_code, _msg = \
@@ -606,7 +583,7 @@ class Test00FMEAModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure mechanism '
                                '{0:d} RPN.'.\
-                         format(self.DUT._dtm_mechanism.last_id))
+                         format(self.DUT.dtm_mechanism.last_id))
         self.assertEqual(_mechanism.rpn, 196)
         self.assertEqual(_mechanism.rpn_new, 60)
 
@@ -615,16 +592,15 @@ class Test00FMEAModel(unittest.TestCase):
         """
         (TestFMEAModel) calculate_cause_rpn returns a zero error code on success
         """
-
-        self.DUT.select_all(1)
+        self.DUT.select_all(3, functional=False)
 
         for _node in self.DUT.tree.children('0.1.1'):
             _cause = _node.data
-            _attributes = list(_cause.get_attributes()[2:])
-            _attributes[2] = 4
-            _attributes[3] = 3
-            _attributes[5] = 7
-            _attributes[6] = 5
+            _attributes = _cause.get_attributes()
+            _attributes['rpn_detection'] = 4
+            _attributes['rpn_occurrence'] = 7
+            _attributes['rpn_detection_new'] = 3
+            _attributes['rpn_occurrence_new'] = 5
             _cause.set_attributes(_attributes)
 
         _error_code, _msg = \
@@ -633,12 +609,12 @@ class Test00FMEAModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Calculating failure cause '
                                '{0:d} RPN.'.\
-                         format(self.DUT._dtm_cause.last_id))
+                         format(self.DUT.dtm_cause.last_id))
         self.assertEqual(_cause.rpn, 196)
         self.assertEqual(_cause.rpn_new, 60)
 
 
-class Test01FMEAController(unittest.TestCase):
+class TestFMEADataController(unittest.TestCase):
     """
     Class for testing the FMEA data controller class.
     """
@@ -647,15 +623,16 @@ class Test01FMEAController(unittest.TestCase):
         """
         Method to setup the test fixture for the FMEA Data Controller.
         """
-
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.RTK_DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG',
@@ -670,94 +647,59 @@ class Test01FMEAController(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
-        self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKMode(), ], self.session)
-        self.dao.db_add([RTKMechanism(), ], self.session)
-        self.dao.db_add([RTKCause(), ], self.session)
-        self.dao.db_add([RTKControl(), ], self.session)
-        self.dao.db_add([RTKAction(), ], self.session)
-
-        self.DUT = FMEA(self.dao, self.Configuration, test='True')
+        self.DUT = dtcFMEA(self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
     def test00_create_controller(self):
         """
         (TestFMEAController) __init__ should return instance of FMEA data controller
         """
-
-        self.assertTrue(isinstance(self.DUT, FMEA))
-        self.assertTrue(isinstance(self.DUT._dtm_fmea, Model))
+        self.assertTrue(isinstance(self.DUT, dtcFMEA))
+        self.assertTrue(isinstance(self.DUT._dtm_data_model, dtmFMEA))
 
     @attr(all=True, unit=True)
     def test01a_request_select_all_hardware(self):
-        """
-        (TestFMEAController) request_select_all() should return a treelib
-        Tree() with the hardware FMEA.
-        """
+        """(TestFMEAController) request_select_all() should return a treelib Tree() with the hardware FMEA."""
 
-        self.assertTrue(isinstance(self.DUT.request_select_all(1), Tree))
+        self.assertTrue(
+            isinstance(self.DUT.request_select_all(1, functional=False), Tree))
 
     @attr(all=True, unit=True)
-    def test01b_request_select_all_function(self):
-        """
-        (TestFMEAController) request_select_all() should return a treelib
-        Tree() with the functional FMEA.
-        """
-
-        self.assertTrue(isinstance(self.DUT.request_select_all(1, True), Tree))
+    def test01b_request_select_all_functional(self):
+        """(TestFMEAController) request_select_all() should return a treelib Tree() with the functional FMEA."""
+        self.assertTrue(
+            isinstance(self.DUT.request_select_all(3, functional=True), Tree))
 
     @attr(all=True, unit=True)
     def test03a_request_insert_mode_functional(self):
-        """
-        (TestFMEAController) request_insert() should return False on success
-        when adding a mode to a functional FMEA.
-        """
-
-        self.DUT.request_select_all(1, True)
+        """(TestFMEAController) request_insert() should return False on success when adding a mode to a functional FMEA."""
+        self.DUT.request_select_all(3, functional=True)
         self.assertFalse(self.DUT.request_insert(1, 0, 'mode'))
 
     @attr(all=True, unit=True)
     def test_03b_request_insert_mode_hardware(self):
-        """
-        (TestFMEAController) request_insert() should return False on success
-        when addin a mode to a hardware FMEA.
-        """
-
-        self.DUT.request_select_all(1)
+        """(TestFMEAController) request_insert() should return False on success when addin a mode to a hardware FMEA."""
+        self.DUT.request_select_all(1, functional=False)
         self.assertFalse(self.DUT.request_insert(1, 0, 'mode'))
 
     @attr(all=True, unit=True)
-    def test03c_insert_mechanism(self):
-        """
-        (TestFMEAController): request_insert() should return a False on success
-        when adding a new Mechanism to a Hardware FMEA.
-        """
-
-        self.DUT.request_select_all(1)
+    def test03c_request_insert_mechanism(self):
+        """(TestFMEAController) request_insert() should return a False on success when adding a new Mechanism to a Hardware FMEA."""
+        self.DUT.request_select_all(3, functional=False)
 
         self.assertFalse(self.DUT.request_insert(1, '0.1', 'mechanism'))
 
     @attr(all=True, unit=True)
-    def test04a_request_delete_control(self):
-        """
-        (TestFMEAController): request_delete() should return False on success
-        when removing a Control.
-        """
-
-        self.DUT.request_select_all(1)
-        _node_id = '0.1.1.1.0' + str(self.DUT._dtm_fmea._dtm_control.last_id)
+    def test04a_request_delete_control_functional(self):
+        """(TestFMEAController) request_delete() should return False on success when removing a Control from a functional FMEA."""
+        self.DUT.request_select_all(3, functional=True)
+        _node_id = '0.1.0' + str(self.DUT._dtm_data_model.dtm_control.last_id)
 
         self.assertFalse(self.DUT.request_delete(_node_id))
 
     @attr(all=True, unit=True)
     def test05a_update_all(self):
-        """
-        (TestFMEAController): request_update_all() should return a zero error code on success.
-        """
-
-        self.DUT.request_select_all(1)
+        """(TestFMEAController) request_update_all() should return a zero error code on success."""
+        self.DUT.request_select_all(3, functional=True)
 
         self.assertFalse(self.DUT.request_update_all())
-
