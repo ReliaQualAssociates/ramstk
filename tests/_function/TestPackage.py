@@ -68,7 +68,10 @@ def test_function_package(suites):
 
     args = [
         '', '-v', '-a unit=True', '--with-coverage', '--cover-branches',
-        '--cover-xml', '--cover-package=function'
+        '--cover-xml', '--cover-package=dao.RTKFunction',
+        '--cover-package=dao.RTKMode', '--cover-package=dao.RTKControl',
+        '--cover-package=dao.RTKAction', '--cover-package=function',
+        '--cover-package=analyses.fmea'
     ]
     nose.runmodule(argv=args, suite=suite, plugins=plugin_mgr)
 
@@ -77,7 +80,7 @@ def test_function_package(suites):
 
 if __name__ == '__main__':
 
-    _db_suites = [TestRTKMode, TestRTKControl, TestRTKAction]
+    _db_suites = [TestRTKFunction, TestRTKMode, TestRTKControl, TestRTKAction]
     _model_suites = [
             TestModeDataModel, TestControlDataModel, TestActionDataModel,
             TestFMEADataModel, TestFunctionDataModel

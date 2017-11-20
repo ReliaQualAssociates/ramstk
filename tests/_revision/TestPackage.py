@@ -68,7 +68,12 @@ def test_function_package(suites):
 
     args = [
         '', '-v', '-a unit=True', '--with-coverage', '--cover-branches',
-        '--cover-xml', '--cover-package=revision'
+        '--cover-xml', '--cover-package=dao.RTKRevision',
+        '--cover-package=dao.RTKFailureDefinition',
+        '--cover-package=dao.RTKMission',
+        '--cover-package=dao.RTKMissionPhase',
+        '--cover-package=dao.RTKEnvironment', '--cover-package=revision',
+        '--cover-package=failure_definition', '--cover-package=usage'
     ]
     nose.runmodule(argv=args, suite=suite, plugins=plugin_mgr)
 
