@@ -14,7 +14,7 @@ from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 # pylint: disable=E0401
-from Utilities import error_handler, none_to_default, OutOfRangeError
+from Utilities import none_to_default, OutOfRangeError
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 _ = gettext.gettext

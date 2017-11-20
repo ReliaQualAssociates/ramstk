@@ -113,6 +113,8 @@ class RevisionDataModel(RTKDataModel):
         """
         _error_code, _msg = RTKDataModel.delete(self, node_id)
 
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKDataModel.__init__
         if _error_code != 0:
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \

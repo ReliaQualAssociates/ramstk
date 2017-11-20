@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Models."""
 
-from treelib import tree
+from treelib import tree  # pylint: disable=E0401
 
 # Import other RTK modules.
 from datamodels import RTKDataModel  # pylint: disable=E0401
@@ -204,7 +204,7 @@ class MechanismDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id, **kwargs):
+    def select_all(self, parent_id):
         """
         Retrieve all the failure Mechanisms from the RTK Program database.
 
@@ -355,7 +355,7 @@ class CauseDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, parent_id, **kwargs):
+    def select_all(self, parent_id):
         """
         Retrieve all the failure Causes from the RTK Program database.
 
