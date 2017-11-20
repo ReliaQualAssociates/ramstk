@@ -13,7 +13,7 @@ function run_test_suites {
     i=0
     for suite in $TESTSUITES;
     do
-        $PYTHON "./$suite/TestPackage.py" $_test
+        $PYTHON "./tests/$suite/TestPackage.py" $_test
         if [ $? != 0 ];
         then
             RESULTS[$i]="\e[1m\e[31mTEST SUITE ERROR: Test suite $suite failed one or more tests.\e[0m"
