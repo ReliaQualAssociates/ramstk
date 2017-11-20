@@ -38,7 +38,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 
-class Test00FunctionModel(unittest.TestCase):
+class TestFunctionDataModel(unittest.TestCase):
     """Class for testing the Function data model class."""
 
     def setUp(self):
@@ -115,6 +115,8 @@ class Test00FunctionModel(unittest.TestCase):
                          'the RTK Program database.')
         self.assertEqual(self.DUT.last_id, 4)
 
+        self.DUT.delete(self.DUT.last_id)
+
     @attr(all=True, unit=True)
     def test03b_insert_child(self):
         """(TestFunctionModel): insert() should return False on success when inserting a child Function."""
@@ -125,15 +127,17 @@ class Test00FunctionModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 5)
+        self.assertEqual(self.DUT.last_id, 4)
+
+        self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
         """(TestFunctionModel): delete() should return a zero error code on success."""
         self.DUT.select_all(1)
+        self.DUT.insert(revision_id=1, parent_id=1)
 
-        _error_code, _msg = self.DUT.delete(3)
-        _error_code, _msg = self.DUT.delete(2)
+        _error_code, _msg = self.DUT.delete(self.DUT.last_id)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
@@ -255,7 +259,7 @@ class Test00FunctionModel(unittest.TestCase):
                          'MTTR: 0.000000.')
 
 
-class Test01FunctionController(unittest.TestCase):
+class TestFunctionDataController(unittest.TestCase):
     """Class for testing the Function Data Controller class."""
 
     def setUp(self):
@@ -307,18 +311,16 @@ class Test01FunctionController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test01b_request_select_all_matrix(self):
-        """(TestFunctionController): select_all_matrix() should return a tuple containing the matrix, column headings, and row headings."""
+        """(TestFunctionController) select_all_matrix() should return a tuple containing the matrix, column headings, and row headings."""
         (_matrix, _column_hdrs,
          _row_hdrs) = self.DUT.request_select_all_matrix(1, 'fnctn_hrdwr')
 
         self.assertTrue(isinstance(_matrix, pd.DataFrame))
         self.assertEqual(_column_hdrs, {1: u'S1', 2: u'S1:SS1', 3: u'S1:SS2'})
-        self.assertEqual(_row_hdrs, {
-            1: u'PRESS-001',
-            3: u'TEMP-001',
-            4: u'Function Code',
-            5: u'Function Code'
-        })
+        self.assertEqual(_row_hdrs,
+                         {1: u'PRESS-001',
+                          2: u'FLOW-001',
+                          3: u'TEMP-001'})
 
     @attr(all=True, unit=True)
     def test02a_request_select(self):
@@ -342,6 +344,8 @@ class Test01FunctionController(unittest.TestCase):
         self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_insert(revision_id=1, parent_id=0))
+
+        self.DUT.request_delete(self.DUT.request_last_id())
 
     @attr(all=True, unit=True)
     def test03b_insert_matrix_row(self):
@@ -379,9 +383,9 @@ class Test01FunctionController(unittest.TestCase):
     def test04a_request_delete(self):
         """(TestFunctionController) request_delete() should return False on success."""
         self.DUT.request_select_all(1)
-        self.DUT.request_insert(parent_id=0)
+        self.DUT.request_insert(revision_id=1, parent_id=0)
 
-        self.assertFalse(self.DUT.request_delete(5))
+        self.assertFalse(self.DUT.request_delete(self.DUT.request_last_id()))
 
     @attr(all=True, unit=True)
     def test04b_request_delete_non_existent_id(self):
@@ -515,12 +519,12 @@ class Test01FunctionController(unittest.TestCase):
             'remarks': '',
             'function_id': 1,
             'mtbf_mission': 0.0,
-            'function_code': 'Test Function Code',
+            'function_code': 'PRESS-001',
             'name': u'Function Name',
             'level': 0,
             'mttr': 0.0,
             'mcmt': 0.0,
-            'revision_id': 1,
+            'function_id': 1,
             'availability_logistics': 1.0,
             'total_mode_count': 0
         }
@@ -535,11 +539,9 @@ class Test01FunctionController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test08c_request_last_id(self):
-        """(TestRevisionController) request_last_id() should return the last Revision ID used in the RTK Program database."""
+        """(TestFunctionController) request_last_id() should return the last Function ID used in the RTK Program database."""
         self.DUT.request_select_all(1)
 
         _last_id = self.DUT.request_last_id()
 
-        # FIXME: This test fails if just running the Controller tests.  The
-        # last ID in that case is 15.
-        self.assertEqual(_last_id, 7)
+        self.assertEqual(_last_id, 3)

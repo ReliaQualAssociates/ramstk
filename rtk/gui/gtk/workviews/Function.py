@@ -18,7 +18,7 @@ from .WorkView import RTKWorkView
 
 class GeneralData(RTKWorkView):
     """
-    Display Revision attribute data in the RTK Work Book.
+    Display Function attribute data in the RTK Work Book.
 
     The Work View displays all the general data attributes for the selected
     Function. The attributes of a Function General Data Work View are:

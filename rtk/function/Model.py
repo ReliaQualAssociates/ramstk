@@ -109,8 +109,8 @@ class FunctionDataModel(RTKDataModel):
         """
         Remove a record from the RTKFunction table.
 
-        :param int node_id entity: the ID of the RTKFunction record to be
-                                   removed from the RTK Program database.
+        :param int node_id: the ID of the RTKFunction record to be removed from
+                            the RTK Program database.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
@@ -119,7 +119,9 @@ class FunctionDataModel(RTKDataModel):
         if _error_code != 0:
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
-                          'Function ID {0:d}.'.format(node_id)
+                          'Function ID {0:s}.'.format(str(node_id))
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 

@@ -18,9 +18,9 @@ class RTKDataModel(object):
     """
     This is the meta-class for all RTK Data Models.
 
-    :ivar tree: the :py:class:`treelib.Tree` that will contain the structure
+    :ivar tree: the :class:`treelib.Tree` that will contain the structure
                 of the RTK module being modeled..
-    :ivar dao: the :py:class:`rtk.dao.DAO` object used to communicate with the
+    :ivar dao: the :class:`rtk.dao.DAO` object used to communicate with the
                RTK Program database.
     """
 

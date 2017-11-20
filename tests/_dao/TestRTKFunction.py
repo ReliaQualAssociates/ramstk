@@ -51,7 +51,7 @@ class TestRTKFunction(unittest.TestCase):
         'remarks': '',
         'function_id': 1,
         'mtbf_mission': 0.0,
-        'function_code': 'Test Function Code',
+        'function_code': 'PRESS-001',
         'name': u'Function Name',
         'level': 0,
         'mttr': 0.0,
@@ -90,7 +90,7 @@ class TestRTKFunction(unittest.TestCase):
         self.assertEqual(self.DUT.availability_logistics, 1.0)
         self.assertEqual(self.DUT.availability_mission, 1.0)
         self.assertEqual(self.DUT.cost, 0.0)
-        self.assertEqual(self.DUT.function_code, 'Test Function Code')
+        self.assertEqual(self.DUT.function_code, 'PRESS-001')
         self.assertEqual(self.DUT.hazard_rate_logistics, 0.0)
         self.assertEqual(self.DUT.hazard_rate_mission, 0.0)
         self.assertEqual(self.DUT.level, 0)

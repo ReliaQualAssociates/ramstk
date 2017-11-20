@@ -144,7 +144,7 @@ class FunctionDataController(RTKDataController):
                 item_id=item_id,
                 row=row)
 
-        return RTKDataController.handle_results(self, _error_code, _msg, None)
+        return RTKDataController.do_handle_results(self, _error_code, _msg, None)
 
     def request_delete(self, function_id):
         """
@@ -181,7 +181,7 @@ class FunctionDataController(RTKDataController):
             _error_code, _msg = self._dmx_fctn_hw_matrix.delete(
                 item_id, row=row)
 
-        return RTKDataController.handle_results(self, _error_code, _msg,
+        return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                 'deletedMatrix')
 
     def request_update(self, function_id):
@@ -215,7 +215,7 @@ class FunctionDataController(RTKDataController):
             _msg = 'RTK ERROR: Attempted to update non-existent matrix ' \
                    '{0:s}.'.format(matrix_type)
 
-        return RTKDataController.handle_results(self, _error_code, _msg,
+        return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                 'savedMatrix')
 
     def request_update_all(self):
