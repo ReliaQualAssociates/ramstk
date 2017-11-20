@@ -10,4 +10,4 @@ install:
 
 # Command to run tests.
 script:
-    - sh tests/TestAll.sh
+    - sh devtools/RunTests.sh
