@@ -35,7 +35,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class Test00EnvironmentModel(unittest.TestCase):
+class TestEnvironmentDataModel(unittest.TestCase):
     """
     Class for testing the Environment model class.
     """
@@ -70,12 +70,6 @@ class Test00EnvironmentModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKEnvironment(),
-        ], self.session)
-        self.dao.db_add([
-            RTKEnvironment(),
-        ], self.session)
 
         self.DUT = dtmEnvironment(self.dao)
 
@@ -88,7 +82,7 @@ class Test00EnvironmentModel(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, dtmEnvironment))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
-        self.assertEqual(self.DUT._last_id, None)
+        self.assertEqual(self.DUT.last_id, None)
 
     @attr(all=True, unit=True)
     def test01a_select_all(self):
@@ -123,7 +117,7 @@ class Test00EnvironmentModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_environment, RTKEnvironment))
         self.assertEqual(_environment.environment_id, 1)
-        self.assertEqual(_environment.name, 'Condition Name')
+        self.assertEqual(_environment.name, 'Test Environmental Condition')
 
     @attr(all=True, unit=True)
     def test02b_retrieve_non_existent_id(self):
@@ -136,28 +130,24 @@ class Test00EnvironmentModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
-        """
-        (TestEnvironmentModel): insert() should return a zero error code on success.
-        """
-
+        """(TestEnvironmentModel): insert() should return a zero error code on success."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1)
+        _error_code, _msg = self.DUT.insert(phase_id=1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
 
+        self.DUT.delete(self.DUT.last_id)
+
     @attr(all=True, unit=True)
     def test04a_delete(self):
-        """
-        (TestEnvironmentModel): delete() should return a zero error code on success.
-        """
-
+        """(TestEnvironmentModel): delete() should return a zero error code on success."""
         self.DUT.select_all(1)
-        self.DUT.insert(1)
+        self.DUT.insert(phase_id=1)
 
-        _error_code, _msg = self.DUT.delete(self.DUT._last_id)
+        _error_code, _msg = self.DUT.delete(self.DUT.last_id)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '

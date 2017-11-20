@@ -34,7 +34,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class Test00MissionModel(unittest.TestCase):
+class TestMissionDataModel(unittest.TestCase):
     """
     Class for testing the Mission model class.
     """
@@ -68,12 +68,6 @@ class Test00MissionModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKMission(),
-        ], self.session)
-        self.dao.db_add([
-            RTKMission(),
-        ], self.session)
 
         self.DUT = dtmMission(self.dao)
 
@@ -106,7 +100,7 @@ class Test00MissionModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_mission, RTKMission))
         self.assertEqual(_mission.mission_id, 1)
-        self.assertEqual(_mission.description, 'Description')
+        self.assertEqual(_mission.description, 'Test Mission Description')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -123,12 +117,12 @@ class Test00MissionModel(unittest.TestCase):
         """
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1)
+        _error_code, _msg = self.DUT.insert(revision_id=1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
-        self.assertEqual(self.DUT._last_id, 2)
+        self.assertEqual(self.DUT.last_id, 2)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):

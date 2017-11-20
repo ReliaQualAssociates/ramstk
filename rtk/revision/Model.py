@@ -77,7 +77,7 @@ class RevisionDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, entities):  # pylint: disable=unused-argument
+    def insert(self, **kwargs):  # pylint: disable=unused-argument
         """
         Add a record to the RTKRevision table.
 
@@ -85,7 +85,7 @@ class RevisionDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _revision = RTKRevision()
-        _error_code, _msg = RTKDataModel.insert(self, [
+        _error_code, _msg = RTKDataModel.insert(self, entities=[
             _revision,
         ])
 
@@ -117,6 +117,8 @@ class RevisionDataModel(RTKDataModel):
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
                           'Revision ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 

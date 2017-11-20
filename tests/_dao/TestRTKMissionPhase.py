@@ -31,7 +31,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
-class TestRTKPhase(unittest.TestCase):
+class TestRTKMissionPhase(unittest.TestCase):
     """
     Class for testing the RTKPhase class.
     """

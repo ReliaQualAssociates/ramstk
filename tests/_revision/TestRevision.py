@@ -35,7 +35,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 
-class Test00RevisionModel(unittest.TestCase):
+class TestRevisionDataModel(unittest.TestCase):
     """
     Class for testing the Revision model class.
     """
@@ -70,9 +70,6 @@ class Test00RevisionModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKRevision(),
-        ], self.session)
 
         self.DUT = dtmRevision(self.dao)
 
@@ -89,7 +86,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01_select_all(self):
         """
-        (TestRevisionModel): select_all(None) should return a Tree() object populated with RTKRevision instances on success.
+        (TestRevisionModel) select_all(None) should return a Tree() object populated with RTKRevision instances on success.
         """
 
         _tree = self.DUT.select_all(None)
@@ -100,7 +97,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02a_select(self):
         """
-        (TestRevisionModel): select() should return an instance of the RTKRevision data model on success.
+        (TestRevisionModel) select() should return an instance of the RTKRevision data model on success.
         """
 
         self.DUT.select_all(None)
@@ -113,7 +110,7 @@ class Test00RevisionModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
         """
-        (TestRevisionModel): select() should return None when a non-existent Revision ID is requested.
+        (TestRevisionModel) select() should return None when a non-existent Revision ID is requested.
         """
 
         _revision = self.DUT.select(100)
@@ -122,28 +119,25 @@ class Test00RevisionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
-        """
-        (TestRevisionModel): insert() should return False on success.
-        """
-
+        """(TestRevisionModel) insert() should return False on success."""
         self.DUT.select_all(None)
 
-        _error_code, _msg = self.DUT.insert(None)
+        _error_code, _msg = self.DUT.insert()
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 7)
+        self.assertEqual(self.DUT.last_id, 2)
+
+        self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
-        """
-        (TestRevisionModel): delete() should return a zero error code on success.
-        """
-
+        """(TestRevisionModel) delete() should return a zero error code on success."""
         self.DUT.select_all(None)
+        self.DUT.insert()
 
-        _error_code, _msg = self.DUT.delete(3)
+        _error_code, _msg = self.DUT.delete(self.DUT.last_id)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
@@ -151,24 +145,18 @@ class Test00RevisionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
-        """
-        (TestRevisionModel): delete() should return a non-zero error code when passed a Revision ID that doesn't exist.
-        """
-
+        """(TestRevisionModel) delete() should return a non-zero error code when passed a Revision ID that doesn't exist."""
         self.DUT.select_all(None)
 
-        _error_code, _msg = self.DUT.delete(3)
+        _error_code, _msg = self.DUT.delete(300)
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                         'Revision ID 3.')
+                         'Revision ID 300.')
 
     @attr(all=True, unit=True)
     def test05a_update(self):
-        """
-        (TestRevisionModel): update() should return a zero error code on success.
-        """
-
+        """(TestRevisionModel) update() should return a zero error code on success."""
         self.DUT.select_all(None)
 
         _revision = self.DUT.tree.get_node(1).data
@@ -182,10 +170,7 @@ class Test00RevisionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test05b_update_non_existent_id(self):
-        """
-        (TestRevisionModel): update() should return a non-zero error code when passed a Revision ID that doesn't exist.
-        """
-
+        """(TestRevisionModel) update() should return a non-zero error code when passed a Revision ID that doesn't exist."""
         self.DUT.select_all(None)
 
         _error_code, _msg = self.DUT.update(100)
@@ -196,10 +181,7 @@ class Test00RevisionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
-        """
-        (TestRevisionModel): update_all() should return a zero error code on success.
-        """
-
+        """(TestRevisionModel) update_all() should return a zero error code on success."""
         self.DUT.select_all(None)
 
         _error_code, _msg = self.DUT.update_all()
@@ -356,7 +338,7 @@ class Test00RevisionModel(unittest.TestCase):
                                '0.000000.')
 
 
-class Test01RevisionController(unittest.TestCase):
+class TestRevisionDataController(unittest.TestCase):
     """
     Class for testing the Revision Data Controller class.
     """
@@ -393,12 +375,6 @@ class Test01RevisionController(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKRevision(),
-        ], self.session)
-        self.dao.db_add([
-            RTKRevision(),
-        ], self.session)
 
         self.DUT = dtcRevision(self.dao, self.Configuration, test='True')
 
@@ -510,35 +486,28 @@ class Test01RevisionController(unittest.TestCase):
 
         _last_id = self.DUT.request_last_id()
 
-        # FIXME: This test fails if just running the Controller tests.  The
-        # last ID in that case is 15.
-        self.assertEqual(_last_id, 33)
+        self.assertEqual(_last_id, 1)
 
     @attr(all=True, unit=True)
     def test04a_request_insert(self):
-        """
-        (TestRevisionController) request_insert() should return False on success.
-        """
-
+        """(TestRevisionController) request_insert() should return False on success."""
         self.DUT.request_select_all(1)
+
         self.assertFalse(self.DUT.request_insert())
+
+        self.DUT.request_delete(self.DUT.request_last_id())
 
     @attr(all=True, unit=True)
     def test05a_request_delete(self):
-        """
-        (TestRevisionController) request_delete() should return False on success.
-        """
-
+        """(TestRevisionController) request_delete() should return False on success."""
         self.DUT.request_select_all(1)
+        self.DUT.request_insert()
 
-        self.assertFalse(self.DUT.request_delete(5))
+        self.assertFalse(self.DUT.request_delete(self.DUT.request_last_id()))
 
     @attr(all=True, unit=True)
     def test05b_request_delete_non_existent_id(self):
-        """
-        (TestRevisionController) request_delete() should return True when attempting to delete a non-existent Revision.
-        """
-
+        """(TestRevisionController) request_delete() should return True when attempting to delete a non-existent Revision."""
         self.DUT.request_select_all(1)
 
         self.assertTrue(self.DUT.request_delete(100))
@@ -551,7 +520,7 @@ class Test01RevisionController(unittest.TestCase):
 
         self.DUT.request_select_all(1)
 
-        self.assertFalse(self.DUT.request_update(2))
+        self.assertFalse(self.DUT.request_update(self.DUT.request_last_id()))
 
     @attr(all=True, unit=True)
     def test06b_request_update_non_existent_id(self):

@@ -58,7 +58,7 @@ class RevisionDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(None)
+        _error_code, _msg = self._dtm_data_model.insert()
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)

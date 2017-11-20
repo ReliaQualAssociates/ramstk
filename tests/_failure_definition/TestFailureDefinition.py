@@ -36,16 +36,13 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class Test00FailureDefinitionModel(unittest.TestCase):
+class TestFailureDefinitionDataModel(unittest.TestCase):
     """
     Class for testing the Failure Definition model class.
     """
 
     def setUp(self):
-        """
-        (TestFailureDefinition): Method to setup the test fixture for the Failure Definition class.
-        """
-
+        """(TestFailureDefinition): Set up the test fixture for the Failure Definition class."""
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -71,31 +68,19 @@ class Test00FailureDefinitionModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKFailureDefinition(),
-        ], self.session)
-        self.dao.db_add([
-            RTKFailureDefinition(),
-        ], self.session)
 
         self.DUT = dtmFailureDefinition(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
-        """
-        (TestFailureDefinitionModel): __init__ should return instance of a FailureDefition data model
-        """
-
+        """(TestFailureDefinitionModel): __init__ should return instance of a FailureDefition data model."""
         self.assertTrue(isinstance(self.DUT, dtmFailureDefinition))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
 
     @attr(all=True, unit=True)
     def test01_select_all(self):
-        """
-        (TestFailureDefinitionModel): select_all should return a Tree() object populated with RTKFailureDefinitions instances on success.
-        """
-
+        """(TestFailureDefinitionModel): select_all should return a Tree() object populated with RTKFailureDefinitions instances on success."""
         _tree = self.DUT.select_all(1)
 
         self.assertTrue(isinstance(_tree, Tree))
@@ -104,10 +89,7 @@ class Test00FailureDefinitionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02a_select(self):
-        """
-        (TestFailureDefinitionModel): select should return an instance of the RTKFailureDefinition data model on success.
-        """
-
+        """(TestFailureDefinitionModel): select should return an instance of the RTKFailureDefinition data model on success."""
         self.DUT.select_all(1)
         _definition = self.DUT.select(1)
 
@@ -117,35 +99,26 @@ class Test00FailureDefinitionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
-        """
-        (TestFailureDefinitionModel): select() should return None when a non-existent Definition ID is requested.
-        """
-
+        """(TestFailureDefinitionModel): select() should return None when a non-existent Definition ID is requested."""
         _definition = self.DUT.select(100)
 
         self.assertEqual(_definition, None)
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
-        """
-        (TestFailureDefinitionModel): insert() should return False on success.
-        """
-
+        """(TestFailureDefinitionModel): insert() should return False on success."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(1)
+        _error_code, _msg = self.DUT.insert(revision_id=1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
-        self.assertEqual(self.DUT._last_id, 2)
+        self.assertEqual(self.DUT.last_id, 1)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
-        """
-        (TestFailureDefinitionModel): delete() should return a zero error code on success.
-        """
-
+        """(TestFailureDefinitionModel): delete() should return a zero error code on success."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.delete(2)
@@ -156,10 +129,7 @@ class Test00FailureDefinitionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
-        """
-        (TestFailureDefinitionModel): delete() should return a non-zero error code when passed a Revision ID that doesn't exist.
-        """
-
+        """(TestFailureDefinitionModel): delete() should return a non-zero error code when passed a Revision ID that doesn't exist."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.delete(300)
@@ -173,10 +143,7 @@ class Test00FailureDefinitionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
-        """
-        (TestFailureDefinitionModel): update() should return a zero error code on success.
-        """
-
+        """(TestFailureDefinitionModel): update() should return a zero error code on success."""
         self.DUT.select_all(1)
 
         _definition = self.DUT.tree.get_node(1).data
@@ -190,10 +157,7 @@ class Test00FailureDefinitionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_05b_update_non_existent_id(self):
-        """
-        (TestFailureDefinition): update() should return a non-zero error code when passed a Failure Definition ID that doesn't exist.
-        """
-
+        """(TestFailureDefinition): update() should return a non-zero error code when passed a Failure Definition ID that doesn't exist."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.update(100)
@@ -204,10 +168,7 @@ class Test00FailureDefinitionModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):
-        """
-        (TestFailureDefinitionModel): update_all() should return a zero error code on success.
-        """
-
+        """(TestFailureDefinitionModel): update_all() should return a zero error code on success."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.update_all()
@@ -217,16 +178,13 @@ class Test00FailureDefinitionModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
 
-class Test01UsageProfileController(unittest.TestCase):
+class TestFailureDefinitionDataController(unittest.TestCase):
     """
-    Class for testing the Usage Profile controller class.
+    Class for testing the Failure Definition data controller class.
     """
 
     def setUp(self):
-        """
-        Method to setup the test fixture for the Revision Data Controller.
-        """
-
+        """(TestFailureDefinitionController) Set up the test fixture for the Failure Definition Data Controller."""
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -254,21 +212,13 @@ class Test01UsageProfileController(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKFailureDefinition(),
-        ], self.session)
-        self.dao.db_add([
-            RTKFailureDefinition(),
-        ], self.session)
 
         self.DUT = dtcFailureDefinition(
             self.dao, self.Configuration, test='True')
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):
-        """
-        (TestFailureDefinitionController) __init__ should return a Failure Definition Data Controller
-        """
+        """(TestFailureDefinitionController) __init__ should return a Failure Definition Data Controller."""
 
         self.assertTrue(isinstance(self.DUT, dtcFailureDefinition))
         self.assertTrue(
@@ -276,10 +226,7 @@ class Test01UsageProfileController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test01_request_select_all(self):
-        """
-        (TestFailureDefinitionController) request_select_all() should return a Tree of RTKFailureDefinition models.
-        """
-
+        """(TestFailureDefinitionController) request_select_all() should return a Tree of RTKFailureDefinition models."""
         _tree = self.DUT.request_select_all(1)
 
         self.assertTrue(
@@ -287,10 +234,7 @@ class Test01UsageProfileController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02a_request_select(self):
-        """
-        (TestFailureDefinitionController) request_select() should return an RTKv model.
-        """
-
+        """(TestFailureDefinitionController) request_select() should return an RTKFailureDefinition model."""
         self.DUT.request_select_all(1)
 
         self.assertTrue(
@@ -298,65 +242,44 @@ class Test01UsageProfileController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02b_request_non_existent_id(self):
-        """
-        (TestFailureDefinitionController) request_select() should return None when requesting a Failure Definition that doesn't exist.
-        """
-
+        """(TestFailureDefinitionController) request_select() should return None when requesting a Failure Definition that doesn't exist."""
         self.assertEqual(self.DUT.request_select(100), None)
 
     @attr(all=True, unit=True)
     def test03a_request_insert(self):
-        """
-        (TestFailureDefinitionController) request_insert() should return False on success.
-        """
-
+        """(TestFailureDefinitionController) request_insert() should return False on success."""
         self.DUT.request_select_all(1)
-        self.assertFalse(self.DUT.request_insert(1))
+        self.assertFalse(self.DUT.request_insert(revision_id=1))
 
     @attr(all=True, unit=True)
     def test04a_request_delete(self):
-        """
-        (TestFailureDefinitionController) request_delete() should return False on success.
-        """
-
+        """(TestFailureDefinitionController) request_delete() should return False on success."""
         self.DUT.request_select_all(1)
         self.assertFalse(self.DUT.request_delete(2))
 
     @attr(all=True, unit=True)
     def test04a_request_delete_non_existent_id(self):
-        """
-        (TestFailureDefinitionController) request_delete() should return True when attempting to delete a non-existent Failure Definition.
-        """
-
+        """(TestFailureDefinitionController) request_delete() should return True when attempting to delete a non-existent Failure Definition."""
         self.DUT.request_select_all(1)
         self.assertTrue(self.DUT.request_delete(100))
 
     @attr(all=True, unit=True)
     def test05a_request_update(self):
-        """
-        (TestFailureDefinitionController) request_update() should return False on success.
-        """
-
+        """(TestFailureDefinitionController) request_update() should return False on success."""
         self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_update(1))
 
     @attr(all=True, unit=True)
     def test05b_request_update_non_existent_id(self):
-        """
-        (TestFailureDefinitionController) request_update() should return True when attempting to save a non-existent Revision.
-        """
-
+        """(TestFailureDefinitionController) request_update() should return True when attempting to save a non-existent Failure Definition."""
         self.DUT.request_select_all(1)
 
         self.assertTrue(self.DUT.request_update(100))
 
     @attr(all=True, unit=True)
     def test06a_request_update_all(self):
-        """
-        (TestFailureDefinitionController) request_update_all() should return False on success.
-        """
-
+        """(TestFailureDefinitionController) request_update_all() should return False on success."""
         self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_update_all())

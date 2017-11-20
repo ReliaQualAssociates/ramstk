@@ -35,7 +35,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 - 2017 Doyle "Weibullguy" Rowland'
 
 
-class Test00UsageProfileModel(unittest.TestCase):
+class TestUsageProfileDataModel(unittest.TestCase):
     """
     Class for testing the Usage Profile model class.
     """
@@ -69,35 +69,25 @@ class Test00UsageProfileModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKMission(),
-        ], self.session)
-        self.dao.db_add([
-            RTKMission(),
-        ], self.session)
 
         self.DUT = dtmUsageProfile(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
-        """
-        (TestUsageProfileModel) __init__() should create a Usage Profile data model.
-        """
+        """(TestUsageProfileModel) __init__() should create a Usage Profile data model."""
         self.assertTrue(isinstance(self.DUT, dtmUsageProfile))
 
         self.assertTrue(isinstance(self.DUT.dtm_mission, dtmMission))
         self.assertTrue(isinstance(self.DUT.dtm_phase, dtmMissionPhase))
         self.assertTrue(isinstance(self.DUT.dtm_environment, dtmEnvironment))
-        self.assertEqual(self.DUT._last_id, None)
+        self.assertEqual(self.DUT.last_id, None)
 
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertEqual(self.DUT.dao, self.dao)
 
     @attr(all=True, unit=True)
     def test01a_select_all(self):
-        """
-        (TestUsageProfileModel): select_all() should return an empty Tree() when passed a Revision ID that doesn't exist.
-        """
+        """(TestUsageProfileModel): select_all() should return an empty Tree() when passed a Revision ID that doesn't exist."""
         _tree = self.DUT.select_all(1)
 
         self.assertTrue(isinstance(_tree, Tree))
@@ -108,9 +98,7 @@ class Test00UsageProfileModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test01b_select_all_non_existent_id(self):
-        """
-        (TestUsageProfileModel): select_all() should return an empty Tree() when passed a Revision ID that doesn't exist.
-        """
+        """(TestUsageProfileModel): select_all() should return an empty Tree() when passed a Revision ID that doesn't exist."""
         _tree = self.DUT.select_all(100)
 
         self.assertTrue(isinstance(_tree, Tree))
@@ -119,21 +107,17 @@ class Test00UsageProfileModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02a_select(self):
-        """
-        (TestUsageProfileModel): select() should return a Tree() on success.
-        """
+        """(TestUsageProfileModel): select() should return a Tree() on success."""
         self.DUT.select_all(1)
 
         _entity = self.DUT.select(1)
 
         self.assertTrue(isinstance(_entity, RTKMission))
-        self.assertEqual(_entity.description, 'Description')
+        self.assertEqual(_entity.description, 'Test Mission Description')
 
     @attr(all=True, unit=True)
     def test03a_insert_mission(self):
-        """
-        (TestUsageProfileModel): insert() should return a zero error code on success when adding a new Mission.
-        """
+        """(TestUsageProfileModel): insert() should return a zero error code on success when adding a new Mission."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.insert(1, 0, 'mission')
@@ -144,6 +128,8 @@ class Test00UsageProfileModel(unittest.TestCase):
                          "Program database.")
 
         self.assertTrue(isinstance(self.DUT.tree.get_node(2).data, RTKMission))
+
+        self.DUT.delete(self.DUT._dtm_data_model.dtm_mission.last_id)
 
     @attr(all=True, unit=True)
     def test03b_insert_phase(self):
@@ -162,6 +148,8 @@ class Test00UsageProfileModel(unittest.TestCase):
         self.assertTrue(
             isinstance(self.DUT.tree.get_node(12).data, RTKMissionPhase))
 
+        self.DUT.delete(self.DUT._dtm_data_model.dtm_mission_phase.last_id)
+
     @attr(all=True, unit=True)
     def test03c_insert_environment(self):
         """
@@ -178,6 +166,8 @@ class Test00UsageProfileModel(unittest.TestCase):
 
         self.assertTrue(
             isinstance(self.DUT.tree.get_node(112).data, RTKEnvironment))
+
+        self.DUT.delete(self.DUT._dtm_data_model.dtm_environment.last_id)
 
     @attr(all=True, unit=True)
     def test03d_insert_non_existent_type(self):
@@ -280,7 +270,7 @@ class Test00UsageProfileModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
 
-class Test01UsageProfileController(unittest.TestCase):
+class TestUsageProfileDataController(unittest.TestCase):
     """
     Class for testing the Usage Profile controller class.
     """
@@ -358,6 +348,8 @@ class Test01UsageProfileController(unittest.TestCase):
         self.DUT.request_select_all(1)
         self.assertFalse(self.DUT.request_insert(1, 0, 'mission'))
 
+        self.DUT.request_delete(self.DUT.request_last_id('mission'))
+
     @attr(all=True, unit=True)
     def test04a_request_delete(self):
         """
@@ -365,7 +357,7 @@ class Test01UsageProfileController(unittest.TestCase):
         """
 
         self.DUT.request_select_all(1)
-        self.assertFalse(self.DUT.request_delete(3))
+        self.assertFalse(self.DUT.request_delete(2))
 
     @attr(all=True, unit=True)
     def test04a_request_delete_non_existent_id(self):
@@ -389,17 +381,15 @@ class Test01UsageProfileController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test05b_request_set_attributes(self):
-        """
-        (TestUsageProfileController) request_set_attributes() should return a dict of {attribute name:attribute value} pairs.
-        """
+        """(TestUsageProfileController) request_set_attributes() should return a zero error code on success."""
         self.DUT.request_select_all(1)
 
         _attributes = {
             'mission_id': 1,
             'revision_id': 1,
             'mission_time': 72.0,
-            'description': 'Description',
-            'time_units': u'hours'
+            'description': 'Test Mission Description',
+            'time_units': u'minutes'
         }
 
         _error_code, _msg = self.DUT.request_set_attributes(1, _attributes)
@@ -417,7 +407,7 @@ class Test01UsageProfileController(unittest.TestCase):
 
         _last_id = self.DUT.request_last_id('mission')
 
-        self.assertEqual(_last_id, 2)
+        self.assertEqual(_last_id, 1)
 
     @attr(all=True, unit=True)
     def test05d_request_last_mission_phase_id(self):
@@ -428,7 +418,7 @@ class Test01UsageProfileController(unittest.TestCase):
 
         _last_id = self.DUT.request_last_id('phase')
 
-        self.assertEqual(_last_id, 2)
+        self.assertEqual(_last_id, 1)
 
     @attr(all=True, unit=True)
     def test05e_request_last_environment_id(self):

@@ -59,7 +59,7 @@ class FailureDefinitionDataController(RTKDataController):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _error_code, _msg = self._dtm_data_model.insert(revision_id)
+        _error_code, _msg = self._dtm_data_model.insert(revision_id=revision_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)

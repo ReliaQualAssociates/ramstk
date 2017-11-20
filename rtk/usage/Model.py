@@ -125,7 +125,7 @@ class UsageProfileDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, entity_id, parent_id, level):
+    def insert(self, **kwargs):
         """
         Add an entity to the Usage Profile and RTK Program database..
 
@@ -146,41 +146,46 @@ class UsageProfileDataModel(RTKDataModel):
         _tag = 'Tag'
         _node_id = -1
 
-        if level == 'mission':
+        _entity_id = kwargs['entity_id']
+        _parent_id = kwargs['parent_id']
+        _level = kwargs['level']
+
+        if _level == 'mission':
             _entity = RTKMission()
-            _entity.revision_id = entity_id
-        elif level == 'phase':
+            _entity.revision_id = _entity_id
+        elif _level == 'phase':
             _entity = RTKMissionPhase()
-            _entity.mission_id = entity_id
-        elif level == 'environment':
+            _entity.mission_id = _entity_id
+        elif _level == 'environment':
             _entity = RTKEnvironment()
-            _entity.phase_id = entity_id
+            _entity.phase_id = _entity_id
         else:
             _entity = None
 
-        _error_code, _msg = RTKDataModel.insert(self, [
-            _entity,
-        ])
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _entity,
+            ])
 
-        if level == 'mission':
+        if _level == 'mission':
             _tag = _entity.description
             _node_id = _entity.mission_id
-        elif level == 'phase':
+        elif _level == 'phase':
             _tag = _entity.name
-            _node_id = int(str(parent_id) + str(_entity.phase_id))
-        elif level == 'environment':
+            _node_id = int(str(_parent_id) + str(_entity.phase_id))
+        elif _level == 'environment':
             _tag = _entity.name
-            _node_id = int(str(parent_id) + str(_entity.environment_id))
+            _node_id = int(str(_parent_id) + str(_entity.environment_id))
 
         if _error_code == 0:
             self.tree.create_node(
-                _tag, _node_id, parent=parent_id, data=_entity)
+                _tag, _node_id, parent=_parent_id, data=_entity)
         else:
             _error_code = 2105
             _msg = 'RTK ERROR: Attempted to add an item to the Usage ' \
                    'Profile with an undefined indenture level.  Level {0:s} ' \
                    'was requested.  Must be one of mission, phase, or ' \
-                   'environment.'.format(level)
+                   'environment.'.format(_level)
 
         return _error_code, _msg
 
@@ -199,6 +204,8 @@ class UsageProfileDataModel(RTKDataModel):
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
                           'Usage Profile entity with Node ID ' \
                           '{0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 
@@ -305,7 +312,7 @@ class MissionDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, revision_id):
+    def insert(self, **kwargs):
         """
         Add a record to the RTKMission table in the RTK Program database.
 
@@ -313,11 +320,13 @@ class MissionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
+        _revision_id = kwargs['revision_id']
         _mission = RTKMission()
-        _mission.revision_id = revision_id
-        _error_code, _msg = RTKDataModel.insert(self, [
-            _mission,
-        ])
+        _mission.revision_id = _revision_id
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _mission,
+            ])
 
         if _error_code == 0:
             self.tree.create_node(
@@ -346,6 +355,8 @@ class MissionDataModel(RTKDataModel):
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
                           'Mission ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 
@@ -451,7 +462,7 @@ class MissionPhaseDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, mission_id):
+    def insert(self, **kwargs):
         """
         Add a record to the RTKMissionPhase table in the RTK Program database.
 
@@ -459,12 +470,14 @@ class MissionPhaseDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
+        _mission_id = kwargs['mission_id']
         _phase = RTKMissionPhase()
-        _phase.mission_id = mission_id
+        _phase.mission_id = _mission_id
 
-        _error_code, _msg = RTKDataModel.insert(self, [
-            _phase,
-        ])
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _phase,
+            ])
 
         if _error_code == 0:
             self.tree.create_node(
@@ -490,6 +503,8 @@ class MissionPhaseDataModel(RTKDataModel):
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
                           'Mission Phase ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 
@@ -598,7 +613,7 @@ class EnvironmentDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, phase_id):
+    def insert(self, **kwargs):
         """
         Add a record to the RTKEnvironment table in the RTK Program database.
 
@@ -606,12 +621,14 @@ class EnvironmentDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
+        _phase_id = kwargs['phase_id']
         _environment = RTKEnvironment()
-        _environment.phase_id = phase_id
+        _environment.phase_id = _phase_id
 
-        _error_code, _msg = RTKDataModel.insert(self, [
-            _environment,
-        ])
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _environment,
+            ])
 
         if _error_code == 0:
             self.tree.create_node(
@@ -640,6 +657,8 @@ class EnvironmentDataModel(RTKDataModel):
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
                           'Environment ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 

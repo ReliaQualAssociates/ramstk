@@ -71,7 +71,7 @@ class UsageProfileDataController(RTKDataController):
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.insert(
-            entity_id, parent_id, level)
+            entity_id=entity_id, parent_id=parent_id, level=level)
 
         # If the add was successful log the success message to the user log.
         # Otherwise, update the error message and write it to the debug log.

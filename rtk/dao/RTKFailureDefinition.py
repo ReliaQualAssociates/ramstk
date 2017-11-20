@@ -46,7 +46,7 @@ class RTKFailureDefinition(RTK_BASE):
         """
         Retrieve the current values of the RTKFailureDefinition attributes.
 
-        :return: (revision_id, definition_id, definition)
+        :return: {revision_id, definition_id, definition} pairs.
         :rtype: (int, int, str)
         """
         _attributes = {

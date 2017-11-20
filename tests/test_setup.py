@@ -273,6 +273,7 @@ def _create_program_database():
     # Create tables that have Revision ID as a Foreign Key.
     _mission = RTKMission()
     _mission.revision_id = _revision.revision_id
+    _mission.description = 'Test Mission Description'
     session.add(_mission)
 
     _failure_definition = RTKFailureDefinition()
@@ -406,11 +407,13 @@ def _create_program_database():
     # Foreign Key or have o Foreign Key.
     _phase = RTKMissionPhase()
     _phase.mission_id = _mission.mission_id
+    _phase.description = 'Test Mission Phase'
     session.add(_phase)
     session.commit()
 
     _environment = RTKEnvironment()
     _environment.phase_id = _phase.phase_id
+    _environment.name = 'Test Environmental Condition'
     session.add(_environment)
     session.commit()
 

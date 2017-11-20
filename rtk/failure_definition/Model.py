@@ -75,7 +75,7 @@ class FailureDefinitionDataModel(RTKDataModel):
 
         return self.tree
 
-    def insert(self, revision_id):
+    def insert(self, **kwargs):
         """
         Add a record to the RTKFailureDefinition table.
 
@@ -84,9 +84,10 @@ class FailureDefinitionDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
+        _revision_id = kwargs['revision_id']
         _definition = RTKFailureDefinition()
-        _definition.revision_id = revision_id
-        _error_code, _msg = RTKDataModel.insert(self, [
+        _definition.revision_id = _revision_id
+        _error_code, _msg = RTKDataModel.insert(self, entities=[
             _definition,
         ])
 
@@ -115,6 +116,8 @@ class FailureDefinitionDataModel(RTKDataModel):
             _error_code = 2005
             _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
                           'Failure Definition ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg
 
