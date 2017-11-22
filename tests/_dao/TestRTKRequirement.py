@@ -69,7 +69,7 @@ class TestRTKRequirement(unittest.TestCase):
         'q_clarity_4': 0,
         'q_clarity_5': 0,
         'q_clarity_2': 0,
-        'description': 'Test Requirement',
+        'description': 'REL-0001',
         'q_clarity_0': 0,
         'q_clarity_1': 0,
         'q_verifiable_4': 0,
@@ -107,7 +107,7 @@ class TestRTKRequirement(unittest.TestCase):
         self.assertEqual(self.DUT.revision_id, 1)
         self.assertEqual(self.DUT.requirement_id, 1)
         self.assertEqual(self.DUT.derived, 0)
-        self.assertEqual(self.DUT.description, 'Test Requirement')
+        self.assertEqual(self.DUT.description, 'REL-0001')
         self.assertEqual(self.DUT.figure_number, '')
         self.assertEqual(self.DUT.owner, '')
         self.assertEqual(self.DUT.page_number, '')

@@ -429,7 +429,7 @@ class TestRequirementDataController(unittest.TestCase):
         'q_clarity_4': 0,
         'q_clarity_5': 0,
         'q_clarity_2': 0,
-        'description': 'Test Requirement',
+        'description': 'REL-0001',
         'q_clarity_0': 0,
         'q_clarity_1': 0,
         'q_verifiable_4': 0,
