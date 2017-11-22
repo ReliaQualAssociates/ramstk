@@ -58,12 +58,12 @@ from dao.RTKUnit import RTKUnit
 from dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
 from revision import dtcRevision
-from usage.UsageProfile import UsageProfile
-from FailureDefinition import FailureDefinition
-from Function import Function
-from analyses.fmea.FMEA import FMEA
-from Requirement import Requirement
-from Stakeholder import Stakeholder
+from usage import dtcUsageProfile
+from failure_definition import dtcFailureDefinition
+from function import dtcFunction
+from analyses.fmea import dtcFMEA
+from requirement import dtcRequirement
+from stakeholder import dtcStakeholder
 # from hardware.BoM import BoM as HardwareBoM
 # from analyses.allocation.Allocation import Allocation
 # from analyses.hazard.Hazard import Hazard
@@ -793,11 +793,11 @@ class RTK(object):
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)
-            self.dic_controllers['function'] = Function(
+            self.dic_controllers['function'] = dtcFunction(
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)
-            self.dic_controllers['requirement'] = Requirement(
+            self.dic_controllers['requirement'] = dtcRequirement(
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)
@@ -809,19 +809,19 @@ class RTK(object):
             # self.dic_controllers['survival'] = Survival()
 
             # self.dic_controllers['matrices'] = Matrix()
-            self.dic_controllers['profile'] = UsageProfile(
+            self.dic_controllers['profile'] = dtcUsageProfile(
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)
-            self.dic_controllers['definition'] = FailureDefinition(
+            self.dic_controllers['definition'] = dtcFailureDefinition(
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)
-            self.dic_controllers['ffmea'] = FMEA(self.rtk_model.program_dao,
+            self.dic_controllers['ffmea'] = dtcFMEA(self.rtk_model.program_dao,
                                                  self.RTK_CONFIGURATION,
                                                  test=False, functional=True)
             # self.dic_controllers['fmea'] = FMEA()
-            self.dic_controllers['stakeholder'] = Stakeholder(
+            self.dic_controllers['stakeholder'] = dtcStakeholder(
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
                 test=False)

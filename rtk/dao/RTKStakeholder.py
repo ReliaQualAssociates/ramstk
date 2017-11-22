@@ -4,24 +4,20 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKStakeholder Table
-===============================================================================
-"""
+"""RTKStakeholder Table Module."""
+
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKStakeholder(RTK_BASE):
     """
-    Class to represent the rtk_stakeholder table in the RTK Program
-    database.
+    Class to represent the rtk_stakeholder table in the RTK Program database.
 
     This table shares a Many-to-One relationship with rtk_revision.
     """
@@ -61,62 +57,79 @@ class RTKStakeholder(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKStakeholder data model
-        attributes.
+        Retrieve current values of the RTKStakeholder data model attributes.
 
-
-        :return: (revision_id, stakeholder_id, customer_rank, description,
+        :return: {revision_id, stakeholder_id, customer_rank, description,
                   group, improvement, overall_weight, planned_rank, priority,
                   requirement_id, stakeholder, user_float_1, user_float_2,
-                  user_float_3, user_float_4, user_float_5)
+                  user_float_3, user_float_4, user_float_5} pairs.
         :rtype: tuple
         """
-
-        _attributes = (self.revision_id, self.stakeholder_id,
-                       self.customer_rank, self.description, self.group,
-                       self.improvement, self.overall_weight,
-                       self.planned_rank, self.priority, self.requirement_id,
-                       self.stakeholder, self.user_float_1, self.user_float_2,
-                       self.user_float_3, self.user_float_4, self.user_float_5)
+        _attributes = {
+            'revision_id': self.revision_id,
+            'stakeholder_id': self.stakeholder_id,
+            'customer_rank': self.customer_rank,
+            'description': self.description,
+            'group': self.group,
+            'improvement': self.improvement,
+            'overall_weight': self.overall_weight,
+            'planned_rank': self.planned_rank,
+            'priority': self.priority,
+            'requirement_id': self.requirement_id,
+            'stakeholder': self.stakeholder,
+            'user_float_1': self.user_float_1,
+            'user_float_2': self.user_float_2,
+            'user_float_3': self.user_float_3,
+            'user_float_4': self.user_float_4,
+            'user_float_5': self.user_float_5
+        }
 
         return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the RTKStakeholder data model attributes.
+        Set the current values of the RTKStakeholder data model attributes.
 
-        :param tuple attributes: tuple of values to assign to the instance
-                                 attributes.
+        :param dict attributes: dict of values to assign to the instance
+                                attributes.
         :return: (_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKStakeholder {0:d} attributes.". \
                format(self.stakeholder_id)
 
         try:
-            self.customer_rank = int(none_to_default(attributes[0], 1))
-            self.description = str(none_to_default(attributes[1], ''))
-            self.group = str(none_to_default(attributes[2], ''))
-            self.improvement = float(none_to_default(attributes[3], 0.0))
-            self.overall_weight = float(none_to_default(attributes[4], 0.0))
-            self.planned_rank = int(none_to_default(attributes[5], 1))
-            self.priority = int(none_to_default(attributes[6], 1))
-            self.requirement_id = int(none_to_default(attributes[7], 0))
-            self.stakeholder = str(none_to_default(attributes[8], ''))
-            self.user_float_1 = float(none_to_default(attributes[9], 0.0))
-            self.user_float_2 = float(none_to_default(attributes[10], 0.0))
-            self.user_float_3 = float(none_to_default(attributes[11], 0.0))
-            self.user_float_4 = float(none_to_default(attributes[12], 0.0))
-            self.user_float_5 = float(none_to_default(attributes[13], 0.0))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKStakeholder.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKStakeholder attributes."
+            self.customer_rank = int(
+                none_to_default(attributes['customer_rank'], 1))
+            self.description = str(
+                none_to_default(attributes['description'], ''))
+            self.group = str(none_to_default(attributes['group'], ''))
+            self.improvement = float(
+                none_to_default(attributes['improvement'], 0.0))
+            self.overall_weight = float(
+                none_to_default(attributes['overall_weight'], 0.0))
+            self.planned_rank = int(
+                none_to_default(attributes['planned_rank'], 1))
+            self.priority = int(none_to_default(attributes['priority'], 1))
+            self.requirement_id = int(
+                none_to_default(attributes['requirement_id'], 0))
+            self.stakeholder = str(
+                none_to_default(attributes['stakeholder'], ''))
+            self.user_float_1 = float(
+                none_to_default(attributes['user_float_1'], 0.0))
+            self.user_float_2 = float(
+                none_to_default(attributes['user_float_2'], 0.0))
+            self.user_float_3 = float(
+                none_to_default(attributes['user_float_3'], 0.0))
+            self.user_float_4 = float(
+                none_to_default(attributes['user_float_4'], 0.0))
+            self.user_float_5 = float(
+                none_to_default(attributes['user_float_5'], 0.0))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKMechanism.set_attributes().".format(_err)
 
         return _error_code, _msg

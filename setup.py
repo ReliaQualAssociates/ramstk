@@ -52,7 +52,9 @@ if __name__ == '__main__':
             'rtk.gui.gtk.mwi',
             'rtk.gui.gtk.rtk',
             'rtk.gui.gtk.workviews',
+            'rtk.requirement',
             'rtk.revision',
+            'rtk.stakeholder',
             'rtk.usage',
             'rtk.analyses.statistics',
             'rtk.analyses.pof',
@@ -109,9 +111,7 @@ if __name__ == '__main__':
         py_modules=[
             'rtk.__init__',
             'rtk.Configuration',
-            'rtk.Requirement',
             'rtk.RTK',
-            'rtk.Stakeholder',
             'rtk.Utilities',
             'rtk.imports'
         ],

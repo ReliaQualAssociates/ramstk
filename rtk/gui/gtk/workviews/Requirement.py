@@ -669,10 +669,35 @@ class RequirementAnalysis(RTKWorkView):
                 _requirement.q_clarity_8 = self._lst_clear_a[8]
             elif index == 1:
                 self._lst_complete_a[_position] = _answer
+                _requirement.q_complete_0 = self._lst_complete_a[0]
+                _requirement.q_complete_1 = self._lst_complete_a[1]
+                _requirement.q_complete_2 = self._lst_complete_a[2]
+                _requirement.q_complete_3 = self._lst_complete_a[3]
+                _requirement.q_complete_4 = self._lst_complete_a[4]
+                _requirement.q_complete_5 = self._lst_complete_a[5]
+                _requirement.q_complete_6 = self._lst_complete_a[6]
+                _requirement.q_complete_7 = self._lst_complete_a[7]
+                _requirement.q_complete_8 = self._lst_complete_a[8]
+                _requirement.q_complete_9 = self._lst_complete_a[9]
             elif index == 2:
                 self._lst_consistent_a[_position] = _answer
+                _requirement.q_consistent_0 = self._lst_consistent_a[0]
+                _requirement.q_consistent_1 = self._lst_consistent_a[1]
+                _requirement.q_consistent_2 = self._lst_consistent_a[2]
+                _requirement.q_consistent_3 = self._lst_consistent_a[3]
+                _requirement.q_consistent_4 = self._lst_consistent_a[4]
+                _requirement.q_consistent_5 = self._lst_consistent_a[5]
+                _requirement.q_consistent_6 = self._lst_consistent_a[6]
+                _requirement.q_consistent_7 = self._lst_consistent_a[7]
+                _requirement.q_consistent_8 = self._lst_consistent_a[8]
             elif index == 3:
                 self._lst_verifiable_a[_position] = _answer
+                _requirement.q_verifiable_0 = self._lst_verifiable_a[0]
+                _requirement.q_verifiable_1 = self._lst_verifiable_a[1]
+                _requirement.q_verifiable_2 = self._lst_verifiable_a[2]
+                _requirement.q_verifiable_3 = self._lst_verifiable_a[3]
+                _requirement.q_verifiable_4 = self._lst_verifiable_a[4]
+                _requirement.q_verifiable_5 = self._lst_verifiable_a[0]
         except IndexError:
             print 'FIXME: Handle IndexError in ' \
                   'rtk.gui.gtk.workview.Requirement.RequirementAnalysis._do_toggle_cell'

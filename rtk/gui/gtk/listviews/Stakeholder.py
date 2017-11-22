@@ -3,10 +3,7 @@
 #       rtk.gui.gtk.listviews.Stakeholder.py is part of the RTK Project
 #
 # All rights reserved.
-"""
-Stakeholder List View Module
--------------------------------------------------------------------------------
-"""
+"""Stakeholder List View."""
 
 from pubsub import pub  # pylint: disable=E0401
 
@@ -18,25 +15,25 @@ from .ListView import RTKListView
 
 class ListView(RTKListView):
     """
-    The Stakeholder List View displays all the stakeholder inputs
-    associated with the selected Revision.  The attributes of the Stakeholder
-    List View are:
+    Display all the Stakeholder Inputs associated with the selected Stakeholder.
 
-    :ivar _dtc_data_controller: the
-    :class:`rtk.stakeholder.Stakeholder.Stakeholder`
-    data controller associated with this List View.
-    :ivar _revision_id: the Revision ID whose stakeholder inputs are being
-                        displayed in the List View.
+    The Stakeholder List View displays all the stakeholder inputs associated
+    with the selected Stakeholder.  The attributes of the Stakeholder List View
+    are:
+
+    :ivar int _revision_id: the Revision ID whose stakeholder inputs are being
+                            displayed in the List View.
+    :ivar int _stakeholder_id: the Stakeholder ID of the input being displayed
+                               in the List View.
     """
 
     def __init__(self, controller):
         """
-        Method to initialize the List View for the Revision package.
+        Initialize the List View for the Stakeholder package.
 
         :param controller: the RTK master data controller instance.
         :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKListView.__init__(self, controller, module='stakeholder')
 
         # Initialize private dictionary attributes.
@@ -56,7 +53,7 @@ class ListView(RTKListView):
         self._make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the list of stakeholder inputs for the selected "
-              u"revision."))
+              u"stakeholder."))
         self._lst_handler_id.append(
             self.treeview.connect('cursor_changed', self._do_change_row))
         self._lst_handler_id.append(
@@ -75,7 +72,7 @@ class ListView(RTKListView):
         _label.show_all()
         _label.set_tooltip_text(
             _(u"Displays stakeholder inputs for the "
-              u"selected revision."))
+              u"selected stakeholder."))
 
         # self.hbx_tab_label.pack_start(_image)
         self.hbx_tab_label.pack_end(_label)
@@ -93,16 +90,16 @@ class ListView(RTKListView):
 
     def _do_change_row(self, treeview):
         """
-        Method to handle events for the Stakeholder package List View
-        gtk.TreeView().  It is called whenever a Stakeholder List View
-        gtk.TreeView() row is activated.
+        Handle events for the Stakeholder List View RTKTreeView().
 
-        :param treeview: the Stakeholder List View gtk.TreeView().
-        :type treeview: :class:`gtk.TreeView`
+        This method is called whenever a Stakeholder List View RTKTreeView()
+        row is activated.
+
+        :param treeview: the Stakeholder List View RTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.TreeView.RTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         treeview.handler_block(self._lst_handler_id[0])
@@ -117,11 +114,10 @@ class ListView(RTKListView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Method to handle edits of the Stakeholder List View
-        gtk.Treeview().
+        Handle edits of the Stakeholder List View RTKTreeView().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
-        :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
+        :param str path: the RTKTreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
@@ -129,13 +125,12 @@ class ListView(RTKListView):
         :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
-
         _return = False
 
-        if not self.treeview.do_edit_cell(__cell, path, new_text,
-                                          position, model):
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
 
             _stakeholder = self._dtc_data_controller.request_select(
                 self._stakeholder_id)
@@ -150,14 +145,17 @@ class ListView(RTKListView):
 
             if position == 4:
                 try:
-                    _key = max(self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS.keys()) + 1
+                    _key = max(self._mdcRTK.RTK_CONFIGURATION.
+                               RTK_AFFINITY_GROUPS.keys()) + 1
                 except ValueError:
                     _key = 1
-                self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS[_key] = _stakeholder.group
+                self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS[
+                    _key] = _stakeholder.group
             print _stakeholder.get_attributes()
-            pub.sendMessage('EditedStakeholder',
-                            index=self._lst_col_order[position],
-                            new_text=new_text)
+            pub.sendMessage(
+                'EditedStakeholder',
+                index=self._lst_col_order[position],
+                new_text=new_text)
         else:
             _return = True
 
@@ -165,25 +163,24 @@ class ListView(RTKListView):
 
     def _do_request_delete(self, __button):
         """
-        Method to delete the selected Stakeholder.
+        Request to delete the selected Stakeholder.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _model, _row = self.treeview.get_selection().get_selected()
         _stakeholder_id = _model.get_value(_row, 0)
 
         if not self._dtc_data_controller.request_delete(_stakeholder_id):
-            self._on_select_revision(self._revision_id)
+            self._on_select_stakeholder(self._stakeholder_id)
         else:
             _prompt = _(u"An error occurred attempting to delete failure "
-                        u"stakeholder {0:d} to Revision {1:d}.").\
-                format(_stakeholder_id, self._revision_id)
+                        u"stakeholder {0:d} to Stakeholder {1:d}.").\
+                format(_stakeholder_id, self._stakeholder_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
@@ -192,22 +189,21 @@ class ListView(RTKListView):
 
     def _do_request_insert(self, __button):
         """
-        Method to add a Stakeholder.
+        Request to add a Stakeholder.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        if not self._dtc_data_controller.request_insert(self._revision_id):
-            self._on_select_revision(self._revision_id)
+        if not self._dtc_data_controller.request_insert(self._stakeholder_id):
+            self._on_select_stakeholder(self._stakeholder_id)
         else:
             _prompt = _(u"An error occurred attempting to add a stakeholder " \
-                        u"input to Revision {0:d}.").\
-                format(self._revision_id)
+                        u"input to Stakeholder {0:d}.").\
+                format(self._stakeholder_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
@@ -216,34 +212,32 @@ class ListView(RTKListView):
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Stakeholder.
+        Save the currently selected Stakeholder Input.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._stakeholder_id)
 
     def _do_request_update_all(self, __button):
         """
-        Method to save all the Stakeholders.
+        Save all the Stakeholder Inputs.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         if not self._dtc_data_controller.request_update_all():
-            self._on_select_revision(self._revision_id)
+            self._on_select_stakeholder(self._stakeholder_id)
         else:
             _prompt = _(u"An error occurred attempting to save the " \
-                        u"stakeholder inputs for Revision {0:d}.").\
-                format(self._revision_id)
+                        u"stakeholder inputs for Stakeholder {0:d}.").\
+                format(self._stakeholder_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
 
             _return = True
@@ -252,13 +246,12 @@ class ListView(RTKListView):
 
     def _make_buttonbox(self):
         """
-        Method to create the buttonbox for the Stakeholder List View.
+        Make the buttonbox for the Stakeholder List View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Stakeholder
                              List View.
         :rtype: :class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             _(u"Add a new Stakeholder."),
             _(u"Remove the currently selected Stakeholder."),
@@ -281,12 +274,11 @@ class ListView(RTKListView):
 
     def _make_treeview(self):
         """
-        Method for setting up the gtk.TreeView() for Stakeholders.
+        Set up the RTKTreeView() for Stakeholders.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # Load the Affinity Group gtk.CellRendererCombo()
@@ -332,11 +324,10 @@ class ListView(RTKListView):
 
     def _on_button_press(self, treeview, event):
         """
-        Method for handling mouse clicks on the Stakeholder package
-        ListView gtk.TreeView().
+        Handle mouse clicks on the Stakeholder List View RTKTreeView().
 
-        :param treeview: the Stakeholder ListView gtk.TreeView().
-        :type treeview: :class:`gtk.TreeView`.
+        :param treeview: the Stakeholder ListView RTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`.
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -352,7 +343,6 @@ class ListView(RTKListView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
@@ -409,23 +399,21 @@ class ListView(RTKListView):
 
     def _on_select_revision(self, module_id):
         """
-        Method to load the Stakeholder List View gtk.TreeModel() with
-        Stakeholder information whenever a new Revision is selected.
+        Load the Stakeholder List View gtk.TreeModel().
 
-        :param int revision_id: the Revision ID to select the Failure
+        :param int stakeholder_id: the Stakeholder ID to select the Failure
                                 Definitions for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        self._revision_id = module_id
+        self._stakeholder_id = module_id
 
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['stakeholder']
         _stakeholders = \
-            self._dtc_data_controller.request_select_all(self._revision_id)
+            self._dtc_data_controller.request_select_all(self._stakeholder_id)
 
         _model = self.treeview.get_model()
         _model.clear()

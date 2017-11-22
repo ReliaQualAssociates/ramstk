@@ -36,7 +36,7 @@ class TestRTKRequirement(unittest.TestCase):
         'owner': u'',
         'priority': 0,
         'parent_id': 0,
-        'requirement_code': 'Test Code',
+        'requirement_code': 'REL-0001',
         'q_complete_4': 0,
         'requirement_type': u'',
         'q_complete_5': 0,
@@ -113,7 +113,7 @@ class TestRTKRequirement(unittest.TestCase):
         self.assertEqual(self.DUT.page_number, '')
         self.assertEqual(self.DUT.parent_id, 0)
         self.assertEqual(self.DUT.priority, 0)
-        self.assertEqual(self.DUT.requirement_code, 'Test Code')
+        self.assertEqual(self.DUT.requirement_code, 'REL-0001')
         self.assertEqual(self.DUT.specification, '')
         self.assertEqual(self.DUT.requirement_type, '')
         self.assertEqual(self.DUT.validated, 0)

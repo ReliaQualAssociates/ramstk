@@ -21,14 +21,14 @@ sys.path.insert(
     0,
     os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../', )
 
-# pylint: disable=wrong-import-postion
 from test_setup import _create_program_database  # pylint: disable=E0401
 from _dao import TestRTKRequirement, TestRTKStakeholder  # pylint: disable=E0401
 # pylint: disable=E0401
 from _requirement import TestRequirementDataModel, \
     TestRequirementDataController
 # pylint: disable=E0401
-from _stakeholder import TestStakeholderDataModel  #, TestStakeholderDataController
+from _stakeholder import TestStakeholderDataModel, \
+    TestStakeholderDataController
 
 
 def test_function_package(suites):
@@ -75,9 +75,8 @@ if __name__ == '__main__':
     _model_suites = [TestRequirementDataModel, TestStakeholderDataModel]
 
     _controller_suites = [
-        TestRequirementDataController,
+        TestRequirementDataController, TestStakeholderDataController
     ]
-    #TestStakeholderDataController
 
     # For the nosetest example.
     if str(sys.argv[1]) == 'db':

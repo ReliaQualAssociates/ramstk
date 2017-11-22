@@ -15,6 +15,7 @@ RTK Module Packages
     rtk.usage
     rtk.function
     rtk.requirement
+    rtk.stakeholder
 
 -------------------------------------------------------------------------------
 RTK Analyses Packages

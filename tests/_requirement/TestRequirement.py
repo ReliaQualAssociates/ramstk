@@ -91,7 +91,7 @@ class TestRequirementDataModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_requirement, RTKRequirement))
         self.assertEqual(_requirement.requirement_id, 1)
-        self.assertEqual(_requirement.description, '')
+        self.assertEqual(_requirement.requirement_code, 'REL-0001')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -154,7 +154,7 @@ class TestRequirementDataModel(unittest.TestCase):
         self.DUT.select_all(1)
 
         _requirement = self.DUT.select(1)
-        _requirement.requirement_code = 'REL-0001a'
+        _requirement.requirement_code = 'REL-0001'
 
         _error_code, _msg = self.DUT.update(1)
 
