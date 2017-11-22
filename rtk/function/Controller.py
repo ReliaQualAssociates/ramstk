@@ -144,7 +144,8 @@ class FunctionDataController(RTKDataController):
                 item_id=item_id,
                 row=row)
 
-        return RTKDataController.do_handle_results(self, _error_code, _msg, None)
+        return RTKDataController.do_handle_results(self, _error_code, _msg,
+                                                   None)
 
     def request_delete(self, function_id):
         """
@@ -182,7 +183,7 @@ class FunctionDataController(RTKDataController):
                 item_id, row=row)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
-                                                'deletedMatrix')
+                                                   'deletedMatrix')
 
     def request_update(self, function_id):
         """
@@ -216,7 +217,7 @@ class FunctionDataController(RTKDataController):
                    '{0:s}.'.format(matrix_type)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
-                                                'savedMatrix')
+                                                   'savedMatrix')
 
     def request_update_all(self):
         """

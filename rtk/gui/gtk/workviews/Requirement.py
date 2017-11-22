@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Requirement Work View Module
--------------------------------------------------------------------------------
-"""
+"""Requirement Work View."""
 
 from pubsub import pub  # pylint: disable=E0401
 
@@ -21,34 +18,32 @@ from .WorkView import RTKWorkView
 
 class GeneralData(RTKWorkView):
     """
+    Display Requirement attribute data in the RTK Work Book.
+
     The Work View displays all the attributes for the selected Requirement. The
     attributes of a Work View are:
 
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
                                being displayed.
-    :ivar chkDerived = rtk.RTKCheckButton(
-            label=_(u"Requirement is derived."),
-            tooltip=_(u"Indicates whether or not the selected requirement is "
-                      u"derived."))
-    :ivar chkValidated = rtk.RTKCheckButton(
-            label=_(u"Requirement is validated."),
-            tooltip=_(u"Indicates whether or not the selected requirement is "
-                      u"validated."))
-    :ivar cmbOwner: the :py:class:`gtk.ComboBox` used to display/select the
+    :ivar chkDerived: the :class:`gtk.CheckButton` used to indicate the
+                      selected Requirement is derived.
+    :ivar chkValidated: the :class:`gtk.CheckButton` used to indicates the
+                        selected Requirement has been validated.
+    :ivar cmbOwner: the :class:`gtk.ComboBox` used to display/select the
                     owning organization for the Requirement.
-    :ivar cmbRequirementType: the :py:class:`gtk.ComboBox` used to
+    :ivar cmbRequirementType: the :class:`gtk.ComboBox` used to
                               display/select the type of Requirement.
-    :ivar cmbPriority: the :py:class:`gtk.ComboBox` used to display/select the
+    :ivar cmbPriority: the :class:`gtk.ComboBox` used to display/select the
                        priority of the Requirement.
-    :ivar txtFigNum: the :py:class:`gtk.Entry` used to display/enter the
+    :ivar txtFigNum: the :class:`gtk.Entry` used to display/enter the
                      spcification figure number associated with the
                      Requirement.
-    :ivar txtPageNum: the :py:class:`gtk.Entry` used to display/enter the
+    :ivar txtPageNum: the :class:`gtk.Entry` used to display/enter the
                       specification page number associated with the
                       Requirement.
-    :ivar txtSpecification: the :py:class:`gtk.Entry` used to display/enter the
+    :ivar txtSpecification: the :class:`gtk.Entry` used to display/enter the
                             governing specification.
-    :ivar txtValidatedDate: the :py:class:`gtk.Entry` used to display/enter the
+    :ivar txtValidatedDate: the :class:`gtk.Entry` used to display/enter the
                             Requirement was validated.
 
     Callbacks signals in _lst_handler_id:
@@ -82,12 +77,11 @@ class GeneralData(RTKWorkView):
 
     def __init__(self, controller):
         """
-        Method to initialize the Work View for the Requirement package.
+        Initialize the Requirement Work View.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKWorkView.__init__(self, controller, module='Requirement')
 
         # Initialize private dictionary attributes.
@@ -171,29 +165,28 @@ class GeneralData(RTKWorkView):
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Requirement.
+        Request to save the currently selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._requirement_id)
 
     def _do_select_date(self, __button, __event):
         """
-        Method to launch a date selection dialog and select the validation
-        date for the Requirement.
+        Request to launch a date selection dialog.
+
+        This method is used to select the validation date for the Requirement.
 
         :param __button: the rtk.RTKButton() that called this method.
-        :type __button: :py:class:`rtk.gui.gtk.rtk.RTKButton`
+        :type __button: :class:`rtk.gui.gtk.rtk.RTKButton`
         :param __event: the gtk.gdk.Event() that called this method.
-        :type __event: :py:class:`gtk.gdk.Event`
+        :type __event: :class:`gtk.gdk.Event`
         :return: _date; the date in ISO-8601 (YYYY-mm-dd) format.
         :rtype: str
         """
-
         _dialog = rtk.RTKDateSelect()
 
         _date = _dialog.do_run()
@@ -205,14 +198,11 @@ class GeneralData(RTKWorkView):
 
     def _make_buttonbox(self):
         """
-        Method to create the gtk.ButtonBox() for the Requirement class Work
-        View.
+        Make the gtk.ButtonBox() for the Requirement Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Requirement class Work
-                 View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :return: _buttonbox; the gtk.ButtonBox() for the Requirement Work View.
+        :rtype: :class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             (u"Save the currently selected Requirement to the open RTK "
              u"Program database.")
@@ -227,13 +217,11 @@ class GeneralData(RTKWorkView):
 
     def _make_general_data_page(self):
         """
-        Method to create the Requirement class gtk.Notebook() page for
-        displaying general data about the selected Requirement.
+        Make the Requirement Work View General Data gtk.Notebook() page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         # Load the requirement type gtk.ComboBox().
         _types = []
         # Each _type is (Code, Description, Type).
@@ -276,8 +264,7 @@ class GeneralData(RTKWorkView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Method to retrieve gtk.ComboBox() changes and assign the new data to
-        the appropriate Requirement data model attribute.
+        Retrieve gtk.ComboBox() changes and assign to Requirement attribute.
 
         :param gtk.CellRendererCombo combo: the gtk.CellRendererCombo() that
                                             called this method.
@@ -287,7 +274,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _requirement = self._dtc_data_controller.request_select(
@@ -327,7 +313,9 @@ class GeneralData(RTKWorkView):
 
     def _on_edit(self, index, new_text):
         """
-        Method to update the Work View gtk.Widgets() with changes to the
+        Update the Requirement Work View gtk.Widgets().
+
+        This method updates Work View gtk.Widgets() with changes to the
         Requirement data model attributes.  This method is called whenever an
         attribute is edited in a different view.
 
@@ -337,7 +325,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         if index == 3:
@@ -387,7 +374,9 @@ class GeneralData(RTKWorkView):
 
     def _on_focus_out(self, entry, index):
         """
-        Method to retrieve changes made to Requirement attributes through the
+        Retrieve RTKEntry() changes and assign to Requirement attributes.
+
+        This method retrieves changes to Requirement attributes through the
         various gtk.Widgets() and assign the new data to the appropriate
         Requirement data model attribute.  This method is called by:
 
@@ -403,7 +392,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _index = -1
         _return = False
         _text = ''
@@ -448,14 +436,13 @@ class GeneralData(RTKWorkView):
 
     def _on_select(self, module_id, **kwargs):
         """
-        Method to load the Requirement Work View class gtk.Notebook() widgets.
+        Load the Requirement Work View gtk.Notebook() widgets.
 
-        :param int requirement_id: the Requirement ID of the selected/edited
-                                Requirement.
+        :param int module_id: the Requirement ID of the selected/edited
+                              Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._requirement_id = module_id
@@ -525,8 +512,7 @@ class GeneralData(RTKWorkView):
 
     def _on_toggled(self, check, index):
         """
-        Method to retrieve gtk.CheckButton() changes and assign the new data to
-        the appropriate Requirement data model attribute.
+        Retrieve gtk.CheckButton() changes and assign to Requirement attribute.
 
         :param gtk.CheckButton check: the gtk.CheckButton() that called this
                                       method.
@@ -536,7 +522,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         check.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
@@ -562,6 +547,8 @@ class GeneralData(RTKWorkView):
 
 class RequirementAnalysis(RTKWorkView):
     """
+    Display Requirement attribute data in the RTK Work Book.
+
     The Requirement Analysis Work View displays all the analysis questions and
     answers for the selected Requirement. The attributes of a Requirement
     Analysis Work View are:
@@ -576,24 +563,23 @@ class RequirementAnalysis(RTKWorkView):
                                   the answers to the Verifiability questions.
     :ivar int _requirement_id: the ID of the Requirement Data Model currently
                                being controlled.
-    :ivar tvwClear: the :py:class:`gtk.RTKTreeView` listing all the Clarity
+    :ivar tvwClear: the :class:`gtk.RTKTreeView` listing all the Clarity
                     questions and answers.
-    :ivar tvwComplete: the :py:class:`gtk.RTKTreeView` listing all the
+    :ivar tvwComplete: the :class:`gtk.RTKTreeView` listing all the
                        Completeness questions and answers.
-    :ivar tvwConsistent: the :py:class:`gtk.RTKTreeView` listing all the
+    :ivar tvwConsistent: the :class:`gtk.RTKTreeView` listing all the
                          Consistency questions and answers.
-    :ivar tvwVerifiable: the :py:class:`gtk.RTKTreeView` listing all the
+    :ivar tvwVerifiable: the :class:`gtk.RTKTreeView` listing all the
                          Verifiability questions and answers.
     """
 
     def __init__(self, controller):
         """
-        Method to initialize the Work View for the Requirement package.
+        Initialize the Work View for the Requirement package.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKWorkView.__init__(self, controller, module='Requirement')
 
         # Initialize private dictionary attributes.
@@ -626,28 +612,26 @@ class RequirementAnalysis(RTKWorkView):
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Requirement.
+        Save the currently selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._requirement_id)
 
     def _do_toggle_cell(self, cell, path, model, index):
         """
-        Method to handle edits of the Requirement Analysis gtk.Treeview()
-        gtk.CellRendererToggle() cells.
+        Handle edits of the Requirement Analysis RTKTreeview().
 
         :param cell: the gtk.CellRendererToggle() that was toggled.
-        :type cell: :py:class:`gtk.CellRendererToggle`
+        :type cell: :class:`gtk.CellRendererToggle`
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param model: the gtk.TreeModel() for the gtk.Treeview() that is being
                       edited.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :param int index: the index of the Requirement analysis gtk.Treeview()
                           questions being answered.  Indices are:
 
@@ -661,10 +645,10 @@ class RequirementAnalysis(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        _requirement = self._dtc_data_controller.request_select(self._requirement_id)
+        _requirement = self._dtc_data_controller.request_select(
+            self._requirement_id)
 
         _answer = boolean_to_integer(not cell.get_active())
         model[path][2] = _answer
@@ -697,14 +681,11 @@ class RequirementAnalysis(RTKWorkView):
 
     def _make_buttonbox(self):
         """
-        Method to create the gtk.ButtonBox() for the Requirement class Work
-        View.
+        Make the gtk.ButtonBox() for the Requirement Work View.
 
-        :return: _buttonbox; the gtk.ButtonBox() for the Requirement class Work
-                 View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :return: _buttonbox; the gtk.ButtonBox() for the Requirement Work View.
+        :rtype: :class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             (u"Save the currently selected Requirement to the open RTK "
              u"Program database.")
@@ -719,13 +700,11 @@ class RequirementAnalysis(RTKWorkView):
 
     def _make_requirement_analysis_page(self):
         """
-        Method to create the Requirement Analysis Work View for displaying the
-        analysis of the selected Requirement.
+        Make the Requirement Analysis Work View page.
 
         :return: _hpaned
-        :rtype: :py:class:`gtk.HPaned`
+        :rtype: :class:`gtk.HPaned`
         """
-
         _lst_clear = [
             _(u"1. The requirement clearly states what is needed or "
               u"desired."),
@@ -942,14 +921,12 @@ class RequirementAnalysis(RTKWorkView):
 
     def _on_select(self, module_id, **kwargs):
         """
-        Method to load the Requirement Analysis Work View class gtk.Notebook()
-        widgets.
+        Load the Requirement Analysis Work View gtk.Notebook() widgets.
 
         :param int module_id: the Requirement ID of the selected Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._requirement_id = module_id
