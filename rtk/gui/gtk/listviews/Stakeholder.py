@@ -410,6 +410,8 @@ class ListView(RTKListView):
 
         self._stakeholder_id = module_id
 
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['stakeholder']
         _stakeholders = \

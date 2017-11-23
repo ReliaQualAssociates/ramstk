@@ -5,9 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-This is the main program for the RTK application.
-"""
+"""This is the main program for the RTK application."""
 
 import gettext
 import logging
@@ -15,10 +13,10 @@ import os
 import sys
 from datetime import date
 
-from sqlalchemy.orm import scoped_session           # pylint: disable=E0401
-from pubsub import pub                              # pylint: disable=E0401
+from sqlalchemy.orm import scoped_session  # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
-from treelib import Tree                            # pylint: disable=E0401
+from treelib import Tree  # pylint: disable=E0401
 
 try:
     import pygtk
@@ -31,6 +29,7 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
+# pylint: disable=E0401
 from Configuration import Configuration
 import Utilities
 from dao.DAO import DAO
@@ -93,10 +92,7 @@ _ = gettext.gettext
 
 
 def main():
-    """
-    This is the main function for the RTK application.
-    """
-
+    """Launch the RTK application."""
     # splScreen = SplashScreen()
 
     # If you don't do this, the splash screen will show, but wont render it's
@@ -116,7 +112,7 @@ def main():
 
 def _initialize_loggers(configuration):
     """
-    Function to create loggers for the RTK application.
+    Create loggers for the RTK application.
 
     :param configuration: the RTK Configuration() object instance holding all
                           the configuration values for the current instance of
@@ -125,7 +121,6 @@ def _initialize_loggers(configuration):
     :return: (_debug_log, _user_log, _import_log)
     :rtype: tuple
     """
-
     # Create loggers for the application.  The first is to store log
     # information for RTK developers.  The second is to log errors for the
     # user.  The user can use these errors to help find problems with their
@@ -155,16 +150,16 @@ def _initialize_loggers(configuration):
 
 
 class NoOptionError(Exception):
-    """
-    Exception raised when no option is available in the configuration file.
-    """
+    """Raise error when no option is available in the configuration file."""
 
     pass
 
 
 class Model(object):
     """
-    This is the RTK data model class.  The attributes of a RTK data model are:
+    This is the RTK data model class.
+
+    The attributes of a RTK data model are:
 
     :ivar site_dao: the data access object used to communicate with the RTK
                     Common database.
@@ -176,14 +171,13 @@ class Model(object):
 
     def __init__(self, sitedao, programdao):
         """
-        Method to initialize an instance of the RTK data model.
+        Initialize an instance of the RTK data model.
 
         :param sitedao: the `:py:class:rtk.dao.DAO.DAO` instance connected to
                         the RTK Common database.
         :param programdao: the `:py:class:rtk.dao.DAO.DAO` instance connected
                            to the RTK Program database.
         """
-
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
@@ -201,21 +195,20 @@ class Model(object):
 
         # Create a session for communicating with the RTK Common database
         site_session = self.site_dao.RTK_SESSION
-        site_session.configure(bind=self.site_dao.engine, autoflush=False,
-                               expire_on_commit=False)
+        site_session.configure(
+            bind=self.site_dao.engine, autoflush=False, expire_on_commit=False)
         self.site_session = scoped_session(site_session)
         self.program_session = None
 
     def create_program(self, database):
         """
-        Method to create a new RTK Program database.
+        Create a new RTK Program database.
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = 'RTK SUCCESS: Creating RTK Program database {0:s}.'.\
             format(database)
@@ -223,8 +216,10 @@ class Model(object):
         self.program_dao.db_connect(database)
 
         _session = scoped_session(self.program_dao.RTK_SESSION)
-        _session.configure(bind=self.program_dao.engine,
-                           autoflush=False, expire_on_commit=False)
+        _session.configure(
+            bind=self.program_dao.engine,
+            autoflush=False,
+            expire_on_commit=False)
 
         if self.program_dao.db_create_program(database, _session):
             _error_code = 1001
@@ -237,33 +232,33 @@ class Model(object):
 
     def read_program_info(self):
         """
-        Method to read the program info table from the RTK Program database.
+        Read the program info table from the RTK Program database.
 
         :return: the list of RTKProgramInfo objects for each row in the
                  rtk_program_info table in the RTK Program database.
         :rtype: :py:class:`dao.RTKProgramInfo.RTKProgramInfo`
         """
-
         return self.program_session.query(RTKProgramInfo).all()
 
     def open_program(self, database):
         """
-        Method to open an RTK Program database for analyses.
+        Open an RTK Program database for analyses.
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = 'RTK SUCCESS: Opening RTK Program database {0:s}.'.\
             format(database)
 
         if not self.program_dao.db_connect(database):
             program_session = self.program_dao.RTK_SESSION
-            program_session.configure(bind=self.program_dao.engine,
-                                      autoflush=False, expire_on_commit=False)
+            program_session.configure(
+                bind=self.program_dao.engine,
+                autoflush=False,
+                expire_on_commit=False)
             self.program_session = scoped_session(program_session)
 
         else:
@@ -274,39 +269,33 @@ class Model(object):
         return _error_code, _msg
 
     def close_program(self):
-        """
-        Method to close the open RTK Program database.
-        """
-
+        """Close the open RTK Program database."""
         self.program_dao.db_close()
 
-        return
+        return None
 
     def save_program(self):
         """
-        Method to save the open RTK Program database.
+        Save the open RTK Program database.
 
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-
         _error_code, _msg = self.program_dao.db_update(self.program_session)
 
         return _error_code, _msg
 
     def delete_program(self):
         """
-        Method to delete an existing RTK Program database.
+        Delete an existing RTK Program database.
 
         :return:
         """
-
         pass
 
     def load_globals(self, configuration):
         """
-        Method to load the RTK Program global constants managed by the RTK
-        Configuration class.
+        Load the RTK Program global constants.
 
         :param configuration: the currently active RTK Program Configuration()
                               object.
@@ -314,7 +303,6 @@ class Model(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # ------------------------------------------------------------------- #
@@ -322,42 +310,46 @@ class Model(object):
         # tree.                                                               #
         # ------------------------------------------------------------------- #
         self.tree.create_node('Components', -1)
-        for _category in self.site_session.query(RTKCategory).\
+        for _item in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'hardware').all():
-            self.tree.create_node(_category.name, _category.category_id,
-                                  parent=-1,
-                                  data=_category.get_attributes()[1:])
+            self.tree.create_node(
+                _item.name,
+                _item.category_id,
+                parent=-1,
+                data=_item.get_attributes()[1:])
 
-        for _subcategory in self.site_session.query(RTKSubCategory).all():
+        for _item in self.site_session.query(RTKSubCategory).all():
             # We need to create a unique identifer for each subcategory because
             # we can't have two nodes in the tree with the same ID, but we can
             # have a category and subcategory with the same ID in the database.
             # This simple method guarantees a unique ID for the subcategory for
             # the tree.
-            _identifier = str(_subcategory.category_id) + \
-                          str(_subcategory.subcategory_id)
-            self.tree.create_node(_subcategory.description, _identifier,
-                                  parent=_subcategory.category_id,
-                                  data=_subcategory.get_attributes()[2:])
+            _identifier = str(_item.category_id) + str(_item.subcategory_id)
+            self.tree.create_node(
+                _item.description,
+                _identifier,
+                parent=_item.category_id,
+                data=_item.get_attributes()[2:])
 
-        for _mode in self.site_session.query(RTKFailureMode).all():
+        for _item in self.site_session.query(RTKFailureMode).all():
             # We need to create a unique identifer for each mode because
             # we can't have two nodes in the tree with the same ID, but we can
             # have a category, subcategory, and/or mode with the same ID in the
             # database.  This simple method guarantees a unique ID for the mode
             # for the tree.  For the same reason we have to create the parent
             # ID.
-            _identifier = str(_mode.category_id) + \
-                          str(_mode.subcategory_id) + \
-                          str(_mode.mode_id)
-            _parent = str(_mode.category_id) + str(_mode.subcategory_id)
-            self.tree.create_node(_mode.description, _identifier,
-                                  parent=_parent,
-                                  data=_mode.get_attributes()[3:])
+            _identifier = str(_item.category_id) + \
+                str(_item.subcategory_id) + str(_item.mode_id)
+            _parent = str(_item.category_id) + str(_item.subcategory_id)
+            self.tree.create_node(
+                _item.description,
+                _identifier,
+                parent=_parent,
+                data=_item.get_attributes()[3:])
 
-        for _stakeholder in self.site_session.query(RTKStakeholders).all():
-            configuration.RTK_STAKEHOLDERS[_stakeholder.stakeholders_id] = \
-                _stakeholder.get_attributes()[1:]
+        for _item in self.site_session.query(RTKStakeholders).all():
+            configuration.RTK_STAKEHOLDERS[_item.stakeholders_id] = \
+                _item.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKCategory.                                 #
@@ -561,14 +553,13 @@ class Model(object):
 
     def validate_license(self, license_key):
         """
-        Method to validate the license and the license expiration date.
+        Validate the license and the license expiration date.
 
         :param str license_key: the license key for the current RTK
                                 installation.
         :return: (_error_code, _msg)
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = 'RTK SUCCESS: Validating RTK License.'
 
@@ -592,8 +583,10 @@ class Model(object):
 
 class RTK(object):
     """
-    Class representing the RTK data controller.  This is the master controller
-    for the entire RTK application.  Attributes of an RTK data controller are:
+    Class representing the RTK data controller.
+
+    This is the master controller for the entire RTK application.  Attributes
+    of an RTK data controller are:
 
     :ivar dict dic_controllers: dictionary of data controllers available in the
                                 running instance of RTK.
@@ -639,10 +632,7 @@ class RTK(object):
     RTK_CONFIGURATION = Configuration()
 
     def __init__(self, **kwargs):  # pylint: disable=R0914
-        """
-        Method to initialize an instance of the RTK data controller.
-        """
-
+        """Initialize an instance of the RTK data controller."""
         # Read the site configuration file.
         self.RTK_CONFIGURATION.set_site_variables()
         self.RTK_CONFIGURATION.set_user_variables()
@@ -662,38 +652,43 @@ class RTK(object):
 
         # Initialize private list instance attributes.
         self.__test = kwargs['test']
-        self._lst_modules = ['revision', 'function', 'requirement', 'hardware',
-                             'software', 'testing', 'validation', 'incident',
-                             'survival']
+        self._lst_modules = [
+            'revision', 'function', 'requirement', 'hardware', 'software',
+            'testing', 'validation', 'incident', 'survival'
+        ]
 
         # Initialize private scalar instance attributes.
 
         # Initialize public dictionary instance attributes.
-        self.dic_controllers = {'revision': None,
-                                'function': None,
-                                'requirement': None,
-                                'hardware': None,
-                                'software': None,
-                                'testing': None,
-                                'validation': None,
-                                'incident': None,
-                                'survival': None,
-                                'matrices': None,
-                                'profile': None,
-                                'definition': None,
-                                'ffmea': None,
-                                'fmea': None,
-                                'stakeholder': None,
-                                'allocation': None,
-                                'hazard': None,
-                                'similaritem': None,
-                                'pof': None,
-                                'growth': None,
-                                'action': None,
-                                'component': None}
-        self.dic_books = {'listbook': None,
-                          'modulebook': None,
-                          'workbook': None}
+        self.dic_controllers = {
+            'revision': None,
+            'function': None,
+            'requirement': None,
+            'hardware': None,
+            'software': None,
+            'testing': None,
+            'validation': None,
+            'incident': None,
+            'survival': None,
+            'matrices': None,
+            'profile': None,
+            'definition': None,
+            'ffmea': None,
+            'fmea': None,
+            'stakeholder': None,
+            'allocation': None,
+            'hazard': None,
+            'similaritem': None,
+            'pof': None,
+            'growth': None,
+            'action': None,
+            'component': None
+        }
+        self.dic_books = {
+            'listbook': None,
+            'modulebook': None,
+            'workbook': None
+        }
 
         # Define public list attributes.
 
@@ -705,7 +700,7 @@ class RTK(object):
         _database = None
         if self.RTK_CONFIGURATION.RTK_COM_BACKEND == 'sqlite':
             _database = self.RTK_CONFIGURATION.RTK_COM_BACKEND + ':///' + \
-                        self.RTK_CONFIGURATION.RTK_COM_INFO['database']
+                self.RTK_CONFIGURATION.RTK_COM_INFO['database']
         _dao = DAO()
         _dao.db_connect(_database)
 
@@ -717,7 +712,7 @@ class RTK(object):
         # configuration.
         if self.RTK_CONFIGURATION.RTK_GUI_LAYOUT == 'basic':  # Single window.
             pass
-        else:                                   # Multiple windows.
+        else:  # Multiple windows.
             self.dic_books['listbook'] = ListBook(self)
             self.dic_books['modulebook'] = ModuleBook(self)
             self.dic_books['workbook'] = WorkBook(self)
@@ -726,23 +721,23 @@ class RTK(object):
             '/32x32/db-disconnected.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
-        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
-                                     u"project database."))
+        self.icoStatus.set_tooltip(
+            _(u"RTK is not currently connected to a "
+              u"project database."))
 
     def request_create_program(self):
         """
-        Method to request a new RTK Program database be created.
+        Request a new RTK Program database be created.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
         _database = None
 
         if self.RTK_CONFIGURATION.RTK_BACKEND == 'sqlite':
             _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
-                        self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
+                self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
 
         _error_code, _msg = self.rtk_model.create_program(_database)
         if _error_code == 0:
@@ -759,30 +754,27 @@ class RTK(object):
 
     def request_load_globals(self):
         """
-        Method to load all the global Configuration variables from the RTK
-        Site database.
+        Request to load all the global Configuration variables.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self.rtk_model.load_globals(self.RTK_CONFIGURATION)
 
     def request_open_program(self):
         """
-        Method to request an RTK Program database be opened for analyses.
+        Request an RTK Program database be opened for analyses.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _database = None
 
         if self.RTK_CONFIGURATION.RTK_BACKEND == 'sqlite':
             _database = self.RTK_CONFIGURATION.RTK_BACKEND + ':///' + \
-                        self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
+                self.RTK_CONFIGURATION.RTK_PROG_INFO['database']
 
         # If the database was successfully opened, create an instance of each
         # of the slave data controllers.
@@ -790,17 +782,11 @@ class RTK(object):
         if _error_code == 0:
             pub.sendMessage('requestOpen')
             self.dic_controllers['revision'] = dtcRevision(
-                self.rtk_model.program_dao,
-                self.RTK_CONFIGURATION,
-                test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['function'] = dtcFunction(
-                self.rtk_model.program_dao,
-                self.RTK_CONFIGURATION,
-                test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['requirement'] = dtcRequirement(
-                self.rtk_model.program_dao,
-                self.RTK_CONFIGURATION,
-                test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['hardware'] = HardwareBoM()
             # self.dic_controllers['software'] = SoftwareBoM()
             # self.dic_controllers['test'] = Test()
@@ -810,21 +796,17 @@ class RTK(object):
 
             # self.dic_controllers['matrices'] = Matrix()
             self.dic_controllers['profile'] = dtcUsageProfile(
-                self.rtk_model.program_dao,
-                self.RTK_CONFIGURATION,
-                test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['definition'] = dtcFailureDefinition(
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
+            self.dic_controllers['ffmea'] = dtcFMEA(
                 self.rtk_model.program_dao,
                 self.RTK_CONFIGURATION,
-                test=False)
-            self.dic_controllers['ffmea'] = dtcFMEA(self.rtk_model.program_dao,
-                                                 self.RTK_CONFIGURATION,
-                                                 test=False, functional=True)
+                test=False,
+                functional=True)
             # self.dic_controllers['fmea'] = FMEA()
             self.dic_controllers['stakeholder'] = dtcStakeholder(
-                self.rtk_model.program_dao,
-                self.RTK_CONFIGURATION,
-                test=False)
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['allocation'] = Allocation()
             # self.dic_controllers['hazard'] = Hazard()
             # self.dic_controllers['similaritem'] = SimilarItem()
@@ -894,8 +876,8 @@ class RTK(object):
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip(
                 _(u"RTK is connected to program database "
-                  u"{0:s}.".format(
-                      self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
+                  u"{0:s}.".format(self.RTK_CONFIGURATION.RTK_PROG_INFO[
+                      'database'])))
 
             self.loaded = True
 
@@ -911,18 +893,18 @@ class RTK(object):
 
     def request_close_program(self):
         """
-        Method to request the open RTK Program database be closed.
+        Request the open RTK Program database be closed.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _icon = self.RTK_CONFIGURATION.RTK_ICON_DIR + \
             '/32x32/db-disconnected.png'
         _icon = gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22)
         self.icoStatus.set_from_pixbuf(_icon)
-        self.icoStatus.set_tooltip(_(u"RTK is not currently connected to a "
-                                     u"project database."))
+        self.icoStatus.set_tooltip(
+            _(u"RTK is not currently connected to a "
+              u"project database."))
 
         if not self.__test:
             pub.sendMessage('closedProgram')
@@ -931,12 +913,11 @@ class RTK(object):
 
     def request_save_program(self):
         """
-        Method to request the open RTK Program database be saved.
+        Request the open RTK Program database be saved.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # TODO: Move this to the ModuleBook.
@@ -962,11 +943,11 @@ class RTK(object):
 
     def request_validate_license(self):
         """
-        Method to request the RTK license be validated.
+        Request the RTK license be validated.
 
-        :return:
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-
         _return = False
 
         # Read the license file and compare to the product key in the site
@@ -975,11 +956,11 @@ class RTK(object):
         try:
             _license_file = open(_license_file, 'r')
         except IOError:
-            Widgets.rtk_warning(_(u"Cannot find license file {0:s}.  If your "
-                                  u"license file is elsewhere, please place "
-                                  u"it in {1:s}.").format(
-                                      _license_file,
-                                      self.RTK_CONFIGURATION.RTK_DATA_DIR))
+            Widgets.rtk_warning(
+                _(u"Cannot find license file {0:s}.  If your "
+                  u"license file is elsewhere, please place "
+                  u"it in {1:s}.").format(_license_file,
+                                          self.RTK_CONFIGURATION.RTK_DATA_DIR))
             _return = True
 
         _license_key = _license_file.readline().rstrip('\n')
@@ -988,21 +969,23 @@ class RTK(object):
 
         _error_code, _msg = self.rtk_model.validate_license(_license_key)
         if _error_code == 1:
-            Widgets.rtk_error(_(u"Invalid license (Invalid key).  Your "
-                                u"license key is incorrect.  Closing the RTK "
-                                u"application."))
+            Widgets.rtk_error(
+                _(u"Invalid license (Invalid key).  Your "
+                  u"license key is incorrect.  Closing the RTK "
+                  u"application."))
             _return = True
         elif _error_code == 2:
             # noinspection PyUnresolvedReferences
-            Widgets.rtk_error(_(u"Invalid license (Expired).  Your license "
-                                u"expired on {0:s}.  Closing the RTK "
-                                u"application.").
-                              format(_expire_date.strftime('%Y-%d-%m')))
+            Widgets.rtk_error(
+                _(u"Invalid license (Expired).  Your license "
+                  u"expired on {0:s}.  Closing the RTK "
+                  u"application.").format(_expire_date.strftime('%Y-%d-%m')))
             _return = True
 
         return _return
 
     def __del__(self):
+        """Delete the running instance of RTK."""
         del self
 
 
