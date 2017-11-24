@@ -37,7 +37,7 @@ class RTKTreeView(gtk.TreeView):
                  pixbuf=False,
                  indexed=False):
         """
-        Method to create RTK TreeView widgets.
+        Initialize an RTK TreeView widget.
 
         :param str fmt_path: the base XML path in the format file to read.
         :param int fmt_idx: the index of the format file to use when creating
@@ -49,7 +49,6 @@ class RTKTreeView(gtk.TreeView):
         :keyword bool pixbuf: indicates whether or not to append a PixBuf
                               column to the gtk.TreeModel().
         """
-
         gtk.TreeView.__init__(self)
 
         # Initialize private dictionary instance attributes:
@@ -62,6 +61,7 @@ class RTKTreeView(gtk.TreeView):
 
         # Initialize public list instance attributes.
         self.order = []
+        self.korder = []
 
         # Initialize public scalar instance attributes.
 
@@ -83,6 +83,8 @@ class RTKTreeView(gtk.TreeView):
         # Retrieve whether or not the column is visible from the format file.
         _visible = lxml.parse(fmt_file).xpath(fmt_path + "/visible")
 
+        _keys = lxml.parse(fmt_file).xpath(fmt_path + "/key")
+
         # Create a list of GObject datatypes to pass to the model.
         _types = []
         for i in range(len(_datatypes)):  # pylint: disable=C0200
@@ -93,6 +95,10 @@ class RTKTreeView(gtk.TreeView):
             _position[i] = int(_position[i].text)
             _visible[i] = int(_visible[i].text)
             _types.append(gobject.type_from_name(_datatypes[i]))
+            try:
+                _keys[i] = _keys[i].text
+            except IndexError:
+                pass
 
         # Sort each of the lists according to the desired sequence provided in
         # the _position list.  This is necessary to all for user-specific
@@ -103,6 +109,7 @@ class RTKTreeView(gtk.TreeView):
         _editable = [x for _, x in sorted(zip(_position, _editable))]
         _visible = [x for _, x in sorted(zip(_position, _visible))]
         _types = [x for _, x in sorted(zip(_position, _types))]
+        self.korder = [x for _, x in sorted(zip(_position, _keys))]
 
         # Append entries to each list if this RTKTreeView is to display an
         # icon at the beginning of the row (Usage Profile, Hardware, etc.)
@@ -208,8 +215,7 @@ class RTKTreeView(gtk.TreeView):
 
     def do_load_tree(self, tree, row=None):
         """
-        Method to recursively load the Module View's gtk.TreeModel with the
-        Module's tree.
+        Load the Module View's gtk.TreeModel() with the Module's tree.
 
         :param tree: the Module's treelib Tree().
         :type tree: :class:`treelib.Tree`
@@ -218,7 +224,6 @@ class RTKTreeView(gtk.TreeView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
         _row = None
         _model = self.get_model()
@@ -226,8 +231,11 @@ class RTKTreeView(gtk.TreeView):
         _node = tree.nodes[SortedDict(tree.nodes).keys()[0]]
         _entity = _node.data
 
+        _attributes = []
         try:
-            _attributes = _entity.get_attributes()
+            _temp = _entity.get_attributes()
+            for _key in self.korder:
+                _attributes.append(_temp[_key])
             try:
                 _row = _model.append(row, _attributes)
             except TypeError:

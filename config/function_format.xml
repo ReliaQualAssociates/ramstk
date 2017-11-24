@@ -22,6 +22,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>revision_id</key>
         </column>
         <column>
             <defaulttitle>Function ID</defaulttitle>
@@ -31,6 +32,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>function_id</key>
         </column>
         <column>
             <defaulttitle>Availability, Logistics</defaulttitle>
@@ -40,6 +42,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>availability_logistics</key>
         </column>
         <column>
             <defaulttitle>Availability, Mission</defaulttitle>
@@ -49,6 +52,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>availability_mission</key>
         </column>
         <column>
             <defaulttitle>Cost</defaulttitle>
@@ -58,6 +62,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost</key>
         </column>
         <column>
             <defaulttitle>Function Code</defaulttitle>
@@ -67,6 +72,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>function_code</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Logistics</defaulttitle>
@@ -76,6 +82,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hazard_rate_logistics</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Mission</defaulttitle>
@@ -85,6 +92,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>hazard_rate_mission</key>
         </column>
         <column>
             <defaulttitle>Level</defaulttitle>
@@ -94,6 +102,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>level</key>
         </column>
         <column>
             <defaulttitle>Mean Maintenance Time (MMT)</defaulttitle>
@@ -103,6 +112,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mmt</key>
         </column>
         <column>
             <defaulttitle>Mean Corrective Maintenance Time (MCMT)</defaulttitle>
@@ -112,6 +122,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mcmt</key>
         </column>
         <column>
             <defaulttitle>Mean Preventive Maintenance Time (MPMT)</defaulttitle>
@@ -121,6 +132,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mpmt</key>
         </column>
         <column>
             <defaulttitle>MTBF, Logistics</defaulttitle>
@@ -130,6 +142,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mtbf_logistics</key>
         </column>
         <column>
             <defaulttitle>MTBF, Mission</defaulttitle>
@@ -139,6 +152,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>mtbf_mission</key>
         </column>
         <column>
             <defaulttitle>Mean Time To Repair (MTTR)</defaulttitle>
@@ -148,6 +162,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mttr</key>
         </column>
         <column>
             <defaulttitle>Function Name</defaulttitle>
@@ -157,6 +172,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>name</key>
         </column>
         <column>
             <defaulttitle>Parent</defaulttitle>
@@ -166,6 +182,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>parent_id</key>
         </column>
         <column>
             <defaulttitle>Remarks</defaulttitle>
@@ -175,6 +192,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>remarks</key>
         </column>
         <column>
             <defaulttitle>Safety Critical</defaulttitle>
@@ -184,6 +202,7 @@ experience. -->
             <widget>toggle</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>safety_critical</key>
         </column>
         <column>
             <defaulttitle>Total Mode Count</defaulttitle>
@@ -193,6 +212,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>total_mode_count</key>
         </column>
         <column>
             <defaulttitle>Total Part Count</defaulttitle>
@@ -202,6 +222,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>total_part_count</key>
         </column>
         <column>
             <defaulttitle>Type</defaulttitle>
@@ -211,6 +232,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>type_id</key>
         </column>
     </tree>
 </root>

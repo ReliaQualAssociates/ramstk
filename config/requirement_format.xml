@@ -21,6 +21,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>revision_id</key>
         </column>
         <column>
             <defaulttitle>Requirement ID</defaulttitle>
@@ -30,6 +31,7 @@ experience. -->
             <position>1</position>
             <editable>0</editable>
             <visible>1</visible>
+            <key>requirement_id</key>
         </column>
         <column>
             <defaulttitle>Derived?</defaulttitle>
@@ -39,6 +41,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>derived</key>
         </column>
         <column>
             <defaulttitle>Requirement</defaulttitle>
@@ -48,6 +51,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>description</key>
         </column>
         <column>
             <defaulttitle>Figure Number</defaulttitle>
@@ -57,6 +61,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>figure_number</key>
         </column>
         <column>
             <defaulttitle>Owner</defaulttitle>
@@ -66,6 +71,7 @@ experience. -->
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>owner</key>
         </column>
         <column>
             <defaulttitle>Page Number</defaulttitle>
@@ -75,6 +81,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>page_number</key>
         </column>
         <column>
             <defaulttitle>Parent ID</defaulttitle>
@@ -84,6 +91,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>parent_id</key>
         </column>
         <column>
             <defaulttitle>Priority</defaulttitle>
@@ -93,6 +101,7 @@ experience. -->
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>priority</key>
         </column>
         <column>
             <defaulttitle>Requirement Code</defaulttitle>
@@ -102,6 +111,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>requirement_code</key>
         </column>
         <column>
             <defaulttitle>Specification</defaulttitle>
@@ -111,6 +121,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>specification</key>
         </column>
         <column>
             <defaulttitle>Requirement Type</defaulttitle>
@@ -120,6 +131,7 @@ experience. -->
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>requirement_type</key>
         </column>
         <column>
             <defaulttitle>Validated?</defaulttitle>
@@ -129,6 +141,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>validated</key>
         </column>
         <column>
             <defaulttitle>Validated Date</defaulttitle>
@@ -138,6 +151,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>validated_date</key>
         </column>
         <column>
             <defaulttitle>Clarity Q1</defaulttitle>
@@ -147,6 +161,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_0</key>
         </column>
         <column>
             <defaulttitle>Clarity Q2</defaulttitle>
@@ -156,6 +171,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_1</key>
         </column>
         <column>
             <defaulttitle>Clarity Q3</defaulttitle>
@@ -165,6 +181,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_2</key>
         </column>
         <column>
             <defaulttitle>Clarity Q4</defaulttitle>
@@ -174,6 +191,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_3</key>
         </column>
         <column>
             <defaulttitle>Clarity Q5</defaulttitle>
@@ -183,6 +201,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_4</key>
         </column>
         <column>
             <defaulttitle>Clarity Q6</defaulttitle>
@@ -192,6 +211,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_5</key>
         </column>
         <column>
             <defaulttitle>Clarity Q7</defaulttitle>
@@ -201,6 +221,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_6</key>
         </column>
         <column>
             <defaulttitle>Clarity Q8</defaulttitle>
@@ -210,6 +231,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_7</key>
         </column>
         <column>
             <defaulttitle>Clarity Q9</defaulttitle>
@@ -219,6 +241,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_clarity_8</key>
         </column>
         <column>
             <defaulttitle>Complete Q1</defaulttitle>
@@ -228,6 +251,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_0</key>
         </column>
         <column>
             <defaulttitle>Complete Q2</defaulttitle>
@@ -237,6 +261,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_1</key>
         </column>
         <column>
             <defaulttitle>Complete Q3</defaulttitle>
@@ -246,6 +271,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_2</key>
         </column>
         <column>
             <defaulttitle>Complete Q4</defaulttitle>
@@ -255,6 +281,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_3</key>
         </column>
         <column>
             <defaulttitle>Complete Q5</defaulttitle>
@@ -264,6 +291,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_4</key>
         </column>
         <column>
             <defaulttitle>Complete Q6</defaulttitle>
@@ -273,6 +301,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_5</key>
         </column>
         <column>
             <defaulttitle>Complete Q7</defaulttitle>
@@ -282,6 +311,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_6</key>
         </column>
         <column>
             <defaulttitle>Complete Q8</defaulttitle>
@@ -291,6 +321,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_7</key>
         </column>
         <column>
             <defaulttitle>Complete Q9</defaulttitle>
@@ -300,6 +331,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_8</key>
         </column>
         <column>
             <defaulttitle>Complete Q10</defaulttitle>
@@ -309,6 +341,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_complete_9</key>
         </column>
         <column>
             <defaulttitle>Consistent Q1</defaulttitle>
@@ -318,6 +351,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_0</key>
         </column>
         <column>
             <defaulttitle>Consistent Q2</defaulttitle>
@@ -327,6 +361,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_1</key>
         </column>
         <column>
             <defaulttitle>Consistent Q3</defaulttitle>
@@ -336,6 +371,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_2</key>
         </column>
         <column>
             <defaulttitle>Consistent Q4</defaulttitle>
@@ -345,6 +381,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_3</key>
         </column>
         <column>
             <defaulttitle>Consistent Q5</defaulttitle>
@@ -354,6 +391,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_4</key>
         </column>
         <column>
             <defaulttitle>Consistent Q6</defaulttitle>
@@ -363,6 +401,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_5</key>
         </column>
         <column>
             <defaulttitle>Consistent Q7</defaulttitle>
@@ -372,6 +411,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_6</key>
         </column>
         <column>
             <defaulttitle>Consistent Q8</defaulttitle>
@@ -381,6 +421,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_7</key>
         </column>
         <column>
             <defaulttitle>Consistent Q9</defaulttitle>
@@ -390,6 +431,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_consistent_8</key>
         </column>
         <column>
             <defaulttitle>Verifiable Q1</defaulttitle>
@@ -399,6 +441,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_verifiable_0</key>
         </column>
         <column>
             <defaulttitle>Verifiable Q2</defaulttitle>
@@ -408,6 +451,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_verifiable_1</key>
         </column>
         <column>
             <defaulttitle>Verifiable Q3</defaulttitle>
@@ -417,6 +461,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_verifiable_2</key>
         </column>
         <column>
             <defaulttitle>Verifiable Q4</defaulttitle>
@@ -426,6 +471,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_verifiable_3</key>
         </column>
         <column>
             <defaulttitle>Verifiable Q5</defaulttitle>
@@ -435,6 +481,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_verifiable_4</key>
         </column>
         <column>
             <defaulttitle>Verifiable Q6</defaulttitle>
@@ -444,6 +491,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>q_verifiable_5</key>
         </column>
     </tree>
 </root>
