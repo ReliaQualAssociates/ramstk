@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Revision Work View Module
--------------------------------------------------------------------------------
-"""
+"""Revision Work View."""
 
 import locale
 
@@ -17,7 +14,6 @@ from pubsub import pub  # pylint: disable=E0401
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
-
 # from Assistants import AddRevision
 
 

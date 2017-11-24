@@ -117,7 +117,7 @@ def _initialize_loggers(configuration):
     :param configuration: the RTK Configuration() object instance holding all
                           the configuration values for the current instance of
                           RTK.
-    :type configuration: :py:class:`rtk.Configuration.Configuration()`
+    :type configuration: :class:`rtk.Configuration.Configuration()`
     :return: (_debug_log, _user_log, _import_log)
     :rtype: tuple
     """
@@ -163,19 +163,19 @@ class Model(object):
 
     :ivar site_dao: the data access object used to communicate with the RTK
                     Common database.
-    :type site_dao: :py:class:`rtk.dao.DAO.DAO()`
+    :type site_dao: :class:`rtk.dao.DAO.DAO()`
     :ivar program_dao: the data access object used to communicate with the RTK
                        Program database
-    :type program_dao: :py:class:`rtk.dao.DAO.DAO()`
+    :type program_dao: :class:`rtk.dao.DAO.DAO()`
     """
 
     def __init__(self, sitedao, programdao):
         """
         Initialize an instance of the RTK data model.
 
-        :param sitedao: the `:py:class:rtk.dao.DAO.DAO` instance connected to
+        :param sitedao: the `:class:rtk.dao.DAO.DAO` instance connected to
                         the RTK Common database.
-        :param programdao: the `:py:class:rtk.dao.DAO.DAO` instance connected
+        :param programdao: the `:class:rtk.dao.DAO.DAO` instance connected
                            to the RTK Program database.
         """
         # Initialize private dictionary attributes.
@@ -236,7 +236,7 @@ class Model(object):
 
         :return: the list of RTKProgramInfo objects for each row in the
                  rtk_program_info table in the RTK Program database.
-        :rtype: :py:class:`dao.RTKProgramInfo.RTKProgramInfo`
+        :rtype: :class:`dao.RTKProgramInfo.RTKProgramInfo`
         """
         return self.program_session.query(RTKProgramInfo).all()
 
@@ -293,13 +293,14 @@ class Model(object):
         """
         pass
 
+    # pylint: disable=too-many-branches
     def load_globals(self, configuration):
         """
         Load the RTK Program global constants.
 
         :param configuration: the currently active RTK Program Configuration()
                               object.
-        :type configuration: :py:class:`rtk.Configuration.Configuration()`
+        :type configuration: :class:`rtk.Configuration.Configuration()`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -310,244 +311,245 @@ class Model(object):
         # tree.                                                               #
         # ------------------------------------------------------------------- #
         self.tree.create_node('Components', -1)
-        for _item in self.site_session.query(RTKCategory).\
+        for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'hardware').all():
             self.tree.create_node(
-                _item.name,
-                _item.category_id,
+                _record.name,
+                _record.category_id,
                 parent=-1,
-                data=_item.get_attributes()[1:])
+                data=_record.get_attributes()[1:])
 
-        for _item in self.site_session.query(RTKSubCategory).all():
+        for _record in self.site_session.query(RTKSubCategory).all():
             # We need to create a unique identifer for each subcategory because
             # we can't have two nodes in the tree with the same ID, but we can
             # have a category and subcategory with the same ID in the database.
             # This simple method guarantees a unique ID for the subcategory for
             # the tree.
-            _identifier = str(_item.category_id) + str(_item.subcategory_id)
+            _identifier = str(_record.category_id) + str(
+                _record.subcategory_id)
             self.tree.create_node(
-                _item.description,
+                _record.description,
                 _identifier,
-                parent=_item.category_id,
-                data=_item.get_attributes()[2:])
+                parent=_record.category_id,
+                data=_record.get_attributes()[2:])
 
-        for _item in self.site_session.query(RTKFailureMode).all():
+        for _record in self.site_session.query(RTKFailureMode).all():
             # We need to create a unique identifer for each mode because
             # we can't have two nodes in the tree with the same ID, but we can
             # have a category, subcategory, and/or mode with the same ID in the
             # database.  This simple method guarantees a unique ID for the mode
             # for the tree.  For the same reason we have to create the parent
             # ID.
-            _identifier = str(_item.category_id) + \
-                str(_item.subcategory_id) + str(_item.mode_id)
-            _parent = str(_item.category_id) + str(_item.subcategory_id)
+            _identifier = str(_record.category_id) + \
+                str(_record.subcategory_id) + str(_record.mode_id)
+            _parent = str(_record.category_id) + str(_record.subcategory_id)
             self.tree.create_node(
-                _item.description,
+                _record.description,
                 _identifier,
                 parent=_parent,
-                data=_item.get_attributes()[3:])
+                data=_record.get_attributes()[3:])
 
-        for _item in self.site_session.query(RTKStakeholders).all():
-            configuration.RTK_STAKEHOLDERS[_item.stakeholders_id] = \
-                _item.get_attributes()[1:]
+        for _record in self.site_session.query(RTKStakeholders).all():
+            configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKCategory.                                 #
         # ------------------------------------------------------------------- #
-        for _category in self.site_session.query(RTKCategory).\
+        for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.category_id == 'action').all():
-            configuration.RTK_ACTION_CATEGORY[_category.category_id] = \
-                _category.get_attributes()[1:]
+            configuration.RTK_ACTION_CATEGORY[_record.category_id] = \
+                _record.get_attributes()[1:]
 
-        for _category in self.site_session.query(RTKCategory).\
+        for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'incident').all():
-            configuration.RTK_INCIDENT_CATEGORY[_category.category_id] = \
-                _category.get_attributes()[1:]
+            configuration.RTK_INCIDENT_CATEGORY[_record.category_id] = \
+                _record.get_attributes()[1:]
 
-        for _severity in self.site_session.query(RTKCategory).\
+        for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'risk').all():
-            configuration.RTK_SEVERITY[_severity.category_id] = \
-                _severity.get_attributes()[1:]
+            configuration.RTK_SEVERITY[_record.category_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKEnviron.                                  #
         # ------------------------------------------------------------------- #
-        for _environ in self.site_session.query(RTKEnviron).\
+        for _record in self.site_session.query(RTKEnviron).\
                 filter(RTKEnviron.environ_type == 'active').all():
-            configuration.RTK_ACTIVE_ENVIRONMENTS[_environ.environ_id] = \
-                _environ.get_attributes()[1:]
+            configuration.RTK_ACTIVE_ENVIRONMENTS[_record.environ_id] = \
+                _record.get_attributes()[1:]
 
-        for _environ in self.site_session.query(RTKEnviron).\
+        for _record in self.site_session.query(RTKEnviron).\
                 filter(RTKEnviron.environ_type == 'dormant').all():
-            configuration.RTK_DORMANT_ENVIRONMENTS[_environ.environ_id] = \
-                _environ.get_attributes()[1:]
+            configuration.RTK_DORMANT_ENVIRONMENTS[_record.environ_id] = \
+                _record.get_attributes()[1:]
 
-        for _environ in self.site_session.query(RTKEnviron).\
+        for _record in self.site_session.query(RTKEnviron).\
                 filter(RTKEnviron.environ_type == 'development').all():
-            configuration.RTK_SW_DEV_ENVIRONMENTS[_environ.environ_id] = \
-                _environ.get_attributes()[1:]
+            configuration.RTK_SW_DEV_ENVIRONMENTS[_record.environ_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKGroup.                                    #
         # ------------------------------------------------------------------- #
-        for _group in self.site_session.query(RTKGroup).\
+        for _record in self.site_session.query(RTKGroup).\
                 filter(RTKGroup.group_type == 'affinity').all():
-            configuration.RTK_AFFINITY_GROUPS[_group.group_id] = \
-                _group.get_attributes()[1:]
+            configuration.RTK_AFFINITY_GROUPS[_record.group_id] = \
+                _record.get_attributes()[1:]
 
-        for _group in self.site_session.query(RTKGroup).\
+        for _record in self.site_session.query(RTKGroup).\
                 filter(RTKGroup.group_type == 'workgroup').all():
-            configuration.RTK_WORKGROUPS[_group.group_id] = \
-                _group.get_attributes()[1:]
+            configuration.RTK_WORKGROUPS[_record.group_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKLevel.                                    #
         # ------------------------------------------------------------------- #
-        for _level in self.site_session.query(RTKLevel).\
+        for _record in self.site_session.query(RTKLevel).\
                 filter(RTKLevel.level_type == 'probability').all():
-            configuration.RTK_FAILURE_PROBABILITY[_level.level_id] = \
-                _level.get_attributes()[1:]
+            configuration.RTK_FAILURE_PROBABILITY[_record.level_id] = \
+                _record.get_attributes()[1:]
 
-        for _level in self.site_session.query(RTKLevel).\
+        for _record in self.site_session.query(RTKLevel).\
                 filter(RTKLevel.level_type == 'software').all():
-            configuration.RTK_SW_LEVELS[_level.level_id] = \
-                _level.get_attributes()[1:]
+            configuration.RTK_SW_LEVELS[_record.level_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load the dictionaries from RTKMethod.                               #
         # ------------------------------------------------------------------- #
-        for _method in self.site_session.query(RTKMethod).\
+        for _record in self.site_session.query(RTKMethod).\
                 filter(RTKMethod.method_type == 'detection').all():
-            configuration.RTK_DETECTION_METHODS[_method.method_id] = \
-                _method.get_attributes[1:]
+            configuration.RTK_DETECTION_METHODS[_record.method_id] = \
+                _record.get_attributes[1:]
 
-        for _method in self.site_session.query(RTKMethod).\
+        for _record in self.site_session.query(RTKMethod).\
                 filter(RTKMethod.method_type == 'test').all():
-            configuration.RTK_SW_TEST_METHODS[_method.method_id] = \
-                _method.get_attributes[1:]
+            configuration.RTK_SW_TEST_METHODS[_record.method_id] = \
+                _record.get_attributes[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKModel.                                    #
         # ------------------------------------------------------------------- #
-        for _model in self.site_session.query(RTKModel).\
+        for _record in self.site_session.query(RTKModel).\
                 filter(RTKModel.model_type == 'allocation').all():
-            configuration.RTK_ALLOCATION_MODELS[_model.model_id] = \
-                _model.get_attributes()[1:]
-        for _model in self.site_session.query(RTKModel).\
+            configuration.RTK_ALLOCATION_MODELS[_record.model_id] = \
+                _record.get_attributes()[1:]
+        for _record in self.site_session.query(RTKModel).\
                 filter(RTKModel.model_type == 'rprediction').all():
-            configuration.RTK_HR_MODEL[_model.model_id] = \
-                _model.get_attributes()[1:]
+            configuration.RTK_HR_MODEL[_record.model_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load the dictionaries from RTKPhase.                                #
         # ------------------------------------------------------------------- #
-        for _phase in self.site_session.query(RTKPhase).\
+        for _record in self.site_session.query(RTKPhase).\
                 filter(RTKPhase.phase_type == 'lifecycle').all():
-            configuration.RTK_LIFECYCLE[_phase.phase_id] = \
-                _phase.get_atrributes()[1:]
+            configuration.RTK_LIFECYCLE[_record.phase_id] = \
+                _record.get_atrributes()[1:]
 
-        for _phase in self.site_session.query(RTKPhase).\
+        for _record in self.site_session.query(RTKPhase).\
                 filter(RTKPhase.phase_type == 'development').all():
-            configuration.RTK_SW_DEV_PHASES[_phase.phase_id] = \
-                _phase.get_attributes()[1:]
+            configuration.RTK_SW_DEV_PHASES[_record.phase_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKRPN.                                      #
         # ------------------------------------------------------------------- #
-        for _rpn in self.site_session.query(RTKRPN).\
+        for _record in self.site_session.query(RTKRPN).\
                 filter(RTKRPN.rpn_type == 'detection').all():
-            configuration.RTK_RPN_DETECTION[_rpn.rpn_id] = \
-                _rpn.get_attributes()[1:]
+            configuration.RTK_RPN_DETECTION[_record.rpn_id] = \
+                _record.get_attributes()[1:]
 
-        for _rpn in self.site_session.query(RTKRPN).\
+        for _record in self.site_session.query(RTKRPN).\
                 filter(RTKRPN.rpn_type == 'occurrence').all():
-            configuration.RTK_RPN_OCCURRENCE[_rpn.rpn_id] = \
-                _rpn.get_attributes()[1:]
+            configuration.RTK_RPN_OCCURRENCE[_record.rpn_id] = \
+                _record.get_attributes()[1:]
 
-        for _rpn in self.site_session.query(RTKRPN). \
+        for _record in self.site_session.query(RTKRPN). \
                 filter(RTKRPN.rpn_type == 'severity').all():
-            configuration.RTK_RPN_SEVERITY[_rpn.rpn_id] = \
-                _rpn.get_attributes()[1:]
+            configuration.RTK_RPN_SEVERITY[_record.rpn_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKStatus.                                   #
         # ------------------------------------------------------------------- #
-        for _status in self.site_session.query(RTKStatus).\
+        for _record in self.site_session.query(RTKStatus).\
                 filter(RTKStatus.status_type == 'action').all():
-            configuration.RTK_ACTION_STATUS[_status.status_id] = \
-                _status.get_attributes()[1:]
+            configuration.RTK_ACTION_STATUS[_record.status_id] = \
+                _record.get_attributes()[1:]
 
-        for _status in self.site_session.query(RTKStatus).\
+        for _record in self.site_session.query(RTKStatus).\
                 filter(RTKStatus.status_type == 'incident').all():
-            configuration.RTK_INCIDENT_STATUS[_status.status_id] = \
-                _status.get_attributes()[1:]
+            configuration.RTK_INCIDENT_STATUS[_record.status_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKType.                                     #
         # ------------------------------------------------------------------- #
         configuration.RTK_CONTROL_TYPES = [_(u"Prevention"), _(u"Detection")]
 
-        for _type in self.site_session.query(RTKType). \
+        for _record in self.site_session.query(RTKType). \
                 filter(RTKType.type_type == 'cost').all():
-            configuration.RTK_COST_TYPE[_type.type_id] = \
-                _type.get_attributes()[1:]
+            configuration.RTK_COST_TYPE[_record.type_id] = \
+                _record.get_attributes()[1:]
 
-        for _type in self.site_session.query(RTKType).\
+        for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'mtbf').all():
-            configuration.RTK_HR_TYPE[_type.type_id] = \
-                _type.get_attributes()[1:]
+            configuration.RTK_HR_TYPE[_record.type_id] = \
+                _record.get_attributes()[1:]
 
-        for _type in self.site_session.query(RTKType).\
+        for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'incident').all():
-            configuration.RTK_INCIDENT_TYPE[_type.type_id] = \
-                _type.get_attributes[1:]
+            configuration.RTK_INCIDENT_TYPE[_record.type_id] = \
+                _record.get_attributes[1:]
 
-        for _type in self.site_session.query(RTKType).\
+        for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'mttr').all():
-            configuration.RTK_MTTR_TYPE[_type.type_id] = \
-                _type.get_attributes()[1:]
+            configuration.RTK_MTTR_TYPE[_record.type_id] = \
+                _record.get_attributes()[1:]
 
-        for _type in self.site_session.query(RTKType).\
+        for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'requirement').all():
-            configuration.RTK_REQUIREMENT_TYPE[_type.type_id] = \
-                _type.get_attributes()[1:]
+            configuration.RTK_REQUIREMENT_TYPE[_record.type_id] = \
+                _record.get_attributes()[1:]
 
-        for _type in self.site_session.query(RTKType).\
+        for _record in self.site_session.query(RTKType).\
                 filter(RTKType.type_type == 'validation').all():
-            configuration.RTK_VALIDATION_TYPE[_type.type_id] = \
-                _type.get_attributes()[1:]
+            configuration.RTK_VALIDATION_TYPE[_record.type_id] = \
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from tables not requiring a filter.               #
         # ------------------------------------------------------------------- #
-        for _application in self.site_session.query(RTKApplication).all():
-            configuration.RTK_SW_APPLICATION[_application.application_id] = \
-                _application.get_attributes()[1:]
+        for _record in self.site_session.query(RTKApplication).all():
+            configuration.RTK_SW_APPLICATION[_record.application_id] = \
+                _record.get_attributes()[1:]
 
-        for _crit in self.site_session.query(RTKCriticality).all():
-            configuration.RTK_CRITICALITY[_crit.criticality_id] = \
-                _crit.get_attributes()[1:]
+        for _record in self.site_session.query(RTKCriticality).all():
+            configuration.RTK_CRITICALITY[_record.criticality_id] = \
+                _record.get_attributes()[1:]
 
-        for _dist in self.site_session.query(RTKDistribution).all():
-            configuration.RTK_S_DIST[_dist.distribution_id] = \
-                _dist.get_attributes()[1:]
+        for _record in self.site_session.query(RTKDistribution).all():
+            configuration.RTK_S_DIST[_record.distribution_id] = \
+                _record.get_attributes()[1:]
 
-        for _hazard in self.site_session.query(RTKHazards).all():
-            configuration.RTK_HAZARDS[_hazard.hazard_id] = \
-                _hazard.get_attributes()[1:]
+        for _record in self.site_session.query(RTKHazards).all():
+            configuration.RTK_HAZARDS[_record.hazard_id] = \
+                _record.get_attributes()[1:]
 
-        for _manufacturer in self.site_session.query(RTKManufacturer).all():
-            configuration.RTK_MANUFACTURERS[_manufacturer.manufacturer_id] = \
-                _manufacturer.get_attributes()[1:]
+        for _record in self.site_session.query(RTKManufacturer).all():
+            configuration.RTK_MANUFACTURERS[_record.manufacturer_id] = \
+                _record.get_attributes()[1:]
 
-        for _unit in self.site_session.query(RTKUnit).\
+        for _record in self.site_session.query(RTKUnit).\
                 filter(RTKUnit.unit_type == 'measurement').all():
-            configuration.RTK_MEASUREMENT_UNITS[_unit.unit_id] = \
-                _unit.get_attributes()[1:]
+            configuration.RTK_MEASUREMENT_UNITS[_record.unit_id] = \
+                _record.get_attributes()[1:]
 
-        for _user in self.site_session.query(RTKUser).all():
-            configuration.RTK_USERS[_user.user_id] = \
-                _user.get_attributes()[1:]
+        for _record in self.site_session.query(RTKUser).all():
+            configuration.RTK_USERS[_record.user_id] = \
+                _record.get_attributes()[1:]
 
         return _return
 
@@ -625,7 +627,7 @@ class RTK(object):
                               'workbook'
                           Values are the instance of each RTK book.
 
-    :ivar rtk_model: the instance of `:py:class:rtk.RTK.Model` managed by this
+    :ivar rtk_model: the instance of :class:`rtk.RTK.Model` managed by this
                      data controller.
     """
 

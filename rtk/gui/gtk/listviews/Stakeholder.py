@@ -135,15 +135,13 @@ class ListView(RTKListView):
             _stakeholder = self._dtc_data_controller.request_select(
                 self._stakeholder_id)
 
-            # Build a list of attributes based on the type of data package.
-            _attributes = [None] * 15
-            for i in xrange(15):
-                _attributes.insert(i, model[path][i])
-                #_attributes.append(model[path][i])
-                print i, self._lst_col_order[i], _attributes
-            _stakeholder.set_attributes(_attributes[2:])
-
-            if position == 4:
+            if position == self._lst_col_order[2]:
+                _stakeholder.customer_rank = int(float(new_text))
+            elif position == self._lst_col_order[3]:
+                _stakeholder.description = str(new_text)
+            elif position == self._lst_col_order[4]:
+                _stakeholder.group = str(new_text)
+                # FIXME: See issue #60.
                 try:
                     _key = max(self._mdcRTK.RTK_CONFIGURATION.
                                RTK_AFFINITY_GROUPS.keys()) + 1
@@ -151,9 +149,25 @@ class ListView(RTKListView):
                     _key = 1
                 self._mdcRTK.RTK_CONFIGURATION.RTK_AFFINITY_GROUPS[
                     _key] = _stakeholder.group
-            print _stakeholder.get_attributes()
+            elif position == self._lst_col_order[7]:
+                _stakeholder.planned_rank = int(float(new_text))
+            elif position == self._lst_col_order[8]:
+                _stakeholder.priority = int(float(new_text))
+            elif position == self._lst_col_order[10]:
+                _stakeholder.stakeholder = str(new_text)
+            elif position == self._lst_col_order[11]:
+                _stakeholder.user_float_1 = float(new_text)
+            elif position == self._lst_col_order[12]:
+                _stakeholder.user_float_2 = float(new_text)
+            elif position == self._lst_col_order[13]:
+                _stakeholder.user_float_3 = float(new_text)
+            elif position == self._lst_col_order[14]:
+                _stakeholder.user_float_4 = float(new_text)
+            elif position == self._lst_col_order[15]:
+                _stakeholder.user_float_5 = float(new_text)
+
             pub.sendMessage(
-                'EditedStakeholder',
+                'editedStakeholder',
                 index=self._lst_col_order[position],
                 new_text=new_text)
         else:
@@ -233,7 +247,7 @@ class ListView(RTKListView):
         _return = False
 
         if not self._dtc_data_controller.request_update_all():
-            self._on_select_stakeholder(self._stakeholder_id)
+            self._on_select_revision(self._revision_id)
         else:
             _prompt = _(u"An error occurred attempting to save the " \
                         u"stakeholder inputs for Stakeholder {0:d}.").\
@@ -282,7 +296,7 @@ class ListView(RTKListView):
         _return = False
 
         # Load the Affinity Group gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(3).get_cell_renderers()[0]
+        _cell = self.treeview.get_column(self._lst_col_order[4]).get_cell_renderers()[0]
         _cell.set_property('has-entry', True)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -294,7 +308,7 @@ class ListView(RTKListView):
             _cellmodel.append([_group[0]])
 
         # Load the Stakeholder gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(10).get_cell_renderers()[0]
+        _cell = self.treeview.get_column(self._lst_col_order[10]).get_cell_renderers()[0]
         _cell.set_property('has-entry', True)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -401,21 +415,21 @@ class ListView(RTKListView):
         """
         Load the Stakeholder List View gtk.TreeModel().
 
-        :param int stakeholder_id: the Stakeholder ID to select the Failure
-                                Definitions for.
+        :param int module_id: the Revision ID to select the Stakeholder Inputs
+                              for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        self._stakeholder_id = module_id
+        self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['stakeholder']
         _stakeholders = \
-            self._dtc_data_controller.request_select_all(self._stakeholder_id)
+            self._dtc_data_controller.request_select_all(self._revision_id)
 
         _model = self.treeview.get_model()
         _model.clear()

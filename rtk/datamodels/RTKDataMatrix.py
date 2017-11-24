@@ -159,7 +159,15 @@ class RTKDataMatrix(object):
         for _column in _session.query(self._column_table).filter(
                 self._column_table.revision_id == revision_id).all():
             _attributes = _column.get_attributes()
-            self.dic_column_hdrs[_attributes[ckey]] = _attributes[cheader]
+            try:
+                self.dic_column_hdrs[_attributes[ckey]] = _attributes[cheader]
+            except TypeError:
+                print 'FIXME: Handle TypeError in ' \
+                      'RTKDataMatrix.select_all().  Tuple indices must be ' \
+                      'integers, not str.  This will be fixed when all the ' \
+                      'RTK database tables are converted to return dicts ' \
+                      'from the get_attributes() method.  Matrix {0:s} is ' \
+                      'not working.'.format(matrix_type)
 
             self.n_col += 1
 

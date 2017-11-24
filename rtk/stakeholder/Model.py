@@ -157,7 +157,7 @@ class StakeholderDataModel(RTKDataModel):
 
         for _node in self.tree.all_nodes():
             try:
-                _error_code, _msg = self.update(_node.data.definition_id)
+                _error_code, _msg = self.update(_node.data.stakeholder_id)
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:

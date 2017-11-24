@@ -603,7 +603,7 @@ class FMEA(RTKWorkView):
 
         self._dtc_fmea = self._mdcRTK.dic_controllers['ffmea']
 
-        _fmea = self._dtc_fmea.request_select_all(self._function_id, True)
+        _fmea = self._dtc_fmea.request_select_all(self._function_id, functional=True)
         self._do_load_tree(_fmea)
 
         _row = _model.get_iter_root()
