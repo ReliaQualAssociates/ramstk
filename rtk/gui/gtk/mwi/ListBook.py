@@ -49,11 +49,15 @@ class ListBook(RTKBook):  # pylint: disable=R0904
             'revision':
             [lvwUsageProfile(controller),
              lvwFailureDefinition(controller)],
-            'function': [FunctionHardware(controller, matrix_id=1)],
+            'function': [FunctionHardware(controller,
+                                          matrix_type='fnctn_hrdwr')],
             'requirement': [lvwStakeholder(controller),
-                            RequirementHardware(controller, matrix_id=11),
-                            RequirementSoftware(controller, matrix_id=12),
-                            RequirementValidation(controller, matrix_id=13)]
+                            RequirementHardware(controller,
+                                                matrix_type='rqrmnt_hrdwr'),
+                            RequirementSoftware(controller,
+                                                matrix_type='rqrmnt_sftwr'),
+                            RequirementValidation(controller,
+                                                  matrix_type='rqrmnt_vldtn')]
         }
 
         # Initialize public list attributes.
