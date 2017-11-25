@@ -130,6 +130,6 @@ class RTKStakeholder(RTK_BASE):
             _error_code = 40
             _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
                    "dictionary passed to " \
-                   "RTKMechanism.set_attributes().".format(_err)
+                   "RTKStakeholder.set_attributes().".format(_err)
 
         return _error_code, _msg
