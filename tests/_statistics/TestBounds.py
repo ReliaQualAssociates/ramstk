@@ -1,52 +1,23 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing statistical bound algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.statistics.TestBounds.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""Test class for testing statistical bound algorithms and models."""
 
 import sys
 from os.path import dirname
-
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import unittest
 from nose.plugins.attrib import attr
 import numpy as np
 
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+
 import dao.DAO as _dao
-from analyses.statistics.Bounds import *
+from statistics.Bounds import *
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -55,11 +26,9 @@ __copyright__ = 'Copyright 2015 Andrew "Weibullguy" Rowland'
 
 
 class TestStatisticalBounds(unittest.TestCase):
-    """
-    Class for testing the Statistical Bound functions.
-    """
+    """Class for testing the Statistical Bound functions."""
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_variance_covariance(self):
         """
         (TestStatisticalBounds) calculate_variance_covariance should return a list of lists
@@ -72,7 +41,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_var_covar[1][1], 0.01710296)
         self.assertEqual(_var_covar[0][1], _var_covar[1][0])
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_variance_covariance_zero_division_scale(self):
         """
         (TestStatisticalBounds) calculate_variance_covariance should return a list of lists when the estimated scale parameter is zero
@@ -85,7 +54,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_var_covar[1][0], 0.002995667)
         self.assertAlmostEqual(_var_covar[1][1], 8.9787221E-06)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_variance_covariance_zero_division_shape(self):
         """
         (TestStatisticalBounds) calculate_variance_covariance should return a list of lists when the estimated shape parameter is zero
@@ -98,7 +67,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_var_covar[1][0], 0.03925982)
         self.assertAlmostEqual(_var_covar[1][1], -0.7475704)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_nhpp_mean_variance_cum_mean(self):
         """
         (TestStatisticalBounds) calculate_nhpp_mean_variance should return a float value equal to the variance of the cumulative mean of the NHPP model
@@ -108,7 +77,7 @@ class TestStatisticalBounds(unittest.TestCase):
         _mean_var = calculate_nhpp_mean_variance(46, 3000.0, 0.332, 0.616)
         self.assertAlmostEqual(_mean_var, 92.3421144)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_nhpp_mean_variance_inst_mean(self):
         """
         (TestStatisticalBounds) calculate_nhpp_mean_variance should return a float value equal to the variance of the instantaneous mean of the NHPP model
@@ -118,7 +87,7 @@ class TestStatisticalBounds(unittest.TestCase):
         _mean_var = calculate_nhpp_mean_variance(46, 3000.0, 0.332, 0.616, 2)
         self.assertAlmostEqual(_mean_var, 489.07164965)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_fisher_bounds(self):
         """
         (TestStatisticalBounds) calculate_fisher_bounds should return a tuple of float values with the lower and upper alpha bounds
@@ -129,7 +98,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.02699778)
         self.assertAlmostEqual(_bounds[1], 0.04662719)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_fisher_bounds_alpha(self):
         """
         (TestStatisticalBounds) calculate_fisher_bounds should return a tuple of float values with the lower and upper alpha bounds with alpha greater than one
@@ -140,7 +109,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.02699778)
         self.assertAlmostEqual(_bounds[1], 0.04662719)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_crow_bounds_cum_failure_rate_type2(self):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the cumulative failure intensity for Type II tests
@@ -151,7 +120,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.02402216)
         self.assertAlmostEqual(_bounds[1], 0.04877491)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_crow_bounds_shape_parameter_type2(self):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the shape parameter for Type II tests
@@ -162,7 +131,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.4527305)
         self.assertAlmostEqual(_bounds[1], 0.9349943)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_crow_bounds_scale_parameter_type2(self):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the scale parameter for Type II tests
@@ -173,7 +142,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.2870230)
         self.assertAlmostEqual(_bounds[1], 0.5827754)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_crow_bounds_cum_failure_rate_type1(self):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the cumulative failure intensity for Type I tests
@@ -184,7 +153,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.02402216)
         self.assertAlmostEqual(_bounds[1], 0.05255707)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_crow_bounds_shape_parameter_type1(self):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the shape parameter for Type I tests
@@ -195,7 +164,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.4356064)
         self.assertAlmostEqual(_bounds[1], 0.8844610)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_crow_bounds_scale_parameter_type1(self):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the scale parameter for Type I tests
@@ -206,7 +175,7 @@ class TestStatisticalBounds(unittest.TestCase):
         self.assertAlmostEqual(_bounds[0], 0.2870230)
         self.assertAlmostEqual(_bounds[1], 0.6279656)
 
-    @attr(all=True, unit=True)
+    @attr(all=True, unit=False)
     def test_calculate_crow_bounds_scale_parameter_alpha(self):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the scale parameter when passed an alpha parameter greater than one
@@ -219,10 +188,7 @@ class TestStatisticalBounds(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_beta_bounds(self):
-        """
-        (TestStatisticalBounds) calculate_beta_bounds should return a tuple of float values with the lower bound, point estimate, upper bound, and standard error
-        """
-
+        """(TestStatisticalBounds) calculate_beta_bounds should return a tuple of float values with the lower bound, point estimate, upper bound, and standard error."""
         self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[0],
                                13.44239853)
         self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[1],

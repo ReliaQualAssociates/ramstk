@@ -1,41 +1,10 @@
-#!/usr/bin/env python
-"""
-Contains functions for performing calculations associated with statistical
-bounds.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       rtk.analyses.statistics.Bounds.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""Functions for performing calculations associated with statistical bounds."""
 
 # Add NLS support.
 import gettext
@@ -44,7 +13,7 @@ import gettext
 from math import exp, log, sqrt
 import numpy as np
 from numpy.linalg import inv
-from scipy.stats import chi2, norm          # pylint: disable=E0611
+from scipy.stats import chi2, norm  # pylint: disable=E0611
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -238,9 +207,9 @@ def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
 
 def calculate_beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
     """
-    Function to calculate the mean, standard error, and bounds on the mean of
-    a beta distribution.  These are the project management estimators, not
-    exact calculations.
+    Calculate the mean, standard error, and bounds of the beta distribution.
+
+    These are the project management estimators, not exact calculations.
 
     :param float a: the minimum expected value.
     :param float m: most likely value.
@@ -250,15 +219,7 @@ def calculate_beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
                                            standard error.
     :rtype: tuple of floats
     """
-
-    if alpha < 0.0:
-# TODO: Move to the view module.
-        #Widgets.rtk_information(_(u"Confidence level take a value between 0 and "
-        #                        u"100 inclusive [0, 100].  Please select and "
-        #                        u"appropriate confidence level and try "
-        #                        u"again."))
-        return a, m, b, 0.0
-    elif alpha > 1.0:
+    if alpha > 1.0:
         _z_norm = norm.ppf(1.0 - ((1.0 - alpha / 100.0) / 2.0))
     else:
         _z_norm = norm.ppf(1.0 - ((1.0 - alpha) / 2.0))
