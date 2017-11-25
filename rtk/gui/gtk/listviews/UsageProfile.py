@@ -200,19 +200,26 @@ class ListView(RTKListView):
                 self._dtc_data_controller.request_select(_node_id)
 
             # Build a list of attributes based on the type of data package.
-            _attributes = []
+            _attributes = {}
             if _entity.is_mission:
-                for i in [2, 6, 4]:
-                    _attributes.append(model[path][i])
+                _attributes['description'] = model[path][2]
+                _attributes['mission_time'] = model[path][6]
+                _attributes['time_units'] = model[path][4]
             elif _entity.is_phase:
-                for i in [3, 2, 5, 6]:
-                    _attributes.append(model[path][i])
+                _attributes['description'] = model[path][3]
+                _attributes['name'] = model[path][2]
+                _attributes['phase_start'] = model[path][5]
+                _attributes['phase_end'] = model[path][6]
             elif _entity.is_env:
-                for i in [2, 4, 5, 6, 7, 8]:
-                    _attributes.append(model[path][i])
-                _attributes.append(_entity.ramp_rate)
-                _attributes.append(_entity.low_dwell_time)
-                _attributes.append(_entity.high_dwell_time)
+                _attributes['name'] = model[path][2]
+                _attributes['units'] = model[path][4]
+                _attributes['minimum'] = model[path][5]
+                _attributes['maximum'] = model[path][6]
+                _attributes['mean'] = model[path][7]
+                _attributes['variance'] = model[path][8]
+                _attributes['ramp_rate'] = _entity.ramp_rate
+                _attributes['low_dwell_time'] = _entity.low_dwell_time
+                _attributes['high_dwell_time'] = _entity.high_dwell_time
 
             _entity.set_attributes(_attributes)
 
