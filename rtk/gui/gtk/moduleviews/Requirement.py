@@ -188,7 +188,7 @@ class ModuleView(RTKModuleView):
 
             _error_code, \
                 _msg = self._dtc_data_controller.request_set_attributes(
-                    _attributes)
+                    self._requirement_id, _attributes)
 
             if _error_code == 0:
                 pub.sendMessage(
