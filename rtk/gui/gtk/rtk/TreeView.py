@@ -4,9 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-TreeView Module
--------------------------------------------------------------------------------
+"""RTKTreeView Module.
 
 This module contains RTK treeview and associated classes.  These classes are
 derived from the applicable pyGTK treeviews, but are provided with RTK specific
@@ -23,9 +21,7 @@ from .Label import RTKLabel  # pylint: disable=E0401
 
 
 class RTKTreeView(gtk.TreeView):
-    """
-    This is the RTKTreeView class.
-    """
+    """The RTKTreeView class."""
 
     # pylint: disable=R0913, R0914
     def __init__(self,
@@ -37,7 +33,7 @@ class RTKTreeView(gtk.TreeView):
                  pixbuf=False,
                  indexed=False):
         """
-        Initialize an RTK TreeView widget.
+        Initialize an RTKTreeView() instance.
 
         :param str fmt_path: the base XML path in the format file to read.
         :param int fmt_idx: the index of the format file to use when creating
@@ -146,8 +142,10 @@ class RTKTreeView(gtk.TreeView):
 
         if pixbuf:
             _n_cols = int(len(_types)) - 2
-        else:
+        elif indexed:
             _n_cols = int(len(_types)) - 1
+        else:
+            _n_cols = int(len(_types))
 
         for i in range(_n_cols):
             self.order.append(_position[i])
@@ -252,7 +250,7 @@ class RTKTreeView(gtk.TreeView):
 
     def _do_make_column(self, cells, visible, heading):
         """
-        Method to make a gtk.TreeViewColumn()
+        Make a gtk.TreeViewColumn().
 
         :param list cells: list of gtk.CellRenderer()s that are to be packed in
                            the column.
@@ -261,7 +259,6 @@ class RTKTreeView(gtk.TreeView):
         :return: _column
         :rtype: :class:`gtk.TreeViewColumn`
         """
-
         _column = gtk.TreeViewColumn("")
 
         for _cell in cells:
@@ -283,12 +280,11 @@ class RTKTreeView(gtk.TreeView):
     @staticmethod
     def _do_make_combo_cell():
         """
-        Method to make a gtk.CellRendererCombo().
+        Make a gtk.CellRendererCombo().
 
         :return: _cell
         :rtype: :class:`gtk.CellRendererCombo`
         """
-
         _cell = gtk.CellRendererCombo()
         _cellmodel = gtk.ListStore(gobject.TYPE_STRING)
         _cellmodel.append([""])
@@ -301,7 +297,7 @@ class RTKTreeView(gtk.TreeView):
     @staticmethod
     def _do_make_spin_cell():
         """
-        Method to make a gtk.CellRendererCombo().
+        Make a gtk.CellRendererCombo().
 
         :param str bg_color: the cell background color.
         :param str fg_color: the cell foreground color.
@@ -313,7 +309,6 @@ class RTKTreeView(gtk.TreeView):
         :return: _cell
         :rtype: :class:`gtk.CellRendererCombo`
         """
-
         _cell = gtk.CellRendererSpin()
         _adjustment = gtk.Adjustment(upper=5.0, step_incr=0.05)
         _cell.set_property('adjustment', _adjustment)
@@ -324,7 +319,7 @@ class RTKTreeView(gtk.TreeView):
     @staticmethod
     def _do_make_text_cell(blob=False):
         """
-        Method to make a gtk.CellRendererCombo().
+        Make a gtk.CellRendererCombo().
 
         :param bool blob: indicates whether the cell will be displaying a BLOB
                           field.
@@ -332,7 +327,6 @@ class RTKTreeView(gtk.TreeView):
         :return: _cell
         :rtype: :class:`gtk.CellRendererCombo`
         """
-
         if not blob:
             _cell = gtk.CellRendererText()
         else:
@@ -349,7 +343,6 @@ class RTKTreeView(gtk.TreeView):
         :return: _cell
         :rtype: :class:`gtk.CellRendererCombo`
         """
-
         _cell = gtk.CellRendererToggle()
         _cell.set_property('activatable', editable)
 
@@ -366,7 +359,6 @@ class RTKTreeView(gtk.TreeView):
         :param str fg_color: the cell foreground color.
         :param int editable: indicates whether the cell is editable.
         """
-
         if editable == 0:
             cell.set_property('cell-background', 'light gray')
         else:
@@ -385,7 +377,7 @@ class RTKTreeView(gtk.TreeView):
     @staticmethod
     def do_edit_cell(cell, path, new_text, position, model):
         """
-        Method called when a gtk.TreeView() gtk.CellRenderer() is edited.
+        Handle gtk.CellRenderer() edits.
 
         :param gtk.CellRenderer cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer() that
@@ -398,7 +390,6 @@ class RTKTreeView(gtk.TreeView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _convert = gobject.type_name(model.get_column_type(position))
@@ -420,7 +411,7 @@ class RTKTreeView(gtk.TreeView):
     @staticmethod
     def _format_cell(__column, cell, model, row, data):
         """
-        Method to set the formatting of the gtk.Treeview() gtk.CellRenderers().
+        Set the formatting of the gtk.Treeview() gtk.CellRenderers().
 
         :param __column: the gtk.TreeViewColumn() containing the
                          gtk.CellRenderer() to format.
@@ -434,7 +425,6 @@ class RTKTreeView(gtk.TreeView):
         :type row: :class:`gtk.TreeIter`
         :param tuple data: a tuple containing the position and the data type.
         """
-
         if data[1] == 'gfloat':
             # fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
             fmt = '{0:0.6g}'
@@ -456,8 +446,9 @@ class RTKTreeView(gtk.TreeView):
     @staticmethod
     def _resize_wrap(column, __param, cell):
         """
-        Method to dynamically set the wrap-width property for a
-        gtk.CellRenderer() in the gtk.TreeView() when the column width is
+        Dynamically set wrap-width property for a gtk.CellRenderer().
+
+        This is called whenever the column widht in the gtk.TreeView() is
         resized.
 
         :param column: the gtk.TreeViewColumn() being resized.
@@ -468,7 +459,6 @@ class RTKTreeView(gtk.TreeView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _width = column.get_width()
 
         if _width <= 0:
@@ -485,13 +475,10 @@ class RTKTreeView(gtk.TreeView):
 
 
 class CellRendererML(gtk.CellRendererText):
-    """
-    Class to create a multi-line cell renderer.  It is based on the base class
-    gtk.CellRendererText().
-    """
+    """Create a multi-line cell renderer."""
 
     def __init__(self):
-
+        """Initialize a CellRendererML instance."""
         gtk.CellRendererText.__init__(self)
 
         self.textedit_window = None
@@ -504,9 +491,11 @@ class CellRendererML(gtk.CellRendererText):
 
     def do_get_size(self, widget, cell_area):
         """
-        Method to get the size of the CellRendererML.
-        """
+        Get the size of the CellRendererML.
 
+        :param widget:
+        :param cell_area:
+        """
         size_tuple = gtk.CellRendererText.do_get_size(self, widget, cell_area)
 
         return size_tuple
@@ -514,7 +503,7 @@ class CellRendererML(gtk.CellRendererText):
     def do_start_editing(self, __event, treeview, path, __background_area,
                          cell_area, __flags):
         """
-
+        Handle edits of the CellRendererML.
 
         :param __event:
         :param treeview:
@@ -523,7 +512,6 @@ class CellRendererML(gtk.CellRendererText):
         :param cell_area:
         :param __flags:
         """
-
         if not self.get_property('editable'):
             return
 
@@ -586,12 +574,11 @@ class CellRendererML(gtk.CellRendererText):
 
     def _keyhandler(self, __widget, event):
         """
+        Handle key-press-events on the gtk.TextView().
 
-
-        :param __widget:
-        :param event:
+        :param __widget: the gtk.TextView() that called this method.
+        :param event: the gtk.gdk.Event() that called this method.
         """
-
         _keyname = gtk.gdk.keyval_name(event.keyval)
         if event.state & (gtk.gdk.SHIFT_MASK | gtk.gdk.CONTROL_MASK) and \
                 _keyname == 'Return':

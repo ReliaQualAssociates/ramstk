@@ -11,6 +11,7 @@ import locale
 from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
+from Utilities import boolean_to_integer
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
@@ -83,6 +84,8 @@ class GeneralData(RTKWorkView):
             self.txtName.connect('changed', self._on_focus_out, 1))
         self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
             'changed', self._on_focus_out, 2))
+        self._lst_handler_id.append(
+            self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
         # FIXME: The general data page should be the page shown after launching.
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
@@ -91,7 +94,6 @@ class GeneralData(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedFunction')
         pub.subscribe(self._on_edit, 'mvwEditedFunction')
-        pub.subscribe(self._on_edit, 'calculatedFunction')
 
     def _do_request_calculate(self, __button):
         """
@@ -107,8 +109,7 @@ class GeneralData(RTKWorkView):
         _error_code = 0
         _msg = ['', '']
 
-        if self._dtc_data_controller.request_calculate_reliability(
-                self._function_id):
+        if self._dtc_data_controller.request_calculate_mtbf(self._function_id):
             _error_code = 1
             _msg[0] = 'Error calculating reliability attributes.'
 
@@ -127,6 +128,8 @@ class GeneralData(RTKWorkView):
                 _error_dialog.do_destroy()
 
             _return = True
+        else:
+            pub.sendMessage('calculatedFunction', module_id=self._function_id)
 
         return _return
 
@@ -288,6 +291,34 @@ class GeneralData(RTKWorkView):
         _textbuffer.set_text(_function.remarks)
         _textbuffer.handler_unblock(self._lst_handler_id[2])
 
+        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
+        self.chkSafetyCritical.set_active(_function.safety_critical)
+        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
+
+        return _return
+
+    def _on_toggled(self, togglebutton, index):
+        """
+        Handle RTKCheckButton() 'toggle' signals.
+
+        :param togglebutton: the RTKToggleButton() that called this method.
+        :type: :class:`rtk.gui.gtk.rtk.Button.RTKToggleButton`
+        :param int index: the index in the signal handler ID list.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        togglebutton.handler_block(self._lst_handler_id[index])
+
+        _function = self._dtc_data_controller.request_select(self._function_id)
+        _function.safety_critical = boolean_to_integer(
+            self.chkSafetyCritical.get_active())
+
+        togglebutton.handler_unblock(self._lst_handler_id[index])
+
+        pub.sendMessage('wvwEditedFunction', position=index, new_text='')
+
         return _return
 
 
@@ -339,6 +370,7 @@ class AssessmentResults(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
+        pub.subscribe(self._on_select, 'calculatedFunction')
 
     def _make_assessment_results_page(self):
         """

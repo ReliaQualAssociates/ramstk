@@ -215,7 +215,7 @@ class ListView(RTKListView):
         if not self._dtc_data_controller.request_insert(self._stakeholder_id):
             self._on_select_stakeholder(self._stakeholder_id)
         else:
-            _prompt = _(u"An error occurred attempting to add a stakeholder " \
+            _prompt = _(u"An error occurred attempting to add a stakeholder "
                         u"input to Stakeholder {0:d}.").\
                 format(self._stakeholder_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
@@ -249,7 +249,7 @@ class ListView(RTKListView):
         if not self._dtc_data_controller.request_update_all():
             self._on_select_revision(self._revision_id)
         else:
-            _prompt = _(u"An error occurred attempting to save the " \
+            _prompt = _(u"An error occurred attempting to save the "
                         u"stakeholder inputs for Stakeholder {0:d}.").\
                 format(self._stakeholder_id)
             rtk.RTKMessageDialog(_prompt, self._dic_icons['error'], 'error')
@@ -296,7 +296,8 @@ class ListView(RTKListView):
         _return = False
 
         # Load the Affinity Group gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(self._lst_col_order[4]).get_cell_renderers()[0]
+        _cell = self.treeview.get_column(
+            self._lst_col_order[4]).get_cell_renderers()[0]
         _cell.set_property('has-entry', True)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -308,7 +309,8 @@ class ListView(RTKListView):
             _cellmodel.append([_group[0]])
 
         # Load the Stakeholder gtk.CellRendererCombo()
-        _cell = self.treeview.get_column(self._lst_col_order[10]).get_cell_renderers()[0]
+        _cell = self.treeview.get_column(
+            self._lst_col_order[10]).get_cell_renderers()[0]
         _cell.set_property('has-entry', True)
         _cellmodel = _cell.get_property('model')
         _cellmodel.clear()
@@ -326,7 +328,15 @@ class ListView(RTKListView):
             _adjustment = _cell.get_property('adjustment')
             _adjustment.set_all(1, 1, 5, 1)
 
-        for i in xrange(2, 14):
+        for i in [
+                self._lst_col_order[2], self._lst_col_order[3],
+                self._lst_col_order[4], self._lst_col_order[5],
+                self._lst_col_order[6], self._lst_col_order[7],
+                self._lst_col_order[8], self._lst_col_order[9],
+                self._lst_col_order[10], self._lst_col_order[11],
+                self._lst_col_order[12], self._lst_col_order[13],
+                self._lst_col_order[14], self._lst_col_order[15]
+        ]:
             _cell = self.treeview.get_column(
                 self._lst_col_order[i]).get_cell_renderers()
             _cell[0].connect('edited', self._do_edit_cell, i,
