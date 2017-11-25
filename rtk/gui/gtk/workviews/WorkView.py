@@ -16,6 +16,8 @@ from gui.gtk import rtk  # pylint: disable=E0401,W0611
 
 class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
     """
+    class to display data in the RTK Work Book.
+
     This is the meta class for all RTK Work View classes.  Attributes of the
     RTKWorkView are:
 
@@ -23,64 +25,67 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
     :ivar list _lst_assess_labels: the labels to use on the Assessment Results
                                    page.
     :ivar str _module: the RTK module the RTKWorkView is associated with.
-    :ivar txtCode: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtCode: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                    RTK module code.
-    :ivar txtName: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the RTK
+    :ivar txtName: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the RTK
                    module name or description.
-    :ivar txtRemarks: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display any
+    :ivar txtRemarks: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display any
                       remarks associated with the RTK module.
-    :ivar txtActiveHt: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtActiveHt: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                        active hazard rate.
-    :ivar txtDormantHt: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtDormantHt: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         dormant hazard rate.
-    :ivar txtSoftwareHt: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display
+    :ivar txtSoftwareHt: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display
                          the software hazard rate.
-    :ivar txtPredictedHt: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display
+    :ivar txtPredictedHt: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display
                           the predicted (logistics) hazard rate.
-    :ivar txtMissionHt: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMissionHt: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         mission hazard rate.
-    :ivar txtMTBF: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMTBF: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                    predicted (logistics) MTBF>
-    :ivar txtMissionMTBF: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display
+    :ivar txtMissionMTBF: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display
                           the mission MTBF.
-    :ivar txtReliability: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display
+    :ivar txtReliability: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display
                           the predicted (logistics) reliability.
-    :ivar txtMissionRt: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMissionRt: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         mission reliability.
-    :ivar txtMPMT: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMPMT: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                    mean preventive maintenance time (MPMT).
-    :ivar txtMCMT: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMCMT: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                    mean corrective maintenance time (MCMT).
-    :ivar txtMTTR: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMTTR: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                    men time to repair (MTTR).
-    :ivar txtMMT: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMMT: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                   the mean maintenance time (MMT).
-    :ivar txtAvailability: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display
+    :ivar txtAvailability: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display
                            the predicted (logistics) availability.
-    :ivar txtMissionAt: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtMissionAt: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         mission availability.
-    :ivar txtPartCount: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtPartCount: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         total part count for the RTK module.
-    :ivar txtTotalCost: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtTotalCost: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         total cost of the RTK module.
-    :ivar txtCostFailure: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display
+    :ivar txtCostFailure: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display
                           the cost/failure of the RTK module.
-    :ivar txtCostHour: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtCostHour: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                        cost/operating hour for the RTK module.
     """
 
-    def __init__(self, controller, **kwargs):
+    def __init__(self, controller, module=None):
         """
-        Method to initialize the RTKWorkView meta-class.
+        Initialize the RTKWorkView meta-class.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
+        :keyword str module: the RTK Module this RTKWorkView is the bassis for.
         """
-
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller)
+        rtk.RTKBaseView.__init__(self, controller, module=module)
 
-        self._module = kwargs['module']
+        self._module = None
+        for __, char in enumerate(module):
+            if char.isalpha():
+                self._module = module.capitalize()
 
         # Initialize private dictionary attributes.
 
@@ -298,13 +303,11 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
     def _make_assessment_results_page(self):
         """
-        Method to create the gtk.Notebook() page for displaying assessment
-        results.
+        Create the gtk.Notebook() page for displaying assessment results.
 
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-
         _hbox = gtk.HBox()
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
@@ -378,12 +381,11 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
     def _make_general_data_page(self):
         """
-        Method to create the gtk.Notebook() page for displaying general data.
+        Create the gtk.Notebook() page for displaying general data.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _fixed = gtk.Fixed()
 
         _scrollwindow = rtk.RTKScrolledWindow(_fixed)
@@ -413,14 +415,13 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
     def _on_select(self, module_id, **kwargs):  # pylint: disable=W0613
         """
-        Method to respond load the Work View gtk.Notebook() widgets.
+        Respond to load the Work View gtk.Notebook() widgets.
 
         :param int revision_id: the ID of the newly selected Revision.
         :param str title: the title to display on the Work Book titlebar.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _title = kwargs['title']

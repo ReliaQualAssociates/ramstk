@@ -9,13 +9,9 @@ testList=$testPath'/unit/Unit.tests'
 excludeList=$testPath'/Excluded.dirs'
 logFile=$curPath'/../RTK_test_error.log'
 
-noseOpts="-c $curPath/setup.cfg --exclude-dir-file=$excludedList"
-unitNoseOpts="$noseOpts --attr=unit=True --cover-package="
-integrationNoseOpts="$noseOpts --attr=integration=True --cover-package="
-
-nosetest=$(which nosetests)
 coverage=$(which coverage)
 codacy=$(which python-codacy-coverage)
+python=$(which python)
 
 echo "BEGIN RTK UNIT TEST EXECUTION ... " > $logFile
 
@@ -23,7 +19,7 @@ echo "BEGIN RTK UNIT TEST EXECUTION ... " > $logFile
 while read package file;
 do
     printf "EXECUTING UNIT TESTS FOR: $package\n"
-    $nosetest $unitNoseOpts$package $testPath/$file
+    $python $testPath/$file 'all'
     if [ "$?" = "0" ];
     then
         printf "UNIT TESTS FOR $package: SAT\n\n"
@@ -48,7 +44,7 @@ done < $testList
 #done < $testList
 
 # Create the coverage XML file and upload to codacy.
-$coverage xml -o "$curPath/tests/coverage.xml"
-$codacy -r "$curPath/tests/coverage.xml"
+$coverage xml -o "$curPath/coverage.xml"
+$codacy -r "$curPath/coverage.xml"
 
 unset CODACY_PROJECT_TOKEN

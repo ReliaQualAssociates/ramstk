@@ -4,20 +4,16 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKHardware Table
-===============================================================================
-"""
+"""RTKHardware Table Module."""
 
 from datetime import date
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from Utilities import none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKHardware(RTK_BASE):
@@ -38,11 +34,17 @@ class RTKHardware(RTK_BASE):
     __tablename__ = 'rtk_hardware'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column('fld_revision_id', Integer,
-                         ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
-    hardware_id = Column('fld_hardware_id', Integer, primary_key=True,
-                         autoincrement=True, nullable=False)
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     alt_part_number = Column('fld_alt_part_number', String(256), default='')
     attachments = Column('fld_attachments', String(512), default='')
@@ -70,15 +72,15 @@ class RTKHardware(RTK_BASE):
     ref_des = Column('fld_ref_des', String(256), default='')
     remarks = Column('fld_remarks', BLOB, default='')
     repairable = Column('fld_repairable', Integer, default=0)
-    specification_number = Column('fld_specification_number', String(256),
-                                  default='')
+    specification_number = Column(
+        'fld_specification_number', String(256), default='')
     subcategory_id = Column('fld_subcategory_id', Integer, default=0)
     tagged_part = Column('fld_tagged_part', Integer, default=0)
     total_part_count = Column('fld_total_part_count', Integer, default=0)
-    total_power_dissipation = Column('fld_total_power_dissipation', Float,
-                                     default=0.0)
-    year_of_manufacture = Column('fld_year_of_manufacture', Integer,
-                                 default=date.today().year)
+    total_power_dissipation = Column(
+        'fld_total_power_dissipation', Float, default=0.0)
+    year_of_manufacture = Column(
+        'fld_year_of_manufacture', Integer, default=date.today().year)
 
     # Define the relationships to other tables in the RTK Program database.
     revision = relationship('RTKRevision', back_populates='hardware')
@@ -89,46 +91,68 @@ class RTKHardware(RTK_BASE):
     sia = relationship('RTKSimilarItem', back_populates='hardware')
     mode = relationship('RTKMode', back_populates='hardware')
 
-    reliability = relationship('RTKReliability', uselist=False,
-                               back_populates='hardware')
-    milhdbkf = relationship('RTKMilHdbkF', uselist=False,
-                            back_populates='hardware')
-    nswc = relationship('RTKNSWC', uselist=False,
-                        back_populates='hardware')
-    design_electric = relationship('RTKDesignElectric', uselist=False,
-                                   back_populates='hardware')
-    design_mechanic = relationship('RTKDesignMechanic', uselist=False,
-                                   back_populates='hardware')
+    reliability = relationship(
+        'RTKReliability', uselist=False, back_populates='hardware')
+    milhdbkf = relationship(
+        'RTKMilHdbkF', uselist=False, back_populates='hardware')
+    nswc = relationship('RTKNSWC', uselist=False, back_populates='hardware')
+    design_electric = relationship(
+        'RTKDesignElectric', uselist=False, back_populates='hardware')
+    design_mechanic = relationship(
+        'RTKDesignMechanic', uselist=False, back_populates='hardware')
 
     def get_attributes(self):
         """
         Method to retrieve the current values of the RTKHardware data model
         attributes.
 
-        :return: (revision_id, hardware_id, alt_part_number, attachments,
+        :return: {revision_id, hardware_id, alt_part_number, attachments,
                   cage_code, category_id, comp_ref_des, cost, cost_failure,
                   cost_hour, cost_type_id, description, duty_cycle,
                   figure_number, lcn, level, manufacturer_id, mission_time,
                   name, nsn, page_number, parent_id, part, part_number,
                   quantity, ref_des, remarks, repairable, specification_number,
                   subcategory_id, tagged_part, total_part_count,
-                  total_power_dissipation, year_of_manufacture)
+                  total_power_dissipation, year_of_manufacture} pairs.
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.hardware_id,
-                       self.alt_part_number, self.attachments, self.cage_code,
-                       self.category_id, self.comp_ref_des, self.cost,
-                       self.cost_failure, self.cost_hour, self.cost_type_id,
-                       self.description, self.duty_cycle, self.figure_number,
-                       self.lcn, self.level, self.manufacturer_id,
-                       self.mission_time, self.name, self.nsn,
-                       self.page_number, self.parent_id, self.part,
-                       self.part_number, self.quantity, self.ref_des,
-                       self.remarks, self.repairable,
-                       self.specification_number, self.subcategory_id,
-                       self.tagged_part, self.total_part_count,
-                       self.total_power_dissipation, self.year_of_manufacture)
+        _attributes = {
+            'revision_id': self.revision_id,
+            'hardware_id': self.hardware_id,
+            'alt_part_num': self.alt_part_number,
+            'attachments': self.attachments,
+            'cage_code': self.cage_code,
+            'category_id': self.category_id,
+            'comp_ref_des': self.comp_ref_des,
+            'cost': self.cost,
+            'cost_failure': self.cost_failure,
+            'cost_hour': self.cost_hour,
+            'cost_type_id': self.cost_type_id,
+            'description': self.description,
+            'duty_cycle': self.duty_cycle,
+            'figure_number': self.figure_number,
+            'lcn': self.lcn,
+            'level': self.level,
+            'manufacturer_id': self.manufacturer_id,
+            'mission_time': self.mission_time,
+            'name': self.name,
+            'nsn': self.nsn,
+            'page_number': self.page_number,
+            'parent_id': self.parent_id,
+            'part': self.part,
+            'part_number': self.part_number,
+            'quantity': self.quantity,
+            'ref_des': self.ref_des,
+            'remarks': self.remarks,
+            'repairable': self.repairable,
+            'specification_number': self.specification_number,
+            'subcategory_id': self.subcategory_id,
+            'tagged_part': self.tagged_part,
+            'total_part_count': self.total_part_count,
+            'total_power_dissipation': self.total_power_dissipation,
+            'year_of_manufacture': self.year_of_manufacture
+        }
 
         return _attributes
 
@@ -147,48 +171,63 @@ class RTKHardware(RTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.alt_part_number = str(none_to_default(attributes[0], ''))
-            self.attachments = str(none_to_default(attributes[1], ''))
-            self.cage_code = str(none_to_default(attributes[2], ''))
-            self.category_id = int(none_to_default(attributes[3], 0))
-            self.comp_ref_des = str(none_to_default(attributes[4], ''))
-            self.cost = float(none_to_default(attributes[5], 0.0))
-            self.cost_failure = float(none_to_default(attributes[6], 0.0))
-            self.cost_hour = float(none_to_default(attributes[7], 0.0))
-            self.cost_type_id = int(none_to_default(attributes[8], 0))
-            self.description = str(none_to_default(attributes[9], ''))
-            self.duty_cycle = float(none_to_default(attributes[10], 100.0))
-            self.figure_number = str(none_to_default(attributes[11], ''))
-            self.lcn = str(none_to_default(attributes[12], ''))
-            self.level = int(none_to_default(attributes[13], 0))
-            self.manufacturer_id = int(none_to_default(attributes[14], 0))
-            self.mission_time = float(none_to_default(attributes[15], 100.0))
-            self.name = str(none_to_default(attributes[16], ''))
-            self.nsn = str(none_to_default(attributes[17], ''))
-            self.page_number = str(none_to_default(attributes[18], ''))
-            self.parent_id = int(none_to_default(attributes[19], 0))
-            self.part = int(none_to_default(attributes[20], 0))
-            self.part_number = str(none_to_default(attributes[21], ''))
-            self.quantity = int(none_to_default(attributes[22], 1))
-            self.ref_des = str(none_to_default(attributes[23], ''))
-            self.remarks = str(none_to_default(attributes[24], ''))
-            self.repairable = int(none_to_default(attributes[25], 0))
-            self.specification_number = str(none_to_default(attributes[26],
-                                                            ''))
-            self.subcategory_id = int(none_to_default(attributes[27], 0))
-            self.tagged_part = int(none_to_default(attributes[28], 0))
-            self.total_part_count = int(none_to_default(attributes[29], 0))
+            self.alt_part_number = str(
+                none_to_default(attributes['alt_part_num'], ''))
+            self.attachments = str(
+                none_to_default(attributes['attachments'], ''))
+            self.cage_code = str(none_to_default(attributes['cage_code'], ''))
+            self.category_id = int(
+                none_to_default(attributes['category_id'], 0))
+            self.comp_ref_des = str(
+                none_to_default(attributes['comp_ref_des'], ''))
+            self.cost = float(none_to_default(attributes['cost'], 0.0))
+            self.cost_failure = float(
+                none_to_default(attributes['cost_failure'], 0.0))
+            self.cost_hour = float(
+                none_to_default(attributes['cost_hour'], 0.0))
+            self.cost_type_id = int(
+                none_to_default(attributes['cost_type_id'], 0))
+            self.description = str(
+                none_to_default(attributes['description'], ''))
+            self.duty_cycle = float(
+                none_to_default(attributes['duty_cycle'], 100.0))
+            self.figure_number = str(
+                none_to_default(attributes['figure_number'], ''))
+            self.lcn = str(none_to_default(attributes['lcn'], ''))
+            self.level = int(none_to_default(attributes['level'], 0))
+            self.manufacturer_id = int(
+                none_to_default(attributes['manufacturer_id'], 0))
+            self.mission_time = float(
+                none_to_default(attributes['mission_time'], 100.0))
+            self.name = str(none_to_default(attributes['name'], ''))
+            self.nsn = str(none_to_default(attributes['nsn'], ''))
+            self.page_number = str(
+                none_to_default(attributes['page_number'], ''))
+            self.parent_id = int(none_to_default(attributes['parent_id'], 0))
+            self.part = int(none_to_default(attributes['part'], 0))
+            self.part_number = str(
+                none_to_default(attributes['part_number'], ''))
+            self.quantity = int(none_to_default(attributes['quantity'], 1))
+            self.ref_des = str(none_to_default(attributes['ref_des'], ''))
+            self.remarks = str(none_to_default(attributes['remarks'], ''))
+            self.repairable = int(none_to_default(attributes['repairable'], 0))
+            self.specification_number = str(
+                none_to_default(attributes['specification_number'], ''))
+            self.subcategory_id = int(
+                none_to_default(attributes['subcategory_id'], 0))
+            self.tagged_part = int(
+                none_to_default(attributes['tagged_part'], 0))
+            self.total_part_count = int(
+                none_to_default(attributes['total_part_count'], 0))
             self.total_power_dissipation = float(
-                none_to_default(attributes[30], 0.0))
-            self.year_of_manufacture = int(none_to_default(attributes[31],
-                                                           date.today().year))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKHardware.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKHardware attributes."
+                none_to_default(attributes['total_power_dissipation'], 0.0))
+            self.year_of_manufacture = int(
+                none_to_default(attributes['year_of_manufacture'],
+                                date.today().year))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKHardware.set_attributes().".format(_err)
 
         return _error_code, _msg

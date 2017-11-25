@@ -7,32 +7,6 @@
 
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without 
-# modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 -->
 
 <!-- This file contains information used by the RTK application to draw
@@ -42,49 +16,24 @@ experience. -->
 <root>
     <tree name="Stakeholder">
         <column>
-            <defaulttitle>Input ID</defaulttitle>
-            <usertitle>Input ID</usertitle>
+            <defaulttitle>Revision ID</defaulttitle>
+            <usertitle>Revision ID</usertitle>
             <datatype>gint</datatype>
             <position>0</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>revision_id</key>
         </column>
         <column>
-            <defaulttitle>Stakeholder</defaulttitle>
-            <usertitle>Stakeholder</usertitle>
-            <datatype>gchararray</datatype>
-            <position>1</position>
-            <widget>combo</widget>
-            <editable>1</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Description</defaulttitle>
-            <usertitle>Description</usertitle>
-            <datatype>gchararray</datatype>
-            <position>2</position>
-            <widget>text</widget>
-            <editable>1</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Affinity Group</defaulttitle>
-            <usertitle>Affinity Group</usertitle>
-            <datatype>gchararray</datatype>
-            <position>3</position>
-            <widget>combo</widget>
-            <editable>1</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Priority</defaulttitle>
-            <usertitle>Priority</usertitle>
+            <defaulttitle>Input ID</defaulttitle>
+            <usertitle>Input ID</usertitle>
             <datatype>gint</datatype>
-            <position>4</position>
-            <widget>spin</widget>
-            <editable>1</editable>
-            <visible>1</visible>
+            <position>1</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>stakeholder_id</key>
         </column>
         <column>
             <defaulttitle>Satisfaction
@@ -94,10 +43,55 @@ Product</defaulttitle>
 with Existing
 Product</usertitle>
             <datatype>gint</datatype>
-            <position>5</position>
+            <position>2</position>
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>customer_rank</key>
+        </column>
+        <column>
+            <defaulttitle>Description</defaulttitle>
+            <usertitle>Description</usertitle>
+            <datatype>gchararray</datatype>
+            <position>3</position>
+            <widget>text</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+            <key>description</key>
+        </column>
+        <column>
+            <defaulttitle>Affinity Group</defaulttitle>
+            <usertitle>Affinity Group</usertitle>
+            <datatype>gchararray</datatype>
+            <position>4</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+            <key>group</key>
+        </column>
+        <column>
+            <defaulttitle>Improvement
+Factor</defaulttitle>
+            <usertitle>Improvement
+Factor</usertitle>
+            <datatype>gfloat</datatype>
+            <position>5</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+            <key>improvement</key>
+        </column>
+        <column>
+            <defaulttitle>Overall
+Weighting</defaulttitle>
+            <usertitle>Overall
+Weighting</usertitle>
+            <datatype>gfloat</datatype>
+            <position>6</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+            <key>overall_weight</key>
         </column>
         <column>
             <defaulttitle>Planned
@@ -107,86 +101,91 @@ Rating</defaulttitle>
 Satisfaction
 Rating</usertitle>
             <datatype>gint</datatype>
-            <position>6</position>
+            <position>7</position>
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>planned_rank</key>
         </column>
         <column>
-            <defaulttitle>Improvement
-Factor</defaulttitle>
-            <usertitle>Improvement
-Factor</usertitle>
-            <datatype>gfloat</datatype>
-            <position>7</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Overall
-Weighting</defaulttitle>
-            <usertitle>Overall
-Weighting</usertitle>
-            <datatype>gfloat</datatype>
+            <defaulttitle>Priority</defaulttitle>
+            <usertitle>Priority</usertitle>
+            <datatype>gint</datatype>
             <position>8</position>
-            <widget>text</widget>
+            <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>priority</key>
         </column>
         <column>
-            <defaulttitle>Requirement</defaulttitle>
-            <usertitle>Requirement</usertitle>
+            <defaulttitle>Requirement ID</defaulttitle>
+            <usertitle>Requirement ID</usertitle>
             <datatype>gchararray</datatype>
             <position>9</position>
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>requirement_id</key>
+        </column>
+        <column>
+            <defaulttitle>Stakeholder</defaulttitle>
+            <usertitle>Stakeholder</usertitle>
+            <datatype>gchararray</datatype>
+            <position>10</position>
+            <widget>combo</widget>
+            <editable>1</editable>
+            <visible>1</visible>
+            <key>stakeholder</key>
         </column>
         <column>
             <defaulttitle>User Float 1</defaulttitle>
             <usertitle>User Float 1</usertitle>
             <datatype>gfloat</datatype>
-            <position>10</position>
+            <position>11</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>user_float_1</key>
         </column>
         <column>
             <defaulttitle>User Float 2</defaulttitle>
             <usertitle>User Float 2</usertitle>
             <datatype>gfloat</datatype>
-            <position>11</position>
+            <position>12</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>user_float_2</key>
         </column>
         <column>
             <defaulttitle>User Float 3</defaulttitle>
             <usertitle>User Float 3</usertitle>
             <datatype>gfloat</datatype>
-            <position>12</position>
+            <position>13</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>user_float_3</key>
         </column>
         <column>
             <defaulttitle>User Float 4</defaulttitle>
             <usertitle>User Float 4</usertitle>
             <datatype>gfloat</datatype>
-            <position>13</position>
+            <position>14</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>user_float_4</key>
         </column>
         <column>
             <defaulttitle>User Float 5</defaulttitle>
             <usertitle>User Float 5</usertitle>
             <datatype>gfloat</datatype>
-            <position>14</position>
+            <position>15</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>user_float_5</key>
         </column>
     </tree>
 </root>

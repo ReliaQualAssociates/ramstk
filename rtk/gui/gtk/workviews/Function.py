@@ -4,16 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Function Work View Module
--------------------------------------------------------------------------------
-"""
+"""Function Work View."""
 
 import locale
 
 from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
+from Utilities import boolean_to_integer
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
@@ -21,15 +19,17 @@ from .WorkView import RTKWorkView
 
 class GeneralData(RTKWorkView):
     """
+    Display Function attribute data in the RTK Work Book.
+
     The Work View displays all the general data attributes for the selected
     Function. The attributes of a Function General Data Work View are:
 
     :ivar int _function_id: the ID of the Function currently being displayed.
-    :ivar chkSafetyCritical: the :py:class:`rtk.gui.gtk.rtk.RTKCheckButton` to
+    :ivar chkSafetyCritical: the :class:`rtk.gui.gtk.rtk.RTKCheckButton` to
                              display/edit the Function's safety criticality.
-    :ivar txtTotalCost: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtTotalCost: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         Function cost.
-    :ivar txtModeCount: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` to display the
+    :ivar txtModeCount: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
                         number of failure modes the function is susceptible to.
 
     Callbacks signals in _lst_handler_id:
@@ -49,12 +49,11 @@ class GeneralData(RTKWorkView):
 
     def __init__(self, controller):
         """
-        Method to initialize the Work View for the Function package.
+        Initialize the Work View for the Function package.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKWorkView.__init__(self, controller, module='Function')
 
         # Initialize private dictionary attributes.
@@ -85,6 +84,8 @@ class GeneralData(RTKWorkView):
             self.txtName.connect('changed', self._on_focus_out, 1))
         self._lst_handler_id.append(self.txtRemarks.do_get_buffer().connect(
             'changed', self._on_focus_out, 2))
+        self._lst_handler_id.append(
+            self.chkSafetyCritical.connect('toggled', self._on_toggled, 3))
 
         # FIXME: The general data page should be the page shown after launching.
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
@@ -93,26 +94,22 @@ class GeneralData(RTKWorkView):
 
         pub.subscribe(self._on_select, 'selectedFunction')
         pub.subscribe(self._on_edit, 'mvwEditedFunction')
-        pub.subscribe(self._on_edit, 'calculatedFunction')
 
     def _do_request_calculate(self, __button):
         """
-        Method to send request to calculate the selected function to the
-        Function data controller.
+        Send request to calculate the selected function.
 
-        :param gtk.ToolButton __button: the gtk.ToolButton() that called this
-                                        method.
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _error_code = 0
         _msg = ['', '']
 
-        if self._dtc_data_controller.request_calculate_reliability(
-                self._function_id):
+        if self._dtc_data_controller.request_calculate_mtbf(self._function_id):
             _error_code = 1
             _msg[0] = 'Error calculating reliability attributes.'
 
@@ -123,38 +120,37 @@ class GeneralData(RTKWorkView):
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
-                        _msg[1] + "\n\n").format(self._function_id)
+                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" + _msg[1]
+                        + "\n\n").format(self._function_id)
             _error_dialog = rtk.RTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
                 _error_dialog.do_destroy()
 
             _return = True
+        else:
+            pub.sendMessage('calculatedFunction', module_id=self._function_id)
 
         return _return
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Function.
+        Send request to save the currently selected Function.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._function_id)
 
     def _make_general_data_page(self):
         """
-        Method to create the Function class gtk.Notebook() page for
-        displaying general data about the selected Function.
+        Make the Function class gtk.Notebook() general data page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         (_frame, _fixed, _x_pos,
          _y_pos) = RTKWorkView._make_general_data_page(self)
 
@@ -166,13 +162,12 @@ class GeneralData(RTKWorkView):
 
     def _make_buttonbox(self):
         """
-        Method to create the gtk.ButtonBox() for the Function class Work View.
+        Make the gtk.ButtonBox() for the Function class Work View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Function class Work
                  View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             _(u"Calculate the currently selected Function."),
             _(u"Saves the currently selected Function to the open "
@@ -188,9 +183,10 @@ class GeneralData(RTKWorkView):
 
     def _on_edit(self, index, new_text):
         """
-        Method to update the Work View gtk.Widgets() with changes to the
-        Function data model attributes.  This method is called whenever an
-        attribute is edited in a different view.
+        Update the Work View gtk.Widgets() when Function attributes change.
+
+        This method is called whenever an attribute is edited in a different
+        view.
 
         :param int index: the index in the Function attributes list of the
                           attribute that was edited.
@@ -198,7 +194,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         if index == 5:
@@ -219,9 +214,9 @@ class GeneralData(RTKWorkView):
 
     def _on_focus_out(self, entry, index):
         """
-        Method to retrieve changes made to Function attributes through the
-        various gtk.Widgets() and assign the new data to the appropriate
-        Function data model attribute.  This method is called by:
+        Retrieve changes made in RTKEntry() widgets..
+
+        This method is called by:
 
             * gtk.Entry() 'changed' signal
             * gtk.TextView() 'changed' signal
@@ -235,7 +230,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _index = -1
         _return = False
         _text = ''
@@ -268,14 +262,13 @@ class GeneralData(RTKWorkView):
 
     def _on_select(self, module_id, **kwargs):
         """
-        Method to load the Function Work View class gtk.Notebook() widgets.
+        Load the Function Work View class gtk.Notebook() widgets.
 
         :param int function_id: the Function ID of the selected/edited
                                 Function.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._function_id = module_id
@@ -298,11 +291,41 @@ class GeneralData(RTKWorkView):
         _textbuffer.set_text(_function.remarks)
         _textbuffer.handler_unblock(self._lst_handler_id[2])
 
+        self.chkSafetyCritical.handler_block(self._lst_handler_id[3])
+        self.chkSafetyCritical.set_active(_function.safety_critical)
+        self.chkSafetyCritical.handler_unblock(self._lst_handler_id[3])
+
+        return _return
+
+    def _on_toggled(self, togglebutton, index):
+        """
+        Handle RTKCheckButton() 'toggle' signals.
+
+        :param togglebutton: the RTKToggleButton() that called this method.
+        :type: :class:`rtk.gui.gtk.rtk.Button.RTKToggleButton`
+        :param int index: the index in the signal handler ID list.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        togglebutton.handler_block(self._lst_handler_id[index])
+
+        _function = self._dtc_data_controller.request_select(self._function_id)
+        _function.safety_critical = boolean_to_integer(
+            self.chkSafetyCritical.get_active())
+
+        togglebutton.handler_unblock(self._lst_handler_id[index])
+
+        pub.sendMessage('wvwEditedFunction', position=index, new_text='')
+
         return _return
 
 
 class AssessmentResults(RTKWorkView):
     """
+    Display Function attribute data in the RTK Work Book.
+
     The Function Assessment Results view displays all the assessment results
     for the selected Function.  The attributes of a Function Assessment Results
     View are:
@@ -312,12 +335,11 @@ class AssessmentResults(RTKWorkView):
 
     def __init__(self, controller):
         """
-        Method to initialize the Work View for the Function package.
+        Initialize the Work View for the Function package.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKWorkView.__init__(self, controller, module='Function')
 
         # Initialize private dictionary attributes.
@@ -348,16 +370,15 @@ class AssessmentResults(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedFunction')
+        pub.subscribe(self._on_select, 'calculatedFunction')
 
     def _make_assessment_results_page(self):
         """
-        Method to create the Function class gtk.Notebook() page for
-        displaying assessment results for the selected Function.
+        Make the Function class gtk.Notebook() assessment results page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
          _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
 
@@ -374,14 +395,13 @@ class AssessmentResults(RTKWorkView):
 
     def _on_select(self, module_id, **kwargs):
         """
-        Method to load the Function Work View class gtk.Notebook() widgets.
+        Load the Function Work View class gtk.Notebook() widgets.
 
         :param int function_id: the Function ID of the selected/edited
                                 Function.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self._function_id = module_id

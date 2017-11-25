@@ -1,0 +1,1193 @@
+# -*- coding: utf-8 -*-
+#
+#       rtk.analyses.fmea.Model.py is part of The RTK Project
+#
+# All rights reserved.
+# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
+"""FMEA Package Data Models."""
+
+from treelib import tree  # pylint: disable=E0401
+
+# Import other RTK modules.
+from datamodels import RTKDataModel  # pylint: disable=E0401
+# pylint: disable=E0401
+from dao import RTKAction, RTKCause, RTKControl, RTKMechanism, RTKMode
+
+
+class ModeDataModel(RTKDataModel):
+    """
+    Contain the attributes and methods of a failure Mode.
+
+    An RTK Project will consist of one or more Modes.  The attributes of a
+    Mode are:
+    """
+
+    _tag = 'Modes'
+
+    def __init__(self, dao):
+        """
+        Initialize a Mode data model instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :class:`rtk.dao.DAO.DAO`
+        """
+        RTKDataModel.__init__(self, dao)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+    def select_all(self, parent_id, **kwargs):
+        """
+        Retrieve all the failure Modes from the RTK Program database.
+
+        This method retrieves all the records from the RTKMode table in the
+        connected RTK Program database.  It then add each to the Mode data
+        model treelib.Tree().
+
+        :param int parent_id: the Function ID or Hardware ID the failure Modes
+                              are associated with.
+        :return: tree; the Tree() of RTKMode data models.
+        :rtype: :class:`treelib.Tree`
+        """
+        _functional = kwargs['functional']
+
+        _session = RTKDataModel.select_all(self)
+
+        if _functional:
+            _modes = _session.query(RTKMode).filter(
+                RTKMode.function_id == parent_id).all()
+        else:
+            _modes = _session.query(RTKMode).filter(
+                RTKMode.hardware_id == parent_id).all()
+
+        for _mode in _modes:
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _mode.get_attributes()
+            _mode.set_attributes(_attributes)
+            self.tree.create_node(
+                _mode.description, _mode.mode_id, parent=0, data=_mode)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _mode.mode_id)
+
+        _session.close()
+
+        return self.tree
+
+    def insert(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Add a record to the RTKMode table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _mode = RTKMode()
+        _mode.function_id = kwargs['function_id']
+        _mode.hardware_id = kwargs['hardware_id']
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _mode,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _mode.description, _mode.mode_id, parent=0, data=_mode)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _mode.mode_id)
+
+        return _error_code, _msg
+
+    def delete(self, node_id):
+        """
+        Remove a record from the RTKMode table.
+
+        :param int node_id: the ID of the RTKMode record to be removed from the
+                            RTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.delete(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+                          'Mode ID {0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update(self, node_id):
+        """
+        Update the record associated with Node ID to the RTK Program database.
+
+        :param int node_id: the Mode ID of the Mode to save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.update(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent Mode ID ' \
+                   '{0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Update all RTKMode table records in the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Saving all Modes in the FMEA.'
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.data.mode_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Model.ModeDataModel.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.Model.ModeDataModel.update_all().'
+
+        return _error_code, _msg
+
+
+class MechanismDataModel(RTKDataModel):
+    """
+    Contain the attributes and methods of a failure Mechanism.
+
+    An RTK Project will consist of one or more Mechanisms.  The attributes of a
+    Mechanism are:
+    """
+
+    _tag = 'Mechanisms'
+
+    def __init__(self, dao):
+        """
+        Initialize a Mechanism data mechanisml instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :class:`rtk.dao.DAO.DAO`
+        """
+        RTKDataModel.__init__(self, dao)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+    def select_all(self, parent_id):
+        """
+        Retrieve all the failure Mechanisms from the RTK Program database.
+
+        This method retrieves all the records from the RTKMechanism table in the
+        connected RTK Program database.  It then add each to the Mechanism data
+        mechanisml treelib.Tree().
+
+        :param int parent_id: the Function ID or Hardware ID the failure Mechanisms
+                              are associated with.
+        :return: tree; the Tree() of RTKMechanism data mechanismls.
+        :rtype: :class:`treelib.Tree`
+        """
+        _session = RTKDataModel.select_all(self)
+
+        _mechanisms = _session.query(RTKMechanism).filter(
+            RTKMechanism.mode_id == parent_id).all()
+
+        for _mechanism in _mechanisms:
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _mechanism.get_attributes()
+            _mechanism.set_attributes(_attributes)
+            self.tree.create_node(
+                _mechanism.description, _mechanism.mechanism_id, parent=0, data=_mechanism)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _mechanism.mechanism_id)
+
+        _session.close()
+
+        return self.tree
+
+    def insert(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Add a record to the RTKMechanism table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _mechanism = RTKMechanism()
+        _mechanism.mode_id = kwargs['mode_id']
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _mechanism,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _mechanism.description, _mechanism.mechanism_id, parent=0, data=_mechanism)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _mechanism.mechanism_id)
+
+        return _error_code, _msg
+
+    def delete(self, node_id):
+        """
+        Remove a record from the RTKMechanism table.
+
+        :param int node_id: the ID of the RTKMechanism record to be removed from the
+                            RTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.delete(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+                          'Mechanism ID {0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update(self, node_id):
+        """
+        Update the record associated with Node ID to the RTK Program database.
+
+        :param int node_id: the Mechanism ID of the Mechanism to save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.update(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent Mechanism ID ' \
+                   '{0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Update all RTKMechanism table records in the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Saving all Mechanisms in the FMEA.'
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.data.mechanism_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Model.MechanismDataModel.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.Model.MechanismDataModel.update_all().'
+
+        return _error_code, _msg
+
+
+class CauseDataModel(RTKDataModel):
+    """
+    Contain the attributes and methods of a failure Cause.
+
+    An RTK Project will consist of one or more Causes.  The attributes of a
+    Cause are:
+    """
+
+    _tag = 'Causes'
+
+    def __init__(self, dao):
+        """
+        Initialize a Cause data causel instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :class:`rtk.dao.DAO.DAO`
+        """
+        RTKDataModel.__init__(self, dao)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+    def select_all(self, parent_id):
+        """
+        Retrieve all the failure Causes from the RTK Program database.
+
+        This method retrieves all the records from the RTKCause table in the
+        connected RTK Program database.  It then add each to the Cause data
+        causel treelib.Tree().
+
+        :param int parent_id: the Function ID or Hardware ID the failure Causes
+                              are associated with.
+        :return: tree; the Tree() of RTKCause data causels.
+        :rtype: :class:`treelib.Tree`
+        """
+        _session = RTKDataModel.select_all(self)
+
+        _causes = _session.query(RTKCause).filter(
+            RTKCause.mechanism_id == parent_id).all()
+
+        for _cause in _causes:
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _cause.get_attributes()
+            _cause.set_attributes(_attributes)
+            self.tree.create_node(
+                _cause.description, _cause.cause_id, parent=0, data=_cause)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _cause.cause_id)
+
+        _session.close()
+
+        return self.tree
+
+    def insert(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Add a record to the RTKCause table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _cause = RTKCause()
+        _cause.mechanism_id = kwargs['mechanism_id']
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _cause,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _cause.description, _cause.cause_id, parent=0, data=_cause)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _cause.cause_id)
+
+        return _error_code, _msg
+
+    def delete(self, node_id):
+        """
+        Remove a record from the RTKCause table.
+
+        :param int node_id: the ID of the RTKCause record to be removed from the
+                            RTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.delete(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+                          'Cause ID {0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update(self, node_id):
+        """
+        Update the record associated with Node ID to the RTK Program database.
+
+        :param int node_id: the Cause ID of the Cause to save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.update(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent Cause ID ' \
+                   '{0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Update all RTKCause table records in the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Saving all Causes in the FMEA.'
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.data.cause_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Model.CauseDataModel.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.Model.CauseDataModel.update_all().'
+
+        return _error_code, _msg
+
+
+class ControlDataModel(RTKDataModel):
+    """
+    Contain the attributes and methods of a FMEA Control.
+
+    An RTK Project will consist of one or more Controls.  The attributes of a
+    Control are:
+    """
+
+    _tag = 'Controls'
+
+    def __init__(self, dao):
+        """
+        Initialize a Control data model instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :class:`rtk.dao.DAO.DAO`
+        """
+        RTKDataModel.__init__(self, dao)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+    def select_all(self, parent_id, **kwargs):
+        """
+        Retrieve all the Controls from the RTK Program database.
+
+        This method retrieves all the records from the RTKControl table in the
+        connected RTK Program database.  It then add each to the Control data
+        model treelib.Tree().
+
+        :param int parent_id: Mode ID or Cause ID the Controls are associated
+                              with.
+        :return: tree; the Tree() of RTKControl data models.
+        :rtype: :class:`treelib.Tree`
+        """
+        _functional = kwargs['functional']
+
+        _session = RTKDataModel.select_all(self)
+
+        if _functional:
+            _controls = _session.query(RTKControl).filter(
+                RTKControl.mode_id == parent_id).all()
+        else:
+            _controls = _session.query(RTKControl).filter(
+                RTKControl.cause_id == parent_id).all()
+
+        for _control in _controls:
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _control.get_attributes()
+            _control.set_attributes(_attributes)
+            self.tree.create_node(
+                _control.description,
+                _control.control_id,
+                parent=0,
+                data=_control)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _control.control_id)
+
+        _session.close()
+
+        return self.tree
+
+    def insert(self, **kwargs):  # pylint: disable=unused-argument
+        """
+        Add a record to the RTKControl table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _control = RTKControl()
+        _control.mode_id = kwargs['mode_id']
+        _control.cause_id = kwargs['cause_id']
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _control,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _control.description,
+                _control.control_id,
+                parent=0,
+                data=_control)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _control.control_id)
+
+        return _error_code, _msg
+
+    def delete(self, node_id):
+        """
+        Remove a record from the RTKControl table.
+
+        :param int node_id: the ID of the RTKMode record to be removed from the
+                            RTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.delete(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+                          'Control ID {0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update(self, node_id):
+        """
+        Update the record associated with Node ID to the RTK Program database.
+
+        :param int node_id: the Mode ID of the Mode to save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.update(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent Control ID ' \
+                   '{0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Update all RTKControl table records in the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Saving all Controls in the FMEA.'
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.data.control_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Model.ControlDataModel.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.Model.ControlDataModel.update_all().'
+
+        return _error_code, _msg
+
+
+class ActionDataModel(RTKDataModel):
+    """
+    Contain the attributes and methods of a FMEA Action.
+
+    An RTK Project will consist of one or more Actions.  The attributes of a
+    Action are:
+    """
+
+    _tag = 'Actions'
+
+    def __init__(self, dao):
+        """
+        Initialize a Action data model instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :class:`rtk.dao.DAO.DAO`
+        """
+        RTKDataModel.__init__(self, dao)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+
+    def select_all(self, parent_id, **kwargs):
+        """
+        Retrieve all the Actions from the RTK Program database.
+
+        This method retrieves all the records from the RTKAction table in the
+        connected RTK Program database.  It then add each to the Action data
+        model treelib.Tree().
+
+        :param int parent_id: Mode ID or Cause ID the Actions are associated
+                              with.
+        :return: tree; the Tree() of RTKAction data models.
+        :rtype: :class:`treelib.Tree`
+        """
+        _functional = kwargs['functional']
+
+        _session = RTKDataModel.select_all(self)
+
+        if _functional:
+            _actions = _session.query(RTKAction).filter(
+                RTKAction.mode_id == parent_id).all()
+        else:
+            _actions = _session.query(RTKAction).filter(
+                RTKAction.cause_id == parent_id).all()
+
+        for _action in _actions:
+            # We get and then set the attributes to replace any None values
+            # (NULL fields in the database) with their default value.
+            _attributes = _action.get_attributes()
+            _action.set_attributes(_attributes)
+            self.tree.create_node(
+                _action.action_status,
+                _action.action_id,
+                parent=0,
+                data=_action)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _action.action_id)
+
+        _session.close()
+
+        return self.tree
+
+    def insert(self, **kwargs):
+        """
+        Add a record to the RTKAction table.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _action = RTKAction()
+        _action.mode_id = kwargs['mode_id']
+        _action.cause_id = kwargs['cause_id']
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _action,
+            ])
+
+        if _error_code == 0:
+            self.tree.create_node(
+                _action.action_status,
+                _action.action_id,
+                parent=0,
+                data=_action)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _action.action_id)
+
+        return _error_code, _msg
+
+    def delete(self, node_id):
+        """
+        Remove a record from the RTKAction table.
+
+        :param int node_id: the ID of the RTKMode record to be removed from the
+                            RTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.delete(self, node_id)
+
+        # pylint: disable=attribute-defined-outside-init
+        # last_id is defined in RTKDataModel.__init__
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+                          'Action ID {0:d}.'.format(node_id)
+        else:
+            self.last_id = max(self.tree.nodes.keys())
+
+        return _error_code, _msg
+
+    def update(self, node_id):
+        """
+        Update the record associated with Node ID to the RTK Program database.
+
+        :param int node_id: the Mode ID of the Mode to save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.update(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent Action ID ' \
+                   '{0:d}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Update all RTKAction table records in the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Saving all Actions in the FMEA.'
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.data.action_id)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Model.ActionDataModel.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.Model.ActionDataModel.update_all().'
+
+        return _error_code, _msg
+
+
+class FMEADataModel(RTKDataModel):
+    """
+    Contain the attributes and methods of a FMEA.
+
+    The FMEA data model aggregates the Mode, Mechanism, Cause, Control and
+    Action data models to produce an overall (D)FME(C)A.  A Function or
+    Hardware item will consist of one (D)FME(C)A.  This is a hierarchical
+    relationship, such as:
+
+          Mode 1
+          |
+          |_Mechanism 1.1
+          |   |
+          |   |_Cause 1.1.1
+          |   |   |
+          |   |   |_Control 1.1.1.01
+          |   |   |_Control 1.1.1.02
+          |   |   |_Action 1.1.1.1
+          |   |_Cause 1.1.2
+          |       |
+          |       |_Control 1.1.2.01
+          |
+          |_Mechanism 1.2
+              |
+              |_Cause 1.2.1
+              |_Cause 1.2.2
+    """
+
+    _tag = 'FMEA'
+
+    def __init__(self, dao):
+        """
+        Initialize a FMEA data model instance.
+
+        :param dao: the data access object for communicating with the RTK
+                    Program database.
+        :type dao: :py:class:`rtk.dao.DAO.DAO`
+        """
+        RTKDataModel.__init__(self, dao)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._functional = False
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.dtm_mode = ModeDataModel(dao)
+        self.dtm_mechanism = MechanismDataModel(dao)
+        self.dtm_cause = CauseDataModel(dao)
+        self.dtm_control = ControlDataModel(dao)
+        self.dtm_action = ActionDataModel(dao)
+
+    def select_all(self, parent_id, **kwargs):
+        """
+        Retrieve and build the FMEA tree for Parent ID.
+
+        The Parent ID is one of Function ID (functional FMEA) or Hardware ID
+        (hardware FMEA).
+
+        :param str parent_id: the Function ID (functional FMEA) or Hardware ID
+                              (hardware FMEA) to retrieve the FMEA and build
+                              trees for.
+        :return: tree; the FMEA treelib Tree().
+        :rtype: :class:`treelib.Tree`
+        """
+        self._functional = kwargs['functional']
+
+        RTKDataModel.select_all(self)
+
+        _modes = self.dtm_mode.select_all(
+            parent_id, functional=self._functional).nodes
+
+        for _key in _modes:
+            _mode = _modes[_key].data
+            if _mode is not None:
+                _node_id = '0.' + str(_mode.mode_id)
+                self.tree.create_node(
+                    tag=_mode.description,
+                    identifier=_node_id,
+                    parent=0,
+                    data=_mode)
+                if self._functional:
+                    self._do_add_controls(_mode.mode_id, _node_id)
+                    self._do_add_actions(_mode.mode_id, _node_id)
+                else:
+                    self._do_add_mechanisms(_mode.mode_id, _node_id)
+
+        return self.tree
+
+    def _do_add_mechanisms(self, mode_id, parent_id):
+        """
+        Add the failure mechanisms to the FMEA tree for Mode ID.
+
+        :param int mode_id: the Mode ID to add the failure mechanisms to.
+        :param str parent_id: the Node ID to add the failure mechanisms to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _mechanisms = self.dtm_mechanism.select_all(mode_id).nodes
+        for _key in _mechanisms:
+            _mechanism = _mechanisms[_key].data
+            if _mechanism is not None:
+                _node_id = parent_id + '.' + str(_mechanism.mechanism_id)
+                self.tree.create_node(
+                    tag=_mechanism.description,
+                    identifier=_node_id,
+                    parent=parent_id,
+                    data=_mechanism)
+
+                self._do_add_causes(_mechanism.mechanism_id, _node_id)
+
+        return _return
+
+    def _do_add_causes(self, mechanism_id, parent_id):
+        """
+        Add the failure causes to the FMEA tree for Mechanism ID.
+
+        :param int mechanism_id: the Mechanism ID to add the failure causes to.
+        :param str parent_id: the Node ID to add the failure causes to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _causes = self.dtm_cause.select_all(mechanism_id).nodes
+        for _key in _causes:
+            _cause = _causes[_key].data
+            if _cause is not None:
+                _node_id = parent_id + '.' + str(_cause.cause_id)
+                self.tree.create_node(
+                    tag=_cause.description,
+                    identifier=_node_id,
+                    parent=parent_id,
+                    data=_cause)
+
+                self._do_add_controls(_cause.cause_id, _node_id)
+                self._do_add_actions(_cause.cause_id, _node_id)
+
+        return _return
+
+    def _do_add_controls(self, cause_id, parent_id):
+        """
+        Add the control methods to the FMEA tree for Mode ID or Cause ID.
+
+        :param int cause_id: the Mode ID (functional FMEA) or Cause ID
+                             (hardware FMEA) to add the control methods to.
+        :param str parent_id: the Node ID to add the control methods to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _controls = self.dtm_control.select_all(
+            cause_id, functional=self._functional).nodes
+
+        for _key in _controls:
+            _control = _controls[_key].data
+            if _control is not None:
+                # Since Controls and Actions are at the same level in the FMEA
+                # tree, we prepend a zero to the Control ID to differentiate it
+                # from an Action.
+                _node_id = parent_id + '.0' + str(_control.control_id)
+                self.tree.create_node(
+                    tag=_control.description,
+                    identifier=_node_id,
+                    parent=parent_id,
+                    data=_control)
+
+        return _return
+
+    def _do_add_actions(self, cause_id, parent_id):
+        """
+        Add the action to the FMEA tree for Mode ID or Cause ID.
+
+        :param int cause_id: the Mode ID (functional FMEA) or Cause ID
+                             (hardware FMEA) to add the action to.
+        :param str parent_id: the Node ID to add the action to.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _actions = self.dtm_action.select_all(
+            cause_id, functional=self._functional).nodes
+        for _key in _actions:
+            _action = _actions[_key].data
+            if _action is not None:
+                _node_id = parent_id + '.' + str(_action.action_id)
+                self.tree.create_node(
+                    tag=_action.action_category,
+                    identifier=_node_id,
+                    parent=parent_id,
+                    data=_action)
+
+        return _return
+
+    def insert(self, **kwargs):
+        """
+        Add an entity to the FMEA and RTK Program database..
+
+        :param int entity_id: the RTK Program database Function ID, Hardware
+                              ID, Mode ID, Mechanism ID, or Cause ID to add the
+                              entity to.
+        :param str parent_id: the Node ID of the parent node in the treelib
+                              Tree().
+        :param str level: the type of entity to add to the FMEA.  Levels are:
+
+                          * mode
+                          * mechanim
+                          * cause
+                          * control
+                          * action
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Adding an item to the FMEA.'
+        _entity = None
+        _tag = 'Tag'
+        _node_id = -1
+
+        _entity_id = kwargs['entity_id']
+        _parent_id = kwargs['parent_id']
+        _level = kwargs['level']
+
+        if self._functional:
+            _function_id = _entity_id
+            _hardware_id = -1
+            _mode_id = _entity_id
+            _cause_id = -1
+        else:
+            _function_id = -1
+            _hardware_id = _entity_id
+            _mode_id = -1
+            _cause_id = _entity_id
+
+        if _level == 'mode':
+            _error_code, _msg = self.dtm_mode.insert(
+                function_id=_function_id, hardware_id=_hardware_id)
+            _entity = self.dtm_mode.select(self.dtm_mode.last_id)
+            _tag = 'Mode'
+            _node_id = '0.' + str(self.dtm_mode.last_id)
+        elif _level == 'mechanism':
+            _error_code, _msg = self.dtm_mechanism.insert(mode_id=_entity_id)
+            _entity = self.dtm_mechanism.select(self.dtm_mechanism.last_id)
+            _tag = 'Mechanism'
+            _node_id = _parent_id + '.' + str(self.dtm_mechanism.last_id)
+        elif _level == 'cause':
+            _error_code, _msg = self.dtm_cause.insert(mechanism_id=_entity_id)
+            _entity = self.dtm_cause.select(self.dtm_cause.last_id)
+            _tag = 'Cause'
+            _node_id = _parent_id + '.' + str(self.dtm_cause.last_id)
+        elif _level == 'control':
+            _error_code, _msg = self.dtm_control.insert(
+                mode_id=_mode_id, cause_id=_cause_id)
+            _entity = self.dtm_control.select(self.dtm_control.last_id)
+            _tag = 'Control'
+            _node_id = _parent_id + '.0' + str(self.dtm_control.last_id)
+        elif _level == 'action':
+            _error_code, _msg = self.dtm_action.insert(
+                mode_id=_mode_id, cause_id=_cause_id)
+            _entity = self.dtm_action.select(self.dtm_action.last_id)
+            _tag = 'Action'
+            _node_id = _parent_id + '.' + str(self.dtm_action.last_id)
+        else:
+            _error_code = 2005
+            _msg = 'RTK ERROR: Attempted to add an item to the FMEA with ' \
+                   'an undefined indenture level.  Level {0:s} was ' \
+                   'requested.  Must be one of mode, mechanism, cause, ' \
+                   'control, or action.'.format(_level)
+
+        try:
+            self.tree.create_node(_tag, _node_id, parent=_parent_id, data=_entity)
+        except tree.NodeIDAbsentError:
+            _error_code = 2005
+            _msg = 'RTK ERROR: Attempted to add an item under non-existent ' \
+                   'Node ID: {0:s}.'.format(str(_parent_id))
+
+        return _error_code, _msg
+
+    def delete(self, node_id):
+        """
+        Remove a record from the RTKControl table.
+
+        :param int node_id: the ID of the RTKMode record to be removed from the
+                            RTK Program database.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.delete(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2005
+            _msg = _msg + '  RTK ERROR: Attempted to delete non-existent ' \
+                          'entity with Node ID {0:s} from the ' \
+                          'FMEA.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update(self, node_id):
+        """
+        Update the record associated with Node ID to the RTK Program database.
+
+        :param int node_id: the Mode ID of the Mode to save.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code, _msg = RTKDataModel.update(self, node_id)
+
+        if _error_code != 0:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Attempted to save non-existent entity with ' \
+                   'Node ID {0:s}.'.format(node_id)
+
+        return _error_code, _msg
+
+    def update_all(self):
+        """
+        Update all RTKControl table records in the RTK Program database.
+
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK SUCCESS: Saving all Controls in the FMEA.'
+
+        for _node in self.tree.all_nodes():
+            try:
+                _error_code, _msg = self.update(_node.identifier)
+
+                # Break if something goes wrong and return.
+                if _error_code != 0:
+                    print 'FIXME: Handle non-zero error codes in ' \
+                          'rtk.analyses.fmea.Model.FMEADataModel.update_all().'
+
+            except AttributeError:
+                print 'FIXME: Handle AttributeError in ' \
+                      'rtk.analyses.fmea.Model.FMEADataModel.update_all().'
+
+        return _error_code, _msg
+
+    def calculate_criticality(self, item_hr):
+        """
+        Calculate the FMEA MIL-STD-1629b, Task 102 criticality.
+
+        :param float item_hr: the hazard rate of the item the criticality is
+                              being calculated for.
+        :return:
+        :rtype:
+        """
+        for _node in self.tree.children(0):
+            _error_code, _msg = _node.data.calculate_criticality(item_hr)
+
+        return _error_code, _msg
+
+    def calculate_rpn(self, node_id, severity, severity_new):
+        """
+        Calculate the Risk Priority NUmber (RPN).
+
+        :param int node_id: the ID of the treelib Node to calculate the RPN.
+        :param int severity: the severity of the failure Mode the Mechanism is
+                             associated with.
+        :param int severity_new: the severity of the failure Mode after
+                                 corrective action.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = 'RTK INFO: No failure mechanisms or causes for Node ' \
+               'ID {0:s}'.format(node_id)
+
+        for _node in self.tree.children(node_id):
+            _error_code, _msg = _node.data.calculate_rpn(severity,
+                                                         severity_new)
+
+        return _error_code, _msg

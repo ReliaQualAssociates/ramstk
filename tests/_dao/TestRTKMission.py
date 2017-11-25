@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKMission module algorithms and
 models.
@@ -14,7 +13,9 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,13 +36,18 @@ class TestRTKMission(unittest.TestCase):
     Class for testing the RTKMission class.
     """
 
-    _attributes = (1, 1, 'Test Mission Description', 0.0, 'hours')
+    _attributes = {
+        'mission_id': 1,
+        'revision_id': 1,
+        'mission_time': 0.0,
+        'description': 'Test Mission Description',
+        'time_units': u'hours'
+    }
 
     def setUp(self):
         """
         Sets up the test fixture for the RTKMission class.
         """
-
         engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
         session = scoped_session(sessionmaker())
 
@@ -49,7 +55,7 @@ class TestRTKMission(unittest.TestCase):
         session.configure(bind=engine, autoflush=False, expire_on_commit=False)
 
         self.DUT = session.query(RTKMission).first()
-        self.DUT.description = self._attributes[2]
+        self.DUT.description = self._attributes['description']
 
         session.commit()
 
@@ -58,7 +64,6 @@ class TestRTKMission(unittest.TestCase):
         """
         (TestMission) DUT should create an RTKMission model
         """
-
         self.assertTrue(isinstance(self.DUT, RTKMission))
 
         # Verify class attributes are properly initialized.
@@ -74,7 +79,6 @@ class TestRTKMission(unittest.TestCase):
         """
         (TestRTKMission) get_attributes should return a tuple of attribute values.
         """
-
         self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
@@ -82,42 +86,23 @@ class TestRTKMission(unittest.TestCase):
         """
         (TestRTKMission) set_attributes should return a zero error code on success
         """
-
-        _attributes = ('Test Mission Description', 0.0, 'hours')
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKMission {0:d} " \
                                "attributes.".format(self.DUT.mission_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
-        """
-        (TestRTKMission) set_attributes should return a 10 error code when passed the wrong type
-        """
-
-        _attributes = ('Test Mission Description', 'None', 'hours')
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKMission " \
-                               "attributes.")
-
-    @attr(all=True, unit=True)
     def test02c_set_attributes_too_few_passed(self):
         """
         (TestRTKMission) set_attributes should return a zero error code when passed too few attributes
         """
+        self._attributes.pop('time_units')
 
-        _attributes = ('Test Mission Description', 216.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to " \
-                               "RTKMission.set_attributes().")
-
+        self.assertEqual(_msg,
+                         "RTK ERROR: Missing attribute 'time_units' in " \
+                         "attribute dictionary passed to " \
+                         "RTKMission.set_attributes().")

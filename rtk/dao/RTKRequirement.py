@@ -4,11 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKRequirement Table
-===============================================================================
-"""
+"""RTKRequirement Table Module."""
 
 from datetime import date
 # pylint: disable=E0401
@@ -16,7 +12,7 @@ from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
@@ -102,10 +98,9 @@ class RTKRequirement(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the Requirement data model
-        attributes.
+        Retrieve the current values of the Requirement data model attributes.
 
-        :return: (revsion_id, requirement_id, derived, description,
+        :return: {revision_id, requirement_id, derived, description,
                   figure_number, owner, page_number, parent_id, priority,
                   requirement_code, specification, requirement_type, validated,
                   validated_date, q_clarity_0, q_clarity_1, q_clarity_2,
@@ -117,112 +112,179 @@ class RTKRequirement(RTK_BASE):
                   q_consistent_3, q_consistent_4, q_consistent_5,
                   q_consistent_6, q_consistent_7, q_consistent_8,
                   q_verifiable_0, q_verifiable_1, q_verifiable_2,
-                  q_verifiable_3, q_verifiable_4, q_verifiable_5)
-        :rtype: tuple
+                  q_verifiable_3, q_verifiable_4, q_verifiable_5} pairs.
+        :rtype: dict
         """
-
-        _attributes = (
-            self.revision_id, self.requirement_id, self.derived,
-            self.description, self.figure_number, self.owner, self.page_number,
-            self.parent_id, self.priority, self.requirement_code,
-            self.specification, self.requirement_type, self.validated,
-            self.validated_date, self.q_clarity_0, self.q_clarity_1,
-            self.q_clarity_2, self.q_clarity_3, self.q_clarity_4,
-            self.q_clarity_5, self.q_clarity_6, self.q_clarity_7,
-            self.q_clarity_8, self.q_complete_0, self.q_complete_1,
-            self.q_complete_2, self.q_complete_3, self.q_complete_4,
-            self.q_complete_5, self.q_complete_6, self.q_complete_7,
-            self.q_complete_8, self.q_complete_9, self.q_consistent_0,
-            self.q_consistent_1, self.q_consistent_2, self.q_consistent_3,
-            self.q_consistent_4, self.q_consistent_5, self.q_consistent_6,
-            self.q_consistent_7, self.q_consistent_8, self.q_verifiable_0,
-            self.q_verifiable_1, self.q_verifiable_2, self.q_verifiable_3,
-            self.q_verifiable_4, self.q_verifiable_5)
+        _attributes = {
+            'revision_id': self.revision_id,
+            'requirement_id': self.requirement_id,
+            'derived': self.derived,
+            'description': self.description,
+            'figure_number': self.figure_number,
+            'owner': self.owner,
+            'page_number': self.page_number,
+            'parent_id': self.parent_id,
+            'priority': self.priority,
+            'requirement_code': self.requirement_code,
+            'specification': self.specification,
+            'requirement_type': self.requirement_type,
+            'validated': self.validated,
+            'validated_date': self.validated_date,
+            'q_clarity_0': self.q_clarity_0,
+            'q_clarity_1': self.q_clarity_1,
+            'q_clarity_2': self.q_clarity_2,
+            'q_clarity_3': self.q_clarity_3,
+            'q_clarity_4': self.q_clarity_4,
+            'q_clarity_5': self.q_clarity_5,
+            'q_clarity_6': self.q_clarity_6,
+            'q_clarity_7': self.q_clarity_7,
+            'q_clarity_8': self.q_clarity_8,
+            'q_complete_0': self.q_complete_0,
+            'q_complete_1': self.q_complete_1,
+            'q_complete_2': self.q_complete_2,
+            'q_complete_3': self.q_complete_3,
+            'q_complete_4': self.q_complete_4,
+            'q_complete_5': self.q_complete_5,
+            'q_complete_6': self.q_complete_6,
+            'q_complete_7': self.q_complete_7,
+            'q_complete_8': self.q_complete_8,
+            'q_complete_9': self.q_complete_9,
+            'q_consistent_0': self.q_consistent_0,
+            'q_consistent_1': self.q_consistent_1,
+            'q_consistent_2': self.q_consistent_2,
+            'q_consistent_3': self.q_consistent_3,
+            'q_consistent_4': self.q_consistent_4,
+            'q_consistent_5': self.q_consistent_5,
+            'q_consistent_6': self.q_consistent_6,
+            'q_consistent_7': self.q_consistent_7,
+            'q_consistent_8': self.q_consistent_8,
+            'q_verifiable_0': self.q_verifiable_0,
+            'q_verifiable_1': self.q_verifiable_1,
+            'q_verifiable_2': self.q_verifiable_2,
+            'q_verifiable_3': self.q_verifiable_3,
+            'q_verifiable_4': self.q_verifiable_4,
+            'q_verifiable_5': self.q_verifiable_5
+        }
 
         return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the Requirement data model attributes.
+        Set the current values of teh Requirement data model attributes.
 
         :param tuple attributes: tuple of values to assign to the instance
                                  attributes.
         :return: (_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKRequirement {0:d} attributes.". \
                format(self.requirement_id)
 
         try:
-            self.derived = int(none_to_default(attributes[0], 0))
-            self.description = str(none_to_default(attributes[1], ''))
-            self.figure_number = str(none_to_default(attributes[2], ''))
-            self.owner = str(none_to_default(attributes[3], ''))
-            self.page_number = str(none_to_default(attributes[4], ''))
-            self.parent_id = int(none_to_default(attributes[5], 0))
-            self.priority = int(none_to_default(attributes[6], 0))
-            self.requirement_code = str(none_to_default(attributes[7], ''))
-            self.specification = str(none_to_default(attributes[8], ''))
-            self.requirement_type = str(none_to_default(attributes[9], ''))
-            self.validated = int(none_to_default(attributes[10], 0))
-            self.validated_date = none_to_default(attributes[11], date.today())
-            self.q_clarity_0 = int(none_to_default(attributes[12], 0))
-            self.q_clarity_1 = int(none_to_default(attributes[13], 0))
-            self.q_clarity_2 = int(none_to_default(attributes[14], 0))
-            self.q_clarity_3 = int(none_to_default(attributes[15], 0))
-            self.q_clarity_4 = int(none_to_default(attributes[16], 0))
-            self.q_clarity_5 = int(none_to_default(attributes[17], 0))
-            self.q_clarity_6 = int(none_to_default(attributes[18], 0))
-            self.q_clarity_7 = int(none_to_default(attributes[19], 0))
-            self.q_clarity_8 = int(none_to_default(attributes[20], 0))
-            self.q_complete_0 = int(none_to_default(attributes[21], 0))
-            self.q_complete_1 = int(none_to_default(attributes[22], 0))
-            self.q_complete_2 = int(none_to_default(attributes[23], 0))
-            self.q_complete_3 = int(none_to_default(attributes[24], 0))
-            self.q_complete_4 = int(none_to_default(attributes[25], 0))
-            self.q_complete_5 = int(none_to_default(attributes[26], 0))
-            self.q_complete_6 = int(none_to_default(attributes[27], 0))
-            self.q_complete_7 = int(none_to_default(attributes[28], 0))
-            self.q_complete_8 = int(none_to_default(attributes[29], 0))
-            self.q_complete_9 = int(none_to_default(attributes[30], 0))
-            self.q_consistent_0 = int(none_to_default(attributes[31], 0))
-            self.q_consistent_1 = int(none_to_default(attributes[32], 0))
-            self.q_consistent_2 = int(none_to_default(attributes[33], 0))
-            self.q_consistent_3 = int(none_to_default(attributes[34], 0))
-            self.q_consistent_4 = int(none_to_default(attributes[35], 0))
-            self.q_consistent_5 = int(none_to_default(attributes[36], 0))
-            self.q_consistent_6 = int(none_to_default(attributes[37], 0))
-            self.q_consistent_7 = int(none_to_default(attributes[38], 0))
-            self.q_consistent_8 = int(none_to_default(attributes[39], 0))
-            self.q_verifiable_0 = int(none_to_default(attributes[40], 0))
-            self.q_verifiable_1 = int(none_to_default(attributes[41], 0))
-            self.q_verifiable_2 = int(none_to_default(attributes[42], 0))
-            self.q_verifiable_3 = int(none_to_default(attributes[43], 0))
-            self.q_verifiable_4 = int(none_to_default(attributes[44], 0))
-            self.q_verifiable_5 = int(none_to_default(attributes[45], 0))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKRequirement.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKRequirement attributes."
+            self.derived = int(none_to_default(attributes['derived'], 0))
+            self.description = str(
+                none_to_default(attributes['description'], ''))
+            self.figure_number = str(
+                none_to_default(attributes['figure_number'], ''))
+            self.owner = str(none_to_default(attributes['owner'], ''))
+            self.page_number = str(
+                none_to_default(attributes['page_number'], ''))
+            self.parent_id = int(none_to_default(attributes['parent_id'], 0))
+            self.priority = int(none_to_default(attributes['priority'], 0))
+            self.requirement_code = str(
+                none_to_default(attributes['requirement_code'], ''))
+            self.specification = str(
+                none_to_default(attributes['specification'], ''))
+            self.requirement_type = str(
+                none_to_default(attributes['requirement_type'], ''))
+            self.validated = int(none_to_default(attributes['validated'], 0))
+            self.validated_date = none_to_default(attributes['validated_date'],
+                                                  date.today())
+            self.q_clarity_0 = int(
+                none_to_default(attributes['q_clarity_0'], 0))
+            self.q_clarity_1 = int(
+                none_to_default(attributes['q_clarity_1'], 0))
+            self.q_clarity_2 = int(
+                none_to_default(attributes['q_clarity_2'], 0))
+            self.q_clarity_3 = int(
+                none_to_default(attributes['q_clarity_3'], 0))
+            self.q_clarity_4 = int(
+                none_to_default(attributes['q_clarity_4'], 0))
+            self.q_clarity_5 = int(
+                none_to_default(attributes['q_clarity_5'], 0))
+            self.q_clarity_6 = int(
+                none_to_default(attributes['q_clarity_6'], 0))
+            self.q_clarity_7 = int(
+                none_to_default(attributes['q_clarity_7'], 0))
+            self.q_clarity_8 = int(
+                none_to_default(attributes['q_clarity_8'], 0))
+            self.q_complete_0 = int(
+                none_to_default(attributes['q_complete_0'], 0))
+            self.q_complete_1 = int(
+                none_to_default(attributes['q_complete_1'], 0))
+            self.q_complete_2 = int(
+                none_to_default(attributes['q_complete_2'], 0))
+            self.q_complete_3 = int(
+                none_to_default(attributes['q_complete_3'], 0))
+            self.q_complete_4 = int(
+                none_to_default(attributes['q_complete_4'], 0))
+            self.q_complete_5 = int(
+                none_to_default(attributes['q_complete_5'], 0))
+            self.q_complete_6 = int(
+                none_to_default(attributes['q_complete_6'], 0))
+            self.q_complete_7 = int(
+                none_to_default(attributes['q_complete_7'], 0))
+            self.q_complete_8 = int(
+                none_to_default(attributes['q_complete_8'], 0))
+            self.q_complete_9 = int(
+                none_to_default(attributes['q_complete_9'], 0))
+            self.q_consistent_0 = int(
+                none_to_default(attributes['q_consistent_0'], 0))
+            self.q_consistent_1 = int(
+                none_to_default(attributes['q_consistent_1'], 0))
+            self.q_consistent_2 = int(
+                none_to_default(attributes['q_consistent_2'], 0))
+            self.q_consistent_3 = int(
+                none_to_default(attributes['q_consistent_3'], 0))
+            self.q_consistent_4 = int(
+                none_to_default(attributes['q_consistent_4'], 0))
+            self.q_consistent_5 = int(
+                none_to_default(attributes['q_consistent_5'], 0))
+            self.q_consistent_6 = int(
+                none_to_default(attributes['q_consistent_6'], 0))
+            self.q_consistent_7 = int(
+                none_to_default(attributes['q_consistent_7'], 0))
+            self.q_consistent_8 = int(
+                none_to_default(attributes['q_consistent_8'], 0))
+            self.q_verifiable_0 = int(
+                none_to_default(attributes['q_verifiable_0'], 0))
+            self.q_verifiable_1 = int(
+                none_to_default(attributes['q_verifiable_1'], 0))
+            self.q_verifiable_2 = int(
+                none_to_default(attributes['q_verifiable_2'], 0))
+            self.q_verifiable_3 = int(
+                none_to_default(attributes['q_verifiable_3'], 0))
+            self.q_verifiable_4 = int(
+                none_to_default(attributes['q_verifiable_4'], 0))
+            self.q_verifiable_5 = int(
+                none_to_default(attributes['q_verifiable_5'], 0))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKMechanism.set_attributes().".format(_err)
 
         return _error_code, _msg
 
     def create_code(self, prefix):
         """
-        Method to create the Requirement code based on the requirement type and
-        it's ID.
+        Create the Requirement code based on the requirement type and it's ID.
 
         :param str prefix: the prefix to use for the Requirement code.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # Pad the suffix (Requirement ID) with zeros so the suffix is four

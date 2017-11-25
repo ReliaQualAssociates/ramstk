@@ -1,8 +1,13 @@
-import sys
-import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__))) +
-                '/../', )
-
-from test_setup import setUp
-
-setUp()
+from .TestRTKAction import TestRTKAction
+from .TestRTKCause import TestRTKCause
+from .TestRTKControl import TestRTKControl
+from .TestRTKEnvironment import TestRTKEnvironment
+from .TestRTKFailureDefinition import TestRTKFailureDefinition
+from .TestRTKFunction import TestRTKFunction
+from .TestRTKMechanism import TestRTKMechanism
+from .TestRTKMission import TestRTKMission
+from .TestRTKMissionPhase import TestRTKMissionPhase
+from .TestRTKMode import TestRTKMode
+from .TestRTKRequirement import TestRTKRequirement
+from .TestRTKRevision import TestRTKRevision
+from .TestRTKStakeholder import TestRTKStakeholder

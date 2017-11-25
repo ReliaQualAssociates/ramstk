@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Requirement Module View Module
--------------------------------------------------------------------------------
-"""
+"""Requirement Module View."""
 
 from pubsub import pub  # pylint: disable=E0401
 
@@ -19,6 +16,8 @@ from .ModuleView import RTKModuleView  # pylint: disable=E0401
 
 class ModuleView(RTKModuleView):
     """
+    Display Requirement attribute data in the RTK Module Book.
+
     The Requirement Module Book view displays all the Requirements associated
     with the RTK Program in a hierarchical list.  The attributes of the
     Requriements Module View are:
@@ -29,12 +28,11 @@ class ModuleView(RTKModuleView):
 
     def __init__(self, controller):
         """
-        Method to initialize the Module View for the Requirement package.
+        Initialize the Requirement Module View.
 
         :param controller: the RTK Master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKModuleView.__init__(self, controller, module='requirement')
 
         # Initialize private dictionary attributes.
@@ -85,11 +83,10 @@ class ModuleView(RTKModuleView):
 
     def _do_change_cell(self, cell, __path, new_iter, position):
         """
-        Method to handle edits of the Requirement package Module View
-        gtk.Treeview() gtk.CellRendererCombo()s.
+        Handle edits of the Requirement Module View gtk.CellRendererCombo()s.
 
         :param __cell: the gtk.CellRendererCombo() that was edited.
-        :type __cell: :py:class:`gtk.CellRendererCombo`
+        :type __cell: :class:`gtk.CellRendererCombo`
         :param str __path: the gtk.TreeView() path of the
                            gtk.CellRendererCombo() that was edited.
         :param str new_iter: the new gtk.TreeITer() selected in the changed
@@ -99,39 +96,43 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _model = cell.get_property('model')
         _new_value = _model.get_value(new_iter, 0)
 
-        _requirement = self._dtc_data_controller.request_select(
+        _attributes = self._dtc_data_controller.request_get_attributes(
             self._requirement_id)
-        _attributes = list(_requirement.get_attributes())[2:]
-        _attributes[self._lst_col_order[position] - 2] = str(_new_value)
-        _error_code, _msg = _requirement.set_attributes(_attributes)
 
-        if _error_code == 0:
-            pub.sendMessage(
-                'mvwEditedRequirement',
-                index=self._lst_col_order[position],
-                new_text=_new_value)
-        else:
-            _return = True
+        if self._lst_col_order[position] == 5:
+            _attributes['owner'] = str(_new_value)
+        elif self._lst_col_order[position] == 8:
+            _attributes['priority'] = str(_new_value)
+        elif self._lst_col_order[position] == 11:
+            _attributes['requirement_type'] = str(_new_value)
+
+        self._dtc_data_controller.request_set_attributes(
+            self._requirement_id, _attributes)
+
+        pub.sendMessage(
+            'mvwEditedRequirement',
+            index=self._lst_col_order[position],
+            new_text=_new_value)
 
         return _return
 
     def _do_change_row(self, treeview):
         """
-        Method to handle events for the Requirement package Module Book
-        gtk.TreeView().  It is called whenever a Module Book gtk.TreeView()
-        row is activated.
+        Handle events for the Requirement Module View RTKTreeView().
 
-        :param gtk.TreeView treeview: the Requirement class gtk.TreeView().
+        This method is called whenever a Module View RTKTreeView() row is
+        activated or changed.
+
+        :param treeview: the Requirement class RTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         treeview.handler_block(self._lst_handler_id[0])
@@ -148,38 +149,54 @@ class ModuleView(RTKModuleView):
 
     def _do_edit_cell(self, __cell, path, new_text, position, model):
         """
-        Method to handle edits of the Requirement package Module View
-        gtk.Treeview().
+        Handle edits of the Requirement package Module View RTKTreeView().
 
         :param __cell: the gtk.CellRenderer() that was edited.
-        :type __cell: :py:class:`gtk.CellRenderer`
+        :type __cell: :class:`gtk.CellRenderer`
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
                          that was edited.
         :param str new_text: the new text in the edited gtk.CellRenderer().
         :param int position: the column position of the edited
                              gtk.CellRenderer().
         :param model: the gtk.TreeModel() the gtk.CellRenderer() belongs to.
-        :type model: :py:class:`gtk.TreeModel`
+        :type model: :class:`gtk.TreeModel`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
-        if not RTKModuleView._do_edit_cell(__cell, path, new_text, position,
-                                           model):
+        if not self.treeview.do_edit_cell(__cell, path, new_text, position,
+                                          model):
 
-            _requirement = self._dtc_data_controller.request_select(
+            _attributes = self._dtc_data_controller.request_get_attributes(
                 self._requirement_id)
-            _attributes = list(_requirement.get_attributes())[2:]
-            _attributes[self._lst_col_order[position] - 2] = str(new_text)
-            _error_code, _msg = _requirement.set_attributes(_attributes)
+
+            if self._lst_col_order[position] == 2:
+                _attributes['derived'] = str(new_text)
+            elif self._lst_col_order[position] == 3:
+                _attributes['description'] = str(new_text)
+            elif self._lst_col_order[position] == 4:
+                _attributes['figure_number'] = str(new_text)
+            elif self._lst_col_order[position] == 6:
+                _attributes['page_number'] = str(new_text)
+            elif self._lst_col_order[position] == 10:
+                _attributes['specification'] = str(new_text)
+            elif self._lst_col_order[position] == 12:
+                _attributes['validated'] = str(new_text)
+            elif self._lst_col_order[position] == 13:
+                _attributes['validated_date'] = str(new_text)
+
+            _error_code, \
+                _msg = self._dtc_data_controller.request_set_attributes(
+                    self._requirement_id, _attributes)
 
             if _error_code == 0:
                 pub.sendMessage(
                     'mvwEditedRequirement',
                     index=self._lst_col_order[position],
                     new_text=new_text)
+            else:
+                _return = True
         else:
             _return = True
 
@@ -187,14 +204,13 @@ class ModuleView(RTKModuleView):
 
     def _do_request_delete(self, __button):
         """
-        Method to delete the selected Requirement and it's children.
+        Request to delete the selected Requirement and it's children.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _prompt = _(u"You are about to delete Requirement {0:d} and all data "
@@ -234,15 +250,13 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert(self, sibling=True):
         """
-        Method to send request to insert a new Requirement into the RTK Program
-        database.
+        Request to insert a new Requirement into the RTK Program database.
 
         :param bool sibling: indicates whether to insert a sibling (default)
                              Requirement or a child Requirement.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _requirement = self._dtc_data_controller.request_select(
@@ -294,64 +308,56 @@ class ModuleView(RTKModuleView):
 
     def _do_request_insert_child(self, __button):
         """
-        Method to send request to insert a new Requirement into the RTK Program
-        database as child of the currently selected Requirement.
+        Request to insert a child Requirement of the selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._do_request_insert(False)
 
     def _do_request_insert_sibling(self, __button):
         """
-        Method to send request to insert a new Requirement into the RTK Program
-        database as a sibling of the currently selected Requirement.
+        Request to insert a sibling Requirement of the selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._do_request_insert(True)
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Requirement.
+        Request to save the currently selected Requirement.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update(self._requirement_id)
 
     def _do_request_update_all(self, __button):
         """
-        Method to save all the Requirements.
+        Request to save all the Requirements.
 
         :param __button: the gtk.ToolButton() that called this method.
-        :type __button: :py:class:`gtk.ToolButton`
+        :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update_all()
 
     def _make_buttonbox(self):
         """
-        Method to create the gtk.ButtonBox() for the Requirement class Module
-        View.
+        Make the gtk.ButtonBox() for the Requirement Module View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Requirement class
                  Module View.
-        :rtype: :py:class:`gtk.ButtonBox`
+        :rtype: :class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             _(u"Adds a new Requirement at the same hierarchy level as the "
               u"selected Requirement (i.e., a sibling Requirement)."),
@@ -378,12 +384,11 @@ class ModuleView(RTKModuleView):
 
     def _make_treeview(self):
         """
-        Method for setting up the gtk.TreeView() for Requirements.
+        Set up the gtk.TreeView() for Requirements.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # Load the Owner gtk.CellRendererCombo()
@@ -435,11 +440,10 @@ class ModuleView(RTKModuleView):
 
     def _on_button_press(self, treeview, event):
         """
-        Method for handling mouse clicks on the Requirement package Module View
-        gtk.TreeView().
+        Handle mouse clicks on the Requirement Module View RTKTreeView().
 
-        :param treeview: the Requirement class gtk.TreeView().
-        :type treeview: :py:class:`gtkTreeView`
+        :param treeview: the Requirement class RTKTreeView().
+        :type treeview: :class:`rtk.gui.gtk.rtk.TreeView.RTKTreeView`
         :param event: the gtk.gdk.Event() that called this method (the
                       important attribute is which mouse button was clicked).
 
@@ -451,11 +455,10 @@ class ModuleView(RTKModuleView):
                                     * 8 =
                                     * 9 =
 
-        :type event: :py:class:`gtk.gdk.Event`
+        :type event: :class:`gtk.gdk.Event`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         treeview.handler_block(self._lst_handler_id[1])
 
         # The cursor-changed signal will call the _on_change_row.  If
@@ -522,8 +525,11 @@ class ModuleView(RTKModuleView):
 
     def _on_edit(self, position, new_text):
         """
-        Method to update the Module View RTKTreeView with changes to the
-        Requirement data model attributes.
+        Update the Requirement Module View RTKTreeView.
+
+        This method updates the Module View RTKTreeView with changes to the
+        Requirement data model attributes.  It is called when Requirement
+        attributes are changed in other views.
 
         :ivar int position: the ordinal position in the Module Book
                             gtk.TreeView() of the data being updated.
@@ -531,7 +537,6 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _model, _row = self.treeview.get_selection().get_selected()
 
         _model.set_value(_row, self._lst_col_order[position], new_text)
@@ -540,13 +545,14 @@ class ModuleView(RTKModuleView):
 
     def _on_select_revision(self, module_id):  # pylint: disable=W0221
         """
-        Method to load the Requirement Module Book view gtk.TreeModel() with
-        Requirement information when an RTK Program database is opened.
+        Load the Requirement Module View gtk.TreeModel().
+
+        This method is called whenever an RTK Program database is opened or a
+        Revision is selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         self._revision_id = module_id
 
         # pylint: disable=attribute-defined-outside-init

@@ -10,13 +10,15 @@ This is the test package for testing RTK.
 
 import sys
 import os
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                '../rtk/')))
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy_utils import create_database
 
+sys.path.insert(
+    0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../rtk/')))
+
+# pylint: disable=import-error, wrong-import-position
 import Configuration
 import Utilities
 
@@ -194,6 +196,19 @@ def _create_common_database():
 
 
 def _create_program_database():
+    bcolors = {
+        'HEADER': '\033[35m',
+        'OKBLUE': '\033[34m',
+        'OKGREEN': '\033[32m',
+        'WARNING': '\033[33m',
+        'FAIL': '\033[31m',
+        'ENDC': '\033[0m',
+        'BOLD': '\033[1m',
+        'UNDERLINE': '\033[4m'
+    }
+
+    print "\n" + bcolors['OKBLUE'] + bcolors['BOLD'] + \
+          "  Creating RTK Program test database...." + bcolors['ENDC'] + "\n"
 
     # Create the RTK Program test database.
     create_database('sqlite:////tmp/TestDB.rtk')
@@ -251,12 +266,14 @@ def _create_program_database():
     session.commit()
 
     _revision = RTKRevision()
+    _revision.revision_id = 1
     session.add(_revision)
     session.commit()
 
     # Create tables that have Revision ID as a Foreign Key.
     _mission = RTKMission()
     _mission.revision_id = _revision.revision_id
+    _mission.description = 'Test Mission Description'
     session.add(_mission)
 
     _failure_definition = RTKFailureDefinition()
@@ -362,18 +379,13 @@ def _create_program_database():
     _reliability.hardware_id = _hardware.hardware_id
     session.add(_reliability)
 
-    _mode = RTKMode()
-    _mode.function_id = _function.function_id
-    _mode.hardware_id = _hardware.hardware_id
-    _mode.description = 'Test Failure Mode #1'
-    session.add(_mode)
-
     # Create test Function:Hardware matrix
     for _row in [1, 2, 3]:
         for _column in [1, 2, 3]:
             _matrix = RTKMatrix()
             _matrix.revision_id = _revision.revision_id
             _matrix.matrix_id = 1
+            _matrix.matrix_type = 'fnctn_hrdwr'
             _matrix.row_item_id = _row
             _matrix.column_item_id = _column
             session.add(_matrix)
@@ -384,6 +396,7 @@ def _create_program_database():
             _matrix = RTKMatrix()
             _matrix.revision_id = _revision.revision_id
             _matrix.matrix_id = 11
+            _matrix.matrix_type = 'rqrmnt_hrdwr'
             _matrix.row_item_id = _row
             _matrix.column_item_id = _column
             session.add(_matrix)
@@ -394,12 +407,21 @@ def _create_program_database():
     # Foreign Key or have o Foreign Key.
     _phase = RTKMissionPhase()
     _phase.mission_id = _mission.mission_id
+    _phase.description = 'Test Mission Phase'
     session.add(_phase)
     session.commit()
 
     _environment = RTKEnvironment()
     _environment.phase_id = _phase.phase_id
+    _environment.name = 'Test Environmental Condition'
     session.add(_environment)
+    session.commit()
+
+    _mode = RTKMode()
+    _mode.function_id = _function.function_id
+    _mode.hardware_id = _hardware.hardware_id
+    _mode.description = 'Test Failure Mode #1'
+    session.add(_mode)
     session.commit()
 
     _mechanism = RTKMechanism()
@@ -419,12 +441,14 @@ def _create_program_database():
     _control.cause_id = _cause.cause_id
     _control.description = 'Test Control for Failure Cause #1'
     session.add(_control)
+    session.commit()
 
     _action = RTKAction()
     _action.mode_id = _mode.mode_id
     _action.cause_id = _cause.cause_id
     _action.action_recommended = 'Recommended action for Failure Cause #1'
     session.add(_action)
+    session.commit()
 
     _op_load = RTKOpLoad()
     _op_load.mechanism_id = _mechanism.mechanism_id
@@ -472,6 +496,7 @@ def _create_program_database():
 
     session.commit()
 
+
 def setUp():
 
     # Clean up from previous runs.
@@ -493,12 +518,10 @@ def setUp():
     _create_program_database()
 
     Configuration.RTK_HR_MULTIPLIER = 1.0
-    Configuration.RTK_DEBUG_LOG = Utilities.create_logger("RTK.debug",
-                                                          'DEBUG',
-                                                          '/tmp/RTK_debug.log')
-    Configuration.RTK_USER_LOG = Utilities.create_logger("RTK.user",
-                                                         'INFO',
-                                                         '/tmp/RTK_user.log')
+    Configuration.RTK_DEBUG_LOG = Utilities.create_logger(
+        "RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
+    Configuration.RTK_USER_LOG = Utilities.create_logger(
+        "RTK.user", 'INFO', '/tmp/RTK_user.log')
 
 
 def tearDown():

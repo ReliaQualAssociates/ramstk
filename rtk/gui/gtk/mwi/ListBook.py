@@ -17,7 +17,7 @@ from pubsub import pub  # pylint: disable=E0401
 # Import other RTK modules.
 # pylint: disable=E0401
 from gui.gtk.rtk import RTKBook
-from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition
+from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, lvwStakeholder
 from gui.gtk.matrixviews import FunctionHardware, RequirementHardware, RequirementSoftware, RequirementValidation
 
 _ = gettext.gettext
@@ -49,10 +49,15 @@ class ListBook(RTKBook):  # pylint: disable=R0904
             'revision':
             [lvwUsageProfile(controller),
              lvwFailureDefinition(controller)],
-            'function': [FunctionHardware(controller, matrix_id=1)],
-            'requirement': [RequirementHardware(controller, matrix_id=11),
-                            RequirementSoftware(controller, matrix_id=12),
-                            RequirementValidation(controller, matrix_id=13)]
+            'function': [FunctionHardware(controller,
+                                          matrix_type='fnctn_hrdwr')],
+            'requirement': [lvwStakeholder(controller),
+                            RequirementHardware(controller,
+                                                matrix_type='rqrmnt_hrdwr'),
+                            RequirementSoftware(controller,
+                                                matrix_type='rqrmnt_sftwr'),
+                            RequirementValidation(controller,
+                                                  matrix_type='rqrmnt_vldtn')]
         }
 
         # Initialize public list attributes.
@@ -60,7 +65,7 @@ class ListBook(RTKBook):  # pylint: disable=R0904
         # Initialize public scalar attributes.
 
         # Set the properties for the ListBook and it's widgets.
-        self.set_title(_(u"RTK Matrices & Lists"))
+        self.set_title(_(u"RTK Matrices and Lists"))
         self.set_deletable(False)
         self.set_skip_pager_hint(True)
         self.set_skip_taskbar_hint(True)

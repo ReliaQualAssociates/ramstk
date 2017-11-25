@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKRevision module algorithms and
 models.
@@ -14,7 +13,9 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -34,6 +35,36 @@ class TestRTKRevision(unittest.TestCase):
     """
     Class for testing the RTKRevision class.
     """
+
+    _attributes = {
+        'revision_id': 1,
+        'availability_logistics': 0.985,
+        'availability_mission': 0.993,
+        'cost': 10.86,
+        'cost_per_failure': 0.00068,
+        'cost_per_hour': 0.000074,
+        'hazard_rate_active': 0.00052,
+        'hazard_rate_dormant': 0.000052,
+        'hazard_rate_logistics': 0.000572,
+        'hazard_rate_mission': 0.00049,
+        'hazard_rate_software': 0.0000,
+        'mmt': 1.8,
+        'mcmt': 1.13,
+        'mpmt': 2.21,
+        'mtbf_logistics': 0.0,
+        'mtbf_mission': 0.0,
+        'mttr': 0.84,
+        'name': 'Initial revision',
+        'reliability_logistics': 0.988,
+        'reliability_mission': 0.995,
+        'remarks': 'Some remarks',
+        'n_parts': 138,
+        'revision_code': '-',
+        'program_time': 1283.6,
+        'program_time_sd': 22.4,
+        'program_cost': 34286.00,
+        'program_cost_sd': 332.7
+    }
 
     def setUp(self):
         """
@@ -92,13 +123,43 @@ class TestRTKRevision(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01_get_attributes(self):
         """
-        (TestRTKRevision) get_attributes should return a tuple of attribute values.
+        (TestRTKRevision) get_attributes should return a dict of {attr name:attr value} pairs.
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (1, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 'Test Revision', 1.0,
-                          1.0, '', 1, '', 0.0, 0.0, 0.0, 0.0))
+        _attributes = {
+            'revision_id': 1,
+            'availability_logistics': 1.0,
+            'availability_mission': 1.0,
+            'cost': 0.0,
+            'cost_per_failure': 0.0,
+            'cost_per_hour': 0.0,
+            'hazard_rate_active': 0.0,
+            'hazard_rate_dormant': 0.0,
+            'hazard_rate_logistics': 0.0,
+            'hazard_rate_mission': 0.0,
+            'hazard_rate_software': 0.0,
+            'mmt': 0.0,
+            'mcmt': 0.0,
+            'mpmt': 0.0,
+            'mtbf_logistics': 0.0,
+            'mtbf_mission': 0.0,
+            'mttr': 0.0,
+            'name': '',
+            'reliability_logistics': 1.0,
+            'reliability_mission': 1.0,
+            'remarks': '',
+            'n_parts': 0,
+            'revision_code': '',
+            'program_time': 0.0,
+            'program_time_sd': 0.0,
+            'program_cost': 0.0,
+            'program_cost_sd': 0.0
+        }
+
+        _values = self.DUT.get_attributes()
+
+        self.assertEqual(_values['availability_logistics'],
+                         _attributes['availability_logistics'])
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):
@@ -106,52 +167,150 @@ class TestRTKRevision(unittest.TestCase):
         (TestRTKRevision) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0.986, 0.999, 113.25, 1.38, 0.15, 0.000001523,
-                       0.0000001523, 0.0000016753, 0.000001018, 0.00000852,
-                       32.8, 2.3, 1.8, 59690.8, 982318.3, 12.6,
-                       'Revision Name', 0.988, 0.9999, 'Remarks', 12, '-',
-                       5688.6, 26812.0, 186238, 255487369.5)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKRevision {0:d} " \
                                "attributes.".format(self.DUT.revision_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
-        """
-        (TestRTKRevision) set_attributes should return a 10 error code when passed the wrong type
-        """
-
-        _attributes = (0.986, 0.999, 113.25, 'None', 0.15, 0.000001523,
-                       0.0000001523, 'None', 0.000001018, 0.00000852,
-                       32.8, 2.3, 1.8, 59690.8, 982318.3, 12.6,
-                       'Revision Name', 0.988, 0.9999, 'Remarks', 12, '-',
-                       5688.6, 26812.0, 186238, 255487369.5)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKRevision " \
-                               "attributes.")
-
-    @attr(all=True, unit=True)
     def test02c_set_attributes_too_few_passed(self):
         """
-        (TestRTKRevision) set_attributes should return a 40 error code when passed too few attributes
+        (TestRTKRevision) set_attributes should return a 40 error code when passed an attribute dict with a missing key
         """
 
-        _attributes = (0.986, 0.999, 113.25, 1.38, 0.15, 0.000001523,
-                       0.0000001523, 0.0000016753, 0.000001018, 0.00000852,
-                       32.8, 2.3, 1.8, 59690.8, 982318.3, 12.6,
-                       'Revision Name', 0.988, 0.9999, 'Remarks', 12, '-',
-                       5688.6, 26812.0, 186238)
+        self._attributes.pop('name')
 
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to RTKRevision.set_attributes().")
+        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'name' in " \
+                               "attribute dictionary passed to " \
+                               "RTKRevision.set_attributes().")
 
+    @attr(all=True, unit=True)
+    def test03a_calculate_hazard_rate(self):
+        """
+        (TestRTKRevision) calculate_hazard_rate should return a zero error code on success.
+        """
+
+        self.DUT.hazard_rate_active = 0.00000151
+        self.DUT.hazard_rate_dormant = 0.0000000152
+        self.DUT.hazard_rate_software = 0.0000003
+        self.DUT.hazard_rate_mission = 0.000002
+
+        _error_code, _msg = self.DUT.calculate_hazard_rate()
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating hazard rates for '
+                         'Revision ID 1.')
+        self.assertAlmostEqual(self.DUT.hazard_rate_logistics, 1.8252e-06)
+
+    @attr(all=True, unit=True)
+    def test03b_calculate_mtbf(self):
+        """
+        (TestRTKRevision) calculate_mtbf should return a zero error code on success.
+        """
+
+        self.DUT.hazard_rate_active = 0.00000151
+        self.DUT.hazard_rate_dormant = 0.0000000152
+        self.DUT.hazard_rate_software = 0.0000003
+        self.DUT.hazard_rate_mission = 0.000002
+        self.DUT.calculate_hazard_rate()
+
+        _error_code, _msg = self.DUT.calculate_mtbf()
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Calculating MTBFs for Revision ID 1.')
+        self.assertAlmostEqual(self.DUT.mtbf_logistics, 547885.1632698)
+        self.assertAlmostEqual(self.DUT.mtbf_mission, 500000.0)
+
+    @attr(all=True, unit=True)
+    def test03c_calculate_reliability(self):
+        """
+        (TestRTKRevision) calculate_reliability should return a zero error code on success.
+        """
+
+        self.DUT.hazard_rate_active = 0.00000151
+        self.DUT.hazard_rate_dormant = 0.0000000152
+        self.DUT.hazard_rate_software = 0.0000003
+        self.DUT.hazard_rate_mission = 0.000002
+        self.DUT.calculate_hazard_rate()
+
+        _error_code, _msg = self.DUT.calculate_reliability(100.0, 1.0)
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating reliabilities for ' \
+                               'Revision ID 1.')
+        self.assertAlmostEqual(self.DUT.reliability_logistics, 0.9998175)
+        self.assertAlmostEqual(self.DUT.reliability_mission, 0.9998000)
+
+    @attr(all=True, unit=True)
+    def test04a_calculate_availability(self):
+        """
+        (TestRTKRevision) calculate_availability should return a zero error code on success.
+        """
+
+        self.DUT.mpmt = 0.5
+        self.DUT.mcmt = 1.2
+        self.DUT.mttr = 5.8
+        self.DUT.mmt = 0.85
+        self.DUT.mtbf_logistics = 547885.1632698
+        self.DUT.mtbf_mission = 500000.0
+
+        _error_code, _msg = self.DUT.calculate_availability()
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating availability ' \
+                               'metrics for Revision ID 1.')
+        self.assertAlmostEqual(self.DUT.availability_logistics, 0.9999894)
+        self.assertAlmostEqual(self.DUT.availability_mission, 0.9999884)
+
+    @attr(all=True, unit=True)
+    def test04b_calculate_availability_divide_by_zero(self):
+        """
+        (TestRTKRevision) calculate_availability should return a non-zero error code when attempting to divide by zero.
+        """
+
+        self.DUT.mttr = 0.0
+        self.DUT.mtbf_logistics = 547885.1632698
+        self.DUT.mtbf_mission = 0.0
+
+        _error_code, _msg = self.DUT.calculate_availability()
+        self.assertEqual(_error_code, 102)
+        self.assertEqual(
+            _msg,
+            'RTK ERROR: Zero Division Error when calculating the mission ' \
+            'availability for Revision ID 1.  Mission MTBF: 0.000000 ' \
+            'MTTR: 0.000000.'
+        )
+
+    @attr(all=True, unit=True)
+    def test05a_calculate_costs(self):
+        """
+        (TestRTKRevision) calculate_costs should return a zero error code on success.
+        """
+
+        self.DUT.cost = 1252.78
+        self.DUT.hazard_rate_logistics = 1.0 / 547885.1632698
+
+        _error_code, _msg = self.DUT.calculate_costs(100.0)
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Calculating cost metrics for ' \
+                               'Revision ID 1.')
+        self.assertAlmostEqual(self.DUT.cost_failure, 0.002286574)
+        self.assertAlmostEqual(self.DUT.cost_hour, 12.5278)
+
+    @attr(all=True, unit=True)
+    def test05b_calculate_costs_divide_by_zero(self):
+        """
+        (TestRTKRevision) calculate_costs should return a non-zero error code when attempting to divide by zero.
+        """
+
+        self.DUT.cost = 1252.78
+        self.DUT.hazard_rate_logistics = 1.0 / 547885.1632698
+
+        _error_code, _msg = self.DUT.calculate_costs(0.0)
+        self.assertEqual(_error_code, 102)
+        self.assertEqual(
+            _msg,
+            'RTK ERROR: Zero Division Error when calculating the cost per ' \
+            'mission hour for Revision ID 1.  Mission time: 0.000000.'
+        )

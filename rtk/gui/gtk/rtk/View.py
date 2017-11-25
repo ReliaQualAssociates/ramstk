@@ -15,6 +15,7 @@ provides the basis for the RTKListView, RTKModuleView, and RTKWorkView.
 import locale
 
 # Import other RTK Widget classes.
+from gui.gtk.rtk import RTKTreeView  # pylint: disable=E0401
 from .Widget import gtk  # pylint: disable=E0401
 
 
@@ -42,12 +43,12 @@ class RTKBaseView(object):
     _top_tab = gtk.POS_TOP
     _bottom_tab = gtk.POS_BOTTOM
 
-    def __init__(self, controller):
+    def __init__(self, controller, module=None):
         """
-        Method to initialize the Work View.
+        Initialize the RTK Base View.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
 
         # Initialize private dictionary attributes.
@@ -77,6 +78,7 @@ class RTKBaseView(object):
         }
 
         # Initialize private list attributes.
+        self._lst_col_order = []
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
@@ -90,6 +92,25 @@ class RTKBaseView(object):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        if module is None:
+            self.treeview = None
+        else:
+            try:
+                _bg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module
+                                                                    + 'bg']
+                _fg_color = controller.RTK_CONFIGURATION.RTK_COLORS[module
+                                                                    + 'fg']
+                _fmt_file = controller.RTK_CONFIGURATION.RTK_CONF_DIR + \
+                    '/' + controller.RTK_CONFIGURATION.RTK_FORMAT_FILE[module]
+                _fmt_path = "/root/tree[@name='" + module.title() + "']/column"
+
+                self.treeview = RTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
+                                            _fg_color)
+                self._lst_col_order = self.treeview.order
+
+            except KeyError:
+                self.treeview = gtk.TreeView()
+
         self.fmt = '{0:0.' + \
                    str(controller.RTK_CONFIGURATION.RTK_DEC_PLACES) + 'g}'
         self.hbx_tab_label = gtk.HBox()
@@ -206,3 +227,32 @@ class RTKBaseView(object):
         # item.  The _position variable can be used by derived classes to
         # add additional items to the gtk.ToolBar().
         return _toolbar, _position
+
+    def _on_select_revision(self, tree):
+        """
+        Method to load the Module View gtk.TreeModel() with information when an
+        RTK Program database is opened.
+
+        :param tree: the treelib Tree() that should be loaded into the View's
+                     RTKTreeView.
+        :type tree: :py:class:`treelib.Tree`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+
+        _return = False
+
+        _model = self.treeview.get_model()
+        _model.clear()
+
+        _return = self.treeview.do_load_tree(tree)
+
+        _row = _model.get_iter_root()
+        self.treeview.expand_all()
+        if _row is not None:
+            _path = _model.get_path(_row)
+            _column = self.treeview.get_column(0)
+            self.treeview.set_cursor(_path, None, False)
+            self.treeview.row_activated(_path, _column)
+
+        return _return

@@ -4,24 +4,20 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKFailureDefinition Table
-===============================================================================
-"""
+"""RTKFailureDefinition Table Module."""
+
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, ForeignKey, Integer
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKFailureDefinition(RTK_BASE):
     """
-    Class to represent the rtk_failure_definition table in the RTK Program
-    database.
+    Class representing the rtk_failure_definition table in the RTK Program database.
 
     This table shares a Many-to-One relationship with rtk_revision.
     """
@@ -29,11 +25,17 @@ class RTKFailureDefinition(RTK_BASE):
     __tablename__ = 'rtk_failure_definition'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column('fld_revision_id', Integer,
-                         ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
-    definition_id = Column('fld_definition_id', Integer, primary_key=True,
-                           autoincrement=True, nullable=False)
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    definition_id = Column(
+        'fld_definition_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     definition = Column('fld_definition', BLOB, default='Failure Definition')
 
@@ -42,38 +44,42 @@ class RTKFailureDefinition(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKFailureDefinition data
-        model attributes.
+        Retrieve the current values of the RTKFailureDefinition attributes.
 
-        :return: (revision_id, definition_id, definition)
+        :return: {revision_id, definition_id, definition} pairs.
         :rtype: (int, int, str)
         """
+        _attributes = {
+            'revision_id': self.revision_id,
+            'definition_id': self.definition_id,
+            'definition': self.definition
+        }
 
-        _values = (self.revision_id, self.definition_id, self.definition)
-
-        return _values
+        return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the current values of the RTKFailureDefinition data model
-        attributes.
+        Set the current values of the RTKFailureDefinition attributes.
 
-        :param tuple attributes: tuple containing the values to set.
-        :return:
+        :param dict attributes: dict containing {attr name:attr value} pairs
+                                of the values to set.
+        :return: (_error_code, _msg)
+        :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKFailureDefinition {0:d} attributes.".\
             format(self.definition_id)
 
         try:
-            self.definition = str(none_to_default(attributes[0],
-                                                  'Failure Definition'))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKFailureDefinition.set_attributes()."
-        except TypeError as _err:
+            self.definition = str(
+                none_to_default(attributes['definition'],
+                                'Failure Definition'))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKFailureDefinition.set_attributes().".format(_err)
+        except (TypeError, ValueError) as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Incorrect data type when converting one or " \
                    "more RTKFailureDefinition attributes."

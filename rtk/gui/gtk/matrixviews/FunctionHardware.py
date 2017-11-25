@@ -24,12 +24,11 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def __init__(self, controller, **kwargs):
         """
-        Method to initialize the List View.
+        Initialize the Matrix View.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         gtk.HBox.__init__(self)
         rtk.RTKBaseMatrix.__init__(self, controller)
 
@@ -40,7 +39,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         # Initialize private scalar attributes.
         self._dtc_data_controller = None
         self._revision_id = None
-        self._matrix_id = kwargs['matrix_id']
+        self._matrix_type = kwargs['matrix_type']
 
         # Initialize public dictionary attributes.
 
@@ -75,26 +74,24 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _do_request_update(self, __button):
         """
-        Method to save the currently selected Function:Hardware Matrix row.
+        Save the currently selected Function:Hardware Matrix row.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :py:class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         return self._dtc_data_controller.request_update_matrix(
-            self._revision_id, self._matrix_id)
+            self._revision_id, self._matrix_type)
 
     def _make_buttonbox(self):
         """
-        Method to create the buttonbox for the Function:Hardware Matrix View.
+        Make the buttonbox for the Function:Hardware Matrix View.
 
         :return: _buttonbox; the gtk.ButtonBox() for the Function:Hardware
                              Matrix View.
         :rtype: :py:class:`gtk.ButtonBox`
         """
-
         _tooltips = [
             _(u"Save the Function:Hardware Matrix to the open RTK "
               u"Program database."),
@@ -113,22 +110,20 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
 
     def _on_select_revision(self, module_id):
         """
-        Method to load the Function:Hardware Matrix View gtk.TreeModel() with
-        matrix information whenever a new Revision is selected.
+        Load the Function:Hardware Matrix View gtk.TreeModel().
 
         :param int revision_id: the Revision ID to select the Function:Hardware
                                 matrix for.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         self._revision_id = module_id
 
         self._dtc_data_controller = \
             self._mdcRTK.dic_controllers['function']
         (_matrix, _column_hdrs,
          _row_hdrs) = self._dtc_data_controller.request_select_all_matrix(
-             self._revision_id, self._matrix_id)
+             self._revision_id, self._matrix_type)
 
         return rtk.RTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
                                                 _row_hdrs, _(u"Function"))

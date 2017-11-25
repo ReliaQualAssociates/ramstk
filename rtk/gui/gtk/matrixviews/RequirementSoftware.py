@@ -41,7 +41,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         # Initialize private scalar attributes.
         self._dtc_data_controller = None
         self._revision_id = None
-        self._matrix_id = kwargs['matrix_id']
+        self._matrix_type = kwargs['matrix_type']
 
         # Initialize public dictionary attributes.
 
@@ -85,7 +85,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
         """
 
         return self._dtc_data_controller.request_update_matrix(
-            self._revision_id, self._matrix_id)
+            self._revision_id, self._matrix_type)
 
     def _make_buttonbox(self):
         """
@@ -130,7 +130,7 @@ class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):
             self._mdcRTK.dic_controllers['requirement']
         (_matrix, _column_hdrs,
          _row_hdrs) = self._dtc_data_controller.request_select_all_matrix(
-             self._revision_id, self._matrix_id)
+             self._revision_id, self._matrix_type)
 
         return rtk.RTKBaseMatrix.do_load_matrix(self, _matrix, _column_hdrs,
                                                 _row_hdrs, _(u"Requirement"))

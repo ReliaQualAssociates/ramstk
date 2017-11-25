@@ -22,15 +22,17 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>revision_id</key>
         </column>
         <column>
             <defaulttitle>Availability, Predicted</defaulttitle>
             <usertitle>Availability, Predicted</usertitle>
             <datatype>gfloat</datatype>
-            <position>1</position>
+            <position>26</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>availability_logistics</key>
         </column>
         <column>
             <defaulttitle>Availability, Mission</defaulttitle>
@@ -40,6 +42,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>availability_mission</key>
         </column>
         <column>
             <defaulttitle>Cost</defaulttitle>
@@ -49,6 +52,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost</key>
         </column>
         <column>
             <defaulttitle>Cost/Failure</defaulttitle>
@@ -58,6 +62,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost_per_failure</key>
         </column>
         <column>
             <defaulttitle>Cost/Hour</defaulttitle>
@@ -67,6 +72,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost_per_hour</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Active</defaulttitle>
@@ -75,7 +81,8 @@ experience. -->
             <position>6</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>hazard_rate_active</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Dormant</defaulttitle>
@@ -84,7 +91,8 @@ experience. -->
             <position>7</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>hazard_rate_dormant</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Mission</defaulttitle>
@@ -94,6 +102,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hazard_rate_mission</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Predicted</defaulttitle>
@@ -103,6 +112,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>hazard_rate_logistics</key>
         </column>
         <column>
             <defaulttitle>Failure Rate, Software</defaulttitle>
@@ -112,6 +122,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hazard_rate_software</key>
         </column>
         <column>
             <defaulttitle>Mean Maintenance Time (MMT)</defaulttitle>
@@ -121,6 +132,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mmt</key>
         </column>
         <column>
             <defaulttitle>Mean Corrective Maintenance Time (MCMT)</defaulttitle>
@@ -130,6 +142,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mcmt</key>
         </column>
         <column>
             <defaulttitle>Mean Preventive Maintenance Time (MPMT)</defaulttitle>
@@ -139,6 +152,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mpmt</key>
         </column>
         <column>
             <defaulttitle>MTBF, Mission</defaulttitle>
@@ -148,6 +162,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mtbf_mission</key>
         </column>
         <column>
             <defaulttitle>MTBF, Predicted</defaulttitle>
@@ -157,6 +172,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>mtbf_logistics</key>
         </column>
         <column>
             <defaulttitle>Mean Time To Repair (MTTR)</defaulttitle>
@@ -165,7 +181,8 @@ experience. -->
             <position>16</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>mttr</key>
         </column>
         <column>
             <defaulttitle>Revision Name</defaulttitle>
@@ -175,6 +192,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>name</key>
         </column>
         <column>
             <defaulttitle>Reliability, Mission</defaulttitle>
@@ -184,6 +202,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>reliability_mission</key>
         </column>
         <column>
             <defaulttitle>Reliability, Predicted</defaulttitle>
@@ -193,6 +212,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>reliability_logistics</key>
         </column>
         <column>
             <defaulttitle>Remarks</defaulttitle>
@@ -202,6 +222,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>remarks</key>
         </column>
         <column>
             <defaulttitle>Total Part Count</defaulttitle>
@@ -211,6 +232,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>n_parts</key>
         </column>
         <column>
             <defaulttitle>Revision</defaulttitle>
@@ -220,6 +242,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>revision_code</key>
         </column>
         <column>
             <defaulttitle>Program Time</defaulttitle>
@@ -229,6 +252,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>program_time</key>
         </column>
         <column>
             <defaulttitle>Program Time SE</defaulttitle>
@@ -238,6 +262,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>program_time_sd</key>
         </column>
         <column>
             <defaulttitle>Program Cost</defaulttitle>
@@ -247,15 +272,17 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>program_cost</key>
         </column>
         <column>
             <defaulttitle>Program Cost SE</defaulttitle>
             <usertitle>Program Cost SE</usertitle>
             <datatype>gfloat</datatype>
-            <position>26</position>
+            <position>1</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>program_cost_sd</key>
         </column>
     </tree>
 </root>

@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKEnvironment module algorithms and
 models.
@@ -14,7 +13,9 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,6 +36,20 @@ class TestRTKEnvironment(unittest.TestCase):
     Class for testing the RTKEnvironment class.
     """
 
+    _attributes = {
+        'environment_id': 1,
+        'low_dwell_time': 0.0,
+        'minimum': 0.0,
+        'ramp_rate': 0.0,
+        'high_dwell_time': 0.0,
+        'name': 'Test Environmental Condition',
+        'maximum': 0.0,
+        'units': u'Units',
+        'variance': 0.0,
+        'phase_id': 1,
+        'mean': 0.0
+    }
+
     def setUp(self):
         """
         Sets up the test fixture for the RTKEnvironment class.
@@ -50,7 +65,6 @@ class TestRTKEnvironment(unittest.TestCase):
         self.DUT.name = 'Test Environmental Condition'
 
         session.commit()
-
 
     @attr(all=True, unit=True)
     def test00_rtkenvironment_create(self):
@@ -80,9 +94,7 @@ class TestRTKEnvironment(unittest.TestCase):
         (TestRTKEnvironment) get_attributes should return a tuple of attribute values.
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (1, 1, 'Test Environmental Condition', 'Units', 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0))
+        self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):
@@ -90,44 +102,23 @@ class TestRTKEnvironment(unittest.TestCase):
         (TestRTKEnvironment) set_attributes should return a zero error code on success
         """
 
-        _attributes = ('Test Environmental Condition', 'hours', 4.5, 58.6,
-                       31.4, 544.0, 15.3, 25.0, 85.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKEnvironment {0:d} " \
                                "attributes.".format(self.DUT.environment_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
+    def test02b_set_attributes_missing_key(self):
         """
-        (TestRTKEnvironment) set_attributes should return a 10 error code when passed the wrong type
+        (TestRTKEnvironment) set_attributes should return a 10 error code when passed a dict with a missing key
         """
+        self._attributes.pop('variance')
 
-        _attributes = ('Test Environmental Condition', 'hours', 4.5, 'None',
-                       31.4, 544.0, 15.3, 25.0, 85.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKEnvironment " \
-                               "attributes.")
-
-    @attr(all=True, unit=True)
-    def test02c_set_attributes_too_few_passed(self):
-        """
-        (TestRTKEnvironment) set_attributes should return a zero error code when passed too few attributes
-        """
-
-        _attributes = ('Test Environmental Condition', 'hours', 4.5, 31.4,
-                       544.0, 15.3, 25.0, 85.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to " \
-                               "RTKEnvironment.set_attributes().")
-
+        self.assertEqual(_msg,
+                         "RTK ERROR: Missing attribute 'variance' in " \
+                         "attribute dictionary passed to " \
+                         "RTKEnvironment.set_attributes().")

@@ -250,13 +250,12 @@ def split_string(string):
 
 def boolean_to_integer(boolean):
     """
-    Converts string representations of TRUE/FALSE to an integer value.
+    Convert boolean representations of TRUE/FALSE to an integer value.
 
     :param bool boolean: the boolean to convert.
     :return: _result
     :rtype: int
     """
-
     _result = 0
 
     if boolean:

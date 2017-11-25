@@ -10,11 +10,26 @@ RTK Module Packages
 
 .. toctree::
 
-    rtk.revision
-    rtk.failure_definition
-    rtk.usage
-    rtk.function
-    rtk.requirement
+    revision/rtk.revision
+    failure_definition/rtk.failure_definition
+    usage/rtk.usage
+    function/rtk.function
+    requirement/rtk.requirement
+    stakeholder/rtk.stakeholder
+    hardware/rtk.hardware
+    software/rtk.software
+    survival/rtk.survival
+    testing/rtk.testing
+    validation/rtk.validation
+
+-------------------------------------------------------------------------------
+RTK Analyses Packages
+-------------------------------------------------------------------------------
+
+.. toctree::
+
+    analyses/fmea/rtk.fmea
+    analyses/pof/rtk.pof
 
 -------------------------------------------------------------------------------
 RTK Graphical User Interface Packages
@@ -26,12 +41,12 @@ pyGTK-2.0
 
 .. toctree::
 
-    rtk.gui.gtk.mwi
-    rtk.gui.gtk.listview
-    rtk.gui.gtk.matrixview
-    rtk.gui.gtk.moduleview
-    rtk.gui.gtk.workview
-    rtk.gui.gtk.widgets
+    gui/gtk/mwi/rtk.gui.gtk.mwi
+    gui/gtk/listviews/rtk.gui.gtk.listview
+    gui/gtk/matrixviews/rtk.gui.gtk.matrixview
+    gui/gtk/moduleviews/rtk.gui.gtk.moduleview
+    gui/gtk/workviews/rtk.gui.gtk.workview
+    gui/gtk/rtk/rtk.gui.gtk.widgets
 
 -------------------------------------------------------------------------------
 RTK Database Package
@@ -39,7 +54,7 @@ RTK Database Package
 
 .. toctree::
 
-    rtk.dao
+    dao/rtk.dao
 
 -------------------------------------------------------------------------------
 RTK Datamodels, Configuration, and Utilities
@@ -47,7 +62,7 @@ RTK Datamodels, Configuration, and Utilities
 
 .. toctree::
 
-    rtk.datamodels
+    datamodels/rtk.datamodels
     rtk.configuration
 
 ===============================================================================

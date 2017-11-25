@@ -4,44 +4,48 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKListView Meta-Class Module
--------------------------------------------------------------------------------
-"""
+"""RTKListView Meta-Class Module."""
 
 # Import other RTK modules.
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
-from gui.gtk import rtk                         # pylint: disable=E0401,W0611
+from gui.gtk import rtk  # pylint: disable=E0401,W0611
 
 
 class RTKListView(gtk.HBox, rtk.RTKBaseView):
     """
+    Class to display data in the RTK List Book.
+
     This is the meta class for all RTK List View classes.  Attributes of the
     RTKListView are:
 
-    :ivar _lst_col_order: list containing the order of the columns in the
-                          List View gtk.TreeView().
-    :ivar hbx_tab_label: the :py:class:`gtk.HBox` used for the label in the
+    :ivar list _lst_col_order: list containing the order of the columns in the
+                               List View RTKTreeView().
+    :ivar str _module: the capitalized name of the RTK module the List View is
+                       associated with.
+    :ivar hbx_tab_label: the :class:`gtk.HBox` used for the label in the
                          ListBook.
-    :ivar treeview: the :py:class:`gtk.TreeView` displaying the list of items
+    :ivar treeview: the :class:`gtk.TreeView` displaying the list of items
                     in the selected module.
     """
 
-    def __init__(self, controller):
+    def __init__(self, controller, module=None):
         """
-        Method to initialize the List View.
+        Initialize the List View.
 
         :param controller: the RTK master data controller instance.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         gtk.HBox.__init__(self)
-        rtk.RTKBaseView.__init__(self, controller)
+        rtk.RTKBaseView.__init__(self, controller, module=module)
+
+        self._module = None
+        for __, char in enumerate(module):
+            if char.isalpha():
+                self._module = module.capitalize()
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_col_order = []
 
         # Initialize private scalar attributes.
 
@@ -50,13 +54,11 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.hbx_tab_label = gtk.HBox()
-        self.treeview = gtk.TreeView()
 
     @staticmethod
     def _do_edit_cell(__cell, path, new_text, position, model):
         """
-        Method to handle edits of the List View gtk.Treeview().
+        Handle edits of the List View RTKTreeView().
 
         :param gtk.CellRenderer __cell: the gtk.CellRenderer() that was edited.
         :param str path: the gtk.TreeView() path of the gtk.CellRenderer()
@@ -67,7 +69,7 @@ class RTKListView(gtk.HBox, rtk.RTKBaseView):
         :param gtk.TreeModel model: the gtk.TreeModel() the gtk.CellRenderer()
                                     belongs to.
         :return: False if successful or True if an error is encountered.
-        :rtype: boolean
+        :rtype: bool
         """
 
         _return = False
