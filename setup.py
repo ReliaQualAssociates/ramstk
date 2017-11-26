@@ -55,6 +55,7 @@ if __name__ == '__main__':
             'rtk.requirement',
             'rtk.revision',
             'rtk.stakeholder',
+            'rtk.statistics',
             'rtk.usage',
             'rtk.validation',
             'rtk.analyses.statistics',
@@ -116,7 +117,7 @@ if __name__ == '__main__':
             'rtk.imports'
         ],
         classifiers=[
-            'Development Status :: 3 - Alpha',
+             'Development Status :: 3 - Alpha',
             'Programming Language :: Python'
         ],
         entry_points={},
