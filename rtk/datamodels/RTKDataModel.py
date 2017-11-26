@@ -68,7 +68,6 @@ class RTKDataModel(object):
         :return: the instance of the RTK<MODULE> class that was requested
                  or None if the requested Node ID does not exist.
         """
-
         try:
             _entity = self.tree.get_node(node_id).data
         except AttributeError:

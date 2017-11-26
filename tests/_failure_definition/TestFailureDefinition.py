@@ -73,14 +73,14 @@ class TestFailureDefinitionDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test00_create(self):
-        """(TestFailureDefinitionModel): __init__ should return instance of a FailureDefition data model."""
+        """(TestFailureDefinitionDataModel): __init__ should return instance of a FailureDefition data model."""
         self.assertTrue(isinstance(self.DUT, dtmFailureDefinition))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
 
     @attr(all=True, unit=True)
     def test01_select_all(self):
-        """(TestFailureDefinitionModel): select_all should return a Tree() object populated with RTKFailureDefinitions instances on success."""
+        """(TestFailureDefinitionDataModel): select_all should return a Tree() object populated with RTKFailureDefinitions instances on success."""
         _tree = self.DUT.select_all(1)
 
         self.assertTrue(isinstance(_tree, Tree))
@@ -89,7 +89,7 @@ class TestFailureDefinitionDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02a_select(self):
-        """(TestFailureDefinitionModel): select should return an instance of the RTKFailureDefinition data model on success."""
+        """(TestFailureDefinitionDataModel): select should return an instance of the RTKFailureDefinition data model on success."""
         self.DUT.select_all(1)
         _definition = self.DUT.select(1)
 
@@ -99,14 +99,14 @@ class TestFailureDefinitionDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
-        """(TestFailureDefinitionModel): select() should return None when a non-existent Definition ID is requested."""
+        """(TestFailureDefinitionDataModel): select() should return None when a non-existent Definition ID is requested."""
         _definition = self.DUT.select(100)
 
         self.assertEqual(_definition, None)
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
-        """(TestFailureDefinitionModel): insert() should return False on success."""
+        """(TestFailureDefinitionDataModel): insert() should return False on success."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.insert(revision_id=1)
@@ -118,7 +118,7 @@ class TestFailureDefinitionDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
-        """(TestFailureDefinitionModel): delete() should return a zero error code on success."""
+        """(TestFailureDefinitionDataModel): delete() should return a zero error code on success."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.delete(2)
@@ -129,7 +129,7 @@ class TestFailureDefinitionDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
-        """(TestFailureDefinitionModel): delete() should return a non-zero error code when passed a Revision ID that doesn't exist."""
+        """(TestFailureDefinitionDataModel): delete() should return a non-zero error code when passed a Revision ID that doesn't exist."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.delete(300)
@@ -143,7 +143,7 @@ class TestFailureDefinitionDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
-        """(TestFailureDefinitionModel): update() should return a zero error code on success."""
+        """(TestFailureDefinitionDataModel): update() should return a zero error code on success."""
         self.DUT.select_all(1)
 
         _definition = self.DUT.tree.get_node(1).data
@@ -168,7 +168,7 @@ class TestFailureDefinitionDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):
-        """(TestFailureDefinitionModel): update_all() should return a zero error code on success."""
+        """(TestFailureDefinitionDataModel): update_all() should return a zero error code on success."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.update_all()
@@ -184,7 +184,7 @@ class TestFailureDefinitionDataController(unittest.TestCase):
     """
 
     def setUp(self):
-        """(TestFailureDefinitionController) Set up the test fixture for the Failure Definition Data Controller."""
+        """(TestFailureDefinitionDataController) Set up the test fixture for the Failure Definition Data Controller."""
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -218,7 +218,7 @@ class TestFailureDefinitionDataController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test00_controller_create(self):
-        """(TestFailureDefinitionController) __init__ should return a Failure Definition Data Controller."""
+        """(TestFailureDefinitionDataController) __init__ should return a Failure Definition Data Controller."""
 
         self.assertTrue(isinstance(self.DUT, dtcFailureDefinition))
         self.assertTrue(
@@ -226,7 +226,7 @@ class TestFailureDefinitionDataController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test01_request_select_all(self):
-        """(TestFailureDefinitionController) request_select_all() should return a Tree of RTKFailureDefinition models."""
+        """(TestFailureDefinitionDataController) request_select_all() should return a Tree of RTKFailureDefinition models."""
         _tree = self.DUT.request_select_all(1)
 
         self.assertTrue(
@@ -234,7 +234,7 @@ class TestFailureDefinitionDataController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02a_request_select(self):
-        """(TestFailureDefinitionController) request_select() should return an RTKFailureDefinition model."""
+        """(TestFailureDefinitionDataController) request_select() should return an RTKFailureDefinition model."""
         self.DUT.request_select_all(1)
 
         self.assertTrue(
@@ -242,44 +242,44 @@ class TestFailureDefinitionDataController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test02b_request_non_existent_id(self):
-        """(TestFailureDefinitionController) request_select() should return None when requesting a Failure Definition that doesn't exist."""
+        """(TestFailureDefinitionDataController) request_select() should return None when requesting a Failure Definition that doesn't exist."""
         self.assertEqual(self.DUT.request_select(100), None)
 
     @attr(all=True, unit=True)
     def test03a_request_insert(self):
-        """(TestFailureDefinitionController) request_insert() should return False on success."""
+        """(TestFailureDefinitionDataController) request_insert() should return False on success."""
         self.DUT.request_select_all(1)
         self.assertFalse(self.DUT.request_insert(revision_id=1))
 
     @attr(all=True, unit=True)
     def test04a_request_delete(self):
-        """(TestFailureDefinitionController) request_delete() should return False on success."""
+        """(TestFailureDefinitionDataController) request_delete() should return False on success."""
         self.DUT.request_select_all(1)
         self.assertFalse(self.DUT.request_delete(2))
 
     @attr(all=True, unit=True)
     def test04a_request_delete_non_existent_id(self):
-        """(TestFailureDefinitionController) request_delete() should return True when attempting to delete a non-existent Failure Definition."""
+        """(TestFailureDefinitionDataController) request_delete() should return True when attempting to delete a non-existent Failure Definition."""
         self.DUT.request_select_all(1)
         self.assertTrue(self.DUT.request_delete(100))
 
     @attr(all=True, unit=True)
     def test05a_request_update(self):
-        """(TestFailureDefinitionController) request_update() should return False on success."""
+        """(TestFailureDefinitionDataController) request_update() should return False on success."""
         self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_update(1))
 
     @attr(all=True, unit=True)
     def test05b_request_update_non_existent_id(self):
-        """(TestFailureDefinitionController) request_update() should return True when attempting to save a non-existent Failure Definition."""
+        """(TestFailureDefinitionDataController) request_update() should return True when attempting to save a non-existent Failure Definition."""
         self.DUT.request_select_all(1)
 
         self.assertTrue(self.DUT.request_update(100))
 
     @attr(all=True, unit=True)
     def test06a_request_update_all(self):
-        """(TestFailureDefinitionController) request_update_all() should return False on success."""
+        """(TestFailureDefinitionDataController) request_update_all() should return False on success."""
         self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_update_all())
