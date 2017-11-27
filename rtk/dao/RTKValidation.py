@@ -151,7 +151,7 @@ class RTKValidation(RTK_BASE):
                 none_to_default(attributes['description'], ''))
             self.measurement_unit = str(
                 none_to_default(attributes['measurement_unit'], ''))
-            self.status = float(none_to_default(attributes['status'], 0))
+            self.status = float(none_to_default(attributes['status'], 0.0))
             self.task_type = str(none_to_default(attributes['task_type'], ''))
             self.task_specification = str(
                 none_to_default(attributes['task_specification'], ''))

@@ -12,30 +12,30 @@ Validation Package Module View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -93,15 +93,15 @@ class ModuleView(object):
                                 signals for each gtk.Widget() associated with
                                 an editable Validation attribute.
     :ivar list _lst_col_order: list containing the order of the columns in the
-                               Module View :py:class:`gtk.TreeView`.
-    :ivar _model: the :py:class:`rtk.validation.Validation.Model` data model
+                               Module View :class:`gtk.TreeView`.
+    :ivar _model: the :class:`rtk.validation.Validation.Model` data model
                   that is currently selected.
-    :ivar _listbook: the :py:class:`rtk.validation.ListBook.ListView`
+    :ivar _listbook: the :class:`rtk.validation.ListBook.ListView`
                      associated with this instance of the Module View.
-    :ivar _workbook: the :py:class:`rtk.validation.WorkBook.WorkView`
+    :ivar _workbook: the :class:`rtk.validation.WorkBook.WorkView`
                      associated with this instance of the Module View.
-    :ivar mdcRTK: the :py:class:`rtk.RTK.RTK` master data controller to use.
-    :ivar treeview: the :py:class:`gtk.TreeView` displaying the list of
+    :ivar mdcRTK: the :class:`rtk.RTK.RTK` master data controller to use.
+    :ivar treeview: the :class:`gtk.TreeView` displaying the list of
                     Validation tasks.
     """
 
@@ -109,7 +109,7 @@ class ModuleView(object):
         """
         Method to initialize the Module Book view for the Validation package.
 
-        :param controller: the instance of the :py:class:`rtk.RTK.RTK` master
+        :param controller: the instance of the :class:`rtk.RTK.RTK` master
                            data controller to use with this view.
         :param gtk.Notebook rtk_view: the gtk.Notebook() to add the Validation
                                       view into.

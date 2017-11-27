@@ -4,15 +4,12 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKWorkBook Module
--------------------------------------------------------------------------------
-"""
+"""RTKWorkBook Module."""
 
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub                              # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
 # pylint: disable=E0401
@@ -25,19 +22,16 @@ from gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
 _ = gettext.gettext
 
 
-class WorkBook(RTKBook):                 # pylint: disable=R0904
-    """
-    This is the Work Book for the pyGTK multiple window interface.
-    """
+class WorkBook(RTKBook):  # pylint: disable=R0904
+    """This is the Work Book for the pyGTK multiple window interface."""
 
     def __init__(self, controller):
         """
-        Initializes an instance of the Work View class.
+        Initialize an instance of the Work View class.
 
         :param controller: the RTK master data controller.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKBook.__init__(self, controller)
 
         # Initialize private dictionary attributes.
@@ -47,13 +41,19 @@ class WorkBook(RTKBook):                 # pylint: disable=R0904
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_work_views = {'revision':[wvwRevisionGD(controller),
-                                           wvwRevisionAR(controller)],
-                               'function':[wvwFunctionGD(controller),
-                                           wvwFMEA(controller),
-                                           wvwFunctionAR(controller)],
-                               'requirement':[wvwRequirementGD(controller),
-                                              wvwRequirementAnalysis(controller)]}
+        self.dic_work_views = {
+            'revision': [wvwRevisionGD(controller),
+                         wvwRevisionAR(controller)],
+            'function': [
+                wvwFunctionGD(controller),
+                wvwFMEA(controller),
+                wvwFunctionAR(controller)
+            ],
+            'requirement':
+            [wvwRequirementGD(controller),
+             wvwRequirementAnalysis(controller)],
+            'validation': []
+        }
 
         # Initialize public list attributes.
 
@@ -90,13 +90,11 @@ class WorkBook(RTKBook):                 # pylint: disable=R0904
 
     def _on_module_change(self, module=''):
         """
-        Method to load the correct Work Views for the RTK module that was
-        selected in the Module Book.
+        Load the Work Views for the RTK module selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         RTKBook._on_module_change(self)

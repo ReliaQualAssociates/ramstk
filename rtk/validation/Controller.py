@@ -18,7 +18,7 @@ class ValidationDataController(RTKDataController):
     Provide an interface between Validation data models and RTK views.
 
     A single Validation data controller can manage one or more Failure
-    Definition data models.
+    Validation data models.
     """
 
     def __init__(self, dao, configuration, **kwargs):
@@ -27,9 +27,9 @@ class ValidationDataController(RTKDataController):
 
         :param dao: the data access object used to communicate with the
                     connected RTK Program database.
-        :type dao: :py:class:`rtk.dao.DAO.DAO`
+        :type dao: :class:`rtk.dao.DAO.DAO`
         :param configuration: the RTK configuration instance.
-        :type configuration: :py:class:`rtk.Configuration.Configuration`
+        :type configuration: :class:`rtk.Configuration.Configuration`
         """
         RTKDataController.__init__(
             self,
@@ -66,7 +66,7 @@ class ValidationDataController(RTKDataController):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self._test:
-                pub.sendMessage('insertedDefinition')
+                pub.sendMessage('insertedValidation')
         else:
             _msg = _msg + '  Failed to add a new Validation to the ' \
                           'RTK Program database.'
@@ -87,7 +87,7 @@ class ValidationDataController(RTKDataController):
         _error_code, _msg = self._dtm_data_model.delete(definition_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'deletedDefinition')
+                                                   'deletedValidation')
 
     def request_update(self, definition_id):
         """
@@ -100,7 +100,7 @@ class ValidationDataController(RTKDataController):
         _error_code, _msg = self._dtm_data_model.update(definition_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
-                                                   'savedDefinition')
+                                                   'savedValidation')
 
     def request_update_all(self):
         """

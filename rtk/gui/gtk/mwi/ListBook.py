@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKListBook Module
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-"""
+"""RTKListBook Module."""
 
 # Import modules for localization support.
 import gettext
@@ -17,25 +14,24 @@ from pubsub import pub  # pylint: disable=E0401
 # Import other RTK modules.
 # pylint: disable=E0401
 from gui.gtk.rtk import RTKBook
-from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, lvwStakeholder
-from gui.gtk.matrixviews import FunctionHardware, RequirementHardware, RequirementSoftware, RequirementValidation
+from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, \
+    lvwStakeholder
+from gui.gtk.matrixviews import FunctionHardware, RequirementHardware, \
+    RequirementSoftware, RequirementValidation
 
 _ = gettext.gettext
 
 
 class ListBook(RTKBook):  # pylint: disable=R0904
-    """
-    This is the List View class for the pyGTK multiple window interface.
-    """
+    """This is the List View class for the pyGTK multiple window interface."""
 
     def __init__(self, controller):
         """
-        Method to initialize an instance of the RTK List View class.
+        Initialize an instance of the RTK List View class.
 
         :param controller: the RTK master data controller.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKBook.__init__(self, controller)
 
         # Initialize private dictionary attributes.
@@ -49,15 +45,15 @@ class ListBook(RTKBook):  # pylint: disable=R0904
             'revision':
             [lvwUsageProfile(controller),
              lvwFailureDefinition(controller)],
-            'function': [FunctionHardware(controller,
-                                          matrix_type='fnctn_hrdwr')],
-            'requirement': [lvwStakeholder(controller),
-                            RequirementHardware(controller,
-                                                matrix_type='rqrmnt_hrdwr'),
-                            RequirementSoftware(controller,
-                                                matrix_type='rqrmnt_sftwr'),
-                            RequirementValidation(controller,
-                                                  matrix_type='rqrmnt_vldtn')]
+            'function':
+            [FunctionHardware(controller, matrix_type='fnctn_hrdwr')],
+            'requirement': [
+                lvwStakeholder(controller),
+                RequirementHardware(controller, matrix_type='rqrmnt_hrdwr'),
+                RequirementSoftware(controller, matrix_type='rqrmnt_sftwr'),
+                RequirementValidation(controller, matrix_type='rqrmnt_vldtn')
+            ],
+            'validation': []
         }
 
         # Initialize public list attributes.
@@ -90,13 +86,11 @@ class ListBook(RTKBook):  # pylint: disable=R0904
 
     def _on_module_change(self, module=''):
         """
-        Method to load the correct List Views for the RTK module that was
-        selected in the Module Book.
+        Load the List Views for the RTK module tselected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         RTKBook._on_module_change(self)
