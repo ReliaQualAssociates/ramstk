@@ -7,14 +7,14 @@
 """RTKValidation Table."""
 
 from datetime import date, timedelta
+
+# Import other RTK modules.
+from statistics.Bounds import calculate_beta_bounds  # pylint: disable=E0401
+from Utilities import none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
-
-# Import other RTK modules.
-from Utilities import none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
-from statistics.Bounds import calculate_beta_bounds  # pylint: disable=E0401
 
 
 class RTKValidation(RTK_BASE):
@@ -45,9 +45,11 @@ class RTKValidation(RTK_BASE):
     acceptable_variance = Column('fld_acceptable_variance', Float, default=0.0)
     confidence = Column('fld_confidence', Float, default=95.0)
     cost_average = Column('fld_cost_average', Float, default=0.0)
+    cost_ll = Column('fld_cost_ll', Float, default=0.0)
     cost_maximum = Column('fld_cost_maximum', Float, default=0.0)
     cost_mean = Column('fld_cost_mean', Float, default=0.0)
     cost_minimum = Column('fld_cost_minimum', Float, default=0.0)
+    cost_ul = Column('fld_cost_ul', Float, default=0.0)
     cost_variance = Column('fld_cost_variance', Float, default=0.0)
     date_end = Column(
         'fld_date_end', Date, default=date.today() + timedelta(days=30))
@@ -59,9 +61,11 @@ class RTKValidation(RTK_BASE):
     task_specification = Column(
         'fld_task_specification', String(512), default='')
     time_average = Column('fld_time_average', Float, default=0.0)
+    time_ll = Column('fld_time_ll', Float, default=0.0)
     time_maximum = Column('fld_time_maximum', Float, default=0.0)
     time_mean = Column('fld_time_mean', Float, default=0.0)
     time_minimum = Column('fld_time_minimum', Float, default=0.0)
+    time_ul = Column('fld_time_ul', Float, default=0.0)
     time_variance = Column('fld_time_variance', Float, default=0.0)
 
     # Define the relationships to other tables in the RTK Program database.
@@ -73,11 +77,11 @@ class RTKValidation(RTK_BASE):
 
         :return: {revision_id, validation_id, acceptable_maximum,
                   acceptable_mean, acceptable_minimum, acceptable_variance,
-                  confidence, cost_average, cost_maximum, cost_mean,
-                  cost_minimum, cost_variance, date_end, date_start,
+                  confidence, cost_average, cost_ll. cost_maximum, cost_mean,
+                  cost_minimum, cost_l, cost_variance, date_end, date_start,
                   description, measurement_unit_id, status_id, task_type_id,
-                  task_specification, time_average, time_maximum, time_mean,
-                  time_minimum, time_variance} pairs.
+                  task_specification, time_average, time_ll, time_maximum,
+                  time_mean, time_minimum, time_ul, time_variance} pairs.
         :rtype: dict
         """
         _attributes = {
@@ -89,9 +93,11 @@ class RTKValidation(RTK_BASE):
             'acceptable_variance': self.acceptable_variance,
             'confidence': self.confidence,
             'cost_average': self.cost_average,
+            'cost_ll': self.cost_ll,
             'cost_maximum': self.cost_maximum,
             'cost_mean': self.cost_mean,
             'cost_minimum': self.cost_minimum,
+            'cost_ul': self.cost_ul,
             'cost_variance': self.cost_variance,
             'date_end': self.date_end,
             'date_start': self.date_start,
@@ -101,9 +107,11 @@ class RTKValidation(RTK_BASE):
             'task_type': self.task_type,
             'task_specification': self.task_specification,
             'time_average': self.time_average,
+            'time_ll': self.time_ll,
             'time_maximum': self.time_maximum,
             'time_mean': self.time_mean,
             'time_minimum': self.time_minimum,
+            'time_ul': self.time_ul,
             'time_variance': self.time_variance
         }
 
@@ -135,12 +143,14 @@ class RTKValidation(RTK_BASE):
                 none_to_default(attributes['confidence'], 95.0))
             self.cost_average = float(
                 none_to_default(attributes['cost_average'], 0.0))
+            self.cost_ll = float(none_to_default(attributes['cost_ll'], 0.0))
             self.cost_maximum = float(
                 none_to_default(attributes['cost_maximum'], 0.0))
             self.cost_mean = float(
                 none_to_default(attributes['cost_mean'], 0.0))
             self.cost_minimum = float(
                 none_to_default(attributes['cost_minimum'], 0.0))
+            self.cost_ul = float(none_to_default(attributes['cost_ul'], 0.0))
             self.cost_variance = float(
                 none_to_default(attributes['cost_variance'], 0.0))
             self.date_end = none_to_default(
@@ -157,12 +167,14 @@ class RTKValidation(RTK_BASE):
                 none_to_default(attributes['task_specification'], ''))
             self.time_average = float(
                 none_to_default(attributes['time_average'], 0.0))
+            self.time_ll = float(none_to_default(attributes['time_ll'], 0.0))
             self.time_maximum = float(
                 none_to_default(attributes['time_maximum'], 0.0))
             self.time_mean = float(
                 none_to_default(attributes['time_mean'], 0.0))
             self.time_minimum = float(
                 none_to_default(attributes['time_minimum'], 0.0))
+            self.time_ul = float(none_to_default(attributes['time_ul'], 0.0))
             self.time_variance = float(
                 none_to_default(attributes['time_variance'], 0.0))
         except KeyError as _err:
@@ -185,11 +197,10 @@ class RTKValidation(RTK_BASE):
         """
         _return = False
 
-        (_meanll, _mean, _meanul, _sd) = calculate_beta_bounds(
-            self.time_minimum, self.time_average, self.time_maximum,
-            self.confidence)
+        (self.time_ll, self.time_mean, self.time_ul,
+         _sd) = calculate_beta_bounds(self.time_minimum, self.time_average,
+                                      self.time_maximum, self.confidence)
 
-        self.time_mean = _mean
         self.time_variance = _sd**2.0
 
         return _return
@@ -206,11 +217,10 @@ class RTKValidation(RTK_BASE):
         """
         _return = False
 
-        (_meanll, _mean, _meanul, _sd) = calculate_beta_bounds(
-            self.cost_minimum, self.cost_average, self.cost_maximum,
-            self.confidence)
+        (self.cost_ll, self.cost_mean, self.cost_ul,
+         _sd) = calculate_beta_bounds(self.cost_minimum, self.cost_average,
+                                      self.cost_maximum, self.confidence)
 
-        self.cost_mean = _mean
         self.cost_variance = _sd**2.0
 
         return _return

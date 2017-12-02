@@ -57,7 +57,11 @@ class TestRTKValidation(unittest.TestCase):
         'cost_maximum': 0.0,
         'time_average': 0.0,
         'cost_mean': 0.0,
-        'revision_id': 1
+        'revision_id': 1,
+        'cost_ll': 0.0,
+        'cost_ul': 0.0,
+        'time_ll': 0.0,
+        'time_ul': 0.0
     }
 
     def setUp(self):
@@ -88,9 +92,11 @@ class TestRTKValidation(unittest.TestCase):
         self.assertEqual(self.DUT.acceptable_variance, 0.0)
         self.assertEqual(self.DUT.confidence, 95.0)
         self.assertEqual(self.DUT.cost_average, 0.0)
+        self.assertEqual(self.DUT.cost_ll, 0.0)
         self.assertEqual(self.DUT.cost_maximum, 0.0)
         self.assertEqual(self.DUT.cost_mean, 0.0)
         self.assertEqual(self.DUT.cost_minimum, 0.0)
+        self.assertEqual(self.DUT.cost_ul, 0.0)
         self.assertEqual(self.DUT.cost_variance, 0.0)
         self.assertEqual(self.DUT.date_end, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.date_start, date.today())
@@ -100,9 +106,11 @@ class TestRTKValidation(unittest.TestCase):
         self.assertEqual(self.DUT.task_type, '')
         self.assertEqual(self.DUT.task_specification, '')
         self.assertEqual(self.DUT.time_average, 0.0)
+        self.assertEqual(self.DUT.time_ll, 0.0)
         self.assertEqual(self.DUT.time_maximum, 0.0)
         self.assertEqual(self.DUT.time_mean, 0.0)
         self.assertEqual(self.DUT.time_minimum, 0.0)
+        self.assertEqual(self.DUT.time_ul, 0.0)
         self.assertEqual(self.DUT.time_variance, 0.0)
 
     @attr(all=True, unit=True)
@@ -134,18 +142,20 @@ class TestRTKValidation(unittest.TestCase):
         self._attributes['status'] = 0.0
 
     @attr(all=True, unit=True)
-    def test_calculate_task_time(self):
+    def test03a_calculate_task_time(self):
         """(TestRTKValidation) calculate returns False on successfully calculating tasks times."""
         self.DUT.time_minimum = 25.2
         self.DUT.time_average = 36.8
         self.DUT.time_maximum = 44.1
 
         self.assertFalse(self.DUT.calculate_task_time())
+        self.assertAlmostEqual(self.DUT.time_ll, 29.90944678)
         self.assertAlmostEqual(self.DUT.time_mean, 36.08333333)
+        self.assertAlmostEqual(self.DUT.time_ul, 42.2572199)
         self.assertAlmostEqual(self.DUT.time_variance, 9.9225)
 
     @attr(all=True, unit=True)
-    def test_calculate_task_cost(self):
+    def test03b_calculate_task_cost(self):
         """(TestRTKValidation) calculate returns False on successfully calculating tasks costs."""
         self.DUT.cost_minimum = 252.00
         self.DUT.cost_average = 368.00
@@ -153,5 +163,7 @@ class TestRTKValidation(unittest.TestCase):
         self.DUT.confidence = 0.95
 
         self.assertFalse(self.DUT.calculate_task_cost())
+        self.assertAlmostEqual(self.DUT.cost_ll, 299.09446782)
         self.assertAlmostEqual(self.DUT.cost_mean, 360.83333333)
+        self.assertAlmostEqual(self.DUT.cost_ul, 422.5721988)
         self.assertAlmostEqual(self.DUT.cost_variance, 992.25)
