@@ -539,8 +539,8 @@ class DAO(object):
             try:
                 session.add(_item)
                 session.commit()
-            except(exc.SQLAlchemyError, exc.DBAPIError) as e:
-                print e
+            except(exc.SQLAlchemyError, exc.DBAPIError) as error:
+                print error
                 session.rollback()
                 _error_code = 1003
                 _msg = "RTK ERROR: Adding one or more items to the RTK " \
@@ -566,8 +566,8 @@ class DAO(object):
 
         try:
             session.commit()
-        except(exc.SQLAlchemyError, exc.DBAPIError) as e:
-            print e
+        except(exc.SQLAlchemyError, exc.DBAPIError) as error:
+            print error
             session.rollback()
             _error_code = 1004
             _msg = "RTK ERROR: Updating the RTK Program database."

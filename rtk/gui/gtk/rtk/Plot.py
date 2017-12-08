@@ -6,11 +6,10 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTK Plot Module."""
 
-# import matplotlib
+# pylint: disable=E0401
 from matplotlib.backends.backend_gtk import FigureCanvasGTK as FigureCanvas
-from matplotlib.figure import Figure
-from matplotlib.lines import Line2D
-# from matplotlib.patches import Ellipse
+from matplotlib.figure import Figure  # pylint: disable=E0401
+from matplotlib.lines import Line2D  # pylint: disable=E0401
 
 # Import other RTK Widget classes.
 from .Widget import _, gtk  # pylint: disable=E0401

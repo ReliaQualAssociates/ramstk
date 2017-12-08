@@ -11,9 +11,9 @@ import gettext
 
 # Import mathematical functions.
 from math import exp, log, sqrt
-import numpy as np
-from numpy.linalg import inv
-from scipy.stats import chi2, norm  # pylint: disable=E0611
+import numpy as np  # pylint: disable=E0401
+from numpy.linalg import inv  # pylint: disable=E0401
+from scipy.stats import chi2, norm  # pylint: disable=E0401,E0611
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

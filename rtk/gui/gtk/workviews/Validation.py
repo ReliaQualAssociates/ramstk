@@ -8,9 +8,9 @@
 
 from datetime import datetime  # pylint: disable=E0401
 
-import numpy as np
+import numpy as np  # pylint: disable=E0401
 from pubsub import pub  # pylint: disable=E0401
-from matplotlib.patches import Ellipse
+from matplotlib.patches import Ellipse  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import ordinal_to_date  # pylint: disable=E0401
