@@ -805,7 +805,7 @@ class RequirementAnalysis(RTKWorkView):
             _(u"5. The task(s) that will validate and verify the "
               u"final design satisfies the requirement have been "
               u"identified."),
-            _(u"6. The identified V&V task(s) have been added to "
+            _(u"6. The identified V&amp;V task(s) have been added to "
               u"the validation plan (e.g., DVP)")
         ]
 

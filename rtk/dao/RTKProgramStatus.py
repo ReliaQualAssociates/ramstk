@@ -6,14 +6,13 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKProgramStatus Table."""
 
-from datetime import date, timedelta
+from datetime import date
 
 # Import other RTK modules.
-from statistics.Bounds import calculate_beta_bounds  # pylint: disable=E0401
 from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 # pylint: disable=E0401
-from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
+from sqlalchemy import Column, Date, Float, ForeignKey, Integer
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 
@@ -31,12 +30,17 @@ class RTKProgramStatus(RTK_BASE):
         'fld_revision_id',
         Integer,
         ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    status_id = Column(
+        'fld_status_id',
+        Integer,
         primary_key=True,
+        autoincrement=True,
         nullable=False)
 
     cost_remaining = Column('fld_cost_remaining', Float, default=0.0)
     date_status = Column(
-        'fld_date_status', Date, primary_key=True, default=date.today())
+        'fld_date_status', Date, unique=True, default=date.today())
     time_remaining = Column('fld_time_remaining', Float, default=0.0)
 
     # Define the relationships to other tables in the RTK Program database.
@@ -44,7 +48,7 @@ class RTKProgramStatus(RTK_BASE):
 
     def get_attributes(self):
         """
-        Retrieve the current values of the RTKProgramStatus data model attributes.
+        Retrieve current values of the RTKProgramStatus data model attributes.
 
         :return: {revision_id, cost_remaining, date_status, time_remaining}
                  pairs.
@@ -52,6 +56,7 @@ class RTKProgramStatus(RTK_BASE):
         """
         _attributes = {
             'revision_id': self.revision_id,
+            'status_id': self.status_id,
             'cost_remaining': self.cost_remaining,
             'date_status': self.date_status,
             'time_remaining': self.time_remaining
@@ -75,8 +80,8 @@ class RTKProgramStatus(RTK_BASE):
         try:
             self.cost_remaining = float(
                 none_to_default(attributes['cost_remaining'], 0.0))
-            self.date_status = none_to_default(
-                attributes['date_status'], date.today())
+            self.date_status = none_to_default(attributes['date_status'],
+                                               date.today())
             self.time_remaining = float(
                 none_to_default(attributes['time_remaining'], 0.0))
         except KeyError as _err:

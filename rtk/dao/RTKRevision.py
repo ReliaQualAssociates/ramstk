@@ -30,6 +30,7 @@ class RTKRevision(RTK_BASE):
         * One-to-Many relationship with rtk_incident.
         * One-to-Many relationship with rtk_survival.
         * One-to-Many relationship with rtk_matrix.
+        * One-to-Many relationship with rtk_program_status.
     """
 
     __tablename__ = 'rtk_revision'
@@ -100,6 +101,8 @@ class RTKRevision(RTK_BASE):
     test = relationship('RTKTest', back_populates='revision')
     survival = relationship('RTKSurvival', back_populates='revision')
     matrix = relationship('RTKMatrix', back_populates='revision')
+    program_status = relationship(
+        'RTKProgramStatus', back_populates='revision')
 
     def get_attributes(self):
         """

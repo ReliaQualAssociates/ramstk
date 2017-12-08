@@ -65,6 +65,8 @@ class RTKBaseView(object):
             controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save.png',
             'save-all':
             controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/save-all.png',
+            'important':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/important.png',
             'error':
             controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/error.png',
             'question':

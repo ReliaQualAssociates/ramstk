@@ -23,7 +23,7 @@ sys.path.insert(
 
 # pylint: disable=wrong-import-postion
 from test_setup import _create_program_database
-from _dao import TestRTKValidation
+from _dao import TestRTKValidation, TestRTKProgramStatus
 from _statistics import TestStatisticalBounds
 from _validation import TestValidationDataModel, TestValidationDataController
 
@@ -53,6 +53,7 @@ def test_package(suites):
     args = [
         '', '-v', '-a unit=True', '--with-coverage', '--cover-branches',
         '--cover-xml', '--cover-package=dao.RTKValidation',
+        '--cover-package=dao.RTKProgramStatus',
         '--cover-package=validation'
     ]
     nose.runmodule(argv=args, suite=suite, plugins=plugin_mgr)
@@ -62,10 +63,8 @@ def test_package(suites):
 
 if __name__ == '__main__':
 
-    _db_suites = [TestRTKValidation, ]
-
+    _db_suites = [TestRTKValidation, TestRTKProgramStatus]
     _model_suites = [TestValidationDataModel, ]
-
     _controller_suites = [TestValidationDataController, ]
 
     # For the nosetest example.

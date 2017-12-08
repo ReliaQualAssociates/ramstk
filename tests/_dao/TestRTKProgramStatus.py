@@ -37,7 +37,8 @@ class TestRTKProgramStatus(unittest.TestCase):
         'cost_remaining': 100.0,
         'date_status': date.today(),
         'time_remaining': 0.0,
-        'revision_id': 1
+        'revision_id': 1,
+        'status_id': 1
     }
 
     def setUp(self):
@@ -61,6 +62,7 @@ class TestRTKProgramStatus(unittest.TestCase):
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_program_status')
         self.assertEqual(self.DUT.revision_id, 1)
+        self.assertEqual(self.DUT.status_id, 1)
         self.assertEqual(self.DUT.cost_remaining, 100.0)
         self.assertEqual(self.DUT.date_status, date.today())
         self.assertEqual(self.DUT.time_remaining, 0.0)

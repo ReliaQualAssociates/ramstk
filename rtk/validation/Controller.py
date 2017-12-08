@@ -75,21 +75,21 @@ class ValidationDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_delete(self, definition_id):
+    def request_delete(self, validation_id):
         """
         Request to delete an RTKValidation table record.
 
-        :param int definition_id: the Validation ID to delete.
+        :param int validation_id: the Validation ID to delete.
         :return: (_error_code, _msg); the error code and associated error
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.delete(definition_id)
+        _error_code, _msg = self._dtm_data_model.delete(validation_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'deletedValidation')
 
-    def request_update(self, definition_id):
+    def request_update(self, validation_id):
         """
         Request to update an RTKValidation table record.
 
@@ -97,7 +97,7 @@ class ValidationDataController(RTKDataController):
                                       message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self._dtm_data_model.update(definition_id)
+        _error_code, _msg = self._dtm_data_model.update(validation_id)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    'savedValidation')
@@ -110,6 +110,18 @@ class ValidationDataController(RTKDataController):
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.update_all()
+
+        return RTKDataController.do_handle_results(self, _error_code, _msg,
+                                                   None)
+
+    def request_update_status(self):
+        """
+        Request to update program Validation task status.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _error_code, _msg = self._dtm_data_model.update_status()
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
@@ -136,7 +148,8 @@ class ValidationDataController(RTKDataController):
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self._test:
-                pub.sendMessage('calculatedValidation')
+                pub.sendMessage(
+                    'calculatedValidation', module_id=validation_id)
 
         elif _costs:
             _msg = 'RTK ERROR: Calculating Validation Task {0:d} cost ' \
@@ -151,3 +164,50 @@ class ValidationDataController(RTKDataController):
             _return = True
 
         return _return
+
+    def request_calculate_program(self):
+        """
+        Request to calculate program cost and time.
+
+        :param int revision_id: the Revision ID of the program to calculate.
+        :return: (_cost_ll, _cost_mean, _cost_ul,
+                  _time_ll, _time_mean, _time_ul); the lower bound, mean,
+                 and upper bound for program cost and time.
+        :rtype: tuple
+        """
+        (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean,
+         _time_ul) = self._dtm_data_model.calculate_program()
+
+        if not self._test:
+            pub.sendMessage('calculatedProgram')
+
+        return (_cost_ll, _cost_mean, _cost_ul, _time_ll, _time_mean, _time_ul)
+
+    def request_planned_burndown(self):
+        """
+        Request the planned burndown curve.
+
+        :return: (_y_minimum, _y_average, _y_maximum)
+        :rtype: tuple
+        """
+        return self._dtm_data_model.planned_burndown()
+
+    def request_assessments(self):
+        """
+        Request the assessment dates, minimum, and maximum values.
+
+        :return: (_assessed_dates, _targets)
+        :rtype: tuple
+        """
+        return self._dtm_data_model.assessments()
+
+    def request_actual_burndown(self):
+        """
+        Request the actual burndown curve.
+
+        :return: dictionary of actual remaining times for each date the value
+                 has been calculated.  Key is the date, value is the remaining
+                 time.
+        :rtype: dict
+        """
+        return self._dtm_data_model.actual_burndown()

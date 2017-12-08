@@ -160,6 +160,18 @@ class TestValidationDataModel(unittest.TestCase):
                          'Validation ID 100.')
 
     @attr(all=True, unit=True)
+    def test05c_update_status(self):
+        """(TestValidationDataModel) update_status() should return a zero error code on success."""
+        self.DUT.select_all(1)
+
+        _error_code, _msg = self.DUT.update_status(1)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Adding one or more items to the RTK '
+                         'Program database.')
+
+    @attr(all=True, unit=True)
     def test06a_update_all(self):
         """(TestValidationDataModel) update_all() should return a zero error code on success."""
         self.DUT.select_all(1)
@@ -171,7 +183,7 @@ class TestValidationDataModel(unittest.TestCase):
                          'RTK SUCCESS: Updating the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test_calculate_task_time(self):
+    def test07a_calculate_task_time(self):
         """(TestValidationDataModel) calculate_task_time() returns False on successfully calculating tasks times."""
         self.DUT.select_all(1)
         _validation = self.DUT.select(1)
@@ -185,7 +197,7 @@ class TestValidationDataModel(unittest.TestCase):
         self.assertAlmostEqual(_validation.time_variance, 9.9225)
 
     @attr(all=True, unit=True)
-    def test_calculate_task_cost(self):
+    def test07b_calculate_task_cost(self):
         """(TestValidationDataModel) calculate_task_cost() returns False on successfully calculating tasks costs."""
         self.DUT.select_all(1)
         _validation = self.DUT.select(1)

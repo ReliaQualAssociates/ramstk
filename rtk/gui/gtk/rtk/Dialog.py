@@ -157,33 +157,21 @@ class RTKMessageDialog(gtk.MessageDialog):
 
 
 class RTKDateSelect(gtk.Dialog):
-    """
-    This is the RTK Date Select Dialog class.
-    """
+    """The RTK Date Selection Dialog."""
 
-    def __init__(self, entry=None):
-        """
-        Method to initialize an instance of the RTKDateSelect class.
-
-        :param entry: the gtk.Entry() in which to place the date, if any.
-        :type entry: :py:class:`gtk.Entry`
-        """
-
+    def __init__(self):
+        """Initialize an instance of the RTKDateSelect class."""
         gtk.Dialog.__init__(
             self,
             _(u"Select Date"),
             buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT))
 
-        self._entry = entry
         self._calendar = gtk.Calendar()
         self.vbox.pack_start(self._calendar)  # pylint: disable=E1101
         self.vbox.show_all()  # pylint: disable=E1101
 
     def do_run(self):
-        """
-        Method to run the RTKDateSelect dialog.
-        """
-
+        """Run the RTKDateSelect dialog."""
         if self.run() == gtk.RESPONSE_ACCEPT:
             _date = self._calendar.get_date()
             _date = datetime(_date[0], _date[1] + 1,
@@ -194,10 +182,7 @@ class RTKDateSelect(gtk.Dialog):
         return _date
 
     def do_destroy(self):
-        """
-        Method to destroy the RTKDateSelect dialog.
-        """
-
+        """Destroy the RTKDateSelect dialog."""
         self.destroy()
 
 

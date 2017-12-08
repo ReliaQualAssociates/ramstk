@@ -4,7 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKListBook Module."""
+"""RTK List Book Module."""
 
 # Import modules for localization support.
 import gettext
@@ -23,7 +23,19 @@ _ = gettext.gettext
 
 
 class ListBook(RTKBook):  # pylint: disable=R0904
-    """This is the List View class for the pyGTK multiple window interface."""
+    """
+    This is the List Book class for the pyGTK multiple window interface.
+
+    The List Book provides the container for any List Views and Matrix Views
+    associated with the RTK module selected in the RTK Module View.  Attributes
+    of the List Book are:
+
+    :ivar dict dic_list_view: dictionary containing the List Views and/or
+                              Matrix Views to load into the RTK List Book for
+                              each RTK module.  Key is the RTK module name;
+                              value is a list of Views associated with that
+                              RTK module.
+    """
 
     def __init__(self, controller):
         """
@@ -86,7 +98,7 @@ class ListBook(RTKBook):  # pylint: disable=R0904
 
     def _on_module_change(self, module=''):
         """
-        Load the List Views for the RTK module tselected in the Module Book.
+        Load the List Views for the RTK module selected in the Module Book.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool

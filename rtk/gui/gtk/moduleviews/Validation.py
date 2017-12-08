@@ -12,6 +12,7 @@ import gettext
 from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
+from Utilities import date_to_ordinal  # pylint: disable=E0401
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
 from .ModuleView import RTKModuleView  # pylint: disable=E0401
@@ -114,7 +115,7 @@ class ModuleView(RTKModuleView):
 
         _model, _row = treeview.get_selection().get_selected()
 
-        self._validation_id = _model.get_value(_row, 0)
+        self._validation_id = _model.get_value(_row, 1)
 
         treeview.handler_unblock(self._lst_handler_id[0])
 
@@ -163,9 +164,9 @@ class ModuleView(RTKModuleView):
             elif self._lst_col_order[position] == 9:
                 _attributes['acceptable_variance'] = str(new_text)
             elif self._lst_col_order[position] == 10:
-                _attributes['date_start'] = new_text
+                _attributes['date_start'] = date_to_ordinal(new_text)
             elif self._lst_col_order[position] == 11:
-                _attributes['date_end'] = new_text
+                _attributes['date_end'] = date_to_ordinal(new_text)
             elif self._lst_col_order[position] == 12:
                 _attributes['status'] = float(new_text)
             elif self._lst_col_order[position] == 13:
@@ -325,9 +326,12 @@ class ModuleView(RTKModuleView):
         _model.clear()
         _model.append([""])
         for i in range(
-                len(self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE)):
-            _model.append(
-                [self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE[i]])
+                len(self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE.values(
+                ))):
+            _model.append([
+                self._mdcRTK.RTK_CONFIGURATION.RTK_VALIDATION_TYPE.values()[i][
+                    1]
+            ])
 
         # Load the gtk.CellRendererCombo() holding the measurement units.
         _cell = self.treeview.get_column(
@@ -337,9 +341,12 @@ class ModuleView(RTKModuleView):
         _model.append([""])
 
         for i in range(
-                len(self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS)):
-            _model.append(
-                [self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS[i]])
+                len(self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS.
+                    values())):
+            _model.append([
+                self._mdcRTK.RTK_CONFIGURATION.RTK_MEASUREMENT_UNITS.values()[
+                    i][1]
+            ])
 
         # Reset the limits of adjustment on the percent complete
         # gtk.CellRendererSpin() to 0 - 100 with steps of 1.
@@ -440,7 +447,6 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
         _model, _row = self.treeview.get_selection().get_selected()
-
         _model.set(_row, self._lst_col_order[position], new_text)
 
         return False
