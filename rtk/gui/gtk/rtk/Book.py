@@ -5,8 +5,7 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """
-RTKBook Module
--------------------------------------------------------------------------------
+RTK Book.
 
 This module contains the base class for all the RTK books.  It provides the
 basis for the RTKListBook, RTKModuleBook, and RTKWorkBook.
@@ -40,8 +39,10 @@ _ = gettext.gettext
 
 def destroy(__widget, __event=None):
     """
-    Quits the RTK application when the X in the upper right corner is pressed
-    or if this function is called as a callback.
+    Quit the RTK application.
+
+    This function quits the RTK application when the X in the upper right
+    corner is pressed or if this function is called as a callback.
 
     :param __widget: the gtk.Widget() that called this method.
     :type __widget: :py:class:`gtk.Widget`
@@ -84,7 +85,7 @@ class RTKBook(gtk.Window):  # pylint: disable=R0904
 
     def __init__(self, controller):
         """
-        Method to initialize an instance of the Module view class.
+        Initialize an instance of the RTK Book.
 
         :param controller: the RTK master data controller.
         :type controller: :py:class:`rtk.RTK.RTK`

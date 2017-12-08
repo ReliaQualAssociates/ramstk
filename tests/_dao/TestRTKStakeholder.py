@@ -110,6 +110,6 @@ class TestRTKStakeholder(unittest.TestCase):
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'user_float_1' "
                          "in attribute dictionary passed to "
-                         "RTKMechanism.set_attributes().")
+                         "RTKStakeholder.set_attributes().")
 
         self._attributes['user_float_1'] = 0.0

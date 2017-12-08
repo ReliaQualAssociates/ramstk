@@ -71,7 +71,7 @@ from stakeholder import dtcStakeholder
 # from software.BoM import BoM as SoftwareBoM
 # from testing.Testing import Testing
 # from testing.growth.Growth import Growth
-# from validation.Validation import Validation
+from validation import dtcValidation
 # from incident.Incident import Incident
 # from incident.action.Action import Action
 # from incident.component.Component import Component
@@ -792,7 +792,8 @@ class RTK(object):
             # self.dic_controllers['hardware'] = HardwareBoM()
             # self.dic_controllers['software'] = SoftwareBoM()
             # self.dic_controllers['test'] = Test()
-            # self.dic_controllers['validation'] = Validation()
+            self.dic_controllers['validation'] = dtcValidation(
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['incident'] = Incident()
             # self.dic_controllers['survival'] = Survival()
 

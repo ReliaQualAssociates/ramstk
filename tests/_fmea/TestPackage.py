@@ -72,7 +72,7 @@ def test_function_package(suites):
         '', '-v', "--attr=unit,functional", '--with-coverage',
         '--cover-branches', '--cover-xml', '--cover-package=dao.RTKMode',
         '--cover-package=dao.RTKMechanism', '--cover-package=dao.RTKCause',
-        '--cover-package=dao.RTKControl', '--cover-package=doa.RTKAction',
+        '--cover-package=dao.RTKControl', '--cover-package=dao.RTKAction',
         '--cover-package=analyses.fmea'
     ]
     nose.runmodule(argv=args, suite=suite, plugins=plugin_mgr)

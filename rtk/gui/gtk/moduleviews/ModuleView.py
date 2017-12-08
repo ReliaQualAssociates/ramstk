@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKModuleView Meta-Class Module
--------------------------------------------------------------------------------
-"""
+"""RTKModuleView Module."""
 
 # Import other RTK modules.
 from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611

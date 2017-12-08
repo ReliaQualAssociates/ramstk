@@ -7,7 +7,7 @@ Welcome to the Reliability ToolKit's (RTK) Documentation!
 =========================================================
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 6
    :caption: :
 
    rtk.rst

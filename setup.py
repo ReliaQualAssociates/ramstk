@@ -55,7 +55,9 @@ if __name__ == '__main__':
             'rtk.requirement',
             'rtk.revision',
             'rtk.stakeholder',
+            'rtk.statistics',
             'rtk.usage',
+            'rtk.validation',
             'rtk.analyses.statistics',
             'rtk.analyses.pof',
             'rtk.analyses.allocation',
@@ -76,7 +78,6 @@ if __name__ == '__main__':
             'rtk.testing',
             'rtk.survival',
             'rtk.incident',
-            'rtk.validation',
             'rtk.hardware.component',
             'rtk.hardware.__gui',
             'rtk.hardware.assembly',
@@ -116,7 +117,7 @@ if __name__ == '__main__':
             'rtk.imports'
         ],
         classifiers=[
-            'Development Status :: 3 - Alpha',
+             'Development Status :: 3 - Alpha',
             'Programming Language :: Python'
         ],
         entry_points={},

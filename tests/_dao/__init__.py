@@ -11,3 +11,5 @@ from .TestRTKMode import TestRTKMode
 from .TestRTKRequirement import TestRTKRequirement
 from .TestRTKRevision import TestRTKRevision
 from .TestRTKStakeholder import TestRTKStakeholder
+from .TestRTKValidation import TestRTKValidation
+from .TestRTKProgramStatus import TestRTKProgramStatus

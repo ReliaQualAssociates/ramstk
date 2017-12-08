@@ -38,6 +38,7 @@ docs/_static/
 docs/_templates/
 rtk-RQA/
 tests/_test_results/
+tools/StaticChecks.sh
 CodeCounts.sql
 FailureModes.sql
 Makefile
@@ -50,9 +51,6 @@ pylintout
 /.eric6project/RTK.e4q
 /.eric6project/RTK.e6t
 /RTK.e4p
-/rtk/hardware/BoM.coverage
-/rtk/hardware/BoM.profile
-/rtk/hardware/BoM.timings
 coverage.xml
 
 # Override settings for some specific files.

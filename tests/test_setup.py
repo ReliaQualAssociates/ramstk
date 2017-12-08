@@ -36,11 +36,11 @@ from dao import RTKAction, RTKAllocation, RTKCause, RTKControl, \
     RTKFailureDefinition, RTKFunction, RTKGrowthTest, RTKHardware, \
     RTKHazardAnalysis, RTKIncident, RTKIncidentAction, RTKIncidentDetail, \
     RTKMatrix, RTKMechanism, RTKMilHdbkF, RTKMission, RTKMissionPhase, \
-    RTKMode, RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, RTKReliability, \
-    RTKRequirement, RTKRevision, RTKSimilarItem, RTKSoftware, \
-    RTKSoftwareDevelopment, RTKSoftwareReview, RTKSoftwareTest, \
-    RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest, RTKTestMethod, \
-    RTKValidation
+    RTKMode, RTKNSWC, RTKOpLoad, RTKOpStress, RTKProgramInfo, \
+    RTKProgramStatus, RTKReliability, RTKRequirement, RTKRevision, \
+    RTKSimilarItem, RTKSoftware, RTKSoftwareDevelopment, RTKSoftwareReview, \
+    RTKSoftwareTest, RTKStakeholder, RTKSurvival, RTKSurvivalData, RTKTest, \
+    RTKTestMethod, RTKValidation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -246,6 +246,7 @@ def _create_program_database():
     RTKOpLoad.__table__.create(bind=engine)
     RTKOpStress.__table__.create(bind=engine)
     RTKProgramInfo.__table__.create(bind=engine)
+    RTKProgramStatus.__table__.create(bind=engine)
     RTKTestMethod.__table__.create(bind=engine)
     RTKSoftware.__table__.create(bind=engine)
     RTKSoftwareDevelopment.__table__.create(bind=engine)
@@ -271,6 +272,10 @@ def _create_program_database():
     session.commit()
 
     # Create tables that have Revision ID as a Foreign Key.
+    _program_status = RTKProgramStatus()
+    _program_status.revision_id = _revision.revision_id
+    session.add(_program_status)
+
     _mission = RTKMission()
     _mission.revision_id = _revision.revision_id
     _mission.description = 'Test Mission Description'

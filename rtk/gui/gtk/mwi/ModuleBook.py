@@ -4,17 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKModuleBook Module
--------------------------------------------------------------------------------
-"""
+"""Module Book Module."""
 
 import sys
 
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub                              # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import modules required for the GUI.
 try:
@@ -37,41 +34,42 @@ from gui.gtk.rtk import RTKBook, destroy
 from gui.gtk.moduleviews import mvwRevision
 from gui.gtk.moduleviews import mvwFunction
 from gui.gtk.moduleviews import mvwRequirement
+from gui.gtk.moduleviews import mvwValidation
 from gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
     Options
 
 _ = gettext.gettext
 
 
-class ModuleBook(RTKBook):               # pylint: disable=R0904
+class ModuleBook(RTKBook):  # pylint: disable=R0904
     """
-    This is the Module view for the pyGTK multiple window interface.
-    Attributes of the ModuleView are:
+    Display Module Views for the RTK modules.
+
+    Attributes of the Module Book are:
 
     :ivar list _lst_handler_id:
     :ivar _mdcRTK: the RTK master data controller.
-    :type _mdcRTK: :py:class:`rtk.RTK.RTK`
+    :type _mdcRTK: :class:`rtk.RTK.RTK`
     :ivar notebook: the gtk.Notebook() widget used to hold each of the RTK
                     module WorkViews.
-    :type notebook: :py:class:`gtk.Notebook`
+    :type notebook: :class:`gtk.Notebook`
     :ivar menubar: the gtk.MenuBar() for the RTK ModuleBook menu.
-    :type menubar: :py:class:`gtk.MenuBar`
+    :type menubar: :class:`gtk.MenuBar`
     :ivar toolbar: the gtk.Toolbar() for the RTK ModuleBook tools.
-    :type toolbar: :py:class:`gtk.Toolbar`
+    :type toolbar: :class:`gtk.Toolbar`
     :ivar statusbar: the gtk.Statusbar() for displaying messages.
-    :type statusbar: :py:class:`gtk.Statusbar`
+    :type statusbar: :class:`gtk.Statusbar`
     :ivar progressbar: the gtk.Progressbar() for displaying progress counters.
-    :type progressbar: :py:class:`gtk.Progressbar`
+    :type progressbar: :class:`gtk.Progressbar`
     """
 
     def __init__(self, controller):
         """
-        Method to initialize an instance of the Module view class.
+        Initialize an instance of the Module Book class.
 
         :param controller: the RTK master data controller.
-        :type controller: :py:class:`rtk.RTK.RTK`
+        :type controller: :class:`rtk.RTK.RTK`
         """
-
         RTKBook.__init__(self, controller)
 
         # Initialize private dictionary attributes.
@@ -81,9 +79,12 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_module_views = {'revision':[mvwRevision(controller), 0],
-                                 'function':[mvwFunction(controller), 1],
-                                 'requirement':[mvwRequirement(controller), 2]}
+        self.dic_module_views = {
+            'revision': [mvwRevision(controller), 0],
+            'function': [mvwFunction(controller), 1],
+            'requirement': [mvwRequirement(controller), 2],
+            'validation': [mvwValidation(controller), 4]
+        }
 
         # Initialize public list attributes.
 
@@ -106,7 +107,8 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
         if self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'left':
             self.notebook.set_tab_pos(self._left_tab)
-        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'right':
+        elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS[
+                'modulebook'] == 'right':
             self.notebook.set_tab_pos(self._right_tab)
         elif self._mdcRTK.RTK_CONFIGURATION.RTK_TABPOS['modulebook'] == 'top':
             self.notebook.set_tab_pos(self._top_tab)
@@ -124,9 +126,10 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         # Insert a page for each of the active RTK Modules.
         for _page in self.dic_module_views:
             _object = self.dic_module_views[_page]
-            self.notebook.insert_page(_object[0],
-                                      tab_label=_object[0].hbx_tab_label,
-                                      position=_object[1])
+            self.notebook.insert_page(
+                _object[0],
+                tab_label=_object[0].hbx_tab_label,
+                position=_object[1])
 
         _vbox = gtk.VBox()
         _vbox.pack_start(self._make_menu(), expand=False, fill=False)
@@ -146,12 +149,11 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
     def _make_menu(self):
         """
-        Method to create the menu for the ModuleBook view.
+        Make the menu for the Module Book.
 
         :return _menubar: the gtk.MenuBar() for the RTK ModuleBook.
-        :type _menubar: :py:class:`gtk.MenuBar`
+        :type _menubar: :class:`gtk.MenuBar`
         """
-
         _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
 
         _menu = gtk.Menu()
@@ -249,8 +251,8 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         _menu_item = gtk.MenuItem(label=_(u"Find _Next"), use_underline=True)
         # _menu_item.connect('activate', Utilities.find, 1)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"Find _Previous"),
-                                  use_underline=True)
+        _menu_item = gtk.MenuItem(
+            label=_(u"Find _Previous"), use_underline=True)
         # _menu_item.connect('activate', Utilities.find, 2)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(label=_(u"_Replace"), use_underline=True)
@@ -265,8 +267,8 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         _menu_item = gtk.MenuItem(label=_(u"Pro_cess Map"), use_underline=True)
         # _menu_item.connect('activate', ProcessMap, self._app)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"_Design Reviews"),
-                                  use_underline=True)
+        _menu_item = gtk.MenuItem(
+            label=_(u"_Design Reviews"), use_underline=True)
         # _menu_item.connect('activate', DesignReview, self._app)
         _menu.append(_menu_item)
 
@@ -277,12 +279,12 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         _menu_item = gtk.MenuItem(label=_(u"_Options"), use_underline=True)
         _menu_item.connect('activate', Options, self._mdcRTK)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"_Composite Ref Des"),
-                                  use_underline=True)
+        _menu_item = gtk.MenuItem(
+            label=_(u"_Composite Ref Des"), use_underline=True)
         _menu_item.connect('activate', self._create_comp_ref_des)
         _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(label=_(u"_Update Design Review Criteria"),
-                                  use_underline=True)
+        _menu_item = gtk.MenuItem(
+            label=_(u"_Update Design Review Criteria"), use_underline=True)
         # _menu_item.connect('activate', ReviewCriteria, self._app)
 
         _mnuTools = gtk.MenuItem(label=_(u"_Tools"), use_underline=True)
@@ -301,12 +303,11 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
     def _make_toolbar(self):
         """
-        Method to create the toolbar for the ModuleBook view.
+        Make the toolbar for the Module Book.
 
         :return _toolbar: the gtk.Toolbar() for the RTK ModuleBook.
-        :type _toolbar: :py:class:`gtk.Toolbar`
+        :type _toolbar: :class:`gtk.Toolbar`
         """
-
         _icon_dir = self._mdcRTK.RTK_CONFIGURATION.RTK_ICON_DIR
 
         _toolbar = gtk.Toolbar()
@@ -325,8 +326,9 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
         # Connect button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Connect to an existing RTK Project "
-                                   u"Database."))
+        _button.set_tooltip_text(
+            _(u"Connect to an existing RTK Project "
+              u"Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/open.png')
         _button.set_icon_widget(_image)
@@ -336,8 +338,9 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
         # Delete button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Deletes an existing RTK Program "
-                                   u"Database."))
+        _button.set_tooltip_text(
+            _(u"Deletes an existing RTK Program "
+              u"Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/delete.png')
         _button.set_icon_widget(_image)
@@ -350,8 +353,9 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
         # Save button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Save the currently open RTK Project "
-                                   u"Database."))
+        _button.set_tooltip_text(
+            _(u"Save the currently open RTK Project "
+              u"Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/save.png')
         _button.set_icon_widget(_image)
@@ -364,8 +368,9 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
         # Save and quit button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Save the currently open RTK Program "
-                                   u"Database then quits."))
+        _button.set_tooltip_text(
+            _(u"Save the currently open RTK Program "
+              u"Database then quits."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/save-exit.png')
         _button.set_icon_widget(_image)
@@ -375,8 +380,9 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
         # Quit without saving button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Quits without saving the currently open "
-                                   u"RTK Program Database."))
+        _button.set_tooltip_text(
+            _(u"Quits without saving the currently open "
+              u"RTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(_icon_dir + '/32x32/exit.png')
         _button.set_icon_widget(_image)
@@ -389,32 +395,29 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
     def _on_request_open(self):
         """
-        Method to set the status bar and update the progress bar when opening
-        an RTK Program database.
+        Set the status bar and update the progress bar.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _message = _(u"Opening Program Database {0:s}"). \
             format(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database'])
         self.statusbar.push(1, _message)
-        self.set_title(_(u"RTK - Analyzing {0:s}").format(
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
+        self.set_title(
+            _(u"RTK - Analyzing {0:s}").format(
+                self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_INFO['database']))
 
         return _return
 
     def _on_open(self):
         """
-        Method to update the status bar and clear the progress bar when the
-        RTK Program database has opened.
+        Update the status bar and clear the progress bar.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         self.statusbar.pop(1)
@@ -423,12 +426,12 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
     def _on_switch_page(self, __notebook, __page, page_num):
         """
-        Called whenever the Module Book gtk.Notebook() page is changed.
+        Handle page changes in the Module Book gtk.Notebook().
 
         :param __notebook: the Tree Book notebook widget.
-        :type __notebook: :py:class:`gtk.Notebook`
+        :type __notebook: :class:`gtk.Notebook`
         :param __page: the newly selected page's child widget.
-        :type __page: :py:class:`gtk.Widget`
+        :type __page: :class:`gtk.Widget`
         :param int page_num: the newly selected page number.
 
                              0 = Revision Tree
@@ -444,7 +447,6 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         # Key errors occur when no RTK Program database has been loaded.  In
         # that case, select the Revision page to load.
         try:
@@ -456,6 +458,8 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
                 _module = 'function'
             elif page_num == 2:
                 _module = 'requirement'
+            elif page_num == 3:  # TODO: Change this as other modules are added.
+                _module = 'validation'
 
         pub.sendMessage('mvwSwitchedPage', module=_module)
 
@@ -463,7 +467,7 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
     def _request_save_project(self, __widget, end=False):
         """
-        Method to request the RTK master data controller save the open Project.
+        Request to save the open RTK Program.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
         :keyword bool close: indicates whether or not to quit RTK after saving
@@ -471,7 +475,6 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         self._mdcRTK.save_project()
 
         if end:
@@ -481,21 +484,19 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
     def _request_close_project(self, __widget):
         """
-        Method to request the RTK master data controller close the open
-        Project.
+        Request to close the open RTK Program.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this method.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         self._mdcRTK.close_project()
 
         return False
 
     def _create_comp_ref_des(self, __widget):
         """
-        Method to iterively create composite reference designators.
+        Create composite reference designators.
 
         :param gtk.Widget __widget: the gtk.Widget() that called this function.
         :return: False if successful or True if an error is encounterd.
@@ -510,7 +511,7 @@ class ModuleBook(RTKBook):               # pylint: disable=R0904
 
     def _build_composite_ref_des(self, model, __path, row):
         """
-        Method to build the composite reference designator.
+        Build the composite reference designator.
 
         :return: False if successful or True if an error is encountered
         :rtype: bool

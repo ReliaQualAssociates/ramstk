@@ -1,24 +1,21 @@
-RTK Validation Sub-Package
-==========================
+Validation Package
+===============================================================================
 
 .. toctree::
 
-.. automodule:: rtk.validation.Validation
+Validation Data Model
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.validation.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-RTK Validation Sub-Package Graphical User Interface
-===================================================
+Validation Data Controller
+-------------------------------------------------------------------------------
 
-.. automodule:: rtk.validation.ModuleBook
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.validation.WorkBook
+.. automodule:: rtk.validation.Controller
     :members:
     :private-members:
     :undoc-members:

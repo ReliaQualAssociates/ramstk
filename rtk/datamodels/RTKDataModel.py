@@ -14,7 +14,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
-class RTKDataModel(object):
+class RTKDataModel(object):  # pragma: no cover
     """
     This is the meta-class for all RTK Data Models.
 
@@ -68,7 +68,6 @@ class RTKDataModel(object):
         :return: the instance of the RTK<MODULE> class that was requested
                  or None if the requested Node ID does not exist.
         """
-
         try:
             _entity = self.tree.get_node(node_id).data
         except AttributeError:
@@ -151,7 +150,6 @@ class RTKDataModel(object):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = ''
 

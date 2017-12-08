@@ -21,6 +21,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>revision_id</key>
         </column>
         <column>
             <defaulttitle>Validation ID</defaulttitle>
@@ -30,6 +31,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>validation_id</key>
         </column>
         <column>
             <defaulttitle>V and V Activity</defaulttitle>
@@ -39,6 +41,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>description</key>
         </column>
         <column>
             <defaulttitle>V and V Activity Type</defaulttitle>
@@ -48,6 +51,7 @@ experience. -->
             <widget>combo</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>task_type</key>
         </column>
         <column>
             <defaulttitle>Specification</defaulttitle>
@@ -57,15 +61,17 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>task_specification</key>
         </column>
         <column>
             <defaulttitle>Measurement Unit</defaulttitle>
             <usertitle>Measurement Unit</usertitle>
-            <datatype>gint</datatype>
+            <datatype>gchararray</datatype>
             <position>5</position>
             <widget>combo</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>measurement_unit</key>
         </column>
         <column>
             <defaulttitle>Min. Acceptable</defaulttitle>
@@ -75,6 +81,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>acceptable_minimum</key>
         </column>
         <column>
             <defaulttitle>Mean Acceptable</defaulttitle>
@@ -84,6 +91,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>acceptable_mean</key>
         </column>
         <column>
             <defaulttitle>Max. Acceptable</defaulttitle>
@@ -93,6 +101,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>acceptable_maximum</key>
         </column>
         <column>
             <defaulttitle>Variance Acceptable</defaulttitle>
@@ -102,6 +111,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>acceptable_variance</key>
         </column>
         <column>
             <defaulttitle>Start Date</defaulttitle>
@@ -111,6 +121,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>date_start</key>
         </column>
         <column>
             <defaulttitle>End Date</defaulttitle>
@@ -120,6 +131,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>date_end</key>
         </column>
         <column>
             <defaulttitle>% Complete</defaulttitle>
@@ -129,6 +141,7 @@ experience. -->
             <widget>spin</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>status</key>
         </column>
         <column>
             <defaulttitle>Minimum Task Time</defaulttitle>
@@ -138,6 +151,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>time_minimum</key>
         </column>
         <column>
             <defaulttitle>Expected Task Time</defaulttitle>
@@ -147,6 +161,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>time_average</key>
         </column>
         <column>
             <defaulttitle>Maximum Task Time</defaulttitle>
@@ -156,6 +171,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>time_maximum</key>
         </column>
         <column>
             <defaulttitle>Mean Project Time</defaulttitle>
@@ -165,6 +181,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>time_mean</key>
         </column>
         <column>
             <defaulttitle>Project Time Variance</defaulttitle>
@@ -174,6 +191,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>time_variance</key>
         </column>
         <column>
             <defaulttitle>Minimum Task Cost</defaulttitle>
@@ -183,6 +201,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>cost_minimum</key>
         </column>
         <column>
             <defaulttitle>Expected Task Cost</defaulttitle>
@@ -192,6 +211,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>cost_average</key>
         </column>
         <column>
             <defaulttitle>Maximum Task Cost</defaulttitle>
@@ -201,6 +221,7 @@ experience. -->
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>cost_maximum</key>
         </column>
         <column>
             <defaulttitle>Expected Project Cost</defaulttitle>
@@ -210,6 +231,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost_mean</key>
         </column>
         <column>
             <defaulttitle>Project Cost Variance</defaulttitle>
@@ -219,6 +241,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost_variance</key>
         </column>
         <column>
             <defaulttitle>Confidence</defaulttitle>
@@ -228,6 +251,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>confidence</key>
         </column>
     </tree>
 </root>
