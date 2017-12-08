@@ -1,9 +1,6 @@
 #!/usr/bin/sh
 
-export CODACY_PROJECT_TOKEN=9ef97176f7504721a0f3ec251bf51c19
-
 curPath=$PWD
-projPath=$HOME'/drive_d/projects/RTK'
 testPath=$curPath'/tests'
 testList=$testPath'/Test.suites'
 excludeList=$testPath'/Excluded.dirs'
@@ -46,5 +43,3 @@ done < $testList
 # Create the coverage XML file and upload to codacy.
 $coverage xml -o "$curPath/coverage.xml"
 $codacy -r "$curPath/coverage.xml"
-
-unset CODACY_PROJECT_TOKEN
