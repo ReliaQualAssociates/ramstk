@@ -307,18 +307,6 @@ class TestUsageProfileDataController(unittest.TestCase):
         self.dao.RTK_SESSION.configure(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([
-            RTKRevision(),
-        ], self.session)
-        self.dao.db_add([
-            RTKMission(),
-        ], self.session)
-        self.dao.db_add([
-            RTKMissionPhase(),
-        ], self.session)
-        self.dao.db_add([
-            RTKEnvironment(),
-        ], self.session)
 
         self.DUT = dtcUsageProfile(self.dao, self.Configuration, test='True')
 
@@ -341,10 +329,7 @@ class TestUsageProfileDataController(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test03a_request_insert_mission(self):
-        """
-        (TestUsageProfileController) request_insert() should return False on success.
-        """
-
+        """(TestUsageProfileController) request_insert() should return False on success."""
         self.DUT.request_select_all(1)
         self.assertFalse(self.DUT.request_insert(1, 0, 'mission'))
 

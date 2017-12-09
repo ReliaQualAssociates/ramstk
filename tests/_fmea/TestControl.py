@@ -63,8 +63,6 @@ class TestControlDataModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKControl(), ], self.session)
-        self.dao.db_add([RTKControl(), ], self.session)
 
         self.DUT = dtmControl(self.dao)
 

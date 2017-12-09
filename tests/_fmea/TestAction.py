@@ -66,8 +66,6 @@ class TestActionDataModel(unittest.TestCase):
         self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
                                        expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
-        self.dao.db_add([RTKAction(), ], self.session)
-        self.dao.db_add([RTKAction(), ], self.session)
 
         self.DUT = dtmAction(self.dao)
 
