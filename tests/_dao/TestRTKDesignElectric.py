@@ -2,19 +2,16 @@
 # -*- coding: utf-8 -*-
 #
 #       tests.unit._dao.TestRTKDesignElectric.py is part of The RTK Project
-
 #
 # All rights reserved.
-
-"""
-This is the test class for testing the RTKDesignElectric module algorithms and
-models.
-"""
+"""Test class for testing RTKDesignElectric module algorithms and models."""
 
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -31,20 +28,65 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
 class TestRTKDesignElectric(unittest.TestCase):
-    """
-    Class for testing the RTKDesignElectric class.
-    """
+    """Class for testing the RTKDesignElectric class."""
 
-    _attributes = (1, 0, 0.0, 0.0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0, 0, 0, 0.0,
-                   0.0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.0, 1, 0, 0.0, 0.0, 0.0,
-                   '', 0.0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1)
+    _attributes = {
+        'voltage_ac_operating': 0.0,
+        'frequency_operating': 0.0,
+        'type_id': 0,
+        'resistance': 0.0,
+        'package_id': 0,
+        'technology_id': 0,
+        'n_cycles': 0,
+        'n_circuit_planes': 1,
+        'contact_gauge': 0,
+        'current_operating': 0.0,
+        'n_hand_soldered': 0,
+        'contact_rating_id': 0,
+        'area': 0.0,
+        'contact_form_id': 0,
+        'years_in_production': 1,
+        'n_active_pins': 0,
+        'capacitance': 0.0,
+        'temperature_case': 0.0,
+        'current_rated': 0.0,
+        'power_operating': 0.0,
+        'configuration_id': 0,
+        'temperature_hot_spot': 0.0,
+        'temperature_junction': 0.0,
+        'current_ratio': 0.0,
+        'insulation_id': 0,
+        'construction_id': 0,
+        'insert_id': 0,
+        'theta_jc': 0.0,
+        'voltage_dc_operating': 0.0,
+        'power_ratio': 0.0,
+        'family_id': 0,
+        'overstress': 1,
+        'voltage_rated': 0.0,
+        'feature_size': 0.0,
+        'operating_life': 0.0,
+        'application_id': 0,
+        'weight': 0.0,
+        'temperature_rated_max': 0.0,
+        'voltage_ratio': 0.0,
+        'temperature_rated_min': 0.0,
+        'power_rated': 0.0,
+        'environment_active_id': 0,
+        'hardware_id': 3,
+        'specification_id': 0,
+        'matching_id': 0,
+        'n_elements': 0,
+        'environment_dormant_id': 0,
+        'reason': u'',
+        'voltage_esd': 0.0,
+        'manufacturing_id': 0,
+        'n_wave_soldered': 0,
+        'temperature_rise': 0.0
+    }
 
     def setUp(self):
-        """
-        Sets up the test fixture for the RTKDesignElectric class.
-        """
-
+        """(TestRTKDesignElectric) Set up the test fixture for the RTKDesignElectric class."""
         engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
         session = scoped_session(sessionmaker())
 
@@ -56,18 +98,14 @@ class TestRTKDesignElectric(unittest.TestCase):
 
         session.commit()
 
-
     @attr(all=True, unit=True)
     def test00_rtkdesignelectric_create(self):
-        """
-        (TestRTKDesignElectric) __init__ should create an RTKDesignElectric model.
-        """
-
+        """(TestRTKDesignElectric) __init__ should create an RTKDesignElectric model."""
         self.assertTrue(isinstance(self.DUT, RTKDesignElectric))
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_design_electric')
-        self.assertEqual(self.DUT.hardware_id, 1)
+        self.assertEqual(self.DUT.hardware_id, 3)
         self.assertEqual(self.DUT.application_id, 0)
         self.assertEqual(self.DUT.area, 0.0)
         self.assertEqual(self.DUT.capacitance, 0.0)
@@ -122,18 +160,12 @@ class TestRTKDesignElectric(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test01_get_attributes(self):
-        """
-        (TestRTKDesignElectric) get_attributes should return a tuple of attribute values.
-        """
-
+        """(TestRTKDesignElectric) get_attributes should return a tuple of attribute values."""
         self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):
-        """
-        (TestRTKDesignElectric) set_attributes should return a zero error code on success
-        """
-
+        """(TestRTKDesignElectric) set_attributes should return a zero error code on success."""
         _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
@@ -142,36 +174,15 @@ class TestRTKDesignElectric(unittest.TestCase):
                          format(self.DUT.hardware_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
-        """
-        (TestRTKDesignElectric) set_attributes should return a 10 error code when passed the wrong type
-        """
+    def test02b_set_attributes_missing_key(self):
+        """(TestRTKDesignElectric) set_attributes should return a 40 error code when passed a dict with a missing key."""
+        self._attributes.pop('family_id')
 
-        _attributes = (1, 0, 0.0, 0.0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0, 0, 0,
-                       0.0, 0.0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.0, 1, 0, 0.0,
-                       0.0, 0.0, 'Reason', 0.0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0, 0.0, 'zero.zero', 0.0, 0.0, 0.0, 0.0, 1)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKDesignElectric " \
-                               "attributes.")
-
-    @attr(all=True, unit=True)
-    def test02c_set_attributes_too_few_passed(self):
-        """
-        (TestRTKDesignElectric) set_attributes should return a 40 error code when passed too few attributes
-        """
-
-        _attributes = (1, 0, 0.0, 0.0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0, 0, 0,
-                       0.0, 0.0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0.0, 1, 0, 0.0,
-                       0.0, 0.0, 'Reason', 0.0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to RTKDesignElectric.set_attributes().")
+        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'family_id' in " \
+                               "attribute dictionary passed to " \
+                               "RTKDesignElectric.set_attributes().")
+
+        self._attributes['family_id'] = 0

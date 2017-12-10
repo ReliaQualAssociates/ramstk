@@ -4,25 +4,22 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKDesignMechanic Table
-===============================================================================
-"""
+"""RTKDesignMechanic Table Module."""  # pragma: no cover
+
 # pylint: disable=E0401
-from sqlalchemy import Column, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy import Column, Float, ForeignKey, Integer  # pragma: no cover
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from Utilities import none_to_default  # pylint: disable=E0401
+# pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pragma: no cover
 
 
 # pylint: disable=R0902
-class RTKDesignMechanic(RTK_BASE):
+class RTKDesignMechanic(RTK_BASE):  # pragma: no cover
     """
-    Class to represent the rtk_design_mechanical table in the RTK Program
-    database.
+    Represent the rtk_design_mechanic table in the RTK Program database.
 
     This table shares a One-to-One relationship with rtk_hardware.
     """
@@ -30,9 +27,12 @@ class RTKDesignMechanic(RTK_BASE):
     __tablename__ = 'rtk_design_mechanic'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column('fld_hardware_id', Integer,
-                         ForeignKey('rtk_hardware.fld_hardware_id'),
-                         primary_key=True, nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        ForeignKey('rtk_hardware.fld_hardware_id'),
+        primary_key=True,
+        nullable=False)
 
     altitude_operating = Column('fld_altitude_operating', Float, default=0.0)
     application_id = Column('fld_application_id', Integer, default=0)
@@ -88,15 +88,13 @@ class RTKDesignMechanic(RTK_BASE):
     width_minimum = Column('fld_width_minimum', Float, default=0.0)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware',
-                            back_populates='design_mechanic')
+    hardware = relationship('RTKHardware', back_populates='design_mechanic')
 
-    def get_attributes(self):
+    def get_attributes(self):  # pragma: no cover
         """
-        Method to retrieve the current values of the RTKDesignElectric data
-        model attributes.
+        Retrieve current values of the RTKDesignMechanic data model attributes.
 
-        :return: (hardware_id, altitude_operating, application_id, balance_id,
+        :return: {hardware_id, altitude_operating, application_id, balance_id,
                   clearance, casing_id, contact_pressure, deflection,
                   diameter_coil, diameter_inner, diameter_outer, diameter_wire,
                   filter_size, flow_design, flow_operating,
@@ -109,117 +107,176 @@ class RTKDesignMechanic(RTK_BASE):
                   pressure_rated, pressure_upstream, rpm_design, rpm_operating,
                   service_id, spring_index, surface_finish, technology_id,
                   thickness, torque_id, type_id, viscosity_design,
-                  viscosity_dynamic, water_per_cent, width_minimum)
-        :rtype: tuple
+                  viscosity_dynamic, water_per_cent, width_minimum} pairs.
+        :rtype: dict
         """
-
-        _attributes = (self.hardware_id, self.altitude_operating,
-                       self.application_id, self.balance_id, self.clearance,
-                       self.casing_id, self.contact_pressure, self.deflection,
-                       self.diameter_coil, self.diameter_inner,
-                       self.diameter_outer, self.diameter_wire,
-                       self.filter_size, self.flow_design, self.flow_operating,
-                       self.frequency_operating, self.friction, self.impact_id,
-                       self.leakage_allowable, self.length,
-                       self.length_compressed, self.length_relaxed,
-                       self.load_design, self.load_id, self.load_operating,
-                       self.lubrication_id, self.manufacturing_id,
-                       self.material_id, self.meyer_hardness,
-                       self.misalignment_angle, self.n_ten, self.n_cycles,
-                       self.n_elements, self.offset, self.particle_size,
-                       self.pressure_contact, self.pressure_delta,
-                       self.pressure_downstream, self.pressure_rated,
-                       self.pressure_upstream, self.rpm_design,
-                       self.rpm_operating, self.service_id, self.spring_index,
-                       self.surface_finish, self.technology_id, self.thickness,
-                       self.torque_id, self.type_id, self.viscosity_design,
-                       self.viscosity_dynamic, self.water_per_cent,
-                       self.width_minimum)
+        _attributes = {
+            'hardware_id': self.hardware_id,
+            'altitude_operating': self.altitude_operating,
+            'application_id': self.application_id,
+            'balance_id': self.balance_id,
+            'clearance': self.clearance,
+            'casing_id': self.casing_id,
+            'contact_pressure': self.contact_pressure,
+            'deflection': self.deflection,
+            'diameter_coil': self.diameter_coil,
+            'diameter_inner': self.diameter_inner,
+            'diameter_outer': self.diameter_outer,
+            'diameter_wire': self.diameter_wire,
+            'filter_size': self.filter_size,
+            'flow_design': self.flow_design,
+            'flow_operating': self.flow_operating,
+            'frequency_operating': self.frequency_operating,
+            'friction': self.friction,
+            'impact_id': self.impact_id,
+            'leakage_allowable': self.leakage_allowable,
+            'length': self.length,
+            'length_compressed': self.length_compressed,
+            'length_relaxed': self.length_relaxed,
+            'load_design': self.load_design,
+            'load_id': self.load_id,
+            'load_operating': self.load_operating,
+            'lubrication_id': self.lubrication_id,
+            'manufacturing_id': self.manufacturing_id,
+            'material_id': self.material_id,
+            'meyer_hardness': self.meyer_hardness,
+            'misalignment_angle': self.misalignment_angle,
+            'n_ten': self.n_ten,
+            'n_cycles': self.n_cycles,
+            'n_elements': self.n_elements,
+            'offset': self.offset,
+            'particle_size': self.particle_size,
+            'pressure_contact': self.pressure_contact,
+            'pressure_delta': self.pressure_delta,
+            'pressure_downstream': self.pressure_downstream,
+            'pressure_rated': self.pressure_rated,
+            'pressure_upstream': self.pressure_upstream,
+            'rpm_design': self.rpm_design,
+            'rpm_operating': self.rpm_operating,
+            'service_id': self.service_id,
+            'spring_index': self.spring_index,
+            'surface_finish': self.surface_finish,
+            'technology_id': self.technology_id,
+            'thickness': self.thickness,
+            'torque_id': self.torque_id,
+            'type_id': self.type_id,
+            'viscosity_design': self.viscosity_design,
+            'viscosity_dynamic': self.viscosity_dynamic,
+            'water_per_cent': self.water_per_cent,
+            'width_minimum': self.width_minimum
+        }
 
         return _attributes
 
-    def set_attributes(self, attributes):
+    def set_attributes(self, attributes):  # pragma: no cover
         """
-        Method to set the RTKDesignElectric data model attributes.
+        Set the current values of the RTKDesignMechanic data model attributes.
 
-        :param tuple attributes: tuple of values to assign to the instance
+        :param dict attributes: dict of values to assign to the instance
                                 attributes.
         :return: (_error_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKDesignMechanic {0:d} attributes.". \
                format(self.hardware_id)
 
         try:
-            self.altitude_operating = float(none_to_default(attributes[0],
-                                                            0.0))
-            self.application_id = int(none_to_default(attributes[1], 0))
-            self.balance_id = int(none_to_default(attributes[2], 0))
-            self.clearance = float(none_to_default(attributes[3], 0.0))
-            self.casing_id = int(none_to_default(attributes[4], 0))
-            self.contact_pressure = float(none_to_default(attributes[5], 0.0))
-            self.deflection = float(none_to_default(attributes[6], 0.0))
-            self.diameter_coil = float(none_to_default(attributes[7], 0.0))
-            self.diameter_inner = float(none_to_default(attributes[8], 0.0))
-            self.diameter_outer = float(none_to_default(attributes[9], 0.0))
-            self.diameter_wire = float(none_to_default(attributes[10], 0.0))
-            self.filter_size = float(none_to_default(attributes[11], 0.0))
-            self.flow_design = float(none_to_default(attributes[12], 0.0))
-            self.flow_operating = float(none_to_default(attributes[13], 0.0))
-            self.frequency_operating = float(none_to_default(attributes[14],
-                                                             0.0))
-            self.friction = float(none_to_default(attributes[15], 0.0))
-            self.impact_id = int(none_to_default(attributes[16], 0))
-            self.leakage_allowable = float(none_to_default(attributes[17],
-                                                           0.0))
-            self.length = float(none_to_default(attributes[18], 0.0))
-            self.length_compressed = float(none_to_default(attributes[19],
-                                                           0.0))
-            self.length_relaxed = float(none_to_default(attributes[20], 0.0))
-            self.load_design = float(none_to_default(attributes[21], 0.0))
-            self.load_id = int(none_to_default(attributes[22], 0))
-            self.load_operating = float(none_to_default(attributes[23], 0.0))
-            self.lubrication_id = int(none_to_default(attributes[24], 0))
-            self.manufacturing_id = int(none_to_default(attributes[25], 0))
-            self.material_id = int(none_to_default(attributes[26], 0))
-            self.meyer_hardness = float(none_to_default(attributes[27], 0.0))
-            self.misalignment_angle = float(none_to_default(attributes[28],
-                                                            0.0))
-            self.n_ten = int(none_to_default(attributes[29], 0))
-            self.n_cycles = int(none_to_default(attributes[30], 0))
-            self.n_elements = int(none_to_default(attributes[31], 0))
-            self.offset = float(none_to_default(attributes[32], 0.0))
-            self.particle_size = float(none_to_default(attributes[33], 0.0))
-            self.pressure_contact = float(none_to_default(attributes[34], 0.0))
-            self.pressure_delta = float(none_to_default(attributes[35], 0.0))
-            self.pressure_downstream = float(none_to_default(attributes[36],
-                                                             0.0))
-            self.pressure_rated = float(none_to_default(attributes[37], 0.0))
-            self.pressure_upstream = float(none_to_default(attributes[38],
-                                                           0.0))
-            self.rpm_design = float(none_to_default(attributes[39], 0.0))
-            self.rpm_operating = float(none_to_default(attributes[40], 0.0))
-            self.service_id = int(none_to_default(attributes[41], 0))
-            self.spring_index = float(none_to_default(attributes[42], 0.0))
-            self.surface_finish = float(none_to_default(attributes[43], 0.0))
-            self.technology_id = int(none_to_default(attributes[44], 0))
-            self.thickness = float(none_to_default(attributes[45], 0.0))
-            self.torque_id = int(none_to_default(attributes[46], 0))
-            self.type_id = int(none_to_default(attributes[47], 0))
-            self.viscosity_design = float(none_to_default(attributes[48], 0.0))
-            self.viscosity_dynamic = float(none_to_default(attributes[49],
-                                                           0.0))
-            self.water_per_cent = float(none_to_default(attributes[50], 0.0))
-            self.width_minimum = float(none_to_default(attributes[51], 0.0))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKDesignMechanic.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKDesignMechanic attributes."
+            self.altitude_operating = float(
+                none_to_default(attributes['altitude_operating'], 0.0))
+            self.application_id = int(
+                none_to_default(attributes['application_id'], 0))
+            self.balance_id = int(none_to_default(attributes['balance_id'], 0))
+            self.clearance = float(
+                none_to_default(attributes['clearance'], 0.0))
+            self.casing_id = int(none_to_default(attributes['casing_id'], 0))
+            self.contact_pressure = float(
+                none_to_default(attributes['contact_pressure'], 0.0))
+            self.deflection = float(
+                none_to_default(attributes['deflection'], 0.0))
+            self.diameter_coil = float(
+                none_to_default(attributes['diameter_coil'], 0.0))
+            self.diameter_inner = float(
+                none_to_default(attributes['diameter_inner'], 0.0))
+            self.diameter_outer = float(
+                none_to_default(attributes['diameter_outer'], 0.0))
+            self.diameter_wire = float(
+                none_to_default(attributes['diameter_wire'], 0.0))
+            self.filter_size = float(
+                none_to_default(attributes['filter_size'], 0.0))
+            self.flow_design = float(
+                none_to_default(attributes['flow_design'], 0.0))
+            self.flow_operating = float(
+                none_to_default(attributes['flow_operating'], 0.0))
+            self.frequency_operating = float(
+                none_to_default(attributes['frequency_operating'], 0.0))
+            self.friction = float(none_to_default(attributes['friction'], 0.0))
+            self.impact_id = int(none_to_default(attributes['impact_id'], 0))
+            self.leakage_allowable = float(
+                none_to_default(attributes['leakage_allowable'], 0.0))
+            self.length = float(none_to_default(attributes['length'], 0.0))
+            self.length_compressed = float(
+                none_to_default(attributes['length_compressed'], 0.0))
+            self.length_relaxed = float(
+                none_to_default(attributes['length_relaxed'], 0.0))
+            self.load_design = float(
+                none_to_default(attributes['load_design'], 0.0))
+            self.load_id = int(none_to_default(attributes['load_id'], 0))
+            self.load_operating = float(
+                none_to_default(attributes['load_operating'], 0.0))
+            self.lubrication_id = int(
+                none_to_default(attributes['lubrication_id'], 0))
+            self.manufacturing_id = int(
+                none_to_default(attributes['manufacturing_id'], 0))
+            self.material_id = int(
+                none_to_default(attributes['material_id'], 0))
+            self.meyer_hardness = float(
+                none_to_default(attributes['meyer_hardness'], 0.0))
+            self.misalignment_angle = float(
+                none_to_default(attributes['misalignment_angle'], 0.0))
+            self.n_ten = int(none_to_default(attributes['n_ten'], 0))
+            self.n_cycles = int(none_to_default(attributes['n_cycles'], 0))
+            self.n_elements = int(none_to_default(attributes['n_elements'], 0))
+            self.offset = float(none_to_default(attributes['offset'], 0.0))
+            self.particle_size = float(
+                none_to_default(attributes['particle_size'], 0.0))
+            self.pressure_contact = float(
+                none_to_default(attributes['pressure_contact'], 0.0))
+            self.pressure_delta = float(
+                none_to_default(attributes['pressure_delta'], 0.0))
+            self.pressure_downstream = float(
+                none_to_default(attributes['pressure_downstream'], 0.0))
+            self.pressure_rated = float(
+                none_to_default(attributes['pressure_rated'], 0.0))
+            self.pressure_upstream = float(
+                none_to_default(attributes['pressure_upstream'], 0.0))
+            self.rpm_design = float(
+                none_to_default(attributes['rpm_design'], 0.0))
+            self.rpm_operating = float(
+                none_to_default(attributes['rpm_operating'], 0.0))
+            self.service_id = int(none_to_default(attributes['service_id'], 0))
+            self.spring_index = float(
+                none_to_default(attributes['spring_index'], 0.0))
+            self.surface_finish = float(
+                none_to_default(attributes['surface_finish'], 0.0))
+            self.technology_id = int(
+                none_to_default(attributes['technology_id'], 0))
+            self.thickness = float(
+                none_to_default(attributes['thickness'], 0.0))
+            self.torque_id = int(none_to_default(attributes['torque_id'], 0))
+            self.type_id = int(none_to_default(attributes['type_id'], 0))
+            self.viscosity_design = float(
+                none_to_default(attributes['viscosity_design'], 0.0))
+            self.viscosity_dynamic = float(
+                none_to_default(attributes['viscosity_dynamic'], 0.0))
+            self.water_per_cent = float(
+                none_to_default(attributes['water_per_cent'], 0.0))
+            self.width_minimum = float(
+                none_to_default(attributes['width_minimum'], 0.0))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKDesignMechanic.set_attributes().".format(_err)
 
         return _error_code, _msg

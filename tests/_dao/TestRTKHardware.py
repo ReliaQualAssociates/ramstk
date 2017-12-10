@@ -2,27 +2,25 @@
 # -*- coding: utf-8 -*-
 #
 #       tests.unit._dao.TestRTKHardware.py is part of The RTK Project
-
 #
 # All rights reserved.
-
-"""
-This is the test class for testing the RTKHardware module algorithms and
-models.
-"""
+"""Test class for testing the RTKHardware module algorithms and models."""
 
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
-
 from datetime import date
+
+import unittest
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-import unittest
 from nose.plugins.attrib import attr
+
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from dao.RTKHardware import RTKHardware
 
@@ -33,50 +31,47 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
 class TestRTKHardware(unittest.TestCase):
-    """
-    Class for testing the RTKHardware class.
-    """
+    """Class for testing the RTKHardware class."""
+
     _attributes = {
-            'revision_id': 1,
-            'hardware_id': 1,
-            'alt_part_num': '',
-            'attachments': '',
-            'cage_code': '',
-            'category_id': 0,
-            'comp_ref_des': 'S1',
-            'cost': 0.0,
-            'cost_failure': 0.0,
-            'cost_hour': 0.0,
-            'cost_type_id': 0,
-            'description': 'Description',
-            'duty_cycle': 100.0,
-            'figure_number': '',
-            'lcn': '',
-            'level': 0,
-            'manufacturer_id': 0,
-            'mission_time': 100.0,
-            'name': '',
-            'nsn': '',
-            'page_number': '',
-            'parent_id': 0,
-            'part': 0,
-            'part_number': '',
-            'quantity': 1,
-            'ref_des': '',
-            'remarks': '',
-            'repairable': 0,
-            'specification_number': '',
-            'subcategory_id': 0,
-            'tagged_part': 0,
-            'total_part_count': 0,
-            'total_power_dissipation': 0,
-            'year_of_manufacture': date.today().year
-        }
+        'revision_id': 1,
+        'hardware_id': 1,
+        'alt_part_num': '',
+        'attachments': '',
+        'cage_code': '',
+        'category_id': 0,
+        'comp_ref_des': 'S1',
+        'cost': 0.0,
+        'cost_failure': 0.0,
+        'cost_hour': 0.0,
+        'cost_type_id': 0,
+        'description': 'Description',
+        'duty_cycle': 100.0,
+        'figure_number': '',
+        'lcn': '',
+        'level': 0,
+        'manufacturer_id': 0,
+        'mission_time': 100.0,
+        'name': '',
+        'nsn': '',
+        'page_number': '',
+        'parent_id': 0,
+        'part': 0,
+        'part_number': '',
+        'quantity': 1,
+        'ref_des': '',
+        'remarks': '',
+        'repairable': 0,
+        'specification_number': '',
+        'subcategory_id': 0,
+        'tagged_part': 0,
+        'total_part_count': 0,
+        'total_power_dissipation': 0,
+        'year_of_manufacture': date.today().year
+    }
 
     def setUp(self):
-        """
-        Sets up the test fixture for the RTKHardware class.
-        """
+        """(TestRTKHardware) Set up the test fixture for the RTKHardware class."""
         engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
         session = scoped_session(sessionmaker())
 
@@ -90,9 +85,7 @@ class TestRTKHardware(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test00_rtkhardware_create(self):
-        """
-        (TestRTKHardware) __init__ should create an RTKHardware model.
-        """
+        """(TestRTKHardware) __init__ should create an RTKHardware model."""
         self.assertTrue(isinstance(self.DUT, RTKHardware))
 
         # Verify class attributes are properly initialized.
@@ -134,32 +127,26 @@ class TestRTKHardware(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test01_get_attributes(self):
-        """
-        (TestRTKHardware) get_attributes should return a tuple of attribute values.
-        """
+        """(TestRTKHardware) get_attributes should return a tuple of attribute values."""
         self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):
-        """
-        (TestRTKHardware) set_attributes should return a zero error code on success
-        """
+        """(TestRTKHardware) set_attributes should return a zero error code on success."""
         _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKHardware {0:d} " \
-                               "attributes.".format(self.DUT.hardware_id))
+        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKHardware {0:d} "
+                         "attributes.".format(self.DUT.hardware_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_too_few_passed(self):
-        """
-        (TestRTKHardware) set_attributes should return a 40 error code when passed too few attributes
-        """
+    def test02b_set_attributes_missing_key(self):
+        """(TestRTKHardware) set_attributes should return a 40 error code when passed a dict with a missing key."""
         self._attributes.pop('name')
 
         _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'name' in "
-                               "attribute dictionary passed to "
-                               "RTKHardware.set_attributes().")
+                         "attribute dictionary passed to "
+                         "RTKHardware.set_attributes().")

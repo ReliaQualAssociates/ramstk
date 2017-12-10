@@ -16,7 +16,7 @@ from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
-class RTKHardware(RTK_BASE):
+class RTKHardware(RTK_BASE):  # pragma: no cover
     """
     Class to represent the rtk_hardware table in the RTK Program database.
 
@@ -101,10 +101,9 @@ class RTKHardware(RTK_BASE):
     design_mechanic = relationship(
         'RTKDesignMechanic', uselist=False, back_populates='hardware')
 
-    def get_attributes(self):
+    def get_attributes(self):  # pragma: no cover
         """
-        Method to retrieve the current values of the RTKHardware data model
-        attributes.
+        Retrieve the current values of the RTKHardware data model attributes.
 
         :return: {revision_id, hardware_id, alt_part_number, attachments,
                   cage_code, category_id, comp_ref_des, cost, cost_failure,
@@ -114,9 +113,8 @@ class RTKHardware(RTK_BASE):
                   quantity, ref_des, remarks, repairable, specification_number,
                   subcategory_id, tagged_part, total_part_count,
                   total_power_dissipation, year_of_manufacture} pairs.
-        :rtype: tuple
+        :rtype: dict
         """
-
         _attributes = {
             'revision_id': self.revision_id,
             'hardware_id': self.hardware_id,
@@ -156,16 +154,15 @@ class RTKHardware(RTK_BASE):
 
         return _attributes
 
-    def set_attributes(self, attributes):
+    def set_attributes(self, attributes):  # pragma: no cover
         """
-        Method to set the RTKHardware data model attributes.
+        Set the current values of the RTKHardware data model attributes.
 
         :param tuple attributes: tuple of attribute values to assign to the
                                  Hardware instance attributes.
         :return: (_code, _msg; the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKHardware {0:d} attributes.". \
                format(self.hardware_id)
