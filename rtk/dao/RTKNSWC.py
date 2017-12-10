@@ -17,7 +17,7 @@ from dao.RTKCommonDB import RTK_BASE  # pragma: no cover
 
 
 # pylint: disable=R0902
-class RTKNSWC(RTK_BASE):  # pragma: no cover
+class RTKNSWC(RTK_BASE):
     """
     Class to represent the rtk_nswc table in the RTK Program database.
 
@@ -25,7 +25,7 @@ class RTKNSWC(RTK_BASE):  # pragma: no cover
     """
 
     __tablename__ = 'rtk_nswc'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}  # pragma: no cover
 
     hardware_id = Column(
         'fld_hardware_id',
@@ -36,17 +36,17 @@ class RTKNSWC(RTK_BASE):  # pragma: no cover
 
     Cac = Column('fld_c_ac', Float, default=0.0)
     Calt = Column('fld_c_alt', Float, default=0.0)
-    Cb = Column('fld_c_b', Float, default=0.0)  # pylint: disable=invalid-name
+    Cb = Column('fld_c_b', Float, default=0.0)  # pylint: disable=C0103
     Cbl = Column('fld_c_bl', Float, default=0.0)
     Cbt = Column('fld_c_bt', Float, default=0.0)
     Cbv = Column('fld_c_bv', Float, default=0.0)
-    Cc = Column('fld_c_c', Float, default=0.0)  # pylint: disable=invalid-name
+    Cc = Column('fld_c_c', Float, default=0.0)  # pylint: disable=C0103
     Ccf = Column('fld_c_cf', Float, default=0.0)
     Ccp = Column('fld_c_cp', Float, default=0.0)
     Ccs = Column('fld_c_cs', Float, default=0.0)
     Ccv = Column('fld_c_cv', Float, default=0.0)
     Ccw = Column('fld_c_cw', Float, default=0.0)
-    Cd = Column('fld_c_d', Float, default=0.0)  # pylint: disable=invalid-name
+    Cd = Column('fld_c_d', Float, default=0.0)  # pylint: disable=C0103
     Cdc = Column('fld_c_dc', Float, default=0.0)
     Cdl = Column('fld_c_dl', Float, default=0.0)
     Cdp = Column('fld_c_dp', Float, default=0.0)
@@ -54,48 +54,49 @@ class RTKNSWC(RTK_BASE):  # pragma: no cover
     Cdt = Column('fld_c_dt', Float, default=0.0)
     Cdw = Column('fld_c_dw', Float, default=0.0)
     Cdy = Column('fld_c_dy', Float, default=0.0)
-    Ce = Column('fld_c_e', Float, default=0.0)  # pylint: disable=invalid-name
-    Cf = Column('fld_c_f', Float, default=0.0)  # pylint: disable=invalid-name
-    Cg = Column('fld_c_g', Float, default=0.0)  # pylint: disable=invalid-name
+    Ce = Column('fld_c_e', Float, default=0.0)  # pylint: disable=C0103
+    Cf = Column('fld_c_f', Float, default=0.0)  # pylint: disable=C0103
+    Cg = Column('fld_c_g', Float, default=0.0)  # pylint: disable=C0103
     Cga = Column('fld_c_ga', Float, default=0.0)
     Cgl = Column('fld_c_gl', Float, default=0.0)
     Cgp = Column('fld_c_gp', Float, default=0.0)
     Cgs = Column('fld_c_gs', Float, default=0.0)
     Cgt = Column('fld_c_gt', Float, default=0.0)
     Cgv = Column('fld_c_gv', Float, default=0.0)
-    Ch = Column('fld_c_h', Float, default=0.0)  # pylint: disable=invalid-name
-    Ci = Column('fld_c_i', Float, default=0.0)  # pylint: disable=invalid-name
-    Ck = Column('fld_c_k', Float, default=0.0)  # pylint: disable=invalid-name
-    Cl = Column('fld_c_l', Float, default=0.0)  # pylint: disable=invalid-name
+    Ch = Column('fld_c_h', Float, default=0.0)  # pylint: disable=C0103
+    Ci = Column('fld_c_i', Float, default=0.0)  # pylint: disable=C0103
+    Ck = Column('fld_c_k', Float, default=0.0)  # pylint: disable=C0103
+    Cl = Column('fld_c_l', Float, default=0.0)  # pylint: disable=C0103
     Clc = Column('fld_c_lc', Float, default=0.0)
-    Cm = Column('fld_c_m', Float, default=0.0)  # pylint: disable=invalid-name
+    Cm = Column('fld_c_m', Float, default=0.0)  # pylint: disable=C0103
     Cmu = Column('fld_c_mu', Float, default=0.0)
-    Cn = Column('fld_c_n', Float, default=0.0)  # pylint: disable=invalid-name
+    Cn = Column('fld_c_n', Float, default=0.0)  # pylint: disable=C0103
     Cnp = Column('fld_c_np', Float, default=0.0)
     Cnw = Column('fld_c_nw', Float, default=0.0)
-    Cp = Column('fld_c_p', Float, default=0.0)  # pylint: disable=invalid-name
+    Cp = Column('fld_c_p', Float, default=0.0)  # pylint: disable=C0103
     Cpd = Column('fld_c_pd', Float, default=0.0)
     Cpf = Column('fld_c_pf', Float, default=0.0)
     Cpv = Column('fld_c_pv', Float, default=0.0)
-    Cq = Column('fld_c_q', Float, default=0.0)  # pylint: disable=invalid-name
-    Cr = Column('fld_c_r', Float, default=0.0)  # pylint: disable=invalid-name
+    Cq = Column('fld_c_q', Float, default=0.0)  # pylint: disable=C0103
+    Cr = Column('fld_c_r', Float, default=0.0)  # pylint: disable=C0103
     Crd = Column('fld_c_rd', Float, default=0.0)
-    Cs = Column('fld_c_s', Float, default=0.0)  # pylint: disable=invalid-name
+    Cs = Column('fld_c_s', Float, default=0.0)  # pylint: disable=C0103
     Csc = Column('fld_c_sc', Float, default=0.0)
     Csf = Column('fld_c_sf', Float, default=0.0)
     Cst = Column('fld_c_st', Float, default=0.0)
     Csv = Column('fld_c_sv', Float, default=0.0)
     Csw = Column('fld_c_sw', Float, default=0.0)
     Csz = Column('fld_c_sz', Float, default=0.0)
-    Ct = Column('fld_c_t', Float, default=0.0)  # pylint: disable=invalid-name
-    Cv = Column('fld_c_v', Float, default=0.0)  # pylint: disable=invalid-name
-    Cw = Column('fld_c_w', Float, default=0.0)  # pylint: disable=invalid-name
-    Cy = Column('fld_c_y', Float, default=0.0)  # pylint: disable=invalid-name
+    Ct = Column('fld_c_t', Float, default=0.0)  # pylint: disable=C0103
+    Cv = Column('fld_c_v', Float, default=0.0)  # pylint: disable=C0103
+    Cw = Column('fld_c_w', Float, default=0.0)  # pylint: disable=C0103
+    Cy = Column('fld_c_y', Float, default=0.0)  # pylint: disable=C0103
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware', back_populates='nswc')
+    hardware = relationship('RTKHardware',
+        back_populates='nswc')  # pragma: no cover
 
-    def get_attributes(self):  # pragma: no cover
+    def get_attributes(self):
         """
         Retrieve the current values of the RTKNSWC data model attributes.
 
@@ -170,7 +171,7 @@ class RTKNSWC(RTK_BASE):  # pragma: no cover
 
         return _attributes
 
-    def set_attributes(self, attributes):  # pragma: no cover
+    def set_attributes(self, attributes):
         """
         Set the current values of the RTKNSWC data model attributes.
 

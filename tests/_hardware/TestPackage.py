@@ -26,7 +26,7 @@ from test_setup import _create_program_database
 from _dao import TestRTKHardware, TestRTKDesignElectric, \
                  TestRTKDesignMechanic, TestRTKReliability, TestRTKMilHdbkF, \
                  TestRTKNSWC
-
+from _hardware import TestHardwareDataModel
 
 def test_hardware_package(suites):
     """
@@ -67,7 +67,8 @@ def test_hardware_package(suites):
         '--cover-package=dao.RTKDesignElectric',
         '--cover-package=dao.RTKDesignMechanic',
         '--cover-package=dao.RTKReliability',
-        '--cover-package=dao.RTKMilHdbkF', '--cover-package=dao.RTKNSWC'
+        '--cover-package=dao.RTKMilHdbkF', '--cover-package=dao.RTKNSWC',
+        '--cover-package=hardware'
     ]
     nose.runmodule(argv=args, suite=suite, plugins=plugin_mgr)
 
@@ -81,7 +82,7 @@ if __name__ == '__main__':
         TestRTKReliability, TestRTKMilHdbkF, TestRTKNSWC
     ]
 
-    #_model_suites = []
+    _model_suites = [TestHardwareDataModel, ]
 
     #_controller_suites = []
 

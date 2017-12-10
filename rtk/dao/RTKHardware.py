@@ -16,7 +16,7 @@ from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
-class RTKHardware(RTK_BASE):  # pragma: no cover
+class RTKHardware(RTK_BASE):
     """
     Class to represent the rtk_hardware table in the RTK Program database.
 
@@ -101,7 +101,7 @@ class RTKHardware(RTK_BASE):  # pragma: no cover
     design_mechanic = relationship(
         'RTKDesignMechanic', uselist=False, back_populates='hardware')
 
-    def get_attributes(self):  # pragma: no cover
+    def get_attributes(self):
         """
         Retrieve the current values of the RTKHardware data model attributes.
 
@@ -154,7 +154,7 @@ class RTKHardware(RTK_BASE):  # pragma: no cover
 
         return _attributes
 
-    def set_attributes(self, attributes):  # pragma: no cover
+    def set_attributes(self, attributes):
         """
         Set the current values of the RTKHardware data model attributes.
 

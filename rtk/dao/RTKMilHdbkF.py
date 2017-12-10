@@ -16,7 +16,7 @@ from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pragma: no cover
 
 
-class RTKMilHdbkF(RTK_BASE):  # pragma: no cover
+class RTKMilHdbkF(RTK_BASE):
     """
     Class to represent the rtk_mil_hdbk_f table in the RTK Program database.
 
@@ -24,7 +24,7 @@ class RTKMilHdbkF(RTK_BASE):  # pragma: no cover
     """
 
     __tablename__ = 'rtk_mil_hdbk_f'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}  # pragma: no cover
 
     hardware_id = Column(
         'fld_hardware_id',
@@ -33,18 +33,12 @@ class RTKMilHdbkF(RTK_BASE):  # pragma: no cover
         primary_key=True,
         nullable=False)
 
-    # pylint: disable=invalid-name
-    A1 = Column('fld_a_one', Float, default=0.0)
-    # pylint: disable=invalid-name
-    A2 = Column('fld_a_two', Float, default=0.0)
-    # pylint: disable=invalid-name
-    B1 = Column('fld_b_one', Float, default=0.0)
-    # pylint: disable=invalid-name
-    B2 = Column('fld_b_two', Float, default=0.0)
-    # pylint: disable=invalid-name
-    C1 = Column('fld_c_one', Float, default=0.0)
-    # pylint: disable=invalid-name
-    C2 = Column('fld_c_two', Float, default=0.0)
+    A1 = Column('fld_a_one', Float, default=0.0)  # pylint: disable=C0103
+    A2 = Column('fld_a_two', Float, default=0.0)  # pylint: disable=C0103
+    B1 = Column('fld_b_one', Float, default=0.0)  # pylint: disable=C0103
+    B2 = Column('fld_b_two', Float, default=0.0)  # pylint: disable=C0103
+    C1 = Column('fld_c_one', Float, default=0.0)  # pylint: disable=C0103
+    C2 = Column('fld_c_two', Float, default=0.0)  # pylint: disable=C0103
     lambdaBD = Column('fld_lambda_bd', Float, default=0.0)
     lambdaBP = Column('fld_lambda_bp', Float, default=0.0)
     lambdaCYC = Column('fld_lambda_cyc', Float, default=0.0)
@@ -76,9 +70,10 @@ class RTKMilHdbkF(RTK_BASE):  # pragma: no cover
     piV = Column('fld_pi_v', Float, default=0.0)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware', back_populates='milhdbkf')
+    hardware = relationship('RTKHardware',
+        back_populates='milhdbkf')  # pragma: no cover
 
-    def get_attributes(self):  # pragma: no cover
+    def get_attributes(self):
         """
         Retrieve the current values of the RTKMilHdbkF data model attributes.
 
@@ -131,7 +126,7 @@ class RTKMilHdbkF(RTK_BASE):  # pragma: no cover
 
         return _attributes
 
-    def set_attributes(self, attributes):  # pragma: no cover
+    def set_attributes(self, attributes):
         """
         Set the current values of the RTKMilHdbkF data model attributes.
 

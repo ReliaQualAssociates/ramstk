@@ -16,7 +16,7 @@ from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pragma: no cover
 
 
-class RTKReliability(RTK_BASE):  # pragma: no cover
+class RTKReliability(RTK_BASE):
     """
     Class to represent the rtk_reliability table in the RTK Program database.
 
@@ -24,7 +24,7 @@ class RTKReliability(RTK_BASE):  # pragma: no cover
     """
 
     __tablename__ = 'rtk_reliability'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}  # pragma: no cover
 
     hardware_id = Column(
         'fld_hardware_id',
@@ -88,9 +88,10 @@ class RTKReliability(RTK_BASE):  # pragma: no cover
         'fld_survival_analysis_id', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware', back_populates='reliability')
+    hardware = relationship('RTKHardware',
+        back_populates='reliability')  # pragma: no cover
 
-    def get_attributes(self):  # pragma: no cover
+    def get_attributes(self):
         """
         Retrieve the RTKReliability attributes from the RTK Program database.
 
@@ -159,7 +160,7 @@ class RTKReliability(RTK_BASE):  # pragma: no cover
 
         return _attributes
 
-    def set_attributes(self, attributes):  # pragma: no cover
+    def set_attributes(self, attributes):
         """
         Set the current values of the RTKReliability attributes.
 
