@@ -17,14 +17,14 @@ from dao.RTKCommonDB import RTK_BASE  # pragma: no cover
 
 
 # pylint: disable=R0902
-class RTKDesignMechanic(RTK_BASE):  # pragma: no cover
+class RTKDesignMechanic(RTK_BASE):
     """
     Represent the rtk_design_mechanic table in the RTK Program database.
 
     This table shares a One-to-One relationship with rtk_hardware.
     """
 
-    __tablename__ = 'rtk_design_mechanic'
+    __tablename__ = 'rtk_design_mechanic'  # pragma: no cover
     __table_args__ = {'extend_existing': True}
 
     hardware_id = Column(
@@ -88,9 +88,10 @@ class RTKDesignMechanic(RTK_BASE):  # pragma: no cover
     width_minimum = Column('fld_width_minimum', Float, default=0.0)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware', back_populates='design_mechanic')
+    hardware = relationship('RTKHardware',
+        back_populates='design_mechanic')  # pragma: no cover
 
-    def get_attributes(self):  # pragma: no cover
+    def get_attributes(self):
         """
         Retrieve current values of the RTKDesignMechanic data model attributes.
 
@@ -168,7 +169,7 @@ class RTKDesignMechanic(RTK_BASE):  # pragma: no cover
 
         return _attributes
 
-    def set_attributes(self, attributes):  # pragma: no cover
+    def set_attributes(self, attributes):
         """
         Set the current values of the RTKDesignMechanic data model attributes.
 

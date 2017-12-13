@@ -9,8 +9,7 @@
 # Import other RTK modules.
 from datamodels import RTKDataModel  # pylint: disable=E0401
 # pylint: disable=E0401
-from dao import RTKEnvironment, \
-    RTKMission, RTKMissionPhase
+from dao import RTKEnvironment, RTKMission, RTKMissionPhase
 
 
 class UsageProfileDataModel(RTKDataModel):

@@ -1,51 +1,28 @@
 #!/usr/bin/env python -O
-"""
-This is the test class for testing Hardware module algorithms and models.
-"""
-
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestHardware.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""Test class for testing Hardware module algorithms and models."""
 
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
-
 import unittest
 from nose.plugins.attrib import attr
 
-from hardware.Hardware import Model
+from sqlalchemy.orm import scoped_session
+from treelib import Tree
 
+sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+
+import Utilities as Utilities  # pylint: disable=import-error
+from Configuration import Configuration  # pylint: disable=import-error
+from hardware import dtmHardware  # pylint: disable=import-error
+from dao import DAO  # pylint: disable=import-error
+from dao import RTKHardware  # pylint: disable=import-error
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -53,423 +30,154 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestHardwareModel(unittest.TestCase):
-    """
-    Class for testing the Hardware data model class.
-    """
+class TestHardwareDataModel(unittest.TestCase):
+    """Class for testing the Hardware data model class."""
 
     def setUp(self):
-        """
-        Setup the test fixture for the Hardware class.
-        """
+        """(TestHardware) Set up the test fixture for the Hardware class."""
+        self.Configuration = Configuration()
 
-        self.DUT = Model()
+        self.Configuration.RTK_BACKEND = 'sqlite'
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
-    @attr(all=True, unit=True)
-    def test_create(self):
-        """
-        (TestHardware) __init__ should return a Hardware model
-        """
+        self.Configuration.DEBUG_LOG = \
+            Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
+        self.Configuration.USER_LOG = \
+            Utilities.create_logger("RTK.user", 'INFO', '/tmp/RTK_user.log')
 
-        self.assertTrue(isinstance(self.DUT, Model))
+        # Create a data access object and connect to a test database.
+        self.dao = DAO()
+        _database = self.Configuration.RTK_BACKEND + ':///' + \
+            self.Configuration.RTK_PROG_INFO['database']
+        self.dao.db_connect(_database)
 
-        self.assertEqual(self.DUT.user_float,
-                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-        self.assertEqual(self.DUT.user_int, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
-        self.assertEqual(self.DUT.user_varchar, ['', '', '', '', ''])
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
+        self.session = scoped_session(self.dao.RTK_SESSION)
 
-        self.assertEqual(self.DUT.revision_id, None)
-        self.assertEqual(self.DUT.hardware_id, None)
-        self.assertEqual(self.DUT.alt_part_number, '')
-        self.assertEqual(self.DUT.attachments, '')
-        self.assertEqual(self.DUT.cage_code, '')
-        self.assertEqual(self.DUT.comp_ref_des, '')
-        self.assertEqual(self.DUT.cost, 0.0)
-        self.assertEqual(self.DUT.cost_failure, 0.0)
-        self.assertEqual(self.DUT.cost_hour, 0.0)
-        self.assertEqual(self.DUT.description, '')
-        self.assertEqual(self.DUT.duty_cycle, 100.0)
-        self.assertEqual(self.DUT.environment_active, 0)
-        self.assertEqual(self.DUT.environment_dormant, 0)
-        self.assertEqual(self.DUT.figure_number, '')
-        self.assertEqual(self.DUT.humidity, 50.0)
-        self.assertEqual(self.DUT.lcn, '')
-        self.assertEqual(self.DUT.level, 1)
-        self.assertEqual(self.DUT.manufacturer, 0)
-        self.assertEqual(self.DUT.mission_time, 10.0)
-        self.assertEqual(self.DUT.name, '')
-        self.assertEqual(self.DUT.nsn, '')
-        self.assertEqual(self.DUT.overstress, 0)
-        self.assertEqual(self.DUT.page_number, '')
-        self.assertEqual(self.DUT.parent_id, 0)
-        self.assertEqual(self.DUT.part, 0)
-        self.assertEqual(self.DUT.part_number, '')
-        self.assertEqual(self.DUT.quantity, 1)
-        self.assertEqual(self.DUT.ref_des, '')
-        self.assertEqual(self.DUT.reliability_goal, 1.0)
-        self.assertEqual(self.DUT.reliability_goal_measure, 0)
-        self.assertEqual(self.DUT.remarks, '')
-        self.assertEqual(self.DUT.rpm, 0.0)
-        self.assertEqual(self.DUT.specification_number, '')
-        self.assertEqual(self.DUT.tagged_part, 0)
-        self.assertEqual(self.DUT.temperature_active, 30.0)
-        self.assertEqual(self.DUT.temperature_dormant, 30.0)
-        self.assertEqual(self.DUT.vibration, 0.0)
-        self.assertEqual(self.DUT.year_of_manufacture, 2014)
-
-        self.assertEqual(self.DUT.current_ratio, 1.0)
-        self.assertEqual(self.DUT.max_rated_temperature, 0.0)
-        self.assertEqual(self.DUT.min_rated_temperature, 0.0)
-        self.assertEqual(self.DUT.operating_current, 0.0)
-        self.assertEqual(self.DUT.operating_power, 0.0)
-        self.assertEqual(self.DUT.operating_voltage, 0.0)
-        self.assertEqual(self.DUT.power_ratio, 1.0)
-        self.assertEqual(self.DUT.rated_current, 1.0)
-        self.assertEqual(self.DUT.rated_power, 1.0)
-        self.assertEqual(self.DUT.rated_voltage, 1.0)
-        self.assertEqual(self.DUT.temperature_rise, 0.0)
-        self.assertEqual(self.DUT.voltage_ratio, 1.0)
-
-        self.assertEqual(self.DUT.add_adj_factor, 0.0)
-        self.assertEqual(self.DUT.availability_logistics, 1.0)
-        self.assertEqual(self.DUT.availability_mission, 1.0)
-        self.assertEqual(self.DUT.avail_log_variance, 0.0)
-        self.assertEqual(self.DUT.avail_mis_variance, 0.0)
-        self.assertEqual(self.DUT.failure_dist, 0)
-        self.assertEqual(self.DUT.failure_parameter_1, 0.0)
-        self.assertEqual(self.DUT.failure_parameter_2, 0.0)
-        self.assertEqual(self.DUT.failure_parameter_3, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_active, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_dormant, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_logistics, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_method, 1)
-        self.assertEqual(self.DUT.hazard_rate_mission, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_model, {})
-        self.assertEqual(self.DUT.hazard_rate_percent, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_software, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_specified, 0.0)
-        self.assertEqual(self.DUT.hazard_rate_type, 1)
-        self.assertEqual(self.DUT.hr_active_variance, 0.0)
-        self.assertEqual(self.DUT.hr_dormant_variance, 0.0)
-        self.assertEqual(self.DUT.hr_logistics_variance, 0.0)
-        self.assertEqual(self.DUT.hr_mission_variance, 0.0)
-        self.assertEqual(self.DUT.hr_specified_variance, 0.0)
-        self.assertEqual(self.DUT.mtbf_logistics, 0.0)
-        self.assertEqual(self.DUT.mtbf_mission, 0.0)
-        self.assertEqual(self.DUT.mtbf_specified, 0.0)
-        self.assertEqual(self.DUT.mtbf_log_variance, 0.0)
-        self.assertEqual(self.DUT.mtbf_miss_variance, 0.0)
-        self.assertEqual(self.DUT.mtbf_spec_variance, 0.0)
-        self.assertEqual(self.DUT.mult_adj_factor, 1.0)
-        self.assertEqual(self.DUT.reliability_logistics, 1.0)
-        self.assertEqual(self.DUT.reliability_mission, 1.0)
-        self.assertEqual(self.DUT.rel_log_variance, 0.0)
-        self.assertEqual(self.DUT.rel_miss_variance, 0.0)
-        self.assertEqual(self.DUT.survival_analysis, 0)
+        self.DUT = dtmHardware(self.dao)
 
     @attr(all=True, unit=True)
-    def test_set_base_attributes(self):
-        """
-        (TestHardware) _set_base_attributes should return a 0 error code on success
-        """
+    def test00_create(self):
+        """(TestHardwareModel) __init__ should return a Hardware model."""
+        self.assertTrue(isinstance(self.DUT, dtmHardware))
+        self.assertTrue(isinstance(self.DUT.tree, Tree))
+        self.assertTrue(isinstance(self.DUT.dao, DAO))
 
-        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
+    @attr(all=True, unit=True)
+    def test01a_select_all(self):
+        """(TestHardwareModel) select_all() should return a Tree() object populated with RTKHardware instances on success."""
+        _tree = self.DUT.select_all(1)
 
-        (_error_code,
-         _error_msg) = self.DUT._set_base_attributes(_base_values)
+        self.assertTrue(isinstance(_tree, Tree))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKHardware))
+
+    @attr(all=True, unit=True)
+    def test02a_select(self):
+        """(TestHardwareModel) select() should return an instance of the RTKHardware data model on success."""
+        self.DUT.select_all(1)
+        _hardware = self.DUT.select(1)
+
+        self.assertTrue(isinstance(_hardware, RTKHardware))
+        self.assertEqual(_hardware.hardware_id, 1)
+        self.assertEqual(_hardware.cage_code, '')
+
+    @attr(all=True, unit=True)
+    def test02b_select_non_existent_id(self):
+        """(TestHardwareModel) select() should return None when a non-existent Hardware ID is requested."""
+        _hardware = self.DUT.select(100)
+
+        self.assertEqual(_hardware, None)
+
+    @attr(all=True, unit=True)
+    def test03a_insert_sibling(self):
+        """(TestHardwareModel) insert() should return False on success when inserting a sibling Hardware."""
+        self.DUT.select_all(1)
+
+        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=0)
+
         self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
+                         'the RTK Program database.')
+        self.assertEqual(self.DUT.last_id, 4)
+
+        self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
-    def test_set_base_attributes_wrong_type(self):
-        """
-        (TestHardware) _set_base_attributes should return a 10 error code when passed a wrong data type
-        """
+    def test03b_insert_child(self):
+        """(TestHardwareModel) insert() should return False on success when inserting a child Hardware."""
+        self.DUT.select_all(1)
 
-        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                        0, 'Figure #', None, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
+        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=1)
 
-        (_error_code,
-         _error_msg) = self.DUT._set_base_attributes(_base_values)
-        self.assertEqual(_error_code, 10)
-
-    @attr(all=True, unit=True)
-    def test_set_base_attributes_missing_index(self):
-        """
-        (TestHardware) _set_base_attributes should return a 40 error code when too few items are passed
-        """
-
-        _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0)
-
-        (_error_code,
-         _error_msg) = self.DUT._set_base_attributes(_base_values)
-        self.assertEqual(_error_code, 40)
-
-    @attr(all=True, unit=True)
-    def test_set_stress_attributes(self):
-        """
-        (TestHardware) _set_stress_attributes should return a 0 error code on success
-        """
-
-        _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                          0.0, 1.0)
-
-        (_error_code,
-         _error_msg) = self.DUT._set_stress_attributes(_stress_values)
         self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
+                         'the RTK Program database.')
+        self.assertEqual(self.DUT.last_id, 4)
+
+        self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
-    def test_set_stress_attributes_wrong_type(self):
-        """
-        (TestHardware) _set_stress_attributes should return a 10 error code when passed a wrong data type
-        """
+    def test04a_delete(self):
+        """(TestHardwareModel) delete() should return a zero error code on success."""
+        self.DUT.select_all(1)
+        self.DUT.insert(revision_id=1, parent_id=1)
 
-        _stress_values = (1.0, 0.0, None, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                          0.0, 1.0)
+        _error_code, _msg = self.DUT.delete(self.DUT.last_id)
 
-        (_error_code,
-         _error_msg) = self.DUT._set_stress_attributes(_stress_values)
-        self.assertEqual(_error_code, 10)
-
-    @attr(all=True, unit=True)
-    def test_set_stress_attributes_missing_index(self):
-        """
-        (TestHardware) _set_stress_attributes should return a 40 error code when too few items are passed
-        """
-
-        _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0)
-
-        (_error_code,
-         _error_msg) = self.DUT._set_stress_attributes(_stress_values)
-        self.assertEqual(_error_code, 40)
-
-    @attr(all=True, unit=True)
-    def test_set_reliability_attributes(self):
-        """
-        (TestHardware) _set_reliability_attributes should return a 0 error code on success
-        """
-
-        _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                       0.0, 0)
-
-        (_error_code,
-         _error_msg) = self.DUT._set_reliability_attributes(_rel_values)
         self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
+                         'Program database.')
 
     @attr(all=True, unit=True)
-    def test_set_reliability_attributes_wrong_type(self):
-        """
-        (TestHardware) _set_reliability_attributes should return a 10 error code when passed a wrong data type
-        """
+    def test04b_delete_non_existent_id(self):
+        """(TestHardwareModel) delete() should return a non-zero error code when passed a Hardware ID that doesn't exist."""
+        self.DUT.select_all(1)
 
-        _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, None, 0.0, 1.0, 1.0, 1.0, 0.0,
-                       0.0, 0)
+        _error_code, _msg = self.DUT.delete(300)
 
-        (_error_code,
-         _error_msg) = self.DUT._set_reliability_attributes(_rel_values)
-        self.assertEqual(_error_code, 10)
+        self.assertEqual(_error_code, 2005)
+        self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
+                         'Hardware ID 300.')
 
     @attr(all=True, unit=True)
-    def test_set_reliability_attributes_missing_index(self):
-        """
-        (TestHardware) _set_reliability_attributes should return a 40 error code when too few items are passed
-        """
+    def test_05a_update(self):
+        """(TestHardwareModel) update() should return a zero error code on success."""
+        self.DUT.select_all(1)
 
-        _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                       0.0, 0)
+        _hardware = self.DUT.tree.get_node(1).data
+        _hardware.availability_logistics = 0.9832
 
-        (_error_code,
-         _error_msg) = self.DUT._set_reliability_attributes(_rel_values)
-        self.assertEqual(_error_code, 40)
+        _error_code, _msg = self.DUT.update(1)
 
-    @attr(all=True, unit=True)
-    def test_set_user_attributes(self):
-        """
-        (TestHardware) _set_user_attributes should return a 0 error code on success
-        """
-
-        _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
-                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two',
-                        'Three', '4')
-
-        (_error_code,
-         _error_msg) = self.DUT._set_user_attributes(_user_values)
         self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Updating the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test_set_user_attributes_wrong_type(self):
-        """
-        (TestHardware) _set_user_attributes should return a 10 error code when passed a wrong data type
-        """
+    def test_05b_update_non_existent_id(self):
+        """(TestHardwareModel) update() should return a non-zero error code when passed a Hardware ID that doesn't exist."""
+        self.DUT.select_all(1)
 
-        _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                        11, 12, None, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
-                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two',
-                        'Three', '4')
+        _error_code, _msg = self.DUT.update(100)
 
-        (_error_code,
-         _error_msg) = self.DUT._set_user_attributes(_user_values)
-        self.assertEqual(_error_code, 10)
+        self.assertEqual(_error_code, 2006)
+        self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
+                         'Hardware ID 100.')
 
     @attr(all=True, unit=True)
-    def test_set_user_attributes_missing_index(self):
-        """
-        (TestHardware) _set_user_attributes should return a 40 error code when too few items are passed
-        """
+    def test_06a_update_all(self):
+        """(TestHardwareModel) update_all() should return a zero error code on success."""
+        self.DUT.select_all(1)
 
-        _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
-                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two',
-                        'Three')
+        _error_code, _msg = self.DUT.update_all()
 
-        (_error_code,
-         _error_msg) = self.DUT._set_user_attributes(_user_values)
-        self.assertEqual(_error_code, 40)
-
-    @attr(all=True, unit=True)
-    def test_set_attributes(self):
-        """
-        (TestHardware) _set_attributes should return a 0 error code on success
-        """
-
-        _all_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                       'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
-                       100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                       'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                       'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
-                       30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0,
-                       0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
-                       0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 1.0, 2.0, 30.0,
-                       440.0, 5, 6, 7.0, 8.0, 99.0, 10.0, 11, 12, 13.0, 14, 15.0,
-                       16.0, 17.0, 18, 19.0, 0.0, 1.0, 2, 3, 440.0, 50, 60, 7.0,
-                       80.0, 90, 'Zero', 'One', 'Two', 'Three', '4')
-
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code, 0)
-
-    @attr(all=True, unit=True)
-    def test_get_base_attributes(self):
-        """
-        (TestHardware) _get_base_attributes should return a tuple of attribute values
-        """
-
-        _base_values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0,
-                        0, 0, '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0,
-                        '', 1, '', 1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0,
-                        2014)
-
-        self.assertEqual(self.DUT._get_base_attributes(), _base_values)
-
-    @attr(all=True, unit=True)
-    def test_get_stress_attributes(self):
-        """
-        (TestHardware) _get_stress_attributes should return a tuple of attribute values
-        """
-
-        _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0,
-                          1.0, 1.0, 0.0, 1.0)
-
-        self.assertEqual(self.DUT._get_stress_attributes(), _stress_values)
-
-    @attr(all=True, unit=True)
-    def test_get_reliability_attributes(self):
-        """
-        (TestHardware) _get_reliability_attributes should return a tuple of attribute values
-        """
-
-        _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                       0.0, 0)
-
-        self.assertEqual(self.DUT._get_reliability_attributes(), _rel_values)
-
-    @attr(all=True, unit=True)
-    def test_get_user_attributes(self):
-        """
-        (TestHardware) _get_user_attributes should return a tuple of attribute values
-        """
-
-        _user_values = ([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                         0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0,
-                         0, 0, 0, 0], ['', '', '', '', ''])
-
-        self.assertEqual(self.DUT._get_user_attributes(), _user_values)
-
-    @attr(all=True, unit=True)
-    def test_get_attributes(self):
-        """
-        (TestHardware) get_attributes should return a tuple of attribute values
-        """
-
-        _all_values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0,
-                       0, '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1,
-                       '', 1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
-                       0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                       0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0,
-                       0, 0, 0, 0, 0, 0, 0], ['', '', '', '', ''])
-
-        self.assertEqual(self.DUT.get_attributes(), _all_values)
-
-    @attr(all=True, unit=True)
-    def test_attribute_sanity(self):
-        """
-        (TestHardware) get_attributes(set_attributes(values)) == values
-        """
-
-        _all_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                       'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
-                       100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                       'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                       'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
-                       30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0,
-                       0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0, 0.0,
-                       0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, [0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0], ['', '',
-                       '', '', ''])
-
-        self.DUT.set_attributes(_all_values)
-        _result = self.DUT.get_attributes()
-        self.assertEqual(_result, _all_values)
-
-    @attr(all=True, unit=True)
-    def test_calculate_cost(self):
-        """
-        (TestHardware) calculate_costs should return False on success
-        """
-
-        self.DUT.cost = 100.00
-        self.DUT.hazard_rate_logistics = 0.00005132
-        self.DUT.mission_time = 10.0
-
-        self.assertFalse(self.DUT._calculate_costs(self.DUT))
-        self.assertEqual(self.DUT.cost_failure, 194855.80670303974)
-        self.assertEqual(self.DUT.cost_hour, 10.0)
+        self.assertEqual(_msg,
+                         'RTK SUCCESS: Updating the RTK Program database.')

@@ -73,7 +73,7 @@ class TestRTKDesignElectric(unittest.TestCase):
         'temperature_rated_min': 0.0,
         'power_rated': 0.0,
         'environment_active_id': 0,
-        'hardware_id': 3,
+        'hardware_id': 1,
         'specification_id': 0,
         'matching_id': 0,
         'n_elements': 0,
@@ -105,7 +105,7 @@ class TestRTKDesignElectric(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_design_electric')
-        self.assertEqual(self.DUT.hardware_id, 3)
+        self.assertEqual(self.DUT.hardware_id, 1)
         self.assertEqual(self.DUT.application_id, 0)
         self.assertEqual(self.DUT.area, 0.0)
         self.assertEqual(self.DUT.capacitance, 0.0)

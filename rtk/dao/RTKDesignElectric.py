@@ -16,7 +16,7 @@ from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 # pylint: disable=R0902
-class RTKDesignElectric(RTK_BASE):  # pragma: no cover
+class RTKDesignElectric(RTK_BASE):
     """
     Represent the rtk_design_electric table in the RTK Program database.
 
@@ -94,9 +94,10 @@ class RTKDesignElectric(RTK_BASE):  # pragma: no cover
     years_in_production = Column('fld_years_in_production', Integer, default=1)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware', back_populates='design_electric')
+    hardware = relationship('RTKHardware',
+        back_populates='design_electric')  # pragma: no cover
 
-    def get_attributes(self):  # pragma: no cover
+    def get_attributes(self):
         """
         Retrieve current values of the RTKDesignElectric data model attributes.
 
@@ -175,7 +176,7 @@ class RTKDesignElectric(RTK_BASE):  # pragma: no cover
 
         return _attributes
 
-    def set_attributes(self, attributes):  # pragma: no cover
+    def set_attributes(self, attributes):
         """
         Set the cuurent values of the RTKDesignElectric data model attributes.
 

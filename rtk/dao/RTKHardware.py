@@ -4,9 +4,9 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKHardware Table Module."""
+"""RTKHardware Table Module."""  # pragma: no cover
 
-from datetime import date
+from datetime import date    # pragma: no cover
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
@@ -16,7 +16,7 @@ from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
-class RTKHardware(RTK_BASE):  # pragma: no cover
+class RTKHardware(RTK_BASE):
     """
     Class to represent the rtk_hardware table in the RTK Program database.
 
@@ -32,7 +32,7 @@ class RTKHardware(RTK_BASE):  # pragma: no cover
     """
 
     __tablename__ = 'rtk_hardware'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}  # pragma: no cover
 
     revision_id = Column(
         'fld_revision_id',
@@ -92,16 +92,16 @@ class RTKHardware(RTK_BASE):  # pragma: no cover
     mode = relationship('RTKMode', back_populates='hardware')
 
     reliability = relationship(
-        'RTKReliability', uselist=False, back_populates='hardware')
+        'RTKReliability', uselist=False, back_populates='hardware', cascade='all,delete')
     milhdbkf = relationship(
-        'RTKMilHdbkF', uselist=False, back_populates='hardware')
-    nswc = relationship('RTKNSWC', uselist=False, back_populates='hardware')
+        'RTKMilHdbkF', uselist=False, back_populates='hardware', cascade='all,delete')
+    nswc = relationship('RTKNSWC', uselist=False, back_populates='hardware', cascade='all,delete')
     design_electric = relationship(
-        'RTKDesignElectric', uselist=False, back_populates='hardware')
+        'RTKDesignElectric', uselist=False, back_populates='hardware', cascade='all,delete')
     design_mechanic = relationship(
-        'RTKDesignMechanic', uselist=False, back_populates='hardware')
+        'RTKDesignMechanic', uselist=False, back_populates='hardware', cascade='all,delete')
 
-    def get_attributes(self):  # pragma: no cover
+    def get_attributes(self):
         """
         Retrieve the current values of the RTKHardware data model attributes.
 
@@ -154,7 +154,7 @@ class RTKHardware(RTK_BASE):  # pragma: no cover
 
         return _attributes
 
-    def set_attributes(self, attributes):  # pragma: no cover
+    def set_attributes(self, attributes):
         """
         Set the current values of the RTKHardware data model attributes.
 
