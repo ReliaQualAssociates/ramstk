@@ -1,11 +1,11 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests._hardware.TestHardware.py is part of The RTK Project
+#       tests._hardware.TestNSWC.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Test class for testing Hardware module algorithms and models."""
+"""Test class for testing NSWC module algorithms and models."""
 
 import sys
 from os.path import dirname
@@ -20,9 +20,9 @@ sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
 
 import Utilities as Utilities  # pylint: disable=import-error
 from Configuration import Configuration  # pylint: disable=import-error
-from hardware import dtmHardware, dtmDesignElectric  # pylint: disable=import-error
+from hardware import dtmNSWC  # pylint: disable=import-error
 from dao import DAO  # pylint: disable=import-error
-from dao import RTKHardware  # pylint: disable=import-error
+from dao import RTKNSWC  # pylint: disable=import-error
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -30,11 +30,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestHardwareDataModel(unittest.TestCase):
-    """Class for testing the Hardware data model class."""
+class TestNSWCDataModel(unittest.TestCase):
+    """Class for testing the NSWC data model class."""
 
     def setUp(self):
-        """(TestHardware) Set up the test fixture for the Hardware class."""
+        """(TestNSWC) Set up the test fixture for the NSWC class."""
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -61,76 +61,59 @@ class TestHardwareDataModel(unittest.TestCase):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
 
-        self.DUT = dtmHardware(self.dao)
+        self.DUT = dtmNSWC(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
-        """(TestHardwareDataModel) __init__ should return a Hardware model."""
-        self.assertTrue(isinstance(self.DUT, dtmHardware))
+        """(TestNSWCDataModel) __init__ should return a NSWC model."""
+        self.assertTrue(isinstance(self.DUT, dtmNSWC))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
-        self.assertEqual(self.DUT._tag, 'Hardware')
+        self.assertEqual(self.DUT._tag, 'NSWC')
 
     @attr(all=True, unit=True)
     def test01a_select_all(self):
-        """(TestHardwareDataModel) select_all() should return a Tree() object populated with RTKHardware instances on success."""
-        _tree = self.DUT.select_all(1)
+        """(TestNSWCDataModel) select_all() should return a Tree() object populated with RTKNSWC instances on success."""
+        _tree = self.DUT.select_all(2)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKHardware))
+        self.assertTrue(isinstance(_tree.get_node(2).data, RTKNSWC))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
-        """(TestHardwareDataModel) select() should return an instance of the RTKHardware data model on success."""
-        self.DUT.select_all(1)
-        _hardware = self.DUT.select(1)
+        """(TestNSWCDataModel) select() should return an instance of the RTKNSWC data model on success."""
+        self.DUT.select_all(2)
+        _nswc = self.DUT.select(2)
 
-        self.assertTrue(isinstance(_hardware, RTKHardware))
-        self.assertEqual(_hardware.hardware_id, 1)
-        self.assertEqual(_hardware.cage_code, '')
+        self.assertTrue(isinstance(_nswc, RTKNSWC))
+        self.assertEqual(_nswc.hardware_id, 2)
+        self.assertEqual(_nswc.Calt, 0.0)
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
-        """(TestHardwareDataModel) select() should return None when a non-existent Hardware ID is requested."""
-        _hardware = self.DUT.select(100)
+        """(TestNSWCDataModel) select() should return None when a non-existent NSWC ID is requested."""
+        _design_electric = self.DUT.select(100)
 
-        self.assertEqual(_hardware, None)
+        self.assertEqual(_design_electric, None)
 
     @attr(all=True, unit=True)
-    def test03a_insert_sibling(self):
-        """(TestHardwareDataModel) insert() should return False on success when inserting a sibling Hardware."""
-        self.DUT.select_all(1)
+    def test03a_insert(self):
+        """(TestNSWCDataModel) insert() should return False on success when inserting a NSWC record."""
+        self.DUT.select_all(3)
 
-        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=0)
+        _error_code, _msg = self.DUT.insert(hardware_id=3)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 4)
-
-        self.DUT.delete(self.DUT.last_id)
-
-    @attr(all=True, unit=True)
-    def test03b_insert_child(self):
-        """(TestHardwareDataModel) insert() should return False on success when inserting a child Hardware."""
-        self.DUT.select_all(1)
-
-        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=1)
-
-        self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                         'the RTK Program database.')
-        self.assertEqual(self.DUT.last_id, 4)
-
-        self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
-        """(TestHardwareDataModel) delete() should return a zero error code on success."""
-        self.DUT.select_all(1)
-        self.DUT.insert(revision_id=1, parent_id=1)
+        """(TestNSWCDataModel) delete() should return a zero error code on success."""
+        self.DUT.select_all(3)
+        self.DUT.insert(hardware_id=5)
 
-        _error_code, _msg = self.DUT.delete(self.DUT.last_id)
+        _error_code, _msg = self.DUT.delete(5)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
@@ -138,24 +121,24 @@ class TestHardwareDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
-        """(TestHardwareDataModel) delete() should return a non-zero error code when passed a Hardware ID that doesn't exist."""
-        self.DUT.select_all(1)
+        """(TestNSWCDataModel) delete() should return a non-zero error code when passed a NSWC ID that doesn't exist."""
+        self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.delete(300)
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                         'Hardware ID 300.')
+                         'NSWC record ID 300.')
 
     @attr(all=True, unit=True)
     def test05a_update(self):
-        """(TestHardwareDataModel) update() should return a zero error code on success."""
-        self.DUT.select_all(1)
+        """(TestNSWCDataModel) update() should return a zero error code on success."""
+        self.DUT.select_all(3)
 
-        _hardware = self.DUT.tree.get_node(1).data
-        _hardware.availability_logistics = 0.9832
+        _design_electric = self.DUT.select(3)
+        _design_electric.resistance = 0.9832
 
-        _error_code, _msg = self.DUT.update(1)
+        _error_code, _msg = self.DUT.update(3)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
@@ -163,19 +146,19 @@ class TestHardwareDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test05b_update_non_existent_id(self):
-        """(TestHardwareDataModel) update() should return a non-zero error code when passed a Hardware ID that doesn't exist."""
-        self.DUT.select_all(1)
+        """(TestNSWCDataModel) update() should return a non-zero error code when passed a NSWC ID that doesn't exist."""
+        self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.update(100)
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                         'Hardware ID 100.')
+                         'NSWC record ID 100.')
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
-        """(TestHardwareDataModel) update_all() should return a zero error code on success."""
-        self.DUT.select_all(1)
+        """(TestNSWCDataModel) update_all() should return a zero error code on success."""
+        self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.update_all()
 

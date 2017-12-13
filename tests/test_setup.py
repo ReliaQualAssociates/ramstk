@@ -314,21 +314,69 @@ def _create_program_database():
     _stakeholder.revision_id = _revision.revision_id
     session.add(_stakeholder)
 
+    # Add Hardware items to the RTK Program database.
     _hardware = RTKHardware()
     _hardware.revision_id = _revision.revision_id
     _hardware.comp_ref_des = 'S1'
     session.add(_hardware)
+    session.commit()
+    _parent_id = _hardware.hardware_id
+
+    _entity = RTKDesignElectric()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKDesignMechanic()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKMilHdbkF()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKNSWC()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKReliability()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
 
     _hardware = RTKHardware()
+    _hardware.parent_id = _parent_id
     _hardware.revision_id = _revision.revision_id
     _hardware.comp_ref_des = 'S1:SS1'
     session.add(_hardware)
+    session.commit()
+
+    _entity = RTKDesignElectric()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKDesignMechanic()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKMilHdbkF()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKNSWC()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
+
+    _entity = RTKReliability()
+    _entity.hardware_id = _hardware.hardware_id
+    session.add(_entity)
 
     _hardware = RTKHardware()
+    _hardware.parent_id = _parent_id
     _hardware.revision_id = _revision.revision_id
     _hardware.comp_ref_des = 'S1:SS2'
     session.add(_hardware)
+    session.commit()
 
+    # Add Incidents to the RTK Program database.
     _incident = RTKIncident()
     _incident.revision_id = _revision.revision_id
     session.add(_incident)
@@ -363,26 +411,6 @@ def _create_program_database():
     _similar_item = RTKSimilarItem()
     _similar_item.hardware_id = _hardware.hardware_id
     session.add(_similar_item)
-
-    _mil_hdbk_f = RTKMilHdbkF()
-    _mil_hdbk_f.hardware_id = _hardware.hardware_id
-    session.add(_mil_hdbk_f)
-
-    _nswc = RTKNSWC()
-    _nswc.hardware_id = _hardware.hardware_id
-    session.add(_nswc)
-
-    _design_electric = RTKDesignElectric()
-    _design_electric.hardware_id = _hardware.hardware_id
-    session.add(_design_electric)
-
-    _design_mechanic = RTKDesignMechanic()
-    _design_mechanic.hardware_id = _hardware.hardware_id
-    session.add(_design_mechanic)
-
-    _reliability = RTKReliability()
-    _reliability.hardware_id = _hardware.hardware_id
-    session.add(_reliability)
 
     # Create test Function:Hardware matrix
     for _row in [1, 2, 3]:

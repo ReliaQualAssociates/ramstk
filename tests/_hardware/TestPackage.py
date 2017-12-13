@@ -24,9 +24,11 @@ sys.path.insert(
 # pylint: disable=wrong-import-postion
 from test_setup import _create_program_database
 from _dao import TestRTKHardware, TestRTKDesignElectric, \
-                 TestRTKDesignMechanic, TestRTKReliability, TestRTKMilHdbkF, \
-                 TestRTKNSWC
-from _hardware import TestHardwareDataModel
+    TestRTKDesignMechanic, TestRTKReliability, TestRTKMilHdbkF, TestRTKNSWC
+from _hardware import TestHardwareDataModel, TestDesignElectricDataModel, \
+    TestDesignMechanicDataModel, TestMilHdbkFDataModel, TestNSWCDataModel, \
+    TestReliabilityDataModel, TestHardwareBoMDataModel
+
 
 def test_hardware_package(suites):
     """
@@ -36,20 +38,20 @@ def test_hardware_package(suites):
     components needed to provide the Hardware module hardwareality; that is, it
     runs the following tests, in this order:
 
-        Revision database table
-        Failure Definition database table
-        Mission database table
-        Mission Phase database table
-        Environment database table
-        Revision data model
-        Failure Definition data model
-        Mission data model
-        Mission Phase data model
-        Environment data model
-        Usage Profile data model
-        Revision data controller
-        Failure Definition data controller
-        Usage Profile data controller
+        Hardware database table
+        Electrical design parameters database table
+        Mechanical design parameters database table
+        MIL-HDBK-217F parameters database table
+        NSWC parameters database table
+        Reliability database table
+        Hardware data model
+        Electrical design data model
+        Mechanical design data model
+        MIL-HDBK-217F data model
+        NSWC data model
+        Reliability data model
+        BoM data model
+        BoM data controller
     """
     all_tests = ()
 
@@ -82,9 +84,13 @@ if __name__ == '__main__':
         TestRTKReliability, TestRTKMilHdbkF, TestRTKNSWC
     ]
 
-    _model_suites = [TestHardwareDataModel, ]
+    _model_suites = [
+        TestHardwareDataModel, TestDesignElectricDataModel,
+        TestDesignMechanicDataModel, TestMilHdbkFDataModel, TestNSWCDataModel,
+        TestReliabilityDataModel, TestHardwareBoMDataModel
+    ]
 
-    #_controller_suites = []
+    #_controller_suites = [TestHardwareBoMDataController, ]
 
     # For the nosetest example.
     if str(sys.argv[1]) == 'db':
