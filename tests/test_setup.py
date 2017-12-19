@@ -395,6 +395,7 @@ def _create_program_database():
 
     _validation = RTKValidation()
     _validation.revision_id = _revision.revision_id
+    _validation.description = 'Test Validation Task'
     session.add(_validation)
 
     session.commit()
@@ -433,6 +434,16 @@ def _create_program_database():
             _matrix.row_item_id = _row
             _matrix.column_item_id = _column
             session.add(_matrix)
+
+    # Create test Hardware:Validation matrix
+    for _row in [1, 2, 3]:
+        _matrix = RTKMatrix()
+        _matrix.revision_id = _revision.revision_id
+        _matrix.matrix_id = 22
+        _matrix.matrix_type = 'hrdwr_vldtn'
+        _matrix.row_item_id = _row
+        _matrix.column_item_id = 1
+        session.add(_matrix)
 
     session.commit()
 

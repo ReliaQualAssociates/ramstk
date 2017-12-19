@@ -60,7 +60,7 @@ class TestRTKReliability(unittest.TestCase):
         'mtbf_specified': 0.0,
         'hr_logistics_variance': 0.0,
         'shape_parameter': 0.0,
-        'hardware_id': 3,
+        'hardware_id': 1,
         'hr_dormant_variance': 0.0,
         'location_parameter': 0.0,
         'survival_analysis_id': 0,
@@ -95,7 +95,7 @@ class TestRTKReliability(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_reliability')
-        self.assertEqual(self.DUT.hardware_id, 3)
+        self.assertEqual(self.DUT.hardware_id, 1)
         self.assertEqual(self.DUT.add_adj_factor, 0.0)
         self.assertEqual(self.DUT.availability_logistics, 1.0)
         self.assertEqual(self.DUT.availability_mission, 1.0)

@@ -27,7 +27,8 @@ from _dao import TestRTKHardware, TestRTKDesignElectric, \
     TestRTKDesignMechanic, TestRTKReliability, TestRTKMilHdbkF, TestRTKNSWC
 from _hardware import TestHardwareDataModel, TestDesignElectricDataModel, \
     TestDesignMechanicDataModel, TestMilHdbkFDataModel, TestNSWCDataModel, \
-    TestReliabilityDataModel, TestHardwareBoMDataModel
+    TestReliabilityDataModel, TestHardwareBoMDataModel, \
+    TestHardwareBoMDataController
 
 
 def test_hardware_package(suites):
@@ -90,7 +91,7 @@ if __name__ == '__main__':
         TestReliabilityDataModel, TestHardwareBoMDataModel
     ]
 
-    #_controller_suites = [TestHardwareBoMDataController, ]
+    _controller_suites = [TestHardwareBoMDataController, ]
 
     # For the nosetest example.
     if str(sys.argv[1]) == 'db':

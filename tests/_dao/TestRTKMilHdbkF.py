@@ -51,7 +51,7 @@ class TestRTKMilHdbkF(unittest.TestCase):
         'piF': 0.0,
         'lambdaCYC': 0.0,
         'piCV': 0.0,
-        'hardware_id': 3,
+        'hardware_id': 1,
         'piE': 0.0,
         'piCR': 0.0,
         'A1': 0.00235,
@@ -90,7 +90,7 @@ class TestRTKMilHdbkF(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_mil_hdbk_f')
-        self.assertEqual(self.DUT.hardware_id, 3)
+        self.assertEqual(self.DUT.hardware_id, 1)
         self.assertEqual(self.DUT.A1, 0.00235)
         self.assertEqual(self.DUT.A2, 0.0)
         self.assertEqual(self.DUT.B1, 0.0)

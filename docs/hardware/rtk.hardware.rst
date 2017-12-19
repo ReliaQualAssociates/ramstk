@@ -1,28 +1,23 @@
 RTK Hardware Sub-Package
-========================
+===============================================================================
 
 .. toctree::
 
-.. automodule:: rtk.hardware.Hardware
+Hardware Data Model
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.hardware.Model
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.hardware.BoM
+Hardware Data Controller
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.hardware.Controller
     :members:
     :private-members:
     :undoc-members:
     :show-inheritance:
 
-.. automodule:: rtk.hardware.assembly.Assembly
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:
-
-.. automodule:: rtk.hardware.component.Component
-    :members:
-    :private-members:
-    :undoc-members:
-    :show-inheritance:

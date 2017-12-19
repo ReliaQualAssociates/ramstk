@@ -70,7 +70,7 @@ class TestRTKNSWC(unittest.TestCase):
         'Csv': 0.0,
         'Cgl': 0.0,
         'Cga': 0.0,
-        'hardware_id': 3,
+        'hardware_id': 1,
         'Cgp': 0.0,
         'Cgs': 0.0,
         'Cgt': 0.0,
@@ -112,7 +112,7 @@ class TestRTKNSWC(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_nswc')
-        self.assertEqual(self.DUT.hardware_id, 3)
+        self.assertEqual(self.DUT.hardware_id, 1)
         self.assertEqual(self.DUT.Cac, 0.0)
         self.assertEqual(self.DUT.Calt, 0.0)
         self.assertEqual(self.DUT.Cb, 0.0)

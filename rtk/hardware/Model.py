@@ -132,17 +132,36 @@ class HardwareBoMDataModel(RTKDataModel):
 
         if _error_code == 0:
             _hardware_id = self.dtm_hardware.last_id
+            _hardware = self.dtm_hardware.select(_hardware_id)
+            _data = {'general': self.dtm_hardware.select(_hardware_id)}
             # FIXME: Handle error codes in HardwareBoMDataModel.insert().
             _error_code, _msg = self.dtm_design_electric.insert(
                 hardware_id=_hardware_id)
+            _data['electrical_design'] = self.dtm_design_electric.select(
+                _hardware_id)
             _error_code, _msg = self.dtm_design_mechanic.insert(
                 hardware_id=_hardware_id)
+            _data['mechanical_design'] = self.dtm_design_mechanic.select(
+                _hardware_id)
             _error_code, _msg = self.dtm_mil_hdbk_f.insert(
                 hardware_id=_hardware_id)
+            _data['mil_hdbk_f'] = self.dtm_mil_hdbk_f.select(_hardware_id)
             _error_code, _msg = self.dtm_nswc.insert(hardware_id=_hardware_id)
+            _data['nswc'] = self.dtm_nswc.select(_hardware_id)
             _error_code, _msg = self.dtm_reliability.insert(
                 hardware_id=_hardware_id)
+            _data['reliability'] = self.dtm_reliability.select(_hardware_id)
             # FIXME: Add code to insert record to analyses tables in HardwareBoMDataModel.insert().
+
+            self.tree.create_node(
+                _hardware.comp_ref_des,
+                _hardware_id,
+                parent=_hardware.parent_id,
+                data=_data)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _hardware_id)
 
         return _error_code, _msg
 
@@ -155,7 +174,6 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = RTKDataModel.delete(self, node_id)
         _error_code = 0
         _msg = ''
 
@@ -178,6 +196,14 @@ class HardwareBoMDataModel(RTKDataModel):
         # It is defined in RTKDataModel.__init__
         if _error_code == 0:
             self.tree.remove_node(node_id)
+            # CASCADE DELETE removes the records from the database.  Now they
+            # need to be reomved from the data model trees.
+            self.dtm_hardware.tree.remove_node(node_id)
+            self.dtm_design_electric.tree.remove_node(node_id)
+            self.dtm_design_mechanic.tree.remove_node(node_id)
+            self.dtm_mil_hdbk_f.tree.remove_node(node_id)
+            self.dtm_nswc.tree.remove_node(node_id)
+            self.dtm_reliability.tree.remove_node(node_id)
             self.last_id = max(self.tree.nodes.keys())
 
         return _error_code, _msg

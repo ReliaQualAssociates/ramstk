@@ -5,3 +5,4 @@ from .Model import MilHdbkFDataModel as dtmMilHdbkF
 from .Model import NSWCDataModel as dtmNSWC
 from .Model import ReliabilityDataModel as dtmReliability
 from .Model import HardwareBoMDataModel as dtmHardwareBoM
+from .Controller import HardwareBoMDataController as dtcHardwareBoM

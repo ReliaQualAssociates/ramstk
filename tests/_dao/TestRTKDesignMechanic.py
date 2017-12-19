@@ -64,7 +64,7 @@ class TestRTKDesignMechanic(unittest.TestCase):
         'filter_size': 0.0,
         'diameter_inner': 0.0,
         'pressure_rated': 0.0,
-        'hardware_id': 3,
+        'hardware_id': 1,
         'altitude_operating': 0.0,
         'thickness': 0.0,
         'diameter_outer': 0.0,
@@ -107,7 +107,7 @@ class TestRTKDesignMechanic(unittest.TestCase):
 
         # Verify class attributes are properly initialized.
         self.assertEqual(self.DUT.__tablename__, 'rtk_design_mechanic')
-        self.assertEqual(self.DUT.hardware_id, 3)
+        self.assertEqual(self.DUT.hardware_id, 1)
         self.assertEqual(self.DUT.altitude_operating, 0.0)
         self.assertEqual(self.DUT.application_id, 0)
         self.assertEqual(self.DUT.balance_id, 0)

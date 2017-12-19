@@ -11,11 +11,11 @@ The RTKOpStress Table
 """
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKOpStress(RTK_BASE):
@@ -28,20 +28,28 @@ class RTKOpStress(RTK_BASE):
     __tablename__ = 'rtk_op_stress'
     __table_args__ = {'extend_existing': True}
 
-    load_id = Column('fld_load_id', Integer,
-                     ForeignKey('rtk_op_load.fld_load_id'), nullable=False)
-    stress_id = Column('fld_stress_id', Integer, primary_key=True,
-                       autoincrement=True, nullable=False)
+    load_id = Column(
+        'fld_load_id',
+        Integer,
+        ForeignKey('rtk_op_load.fld_load_id'),
+        nullable=False)
+    stress_id = Column(
+        'fld_stress_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     description = Column('fld_description', String(512), default='')
     load_history = Column('fld_load_history', Integer, default=0)
-    measurable_parameter = Column('fld_measurable_parameter', Integer,
-                                  default=0)
+    measurable_parameter = Column(
+        'fld_measurable_parameter', Integer, default=0)
     remarks = Column('fld_remarks', BLOB, default='')
 
     # Define the relationships to other tables in the RTK Program database.
     op_load = relationship('RTKOpLoad', back_populates='op_stress')
-    test_method = relationship('RTKTestMethod', back_populates='op_stress')
+    test_method = relationship(
+        'RTKTestMethod', back_populates='op_stress', cascade='all,delete')
 
     def get_attributes(self):
         """

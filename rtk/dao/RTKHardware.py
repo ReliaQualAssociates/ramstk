@@ -6,7 +6,7 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKHardware Table Module."""  # pragma: no cover
 
-from datetime import date    # pragma: no cover
+from datetime import date  # pragma: no cover
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
@@ -86,20 +86,40 @@ class RTKHardware(RTK_BASE):
     revision = relationship('RTKRevision', back_populates='hardware')
 
     # One-to-one relationships.
-    allocation = relationship('RTKAllocation', back_populates='hardware')
-    hazard = relationship('RTKHazardAnalysis', back_populates='hardware')
-    sia = relationship('RTKSimilarItem', back_populates='hardware')
-    mode = relationship('RTKMode', back_populates='hardware')
+    allocation = relationship(
+        'RTKAllocation', back_populates='hardware', cascade='all,delete')
+    hazard = relationship(
+        'RTKHazardAnalysis', back_populates='hardware', cascade='all,delete')
+    sia = relationship(
+        'RTKSimilarItem', back_populates='hardware', cascade='all,delete')
+    mode = relationship(
+        'RTKMode', back_populates='hardware', cascade='all,delete')
 
     reliability = relationship(
-        'RTKReliability', uselist=False, back_populates='hardware', cascade='all,delete')
+        'RTKReliability',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
     milhdbkf = relationship(
-        'RTKMilHdbkF', uselist=False, back_populates='hardware', cascade='all,delete')
-    nswc = relationship('RTKNSWC', uselist=False, back_populates='hardware', cascade='all,delete')
+        'RTKMilHdbkF',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
+    nswc = relationship(
+        'RTKNSWC',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
     design_electric = relationship(
-        'RTKDesignElectric', uselist=False, back_populates='hardware', cascade='all,delete')
+        'RTKDesignElectric',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
     design_mechanic = relationship(
-        'RTKDesignMechanic', uselist=False, back_populates='hardware', cascade='all,delete')
+        'RTKDesignMechanic',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
 
     def get_attributes(self):
         """
