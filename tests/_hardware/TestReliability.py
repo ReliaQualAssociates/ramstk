@@ -101,7 +101,7 @@ class TestReliabilityDataModel(unittest.TestCase):
         """(TestReliabilityDataModel) insert() should return False on success when inserting a Reliability record."""
         self.DUT.select_all(3)
 
-        _error_code, _msg = self.DUT.insert(hardware_id=3)
+        _error_code, _msg = self.DUT.insert(hardware_id=4)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
@@ -110,10 +110,9 @@ class TestReliabilityDataModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04a_delete(self):
         """(TestReliabilityDataModel) delete() should return a zero error code on success."""
-        self.DUT.select_all(3)
-        self.DUT.insert(hardware_id=5)
+        self.DUT.select_all(4)
 
-        _error_code, _msg = self.DUT.delete(5)
+        _error_code, _msg = self.DUT.delete(4)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '

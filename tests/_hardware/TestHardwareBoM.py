@@ -98,21 +98,6 @@ class TestHardwareBoMDataModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_tree, Tree))
         self.assertTrue(isinstance(_tree.get_node(1).data, dict))
-        self.assertTrue(
-            isinstance(_tree.get_node(1).data['general'], RTKHardware))
-        self.assertTrue(
-            isinstance(
-                _tree.get_node(1).data['electrical_design'],
-                RTKDesignElectric))
-        self.assertTrue(
-            isinstance(
-                _tree.get_node(1).data['mechanical_design'],
-                RTKDesignMechanic))
-        self.assertTrue(
-            isinstance(_tree.get_node(1).data['mil_hdbk_f'], RTKMilHdbkF))
-        self.assertTrue(isinstance(_tree.get_node(3).data['nswc'], RTKNSWC))
-        self.assertTrue(
-            isinstance(_tree.get_node(1).data['reliability'], RTKReliability))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
@@ -121,16 +106,8 @@ class TestHardwareBoMDataModel(unittest.TestCase):
         _hardware = self.DUT.select(1)
 
         self.assertTrue(isinstance(_hardware, dict))
-        self.assertTrue(isinstance(_hardware['general'], RTKHardware))
-        self.assertTrue(
-            isinstance(_hardware['electrical_design'], RTKDesignElectric))
-        self.assertTrue(
-            isinstance(_hardware['mechanical_design'], RTKDesignMechanic))
-        self.assertTrue(isinstance(_hardware['mil_hdbk_f'], RTKMilHdbkF))
-        self.assertTrue(isinstance(_hardware['nswc'], RTKNSWC))
-        self.assertTrue(isinstance(_hardware['reliability'], RTKReliability))
-        self.assertEqual(_hardware['general'].comp_ref_des, 'S1')
-        self.assertEqual(_hardware['general'].cage_code, '')
+        self.assertEqual(_hardware['comp_ref_des'], 'S1')
+        self.assertEqual(_hardware['cage_code'], '')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -170,7 +147,7 @@ class TestHardwareBoMDataModel(unittest.TestCase):
         """(TestHardwareBoMDataModel) delete() should return a zero error code on success."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.delete(self.DUT.last_id)
+        _error_code, _msg = self.DUT.delete(4)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
@@ -194,7 +171,7 @@ class TestHardwareBoMDataModel(unittest.TestCase):
         self.DUT.select_all(1)
 
         _hardware = self.DUT.tree.get_node(1).data
-        _hardware['general'].cost = 0.9832
+        _hardware['cost'] = 0.9832
 
         _error_code, _msg = self.DUT.update(1)
 
@@ -210,8 +187,13 @@ class TestHardwareBoMDataModel(unittest.TestCase):
         _error_code, _msg = self.DUT.update(100)
 
         self.assertEqual(_error_code, 2006)
-        self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                         'Hardware BoM ID 100.')
+        self.assertEqual(
+            _msg,
+            'RTK ERROR: Problem saving Hardware BoM ID 100.  Error when '
+            'saving: RTKHardware record, RTKDesignElectric record, '
+            'RTKDesignMechanic record, RTKMilHdbkF record, RTKNSWC record, '
+            'RTKReliability record.'
+        )
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):

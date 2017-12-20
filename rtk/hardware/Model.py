@@ -72,38 +72,40 @@ class HardwareBoMDataModel(RTKDataModel):
         for _node in self.dtm_hardware.select_all(revision_id).all_nodes()[1:]:
             _data = {}
             _hardware_id = _node.data.hardware_id
-            _data['general'] = _node.data
+            _data = _node.data.get_attributes()
             try:
                 _electrical = self.dtm_design_electric.select_all(_hardware_id)
-                _data['electrical_design'] = _electrical.nodes[
-                    _hardware_id].data
+                _data.update(
+                    _electrical.nodes[_hardware_id].data.get_attributes())
             except KeyError:
-                _data['electrical_design'] = None
+                pass
 
             try:
                 _mechanical = self.dtm_design_mechanic.select_all(_hardware_id)
-                _data['mechanical_design'] = _mechanical.nodes[
-                    _hardware_id].data
+                _data.update(
+                    _mechanical.nodes[_hardware_id].data.get_attributes())
             except KeyError:
-                _data['mechanical_design'] = None
+                pass
 
             try:
                 _mil_hdbk_f = self.dtm_mil_hdbk_f.select_all(_hardware_id)
-                _data['mil_hdbk_f'] = _mil_hdbk_f.nodes[_hardware_id].data
+                _data.update(
+                    _mil_hdbk_f.nodes[_hardware_id].data.get_attributes())
             except KeyError:
-                _data['mil_hdbk_f'] = None
+                pass
 
             try:
                 _nswc = self.dtm_nswc.select_all(_hardware_id)
-                _data['nswc'] = _nswc.nodes[_hardware_id].data
+                _data.update(_nswc.nodes[_hardware_id].data.get_attributes())
             except KeyError:
-                _data['nswc'] = None
+                pass
 
             try:
                 _reliability = self.dtm_reliability.select_all(_hardware_id)
-                _data['reliability'] = _reliability.nodes[_hardware_id].data
+                _data.update(
+                    _reliability.nodes[_hardware_id].data.get_attributes())
             except KeyError:
-                _data['reliability'] = None
+                pass
 
             self.tree.create_node(
                 _node.data.comp_ref_des,
@@ -180,8 +182,10 @@ class HardwareBoMDataModel(RTKDataModel):
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
+        # Delete the RTKHardware entry.  Other RTK Program database tables will
+        # delete their entries based on CASCADE behavior.
         try:
-            _hardware = self.tree.get_node(node_id).data['general']
+            _hardware = self.dtm_hardware.tree.get_node(node_id).data
             if _hardware is not None:
                 _error_code, _msg = self.dao.db_delete(_hardware, _session)
 
@@ -217,7 +221,7 @@ class HardwareBoMDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _error_code = 0
-        _msg = ''
+        _msg0 = ''
 
         _session = self.dao.RTK_SESSION(
             bind=self.dao.engine,
@@ -226,15 +230,59 @@ class HardwareBoMDataModel(RTKDataModel):
             expire_on_commit=False)
 
         try:
-            _hardware = self.tree.get_node(node_id).data
-            for _entity in _hardware.values():
-                if _entity is not None:
-                    _session.add(_entity)
-                    _error_code, _msg = self.dao.db_update(_session)
+            _entity = self.dtm_hardware.tree.get_node(node_id).data
+            if _entity is not None:
+                _session.add(_entity)
         except AttributeError:
             _error_code = 2006
-            _msg = 'RTK ERROR: Attempted to save non-existent Hardware BoM ' \
-                   'ID {0:d}.'.format(node_id)
+            _msg0 = 'RTKHardware record'
+
+        try:
+            _entity = self.dtm_design_electric.tree.get_node(node_id).data
+            if _entity is not None:
+                _session.add(_entity)
+        except AttributeError:
+            _error_code = 2006
+            _msg0 = _msg0 + ', RTKDesignElectric record'
+
+        try:
+            _entity = self.dtm_design_mechanic.tree.get_node(node_id).data
+            if _entity is not None:
+                _session.add(_entity)
+        except AttributeError:
+            _error_code = 2006
+            _msg0 = _msg0 + ', RTKDesignMechanic record'
+
+        try:
+            _entity = self.dtm_mil_hdbk_f.tree.get_node(node_id).data
+            if _entity is not None:
+                _session.add(_entity)
+        except AttributeError:
+            _error_code = 2006
+            _msg0 = _msg0 + ', RTKMilHdbkF record'
+
+        try:
+            _entity = self.dtm_nswc.tree.get_node(node_id).data
+            if _entity is not None:
+                _session.add(_entity)
+        except AttributeError:
+            _error_code = 2006
+            _msg0 = _msg0 + ', RTKNSWC record'
+
+        try:
+            _entity = self.dtm_reliability.tree.get_node(node_id).data
+            if _entity is not None:
+                _session.add(_entity)
+        except AttributeError:
+            _error_code = 2006
+            _msg0 = _msg0 + ', RTKReliability record'
+
+        if _error_code == 0:
+            _error_code, _msg = self.dao.db_update(_session)
+        else:
+            _error_code = 2006
+            _msg = 'RTK ERROR: Problem saving Hardware BoM ID {0:d}.  Error ' \
+                   'when saving: {1:s}.'.format(node_id, _msg0)
 
         _session.close()
 
@@ -466,7 +514,11 @@ class DesignElectricDataModel(RTKDataModel):
                  comprise the DesignElectric tree.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        # Don't use the RTKDataModel.select_all() method because we don't want
+        # to clear the tree or we'll only be left with the last hardware ID
+        # passed.
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _design in _session.query(RTKDesignElectric).\
                 filter(RTKDesignElectric.hardware_id == hardware_id).all():
@@ -504,6 +556,10 @@ class DesignElectricDataModel(RTKDataModel):
                 _design.hardware_id,
                 parent=0,
                 data=_design)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _design.hardware_id)
 
         return _error_code, _msg
 
@@ -615,7 +671,11 @@ class DesignMechanicDataModel(RTKDataModel):
                  comprise the DesignMechanic tree.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        # Don't use the RTKDataModel.select_all() method because we don't want
+        # to clear the tree or we'll only be left with the last hardware ID
+        # passed.
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _design in _session.query(RTKDesignMechanic).\
                 filter(RTKDesignMechanic.hardware_id == hardware_id).all():
@@ -653,6 +713,10 @@ class DesignMechanicDataModel(RTKDataModel):
                 _design.hardware_id,
                 parent=0,
                 data=_design)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _design.hardware_id)
 
         return _error_code, _msg
 
@@ -764,7 +828,11 @@ class MilHdbkFDataModel(RTKDataModel):
                  comprise the MilHdbkF tree.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        # Don't use the RTKDataModel.select_all() method because we don't want
+        # to clear the tree or we'll only be left with the last hardware ID
+        # passed.
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _milhdbkf in _session.query(RTKMilHdbkF).\
                 filter(RTKMilHdbkF.hardware_id == hardware_id).all():
@@ -802,6 +870,10 @@ class MilHdbkFDataModel(RTKDataModel):
                 _milhdbkf.hardware_id,
                 parent=0,
                 data=_milhdbkf)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _milhdbkf.hardware_id)
 
         return _error_code, _msg
 
@@ -913,7 +985,11 @@ class NSWCDataModel(RTKDataModel):
                  comprise the NSWC tree.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        # Don't use the RTKDataModel.select_all() method because we don't want
+        # to clear the tree or we'll only be left with the last hardware ID
+        # passed.
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
         for _nswc in _session.query(RTKNSWC).\
                 filter(RTKNSWC.hardware_id == hardware_id).all():
@@ -945,6 +1021,10 @@ class NSWCDataModel(RTKDataModel):
         if _error_code == 0:
             self.tree.create_node(
                 _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _nswc.hardware_id)
 
         return _error_code, _msg
 
@@ -1056,16 +1136,20 @@ class ReliabilityDataModel(RTKDataModel):
                  comprise the Reliability tree.
         :rtype: :class:`treelib.Tree`
         """
-        _session = RTKDataModel.select_all(self)
+        # Don't use the RTKDataModel.select_all() method because we don't want
+        # to clear the tree or we'll only be left with the last hardware ID
+        # passed.
+        _session = self.dao.RTK_SESSION(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
 
-        for _nswc in _session.query(RTKReliability).\
+        for _reliability in _session.query(RTKReliability).\
                 filter(RTKReliability.hardware_id == hardware_id).all():
             self.tree.create_node(
-                _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
+                _reliability.hardware_id, _reliability.hardware_id, parent=0, data=_reliability)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _nswc.hardware_id)
+            self.last_id = max(self.last_id, _reliability.hardware_id)
 
         _session.close()
 
@@ -1078,16 +1162,20 @@ class ReliabilityDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _nswc = RTKReliability()
-        _nswc.hardware_id = kwargs['hardware_id']
+        _reliability = RTKReliability()
+        _reliability.hardware_id = kwargs['hardware_id']
         _error_code, _msg = RTKDataModel.insert(
             self, entities=[
-                _nswc,
+                _reliability,
             ])
 
         if _error_code == 0:
             self.tree.create_node(
-                _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
+                _reliability.hardware_id, _reliability.hardware_id, parent=0, data=_reliability)
+
+            # pylint: disable=attribute-defined-outside-init
+            # It is defined in RTKDataModel.__init__
+            self.last_id = max(self.last_id, _reliability.hardware_id)
 
         return _error_code, _msg
 

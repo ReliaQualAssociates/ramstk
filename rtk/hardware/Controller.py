@@ -277,7 +277,28 @@ class HardwareBoMDataController(RTKDataController):
         :return: attributes; the {attribute:value} dict.
         :rtype: dict
         """
-        return self.request_select(node_id)[table].get_attributes()
+        if table == 'general':
+            _attributes = self._dtm_data_model.dtm_hardware.select(
+                node_id).get_attributes()
+        elif table == 'electrical_design':
+            _attributes = self._dtm_data_model.dtm_design_electric.select(
+                node_id).get_attributes()
+        elif table == 'mechanical_design':
+            _attributes = self._dtm_data_model.dtm_design_mechanic.select(
+                node_id).get_attributes()
+        elif table == 'mil_hdbk_f':
+            _attributes = self._dtm_data_model.dtm_mil_hdbk_f.select(
+                node_id).get_attributes()
+        elif table == 'nswc':
+            _attributes = self._dtm_data_model.dtm_nswc.select(
+                node_id).get_attributes()
+        elif table == 'reliability':
+            _attributes = self._dtm_data_model.dtm_reliability.select(
+                node_id).get_attributes()
+        else:
+            _attributes = None
+
+        return _attributes
 
     def request_set_attributes(self, node_id, attributes, table):
         """
@@ -300,6 +321,26 @@ class HardwareBoMDataController(RTKDataController):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _entity = self.request_select(node_id)[table]
+        _error_code = 0
+        _msg = ''
 
-        return _entity.set_attributes(attributes)
+        if table == 'general':
+            _error_code, _msg = self._dtm_data_model.dtm_hardware.select(
+                node_id).set_attributes(attributes)
+        elif table == 'electrical_design':
+            _error_code, _msg = self._dtm_data_model.dtm_design_electric.select(
+                node_id).set_attributes(attributes)
+        elif table == 'mechanical_design':
+            _error_code, _msg = self._dtm_data_model.dtm_design_mechanic.select(
+                node_id).set_attributes(attributes)
+        elif table == 'mil_hdbk_f':
+            _error_code, _msg = self._dtm_data_model.dtm_mil_hdbk_f.select(
+                node_id).set_attributes(attributes)
+        elif table == 'nswc':
+            _error_code, _msg = self._dtm_data_model.dtm_nswc.select(
+                node_id).set_attributes(attributes)
+        elif table == 'reliability':
+            _error_code, _msg = self._dtm_data_model.dtm_reliability.select(
+                node_id).set_attributes(attributes)
+
+        return _error_code, _msg
