@@ -34,6 +34,7 @@ from gui.gtk.rtk import RTKBook, destroy
 from gui.gtk.moduleviews import mvwRevision
 from gui.gtk.moduleviews import mvwFunction
 from gui.gtk.moduleviews import mvwRequirement
+from gui.gtk.moduleviews import mvwHardware
 from gui.gtk.moduleviews import mvwValidation
 from gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
     Options
@@ -75,16 +76,15 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_module_views = [[mvwRevision(controller), 0],
+                                  [mvwFunction(controller), 1],
+                                  [mvwRequirement(controller), 2],
+                                  [mvwHardware(controller), 3],
+                                  [mvwValidation(controller), 4]]
 
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_module_views = {
-            'revision': [mvwRevision(controller), 0],
-            'function': [mvwFunction(controller), 1],
-            'requirement': [mvwRequirement(controller), 2],
-            'validation': [mvwValidation(controller), 4]
-        }
 
         # Initialize public list attributes.
 
@@ -124,8 +124,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
             self.notebook.connect('switch-page', self._on_switch_page))
 
         # Insert a page for each of the active RTK Modules.
-        for _page in self.dic_module_views:
-            _object = self.dic_module_views[_page]
+        for _object in self._lst_module_views:
             self.notebook.insert_page(
                 _object[0],
                 tab_label=_object[0].hbx_tab_label,
@@ -458,7 +457,9 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
                 _module = 'function'
             elif page_num == 2:
                 _module = 'requirement'
-            elif page_num == 3:  # TODO: Change this as other modules are added.
+            elif page_num == 3:
+                _module = 'hardware'
+            elif page_num == 4:  # TODO: Change this as other modules are added.
                 _module = 'validation'
 
         pub.sendMessage('mvwSwitchedPage', module=_module)

@@ -230,17 +230,32 @@ class RTKTreeView(gtk.TreeView):
         _entity = _node.data
 
         _attributes = []
-        try:
-            _temp = _entity.get_attributes()
-            for _key in self.korder:
-                _attributes.append(_temp[_key])
+        if _entity is not None:
+            # For simple data models that return an RTK database table instance
+            # for the data object, the first try statement will create the list
+            # of attribute values.
+            try:
+                _temp = _entity.get_attributes()
+                for _key in self.korder:
+                    _attributes.append(_temp[_key])
+            except AttributeError:
+                # For aggregate data models (Hardware, Software) that return a
+                # discionary of attributes from ALL associated RTK database
+                # tables, this try statement will create the list of attribute
+                # values.
+                try:
+                    for _key in self.korder:
+                        _attributes.append(_entity[_key])
+                except TypeError:
+                    print "FIXME: Handle TypeError in " \
+                          "gtk.gui.rtk.TreeView.RTKTreeView.do_load_tree"
+
             try:
                 _row = _model.append(row, _attributes)
-            except TypeError:
-                print "FIXME: Handle TypeError in " \
+            except ValueError:
+                _row = None
+                print "FIXME: Handle ValueError in " \
                       "gtk.gui.rtk.TreeView.RTKTreeView.do_load_tree"
-        except AttributeError:
-            _row = None
 
         for _n in tree.children(_node.identifier):
             _child_tree = tree.subtree(_n.identifier)

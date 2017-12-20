@@ -11,4 +11,5 @@ from .ModuleView import RTKModuleView
 from .Function import ModuleView as mvwFunction
 from .Revision import ModuleView as mvwRevision
 from .Requirement import ModuleView as mvwRequirement
+from .Hardware import ModuleView as mvwHardware
 from .Validation import ModuleView as mvwValidation

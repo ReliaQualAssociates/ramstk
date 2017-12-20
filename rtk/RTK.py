@@ -63,7 +63,7 @@ from function import dtcFunction
 from analyses.fmea import dtcFMEA
 from requirement import dtcRequirement
 from stakeholder import dtcStakeholder
-# from hardware.BoM import BoM as HardwareBoM
+from hardware import dtcHardwareBoM
 # from analyses.allocation.Allocation import Allocation
 # from analyses.hazard.Hazard import Hazard
 # from analyses.similar_item.SimilarItem import SimilarItem
@@ -789,7 +789,8 @@ class RTK(object):
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['requirement'] = dtcRequirement(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['hardware'] = HardwareBoM()
+            self.dic_controllers['hardware'] = dtcHardwareBoM(
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['software'] = SoftwareBoM()
             # self.dic_controllers['test'] = Test()
             self.dic_controllers['validation'] = dtcValidation(

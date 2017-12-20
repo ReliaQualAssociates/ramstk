@@ -88,12 +88,8 @@ class Configuration(object):
                            * functionfg - Function Tree foreground
                            * requirementbg - Requirement Tree background
                            * requirementfg - Requirement Tree foreground
-                           * assemblybg - Hardware Tree background for
-                             assemblies
-                           * assemblyfg - Hardware Tree foreground for
-                             assemblies
-                           * partbg - Part List Tree background
-                           * partfg - Part List Tree foreground
+                           * hardwarebg - Hardware Tree background
+                           * hardwarefg - Hardware Tree foreground
                            * overstressbg - Overstressed Part background
                            * overstressfg - Overstressed Part foreground
                            * taggedbg - Tagged Part background
@@ -410,11 +406,11 @@ class Configuration(object):
         """
 
         self._lst_colors = ['revisionfg', 'functionfg', 'requirementfg',
-                            'assemblyfg', 'partfg', 'overstressfg', 'taggedfg',
+                            'hardwarefg', 'partfg', 'overstressfg', 'taggedfg',
                             'nofrmodelfg', 'softwarefg', 'incidentfg',
                             'validationfg', 'testfg', 'survivalfg',
                             'revisionbg', 'functionbg', 'requirementbg',
-                            'assemblybg', 'partbg', 'overstressbg', 'taggedbg',
+                            'hardwarebg', 'partbg', 'overstressbg', 'taggedbg',
                             'softwarebg', 'incidentbg', 'validationbg',
                             'testbg', 'survivalbg', 'stakeholderbg',
                             'stakeholderfg']
@@ -655,8 +651,8 @@ class Configuration(object):
         _config.set('Colors', 'functionfg', '#0000FF')
         _config.set('Colors', 'requirementbg', '#FFFFFF')
         _config.set('Colors', 'requirementfg', '#000000')
-        _config.set('Colors', 'assemblybg', '#FFFFFF')
-        _config.set('Colors', 'assemblyfg', '#000000')
+        _config.set('Colors', 'hardwarebg', '#FFFFFF')
+        _config.set('Colors', 'hardwarefg', '#000000')
         _config.set('Colors', 'partbg', '#FFFFFF')
         _config.set('Colors', 'partfg', '#000000')
         _config.set('Colors', 'overstressbg', '#FF0000')
