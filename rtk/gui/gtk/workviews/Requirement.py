@@ -87,16 +87,17 @@ class GeneralData(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_gendata_labels.insert(2, _(u"Requirement Type:"))
-        self._lst_gendata_labels.insert(3, "")
-        self._lst_gendata_labels.insert(4, _(u"Specification:"))
-        self._lst_gendata_labels.insert(5, _(u"Page Number:"))
-        self._lst_gendata_labels.insert(6, _(u"Figure Number:"))
-        self._lst_gendata_labels.insert(7, _(u"Priority:"))
-        self._lst_gendata_labels.insert(8, _(u"Owner:"))
-        self._lst_gendata_labels.insert(9, "")
-        self._lst_gendata_labels.insert(10, _(u"Validated Date:"))
-        self._lst_gendata_labels.pop(-1)
+        self._lst_gendata_labels = [
+            _(u"Requirement Code:"),
+            _(u"Requirement Description:"),
+            _(u"Requirement Type:"), "",
+            _(u"Specification:"),
+            _(u"Page Number:"),
+            _(u"Figure Number:"),
+            _(u"Priority:"),
+            _(u"Owner:"), "",
+            _(u"Validated Date:")
+        ]
 
         # Initialize private scalar attributes.
         self._requirement_id = None
@@ -107,6 +108,7 @@ class GeneralData(RTKWorkView):
 
         # Initialize public scalar attributes.
         self.btnValidateDate = rtk.RTKButton(height=25, width=25, label="...")
+
         self.chkDerived = rtk.RTKCheckButton(
             label=_(u"Requirement is derived."),
             tooltip=_(u"Indicates whether or not the selected requirement is "
@@ -115,15 +117,21 @@ class GeneralData(RTKWorkView):
             label=_(u"Requirement is validated."),
             tooltip=_(u"Indicates whether or not the selected requirement is "
                       u"validated."))
+
         self.cmbOwner = rtk.RTKComboBox()
         self.cmbRequirementType = rtk.RTKComboBox(index=1, simple=False)
         self.cmbPriority = rtk.RTKComboBox(width=50)
+
+        self.txtCode = rtk.RTKEntry(
+            width=125,
+            tooltip=_(u"A unique code for the selected requirement."))
         self.txtFigNum = rtk.RTKEntry()
+        self.txtName = rtk.RTKEntry(
+            width=800,
+            tooltip=_(u"The description of the selected requirement."))
         self.txtPageNum = rtk.RTKEntry()
         self.txtSpecification = rtk.RTKEntry()
         self.txtValidatedDate = rtk.RTKEntry()
-
-        self.txtName.props.width_request = 800
 
         # Connect to callback requirements for editable gtk.Widgets().
         self._lst_handler_id.append(
@@ -156,8 +164,6 @@ class GeneralData(RTKWorkView):
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_start(self._make_general_data_page(), expand=True, fill=True)
         self.show_all()
-
-        self.txtRemarks.scrollwindow.set_visible(False)
 
         pub.subscribe(self._on_select, 'selectedRequirement')
         pub.subscribe(self._on_edit, 'mvwEditedRequirement')
@@ -244,9 +250,11 @@ class GeneralData(RTKWorkView):
         _priorities = [["1"], ["2"], ["3"], ["4"], ["5"]]
         self.cmbPriority.do_load_combo(_priorities)
 
-        (_frame, _fixed, _x_pos,
-         _y_pos) = RTKWorkView._make_general_data_page(self)
+        (_frame, _fixed, _x_pos, _y_pos) = RTKWorkView._make_general_data_page(
+            self, self._lst_gendata_labels)
 
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
         _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2])
         _fixed.put(self.chkDerived, _x_pos, _y_pos[3] + 5)
         _fixed.put(self.txtSpecification, _x_pos, _y_pos[4])

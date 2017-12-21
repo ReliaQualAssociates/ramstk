@@ -15,5 +15,7 @@ from .Function import AssessmentResults as wvwFunctionAR
 from .FMEA import FMEA as wvwFMEA
 from .Requirement import GeneralData as wvwRequirementGD
 from .Requirement import RequirementAnalysis as wvwRequirementAnalysis
+from .Hardware import GeneralData as wvwHardwareGD
+from .Hardware import AssessmentResults as wvwHardwareAR
 from .Validation import GeneralData as wvwValidationGD
 from .Validation import BurndownCurve as wvwBurndownCurve
