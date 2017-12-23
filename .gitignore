@@ -38,7 +38,6 @@ docs/_static/
 docs/_templates/
 rtk-RQA/
 tests/_test_results/
-tools/StaticChecks.sh
 CodeCounts.sql
 FailureModes.sql
 Makefile
