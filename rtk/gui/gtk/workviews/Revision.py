@@ -14,6 +14,7 @@ from pubsub import pub  # pylint: disable=E0401
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
+
 # from Assistants import AddRevision
 
 

@@ -13,11 +13,11 @@ The RTKGrowthTest Table
 from datetime import date
 # pylint: disable=E0401
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKGrowthTest(RTK_BASE):
@@ -30,10 +30,17 @@ class RTKGrowthTest(RTK_BASE):
     __tablename__ = 'rtk_growth_test'
     __table_args__ = {'extend_existing': True}
 
-    test_id = Column('fld_test_id', Integer,
-                     ForeignKey('rtk_test.fld_test_id'), nullable=False)
-    phase_id = Column('fld_phase_id', Integer, primary_key=True,
-                      autoincrement=True, nullable=False)
+    test_id = Column(
+        'fld_test_id',
+        Integer,
+        ForeignKey('rtk_test.fld_test_id'),
+        nullable=False)
+    phase_id = Column(
+        'fld_phase_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     i_mi = Column('fld_i_mi', Float, default=0.0)
     i_mf = Column('fld_i_mf', Float, default=0.0)

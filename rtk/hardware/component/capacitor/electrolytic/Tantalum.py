@@ -13,30 +13,30 @@ Hardware Package Electrolytic Tantalum Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -46,7 +46,7 @@ try:
     import Configuration
     import Utilities
     from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
@@ -59,7 +59,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -82,15 +82,19 @@ class Solid(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 12.0, 20.0, 24.0, 0.4, 11.0,
-            29.0, 530.0]
+    _piE = [
+        1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 12.0, 20.0, 24.0, 0.4, 11.0, 29.0,
+        530.0
+    ]
     _piQ = [0.001, 0.01, 0.03, 0.03, 0.1, 0.3, 1.0, 1.5, 10.0]
-    _lambdab_count = [0.0018, 0.0039, 0.016, 0.0097, 0.028, 0.0091, 0.011,
-                      0.034, 0.057, 0.055, 0.00072, 0.022, 0.066, 1.0]
+    _lambdab_count = [
+        0.0018, 0.0039, 0.016, 0.0097, 0.028, 0.0091, 0.011, 0.034, 0.057,
+        0.055, 0.00072, 0.022, 0.066, 1.0
+    ]
     lst_ref_temp = [398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 51                        # Subcategory ID in the common DB.
+    subcategory = 51  # Subcategory ID in the common DB.
 
     def __init__(self):
         """
@@ -102,7 +106,7 @@ class Solid(Capacitor):
         # Initialize public scalar attributes.
         self.effective_resistance = 0.0
         self.piSR = 0.0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             self.reference_temperature = 398.0
 
     def set_attributes(self, values):
@@ -130,7 +134,7 @@ class Solid(Capacitor):
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -163,7 +167,8 @@ class Solid(Capacitor):
         if self.hazard_rate_type == 1:
             self.hazard_rate_model['equation'] = 'lambdab * piQ'
         elif self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV * piSR'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piQ * piE * piCV * piSR'
 
             # Base hazard rate.
             _stress = (self.operating_voltage + self.acvapplied) / \
@@ -173,7 +178,7 @@ class Solid(Capacitor):
                                exp(2.6 * ((self.temperature_active + 273) /
                                           self.reference_temperature)**9.0)
                 self.hazard_rate_model['lambdab'] = self.base_hr
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 
@@ -215,15 +220,19 @@ class NonSolid(Capacitor):
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----
     _piC = [0.3, 1.0, 2.0, 2.5, 3.0]
-    _piE = [1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0, 14.0, 30.0, 23.0, 0.5, 13.0,
-            34.0, 610.0]
+    _piE = [
+        1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0, 14.0, 30.0, 23.0, 0.5, 13.0, 34.0,
+        610.0
+    ]
     _piQ = [0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 10.0]
-    _lambdab_count = [0.0061, 0.013, 0.069, 0.039, 0.11, 0.031, 0.061, 0.13,
-                      0.29, 0.18, 0.0030, 0.069, 0.26, 4.0]
+    _lambdab_count = [
+        0.0061, 0.013, 0.069, 0.039, 0.11, 0.031, 0.061, 0.13, 0.29, 0.18,
+        0.0030, 0.069, 0.26, 4.0
+    ]
     lst_ref_temp = [358.0, 398.0, 448.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 52                        # Subcategory ID in rtkcom DB.
+    subcategory = 52  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -236,7 +245,7 @@ class NonSolid(Capacitor):
         # Initialize public scalar attributes.
         self.construction = 0
         self.piC = 0.0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             if self.max_rated_temperature == 125.0:
                 self.reference_temperature = 398.0
             elif self.max_rated_temperature == 175.0:
@@ -269,7 +278,7 @@ class NonSolid(Capacitor):
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -302,7 +311,8 @@ class NonSolid(Capacitor):
         if self.hazard_rate_type == 1:
             self.hazard_rate_model['equation'] = 'lambdab * piQ'
         elif self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piQ * piE * piCV * piC'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piQ * piE * piCV * piC'
 
             # Base hazard rate.
             _stress = (self.operating_voltage + self.acvapplied) / \
@@ -312,7 +322,7 @@ class NonSolid(Capacitor):
                     0.00165 * ((_stress / 0.4)**3 + 1) * \
                     exp(2.6 * ((self.temperature_active + 273) /
                                self.reference_temperature)**9)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 

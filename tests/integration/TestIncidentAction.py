@@ -40,7 +40,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -93,15 +96,15 @@ class TestIncidentActionController(unittest.TestCase):
         (TestIncidentAction) save_action returns 0 on success
         """
 
-        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 2,
-                   0, False, 2, 0, False)
+        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 2, 0,
+                   False, 2, 0, False)
 
         self.assertEqual(self.DUT.request_actions(self._dao, 1)[1], 0)
         _action = self.DUT.dicActions[min(self.DUT.dicActions.keys())]
         _action.set_attributes(_values)
 
-        (_results,
-         _error_code) = self.DUT.save_action(min(self.DUT.dicActions.keys()))
+        (_results, _error_code) = self.DUT.save_action(
+            min(self.DUT.dicActions.keys()))
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

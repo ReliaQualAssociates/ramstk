@@ -21,7 +21,8 @@ from sqlalchemy.orm import scoped_session
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(__file__))) + "/rtk", )
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import Utilities as Utilities  # pylint: disable=import-error
 from Configuration import Configuration  # pylint: disable=import-error
@@ -87,14 +88,16 @@ class Test00MatrixModel(unittest.TestCase):
                                 'function_code', 6))
 
         self.assertTrue(isinstance(self.DUT.dtf_matrix, pd.DataFrame))
-        self.assertEqual(self.DUT.dic_column_hdrs,
-                         {1: u'S1',
-                          2: u'S1:SS1',
-                          3: u'S1:SS2'})
-        self.assertEqual(self.DUT.dic_row_hdrs,
-                         {1: u'PRESS-001',
-                          2: u'FLOW-001',
-                          3: u'TEMP-001'})
+        self.assertEqual(self.DUT.dic_column_hdrs, {
+            1: u'S1',
+            2: u'S1:SS1',
+            3: u'S1:SS2'
+        })
+        self.assertEqual(self.DUT.dic_row_hdrs, {
+            1: u'PRESS-001',
+            2: u'FLOW-001',
+            3: u'TEMP-001'
+        })
         self.assertEqual(self.DUT.n_row, 3)
         self.assertEqual(self.DUT.n_col, 3)
 

@@ -14,7 +14,10 @@ import unittest
 from nose.plugins.attrib import attr
 import numpy as np
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import dao.DAO as _dao
 from statistics.Bounds import *
@@ -47,7 +50,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_variance_covariance should return a list of lists when the estimated scale parameter is zero
         """
 
-
         _var_covar = calculate_variance_covariance(22, 620.0, 0.0, 0.6142)
         self.assertAlmostEqual(_var_covar[0][0], -0.0005236216)
         self.assertAlmostEqual(_var_covar[0][1], 0.002995667)
@@ -59,7 +61,6 @@ class TestStatisticalBounds(unittest.TestCase):
         """
         (TestStatisticalBounds) calculate_variance_covariance should return a list of lists when the estimated shape parameter is zero
         """
-
 
         _var_covar = calculate_variance_covariance(22, 620.0, 0.4239, 0.0)
         self.assertAlmostEqual(_var_covar[0][0], 0.006105992)
@@ -73,7 +74,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_nhpp_mean_variance should return a float value equal to the variance of the cumulative mean of the NHPP model
         """
 
-
         _mean_var = calculate_nhpp_mean_variance(46, 3000.0, 0.332, 0.616)
         self.assertAlmostEqual(_mean_var, 92.3421144)
 
@@ -83,7 +83,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_nhpp_mean_variance should return a float value equal to the variance of the instantaneous mean of the NHPP model
         """
 
-
         _mean_var = calculate_nhpp_mean_variance(46, 3000.0, 0.332, 0.616, 2)
         self.assertAlmostEqual(_mean_var, 489.07164965)
 
@@ -92,7 +91,6 @@ class TestStatisticalBounds(unittest.TestCase):
         """
         (TestStatisticalBounds) calculate_fisher_bounds should return a tuple of float values with the lower and upper alpha bounds
         """
-
 
         _bounds = calculate_fisher_bounds(0.03548, 0.00005721408, 0.9)
         self.assertAlmostEqual(_bounds[0], 0.02699778)
@@ -104,7 +102,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_fisher_bounds should return a tuple of float values with the lower and upper alpha bounds with alpha greater than one
         """
 
-
         _bounds = calculate_fisher_bounds(0.03548, 0.00005721408, 90.0)
         self.assertAlmostEqual(_bounds[0], 0.02699778)
         self.assertAlmostEqual(_bounds[1], 0.04662719)
@@ -114,7 +111,6 @@ class TestStatisticalBounds(unittest.TestCase):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the cumulative failure intensity for Type II tests
         """
-
 
         _bounds = calculate_crow_bounds(22, 620.0, 0.4239, 0.6142, 0.9, 3, 2)
         self.assertAlmostEqual(_bounds[0], 0.02402216)
@@ -126,7 +122,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the shape parameter for Type II tests
         """
 
-
         _bounds = calculate_crow_bounds(22, 620.0, 0.4239, 0.6142, 0.9, 1, 2)
         self.assertAlmostEqual(_bounds[0], 0.4527305)
         self.assertAlmostEqual(_bounds[1], 0.9349943)
@@ -136,7 +131,6 @@ class TestStatisticalBounds(unittest.TestCase):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the scale parameter for Type II tests
         """
-
 
         _bounds = calculate_crow_bounds(22, 620.0, 0.4239, 0.6142, 0.9, 2, 2)
         self.assertAlmostEqual(_bounds[0], 0.2870230)
@@ -148,7 +142,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the cumulative failure intensity for Type I tests
         """
 
-
         _bounds = calculate_crow_bounds(22, 620.0, 0.4239, 0.6142, 0.9, 3, 1)
         self.assertAlmostEqual(_bounds[0], 0.02402216)
         self.assertAlmostEqual(_bounds[1], 0.05255707)
@@ -158,7 +151,6 @@ class TestStatisticalBounds(unittest.TestCase):
         """
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the shape parameter for Type I tests
         """
-
 
         _bounds = calculate_crow_bounds(22, 620.0, 0.4239, 0.6142, 0.9, 1, 1)
         self.assertAlmostEqual(_bounds[0], 0.4356064)
@@ -170,7 +162,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the scale parameter for Type I tests
         """
 
-
         _bounds = calculate_crow_bounds(22, 620.0, 0.4239, 0.6142, 0.9, 2, 1)
         self.assertAlmostEqual(_bounds[0], 0.2870230)
         self.assertAlmostEqual(_bounds[1], 0.6279656)
@@ -181,7 +172,6 @@ class TestStatisticalBounds(unittest.TestCase):
         (TestStatisticalBounds) calculate_crow_bounds should return a tuple of float values with the lower and upper alpha bounds for the scale parameter when passed an alpha parameter greater than one
         """
 
-
         _bounds = calculate_crow_bounds(22, 620.0, 0.4239, 0.6142, 90.0, 2, 2)
         self.assertAlmostEqual(_bounds[0], 0.2870230)
         self.assertAlmostEqual(_bounds[1], 0.5827754)
@@ -189,23 +179,19 @@ class TestStatisticalBounds(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_beta_bounds(self):
         """(TestStatisticalBounds) calculate_beta_bounds should return a tuple of float values with the lower bound, point estimate, upper bound, and standard error."""
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[0],
-                               13.44239853)
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[1],
-                               21.66666666)
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[2],
-                               29.89093480)
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[3],
-                               5.0)
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0,
-                                                     90.0)[0],
-                               13.44239853)
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0,
-                                                     90.0)[1],
-                               21.66666666)
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0,
-                                                     90.0)[2],
-                               29.89093480)
-        self.assertAlmostEqual(calculate_beta_bounds(10.0, 20.0, 40.0,
-                                                     90.0)[3],
-                               5.0)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[0], 13.44239853)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[1], 21.66666666)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[2], 29.89093480)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 0.9)[3], 5.0)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 90.0)[0], 13.44239853)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 90.0)[1], 21.66666666)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 90.0)[2], 29.89093480)
+        self.assertAlmostEqual(
+            calculate_beta_bounds(10.0, 20.0, 40.0, 90.0)[3], 5.0)

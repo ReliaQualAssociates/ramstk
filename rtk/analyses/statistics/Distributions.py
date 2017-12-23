@@ -12,30 +12,30 @@ Statistics Package Distribution Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import inspect
@@ -46,7 +46,7 @@ import numpy as np
 import scipy.misc as misc
 import scipy.optimize as optimize
 from scipy.special import gamma
-from scipy.stats import chi2, expon, exponweib, lognorm, norm     # pylint: disable=E0611
+from scipy.stats import chi2, expon, exponweib, lognorm, norm  # pylint: disable=E0611
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -55,7 +55,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
 # WARNING: Refactor all distributions to accept Survival data model dicRecords as data input.
-def fisher_information(model, p0, X, noise=1.0):    # pylint: disable=C0103
+def fisher_information(model, p0, X, noise=1.0):  # pylint: disable=C0103
     """
     Function to calculate the Fisher information matrix for model sampled on
     grid X with parameters p0. Assumes samples are not correlated and have
@@ -99,7 +99,7 @@ def time_between_failures(previous, current):
     :return: _tbf; the time between previous and current failures.
     :rtype: float
     """
-# TODO: Consider re-writing time_between_failures; current McCabe Complexity metric=10.
+    # TODO: Consider re-writing time_between_failures; current McCabe Complexity metric=10.
     if current.status == 'Event' or str(current.status) == '1':
         if current.left_interval == 0.0:
             _tbf = current.right_interval
@@ -109,12 +109,13 @@ def time_between_failures(previous, current):
             _tbf = current.right_interval
     elif current.status == 'Right Censored' or str(current.status) == '2':
         _tbf = 1E99
-    elif(current.status == 'Left Censored' or str(current.status) == '3' or
-         current.status == 'Interval Censored' or str(current.status) == '4'):
-        _time1 = ((previous.right_interval -
-                   previous.left_interval) / 2.0) + previous.left_interval
-        _time2 = ((current.right_interval -
-                   current.left_interval) / 2.0) + current.left_interval
+    elif (current.status == 'Left Censored' or str(current.status) == '3'
+          or current.status == 'Interval Censored'
+          or str(current.status) == '4'):
+        _time1 = ((previous.right_interval - previous.left_interval) /
+                  2.0) + previous.left_interval
+        _time2 = ((current.right_interval - current.left_interval) /
+                  2.0) + current.left_interval
         if current.assembly_id == previous.assembly_id:
             _tbf = _time2 - _time1
         else:
@@ -149,7 +150,7 @@ def format_data_set(data, start, end):
              number of records in the data set.
     :rtype: tuple
     """
-# WARNING: Refactor format_data_set; current McCabe Complexity metric=12.
+    # WARNING: Refactor format_data_set; current McCabe Complexity metric=12.
     # Sort data by the right of the interval.  Remove records occurring before
     # the start time and after the end time.
     _data = sorted(data, key=lambda x: float(x[2]))
@@ -174,8 +175,8 @@ def format_data_set(data, start, end):
             _record[2] = np.inf
             _record[4] = 2
             _n_suspensions += 1
-        elif(_record[4] == 'Left Censored' or
-             _record[4] == 'Interval Censored' or str(_record[4]) == '3'):
+        elif (_record[4] == 'Left Censored'
+              or _record[4] == 'Interval Censored' or str(_record[4]) == '3'):
             _record[4] = 3
             _n_failures += 1
         else:
@@ -188,7 +189,7 @@ def format_data_set(data, start, end):
     _data = np.array(np.transpose(_data), dtype=float)
     _n_records = len(_data)
 
-    return(_data, _n_records, _n_suspensions, _n_failures)
+    return (_data, _n_records, _n_suspensions, _n_failures)
 
 
 class Exponential(object):
@@ -211,7 +212,7 @@ class Exponential(object):
 
         return np.log(theta) - theta * (data - loc)
 
-    def log_likelihood(self, theta, loc, data):   # pylint: disable=C0103, R0201, W0613
+    def log_likelihood(self, theta, loc, data):  # pylint: disable=C0103, R0201, W0613
         """
         Method to calculate the value of the log likelihood function for the
         exponential distribution.
@@ -233,12 +234,12 @@ class Exponential(object):
                              * 4 - interarrival time or time between failures
         """
 
-# TODO: Extend this to the two-parameter Exponential
+        # TODO: Extend this to the two-parameter Exponential
         # Calculate the value of the log-likelihood for the event observations.
         _event_t = data[np.where(data[:, 3] == 1)][:, 1]
         _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-        _event_ll = np.sum(_event_n *
-                           np.log((theta * np.exp(-theta * _event_t))))
+        _event_ll = np.sum(_event_n * np.log(
+            (theta * np.exp(-theta * _event_t))))
 
         # Calculate the value of the log-likelihood for the right-censored
         # observations.
@@ -248,16 +249,15 @@ class Exponential(object):
 
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
-        _interval_ll = np.sum(_interval_n *
-                              ((-theta * _interval_lt) -
-                               (-theta * _interval_rt)))
+        _interval_ll = np.sum(_interval_n * ((-theta * _interval_lt) -
+                                             (-theta * _interval_rt)))
 
         _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -337,17 +337,18 @@ class Exponential(object):
 
         # To find the lower bound, we provide root with a starting value for
         # theta less than the point estimate; in this case 1/10 the value.
-        _lower = optimize.root(self.log_likelihood_ratio, theta / 10.0,
-                               args=(loc, data, _const)).x[0]
+        _lower = optimize.root(
+            self.log_likelihood_ratio, theta / 10.0, args=(loc, data,
+                                                           _const)).x[0]
 
         # To find the upper bound, we provide root with a starting value for
         # theta equal to the point estimate.
-        _upper = optimize.root(self.log_likelihood_ratio, theta,
-                               args=(loc, data, _const)).x[0]
+        _upper = optimize.root(
+            self.log_likelihood_ratio, theta, args=(loc, data, _const)).x[0]
 
-        return(_lower, _upper)
+        return (_lower, _upper)
 
-    def partial_derivatives(self, theta, data):     # pylint: disable=R0201
+    def partial_derivatives(self, theta, data):  # pylint: disable=R0201
         """
         Method to calculate the value of the partial derivative of the
         exponential log-likelihood function with respect to theta.  This
@@ -382,12 +383,12 @@ class Exponential(object):
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.  Use the midpoint of the interval as an
         # approximation.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
         # Following are the exact equations for the interval censored
         # observations.
@@ -427,10 +428,10 @@ class Exponential(object):
         # _error_function = lambda s, x, y: ((s[0] + s[1] * x) - y)
 
         # Initialize lists to hold results.
-        _parameters = [0.0, 0.0]            # Scale and location parameters.
-        _variance = [0.0, 0.0, 0.0]         # Scale variance, covariance,
-                                            # location variance.
-        _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
+        _parameters = [0.0, 0.0]  # Scale and location parameters.
+        _variance = [0.0, 0.0, 0.0]  # Scale variance, covariance,
+        # location variance.
+        _gof = [0.0, 0.0, 0.0]  # MLE, AIC, BIC
 
         # Sort data by the right of the interval.  Remove records occurring
         # before the start time and after the end time.
@@ -441,16 +442,16 @@ class Exponential(object):
 
         # Count the number of suspensions, failures, and records.
         _n_suspensions = sum(x[2] for x in _data if x[3] == 2)
-        _n_failures = sum(x[2] for x in _data
-                          if x[3] == 1 or x[3] == 3 or x[3] == 4)
+        _n_failures = sum(
+            x[2] for x in _data if x[3] == 1 or x[3] == 3 or x[3] == 4)
         _n_records = len(_data)
 
         # Estimate the initial guess for the scale parameter using the fit
         # function from scipy.stats.  Then minimize the partial derivitive of
         # the likelihood function to find the final theta value.
         _theta = 1.0 / expon.fit(_data[:, 1])[1]
-        _parameters[0] = optimize.fsolve(self.partial_derivatives, _theta,
-                                         args=(_data))[0]
+        _parameters[0] = optimize.fsolve(
+            self.partial_derivatives, _theta, args=(_data))[0]
 
         _fI = fisher_information(self.log_pdf, _parameters, _data[:, 3])
         _variance[0] = 1.0 / _fI[0, 0]
@@ -463,7 +464,7 @@ class Exponential(object):
 
         return _fit
 
-    def theoretical_distribution(self, data, params):   # pylint: disable=R0201
+    def theoretical_distribution(self, data, params):  # pylint: disable=R0201
         """
         Method to create a data set from the theoretical distribution given the
         parameters.
@@ -512,7 +513,7 @@ class Exponential(object):
 
         return _hazard
 
-    def mean(self, scale, start_time, end_time, step_time):     # pylint: disable=R0201
+    def mean(self, scale, start_time, end_time, step_time):  # pylint: disable=R0201
         """
         Method to calculate the hazard function for the Exponential
         distribution between start_time and end_time in intervals of step_time.
@@ -544,7 +545,7 @@ class Exponential(object):
 
         return _mean
 
-    def reliability_function(self, scale, start_time, end_time, step_time):     # pylint: disable=R0201
+    def reliability_function(self, scale, start_time, end_time, step_time):  # pylint: disable=R0201
         """
         Method to calculate the reliability function for the Exponential
         distribution between start_time and end_time in intervals of step_time.
@@ -583,7 +584,7 @@ class Gaussian(object):
     Class for the Gaussian distribution.
     """
 
-    def log_pdf(self, data, mu, sigma):     # pylint: disable=C0103, R0201
+    def log_pdf(self, data, mu, sigma):  # pylint: disable=C0103, R0201
         """
         Method to calculate the logarithm of the gaussian probability density
         function (pdf).
@@ -601,7 +602,7 @@ class Gaussian(object):
 
         return _log_pdf
 
-    def log_likelihood(self, x, data):      # pylint: disable=C0103, R0201
+    def log_likelihood(self, x, data):  # pylint: disable=C0103, R0201
         """
         Method to calculate the value of the log likelihood function for the
         Gaussian distribution.
@@ -622,30 +623,28 @@ class Gaussian(object):
         # Calculate the value of the log-likelihood for the event observations.
         _event_t = data[np.where(data[:, 3] == 1)][:, 1]
         _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-        _event_ll = np.sum(_event_n *
-                           np.log((1.0 / x[1]) *
-                                  norm.pdf((_event_t - x[0]) / x[1])))
+        _event_ll = np.sum(_event_n * np.log((1.0 / x[1]) * norm.pdf(
+            (_event_t - x[0]) / x[1])))
 
         # Calculate the value of the log-likelihood for the right-censored
         # observations.
         _right_t = data[np.where(data[:, 3] == 2)][:, 1]
         _right_n = data[np.where(data[:, 3] == 2)][:, 2]
-        _right_ll = np.sum(_right_n *
-                           np.log((1.0 - norm.cdf((np.log(_right_t) - x[0]) /
-                                                  x[1]))))
+        _right_ll = np.sum(_right_n * np.log((1.0 - norm.cdf(
+            (np.log(_right_t) - x[0]) / x[1]))))
 
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
-        _interval_ll = np.sum(_interval_n *
-                              np.log(norm.cdf((_interval_rt - x[0]) / x[1]) -
-                                     norm.cdf((_interval_lt - x[0]) / x[1])))
+        _interval_ll = np.sum(_interval_n * np.log(
+            norm.cdf((_interval_rt - x[0]) / x[1]) - norm.cdf(
+                (_interval_lt - x[0]) / x[1])))
 
         _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -717,7 +716,8 @@ class Gaussian(object):
         :return: (_lower, _upper)
         :rtype: tuple
         """
-# TODO: Consider re-writing Gaussian.likelihood_bounds; current McCabe Complexity metric=10.
+
+        # TODO: Consider re-writing Gaussian.likelihood_bounds; current McCabe Complexity metric=10.
         def _shadow_func(pars, data, const):
             """
             Shadow function used to minimize the log-likelihood ratio.  It's a
@@ -743,9 +743,9 @@ class Gaussian(object):
 
             for _keyl in lower.keys():
                 for _keyu in upper.keys():
-                    if(abs(upper[_keyu] - lower[_keyl]) < 1.0E-6 and
-                       _keyl < _keyu):
-                        return(_keyl, _keyu)
+                    if (abs(upper[_keyu] - lower[_keyl]) < 1.0E-6
+                            and _keyl < _keyu):
+                        return (_keyl, _keyu)
 
         _lower = OrderedDict()
         _upper = OrderedDict()
@@ -759,15 +759,15 @@ class Gaussian(object):
 
             # To find the lower bound, we provide root with a starting value
             # for mu less than the point estimate; in this case 1/10 the value.
-            _lower[_sigma] = optimize.root(_shadow_func,
-                                           [pars[0] / 10.0, _sigma],
-                                           args=(data, _const)).x[0]
+            _lower[_sigma] = optimize.root(
+                _shadow_func, [pars[0] / 10.0, _sigma], args=(data,
+                                                              _const)).x[0]
 
             # To find the upper bound, we provide root with a starting value
             # for mu greater than the point estimate; in this case double.
-            _upper[_sigma] = optimize.root(_shadow_func,
-                                           [2.0 * pars[0], _sigma],
-                                           args=(data, _const)).x[0]
+            _upper[_sigma] = optimize.root(
+                _shadow_func, [2.0 * pars[0], _sigma], args=(data,
+                                                             _const)).x[0]
 
         # Find the values of sigma where the difference between the lower and
         # upper limits is less than 1.0E-6.  There will be two points found and
@@ -775,14 +775,20 @@ class Gaussian(object):
         # well-behaved.  Only the key-value pairs falling between these values
         # will be kept and used to find the limits.
         _sigma = _sigma_limits(_lower, _upper)
-        _upper.values = [_upper[y] for y in _upper.keys()
-                         if y >= _sigma[0] and y <= _sigma[1]]
-        _upper.keys = [y for y in _upper.keys()
-                       if y >= _sigma[0] and y <= _sigma[1]]
-        _lower.values = [_lower[y] for y in _lower.keys()
-                         if y >= _sigma[0] and y <= _sigma[1]]
-        _lower.keys = [y for y in _lower.keys()
-                       if y >= _sigma[0] and y <= _sigma[1]]
+        _upper.values = [
+            _upper[y] for y in _upper.keys()
+            if y >= _sigma[0] and y <= _sigma[1]
+        ]
+        _upper.keys = [
+            y for y in _upper.keys() if y >= _sigma[0] and y <= _sigma[1]
+        ]
+        _lower.values = [
+            _lower[y] for y in _lower.keys()
+            if y >= _sigma[0] and y <= _sigma[1]
+        ]
+        _lower.keys = [
+            y for y in _lower.keys() if y >= _sigma[0] and y <= _sigma[1]
+        ]
 
         # Find the slope and intercept for the lower bounds assuming the
         # sigma-mu relationship is parabolic.
@@ -796,13 +802,13 @@ class Gaussian(object):
                                         _lower.values)
         _mu_u = max(_upper.values)
 
-        _sigma = np.roots([_poptu[0] - _poptl[0],
-                           _poptu[1] - _poptl[1],
-                           _poptu[2] - _poptl[2]])
+        _sigma = np.roots([
+            _poptu[0] - _poptl[0], _poptu[1] - _poptl[1], _poptu[2] - _poptl[2]
+        ])
 
-        return(_mu_l, _mu_u, _sigma[1], _sigma[0])
+        return (_mu_l, _mu_u, _sigma[1], _sigma[0])
 
-    def partial_derivatives(self, pars, data):         # pylint: disable=C0103, R0201, R0914
+    def partial_derivatives(self, pars, data):  # pylint: disable=C0103, R0201, R0914
         """
         Method to calculate the value of the partial derivatives of the
         gaussian log-likelihood function with respect to mu and sigma.  This
@@ -848,12 +854,12 @@ class Gaussian(object):
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.  Use the midpoint of the interval as an
         # approximation.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
         # Following are the exact equations for the interval censored
         # observations.
@@ -877,7 +883,7 @@ class Gaussian(object):
 
         return _del_mu * _del_sigma
 
-    def maximum_likelihood_estimate(self, data, start, end):    # pylint: disable=R0914
+    def maximum_likelihood_estimate(self, data, start, end):  # pylint: disable=R0914
         """
         Method to fit data to a parametric distribution and find point
         estimates of the parameters.  It is up to the calling function to
@@ -910,10 +916,10 @@ class Gaussian(object):
             return [self.partial_derivatives(pars, data), 0.0]
 
         # Initialize lists to hold results.
-        _parameters = [0.0, 0.0]            # Scale and location parameters.
-        _variance = [0.0, 0.0, 0.0]         # Scale variance, covariance,
-                                            # location variance.
-        _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
+        _parameters = [0.0, 0.0]  # Scale and location parameters.
+        _variance = [0.0, 0.0, 0.0]  # Scale variance, covariance,
+        # location variance.
+        _gof = [0.0, 0.0, 0.0]  # MLE, AIC, BIC
 
         # Sort data by the right of the interval.  Remove records occurring
         # before the start time and after the end time.
@@ -924,14 +930,14 @@ class Gaussian(object):
 
         # Count the number of suspensions, failures, and records.
         _n_suspensions = sum(x[2] for x in _data if x[3] == 2)
-        _n_failures = sum(x[2] for x in _data
-                          if x[3] == 1 or x[3] == 3 or x[3] == 4)
+        _n_failures = sum(
+            x[2] for x in _data if x[3] == 1 or x[3] == 3 or x[3] == 4)
         _n_records = len(_data)
 
         # Adjust the right-censored times to be the mid-point between the
         # censored time and the maximum oberserved time in the data set.
-        _adj_right = (max(_data[:, 1]) +
-                      _data[np.where(_data[:, 3] == 2), 1]) / 2.0
+        _adj_right = (
+            max(_data[:, 1]) + _data[np.where(_data[:, 3] == 2), 1]) / 2.0
         _data[np.where(_data[:, 3] == 2), 1] = _adj_right
 
         # Adjust the interval-censored times so they can be passed to the
@@ -945,8 +951,7 @@ class Gaussian(object):
         # using the right of the interval.  Use these as the starting
         # values to scipy.optimize.fsolve.
         (_mu, _sigma) = norm.fit(np.array(_data[:, 1], dtype=float))
-        _params = optimize.fsolve(_shadow_func, [_mu, _sigma],
-                                  args=(data))
+        _params = optimize.fsolve(_shadow_func, [_mu, _sigma], args=(data))
 
         _parameters[0] = _params[0]
         _parameters[1] = _params[1]
@@ -965,7 +970,7 @@ class Gaussian(object):
 
         return _fit
 
-    def theoretical_distribution(self, data, params):   # pylint: disable=R0201
+    def theoretical_distribution(self, data, params):  # pylint: disable=R0201
         """
         Method to create a data set from the theoretical distribution given the
         parameters.
@@ -989,7 +994,7 @@ class Gaussian(object):
 
         return _y
 
-    def hazard_function(self, scale, shape, start_time, end_time, step_time):   # pylint: disable=R0201
+    def hazard_function(self, scale, shape, start_time, end_time, step_time):  # pylint: disable=R0201
         """
         Method to calculate the hazard function for the Exponential
         distribution between start_time and end_time in intervals of step_time.
@@ -1038,7 +1043,7 @@ class Gaussian(object):
 
         return _hazard
 
-    def mean(self, scale, start_time, end_time, step_time):     # pylint: disable=R0201
+    def mean(self, scale, start_time, end_time, step_time):  # pylint: disable=R0201
         """
         Method to calculate the means for the Gaussian distribution between
         start_time and end_time in intervals of step_time.  This method
@@ -1065,7 +1070,7 @@ class Gaussian(object):
         return _mean
 
     def reliability_function(self, scale, shape, start_time, end_time,
-                             step_time):    # pylint: disable=R0201
+                             step_time):  # pylint: disable=R0201
         """
         Method to calculate the reliability function for the Gaussian
         distribution between start_time and end_time in intervals of step_time.
@@ -1106,7 +1111,7 @@ class LogNormal(object):
     Class for the LogNormal distribution.
     """
 
-    def log_pdf(self, data, mu, sigma):     # pylint: disable=C0103, R0201
+    def log_pdf(self, data, mu, sigma):  # pylint: disable=C0103, R0201
         """
         Method to calculate the logarithm of the lognormal probability density
         function (pdf).
@@ -1124,7 +1129,7 @@ class LogNormal(object):
 
         return _log_pdf
 
-    def log_likelihood(self, pars, data):      # pylint: disable=C0103, R0201
+    def log_likelihood(self, pars, data):  # pylint: disable=C0103, R0201
         """
         Method to calculate the value of the log likelihood function for the
         lognormal distribution.
@@ -1145,34 +1150,29 @@ class LogNormal(object):
         # Calculate the value of the log-likelihood for the event observations.
         _event_t = data[np.where(data[:, 3] == 1)][:, 1]
         _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-        _event_ll = np.sum(_event_n *
-                           np.log((1.0 / (_event_t * pars[1])) *
-                                  norm.pdf((np.log(_event_t) - pars[0]) /
-                                           pars[1])))
+        _event_ll = np.sum(_event_n * np.log(
+            (1.0 / (_event_t * pars[1])) * norm.pdf(
+                (np.log(_event_t) - pars[0]) / pars[1])))
 
         # Calculate the value of the log-likelihood for the right-censored
         # observations.
         _right_t = data[np.where(data[:, 3] == 2)][:, 1]
         _right_n = data[np.where(data[:, 3] == 2)][:, 2]
-        _right_ll = np.sum(_right_n *
-                           (1.0 - norm.cdf((np.log(_right_t) - pars[0]) /
-                                           pars[1])))
+        _right_ll = np.sum(_right_n * (1.0 - norm.cdf(
+            (np.log(_right_t) - pars[0]) / pars[1])))
 
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
-        _interval_ll = np.sum(_interval_n *
-                              np.log(norm.cdf(
-                                  (np.log(_interval_rt) - pars[0]) / pars[1]) -
-                                     norm.cdf(
-                                         (np.log(_interval_lt) - pars[0]) /
-                                         pars[1])))
+        _interval_ll = np.sum(_interval_n * np.log(
+            norm.cdf((np.log(_interval_rt) - pars[0]) / pars[1]) - norm.cdf(
+                (np.log(_interval_lt) - pars[0]) / pars[1])))
 
         _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -1266,19 +1266,19 @@ class LogNormal(object):
 
             # To find the lower bound, we provide root with a starting value
             # for mu less than the point estimate; in this case 1/10 the value.
-            _lower[_sigma] = optimize.root(_shadow_func,
-                                           [pars[0] / 10.0, _sigma],
-                                           args=(data, _const)).x[0]
+            _lower[_sigma] = optimize.root(
+                _shadow_func, [pars[0] / 10.0, _sigma], args=(data,
+                                                              _const)).x[0]
 
             # To find the upper bound, we provide root with a starting value
             # for mu greater than the point estimate; in this case double.
-            _upper[_sigma] = optimize.root(_shadow_func,
-                                           [2.0 * pars[0], _sigma],
-                                           args=(data, _const)).x[0]
+            _upper[_sigma] = optimize.root(
+                _shadow_func, [2.0 * pars[0], _sigma], args=(data,
+                                                             _const)).x[0]
 
-        return(_lower, _upper)
+        return (_lower, _upper)
 
-    def partial_derivatives(self, pars, data):         # pylint: disable=C0103, R0201, R0914
+    def partial_derivatives(self, pars, data):  # pylint: disable=C0103, R0201, R0914
         """
         Method to calculate the value of the partial derivatives of the
         lognormal log-likelihood function with respect to mu and sigma.  This
@@ -1324,12 +1324,12 @@ class LogNormal(object):
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.  Use the midpoint of the interval as an
         # approximation.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
         # Following are the exact equations for the interval censored
         # observations.
@@ -1353,7 +1353,7 @@ class LogNormal(object):
 
         return _del_mu * _del_sigma
 
-    def maximum_likelihood_estimate(self, data, start, end):    # pylint: disable=R0914
+    def maximum_likelihood_estimate(self, data, start, end):  # pylint: disable=R0914
         """
         Method to fit data to a parametric distribution and find point
         estimates of the parameters.  It is up to the calling function to
@@ -1386,10 +1386,10 @@ class LogNormal(object):
             return [self.partial_derivatives(pars, data), 0.0]
 
         # Initialize lists to hold results.
-        _parameters = [0.0, 0.0]            # Scale and shape parameters.
-        _variance = [0.0, 0.0, 0.0]         # Scale variance, covariance,
-                                            # shape variance.
-        _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
+        _parameters = [0.0, 0.0]  # Scale and shape parameters.
+        _variance = [0.0, 0.0, 0.0]  # Scale variance, covariance,
+        # shape variance.
+        _gof = [0.0, 0.0, 0.0]  # MLE, AIC, BIC
 
         # Sort data by the right of the interval.  Remove records occurring
         # before the start time and after the end time.
@@ -1400,14 +1400,14 @@ class LogNormal(object):
 
         # Count the number of suspensions, failures, and records.
         _n_suspensions = sum(x[2] for x in _data if x[3] == 2)
-        _n_failures = sum(x[2] for x in _data
-                          if x[3] == 1 or x[3] == 3 or x[3] == 4)
+        _n_failures = sum(
+            x[2] for x in _data if x[3] == 1 or x[3] == 3 or x[3] == 4)
         _n_records = len(_data)
 
         # Adjust the right-censored times to be the mid-point between the
         # censored time and the maximum observed time in the data set.
-        _adj_right = (max(_data[:, 1]) +
-                      _data[np.where(_data[:, 3] == 2), 1]) / 2.0
+        _adj_right = (
+            max(_data[:, 1]) + _data[np.where(_data[:, 3] == 2), 1]) / 2.0
         _data[np.where(_data[:, 3] == 2), 1] = _adj_right
 
         # Adjust the interval-censored times so they can be passed to the
@@ -1420,10 +1420,10 @@ class LogNormal(object):
         # Provide an estimate of mu and sigma assuming no suspensions and
         # using the right of the interval.  Use these as the starting
         # values to scipy.optimize.fsolve.
-        (_sigma, __,
-         _mu) = lognorm.fit(np.array(_data[:, 1], dtype=float), floc=0)
-        _params = optimize.fsolve(_shadow_func, [np.log(_mu), _sigma],
-                                  args=(_data))
+        (_sigma, __, _mu) = lognorm.fit(
+            np.array(_data[:, 1], dtype=float), floc=0)
+        _params = optimize.fsolve(
+            _shadow_func, [np.log(_mu), _sigma], args=(_data))
 
         _parameters[0] = _params[0]
         _parameters[1] = _params[1]
@@ -1442,7 +1442,7 @@ class LogNormal(object):
 
         return _fit
 
-    def theoretical_distribution(self, data, params):   # pylint: disable=R0201
+    def theoretical_distribution(self, data, params):  # pylint: disable=R0201
         """
         Method to create a data set from the theoretical distribution given the
         parameters.
@@ -1466,7 +1466,7 @@ class LogNormal(object):
 
         return _y
 
-    def hazard_function(self, scale, shape, start_time, end_time, step_time):   # pylint: disable=R0201
+    def hazard_function(self, scale, shape, start_time, end_time, step_time):  # pylint: disable=R0201
         """
         Method to calculate the hazard function for the LogNormal
         distribution between start_time and end_time in intervals of step_time.
@@ -1550,7 +1550,7 @@ class LogNormal(object):
         return _mean
 
     def reliability_function(self, scale, shape, start_time, end_time,
-                             step_time):    # pylint: disable=R0201
+                             step_time):  # pylint: disable=R0201
         """
         Method to calculate the reliability function for the LogNormal
         distribution between start_time and end_time in intervals of step_time.
@@ -1591,7 +1591,7 @@ class Weibull(object):
     Class for the Weibull distribution.
     """
 
-    def log_pdf(self, data, eta, beta):     # pylint: disable=C0103, R0201
+    def log_pdf(self, data, eta, beta):  # pylint: disable=C0103, R0201
         """
         Method to calculate the logarithm of the weibull probability density
         function (pdf).
@@ -1609,7 +1609,7 @@ class Weibull(object):
 
         return _log_pdf
 
-    def log_likelihood(self, pars, data):   # pylint: disable=C0103, R0201
+    def log_likelihood(self, pars, data):  # pylint: disable=C0103, R0201
         """
         Method to calculate the value of the log likelihood function for the
         weibull distribution.
@@ -1630,10 +1630,10 @@ class Weibull(object):
         # Calculate the value of the log-likelihood for the event observations.
         _event_t = data[np.where(data[:, 3] == 1)][:, 1]
         _event_n = data[np.where(data[:, 3] == 1)][:, 2]
-        _event_ll = np.sum(_event_n *
-                           np.log((pars[1] / pars[0]) *
-                                  ((_event_t / pars[0])**(pars[1] - 1.0)) *
-                                  np.exp(-(_event_t / pars[0])**pars[1])))
+        _event_ll = np.sum(_event_n * np.log(
+            (pars[1] / pars[0]) *
+            ((_event_t / pars[0])**
+             (pars[1] - 1.0)) * np.exp(-(_event_t / pars[0])**pars[1])))
 
         # Calculate the value of the log-likelihood for the right-censored
         # observations.
@@ -1643,18 +1643,16 @@ class Weibull(object):
 
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
-        _interval_ll = np.sum(_interval_n *
-                              np.log(np.exp(-(_interval_lt /
-                                              pars[0])**pars[1]) -
-                                     np.exp(-(_interval_rt /
-                                              pars[0])**pars[1])))
+        _interval_ll = np.sum(_interval_n * np.log(
+            np.exp(-(_interval_lt / pars[0])**pars[1]) -
+            np.exp(-(_interval_rt / pars[0])**pars[1])))
 
         _logLik = _event_ll - _right_ll + _interval_ll
 
@@ -1752,9 +1750,9 @@ class Weibull(object):
 
             for _keyl in lower.keys():
                 for _keyu in upper.keys():
-                    if(abs(upper[_keyu] - lower[_keyl]) < 1.0E-6 and
-                       _keyl < _keyu):
-                        return(_keyl, _keyu)
+                    if (abs(upper[_keyu] - lower[_keyl]) < 1.0E-6
+                            and _keyl < _keyu):
+                        return (_keyl, _keyu)
 
         _lower = OrderedDict()
         _upper = OrderedDict()
@@ -1766,26 +1764,26 @@ class Weibull(object):
         _betau = 2.0 * pars[1]
         for _index in range(200):
             # Find the lower bound.
-            _temp = optimize.root(_shadow_func, [pars[0], _betal],
-                                  args=(data, _const)).x
+            _temp = optimize.root(
+                _shadow_func, [pars[0], _betal], args=(data, _const)).x
             _lower[_betal] = _temp[0]
             _betal = _temp[1]
 
             # Find the upper bound.
-            _temp = optimize.root(_shadow_func, [pars[0], _betau],
-                                  args=(data, _const)).x
+            _temp = optimize.root(
+                _shadow_func, [pars[0], _betau], args=(data, _const)).x
             _upper[_betau] = _temp[0]
             _betau = _temp[1]
 
         _beta_l = max(_lower.keys())
         _beta_u = min(_upper.keys())
-        _eta_l = optimize.fsolve(_shadow_func, [pars[0] / 10.0, _beta_l],
-                                 args=(data, 0.0))[0]
+        _eta_l = optimize.fsolve(
+            _shadow_func, [pars[0] / 10.0, _beta_l], args=(data, 0.0))[0]
         _eta_u = _upper[_beta_u]
 
-        return(_eta_l, _eta_u, _beta_l, _beta_u)
+        return (_eta_l, _eta_u, _beta_l, _beta_u)
 
-    def partial_derivatives(self, x, data):     # pylint: disable=C0103, R0201, R0914
+    def partial_derivatives(self, x, data):  # pylint: disable=C0103, R0201, R0914
         """
         Method to calculate the value of the partial derivatives of the
         weibull log-likelihood function with respect to mu and sigma.  This
@@ -1821,20 +1819,20 @@ class Weibull(object):
         # observations.
         _right_t = data[np.where(data[:, 3] == 2)][:, 1]
         _right_n = data[np.where(data[:, 3] == 2)][:, 2]
-        _right_ll_beta = np.sum(_right_n * (_right_t / x[0])**x[1] *
-                                np.log(_right_t / x[0]))
+        _right_ll_beta = np.sum(
+            _right_n * (_right_t / x[0])**x[1] * np.log(_right_t / x[0]))
         _right_ll_eta = (x[1] / x[0]) * \
                         np.sum(_right_n * (_right_t / x[0])**x[1])
 
         # Calculate the value of the log-likelihood for the left- and interval-
         # censored observations.  Use the midpoint of the interval as an
         # approximation.
-        _interval_lt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 0]
-        _interval_rt = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                   data[:, 3] == 4))][:, 1]
-        _interval_n = data[np.where(np.logical_or(data[:, 3] == 3,
-                                                  data[:, 3] == 4))][:, 2]
+        _interval_lt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 0]
+        _interval_rt = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 1]
+        _interval_n = data[np.where(
+            np.logical_or(data[:, 3] == 3, data[:, 3] == 4))][:, 2]
 
         # Following are the exact equations for the interval censored
         # observations.
@@ -1893,11 +1891,11 @@ class Weibull(object):
             return [self.partial_derivatives(pars, data), 0.0]
 
         # Initialize lists to hold results.
-        _parameters = [0.0, 0.0, 0.0]       # Scale, shape, and location
-                                            # parameters.
-        _variance = [0.0, 0.0, 0.0]         # Scale variance, covariance,
-                                            # location variance.
-        _gof = [0.0, 0.0, 0.0]              # MLE, AIC, BIC
+        _parameters = [0.0, 0.0, 0.0]  # Scale, shape, and location
+        # parameters.
+        _variance = [0.0, 0.0, 0.0]  # Scale variance, covariance,
+        # location variance.
+        _gof = [0.0, 0.0, 0.0]  # MLE, AIC, BIC
 
         # Sort data by the right of the interval.  Remove records occurring
         # before the start time and after the end time.
@@ -1908,14 +1906,14 @@ class Weibull(object):
 
         # Count the number of suspensions, failures, and records.
         _n_suspensions = sum(x[2] for x in _data if x[3] == 2)
-        _n_failures = sum(x[2] for x in _data
-                          if x[3] == 1 or x[3] == 3 or x[3] == 4)
+        _n_failures = sum(
+            x[2] for x in _data if x[3] == 1 or x[3] == 3 or x[3] == 4)
         _n_records = len(_data)
 
         # Adjust the right-censored times to be the mid-point between the
         # censored time and the maximum oberserved time in the data set.
-        _adj_right = (max(_data[:, 1]) +
-                      _data[np.where(_data[:, 3] == 2), 1]) / 2.0
+        _adj_right = (
+            max(_data[:, 1]) + _data[np.where(_data[:, 3] == 2), 1]) / 2.0
         _data[np.where(_data[:, 3] == 2), 1] = _adj_right
 
         # Adjust the interval-censored times so they can be passed to the
@@ -1928,9 +1926,8 @@ class Weibull(object):
         # Provide an estimate of eta and beta assuming no suspensions and
         # using the right of the interval.  Use these as the starting
         # values to scipy.optimize.fsolve.
-        (__, _beta,
-         __, _eta) = exponweib.fit(np.array(_data[:, 4], dtype=float),
-                                   f0=1, floc=0)
+        (__, _beta, __, _eta) = exponweib.fit(
+            np.array(_data[:, 4], dtype=float), f0=1, floc=0)
         _params = optimize.fsolve(_shadow_func, [_eta, _beta], args=(data))
 
         _parameters[0] = _params[0]
@@ -1950,7 +1947,7 @@ class Weibull(object):
 
         return _fit
 
-    def theoretical_distribution(self, data, params):   # pylint: disable=R0201
+    def theoretical_distribution(self, data, params):  # pylint: disable=R0201
         """
         Method to create a data set from the theoretical distribution given the
         parameters.
@@ -1973,7 +1970,7 @@ class Weibull(object):
 
         return _y
 
-    def hazard_function(self, scale, shape, start_time, end_time, step_time):   # pylint: disable=R0201
+    def hazard_function(self, scale, shape, start_time, end_time, step_time):  # pylint: disable=R0201
         """
         Method to calculate the hazard function for the Weibull distribution
         between start_time and end_time in intervals of step_time.  This method
@@ -2062,7 +2059,7 @@ class Weibull(object):
         return _mean
 
     def reliability_function(self, scale, shape, start_time, end_time,
-                             step_time):    # pylint: disable=R0201
+                             step_time):  # pylint: disable=R0201
         """
         Method to calculate the reliability function for the Weibull
         distribution between start_time and end_time in intervals of step_time.

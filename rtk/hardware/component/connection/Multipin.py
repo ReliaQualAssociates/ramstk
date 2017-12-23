@@ -13,30 +13,30 @@ Hardware.Component.Connection Package Multipin Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -46,7 +46,7 @@ try:
     import Configuration
     import Utilities
     from hardware.component.connection.Connection import Model as Connection
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.connection.Connection import Model as \
@@ -60,7 +60,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -86,16 +86,21 @@ class Multipin(Connection):
 
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _quality = [1.0, 2.0]
-    _piE = [[1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
-             27.0, 490.0],
-            [2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8,
-             20.0, 54.0, 970.0]]
+    _piE = [[
+        1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0, 27.0,
+        490.0
+    ], [
+        2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8, 20.0,
+        54.0, 970.0
+    ]]
     _piK = [1.0, 1.5, 2.0, 3.0, 4.0]
-    _lambdab_count = [0.011, 0.14, 0.11, 0.069, 0.20, 0.058, 0.098, 0.23,
-                      0.34, 0.37, 0.0054, 0.16, 0.42, 6.8]
+    _lambdab_count = [
+        0.011, 0.14, 0.11, 0.069, 0.20, 0.058, 0.098, 0.23, 0.34, 0.37, 0.0054,
+        0.16, 0.42, 6.8
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 72                        # Subcategory ID in the common DB.
+    subcategory = 72  # Subcategory ID in the common DB.
 
     def __init__(self):
         """
@@ -120,7 +125,7 @@ class Multipin(Connection):
         self.amps_per_contact = 0.0
         self.mate_unmate_cycles = 0.0
         self.contact_temperature = 30.0
-        self.insert = 0                     # Insert material.
+        self.insert = 0  # Insert material.
         self.specification = 0
         self.configuration = 0
         self.contact_gauge = 22
@@ -155,11 +160,11 @@ class Multipin(Connection):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -174,14 +179,14 @@ class Multipin(Connection):
 
         _values = Connection.get_attributes(self)
 
-        _values = _values + (self.piK, self.piP, self.amps_per_contact, 
-                             self.mate_unmate_cycles, self.contact_temperature, 
-                             self.insert, self.specification, self.configuration, 
-                             self.contact_gauge, self.n_active_contacts)
+        _values = _values + (
+            self.piK, self.piP, self.amps_per_contact, self.mate_unmate_cycles,
+            self.contact_temperature, self.insert, self.specification,
+            self.configuration, self.contact_gauge, self.n_active_contacts)
 
         return _values
 
-    def calculate_part(self):               # pylint: disable=R0912
+    def calculate_part(self):  # pylint: disable=R0912
         """
         Method to calculate the hazard rate for the Multi-Pin Connection data
         model.
@@ -189,7 +194,7 @@ class Multipin(Connection):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 41.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 41.
         from math import exp
 
         self.hazard_rate_model = {}
@@ -216,7 +221,7 @@ class Multipin(Connection):
             To = self.temperature_rise + self.temperature_active
 
             # Base hazard rate.
-            if self.configuration == 1:     # Rack and panel
+            if self.configuration == 1:  # Rack and panel
                 if self.specification in [1, 2]:
                     _constant = [0.431, -2073.6, 423.0, 4.66]
                 else:
@@ -224,7 +229,7 @@ class Multipin(Connection):
                         _constant = [0.020, -1592.0, 473.0, 5.36]
                     else:
                         _constant = [0.431, -2073.6, 423.0, 4.66]
-            elif self.configuration == 2:   # Circular
+            elif self.configuration == 2:  # Circular
                 if self.specification == 1:
                     if self.insert in [1, 2, 3, 4, 5, 6]:
                         _constant = [0.431, -2073.6, 423.0, 4.66]
@@ -245,7 +250,7 @@ class Multipin(Connection):
                 else:
                     _constant = [0.431, -2073.6, 423.0, 4.66]
 
-            elif self.configuration == 3:   # Power
+            elif self.configuration == 3:  # Power
                 if self.specification in [1, 2, 3, 4, 5, 6, 7]:
                     _constant = [0.190, -1298.0, 373.0, 4.25]
                 else:
@@ -253,7 +258,7 @@ class Multipin(Connection):
                         _constant = [0.431, -2073.6, 423.0, 4.66]
                     else:
                         _constant = [0.190, -1298.0, 373.0, 4.25]
-            else:                            # Coaxial/triaxial
+            else:  # Coaxial/triaxial
                 if self.insert in [1, 2, 3, 4, 5, 6]:
                     _constant = [0.431, -2073.6, 423.0, 4.66]
                 else:

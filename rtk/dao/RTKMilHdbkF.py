@@ -11,11 +11,11 @@ The RTKMilHdbkF Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKMilHdbkF(RTK_BASE):
@@ -28,9 +28,12 @@ class RTKMilHdbkF(RTK_BASE):
     __tablename__ = 'rtk_mil_hdbk_f'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column('fld_hardware_id', Integer,
-                         ForeignKey('rtk_hardware.fld_hardware_id'),
-                         primary_key=True, nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        ForeignKey('rtk_hardware.fld_hardware_id'),
+        primary_key=True,
+        nullable=False)
 
     # pylint: disable=invalid-name
     A1 = Column('fld_a_one', Float, default=0.0)

@@ -31,7 +31,6 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This is the test class for testing Requirement module algorithms and models.
 """
@@ -42,7 +41,10 @@ from os.path import dirname
 import unittest
 from nose.plugins.attrib import attr
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 import dao.DAO as _dao
 from requirement.Requirement import Model, Requirement
 
@@ -77,6 +79,7 @@ class TestRequirementController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_requirements(0)[1], 0)
+
     # TODO: Test that method fails when no Requirements exist in database.
     @attr(all=True, integration=True)
     def test01_add_requirement(self):
@@ -85,12 +88,11 @@ class TestRequirementController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_requirements(0)[1], 0)
-        (_results,
-         _error_code,
-         _requirement_id) = self.DUT.add_requirement(0, 0)
+        (_results, _error_code, _requirement_id) = self.DUT.add_requirement(
+            0, 0)
 
-        self.assertTrue(isinstance(self.DUT.dicRequirements[self.DUT._last_id],
-                                   Model))
+        self.assertTrue(
+            isinstance(self.DUT.dicRequirements[self.DUT._last_id], Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
@@ -101,9 +103,7 @@ class TestRequirementController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_requirements(0)[1], 0)
-        (_results,
-         _error_code,
-         _requirement_id) = self.DUT.add_requirement(0)
+        (_results, _error_code, _requirement_id) = self.DUT.add_requirement(0)
         self.assertEqual(self.DUT.dicRequirements[self.DUT._last_id].parent_id,
                          -1)
         self.assertTrue(_results)
@@ -116,8 +116,8 @@ class TestRequirementController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_requirements(0)[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_requirement(self.DUT._last_id)
+        (_results, _error_code) = self.DUT.delete_requirement(
+            self.DUT._last_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, [0, 0])

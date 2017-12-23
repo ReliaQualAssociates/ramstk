@@ -12,30 +12,30 @@ Incident Component Sub-Package Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import other RTK modules.
@@ -50,7 +50,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 
-class Model(object):                       # pylint: disable=R0902, R0904
+class Model(object):  # pylint: disable=R0902, R0904
     """
     The Incident Component data model contains the attributes and methods for
     an Incident Component. The attributes of an Incident Component model are:
@@ -176,7 +176,7 @@ class Component(object):
             _component.set_attributes(_results[i])
             self.dicComponents[_results[i][1]] = _component
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_component(self, incident_id, component_id):
         """
@@ -207,7 +207,7 @@ class Component(object):
             _component.component_id = component_id
             self.dicComponents[_component.component_id] = _component
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_component(self, incident_id, component_id):
         """
@@ -225,7 +225,7 @@ class Component(object):
                   AND fld_component_id={1:d}".format(incident_id, component_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_all_components(self):
         """
@@ -236,8 +236,8 @@ class Component(object):
         """
 
         for _component in self.dicComponents.values():
-            (_results,
-             _error_code) = self.save_component(_component.component_id)
+            (_results, _error_code) = self.save_component(
+                _component.component_id)
 
         return False
 
@@ -261,12 +261,11 @@ class Component(object):
                       fld_ttf={10:f}, fld_mode_type={11:d} \
                   WHERE fld_incident_id={0:d} \
                   AND fld_component_id={1:d}".format(
-                      _component.incident_id, _component.component_id,
-                      _component.initial_installation, _component.failure,
-                      _component.suspension, _component.occ_fault,
-                      _component.cnd_nff, _component.interval_censored,
-                      _component.use_op_time, _component.use_cal_time,
-                      _component.ttf, _component.mode_type)
+            _component.incident_id, _component.component_id,
+            _component.initial_installation, _component.failure,
+            _component.suspension, _component.occ_fault, _component.cnd_nff,
+            _component.interval_censored, _component.use_op_time,
+            _component.use_cal_time, _component.ttf, _component.mode_type)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)

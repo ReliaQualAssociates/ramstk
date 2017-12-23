@@ -13,30 +13,30 @@ Hardware.Component.Capacitor.Fixed Package Glass Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -45,7 +45,7 @@ import locale
 try:
     import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
@@ -57,7 +57,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -86,11 +86,15 @@ class Glass(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0,
-            34.0, 610.0]
+    _piE = [
+        1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0, 34.0,
+        610.0
+    ]
     _piQ = [0.03, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0]
-    _lambdab_count = [0.00032, 0.00096, 0.0059, 0.0029, 0.0094, 0.0044, 0.0062,
-                      0.035, 0.045, 0.020, 0.00016, 0.0076, 0.030, 0.29]
+    _lambdab_count = [
+        0.00032, 0.00096, 0.0059, 0.0029, 0.0094, 0.0044, 0.0062, 0.035, 0.045,
+        0.020, 0.00016, 0.0076, 0.030, 0.29
+    ]
     lst_ref_temp = [398.0, 473.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -106,7 +110,7 @@ class Glass(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 398.0
 
     def calculate_part(self):
@@ -135,7 +139,7 @@ class Glass(Capacitor):
                     0.000000000825 * ((_stress / 0.5)**4 + 1) * \
                     exp(16.0 * ((self.temperature_active + 273) /
                                 self.reference_temperature))
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 

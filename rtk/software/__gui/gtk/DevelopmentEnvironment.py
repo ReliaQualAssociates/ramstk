@@ -13,30 +13,30 @@ Software Package Risk Analysis Development Environment Specific Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -276,24 +276,26 @@ class RiskAnalysis(gtk.VPaned):
 
         _hpaned.pack1(_frame, True, True)
 
-        _labels = [_(u"1. There are separate design and coding "
-                     u"organizations."),
-                   _(u"2. There is an independent software test "
-                     u"organization."),
-                   _(u"3. There is an independent software quality "
-                     u"assurance organization."),
-                   _(u"4. There is an independent software configuration "
-                     u"management organization."),
-                   _(u"5. There is an independent software verification "
-                     u"and validation organization."),
-                   _(u"6. A structured programming team will develop the "
-                     u"software."),
-                   _(u"7. The educational level of the software team members "
-                     u"is above average."),
-                   _(u"8. The experience level of the software team members "
-                     u"is above average.")]
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
+        _labels = [
+            _(u"1. There are separate design and coding "
+              u"organizations."),
+            _(u"2. There is an independent software test "
+              u"organization."),
+            _(u"3. There is an independent software quality "
+              u"assurance organization."),
+            _(u"4. There is an independent software configuration "
+              u"management organization."),
+            _(u"5. There is an independent software verification "
+              u"and validation organization."),
+            _(u"6. A structured programming team will develop the "
+              u"software."),
+            _(u"7. The educational level of the software team members "
+              u"is above average."),
+            _(u"8. The experience level of the software team members "
+              u"is above average.")
+        ]
+        (_x_pos, _y_pos) = Widgets.make_labels(
+            _labels, _fixed, 5, 5, wrap=False)
         _x_pos += 125
 
         _fixed.put(self.chkDevEnvQ1, _x_pos, _y_pos[0])
@@ -318,21 +320,23 @@ class RiskAnalysis(gtk.VPaned):
 
         _hpaned.pack2(_frame, True, True)
 
-        _labels = [_(u"1. Standards are defined and will be enforced."),
-                   _(u"2. Software will be developed using a higher order "
-                     u"language."),
-                   _(u"3. The development process will include formal "
-                     u"reviews (PDR, CDR, etc.)."),
-                   _(u"4. The development process will include frequent "
-                     u"walkthroughs."),
-                   _(u"5. Development will take a top-down and "
-                     u"structured approach."),
-                   _(u"6. Unit development folders will be used."),
-                   _(u"7. A software development library will be used."),
-                   _(u"8. A formal change and error reporting process "
-                     u"will be used."),
-                   _(u"9. Progress and status will routinely be "
-                     u"reported.")]
+        _labels = [
+            _(u"1. Standards are defined and will be enforced."),
+            _(u"2. Software will be developed using a higher order "
+              u"language."),
+            _(u"3. The development process will include formal "
+              u"reviews (PDR, CDR, etc.)."),
+            _(u"4. The development process will include frequent "
+              u"walkthroughs."),
+            _(u"5. Development will take a top-down and "
+              u"structured approach."),
+            _(u"6. Unit development folders will be used."),
+            _(u"7. A software development library will be used."),
+            _(u"8. A formal change and error reporting process "
+              u"will be used."),
+            _(u"9. Progress and status will routinely be "
+              u"reported.")
+        ]
         (__, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
 
         _fixed.put(self.chkDevEnvQ9, _x_pos, _y_pos[0])
@@ -361,28 +365,30 @@ class RiskAnalysis(gtk.VPaned):
 
         _hpaned.pack1(_frame, True, True)
 
-        _labels = [_(u" 1. System requirements specifications will be "
-                     u"documented."),
-                   _(u" 2. Software requirements specifications will be "
-                     u"documented."),
-                   _(u" 3. Interface design specifications will be "
-                     u"documented."),
-                   _(u" 4. Software design specification will be "
-                     u"documented."),
-                   _(u" 5. Test plans, procedures, and reports will be "
-                     u"documented."),
-                   _(u" 6. The software development plan will be "
-                     u"documented."),
-                   _(u" 7. The software quality assurance plan will be "
-                     u"documented."),
-                   _(u" 8. The software configuration management plan will "
-                     u"be documented."),
-                   _(u" 9. A requirements traceability matrix will be "
-                     u"used."),
-                   _(u"10. The software version description will be "
-                     u"documented."),
-                   _(u"11. All software discrepancies will be "
-                     u"documented.")]
+        _labels = [
+            _(u" 1. System requirements specifications will be "
+              u"documented."),
+            _(u" 2. Software requirements specifications will be "
+              u"documented."),
+            _(u" 3. Interface design specifications will be "
+              u"documented."),
+            _(u" 4. Software design specification will be "
+              u"documented."),
+            _(u" 5. Test plans, procedures, and reports will be "
+              u"documented."),
+            _(u" 6. The software development plan will be "
+              u"documented."),
+            _(u" 7. The software quality assurance plan will be "
+              u"documented."),
+            _(u" 8. The software configuration management plan will "
+              u"be documented."),
+            _(u" 9. A requirements traceability matrix will be "
+              u"used."),
+            _(u"10. The software version description will be "
+              u"documented."),
+            _(u"11. All software discrepancies will be "
+              u"documented.")
+        ]
         (__, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
 
         _fixed.put(self.chkDevEnvQ18, _x_pos, _y_pos[0])
@@ -410,24 +416,26 @@ class RiskAnalysis(gtk.VPaned):
 
         _hpaned.pack2(_frame, True, True)
 
-        _labels = [_(u" 1. The software language requirements will be "
-                     u"specified."),
-                   _(u" 2. Formal program design language will be used."),
-                   _(u" 3. Program design graphical techniques "
-                     u"(flowcharts, HIPO, etc.) will be used."),
-                   _(u" 4. Simulation/emulation tools will be used."),
-                   _(u" 5. Configuration management tools will be used."),
-                   _(u" 6. A code auditing tool will be used."),
-                   _(u" 7. A data flow analyzer will be used."),
-                   _(u" 8. A programmer's workbench will be used."),
-                   _(u" 9. Measurement tools will be used."),
-                   _(u"10. Software code reviews will be used."),
-                   _(u"11. Software branch testing will be used."),
-                   _(u"12. Random testing will be used."),
-                   _(u"13. Functional testing will be used."),
-                   _(u"14. Error and anomaly detection testing will be "
-                     u"used."),
-                   _(u"15. Structure analysis will be used.")]
+        _labels = [
+            _(u" 1. The software language requirements will be "
+              u"specified."),
+            _(u" 2. Formal program design language will be used."),
+            _(u" 3. Program design graphical techniques "
+              u"(flowcharts, HIPO, etc.) will be used."),
+            _(u" 4. Simulation/emulation tools will be used."),
+            _(u" 5. Configuration management tools will be used."),
+            _(u" 6. A code auditing tool will be used."),
+            _(u" 7. A data flow analyzer will be used."),
+            _(u" 8. A programmer's workbench will be used."),
+            _(u" 9. Measurement tools will be used."),
+            _(u"10. Software code reviews will be used."),
+            _(u"11. Software branch testing will be used."),
+            _(u"12. Random testing will be used."),
+            _(u"13. Functional testing will be used."),
+            _(u"14. Error and anomaly detection testing will be "
+              u"used."),
+            _(u"15. Structure analysis will be used.")
+        ]
         (__, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5, wrap=False)
 
         _fixed.put(self.chkDevEnvQ29, _x_pos, _y_pos[0])
@@ -448,14 +456,14 @@ class RiskAnalysis(gtk.VPaned):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"Development\nEnvironment") +
-                          "</span>")
+                          _(u"Development\nEnvironment") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_angle(0)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Assesses risk due to the development "
-                                  u"environment."))
+        _label.set_tooltip_text(
+            _(u"Assesses risk due to the development "
+              u"environment."))
         notebook.insert_page(self, tab_label=_label, position=-1)
 
         return False

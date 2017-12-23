@@ -4,7 +4,6 @@
 #       tests.unit.TestMemory.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing Memory IC module algorithms and models.
 """
@@ -12,7 +11,10 @@ This is the test class for testing Memory IC module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -43,8 +45,8 @@ class TestDRAMModel(unittest.TestCase):
                              10.0, 11, 12, 'Figure #', 14.0, 'LCN', 16, 17,
                              18.0, 'Name', 'NSN', 21, 'Page #', 23, 24,
                              'Part #', 26, 'Ref Des', 28.0, 29, 'Remarks',
-                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014,
-                             38, 39, 40, 41.0, 1, 1)
+                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014, 38,
+                             39, 40, 41.0, 1, 1)
         self._stress_values = (44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0,
                                52.0, 53.0, 54.0, 55.0, 56.0, 57.0, 58.0, 59.0,
                                'Sixty')
@@ -92,8 +94,7 @@ class TestDRAMModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + self._user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 0)
         self.assertEqual(self.DUT.package_id, 120)
         self.assertEqual(self.DUT.n_pins, 121)
@@ -105,15 +106,14 @@ class TestDRAMModel(unittest.TestCase):
         (TestDRAM) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0,
-                        105.0, 106.0, 107.0, 108, 109, 110.0, 111, 112.0,
-                        113.0, 114.0, 115, 116.0, 117, 118, 119, 120)
+        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0, 105.0,
+                        106.0, 107.0, 108, 109, 110.0, 111, 112.0, 113.0,
+                        114.0, 115, 116.0, 117, 118, 119, 120)
 
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 40)
 
     @attr(all=True, unit=True)
@@ -131,8 +131,7 @@ class TestDRAMModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 10)
 
     @attr(all=True, unit=True)
@@ -256,20 +255,21 @@ class TestEEPROMModel(unittest.TestCase):
         self.DUT = EEPROM()
 
         self._base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                             0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                             0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                             'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
-        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                               0.0, 1.0)
-        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                            0.0, 0)
-        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
-                             'Two', 'Three', '4')
+                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
+                             100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
+                             'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
+                             'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
+                             30.0, 30.0, 0.0, 2014)
+        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+                               1.0, 0.0, 1.0)
+        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                            1.0, 1.0, 0.0, 0.0, 0)
+        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0,
+                             10.0, 11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18,
+                             19.0, 0.0, 1.0, 2, 3, 440.0, 50, 60, 7.0, 80.0,
+                             90, 'Zero', 'One', 'Two', 'Three', '4')
         self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
         self._ic_values = (1.0, 0.05, 3.0, 4.0, 5.0, 1, "")
 
@@ -322,8 +322,7 @@ class TestEEPROMModel(unittest.TestCase):
                   self._user_values + self._comp_values + self._ic_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.part_type, 1)
         self.assertEqual(self.DUT.technology, 3)
@@ -347,16 +346,19 @@ class TestEEPROMModel(unittest.TestCase):
         (TestEEPROM) get_attributes should return a tuple of attribute values
         """
 
-        _my_values = (0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
-                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '',
-                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0,
-                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0,
+        _my_values = (0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                      0.0)
+        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
+                   '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
+                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, [
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+                   ], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                       ], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0,
                    0.0, 0.0, 1.0, 0.0, 0.0, 0, "") + _my_values
 
         self.assertEqual(self.DUT.get_attributes(), _values)
@@ -462,8 +464,8 @@ class TestROMModel(unittest.TestCase):
                              10.0, 11, 12, 'Figure #', 14.0, 'LCN', 16, 17,
                              18.0, 'Name', 'NSN', 21, 'Page #', 23, 24,
                              'Part #', 26, 'Ref Des', 28.0, 29, 'Remarks',
-                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014,
-                             38, 39, 40, 41.0, 1, 1)
+                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014, 38,
+                             39, 40, 41.0, 1, 1)
         self._stress_values = (44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0,
                                52.0, 53.0, 54.0, 55.0, 56.0, 57.0, 58.0, 59.0,
                                'Sixty')
@@ -510,8 +512,7 @@ class TestROMModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + self._user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 0)
         self.assertEqual(self.DUT.package_id, 120)
         self.assertEqual(self.DUT.n_pins, 121)
@@ -523,15 +524,14 @@ class TestROMModel(unittest.TestCase):
         (TestROM) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0,
-                        105.0, 106.0, 107.0, 108, 109, 110.0, 111, 112.0,
-                        113.0, 114.0, 115, 116.0, 117, 118, 119, 120)
+        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0, 105.0,
+                        106.0, 107.0, 108, 109, 110.0, 111, 112.0, 113.0,
+                        114.0, 115, 116.0, 117, 118, 119, 120)
 
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 40)
 
     @attr(all=True, unit=True)
@@ -549,8 +549,7 @@ class TestROMModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 10)
 
     @attr(all=True, unit=True)
@@ -678,8 +677,8 @@ class TestSRAMModel(unittest.TestCase):
                              10.0, 11, 12, 'Figure #', 14.0, 'LCN', 16, 17,
                              18.0, 'Name', 'NSN', 21, 'Page #', 23, 24,
                              'Part #', 26, 'Ref Des', 28.0, 29, 'Remarks',
-                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014,
-                             38, 39, 40, 41.0, 1, 1)
+                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014, 38,
+                             39, 40, 41.0, 1, 1)
         self._stress_values = (44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0,
                                52.0, 53.0, 54.0, 55.0, 56.0, 57.0, 58.0, 59.0,
                                'Sixty')
@@ -726,8 +725,7 @@ class TestSRAMModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + self._user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 0)
         self.assertEqual(self.DUT.package_id, 120)
         self.assertEqual(self.DUT.n_pins, 121)
@@ -739,15 +737,14 @@ class TestSRAMModel(unittest.TestCase):
         (TestSRAM) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0,
-                        105.0, 106.0, 107.0, 108, 109, 110.0, 111, 112.0,
-                        113.0, 114.0, 115, 116.0, 117, 118, 119, 120)
+        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0, 105.0,
+                        106.0, 107.0, 108, 109, 110.0, 111, 112.0, 113.0,
+                        114.0, 115, 116.0, 117, 118, 119, 120)
 
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 40)
 
     @attr(all=True, unit=True)
@@ -765,8 +762,7 @@ class TestSRAMModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 10)
 
     @attr(all=True, unit=True)

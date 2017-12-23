@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing Hardware BoM module algorithms and models.
 """
@@ -13,7 +12,10 @@ This is the test class for testing Hardware BoM module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -39,7 +41,7 @@ class TestBoMController(unittest.TestCase):
         Sets up the test fixture for the BoM class.
         """
 
-        self.DUT = Model()                  # Hardware BoM type.
+        self.DUT = Model()  # Hardware BoM type.
         self.CUT = BoM()
 
         _database = '/tmp/tempdb.rtk'
@@ -56,8 +58,8 @@ class TestBoMController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Model))
 
         # Verify class attributes are properly initialized.
-        self.assertTrue(isinstance(self.DUT.dicHardware[100][101],
-                                   Variable.AirTrimmer))
+        self.assertTrue(
+            isinstance(self.DUT.dicHardware[100][101], Variable.AirTrimmer))
 
         self.assertEqual(self.DUT.bom_type, 0)
         self.assertEqual(self.DUT.dao, self._dao)

@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKUnit module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,7 +37,7 @@ class TestRTKUnit(unittest.TestCase):
     Class for testing the RTKUnit class.
     """
 
-    attributes = (1, 'lbf','Pounds Force','measurement')
+    attributes = (1, 'lbf', 'Pounds Force', 'measurement')
 
     def setUp(self):
         """
@@ -98,7 +100,10 @@ class TestRTKUnit(unittest.TestCase):
         (TestRTKUnits) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = ('N', 'Newtons',)
+        _attributes = (
+            'N',
+            'Newtons',
+        )
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

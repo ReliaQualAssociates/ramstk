@@ -12,30 +12,30 @@ Survival Package Module View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -136,12 +136,12 @@ class ModuleView(object):
         # Create the main Survival class treeview.
         _fg_color = Configuration.RTK_COLORS[12]
         _bg_color = Configuration.RTK_COLORS[13]
-        (self.treeview,
-         self._lst_col_order) = Widgets.make_treeview('Dataset', 13,
-                                                      _fg_color, _bg_color)
+        (self.treeview, self._lst_col_order) = Widgets.make_treeview(
+            'Dataset', 13, _fg_color, _bg_color)
 
-        self.treeview.set_tooltip_text(_(u"Displays the list of survival "
-                                         u"analyses."))
+        self.treeview.set_tooltip_text(
+            _(u"Displays the list of survival "
+              u"analyses."))
 
         # Connect gtk.TreeView() editable cells to the callback function.
         i = 0
@@ -156,8 +156,8 @@ class ModuleView(object):
             i += 1
 
         self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_changed,
-                                  None, None))
+            self.treeview.connect('cursor_changed', self._on_row_changed, None,
+                                  None))
         self.treeview.connect('row_activated', self._on_row_changed)
 
         _scrollwindow = gtk.ScrolledWindow()
@@ -170,22 +170,23 @@ class ModuleView(object):
         _image.set_from_pixbuf(_icon)
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Survival\nAnalyses") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Survival\nAnalyses") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the development program "
-                                  u"survival analyses for the selected "
-                                  u"revision."))
+        _label.set_tooltip_text(
+            _(u"Displays the development program "
+              u"survival analyses for the selected "
+              u"revision."))
 
         _hbox = gtk.HBox()
         _hbox.pack_start(_image)
         _hbox.pack_end(_label)
         _hbox.show_all()
 
-        rtk_view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
-                                      position=position)
+        rtk_view.notebook.insert_page(
+            _scrollwindow, tab_label=_hbox, position=position)
 
         # Create a List View to associate with this Module View.
         self.listbook = ListView(self)
@@ -203,9 +204,8 @@ class ModuleView(object):
         """
 
         # Retrieve all the development program survival analyses.
-        (_survivals,
-         __) = self.mdcRTK.dtcSurvival.request_survival(self.mdcRTK.project_dao,
-                                                        self.mdcRTK.revision_id)
+        (_survivals, __) = self.mdcRTK.dtcSurvival.request_survival(
+            self.mdcRTK.project_dao, self.mdcRTK.revision_id)
 
         # Clear the Survival Module View gtk.TreeModel().
         _model = self.treeview.get_model()
@@ -319,9 +319,8 @@ class ModuleView(object):
         :rtype: bool
         """
 
-        (_result,
-         _error_code) = self.mdcRTK.dtcSurvival.delete_record(survival_id,
-                                                              record_id)
+        (_result, _error_code) = self.mdcRTK.dtcSurvival.delete_record(
+            survival_id, record_id)
 
         return False
 
@@ -357,7 +356,8 @@ class ModuleView(object):
         _records = _survival.dicRecords
 
         _keys = [_key for _key in _records.keys()]
-        _records[_keys[0]].interarrival_time = _records[_keys[0]].right_interval
+        _records[_keys[0]].interarrival_time = _records[_keys[
+            0]].right_interval
         for i in range(len(_keys) - 1):
             _survival.calculate_tbf(_keys[i], _keys[i + 1])
 

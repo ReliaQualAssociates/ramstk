@@ -10,11 +10,11 @@ The RTKStakeholders Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKStakeholders(RTK_BASE):
@@ -25,8 +25,12 @@ class RTKStakeholders(RTK_BASE):
     __tablename__ = 'rtk_stakeholders'
     __table_args__ = {'extend_existing': True}
 
-    stakeholders_id = Column('fld_stakeholders_id', Integer, primary_key=True,
-                             autoincrement=True, nullable=False)
+    stakeholders_id = Column(
+        'fld_stakeholders_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     stakeholder = Column('fld_stakeholder', String(512), default='Stakeholder')
 
     def get_attributes(self):
@@ -57,8 +61,8 @@ class RTKStakeholders(RTK_BASE):
             format(self.stakeholders_id)
 
         try:
-            self.stakeholder = str(none_to_default(attributes[0],
-                                                   'Stakeholder'))
+            self.stakeholder = str(
+                none_to_default(attributes[0], 'Stakeholder'))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

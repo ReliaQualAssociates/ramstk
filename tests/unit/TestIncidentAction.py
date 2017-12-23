@@ -39,7 +39,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -96,11 +99,10 @@ class TestIncidentActionModel(unittest.TestCase):
         (TestIncidentAction) set_attributes should return a 0 error code on success
         """
 
-        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 1,
-                   0, False, 2, 0, False)
+        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 1, 0,
+                   False, 2, 0, False)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -109,11 +111,10 @@ class TestIncidentActionModel(unittest.TestCase):
         (TestIncidentAction) set_attributes should return a 10 error code when passed a wrong data type
         """
 
-        _values = (None, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3,
-                   2, 0, False, 2, 0, False)
+        _values = (None, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 2, 0,
+                   False, 2, 0, False)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -122,11 +123,10 @@ class TestIncidentActionModel(unittest.TestCase):
         (TestIncidentAction) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _values = (0, 1, 'Prescribed Action', 'Action Taken',
-                   1, 0, 3, 0, False, 2, 0, False)
+        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 0,
+                   False, 2, 0, False)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -135,9 +135,9 @@ class TestIncidentActionModel(unittest.TestCase):
         (TestIncidentAction) get_attributes should return a tuple of attribute values
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (None, None, '', '', 0, 0, 0, 0, 0, False,
-                          0, 0, False))
+        self.assertEqual(
+            self.DUT.get_attributes(),
+            (None, None, '', '', 0, 0, 0, 0, 0, False, 0, 0, False))
 
     @attr(all=True, unit=True)
     def test_sanity(self):
@@ -145,8 +145,8 @@ class TestIncidentActionModel(unittest.TestCase):
         (TestIncidentAction) get_attributes(set_attributes(values)) == values
         """
 
-        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3,
-                   2, 0, False, 2, 0, False)
+        _values = (0, 1, 'Prescribed Action', 'Action Taken', 1, 0, 3, 2, 0,
+                   False, 2, 0, False)
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()

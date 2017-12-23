@@ -10,11 +10,11 @@ The RTKCriticality Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKCriticality(RTK_BASE):
@@ -25,11 +25,15 @@ class RTKCriticality(RTK_BASE):
     __tablename__ = 'rtk_criticality'
     __table_args__ = {'extend_existing': True}
 
-    criticality_id = Column('fld_criticality_id', Integer, primary_key=True,
-                            autoincrement=True, nullable=False)
+    criticality_id = Column(
+        'fld_criticality_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     name = Column('fld_name', String(256), default='Criticality Name')
-    description = Column('fld_description', String(512),
-                         default='Criticality Description')
+    description = Column(
+        'fld_description', String(512), default='Criticality Description')
     category = Column('fld_category', String(256), default='')
     value = Column('fld_value', Integer, default=0)
 
@@ -63,8 +67,8 @@ class RTKCriticality(RTK_BASE):
 
         try:
             self.name = str(none_to_default(attributes[0], 'Criticality Name'))
-            self.description = str(none_to_default(attributes[1],
-                                                   'Criticality Description'))
+            self.description = str(
+                none_to_default(attributes[1], 'Criticality Description'))
             self.category = str(none_to_default(attributes[2], ''))
             self.value = int(none_to_default(attributes[3], 0))
         except IndexError as _err:

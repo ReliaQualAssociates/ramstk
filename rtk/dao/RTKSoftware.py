@@ -11,11 +11,11 @@ The RTKSoftware Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 # pylint: disable=R0902
@@ -30,11 +30,17 @@ class RTKSoftware(RTK_BASE):
     __tablename__ = 'rtk_software'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column('fld_revision_id', Integer,
-                         ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
-    software_id = Column('fld_software_id', Integer, primary_key=True,
-                         autoincrement=True, nullable=False)
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    software_id = Column(
+        'fld_software_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     # pylint: disable=invalid-name
     a = Column('fld_a', Float, default=0.0)
@@ -114,8 +120,8 @@ class RTKSoftware(RTK_BASE):
 
     # Define the relationships to other tables in the RTK Program database.
     revision = relationship('RTKRevision', back_populates='software')
-    development = relationship('RTKSoftwareDevelopment',
-                               back_populates='software')
+    development = relationship(
+        'RTKSoftwareDevelopment', back_populates='software')
     review = relationship('RTKSoftwareReview', back_populates='software')
     software_test = relationship('RTKSoftwareTest', back_populates='software')
 

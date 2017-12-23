@@ -46,7 +46,10 @@ import os
 import sys
 import pandas as pd
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 from rtk._reports_.tabular import ExcelReport
 
@@ -55,15 +58,15 @@ class TestAnalysisReports(unittest.TestCase):
 
     xcloutfile = '/home/andrew/RTKTestOutput.xls'
 
-    data = pd.DataFrame([['Example Sub-System 1', 0.00036],
-                         ['No changes', 1.0], ['No changes', 1.0],
-                         ['No changes', 1.0], ['No changes', 1.0],
-                         ['No changes', 1.0], ['No changes', 1.0]],
-                        columns=['Assembly', 'Failure Intensity'])
+    data = pd.DataFrame(
+        [['Example Sub-System 1', 0.00036
+          ], ['No changes', 1.0], ['No changes', 1.0], ['No changes', 1.0],
+         ['No changes', 1.0], ['No changes', 1.0], ['No changes', 1.0]],
+        columns=['Assembly', 'Failure Intensity'])
 
-    metadata = pd.DataFrame([(0, 'Test Metadata', 100.0, '2014-01-01')],
-                            columns=['Test Output ID', 'Test',
-                                     'Test Time', 'Report Date'])
+    metadata = pd.DataFrame(
+        [(0, 'Test Metadata', 100.0, '2014-01-01')],
+        columns=['Test Output ID', 'Test', 'Test Time', 'Report Date'])
 
     def setUp(self):
         """
@@ -85,8 +88,8 @@ class TestAnalysisReports(unittest.TestCase):
         Test that the ExcelReport class can write the report title to file.
         """
 
-        self.assertFalse(self._DUT.write_title("Test Report", 'Sheet 1',
-                                               srow=0, scol=0))
+        self.assertFalse(
+            self._DUT.write_title("Test Report", 'Sheet 1', srow=0, scol=0))
         self._DUT.book.save(self.xcloutfile)
 
     def test_write_metadata(self):
@@ -94,8 +97,8 @@ class TestAnalysisReports(unittest.TestCase):
         Test that the ExcelReport class can write the metadata to file.
         """
 
-        self.assertFalse(self._DUT.write_metadata(self.metadata, 'Sheet 1',
-                                                  srow=3, scol=0))
+        self.assertFalse(
+            self._DUT.write_metadata(self.metadata, 'Sheet 1', srow=3, scol=0))
         self._DUT.book.save(self.xcloutfile)
 
     def test_write_content(self):
@@ -103,6 +106,6 @@ class TestAnalysisReports(unittest.TestCase):
         Test that the ExcelReport class can write the contents to file.
         """
 
-        self.assertFalse(self._DUT.write_content(self.data, 'Sheet 1',
-                                                 srow=12, scol=0))
+        self.assertFalse(
+            self._DUT.write_content(self.data, 'Sheet 1', srow=12, scol=0))
         self._DUT.book.save(self.xcloutfile)

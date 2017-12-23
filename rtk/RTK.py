@@ -879,8 +879,8 @@ class RTK(object):
             self.icoStatus.set_from_pixbuf(_icon)
             self.icoStatus.set_tooltip(
                 _(u"RTK is connected to program database "
-                  u"{0:s}.".format(self.RTK_CONFIGURATION.RTK_PROG_INFO[
-                      'database'])))
+                  u"{0:s}.".format(
+                      self.RTK_CONFIGURATION.RTK_PROG_INFO['database'])))
 
             self.loaded = True
 

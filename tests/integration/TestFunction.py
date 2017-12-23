@@ -38,7 +38,10 @@ This is the test class for testing Function module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -81,6 +84,7 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_functions(0)[1], 0)
+
     # TODO: Test that method fails when no Functions exist in database.
     @attr(all=True, integration=True)
     def test01_add_function(self):
@@ -90,13 +94,11 @@ class TestFunctionController(unittest.TestCase):
 
         self.assertEqual(self.DUT.request_functions(0)[1], 0)
 
-        (_results,
-         _error_code,
-         _function_id) = self.DUT.add_function(0, 0, 'F-T', 'Test Function',
-                                               'This is a test function')
+        (_results, _error_code, _function_id) = self.DUT.add_function(
+            0, 0, 'F-T', 'Test Function', 'This is a test function')
 
-        self.assertTrue(isinstance(self.DUT.dicFunctions[self.DUT._last_id],
-                                   Model))
+        self.assertTrue(
+            isinstance(self.DUT.dicFunctions[self.DUT._last_id], Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
         self.assertEqual(_function_id, 11)
@@ -108,10 +110,8 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_functions(0)[1], 0)
-        (_results,
-         _error_code,
-         _function_id) = self.DUT.add_function(0, None, 'F-T', 'New Function',
-                                               'This is a test function')
+        (_results, _error_code, _function_id) = self.DUT.add_function(
+            0, None, 'F-T', 'New Function', 'This is a test function')
         self.assertEqual(self.DUT.dicFunctions[self.DUT._last_id].parent_id,
                          -1)
         self.assertTrue(_results)
@@ -139,10 +139,8 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_functions(0)[1], 0)
-        (_results,
-         _error_code,
-         _function_id) = self.DUT.add_function(0, 0, 'F-T', None,
-                                               'This is a test function')
+        (_results, _error_code, _function_id) = self.DUT.add_function(
+            0, 0, 'F-T', None, 'This is a test function')
         self.assertEqual(self.DUT.dicFunctions[self.DUT._last_id].name,
                          'New Function')
         self.assertTrue(_results)
@@ -155,12 +153,9 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_functions(0)[1], 0)
-        (_results,
-         _error_code,
-         _function_id) = self.DUT.add_function(0, 0, 'F-T', 'New Function',
-                                               '')
-        self.assertEqual(self.DUT.dicFunctions[self.DUT._last_id].remarks,
-                         '')
+        (_results, _error_code, _function_id) = self.DUT.add_function(
+            0, 0, 'F-T', 'New Function', '')
+        self.assertEqual(self.DUT.dicFunctions[self.DUT._last_id].remarks, '')
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
@@ -171,8 +166,7 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_functions(0)[1], 0)
-        (_results,
-         _error_codes) = self.DUT.delete_function(self.DUT._last_id)
+        (_results, _error_codes) = self.DUT.delete_function(self.DUT._last_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_codes, [0, 0])
@@ -184,8 +178,7 @@ class TestFunctionController(unittest.TestCase):
         """
 
         self.DUT.request_functions(0)
-        (_results,
-         _error_code) = self.DUT.save_function(0)
+        (_results, _error_code) = self.DUT.save_function(0)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
@@ -208,16 +201,29 @@ class TestFunctionController(unittest.TestCase):
         (TestFunction) copy_function should return a dict
         """
 
-        (_results,
-         _error_code,
-         _revision_id) = self.dtcRevision.add_revision('01', 'New Revision', '')
+        (_results, _error_code, _revision_id) = self.dtcRevision.add_revision(
+            '01', 'New Revision', '')
         self.DUT.request_functions(0)
         _dic_f_xref = self.DUT.copy_function(_revision_id)
 
-        self.assertEqual(_dic_f_xref,
-                         {0: 14, 1: 15, 2: 16, 3: 17, 4: 18, 5: 19, 6: 20,
-                          7: 21, 8: 22, 9: 23, 10: 24, 11: 25, 12: 26,
-                          13: 27, -1: -1})
+        self.assertEqual(
+            _dic_f_xref, {
+                0: 14,
+                1: 15,
+                2: 16,
+                3: 17,
+                4: 18,
+                5: 19,
+                6: 20,
+                7: 21,
+                8: 22,
+                9: 23,
+                10: 24,
+                11: 25,
+                12: 26,
+                13: 27,
+                -1: -1
+            })
 
     @attr(all=True, integration=True)
     def test09a_copy_function_no_revision(self):
@@ -227,4 +233,4 @@ class TestFunctionController(unittest.TestCase):
 
         _dic_f_xref = self.DUT.copy_function(2)
 
-        self.assertEqual(_dic_f_xref, {-1:-1})
+        self.assertEqual(_dic_f_xref, {-1: -1})

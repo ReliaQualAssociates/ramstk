@@ -13,30 +13,30 @@ Hardware.Component.Semiconductor.Optoelectronics Package Display Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -47,7 +47,7 @@ try:
     import Utilities
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
@@ -61,7 +61,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -87,14 +87,20 @@ class Display(Semiconductor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_lambdab = [0.0055, 0.0040, 0.0025, 0.013, 0.013, 0.0064, 0.0033,
-                    0.017, 0.017, 0.0086, 0.0013, 0.00023]
-    _lst_piE = [1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0,
-                24.0, 450.0]
+    _lst_lambdab = [
+        0.0055, 0.0040, 0.0025, 0.013, 0.013, 0.0064, 0.0033, 0.017, 0.017,
+        0.0086, 0.0013, 0.00023
+    ]
+    _lst_piE = [
+        1.0, 2.0, 8.0, 5.0, 12.0, 4.0, 6.0, 6.0, 8.0, 17.0, 0.5, 9.0, 24.0,
+        450.0
+    ]
     _lst_piQ_count = [0.7, 1.0, 2.4, 5.5, 8.0]
     _lst_piQ_stress = [0.7, 1.0, 2.4, 5.5, 8.0]
-    _lst_lambdab_count = [0.0062, 0.016, 0.045, 0.032, 0.10, 0.046, 0.058,
-                          0.11, 0.19, 0.18, 0.0031, 0.082, 0.28, 2.0]
+    _lst_lambdab_count = [
+        0.0062, 0.016, 0.045, 0.032, 0.10, 0.046, 0.058, 0.11, 0.19, 0.18,
+        0.0031, 0.082, 0.28, 2.0
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     subcategory = 23
@@ -107,9 +113,9 @@ class Display(Semiconductor):
         super(Display, self).__init__()
 
         # Initialize public scalar attributes.
-        self.type = 0                       # Type index.
-        self.construction = 0               # Construction index.
-        self.n_characters = 0               # Number of display characters.
+        self.type = 0  # Type index.
+        self.construction = 0  # Construction index.
+        self.n_characters = 0  # Number of display characters.
 
     def set_attributes(self, values):
         """
@@ -133,11 +139,11 @@ class Display(Semiconductor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -171,12 +177,12 @@ class Display(Semiconductor):
             self.hazard_rate_model['equation'] = 'lambdab * piT * piQ * piE'
 
             # Set the base hazard rate for the model.
-            if self.type == 1:              # Segment display
+            if self.type == 1:  # Segment display
                 if self.construction == 1:  # With logic chip
                     self.base_hr = 0.00043 * self.n_characters + 0.000043
                 else:
                     self.base_hr = 0.00043 * self.n_characters
-            else:                           # Diode array display
+            else:  # Diode array display
                 if self.construction == 1:  # With logic chip
                     self.base_hr = 0.00009 + 0.00017 * self.n_characters + \
                                    0.000043
@@ -185,8 +191,9 @@ class Display(Semiconductor):
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
-            self.piT = exp(-2790.0 * ((1.0 / (self.junction_temperature +
-                                              273.0)) - (1.0 / 298.0)))
+            self.piT = exp(-2790.0 * ((1.0 /
+                                       (self.junction_temperature + 273.0)) -
+                                      (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
         return Semiconductor.calculate_part(self)

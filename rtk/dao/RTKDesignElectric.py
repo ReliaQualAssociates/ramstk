@@ -11,11 +11,11 @@ The RTKDesignElectric Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 # pylint: disable=R0902
@@ -30,9 +30,12 @@ class RTKDesignElectric(RTK_BASE):
     __tablename__ = 'rtk_design_electric'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column('fld_hardware_id', Integer,
-                         ForeignKey('rtk_hardware.fld_hardware_id'),
-                         primary_key=True, nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        ForeignKey('rtk_hardware.fld_hardware_id'),
+        primary_key=True,
+        nullable=False)
 
     application_id = Column('fld_application_id', Integer, default=0)
     area = Column('fld_area', Float, default=0.0)
@@ -45,10 +48,10 @@ class RTKDesignElectric(RTK_BASE):
     current_operating = Column('fld_current_operating', Float, default=0.0)
     current_rated = Column('fld_current_rated', Float, default=0.0)
     current_ratio = Column('fld_current_ratio', Float, default=0.0)
-    environment_active_id = Column('fld_environment_active_id', Integer,
-                                   default=0)
-    environment_dormant_id = Column('fld_environment_dormant_id', Integer,
-                                    default=0)
+    environment_active_id = Column(
+        'fld_environment_active_id', Integer, default=0)
+    environment_dormant_id = Column(
+        'fld_environment_dormant_id', Integer, default=0)
     family_id = Column('fld_family_id', Integer, default=0)
     feature_size = Column('fld_feature_size', Float, default=0.0)
     frequency_operating = Column('fld_frequency_operating', Float, default=0.0)
@@ -73,21 +76,21 @@ class RTKDesignElectric(RTK_BASE):
     specification_id = Column('fld_specification_id', Integer, default=0)
     technology_id = Column('fld_technology_id', Integer, default=0)
     temperature_case = Column('fld_temperature_case', Float, default=0.0)
-    temperature_hot_spot = Column('fld_temperature_hot_spot', Float,
-                                  default=0.0)
-    temperature_junction = Column('fld_temperature_junction', Float,
-                                  default=0.0)
-    temperature_rated_max = Column('fld_temperature_rated_max', Float,
-                                   default=0.0)
-    temperature_rated_min = Column('fld_temperature_rated_min', Float,
-                                   default=0.0)
+    temperature_hot_spot = Column(
+        'fld_temperature_hot_spot', Float, default=0.0)
+    temperature_junction = Column(
+        'fld_temperature_junction', Float, default=0.0)
+    temperature_rated_max = Column(
+        'fld_temperature_rated_max', Float, default=0.0)
+    temperature_rated_min = Column(
+        'fld_temperature_rated_min', Float, default=0.0)
     temperature_rise = Column('fld_temperature_rise', Float, default=0.0)
     theta_jc = Column('fld_theta_jc', Float, default=0.0)
     type_id = Column('fld_type_id', Integer, default=0)
-    voltage_ac_operating = Column('fld_voltage_ac_operating', Float,
-                                  default=0.0)
-    voltage_dc_operating = Column('fld_voltage_dc_operating', Float,
-                                  default=0.0)
+    voltage_ac_operating = Column(
+        'fld_voltage_ac_operating', Float, default=0.0)
+    voltage_dc_operating = Column(
+        'fld_voltage_dc_operating', Float, default=0.0)
     voltage_esd = Column('fld_voltage_esd', Float, default=0.0)
     voltage_rated = Column('fld_voltage_rated', Float, default=0.0)
     voltage_ratio = Column('fld_voltage_ratio', Float, default=0.0)
@@ -95,8 +98,7 @@ class RTKDesignElectric(RTK_BASE):
     years_in_production = Column('fld_years_in_production', Integer, default=1)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware',
-                            back_populates='design_electric')
+    hardware = relationship('RTKHardware', back_populates='design_electric')
 
     def get_attributes(self):
         """
@@ -122,30 +124,25 @@ class RTKDesignElectric(RTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.hardware_id, self.application_id, self.area,
-                       self.capacitance, self.configuration_id,
-                       self.construction_id, self.contact_form_id,
-                       self.contact_gauge, self.contact_rating_id,
-                       self.current_operating, self.current_rated,
-                       self.current_ratio, self.environment_active_id,
-                       self.environment_dormant_id, self.family_id,
-                       self.feature_size, self.frequency_operating,
-                       self.insert_id, self.insulation_id,
-                       self.manufacturing_id, self.matching_id,
-                       self.n_active_pins, self.n_circuit_planes,
-                       self.n_cycles, self.n_elements, self.n_hand_soldered,
-                       self.n_wave_soldered, self.operating_life,
-                       self.overstress, self.package_id, self.power_operating,
-                       self.power_rated, self.power_ratio, self.reason,
-                       self.resistance, self.specification_id,
-                       self.technology_id, self.temperature_case,
-                       self.temperature_hot_spot, self.temperature_junction,
-                       self.temperature_rated_max, self.temperature_rated_min,
-                       self.temperature_rise, self.theta_jc, self.type_id,
-                       self.voltage_ac_operating, self.voltage_dc_operating,
-                       self.voltage_esd, self.voltage_rated,
-                       self.voltage_ratio, self.weight,
-                       self.years_in_production)
+        _attributes = (
+            self.hardware_id, self.application_id, self.area, self.capacitance,
+            self.configuration_id, self.construction_id, self.contact_form_id,
+            self.contact_gauge, self.contact_rating_id, self.current_operating,
+            self.current_rated, self.current_ratio, self.environment_active_id,
+            self.environment_dormant_id, self.family_id, self.feature_size,
+            self.frequency_operating, self.insert_id, self.insulation_id,
+            self.manufacturing_id, self.matching_id, self.n_active_pins,
+            self.n_circuit_planes, self.n_cycles, self.n_elements,
+            self.n_hand_soldered, self.n_wave_soldered, self.operating_life,
+            self.overstress, self.package_id, self.power_operating,
+            self.power_rated, self.power_ratio, self.reason, self.resistance,
+            self.specification_id, self.technology_id, self.temperature_case,
+            self.temperature_hot_spot, self.temperature_junction,
+            self.temperature_rated_max, self.temperature_rated_min,
+            self.temperature_rise, self.theta_jc, self.type_id,
+            self.voltage_ac_operating, self.voltage_dc_operating,
+            self.voltage_esd, self.voltage_rated, self.voltage_ratio,
+            self.weight, self.years_in_production)
 
         return _attributes
 
@@ -176,14 +173,14 @@ class RTKDesignElectric(RTK_BASE):
             self.current_operating = float(none_to_default(attributes[9], 0.0))
             self.current_rated = float(none_to_default(attributes[10], 0.0))
             self.current_ratio = float(none_to_default(attributes[11], 0.0))
-            self.environment_active_id = int(none_to_default(attributes[12],
-                                                             0))
-            self.environment_dormant_id = int(none_to_default(attributes[13],
-                                                              0))
+            self.environment_active_id = int(
+                none_to_default(attributes[12], 0))
+            self.environment_dormant_id = int(
+                none_to_default(attributes[13], 0))
             self.family_id = int(none_to_default(attributes[14], 0))
             self.feature_size = float(none_to_default(attributes[15], 0.0))
-            self.frequency_operating = float(none_to_default(attributes[16],
-                                                             0.0))
+            self.frequency_operating = float(
+                none_to_default(attributes[16], 0.0))
             self.insert_id = int(none_to_default(attributes[17], 0))
             self.insulation_id = int(none_to_default(attributes[18], 0))
             self.manufacturing_id = int(none_to_default(attributes[19], 0))
@@ -205,21 +202,21 @@ class RTKDesignElectric(RTK_BASE):
             self.specification_id = int(none_to_default(attributes[35], 0))
             self.technology_id = int(none_to_default(attributes[36], 0))
             self.temperature_case = float(none_to_default(attributes[37], 0.0))
-            self.temperature_hot_spot = float(none_to_default(attributes[38],
-                                                              0.0))
-            self.temperature_junction = float(none_to_default(attributes[39],
-                                                              0.0))
-            self.temperature_rated_max = float(none_to_default(attributes[40],
-                                                               0.0))
-            self.temperature_rated_min = float(none_to_default(attributes[41],
-                                                               0.0))
+            self.temperature_hot_spot = float(
+                none_to_default(attributes[38], 0.0))
+            self.temperature_junction = float(
+                none_to_default(attributes[39], 0.0))
+            self.temperature_rated_max = float(
+                none_to_default(attributes[40], 0.0))
+            self.temperature_rated_min = float(
+                none_to_default(attributes[41], 0.0))
             self.temperature_rise = float(none_to_default(attributes[42], 0.0))
             self.theta_jc = float(none_to_default(attributes[43], 0.0))
             self.type_id = float(none_to_default(attributes[44], 0.0))
-            self.voltage_ac_operating = float(none_to_default(attributes[45],
-                                                              0.0))
-            self.voltage_dc_operating = float(none_to_default(attributes[46],
-                                                              0.0))
+            self.voltage_ac_operating = float(
+                none_to_default(attributes[45], 0.0))
+            self.voltage_dc_operating = float(
+                none_to_default(attributes[46], 0.0))
             self.voltage_esd = float(none_to_default(attributes[47], 0.0))
             self.voltage_rated = float(none_to_default(attributes[48], 0.0))
             self.voltage_ratio = float(none_to_default(attributes[49], 0.0))

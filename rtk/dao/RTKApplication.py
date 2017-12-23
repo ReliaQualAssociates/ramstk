@@ -13,8 +13,8 @@ The RTKApplication Table
 from sqlalchemy import Column, Float, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default   # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                   # pylint: disable=E0401
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKApplication(RTK_BASE):
@@ -25,13 +25,17 @@ class RTKApplication(RTK_BASE):
     __tablename__ = 'rtk_application'
     __table_args__ = {'extend_existing': True}
 
-    application_id = Column('fld_application_id', Integer, primary_key=True,
-                            autoincrement=True, nullable=False)
-    description = Column('fld_description', String(512),
-                         default='Application Description')
+    application_id = Column(
+        'fld_application_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    description = Column(
+        'fld_description', String(512), default='Application Description')
     fault_density = Column('fld_fault_density', Float, default=1.0)
-    transformation_ratio = Column('fld_transformation_ratio', Float,
-                                  default=1.0)
+    transformation_ratio = Column(
+        'fld_transformation_ratio', Float, default=1.0)
 
     def get_attributes(self):
         """
@@ -63,11 +67,11 @@ class RTKApplication(RTK_BASE):
             format(self.application_id)
 
         try:
-            self.description = str(none_to_default(attributes[0],
-                                                   'Application Description'))
+            self.description = str(
+                none_to_default(attributes[0], 'Application Description'))
             self.fault_density = float(none_to_default(attributes[1], 1.0))
-            self.transformation_ratio = float(none_to_default(attributes[2],
-                                                              1.0))
+            self.transformation_ratio = float(
+                none_to_default(attributes[2], 1.0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

@@ -13,30 +13,30 @@ Hardware.Component.Capacitor.Variable Package Variable Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -46,7 +46,7 @@ try:
     import Configuration
     import Utilities
     from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
@@ -59,7 +59,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -90,11 +90,15 @@ class AirTrimmer(Capacitor):
     # MIL-HDBK-217FN2 hazard rate calculation variables.
 
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.5, 20.0,
-            52.0, 950.0]
+    _piE = [
+        1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.5, 20.0,
+        52.0, 950.0
+    ]
     _piQ = [5.0, 20.0]
-    _lambdab_count = [0.80, 0.33, 1.6, 0.87, 3.0, 1.0, 1.7, 9.9, 19.0, 8.1,
-                      0.032, 2.5, 8.9, 100.0]
+    _lambdab_count = [
+        0.80, 0.33, 1.6, 0.87, 3.0, 1.0, 1.7, 9.9, 19.0, 8.1, 0.032, 2.5, 8.9,
+        100.0
+    ]
     lst_ref_temp = [358.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -121,7 +125,7 @@ class AirTrimmer(Capacitor):
         # Define public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -150,8 +154,8 @@ class AirTrimmer(Capacitor):
                     0.00000192 * ((_stress / 0.33)**3 + 1) * \
                     exp(10.8 * ((self.temperature_active + 273) /
                                 self.reference_temperature))
-            except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow error.
+            except (OverflowError, ZeroDivisionError):
+                # TODO: Handle overflow error.
                 return True
 
         return Capacitor.calculate_part(self)
@@ -182,11 +186,15 @@ class Ceramic(Capacitor):
     # MIL-HDBK-217FN2 hazard rate calculation variables.
 
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.4, 20.0,
-            52.0, 950.0]
+    _piE = [
+        1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.4, 20.0,
+        52.0, 950.0
+    ]
     _piQ = [4.0, 20.0]
-    _lambdab_count = [0.08, 0.27, 1.2, 0.71, 2.3, 0.69, 1.1, 6.2, 12.0, 4.1,
-                      0.032, 1.9, 5.9, 85.0]
+    _lambdab_count = [
+        0.08, 0.27, 1.2, 0.71, 2.3, 0.69, 1.1, 6.2, 12.0, 4.1, 0.032, 1.9, 5.9,
+        85.0
+    ]
     lst_ref_temp = [358.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -212,7 +220,7 @@ class Ceramic(Capacitor):
         # Define public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -241,8 +249,8 @@ class Ceramic(Capacitor):
                     0.00224 * ((_stress / 0.17)**3 + 1) * \
                     exp(1.59 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**10.1)
-            except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow error.
+            except (OverflowError, ZeroDivisionError):
+                # TODO: Handle overflow error.
                 return True
 
         return Capacitor.calculate_part(self)
@@ -273,11 +281,15 @@ class Piston(Capacitor):
     # MIL-HDBK-217FN2 hazard rate calculation variables.
 
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 3.0, 12.0, 7.0, 18.0, 3.0, 4.0, 20.0, 30.0, 32.0, 0.5, 18.0,
-            46.0, 830.0]
+    _piE = [
+        1.0, 3.0, 12.0, 7.0, 18.0, 3.0, 4.0, 20.0, 30.0, 32.0, 0.5, 18.0, 46.0,
+        830.0
+    ]
     _piQ = [3.0, 10.0]
-    _lambdab_count = [0.033, 0.13, 0.62, 0.31, 0.93, 0.21, 0.28, 2.2, 3.3, 2.2,
-                      0.16, 0.93, 3.2, 37.0]
+    _lambdab_count = [
+        0.033, 0.13, 0.62, 0.31, 0.93, 0.21, 0.28, 2.2, 3.3, 2.2, 0.16, 0.93,
+        3.2, 37.0
+    ]
     lst_ref_temp = [398.0, 423.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -303,7 +315,7 @@ class Piston(Capacitor):
         # Define public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 398.0
 
     def calculate_part(self):
@@ -332,8 +344,8 @@ class Piston(Capacitor):
                     0.00000073 * ((_stress / 0.33)**3 + 1) * \
                     exp(12.1 * ((self.temperature_active + 273) /
                                 self.reference_temperature))
-            except(OverflowError, ZeroDivisionError):
-# TODO: Handle overflow error.
+            except (OverflowError, ZeroDivisionError):
+                # TODO: Handle overflow error.
                 return True
 
         return Capacitor.calculate_part(self)
@@ -365,11 +377,15 @@ class Vacuum(Capacitor):
 
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _piCF = [0.10, 1.0]
-    _piE = [1.0, 3.0, 14.0, 8.0, 27.0, 10.0, 18.0, 70.0, 108.0, 40.0, 0.5, 0.0,
-            0.0, 0.0]
+    _piE = [
+        1.0, 3.0, 14.0, 8.0, 27.0, 10.0, 18.0, 70.0, 108.0, 40.0, 0.5, 0.0,
+        0.0, 0.0
+    ]
     _piQ = [3.0, 20.0]
-    _lambdab_count = [0.4, 1.3, 6.8, 3.6, 13.0, 5.7, 10.0, 58.0, 90.0, 23.0,
-                      20.0, 0.0, 0.0, 0.0]
+    _lambdab_count = [
+        0.4, 1.3, 6.8, 3.6, 13.0, 5.7, 10.0, 58.0, 90.0, 23.0, 20.0, 0.0, 0.0,
+        0.0
+    ]
     lst_ref_temp = [358.0, 373.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -393,11 +409,11 @@ class Vacuum(Capacitor):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.configuration = 1              # Fixed
+        self.configuration = 1  # Fixed
         self.specification = 0
         self.spec_sheet = 0
         self.piCF = 0.0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 358.0
 
     def set_attributes(self, values):
@@ -425,7 +441,7 @@ class Vacuum(Capacitor):
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -470,7 +486,7 @@ class Vacuum(Capacitor):
                     0.0112 * ((_stress / 0.17)**3 + 1) * \
                     exp(1.59 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**10.1)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 

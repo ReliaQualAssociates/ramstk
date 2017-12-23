@@ -12,30 +12,30 @@ Relay Module Component Specific Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -93,36 +93,65 @@ class Inputs(gtk.Frame):
     attributes of a relay Work Book view are:
     """
 
-    _lst_application = [["", _(u"Dry Circuit")],
-                        ["", _(u"General Purpose"), _(u"Sensitive (0-100 mW)"),
-                         _(u"Polarized"), _(u"Vibrating Reed"),
-                         _(u"High Speed"), _(u"Thermal Time Delay"),
-                         _(u"Electronic Time Delay"), _(u"Magnetic Latching")],
-                        ["", _(u"High Voltage"), _(u"Medium Power")],
-                        ["", _(u"Contactor")]]
-    _lst_construction = [[["", _(u"Long Armature"), _(u"Dry Reed"),
-                           _(u"Mercury Wetted"), _(u"Magnetic Latching"),
-                           _(u"Balanced Armature"), _(u"Solenoid")]],
-                         [["", _(u"Long Armature"), _(u"Balanaced Armature"),
-                           _(u"Solenoid")],
-                          ["", _(u"Long Armature"), _(u"Short Armature"),
-                           _(u"Mercury Wetted"), _(u"Magnetic Latching"),
-                           _(u"Meter Movement"), _(u"Balanced Armature")],
-                          ["", _(u"Short Armature"), _(u"Meter Movement")],
-                          ["", _(u"Dry Reed"), _(u"Mecury Wetted")],
-                          ["", _(u"Balanced Armature"), _(u"Short Armature"),
-                           _(u"Dry Reed")],
-                          ["", _(u"Bimetal")],
-                          [""],
-                          ["", _(u"Dry Reed"), _(u"Mercury Wetted"),
-                           _(u"Balanced Armature")]],
-                         [["", _(u"Vacuum, Glass"), _(u"Vacuum, Ceramic")],
-                          ["", _(u"Long Armature"), _(u"Short Armature"),
-                           _(u"Mercury Wetted"), _(u"Magnetic Latching"),
-                           _(u"Mechanical Latching"), _(u"Balanced Armature"),
-                           _(u"Solenoid")]],
-                         [["", _(u"Short Armature"), _(u"Mechanical Latching"),
-                           _(u"Balanced Armature"), _(u"Solenoid")]]]
+    _lst_application = [["", _(u"Dry Circuit")], [
+        "",
+        _(u"General Purpose"),
+        _(u"Sensitive (0-100 mW)"),
+        _(u"Polarized"),
+        _(u"Vibrating Reed"),
+        _(u"High Speed"),
+        _(u"Thermal Time Delay"),
+        _(u"Electronic Time Delay"),
+        _(u"Magnetic Latching")
+    ], ["", _(u"High Voltage"), _(u"Medium Power")], ["", _(u"Contactor")]]
+    _lst_construction = [[[
+        "",
+        _(u"Long Armature"),
+        _(u"Dry Reed"),
+        _(u"Mercury Wetted"),
+        _(u"Magnetic Latching"),
+        _(u"Balanced Armature"),
+        _(u"Solenoid")
+    ]], [["",
+          _(u"Long Armature"),
+          _(u"Balanaced Armature"),
+          _(u"Solenoid")], [
+              "",
+              _(u"Long Armature"),
+              _(u"Short Armature"),
+              _(u"Mercury Wetted"),
+              _(u"Magnetic Latching"),
+              _(u"Meter Movement"),
+              _(u"Balanced Armature")
+          ], ["", _(u"Short Armature"),
+              _(u"Meter Movement")], ["",
+                                      _(u"Dry Reed"),
+                                      _(u"Mecury Wetted")],
+         ["",
+          _(u"Balanced Armature"),
+          _(u"Short Armature"),
+          _(u"Dry Reed")], ["", _(u"Bimetal")], [""],
+         ["",
+          _(u"Dry Reed"),
+          _(u"Mercury Wetted"),
+          _(u"Balanced Armature")]],
+                         [["", _(u"Vacuum, Glass"),
+                           _(u"Vacuum, Ceramic")], [
+                               "",
+                               _(u"Long Armature"),
+                               _(u"Short Armature"),
+                               _(u"Mercury Wetted"),
+                               _(u"Magnetic Latching"),
+                               _(u"Mechanical Latching"),
+                               _(u"Balanced Armature"),
+                               _(u"Solenoid")
+                           ]], [[
+                               "",
+                               _(u"Short Armature"),
+                               _(u"Mechanical Latching"),
+                               _(u"Balanced Armature"),
+                               _(u"Solenoid")
+                           ]]]
 
     def __init__(self, model):
         """
@@ -162,40 +191,48 @@ class Inputs(gtk.Frame):
         self.txtQOverride = Widgets.make_entry(width=100)
 
         # Create the tooltips for the input widgets.
-        self.cmbApplication.set_tooltip_text(_(u"Select and display the "
-                                               u"application for the selected "
-                                               u"relay."))
-        self.cmbContactForm.set_tooltip_text(_(u"Select and display the "
-                                               u"contact form for the "
-                                               u"selected relay."))
-        self.cmbContactRating.set_tooltip_text(_(u"Select and display the "
-                                                 u"contact current rating for "
-                                                 u"the selected relay."))
-        self.cmbConstruction.set_tooltip_text(_(u"Select and display the type "
-                                                u"of construction for the "
-                                                u"sselected relay."))
-        self.cmbLoadType.set_tooltip_text(_(u"Select and display the type of "
-                                            u"load connected to the selected "
-                                            u"relay."))
-        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
-                                           u"level for the selected relay."))
-        self.cmbTempRating.set_tooltip_text(_(u"Select and display the "
-                                              u"temperature rating for the "
-                                              u"selected relay."))
-        self.txtCyclePerHour.set_tooltip_text(_(u"Enter and display the "
-                                                u"average cycles per hour for "
-                                                u"the selected relay."))
-        self.txtQOverride.set_tooltip_text(_(u"Enter and display the the "
-                                             u"user-defined quality factor "
-                                             u"for the selected relay."))
+        self.cmbApplication.set_tooltip_text(
+            _(u"Select and display the "
+              u"application for the selected "
+              u"relay."))
+        self.cmbContactForm.set_tooltip_text(
+            _(u"Select and display the "
+              u"contact form for the "
+              u"selected relay."))
+        self.cmbContactRating.set_tooltip_text(
+            _(u"Select and display the "
+              u"contact current rating for "
+              u"the selected relay."))
+        self.cmbConstruction.set_tooltip_text(
+            _(u"Select and display the type "
+              u"of construction for the "
+              u"sselected relay."))
+        self.cmbLoadType.set_tooltip_text(
+            _(u"Select and display the type of "
+              u"load connected to the selected "
+              u"relay."))
+        self.cmbQuality.set_tooltip_text(
+            _(u"Select and display the quality "
+              u"level for the selected relay."))
+        self.cmbTempRating.set_tooltip_text(
+            _(u"Select and display the "
+              u"temperature rating for the "
+              u"selected relay."))
+        self.txtCyclePerHour.set_tooltip_text(
+            _(u"Enter and display the "
+              u"average cycles per hour for "
+              u"the selected relay."))
+        self.txtQOverride.set_tooltip_text(
+            _(u"Enter and display the the "
+              u"user-defined quality factor "
+              u"for the selected relay."))
 
         # Connect signals to callback functions.
         self._lst_handler_id.append(
-            self.cmbQuality.connect('changed',
-                                    self._on_combo_changed, 0))
+            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
         self._lst_handler_id.append(
-            self.txtQOverride.connect('focus-out-event',
-                                      self._on_focus_out, 1))
+            self.txtQOverride.connect('focus-out-event', self._on_focus_out,
+                                      1))
         self._lst_handler_id.append(
             self.cmbConstruction.connect('changed', self._on_combo_changed, 2))
         self._lst_handler_id.append(
@@ -205,29 +242,38 @@ class Inputs(gtk.Frame):
         self._lst_handler_id.append(
             self.cmbContactForm.connect('changed', self._on_combo_changed, 5))
         self._lst_handler_id.append(
-            self.cmbContactRating.connect('changed',
-                                          self._on_combo_changed, 6))
+            self.cmbContactRating.connect('changed', self._on_combo_changed,
+                                          6))
         self._lst_handler_id.append(
             self.cmbApplication.connect('changed', self._on_combo_changed, 7))
         self._lst_handler_id.append(
-            self.txtCyclePerHour.connect('focus-out-event',
-                                         self._on_focus_out, 8))
+            self.txtCyclePerHour.connect('focus-out-event', self._on_focus_out,
+                                         8))
 
         # Create the input widgets specific to Relay subcategories.
-        if self._subcategory == 64:         # Mechanical
-            self._lst_stress_labels = [_(u"Quality:"),
-                                       _(u"\u03C0<sub>Q</sub> Override:"),
-                                       _(u"Contact Rating:"),
-                                       _(u"Application:"), _(u"Construction:"),
-                                       _(u"Rated Temperature (\u00B0C):"),
-                                       _(u"Load Type:"), _(u"Contact Form:"),
-                                       _(u"Cycling Rate (Cycles/Hour):")]
+        if self._subcategory == 64:  # Mechanical
+            self._lst_stress_labels = [
+                _(u"Quality:"),
+                _(u"\u03C0<sub>Q</sub> Override:"),
+                _(u"Contact Rating:"),
+                _(u"Application:"),
+                _(u"Construction:"),
+                _(u"Rated Temperature (\u00B0C):"),
+                _(u"Load Type:"),
+                _(u"Contact Form:"),
+                _(u"Cycling Rate (Cycles/Hour):")
+            ]
 
             # Populate the gtk.ComboBox().
-            _lst_quality = ["", "R", "P", "X", "U", "M", "L",
-                            _(u"Non-Established Reliability"), _(u"Lower")]
-            _lst_form = ["", "SPST", "DPST", "SPDT", "3PST", "4PST", "DPDT",
-                         "3PDT", "4PDT", "6PDT"]
+            _lst_quality = [
+                "", "R", "P", "X", "U", "M", "L",
+                _(u"Non-Established Reliability"),
+                _(u"Lower")
+            ]
+            _lst_form = [
+                "", "SPST", "DPST", "SPDT", "3PST", "4PST", "DPDT", "3PDT",
+                "4PDT", "6PDT"
+            ]
             for _index, _quality in enumerate(_lst_quality):
                 self.cmbQuality.insert_text(_index, _quality)
             for _index, _form in enumerate(_lst_form):
@@ -243,16 +289,19 @@ class Inputs(gtk.Frame):
             self.cmbLoadType.insert_text(3, _(u"Lamp"))
 
             self.cmbContactRating.insert_text(0, '')
-            self.cmbContactRating.insert_text(1, _(u"Signal Current (Low mV "
-                                                   u"and mA)"))
+            self.cmbContactRating.insert_text(1,
+                                              _(u"Signal Current (Low mV "
+                                                u"and mA)"))
             self.cmbContactRating.insert_text(2, "0-5 Amp")
             self.cmbContactRating.insert_text(3, "5-20 Amp")
             self.cmbContactRating.insert_text(4, "20-600 Amp")
 
-        elif self._subcategory == 65:       # Solid State
-            self._lst_stress_labels = [_(u"Quality:"),
-                                       _(u"\u03C0<sub>Q</sub> Override:"),
-                                       _(u"Construction:")]
+        elif self._subcategory == 65:  # Solid State
+            self._lst_stress_labels = [
+                _(u"Quality:"),
+                _(u"\u03C0<sub>Q</sub> Override:"),
+                _(u"Construction:")
+            ]
 
             # Populate the gtk.ComboBox().
             self.cmbQuality.insert_text(0, '')
@@ -275,8 +324,7 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Parts Count Inputs") +
-                          "</span>")
+                          _(u"MIL-HDBK-217FN2 Parts Count Inputs") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -284,8 +332,8 @@ class Inputs(gtk.Frame):
 
         _fixed = gtk.Fixed()
 
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed,
+                                               5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
         if self.cmbQuality.get_parent() is not None:
@@ -313,8 +361,7 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Stress Inputs") +
-                          "</span>")
+                          _(u"MIL-HDBK-217FN2 Part Stress Inputs") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -329,7 +376,7 @@ class Inputs(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        if self._subcategory == 64:         # Mechanical
+        if self._subcategory == 64:  # Mechanical
             (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels,
                                                    _fixed, 5, 5)
         else:
@@ -343,7 +390,7 @@ class Inputs(gtk.Frame):
         _fixed.put(self.cmbQuality, _x_pos, _y_pos[0])
         _fixed.put(self.txtQOverride, _x_pos, _y_pos[1])
 
-        if self._subcategory == 64:         # Mechanical
+        if self._subcategory == 64:  # Mechanical
             _fixed.put(self.cmbContactRating, _x_pos, _y_pos[2])
             _fixed.put(self.cmbApplication, _x_pos, _y_pos[3])
             _fixed.put(self.cmbConstruction, _x_pos, _y_pos[4])
@@ -351,7 +398,7 @@ class Inputs(gtk.Frame):
             _fixed.put(self.cmbLoadType, _x_pos, _y_pos[6])
             _fixed.put(self.cmbContactForm, _x_pos, _y_pos[7])
             _fixed.put(self.txtCyclePerHour, _x_pos, _y_pos[8])
-        elif self._subcategory == 65:       # Solid State
+        elif self._subcategory == 65:  # Solid State
             _fixed.put(self.cmbConstruction, _x_pos, _y_pos[2])
 
         _fixed.show_all()
@@ -390,7 +437,7 @@ class Inputs(gtk.Frame):
         self.cmbQuality.set_active(model.quality)
         self.txtQOverride.set_text(str(fmt.format(model.q_override)))
 
-        if self._subcategory == 64:         # Mechanical
+        if self._subcategory == 64:  # Mechanical
             self.cmbContactRating.set_active(model.contact_rating)
             self._load_application(model.contact_rating)
 
@@ -403,7 +450,7 @@ class Inputs(gtk.Frame):
             self.cmbContactForm.set_active(model.contact_form)
             self.txtCyclePerHour.set_text(
                 str(fmt.format(model.cycles_per_hour)))
-        elif self._subcategory == 65:       # Solid State
+        elif self._subcategory == 65:  # Solid State
             self.cmbConstruction.set_active(model.construction)
 
         return False
@@ -516,7 +563,8 @@ class Inputs(gtk.Frame):
 
         # Load the new entries.
         try:
-            _n_constructions = len(self._lst_construction[rating - 1][application - 1])
+            _n_constructions = len(
+                self._lst_construction[rating - 1][application - 1])
         except IndexError:
             _n_constructions = 0
             print rating, application
@@ -551,17 +599,16 @@ class Results(gtk.Frame):
         # Define private dictionary attributes.
 
         # Define private list attributes.
-        self._lst_count_labels = [u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>",
-                                  u"\u03BB<sub>g</sub>:",
-                                  u"\u03C0<sub>Q</sub>:"]
-        self._lst_stress_labels = ["",
-                                   u"\u03BB<sub>b</sub>:",
-                                   u"\u03C0<sub>Q</sub>:",
-                                   u"\u03C0<sub>E</sub>:",
-                                   u"\u03C0<sub>L</sub>:",
-                                   u"\u03C0<sub>C</sub>:",
-                                   u"\u03C0<sub>CYC</sub>:",
-                                   u"\u03C0<sub>F</sub>:"]
+        self._lst_count_labels = [
+            u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>",
+            u"\u03BB<sub>g</sub>:", u"\u03C0<sub>Q</sub>:"
+        ]
+        self._lst_stress_labels = [
+            "", u"\u03BB<sub>b</sub>:", u"\u03C0<sub>Q</sub>:",
+            u"\u03C0<sub>E</sub>:", u"\u03C0<sub>L</sub>:",
+            u"\u03C0<sub>C</sub>:", u"\u03C0<sub>CYC</sub>:",
+            u"\u03C0<sub>F</sub>:"
+        ]
 
         # Define private scalar attributes.
         self._hardware_model = model
@@ -572,42 +619,51 @@ class Results(gtk.Frame):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.txtLambdaB = Widgets.make_entry(width=100, editable=False,
-                                             bold=True)
+        self.txtLambdaB = Widgets.make_entry(
+            width=100, editable=False, bold=True)
         self.txtPiQ = Widgets.make_entry(width=100, editable=False, bold=True)
         self.txtPiE = Widgets.make_entry(width=100, editable=False, bold=True)
         self.txtPiL = Widgets.make_entry(width=100, editable=False, bold=True)
         self.txtPiC = Widgets.make_entry(width=100, editable=False, bold=True)
-        self.txtPiCYC = Widgets.make_entry(width=100, editable=False,
-                                           bold=True)
+        self.txtPiCYC = Widgets.make_entry(
+            width=100, editable=False, bold=True)
         self.txtPiF = Widgets.make_entry(width=100, editable=False, bold=True)
 
         self.figDerate = Figure(figsize=(6, 4))
         self.axsDerate = self.figDerate.add_subplot(111)
         self.pltDerate = FigureCanvas(self.figDerate)
 
-        if self._subcategory == 64:         # Mechanical
-            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub></span>"
+        if self._subcategory == 64:  # Mechanical
+            self._lst_stress_labels[
+                0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub></span>"
 
-        elif self._subcategory == 65:       # Solid State
-            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        elif self._subcategory == 65:  # Solid State
+            self._lst_stress_labels[
+                0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
         # Create the tooltips for all the results display widgets.
-        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
-                                           u"for the selected relay."))
-        self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for the "
-                                       u"selected relay."))
-        self.txtPiE.set_tooltip_text(_(u"Displays the environment factor for "
-                                       u"the selected relay."))
-        self.txtPiL.set_tooltip_text(_(u"Displays the load stress factor for "
-                                       u"the selected relay."))
-        self.txtPiC.set_tooltip_text(_(u"Displays the contact form factor for "
-                                       u"the selected relay."))
-        self.txtPiCYC.set_tooltip_text(_(u"Displays the cycling factor for "
-                                         u"the selected relay."))
-        self.txtPiF.set_tooltip_text(_(u"Displays the application and "
-                                       u"construction factor for the selected "
-                                       u"relay."))
+        self.txtLambdaB.set_tooltip_text(
+            _(u"Displays the base hazard rate "
+              u"for the selected relay."))
+        self.txtPiQ.set_tooltip_text(
+            _(u"Displays the quality factor for the "
+              u"selected relay."))
+        self.txtPiE.set_tooltip_text(
+            _(u"Displays the environment factor for "
+              u"the selected relay."))
+        self.txtPiL.set_tooltip_text(
+            _(u"Displays the load stress factor for "
+              u"the selected relay."))
+        self.txtPiC.set_tooltip_text(
+            _(u"Displays the contact form factor for "
+              u"the selected relay."))
+        self.txtPiCYC.set_tooltip_text(
+            _(u"Displays the cycling factor for "
+              u"the selected relay."))
+        self.txtPiF.set_tooltip_text(
+            _(u"Displays the application and "
+              u"construction factor for the selected "
+              u"relay."))
 
     def create_217_count_results(self, x_pos=5):
         """
@@ -620,9 +676,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Parts Count Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Parts Count Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -637,8 +692,8 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 25)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed,
+                                               5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
@@ -660,9 +715,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Stress Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Part Stress Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -737,7 +791,7 @@ class Results(gtk.Frame):
         self.txtPiQ.set_text(str(fmt.format(model.piQ)))
         self.txtPiE.set_text(str(fmt.format(model.piE)))
 
-        if self._subcategory == 64:         # Mechanical
+        if self._subcategory == 64:  # Mechanical
             self.txtPiL.set_text(str(fmt.format(model.piL)))
             self.txtPiC.set_text(str(fmt.format(model.piC)))
             self.txtPiCYC.set_text(str(fmt.format(model.piCYC)))
@@ -762,46 +816,61 @@ class Results(gtk.Frame):
         self.axsDerate.cla()
 
         # Plot the derating curve and operating point.
-        _x = [float(model.min_rated_temperature),
-              float(model.knee_temperature),
-              float(model.max_rated_temperature)]
+        _x = [
+            float(model.min_rated_temperature),
+            float(model.knee_temperature),
+            float(model.max_rated_temperature)
+        ]
 
-        self.axsDerate.plot(_x, model.lst_derate_criteria[0], 'r.-',
-                            linewidth=2)
-        self.axsDerate.plot(_x, model.lst_derate_criteria[1], 'b.-',
-                            linewidth=2)
-        self.axsDerate.plot(model.temperature_active,
-                            model.current_ratio, 'go')
+        self.axsDerate.plot(
+            _x, model.lst_derate_criteria[0], 'r.-', linewidth=2)
+        self.axsDerate.plot(
+            _x, model.lst_derate_criteria[1], 'b.-', linewidth=2)
+        self.axsDerate.plot(model.temperature_active, model.current_ratio,
+                            'go')
 
-        if(_x[0] != _x[2] and
-           model.lst_derate_criteria[1][0] != model.lst_derate_criteria[1][2]):
-            self.axsDerate.axis([0.95 * _x[0], 1.05 * _x[2],
-                                 model.lst_derate_criteria[1][2],
-                                 1.05 * model.lst_derate_criteria[1][0]])
+        if (_x[0] != _x[2] and model.lst_derate_criteria[1][0] !=
+                model.lst_derate_criteria[1][2]):
+            self.axsDerate.axis([
+                0.95 * _x[0], 1.05 * _x[2], model.lst_derate_criteria[1][2],
+                1.05 * model.lst_derate_criteria[1][0]
+            ])
         else:
             self.axsDerate.axis([0.95, 1.05, 0.0, 1.05])
 
-        self.axsDerate.set_title(_(u"Current Derating Curve for %s at %s") %
-                                 (model.part_number, model.ref_des),
-                                 fontdict={'fontsize': 12,
-                                           'fontweight': 'bold',
-                                           'verticalalignment': 'baseline'})
-        _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
-                         _(u"Voltage Operating Point")])
+        self.axsDerate.set_title(
+            _(u"Current Derating Curve for %s at %s") % (model.part_number,
+                                                         model.ref_des),
+            fontdict={
+                'fontsize': 12,
+                'fontweight': 'bold',
+                'verticalalignment': 'baseline'
+            })
+        _legend = tuple([
+            _(u"Harsh Environment"),
+            _(u"Mild Environment"),
+            _(u"Voltage Operating Point")
+        ])
 
         _leg = self.axsDerate.legend(_legend, loc='upper right', shadow=True)
         for _text in _leg.get_texts():
             _text.set_fontsize('small')
 
         # Set the proper labels on the derating curve.
-        self.axsDerate.set_xlabel(_(u"Temperature (\u2070C)"),
-                                  fontdict={'fontsize': 12,
-                                            'fontweight': 'bold'})
-        self.axsDerate.set_ylabel(r'$\mathbf{I_{op} / I_{rated}}$',
-                                  fontdict={'fontsize': 12,
-                                            'fontweight': 'bold',
-                                            'rotation': 'vertical',
-                                            'verticalalignment': 'baseline'})
+        self.axsDerate.set_xlabel(
+            _(u"Temperature (\u2070C)"),
+            fontdict={
+                'fontsize': 12,
+                'fontweight': 'bold'
+            })
+        self.axsDerate.set_ylabel(
+            r'$\mathbf{I_{op} / I_{rated}}$',
+            fontdict={
+                'fontsize': 12,
+                'fontweight': 'bold',
+                'rotation': 'vertical',
+                'verticalalignment': 'baseline'
+            })
 
         self.figDerate.tight_layout()
 

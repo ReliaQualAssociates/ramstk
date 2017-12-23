@@ -8,30 +8,30 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
@@ -68,9 +68,9 @@ import xlrd
 import Configuration as _conf
 import gui.gtk.Widgets as _widg
 
+
 # TODO: Move this to each applicable class.
 class ImportAssistant:
-
     def __init__(self, widget, application):
 
         self._app = application
@@ -89,7 +89,9 @@ class ImportAssistant:
         page = assistant.append_page(vbox)
         assistant.set_page_title(vbox, _("RTK: Importing Data..."))
         assistant.set_page_type(vbox, gtk.ASSISTANT_PAGE_INTRO)
-        label = gtk.Label(_("This assistant will guide you through the process of importing various types of data from an external source to the currently open RTK Program database."))
+        label = gtk.Label(
+            _("This assistant will guide you through the process of importing various types of data from an external source to the currently open RTK Program database."
+              ))
         label.set_line_wrap(True)
         vbox.pack_start(label, True, True, 0)
         assistant.set_page_complete(vbox, True)
@@ -98,16 +100,23 @@ class ImportAssistant:
         vbox.set_name('Page2')
         vbox.set_border_width(5)
         assistant.append_page(vbox)
-        assistant.set_page_title(vbox, _("RTK: Select Type of Data to Import..."))
+        assistant.set_page_title(vbox,
+                                 _("RTK: Select Type of Data to Import..."))
         assistant.set_page_type(vbox, gtk.ASSISTANT_PAGE_CONTENT)
         label = gtk.Label(_("Make a selection from the list below."))
         label.set_line_wrap(True)
         self.rdoFunctions = gtk.RadioButton(label=_("Functions"))
-        self.rdoHardware1 = gtk.RadioButton(group=self.rdoFunctions, label=_("Hardware, BOM"))
-        self.rdoHardware2 = gtk.RadioButton(group=self.rdoFunctions, label=_("Hardware, Flat List"))
-        self.rdoRGIncidents = gtk.RadioButton(group=self.rdoFunctions, label=_("Reliability Growth Testing Incidents"))
-        self.rdoBuildData = gtk.RadioButton(group=self.rdoFunctions, label=_("Build Data"))
-        self.rdoFieldIncidents = gtk.RadioButton(group=self.rdoFunctions, label=_("Field Incidents"))
+        self.rdoHardware1 = gtk.RadioButton(
+            group=self.rdoFunctions, label=_("Hardware, BOM"))
+        self.rdoHardware2 = gtk.RadioButton(
+            group=self.rdoFunctions, label=_("Hardware, Flat List"))
+        self.rdoRGIncidents = gtk.RadioButton(
+            group=self.rdoFunctions,
+            label=_("Reliability Growth Testing Incidents"))
+        self.rdoBuildData = gtk.RadioButton(
+            group=self.rdoFunctions, label=_("Build Data"))
+        self.rdoFieldIncidents = gtk.RadioButton(
+            group=self.rdoFunctions, label=_("Field Incidents"))
         vbox.pack_start(label, True, True, 0)
         vbox.pack_start(self.rdoFunctions, False, False, 0)
         self.rdoFunctions.set_sensitive(False)
@@ -134,7 +143,6 @@ class ImportAssistant:
         assistant.show_all()
 
     def _hardware_data_select(self):
-
         """ Function to select the file containing the hardware data and
             associate the external file fields with the appropriate
             RTK Program database fields.
@@ -142,16 +150,15 @@ class ImportAssistant:
 
         import xlrd
 
-        if(self.rdoHardware1.get_active()):
+        if (self.rdoHardware1.get_active()):
             _title = _("RTK - Import Hardware from BOM")
-        elif(self.rdoHardware2.get_active()):
+        elif (self.rdoHardware2.get_active()):
             _title = _("RTK - Import Hardware from flat list")
 
-        filechooser = gtk.FileChooserDialog(_title,
-                                            buttons=(gtk.STOCK_CANCEL,
-                                                     gtk.RESPONSE_REJECT,
-                                                     gtk.STOCK_OK,
-                                                     gtk.RESPONSE_ACCEPT))
+        filechooser = gtk.FileChooserDialog(
+            _title,
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK,
+                     gtk.RESPONSE_ACCEPT))
 
         filechooser.set_default_response(gtk.RESPONSE_CANCEL)
 
@@ -176,7 +183,7 @@ class ImportAssistant:
 
         order = []
         sheet = ''
-        if(response == gtk.RESPONSE_ACCEPT):
+        if (response == gtk.RESPONSE_ACCEPT):
             infile = filechooser.get_filename()
             (name, extension) = os.path.splitext(infile)
 
@@ -224,7 +231,8 @@ class ImportAssistant:
             button.show()
             hbox.pack_start(button, expand=False)
 
-            model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_STRING)
+            model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                                  gobject.TYPE_STRING)
             d_treeview = gtk.TreeView(model)
 
             column = gtk.TreeViewColumn(_("RTK Field"))
@@ -260,7 +268,8 @@ class ImportAssistant:
             row = model.append(None, [_("Level"), -1, ""])
             row = model.append(None, [_("Mission Time"), -1, ""])
             row = model.append(None, [_("MTBF, Specified"), -1, ""])
-            row = model.append(None, [_("Multiplicative Adjustment Factor"), -1, ""])
+            row = model.append(None,
+                               [_("Multiplicative Adjustment Factor"), -1, ""])
             row = model.append(None, [_("Name"), -1, ""])
             row = model.append(None, [_("NSN"), -1, ""])
             row = model.append(None, [_("Page Number"), -1, ""])
@@ -284,10 +293,10 @@ class ImportAssistant:
             d_treeview.show()
             hbox.pack_start(scrollwindow)
 
-            if(self.rdoHardware2.get_active()):
+            if (self.rdoHardware2.get_active()):
                 fixed = gtk.Fixed()
-                label = _widg.make_label(_("Add hardware to which assembly?"),
-                                         height=50)
+                label = _widg.make_label(
+                    _("Add hardware to which assembly?"), height=50)
                 fixed.put(label, 10, 10)
                 self.cmbSystems = _widg.make_combo()
                 fixed.put(self.cmbSystems, 10, 65)
@@ -297,8 +306,8 @@ class ImportAssistant:
                          WHERE fld_part=0 \
                          AND fld_parent_assembly='0' \
                          AND fld_ref_des<>''"
-                results = self._app.DB.execute_query(query,
-                                                     None,
+
+                results = self._app.DB.execute_query(query, None,
                                                      self._app.ProgCnx)
                 _widg.load_combo(self.cmbSystems, results)
 
@@ -313,7 +322,7 @@ class ImportAssistant:
 
             response = dialog.run()
 
-            if(response == gtk.RESPONSE_ACCEPT):
+            if (response == gtk.RESPONSE_ACCEPT):
                 model = d_treeview.get_model()
                 row = model.get_iter_root()
                 while row is not None:
@@ -325,29 +334,29 @@ class ImportAssistant:
         else:
             filechooser.destroy()
 
-        return(response, sheet, order)
+        return (response, sheet, order)
 
     def _hardware_flat_data_import(self):
-
         """ This function imports hardware information in a flat list format
             from an external source to the program database.
         """
 
         from datetime import datetime
 
-        if(_conf.RTK_MODULES[0] == 1):
+        if (_conf.RTK_MODULES[0] == 1):
             _revision = self._app.REVISION.revision_id
         else:
             _revision = 0
 
         _system = self.cmbSystems.get_active_text()
 
-        if(self._response == gtk.RESPONSE_ACCEPT):
+        if (self._response == gtk.RESPONSE_ACCEPT):
             _status = _("Importing Components to %s") % _system
             self._app.winTree.statusbar.push(2, _status)
 
             self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            self._app.winWorkBook.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.WATCH))
             self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
             # Find the path of the selected assembly to add the new components.
@@ -356,8 +365,7 @@ class ImportAssistant:
             path = self._app.HARDWARE.model.get_string_from_iter(row)
 
             query = "BEGIN TRANSACTION"
-            results = self._app.DB.execute_query(query,
-                                                 None,
+            results = self._app.DB.execute_query(query, None,
                                                  self._app.ProgCnx)
 
             for i in xrange(self._sheet.nrows - 1):
@@ -367,38 +375,38 @@ class ImportAssistant:
                 # If the assembly code for the curent row of external data is
                 # the same as the selected assembly code, import the current
                 # row of external data.
-                if(x.upper() == _system.upper()):
+                if (x.upper() == _system.upper()):
                     for j in range(len(self._order)):
                         value = self._sheet.row_values(i + 1)[self._order[j]]
 
-                        if((j == 0 or j == 3 or j == 6 or j == 12) and
-                           self._order[j] == -1):
+                        if ((j == 0 or j == 3 or j == 6 or j == 12)
+                                and self._order[j] == -1):
                             data.append(0.0)
 
-                        elif((j == 5 or j == 11) and self._order[j] == -1):
+                        elif ((j == 5 or j == 11) and self._order[j] == -1):
                             data.append(100.0)
 
-                        elif(j == 13 and self._order[j] == -1):
+                        elif (j == 13 and self._order[j] == -1):
                             data.append(1.0)
 
-                        elif((j == 25 or j == 26) and self._order[j] == -1):
+                        elif ((j == 25 or j == 26) and self._order[j] == -1):
                             data.append(30.0)
 
-                        elif((j == 2 or j == 7 or j == 24) and
-                             self._order[j] == -1):
+                        elif ((j == 2 or j == 7 or j == 24)
+                              and self._order[j] == -1):
                             data.append(0)
 
-                        elif((j == 10 or j == 18 or j == 20) and
-                             self._order[j] == -1):
+                        elif ((j == 10 or j == 18 or j == 20)
+                              and self._order[j] == -1):
                             data.append(1)
 
-                        elif(j == 27 and self._order[j] == -1):
+                        elif (j == 27 and self._order[j] == -1):
                             data.append(2010)
 
-                        elif((j == 1 or j == 4 or j == 8 or j == 9 or
-                              j == 14 or j == 15 or j == 16 or j == 19 or
-                              j == 21 or j == 22 or j == 23) and
-                             self._order[j] == -1):
+                        elif ((j == 1 or j == 4 or j == 8 or j == 9 or j == 14
+                               or j == 15 or j == 16 or j == 19 or j == 21
+                               or j == 22 or j == 23)
+                              and self._order[j] == -1):
                             data.append('')
 
                         else:
@@ -410,36 +418,36 @@ class ImportAssistant:
                               data[14], data[15], data[16], path, data[18],
                               data[19], data[20], data[21], data[22], data[23],
                               data[24], data[25], data[26], data[27])
-                                    # Index     Value
-                #    0      Additive Adjustment Factor (float)
-                #    1          CAGE Code (text)
-                #    2      Category (integer)
-                #    3      Cost (float)
-                #    4          Description (text)
-                #    5      Duty Cycle (float)
-                #    6      Failure Rate, Specified (float)
-                #    7      Failure Rate Type (integer)
-                #    8          Figure Number (text)
-                #    9          LCN (text)
-                #   10      Level(integer)
-                #   11      Mission Time (float)
-                #   12      MTBF, Specified (float)
-                #   13      Multiplicative Adjustment Factor (float)
-                #   14          Name (text)
-                #   15          NSN (text)
-                #   16          Page Number (text)
-                #   17          Parent Assembly (text)
-                #   18      Part (integer)
-                #   19          Part Number (text)
-                #   20      Quantity (integer)
-                #   21          Reference Designator (text)
-                #   22          Remarks (text)
-                #   23          Specification Number (text)
-                #   24      Subcategory (integer)
-                #   25      Temperature, Active (float)
-                #   26      Temperature, Dormant (float)
-                #   27      Year of Manufacture (integer)
-                    if(_conf.BACKEND == 'mysql'):
+                    # Index     Value
+                    #    0      Additive Adjustment Factor (float)
+                    #    1          CAGE Code (text)
+                    #    2      Category (integer)
+                    #    3      Cost (float)
+                    #    4          Description (text)
+                    #    5      Duty Cycle (float)
+                    #    6      Failure Rate, Specified (float)
+                    #    7      Failure Rate Type (integer)
+                    #    8          Figure Number (text)
+                    #    9          LCN (text)
+                    #   10      Level(integer)
+                    #   11      Mission Time (float)
+                    #   12      MTBF, Specified (float)
+                    #   13      Multiplicative Adjustment Factor (float)
+                    #   14          Name (text)
+                    #   15          NSN (text)
+                    #   16          Page Number (text)
+                    #   17          Parent Assembly (text)
+                    #   18      Part (integer)
+                    #   19          Part Number (text)
+                    #   20      Quantity (integer)
+                    #   21          Reference Designator (text)
+                    #   22          Remarks (text)
+                    #   23          Specification Number (text)
+                    #   24      Subcategory (integer)
+                    #   25      Temperature, Active (float)
+                    #   26      Temperature, Dormant (float)
+                    #   27      Year of Manufacture (integer)
+                    if (_conf.BACKEND == 'mysql'):
                         query = "INSERT INTO tbl_system \
                                  (fld_revision_id, fld_add_adj_factor, \
                                   fld_cage_code, fld_category_id, fld_cost, \
@@ -460,7 +468,8 @@ class ImportAssistant:
                                   '%s', '%s', %d, %f, %f, %f, '%s', '%s', \
                                   '%s', '%s', %d, '%s', %d, '%s', '%s', '%s', \
                                   %d, %f, %f, %d)"
-                    elif(_conf.BACKEND == 'sqlite3'):
+
+                    elif (_conf.BACKEND == 'sqlite3'):
                         query = "INSERT INTO tbl_system \
                                  (fld_revision_id, fld_add_adj_factor, \
                                   fld_cage_code, fld_category_id, fld_cost, \
@@ -480,56 +489,52 @@ class ImportAssistant:
                                  (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, \
                                   ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
-                    results = self._app.DB.execute_query(query,
-                                                         values,
-                                                         self._app.ProgCnx,
-                                                         commit=True)
+                    results = self._app.DB.execute_query(
+                        query, values, self._app.ProgCnx, commit=True)
 
-                    if(_conf.BACKEND == 'mysql'):
+                    if (_conf.BACKEND == 'mysql'):
                         query = "SELECT LAST_INSERT_ID()"
-                    elif(_conf.BACKEND == 'sqlite3'):
+                    elif (_conf.BACKEND == 'sqlite3'):
                         query = "SELECT seq \
                                  FROM sqlite_sequence \
                                  WHERE name='tbl_system'"
 
-                    _assembly_id = self._app.DB.execute_query(query,
-                                                              None,
-                                                              self._app.ProgCnx)
+                    _assembly_id = self._app.DB.execute_query(
+                        query, None, self._app.ProgCnx)
 
                     values = (_revision, _assembly_id[0][0])
-                    if(_conf.BACKEND == 'mysql'):
+                    if (_conf.BACKEND == 'mysql'):
                         query = "INSERT INTO tbl_prediction \
                                  (fld_revision_id, fld_assembly_id) \
                                  VALUES (%d, %d)"
-                    elif(_conf.BACKEND == 'sqlite3'):
+
+                    elif (_conf.BACKEND == 'sqlite3'):
                         query = "INSERT INTO tbl_prediction \
                                  (fld_revision_id, fld_assembly_id) \
                                  VALUES (?, ?)"
 
-                    results = self._app.DB.execute_query(query,
-                                                         values,
-                                                         self._app.ProgCnx,
-                                                         commit=True)
+                    results = self._app.DB.execute_query(
+                        query, values, self._app.ProgCnx, commit=True)
 
-                    if(_conf.BACKEND == 'mysql'):
+                    if (_conf.BACKEND == 'mysql'):
                         query = "INSERT INTO tbl_functional_matrix \
                                  (fld_revision_id, fld_assembly_id) \
                                  VALUES(%d, %d)"
-                    elif(_conf.BACKEND == 'sqlite3'):
+
+                    elif (_conf.BACKEND == 'sqlite3'):
                         query = "INSERT INTO tbl_functional_matrix \
                                  (fld_revision_id, fld_assembly_id) \
                                  VALUES(?, ?)"
 
-                    results = self._app.DB.execute_query(query,
-                                                         values,
-                                                         self._app.ProgCnx,
-                                                         commit=True)
+                    results = self._app.DB.execute_query(
+                        query, values, self._app.ProgCnx, commit=True)
 
-                    if(_conf.BACKEND == 'mysql'):
+                    if (_conf.BACKEND == 'mysql'):
                         query = "INSERT INTO tbl_fmeca_items \
                                  (fld_revision_id, fld_assembly_id) \
                                  VALUES (%d, %d)"
-                    elif(_conf.BACKEND == 'sqlite3'):
+
+                    elif (_conf.BACKEND == 'sqlite3'):
                         query = "INSERT INTO tbl_fmeca_items \
                                  (fld_revision_id, fld_assembly_id) \
                                  VALUES (?, ?)"
@@ -540,20 +545,21 @@ class ImportAssistant:
                     #                                     commit=True)
 
             query = "END TRANSACTION"
-            results = self._app.DB.execute_query(query,
-                                                 None,
+            results = self._app.DB.execute_query(query, None,
                                                  self._app.ProgCnx)
 
-            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winTree.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winWorkBook.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winParts.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
             self._app.winTree.statusbar.pop(2)
 
         return False
 
     def _build_data_select(self):
-
         """ Function to select the file containing the build data and
             associate the external file fields with the appropriate
             RTK Program database fields.
@@ -561,11 +567,10 @@ class ImportAssistant:
 
         import xlrd
 
-        filechooser = gtk.FileChooserDialog(_("RTK - Import Units"),
-                                            buttons=(gtk.STOCK_CANCEL,
-                                                     gtk.RESPONSE_REJECT,
-                                                     gtk.STOCK_OK,
-                                                     gtk.RESPONSE_ACCEPT))
+        filechooser = gtk.FileChooserDialog(
+            _("RTK - Import Units"),
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK,
+                     gtk.RESPONSE_ACCEPT))
 
         filechooser.set_default_response(gtk.RESPONSE_CANCEL)
 
@@ -589,7 +594,7 @@ class ImportAssistant:
 
         order = []
         sheet = ''
-        if(response == gtk.RESPONSE_ACCEPT):
+        if (response == gtk.RESPONSE_ACCEPT):
             infile = filechooser.get_filename()
             (name, extension) = os.path.splitext(infile)
 
@@ -637,7 +642,8 @@ class ImportAssistant:
             button.show()
             hbox.pack_start(button)
 
-            model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_STRING)
+            model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                                  gobject.TYPE_STRING)
             d_treeview = gtk.TreeView(model)
 
             column = gtk.TreeViewColumn(_("RTK Field"))
@@ -685,7 +691,7 @@ class ImportAssistant:
 
             response = dialog.run()
 
-            if(response == gtk.RESPONSE_ACCEPT):
+            if (response == gtk.RESPONSE_ACCEPT):
                 model = d_treeview.get_model()
                 row = model.get_iter_root()
                 while row is not None:
@@ -697,10 +703,9 @@ class ImportAssistant:
         else:
             filechooser.destroy()
 
-        return(response, sheet, order)
+        return (response, sheet, order)
 
     def _build_data_import(self):
-
         """ This function imports unit build information from an external
             source to the program database.
         """
@@ -708,65 +713,74 @@ class ImportAssistant:
         from datetime import datetime
 
         # Find the revision ID.
-        if(_conf.RTK_MODULES[0] == 1):
+        if (_conf.RTK_MODULES[0] == 1):
             _revision_id = self._app.REVISION.revision_id
         else:
-            _revision_id  = 0
+            _revision_id = 0
 
-        if(self._response == gtk.RESPONSE_ACCEPT):
+        if (self._response == gtk.RESPONSE_ACCEPT):
             _status = _("Importing Build Data")
             self._app.winTree.statusbar.push(2, _status)
 
             self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            self._app.winWorkBook.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.WATCH))
             self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
             query = "BEGIN TRANSACTION"
-            results = self._app.DB.execute_query(query,
-                                                   None,
-                                                   self._app.ProgCnx)
+            results = self._app.DB.execute_query(query, None,
+                                                 self._app.ProgCnx)
 
             for i in xrange(self._sheet.nrows - 1):
                 data = []
                 for j in range(len(self._order)):
-                    if((j == 0 or j == 1 or j == 2 or j == 7) and self._order[j] == -1):
+                    if ((j == 0 or j == 1 or j == 2 or j == 7)
+                            and self._order[j] == -1):
                         data.append("")
 
                     # Import build date, delivery date, and warranty date.
                     # Convert dates to ISO format.
-                    elif(j == 3 or j == 4 or j == 5):
-                        if(self._order[j] != -1):
-                            data.append(self._sheet.row_values(i + 1)[self._order[j]])
+                    elif (j == 3 or j == 4 or j == 5):
+                        if (self._order[j] != -1):
+                            data.append(
+                                self._sheet.row_values(i + 1)[self._order[j]])
                             try:
                                 d = xlrd.xldate_as_tuple(data[j], 0)
-                                if(d[1] == "/" or d[2] == "/"):
-                                    dfixed = datetime.strptime(d, '%m/%d/%Y').date().isoformat()
-                                elif(d[1] == "-" or d[2] == "-"):
-                                    dfixed = datetime.strptime(d, '%d-%b-%y').date().isoformat()
+                                if (d[1] == "/" or d[2] == "/"):
+                                    dfixed = datetime.strptime(
+                                        d, '%m/%d/%Y').date().isoformat()
+                                elif (d[1] == "-" or d[2] == "-"):
+                                    dfixed = datetime.strptime(
+                                        d, '%d-%b-%y').date().isoformat()
                                 else:
-                                    dfixed = datetime(*d[0:6]).date().isoformat()
+                                    dfixed = datetime(
+                                        *d[0:6]).date().isoformat()
                             except ValueError:
-                                dfixed = datetime(1970, 1, 1, 0, 0, 0).date().isoformat()
+                                dfixed = datetime(1970, 1, 1, 0, 0,
+                                                  0).date().isoformat()
 
                             data[j] = dfixed
                         else:
-                            data.append(datetime(1970, 1, 1, 0, 0, 0).date().isoformat())
+                            data.append(
+                                datetime(1970, 1, 1, 0, 0,
+                                         0).date().isoformat())
 
                     # Default to one year warranty period if no field is imported.
-                    elif(j == 6 and self._order[j] == -1):
+                    elif (j == 6 and self._order[j] == -1):
                         data.append(1)
 
                     else:
-                        data.append(self._sheet.row_values(i + 1)[self._order[j]])
+                        data.append(
+                            self._sheet.row_values(i + 1)[self._order[j]])
 
-                if(data[0] == "" or data[0] is None or data[0] == 0):
+                if (data[0] == "" or data[0] is None or data[0] == 0):
                     data[0] = i
 
-                values = (_revision_id, str(data[0]), str(data[1]),
-                          str(data[2]), str(data[3]), str(data[4]),
-                          str(data[5]), int(data[6]), str(data[7]))
+                values = (_revision_id, str(data[0]), str(data[1]), str(
+                    data[2]), str(data[3]), str(data[4]), str(data[5]),
+                          int(data[6]), str(data[7]))
 
-                if(_conf.BACKEND == 'mysql'):
+                if (_conf.BACKEND == 'mysql'):
                     query = "INSERT INTO tbl_units \
                              (fld_revision_id, fld_serial_no, \
                               fld_model, fld_market, \
@@ -775,7 +789,8 @@ class ImportAssistant:
                               fld_warranty_type) \
                              VALUES \
                              (%d, '%s', '%s', '%s', '%s', '%s', '%s', %d, '%s')"
-                elif(_conf.BACKEND == 'sqlite3'):
+
+                elif (_conf.BACKEND == 'sqlite3'):
                     query = "INSERT INTO tbl_units \
                              (fld_revision_id, fld_serial_no, \
                               fld_model, fld_market, \
@@ -785,26 +800,25 @@ class ImportAssistant:
                              VALUES \
                              (?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
-                results = self._app.DB.execute_query(query,
-                                                       values,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                results = self._app.DB.execute_query(
+                    query, values, self._app.ProgCnx, commit=True)
 
             query = "END TRANSACTION"
-            results = self._app.DB.execute_query(query,
-                                                   None,
-                                                   self._app.ProgCnx)
+            results = self._app.DB.execute_query(query, None,
+                                                 self._app.ProgCnx)
 
-            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winTree.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winWorkBook.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winParts.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
             self._app.winTree.statusbar.pop(2)
 
         return False
 
     def _field_incident_select(self):
-
         """ Function to select the file containing the field incident data and
             associate the external file fields with the appropriate RTK
             Program database fields.
@@ -812,11 +826,10 @@ class ImportAssistant:
 
         import xlrd
 
-        filechooser = gtk.FileChooserDialog(_("RTK - Import Field Incident Data"),
-                                            buttons=(gtk.STOCK_CANCEL,
-                                                     gtk.RESPONSE_REJECT,
-                                                     gtk.STOCK_OK,
-                                                     gtk.RESPONSE_ACCEPT))
+        filechooser = gtk.FileChooserDialog(
+            _("RTK - Import Field Incident Data"),
+            buttons=(gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT, gtk.STOCK_OK,
+                     gtk.RESPONSE_ACCEPT))
 
         filechooser.set_default_response(gtk.RESPONSE_CANCEL)
 
@@ -840,7 +853,7 @@ class ImportAssistant:
 
         order = []
         sheet = ''
-        if(response == gtk.RESPONSE_ACCEPT):
+        if (response == gtk.RESPONSE_ACCEPT):
             infile = filechooser.get_filename()
             (name, extension) = os.path.splitext(infile)
 
@@ -888,7 +901,8 @@ class ImportAssistant:
             button.show()
             hbox.pack_start(button)
 
-            model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_STRING)
+            model = gtk.TreeStore(gobject.TYPE_STRING, gobject.TYPE_INT,
+                                  gobject.TYPE_STRING)
             d_treeview = gtk.TreeView(model)
 
             column = gtk.TreeViewColumn(_("RTK Field"))
@@ -961,7 +975,7 @@ class ImportAssistant:
 
             response = dialog.run()
 
-            if(response == gtk.RESPONSE_ACCEPT):
+            if (response == gtk.RESPONSE_ACCEPT):
                 model = d_treeview.get_model()
                 row = model.get_iter_root()
                 while row is not None:
@@ -973,7 +987,7 @@ class ImportAssistant:
         else:
             filechooser.destroy()
 
-        return(response, sheet, order)
+        return (response, sheet, order)
 
     def _field_incident_import(self):
         """
@@ -983,47 +997,53 @@ class ImportAssistant:
 
         from datetime import datetime
 
-        if(self._response == gtk.RESPONSE_ACCEPT):
+        if (self._response == gtk.RESPONSE_ACCEPT):
             _status = _("Importing Field Incidents")
             self._app.winTree.statusbar.push(2, _status)
 
             self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
+            self._app.winWorkBook.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.WATCH))
             self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.WATCH))
 
             query = "BEGIN TRANSACTION"
-            results = self._app.DB.execute_query(query,
-                                                   None,
-                                                   self._app.ProgCnx)
+            results = self._app.DB.execute_query(query, None,
+                                                 self._app.ProgCnx)
 
             for i in xrange(self._sheet.nrows - 1):
                 data = []
                 for j in range(len(self._order)):
-                    if(self._order[j] == -1):
+                    if (self._order[j] == -1):
                         data.append(0)
                     else:
-                        data.append(self._sheet.row_values(i + 1)[self._order[j]])
+                        data.append(
+                            self._sheet.row_values(i + 1)[self._order[j]])
 
                         # Import failure date and repair date.
                         # Convert dates to ISO format.
-                        if(j == 3 or j == 4):
-                            if(self._order[j] != -1):
+                        if (j == 3 or j == 4):
+                            if (self._order[j] != -1):
                                 try:
                                     d = xlrd.xldate_as_tuple(data[j], 0)
-                                    if(d[1] == "/" or d[2] == "/"):
-                                        dfixed = datetime.strptime(d, '%m/%d/%Y').date().isoformat()
-                                    elif(d[1] == "-" or d[2] == "-"):
-                                        dfixed = datetime.strptime(d, '%d-%b-%y').date().isoformat()
+                                    if (d[1] == "/" or d[2] == "/"):
+                                        dfixed = datetime.strptime(
+                                            d, '%m/%d/%Y').date().isoformat()
+                                    elif (d[1] == "-" or d[2] == "-"):
+                                        dfixed = datetime.strptime(
+                                            d, '%d-%b-%y').date().isoformat()
                                     else:
-                                        dfixed = datetime(*d[0:6]).date().isoformat()
+                                        dfixed = datetime(
+                                            *d[0:6]).date().isoformat()
                                 except:
-                                    dfixed = datetime(1970, 1, 1, 0, 0, 0).date().isoformat()
+                                    dfixed = datetime(1970, 1, 1, 0, 0,
+                                                      0).date().isoformat()
 
                                 data[j] = dfixed
                             else:
-                                data[j] = datetime(1970, 1, 1, 0, 0, 0).date().isoformat()
+                                data[j] = datetime(1970, 1, 1, 0, 0,
+                                                   0).date().isoformat()
 
-                if(data[0] == "" or data[0] is None or data[0] == 0):
+                if (data[0] == "" or data[0] is None or data[0] == 0):
                     data[0] = i
 
                 try:
@@ -1034,7 +1054,7 @@ class ImportAssistant:
                 except ValueError:
                     print "One or more selected columns contain the wrong type of data for the RTK database."
 
-                if(_conf.BACKEND == 'mysql'):
+                if (_conf.BACKEND == 'mysql'):
                     query = "INSERT INTO tbl_incident \
                              (fld_incident_id, fld_incident_type, fld_status, \
                               fld_incident_date, fld_closure_date, \
@@ -1044,7 +1064,8 @@ class ImportAssistant:
                              VALUES \
                              ('%s', '%s', '%s', '%s', '%s', %d, '%s', '%s', \
                               '%s', '%s', '%s')"
-                elif(_conf.BACKEND == 'sqlite3'):
+
+                elif (_conf.BACKEND == 'sqlite3'):
                     query = "INSERT INTO tbl_incident \
                              (fld_incident_id, fld_incident_type, fld_status, \
                               fld_incident_date, fld_closure_date, \
@@ -1054,79 +1075,73 @@ class ImportAssistant:
                              VALUES \
                              (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
-                results = self._app.DB.execute_query(query,
-                                                       values,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                results = self._app.DB.execute_query(
+                    query, values, self._app.ProgCnx, commit=True)
 
                 values = (str(data[0]), str(data[11]), float(data[12]))
 
-                if(_conf.BACKEND == 'mysql'):
+                if (_conf.BACKEND == 'mysql'):
                     query = "INSERT INTO tbl_incident_detail \
                              (fld_incident_id, fld_part_num, \
                               fld_age_at_incident) \
                              VALUES \
                              ('%s', '%s', %f)"
-                elif(_conf.BACKEND == 'sqlite3'):
+
+                elif (_conf.BACKEND == 'sqlite3'):
                     query = "INSERT INTO tbl_incident_detail \
                              (fld_incident_id, fld_part_num, \
                               fld_age_at_incident) \
                              VALUES \
                              (?, ?, ?)"
 
-                results = self._app.DB.execute_query(query,
-                                                       values,
-                                                       self._app.ProgCnx,
-                                                       commit=True)
+                results = self._app.DB.execute_query(
+                    query, values, self._app.ProgCnx, commit=True)
 
             query = "END TRANSACTION"
-            results = self._app.DB.execute_query(query,
-                                                   None,
-                                                   self._app.ProgCnx)
+            results = self._app.DB.execute_query(query, None,
+                                                 self._app.ProgCnx)
 
-            self._app.winTree.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-            self._app.winWorkBook.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
-            self._app.winParts.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winTree.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winWorkBook.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
+            self._app.winParts.window.set_cursor(
+                gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
             self._app.winTree.statusbar.pop(2)
 
         return False
 
     def _set_next_page(self, page, assistant):
-
         """ Function to determine the next page to display. """
 
-        if(page == 1):
-            if(self.rdoHardware1.get_active()):
-                (self._response,
-                 self._sheet,
+        if (page == 1):
+            if (self.rdoHardware1.get_active()):
+                (self._response, self._sheet,
                  self._order) = self._hardware_data_select()
-            elif(self.rdoHardware2.get_active()):
-                (self._response,
-                 self._sheet,
+            elif (self.rdoHardware2.get_active()):
+                (self._response, self._sheet,
                  self._order) = self._hardware_data_select()
-            elif(self.rdoBuildData.get_active()):
-                (self._response,
-                 self._sheet,
+            elif (self.rdoBuildData.get_active()):
+                (self._response, self._sheet,
                  self._order) = self._build_data_select()
-            elif(self.rdoFieldIncidents.get_active()):
-                (self._response,
-                 self._sheet,
+            elif (self.rdoFieldIncidents.get_active()):
+                (self._response, self._sheet,
                  self._order) = self._field_incident_select()
 
         _next_page = page + 1
 
-        return(_next_page)
+        return (_next_page)
 
     def _apply(self, assistant):
 
-        if(self.rdoHardware1.get_active()):
+        if (self.rdoHardware1.get_active()):
             self._hardware_data_import()
-        elif(self.rdoHardware2.get_active()):
+        elif (self.rdoHardware2.get_active()):
             self._hardware_flat_data_import()
-        elif(self.rdoBuildData.get_active()):
+        elif (self.rdoBuildData.get_active()):
             self._build_data_import()
-        elif(self.rdoFieldIncidents.get_active()):
+        elif (self.rdoFieldIncidents.get_active()):
             self._field_incident_import()
         else:
             print self._order
@@ -1141,8 +1156,8 @@ class ImportAssistant:
 
         return False
 
-def _select_worksheet(infile):
 
+def _select_worksheet(infile):
     """ This function allows the user to select the worksheet in the workbook
         file that contains the data to import.
 
@@ -1181,7 +1196,7 @@ def _select_worksheet(infile):
     scrollwindow.show()
 
     response = dialog.run()
-    if(response == gtk.RESPONSE_ACCEPT):
+    if (response == gtk.RESPONSE_ACCEPT):
         # Get the selected sheet name.
         selection = treeview.get_selection()
         (model, row) = selection.get_selected()
@@ -1195,10 +1210,10 @@ def _select_worksheet(infile):
 
     dialog.destroy()
 
-    return(sheet)
+    return (sheet)
+
 
 def _set_import_order(button, s_treeview, d_treeview):
-
     """ Sets the order columns will be imported from an external Excel
         spreadsheet to the RTK project database table. """
 

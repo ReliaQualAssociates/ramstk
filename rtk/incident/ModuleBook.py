@@ -12,30 +12,30 @@ Incident Package Module View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -144,9 +144,8 @@ class ModuleView(object):
         # Create the main Incident class treeview.
         _fg_color = Configuration.RTK_COLORS[12]
         _bg_color = Configuration.RTK_COLORS[13]
-        (self.treeview,
-         self._lst_col_order) = Widgets.make_treeview('Incidents', 11,
-                                                      _fg_color, _bg_color)
+        (self.treeview, self._lst_col_order) = Widgets.make_treeview(
+            'Incidents', 11, _fg_color, _bg_color)
 
         # Populate the incident category gtk.CellRendererCombo().
         _cell = self.treeview.get_column(
@@ -214,13 +213,14 @@ class ModuleView(object):
             i += 1
 
         # Set gtk.Widget() tooltips.
-        self.treeview.set_tooltip_text(_(u"Displays the list of program "
-                                         u"incidents."))
+        self.treeview.set_tooltip_text(
+            _(u"Displays the list of program "
+              u"incidents."))
 
         # Connect gtk.Widget() signals to callback methods.
         self._lst_handler_id.append(
-            self.treeview.connect('cursor_changed', self._on_row_changed,
-                                  None, None))
+            self.treeview.connect('cursor_changed', self._on_row_changed, None,
+                                  None))
         self.treeview.connect('row_activated', self._on_row_changed)
         self.treeview.connect('button_press_event', self._on_button_press)
 
@@ -234,22 +234,22 @@ class ModuleView(object):
         _image.set_from_pixbuf(_icon)
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Incidents") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Incidents") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the development program "
-                                  u"incidents for the selected revision or, "
-                                  u"alternately, all revisions."))
+        _label.set_tooltip_text(
+            _(u"Displays the development program "
+              u"incidents for the selected revision or, "
+              u"alternately, all revisions."))
 
         _hbox = gtk.HBox()
         _hbox.pack_start(_image)
         _hbox.pack_end(_label)
         _hbox.show_all()
 
-        rtk_view.notebook.insert_page(_scrollwindow, tab_label=_hbox,
-                                      position=position)
+        rtk_view.notebook.insert_page(
+            _scrollwindow, tab_label=_hbox, position=position)
 
         # Create a Work View to associate with this Module View.
         self.workbook = WorkView(self)
@@ -267,11 +267,9 @@ class ModuleView(object):
         """
 
         # Retrieve all the development program tests.
-        (_incidents,
-         __) = self.mdcRTK.dtcIncident.request_incidents(self.mdcRTK.project_dao,
-                                                         self.mdcRTK.revision_id,
-                                                         self.load_all_revisions,
-                                                         query)
+        (_incidents, __) = self.mdcRTK.dtcIncident.request_incidents(
+            self.mdcRTK.project_dao, self.mdcRTK.revision_id,
+            self.load_all_revisions, query)
 
         # Clear the Incident Module View gtk.TreeModel().
         _model = self.treeview.get_model()
@@ -282,28 +280,32 @@ class ModuleView(object):
             if _incident[7] == 0:
                 _detection_method = ''
             else:
-                _detection_method = Configuration.RTK_DETECTION_METHODS[_incident[7]]
+                _detection_method = Configuration.RTK_DETECTION_METHODS[
+                    _incident[7]]
             if _incident[9] == 0:
                 _status = ''
             else:
                 _status = Configuration.RTK_INCIDENT_STATUS[_incident[9] - 1]
 
-            _data = [_incident[0], _incident[1],
-                     Configuration.RTK_INCIDENT_CATEGORY[_incident[2] - 1],
-                     Configuration.RTK_INCIDENT_TYPE[_incident[3] - 1],
-                     _incident[4], _incident[5],
-                     Configuration.RTK_INCIDENT_CRITICALITY[_incident[6] - 1],
-                     _detection_method, _incident[8], _status, _incident[10],
-                     _incident[11], _incident[12], _incident[13],
-                     _incident[14], _incident[15], _incident[16],
-                     _incident[17], _incident[18],
-                     Utilities.ordinal_to_date(_incident[19]), _incident[20],
-                     _incident[21], Utilities.ordinal_to_date(_incident[22]),
-                     _incident[23], _incident[24],
-                     Utilities.ordinal_to_date(_incident[25]), _incident[26],
-                     _incident[27], Utilities.ordinal_to_date(_incident[28]),
-                     Configuration.RTK_LIFECYCLE[_incident[29] - 1],
-                     _incident[30], _incident[31]]
+            _data = [
+                _incident[0], _incident[1],
+                Configuration.RTK_INCIDENT_CATEGORY[_incident[2] - 1],
+                Configuration.RTK_INCIDENT_TYPE[_incident[3] - 1],
+                _incident[4], _incident[5],
+                Configuration.RTK_INCIDENT_CRITICALITY[_incident[6] - 1],
+                _detection_method, _incident[8], _status, _incident[10],
+                _incident[11], _incident[12], _incident[13], _incident[14],
+                _incident[15], _incident[16], _incident[17], _incident[18],
+                Utilities.ordinal_to_date(
+                    _incident[19]), _incident[20], _incident[21],
+                Utilities.ordinal_to_date(
+                    _incident[22]), _incident[23], _incident[24],
+                Utilities.ordinal_to_date(
+                    _incident[25]), _incident[26], _incident[27],
+                Utilities.ordinal_to_date(_incident[28]),
+                Configuration.RTK_LIFECYCLE[_incident[29] - 1], _incident[30],
+                _incident[31]
+            ]
 
             _model.append(None, _data)
 
@@ -343,9 +345,8 @@ class ModuleView(object):
 
         # Retrieve all the affected components associated with the selected
         # incident.
-        (_components,
-         __) = self.mdcRTK.dtcComponent.request_components(self.mdcRTK.project_dao,
-                                                           incident_id)
+        (_components, __) = self.mdcRTK.dtcComponent.request_components(
+            self.mdcRTK.project_dao, incident_id)
 
         return _components
 
@@ -359,11 +360,10 @@ class ModuleView(object):
         :rtype: tuple
         """
 
-        (_results,
-         _error_code) = self.mdcRTK.dtcComponent.add_component(incident_id,
-                                                               hardware_id)
-# TODO: Handle error codes.
-        return(_results, _error_code)
+        (_results, _error_code) = self.mdcRTK.dtcComponent.add_component(
+            incident_id, hardware_id)
+        # TODO: Handle error codes.
+        return (_results, _error_code)
 
     def request_delete_component(self, incident_id, hardware_id):
         """
@@ -375,11 +375,10 @@ class ModuleView(object):
         :rtype: tuple
         """
 
-        (_results,
-         _error_code) = self.mdcRTK.dtcComponent.delete_component(incident_id,
-                                                                  hardware_id)
-# TODO: Handle error codes.
-        return(_results, _error_code)
+        (_results, _error_code) = self.mdcRTK.dtcComponent.delete_component(
+            incident_id, hardware_id)
+        # TODO: Handle error codes.
+        return (_results, _error_code)
 
     def request_save_component(self, hardware_id):
         """
@@ -392,8 +391,8 @@ class ModuleView(object):
 
         (_results,
          _error_code) = self.mdcRTK.dtcComponent.save_component(hardware_id)
-# TODO: Handle error codes.
-        return(_results, _error_code)
+        # TODO: Handle error codes.
+        return (_results, _error_code)
 
     def request_load_actions(self, incident_id):
         """
@@ -407,9 +406,8 @@ class ModuleView(object):
 
         # Retrieve all the affected components associated with the selected
         # incident.
-        (_actions,
-         __) = self.mdcRTK.dtcAction.request_actions(self.mdcRTK.project_dao,
-                                                     incident_id)
+        (_actions, __) = self.mdcRTK.dtcAction.request_actions(
+            self.mdcRTK.project_dao, incident_id)
 
         return _actions
 
@@ -422,10 +420,9 @@ class ModuleView(object):
         :rtype: tuple
         """
 
-        (_results,
-         _error_code) = self.mdcRTK.dtcAction.add_action(incident_id)
-# TODO: Handle error codes.
-        return(_results, _error_code)
+        (_results, _error_code) = self.mdcRTK.dtcAction.add_action(incident_id)
+        # TODO: Handle error codes.
+        return (_results, _error_code)
 
     def request_save_action(self, action_id):
         """
@@ -436,10 +433,9 @@ class ModuleView(object):
         :rtype: tuple
         """
 
-        (_results,
-         _error_code) = self.mdcRTK.dtcAction.save_action(action_id)
-# TODO: Handle error codes.
-        return(_results, _error_code)
+        (_results, _error_code) = self.mdcRTK.dtcAction.save_action(action_id)
+        # TODO: Handle error codes.
+        return (_results, _error_code)
 
     def update(self, position, new_text):
         """
@@ -536,7 +532,8 @@ class ModuleView(object):
         # TODO: Consider refactoring _on_cell_edited; current McCabe Complexity metric = 12.
         if self._lst_col_order[index] == 2:
             try:
-                _category = Configuration.RTK_INCIDENT_CATEGORY.index(new_text) + 1
+                _category = Configuration.RTK_INCIDENT_CATEGORY.index(
+                    new_text) + 1
             except ValueError:
                 _category = 0
             self._model.incident_category = _category
@@ -548,13 +545,15 @@ class ModuleView(object):
             self._model.incident_type = _type
         elif self._lst_col_order[index] == 6:
             try:
-                _criticality = Configuration.RTK_INCIDENT_CRITICALITY.index(new_text) + 1
+                _criticality = Configuration.RTK_INCIDENT_CRITICALITY.index(
+                    new_text) + 1
             except ValueError:
                 _criticality = 0
             self._model.criticality = _criticality
         elif self._lst_col_order[index] == 7:
             try:
-                _method = Configuration.RTK_DETECTION_METHODS.index(new_text) + 1
+                _method = Configuration.RTK_DETECTION_METHODS.index(
+                    new_text) + 1
             except ValueError:
                 _method = 0
             self._model.detection_method = _method

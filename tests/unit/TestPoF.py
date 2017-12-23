@@ -39,13 +39,15 @@ This is the test class for testing the Physics of Failure (PoF) class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
 
 from analyses.pof.PhysicsOfFailure import Model, PoF, ParentError
-
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -67,7 +69,6 @@ class TestPoFModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_pof_create(self):
-
         """
         (TestPoF) __init__ should return instance of PoF data model
         """
@@ -78,7 +79,6 @@ class TestPoFModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test_pof_create_parent_problem(self):
-
         """
         (TestPoF) __init__ raises ParentError for None input
         """

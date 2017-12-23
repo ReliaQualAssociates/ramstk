@@ -43,7 +43,10 @@ from nose.plugins.attrib import attr
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import dao.DAO as _dao
 from incident.component.Component import Component
@@ -95,9 +98,9 @@ class TestIncidentComponentController(unittest.TestCase):
 
         self.assertEqual(self.DUT.request_components(self._dao, 1)[1], 0)
         _component = self.DUT.dicComponents[max(self.DUT.dicComponents.keys())]
-        self.assertEqual(self.DUT.delete_component(_component.incident_id,
-                                                   _component.component_id)[1],
-                                                   0)
+        self.assertEqual(
+            self.DUT.delete_component(_component.incident_id,
+                                      _component.component_id)[1], 0)
 
     @attr(all=True, integration=True)
     def test_save_component(self):
@@ -107,11 +110,12 @@ class TestIncidentComponentController(unittest.TestCase):
 
         self.assertEqual(self.DUT.request_components(self._dao, 1)[1], 0)
         _component = self.DUT.dicComponents[min(self.DUT.dicComponents.keys())]
-        _component.lstRelevant = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0,
-                                  1, 0, 0, 0, 0]
+        _component.lstRelevant = [
+            0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0
+        ]
         _component.lstChargeable = [0, 0, 0, 0, 0, 1, 0, 0, 0, 0]
-        (_results,
-         _error_code) = self.DUT.save_component(_component.component_id)
+        (_results, _error_code) = self.DUT.save_component(
+            _component.component_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

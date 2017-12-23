@@ -260,22 +260,24 @@ class RTKPlot(object):
         _label = None
 
         if set_x:
-            _label = self.axis.set_xlabel(label, {
-                'fontsize': fontsize,
-                'fontweight': fontweight,
-                'verticalalignment': 'center',
-                'horizontalalignment': 'center',
-                'x': x_pos,
-                'y': y_pos
-            })
+            _label = self.axis.set_xlabel(
+                label, {
+                    'fontsize': fontsize,
+                    'fontweight': fontweight,
+                    'verticalalignment': 'center',
+                    'horizontalalignment': 'center',
+                    'x': x_pos,
+                    'y': y_pos
+                })
         else:
-            _label = self.axis.set_ylabel(label, {
-                'fontsize': fontsize,
-                'fontweight': fontweight,
-                'verticalalignment': 'center',
-                'horizontalalignment': 'center',
-                'rotation': 'vertical'
-            })
+            _label = self.axis.set_ylabel(
+                label, {
+                    'fontsize': fontsize,
+                    'fontweight': fontweight,
+                    'verticalalignment': 'center',
+                    'horizontalalignment': 'center',
+                    'rotation': 'vertical'
+                })
 
         return _label
 
@@ -351,9 +353,10 @@ class RTKPlot(object):
         :return: matplotlib text instance representing the title.
         :rtype: :class:`matplotlib.text.Text`
         """
-        return self.axis.set_title(title, {
-            'fontsize': fontsize,
-            'fontweight': fontweight,
-            'verticalalignment': 'baseline',
-            'horizontalalignment': 'center'
-        })
+        return self.axis.set_title(
+            title, {
+                'fontsize': fontsize,
+                'fontweight': fontweight,
+                'verticalalignment': 'baseline',
+                'horizontalalignment': 'center'
+            })

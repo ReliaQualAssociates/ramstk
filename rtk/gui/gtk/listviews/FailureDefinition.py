@@ -62,8 +62,8 @@ class ListView(RTKListView):
             self.treeview.connect('button_press_event', self._on_button_press))
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Failure\nDefinitions") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Failure\nDefinitions") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()

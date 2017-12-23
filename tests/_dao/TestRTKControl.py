@@ -12,7 +12,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -33,7 +36,13 @@ class TestRTKControl(unittest.TestCase):
     Class for testing the RTKControl class.
     """
 
-    _attributes = {'cause_id': 1, 'mode_id': 1, 'description': 'Test Control', 'control_id': 1, 'type_id': 0}
+    _attributes = {
+        'cause_id': 1,
+        'mode_id': 1,
+        'description': 'Test Control',
+        'control_id': 1,
+        'type_id': 0
+    }
 
     def setUp(self):
         """
@@ -94,7 +103,5 @@ class TestRTKControl(unittest.TestCase):
 
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'type_id' in "
-                               "attribute dictionary passed to "
-                               "RTKControl.set_attributes().")
-
-
+                         "attribute dictionary passed to "
+                         "RTKControl.set_attributes().")

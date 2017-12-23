@@ -12,30 +12,30 @@ Physics of Failure Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
@@ -45,7 +45,7 @@ import locale
 # Import other RTK modules.
 try:
     import Configuration
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
 
 from Mechanism import Model as Mechanism
@@ -60,7 +60,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -149,7 +149,7 @@ class PoF(object):
 
         # Define public scalar attributes.
 
-    def request_pof(self, dao, assembly_id=None):    # pylint: disable=R0914
+    def request_pof(self, dao, assembly_id=None):  # pylint: disable=R0914
         """
         Method to load the entire PoF for a Hardware item.  Starting at the
         Mechanism level, the steps to create the PoF are:
@@ -201,7 +201,7 @@ class PoF(object):
 
             _query = "SELECT * FROM rtk_op_loads \
                       WHERE fld_mechanism_id={0:d}".format(
-                          _mechanism.mechanism_id)
+                _mechanism.mechanism_id)
             (_loads, _error_code, __) = self._dao.execute(_query, commit=False)
             try:
                 _n_loads = len(_loads)
@@ -214,8 +214,7 @@ class PoF(object):
                 _mechanism.dicLoads[_load.load_id] = _load
 
                 _query = "SELECT * FROM rtk_op_stress \
-                          WHERE fld_load_id={0:d}".format(
-                              _load.load_id)
+                          WHERE fld_load_id={0:d}".format(_load.load_id)
                 (_stresses, _error_code, __) = self._dao.execute(_query)
                 try:
                     _n_stresses = len(_stresses)
@@ -229,7 +228,7 @@ class PoF(object):
 
                     _query = "SELECT * FROM rtk_test_methods \
                               WHERE fld_stress_id={0:d}".format(
-                                  _stress.stress_id)
+                        _stress.stress_id)
                     (_methods, _error_code, __) = self._dao.execute(_query)
                     try:
                         _n_methods = len(_methods)
@@ -271,14 +270,14 @@ class PoF(object):
         _query = "INSERT INTO rtk_mechanisms \
                   (fld_assembly_id, fld_mode_id, fld_include_pof) \
                   VALUES ({0:d}, 10000, 1)".format(hardware_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
-                                                              commit=True)
+        (_results, _error_code, _last_id) = self._dao.execute(
+            _query, commit=True)
 
         _mechanism = Mechanism()
         _mechanism.set_attributes((hardware_id, _last_id, ''))
         _pof.dicMechanisms[_last_id] = _mechanism
 
-        return(_results, _error_code, _last_id)
+        return (_results, _error_code, _last_id)
 
     def delete_mechanism(self, hardware_id, mechanism_id):
         """
@@ -294,15 +293,15 @@ class PoF(object):
 
         _query = "DELETE FROM rtk_mechanisms \
                   WHERE fld_mechanism_id={0:d}".format(mechanism_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
-                                                              commit=True)
+        (_results, _error_code, _last_id) = self._dao.execute(
+            _query, commit=True)
 
         try:
             _pof.dicMechanisms.pop(mechanism_id)
         except KeyError:
             _error_code = 60
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_load(self, hardware_id, mechanism_id):
         """
@@ -321,14 +320,14 @@ class PoF(object):
         _query = "INSERT INTO rtk_op_loads \
                   (fld_mechanism_id) \
                   VALUES ({0:d})".format(mechanism_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
-                                                              commit=True)
+        (_results, _error_code, _last_id) = self._dao.execute(
+            _query, commit=True)
 
         _load = Load()
         _load.set_attributes((mechanism_id, _last_id, 'Test Load', 0))
         _mechanism.dicLoads[_last_id] = _load
 
-        return(_results, _error_code, _last_id)
+        return (_results, _error_code, _last_id)
 
     def delete_load(self, hardware_id, mechanism_id, load_id):
         """
@@ -356,7 +355,7 @@ class PoF(object):
         except KeyError:
             _error_code = 60
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_stress(self, hardware_id, mechanism_id, load_id):
         """
@@ -377,14 +376,14 @@ class PoF(object):
         _query = "INSERT INTO rtk_op_stress \
                   (fld_load_id) \
                   VALUES ({0:d})".format(load_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
-                                                              commit=True)
+        (_results, _error_code, _last_id) = self._dao.execute(
+            _query, commit=True)
 
         _stress = Stress()
         _stress.set_attributes((load_id, _last_id, '', '', '', ''))
         _load.dicStresses[_last_id] = _stress
 
-        return(_results, _error_code, _last_id)
+        return (_results, _error_code, _last_id)
 
     def delete_stress(self, hardware_id, mechanism_id, load_id, stress_id):
         """
@@ -414,7 +413,7 @@ class PoF(object):
         except KeyError:
             _error_code = 60
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_method(self, hardware_id, mechanism_id, load_id, stress_id):
         """
@@ -437,14 +436,14 @@ class PoF(object):
         _query = "INSERT INTO rtk_test_methods \
                   (fld_stress_id) \
                   VALUES ({0:d})".format(stress_id)
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
-                                                              commit=True)
+        (_results, _error_code, _last_id) = self._dao.execute(
+            _query, commit=True)
 
         _method = Method()
         _method.set_attributes((stress_id, _last_id, '', 0, 0, ''))
         _stress.dicMethods[_last_id] = _method
 
-        return(_results, _error_code, _last_id)
+        return (_results, _error_code, _last_id)
 
     def delete_method(self, hardware_id, mechanism_id, load_id, stress_id,
                       method_id):
@@ -477,7 +476,7 @@ class PoF(object):
         except KeyError:
             _error_code = 60
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_pof(self, hardware_id=None):
         """
@@ -519,8 +518,8 @@ class PoF(object):
 
         _query = "UPDATE rtk_mechanisms \
                   SET fld_description='{0:s}', fld_include_pof=1 \
-                  WHERE fld_mechanism_id={1:d}".format(
-                      mechanism.description, mechanism.mechanism_id)
+                  WHERE fld_mechanism_id={1:d}".format(mechanism.description,
+                                                       mechanism.mechanism_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return _error_code
@@ -541,8 +540,7 @@ class PoF(object):
                   SET fld_load_description='{0:s}', \
                       fld_priority={1:d}, fld_damage_model={2:d} \
                   WHERE fld_load_id={3:d}".format(
-                      load.description, load.priority, load.damage_model,
-                      load.load_id)
+            load.description, load.priority, load.damage_model, load.load_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return _error_code
@@ -564,8 +562,8 @@ class PoF(object):
                       fld_measurable_parameter={1:d}, \
                       fld_load_history={2:d}, fld_remarks='{3:s}' \
                   WHERE fld_stress_id={4:d}".format(
-                      stress.description, stress.measurable_parameter,
-                      stress.load_history, stress.remarks, stress.stress_id)
+            stress.description, stress.measurable_parameter,
+            stress.load_history, stress.remarks, stress.stress_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return _error_code
@@ -587,9 +585,8 @@ class PoF(object):
                       fld_boundary_conditions='{2:s}', \
                       fld_remarks='{3:s}' \
                   WHERE fld_method_id={4:d}".format(
-                      method.stress_id, method.description,
-                      method.boundary_conditions, method.remarks,
-                      method.method_id)
+            method.stress_id, method.description, method.boundary_conditions,
+            method.remarks, method.method_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         return _error_code

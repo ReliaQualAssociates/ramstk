@@ -42,7 +42,10 @@ from nose.plugins.attrib import attr
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 from software.Software import Model, _calculate_application_risk, _calculate_development_risk, _calculate_anomaly_risk, _calculate_traceability_risk, _calculate_quality_risk, _calculate_language_type_risk, _calculate_risk_reduction, _calculate_reliability_estimation_number
 
@@ -162,8 +165,7 @@ class TestSoftwareModel(unittest.TestCase):
                    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0, 0, 0, 0, 0, 0.0, 0, 0.0)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -179,8 +181,7 @@ class TestSoftwareModel(unittest.TestCase):
                    0.0, None, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0, 0, 0, 0, 0, 0.0, 0, 0.0)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -191,13 +192,11 @@ class TestSoftwareModel(unittest.TestCase):
 
         _values = (0, 32, 0, "Description", 0, 0, 0.0, 0.0, 0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0.0, 0, 0, 0, 0, 0.0, 0,
-                   0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 44, 0, 0, 0, 0, 0, 0,
-                   0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0, 0)
+                   0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 44, 0, 0, 0, 0, 0, 0, 0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -210,8 +209,8 @@ class TestSoftwareModel(unittest.TestCase):
                    0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0.0, 0, 0, 0, 0, 0.0, 0, 0, 0,
                    1.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0,
                    0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0,
-                   0, 0, 0.0, 0, 0.0)
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0,
+                   0, 0.0, 0, 0.0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 
@@ -257,24 +256,24 @@ class TestSoftwareModel(unittest.TestCase):
         (TestSoftware) _calculate_development_risk should return False on success
         """
 
-        self.DUT.lst_development = [1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-                                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-                                    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                    1]
+        self.DUT.lst_development = [
+            1, 1, 1, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+        ]
         self.assertFalse(_calculate_development_risk(self.DUT))
         self.assertEqual(self.DUT.d_risk, 0.5)
 
-        self.DUT.lst_development = [0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1,
-                                    0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 1, 0,
-                                    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
-                                    1]
+        self.DUT.lst_development = [
+            0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 1,
+            0, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1
+        ]
         _calculate_development_risk(self.DUT)
         self.assertEqual(self.DUT.d_risk, 2.0)
 
-        self.DUT.lst_development = [1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-                                    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-                                    0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                    0]
+        self.DUT.lst_development = [
+            1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
+        ]
         _calculate_development_risk(self.DUT)
         self.assertEqual(self.DUT.d_risk, 1.0)
 
@@ -284,19 +283,20 @@ class TestSoftwareModel(unittest.TestCase):
         (TestSoftware) _calculate_anomaly_risk should return a 0 error code on success
         """
 
-        self.DUT.phase_id = 2               # Requirements review
-        self.DUT.lst_anomaly_mgmt = [[5, 5, 10, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0,
-                                      1, 1, 1, 0, 1, 0]]
+        self.DUT.phase_id = 2  # Requirements review
+        self.DUT.lst_anomaly_mgmt = [[
+            5, 5, 10, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0
+        ]]
 
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 0)
         self.assertAlmostEqual(self.DUT.am, 0.3684211)
         self.assertEqual(self.DUT.sa, 0.9)
 
-        self.DUT.phase_id = 3               # PDR
-        self.DUT.lst_anomaly_mgmt = [[],
-                                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
-                                     1, 1, 0, 1, 0]]
+        self.DUT.phase_id = 3  # PDR
+        self.DUT.lst_anomaly_mgmt = [[], [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0
+        ]]
 
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 0)
@@ -309,21 +309,24 @@ class TestSoftwareModel(unittest.TestCase):
         (TestSoftware) _calculate_anomaly_risk should return a 10 error code when attempting to divide by zero
         """
 
-        self.DUT.phase_id = 2               # Requirements review
-        self.DUT.lst_anomaly_mgmt = [[0, 5, 10, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0,
-                                      1, 1, 1, 0, 1, 0]]
+        self.DUT.phase_id = 2  # Requirements review
+        self.DUT.lst_anomaly_mgmt = [[
+            0, 5, 10, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0
+        ]]
 
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 10)
 
-        self.DUT.lst_anomaly_mgmt = [[5, 5, 0, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0,
-                                      1, 1, 1, 0, 1, 0]]
+        self.DUT.lst_anomaly_mgmt = [[
+            5, 5, 0, 10, 1, 3, 3, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0
+        ]]
 
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 10)
 
-        self.DUT.lst_anomaly_mgmt = [[5, 5, 10, 10, 1, 0, 3, 1, 1, 0, 1, 1, 0,
-                                      1, 1, 1, 0, 1, 0]]
+        self.DUT.lst_anomaly_mgmt = [[
+            5, 5, 10, 10, 1, 0, 3, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0
+        ]]
 
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 10)
@@ -356,8 +359,10 @@ class TestSoftwareModel(unittest.TestCase):
         """
 
         self.DUT.phase_id = 2
-        self.DUT.lst_sftw_quality = [[1, 1, 1, 1, 1, 1, 0, 1, 5, 4, 4, 4, 1, 1,
-                                      1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        self.DUT.lst_sftw_quality = [[
+            1, 1, 1, 1, 1, 1, 0, 1, 5, 4, 4, 4, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
+            1, 1, 1, 1, 1
+        ]]
 
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 0)
@@ -365,10 +370,10 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
         self.DUT.phase_id = 3
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 4,
-                                      3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
-                                      0, 0, 0]]
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 4, 3, 1, 0, 10, 8, 1, 1, 1, 1,
+            0, 1, 1, 1, 0, 0, 0
+        ]]
 
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 0)
@@ -382,56 +387,60 @@ class TestSoftwareModel(unittest.TestCase):
         """
 
         self.DUT.phase_id = 2
-        self.DUT.lst_sftw_quality = [[1, 1, 1, 1, 1, 1, 0, 1, 0, 4, 4, 4, 1, 1,
-                                      1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        self.DUT.lst_sftw_quality = [[
+            1, 1, 1, 1, 1, 1, 0, 1, 0, 4, 4, 4, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
+            1, 1, 1, 1, 1
+        ]]
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 10)
         self.assertAlmostEqual(self.DUT.dr, 0.16)
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
-        self.DUT.lst_sftw_quality = [[1, 1, 0, 0, 1, 1, 0, 1, 5, 4, 0, 4, 1, 1,
-                                      1, 1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1]]
+        self.DUT.lst_sftw_quality = [[
+            1, 1, 0, 0, 1, 1, 0, 1, 5, 4, 0, 4, 1, 1, 1, 1, 1, 0, 1, 1, 1, 1,
+            1, 1, 1, 1, 1
+        ]]
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 10)
         self.assertAlmostEqual(self.DUT.dr, 0.24)
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
         self.DUT.phase_id = 3
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 0, 0, 1, 1, 5, 4, 4, 4, 4,
-                                      3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
-                                      0, 0, 0]]
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 0, 0, 1, 1, 5, 4, 4, 4, 4, 3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1,
+            1, 1, 0, 0, 0
+        ]]
 
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 10)
         self.assertAlmostEqual(self.DUT.dr, 0.3684211)
         self.assertAlmostEqual(self.DUT.sq, 1.1)
 
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 125.0, 15.0, 1, 1, 0, 4, 4, 4, 4,
-                                      3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
-                                      0, 0, 0]]
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 125.0, 15.0, 1, 1, 0, 4, 4, 4, 4, 3, 1, 0, 10, 8, 1, 1, 1, 1,
+            0, 1, 1, 1, 0, 0, 0
+        ]]
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 10)
 
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 125.0, 15.0, 1, 1, 5, 4, 0, 4, 4,
-                                      3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
-                                      0, 0, 0]]
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 125.0, 15.0, 1, 1, 5, 4, 0, 4, 4, 3, 1, 0, 10, 8, 1, 1, 1, 1,
+            0, 1, 1, 1, 0, 0, 0
+        ]]
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 10)
 
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 0,
-                                      3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
-                                      0, 0, 0]]
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 0, 3, 1, 0, 10, 8, 1, 1, 1, 1,
+            0, 1, 1, 1, 0, 0, 0
+        ]]
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 10)
 
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 4,
-                                      3, 1, 0, 0, 8, 1, 1, 1, 1, 0, 1, 1, 1,
-                                      0, 0, 0]]
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 4, 3, 1, 0, 0, 8, 1, 1, 1, 1,
+            0, 1, 1, 1, 0, 0, 0
+        ]]
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 10)
 
@@ -470,11 +479,11 @@ class TestSoftwareModel(unittest.TestCase):
         """
 
         self.DUT.level_id = 2
-        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
-                                       [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
-                                       [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
-                                       [1, 0], [0, 0], [0, 0], [0, 0], [1, 1],
-                                       [0, 0]]
+        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [
+            0, 0
+        ], [1, 1], [0, 0], [0, 0], [0, 0], [1, 0], [1, 1], [0, 0], [1, 1], [
+            0, 0
+        ], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 1], [0, 0]]
 
         self.DUT.test_effort = 1
         self.DUT.labor_hours_test = 15
@@ -505,11 +514,11 @@ class TestSoftwareModel(unittest.TestCase):
         """
 
         self.DUT.level_id = 3
-        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
-                                       [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
-                                       [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
-                                       [1, 0], [0, 0], [0, 0], [0, 0], [1, 1],
-                                       [0, 0]]
+        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [
+            0, 0
+        ], [1, 1], [0, 0], [0, 0], [0, 0], [1, 0], [1, 1], [0, 0], [1, 1], [
+            0, 0
+        ], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 1], [0, 0]]
 
         self.DUT.test_effort = 2
         self.DUT.labor_hours_test = 15
@@ -540,11 +549,11 @@ class TestSoftwareModel(unittest.TestCase):
         """
 
         self.DUT.level_id = 3
-        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
-                                       [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
-                                       [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
-                                       [1, 0], [0, 0], [0, 0], [0, 0], [1, 1],
-                                       [0, 0]]
+        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [
+            0, 0
+        ], [1, 1], [0, 0], [0, 0], [0, 0], [1, 0], [1, 1], [0, 0], [1, 1], [
+            0, 0
+        ], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 1], [0, 0]]
 
         self.DUT.test_effort = 3
         self.DUT.labor_hours_test = 15
@@ -576,11 +585,11 @@ class TestSoftwareModel(unittest.TestCase):
 
         self.DUT.level_id = 2
 
-        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
-                                       [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
-                                       [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
-                                       [1, 0], [0, 0], [0, 0], [0, 0], [1, 1],
-                                       [0, 0]]
+        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [
+            0, 0
+        ], [1, 1], [0, 0], [0, 0], [0, 0], [1, 0], [1, 1], [0, 0], [1, 1], [
+            0, 0
+        ], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 1], [0, 0]]
 
         self.DUT.test_effort = 1
         self.DUT.labor_hours_test = 15
@@ -607,11 +616,11 @@ class TestSoftwareModel(unittest.TestCase):
 
         self.DUT.level_id = 3
 
-        self.DUT.lst_test_selection = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
-                                       [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
-                                       [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
-                                       [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
-                                       [0, 0]]
+        self.DUT.lst_test_selection = [[0, 0], [0, 0], [0, 0], [0, 0], [
+            0, 0
+        ], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [
+            0, 0
+        ], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0]]
 
         self.DUT.test_effort = 2
         self.DUT.labor_hours_test = 15
@@ -631,18 +640,19 @@ class TestSoftwareModel(unittest.TestCase):
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
-    def test20_calculate_risk_reduction_test_coverage_zero_division_error(self):
+    def test20_calculate_risk_reduction_test_coverage_zero_division_error(
+            self):
         """
         (TestSoftware) calculate_risk_reduction should return a 10 error code when attempting to divide by zero when calculating test coverage
         """
 
         self.DUT.level_id = 2
 
-        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [0, 0],
-                                       [1, 1], [0, 0], [0, 0], [0, 0], [1, 0],
-                                       [1, 1], [0, 0], [1, 1], [0, 0], [0, 0],
-                                       [1, 0], [0, 0], [0, 0], [0, 0], [1, 1],
-                                       [0, 0]]
+        self.DUT.lst_test_selection = [[1, 1], [0, 0], [0, 0], [1, 0], [
+            0, 0
+        ], [1, 1], [0, 0], [0, 0], [0, 0], [1, 0], [1, 1], [0, 0], [1, 1], [
+            0, 0
+        ], [0, 0], [1, 0], [0, 0], [0, 0], [0, 0], [1, 1], [0, 0]]
 
         self.DUT.test_effort = 1
         self.DUT.labor_hours_test = 15
@@ -751,26 +761,25 @@ class TestSoftwareModel(unittest.TestCase):
 
     @attr(all=True, unit=False)
     def test25_calculate(self):
-
         """
         (TestSoftware) calculate should return False on success
         """
 
-        self.DUT.lst_development = [1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1,
-                                    1, 1, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0,
-                                    0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                    0]
-        self.DUT.lst_anomaly_mgmt = [[],
-                                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
-                                      1, 1, 0, 1, 0]]
+        self.DUT.lst_development = [
+            1, 1, 0, 0, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0
+        ]
+        self.DUT.lst_anomaly_mgmt = [[], [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0
+        ]]
         self.DUT.lst_traceability = [[], [0, 0]]
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 4,
-                                      3, 1, 0, 10, 8, 1, 1, 1, 1, 0, 1, 1, 1,
-                                      0, 0, 0]]
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 125.0, 15.0, 1, 1, 5, 4, 4, 4, 4, 3, 1, 0, 10, 8, 1, 1, 1, 1,
+            0, 1, 1, 1, 0, 0, 0
+        ]]
 
         self.DUT.application_id = 4
-        self.DUT.phase_id = 3               # PDR
+        self.DUT.phase_id = 3  # PDR
 
         self.assertFalse(self.DUT.calculate(self.DUT))
         self.assertEqual(self.DUT.a_risk, 2.0)

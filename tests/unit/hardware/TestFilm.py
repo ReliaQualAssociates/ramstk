@@ -12,7 +12,10 @@ This is the test class for testing Carbon Film resistor module algorithms and mo
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -56,33 +59,27 @@ class TestFilmModel(unittest.TestCase):
         # Verify the Carbon Film resistor class was properly
         # initialized.
         self.assertEqual(self.DUT._lst_piR, [1.0, 1.1, 1.6, 2.5])
-        self.assertEqual(self.DUT._lst_piE, [1.0, 2.0, 8.0, 4.0, 14.0, 4.0,
-                                             8.0, 10.0, 18.0, 19.0, 0.2, 10.0,
-                                             28.0, 510.0])
-        self.assertEqual(self.DUT._lst_piQ_count, [0.03, 0.1, 0.3, 1.0, 3.0,
-                                                   10.0])
-        self.assertEqual(self.DUT._lst_piQ_stress, [0.03, 0.1, 0.3, 1.0, 5.0,
-                                                    5.0, 15.0])
-        self.assertEqual(self.DUT._lambdab_count, [[0.0012, 0.0027, 0.011,
-                                                    0.0054, 0.020, 0.0063,
-                                                    0.013, 0.018, 0.033, 0.030,
-                                                    0.00025, 0.014, 0.044,
-                                                    0.69],
-                                                   [0.0012, 0.0027, 0.011,
-                                                    0.0054, 0.020, 0.0063,
-                                                    0.013, 0.018, 0.033, 0.030,
-                                                    0.00025, 0.014, 0.044,
-                                                    0.69],
-                                                   [0.0014, 0.0031, 0.013,
-                                                    0.0061, 0.023, 0.0072,
-                                                    0.014, 0.021, 0.038, 0.034,
-                                                    0.00028, 0.016, 0.050,
-                                                    0.78],
-                                                   [0.0014, 0.0031, 0.013,
-                                                    0.0061, 0.023, 0.0072,
-                                                    0.014, 0.021, 0.038, 0.034,
-                                                    0.00028, 0.016, 0.050,
-                                                    0.78]])
+        self.assertEqual(self.DUT._lst_piE, [
+            1.0, 2.0, 8.0, 4.0, 14.0, 4.0, 8.0, 10.0, 18.0, 19.0, 0.2, 10.0,
+            28.0, 510.0
+        ])
+        self.assertEqual(self.DUT._lst_piQ_count,
+                         [0.03, 0.1, 0.3, 1.0, 3.0, 10.0])
+        self.assertEqual(self.DUT._lst_piQ_stress,
+                         [0.03, 0.1, 0.3, 1.0, 5.0, 5.0, 15.0])
+        self.assertEqual(self.DUT._lambdab_count, [[
+            0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013, 0.018, 0.033,
+            0.030, 0.00025, 0.014, 0.044, 0.69
+        ], [
+            0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013, 0.018, 0.033,
+            0.030, 0.00025, 0.014, 0.044, 0.69
+        ], [
+            0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014, 0.021, 0.038,
+            0.034, 0.00028, 0.016, 0.050, 0.78
+        ], [
+            0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014, 0.021, 0.038,
+            0.034, 0.00028, 0.016, 0.050, 0.78
+        ]])
         self.assertEqual(self.DUT.subcategory, 26)
         self.assertEqual(self.DUT.specification, 0)
 
@@ -93,22 +90,19 @@ class TestFilmModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3, 1)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3, 1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.specification, 1)
 
@@ -120,14 +114,12 @@ class TestFilmModel(unittest.TestCase):
 
         _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
                    '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
-                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1,
-                   0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0,
-                   0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 0)
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
+                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0,
+                   0.0, 30.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 
@@ -292,17 +284,17 @@ class TestFilmPowerPowerModel(unittest.TestCase):
         # Verify the Carbon Film Power resistor class was properly
         # initialized.
         self.assertEqual(self.DUT._lst_piR, [1.0, 1.2, 1.3, 3.5])
-        self.assertEqual(self.DUT._lst_piE, [1.0, 2.0, 10.0, 5.0, 17.0, 6.0,
-                                             8.0, 14.0, 18.0, 25.0, 0.5, 14.0,
-                                             36.0, 660.0])
-        self.assertEqual(self.DUT._lst_piQ_count, [0.03, 0.1, 0.3, 1.0, 3.0,
-                                                   10.0])
+        self.assertEqual(self.DUT._lst_piE, [
+            1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5, 14.0,
+            36.0, 660.0
+        ])
+        self.assertEqual(self.DUT._lst_piQ_count,
+                         [0.03, 0.1, 0.3, 1.0, 3.0, 10.0])
         self.assertEqual(self.DUT._lst_piQ_stress, [1.0, 3.0])
-        self.assertEqual(self.DUT._lst_lambdab_count, [0.012, 0.025, 0.13,
-                                                       0.062, 0.21, 0.078,
-                                                       0.10, 0.19, 0.24, 0.32,
-                                                       0.0060, 0.18, 0.47,
-                                                       8.2])
+        self.assertEqual(self.DUT._lst_lambdab_count, [
+            0.012, 0.025, 0.13, 0.062, 0.21, 0.078, 0.10, 0.19, 0.24, 0.32,
+            0.0060, 0.18, 0.47, 8.2
+        ])
         self.assertEqual(self.DUT.subcategory, 27)
 
     @attr(all=True, unit=True)
@@ -461,17 +453,17 @@ class TestFilmNetworkModel(unittest.TestCase):
 
         # Verify the Carbon FilmNetwork resistor class was properly
         # initialized.
-        self.assertEqual(self.DUT._lst_piE, [1.0, 2.0, 10.0, 5.0, 17.0, 6.0,
-                                             8.0, 14.0, 18.0, 25.0, 0.5, 14.0,
-                                             36.0, 660.0])
-        self.assertEqual(self.DUT._lst_piQ_count, [0.03, 0.1, 0.3, 1.0, 3.0,
-                                                   10.0])
+        self.assertEqual(self.DUT._lst_piE, [
+            1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5, 14.0,
+            36.0, 660.0
+        ])
+        self.assertEqual(self.DUT._lst_piQ_count,
+                         [0.03, 0.1, 0.3, 1.0, 3.0, 10.0])
         self.assertEqual(self.DUT._lst_piQ_stress, [1.0, 3.0])
-        self.assertEqual(self.DUT._lst_lambdab_count, [0.0023, 0.0066, 0.031,
-                                                       0.013, 0.055, 0.022,
-                                                       0.043, 0.077, 0.15,
-                                                       0.10, 0.0011, 0.055,
-                                                       0.15, 1.7])
+        self.assertEqual(self.DUT._lst_lambdab_count, [
+            0.0023, 0.0066, 0.031, 0.013, 0.055, 0.022, 0.043, 0.077, 0.15,
+            0.10, 0.0011, 0.055, 0.15, 1.7
+        ])
         self.assertEqual(self.DUT.subcategory, 28)
         self.assertEqual(self.DUT.n_resistors, 1)
         self.assertEqual(self.DUT.piT, 0.0)
@@ -484,22 +476,19 @@ class TestFilmNetworkModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3, 8)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3, 8)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.n_resistors, 8)
         self.assertEqual(self.DUT.piT, 0.1)
@@ -512,22 +501,19 @@ class TestFilmNetworkModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -537,22 +523,19 @@ class TestFilmNetworkModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3, '')
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3, '')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -563,14 +546,12 @@ class TestFilmNetworkModel(unittest.TestCase):
 
         _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
                    '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
-                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1,
-                   0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0,
-                   0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 1, 0.0, 0.0)
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
+                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0,
+                   0.0, 30.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 1, 0.0, 0.0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 
@@ -609,8 +590,7 @@ class TestFilmNetworkModel(unittest.TestCase):
         self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piNR * piQ * piE')
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.00006)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.00006)
         self.assertAlmostEqual(self.DUT.hazard_rate_model['piT'], 1.2518214)
         self.assertEqual(self.DUT.hazard_rate_model['piNR'], 8.0)
         self.assertEqual(self.DUT.hazard_rate_model['piQ'], 1.0)
@@ -635,8 +615,7 @@ class TestFilmNetworkModel(unittest.TestCase):
         self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piT * piNR * piQ * piE')
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.00006)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.00006)
         self.assertAlmostEqual(self.DUT.hazard_rate_model['piT'], 3.4542461)
         self.assertEqual(self.DUT.hazard_rate_model['piNR'], 8.0)
         self.assertEqual(self.DUT.hazard_rate_model['piQ'], 1.0)
@@ -673,16 +652,17 @@ class TestVarFilmModel(unittest.TestCase):
 
         # Verify the VarFilm resistor class was properly
         # initialized.
-        self.assertEqual(self.DUT._lst_piE, [1.0, 3.0, 14.0, 7.0, 24.0, 6.0,
-                                             12.0, 20.0, 30.0, 39.0, 0.5, 22.0,
-                                             57.0, 1000.0])
-        self.assertEqual(self.DUT._lst_piQ_count, [0.03, 0.1, 0.3, 1.0, 3.0,
-                                                   10.0])
+        self.assertEqual(self.DUT._lst_piE, [
+            1.0, 3.0, 14.0, 7.0, 24.0, 6.0, 12.0, 20.0, 30.0, 39.0, 0.5, 22.0,
+            57.0, 1000.0
+        ])
+        self.assertEqual(self.DUT._lst_piQ_count,
+                         [0.03, 0.1, 0.3, 1.0, 3.0, 10.0])
         self.assertEqual(self.DUT._lst_piQ_stress, [2.0, 4.0])
-        self.assertEqual(self.DUT._lst_lambdab_count, [0.048, 0.16, 0.76, 0.36,
-                                                       1.3, 0.36, 0.72, 1.4,
-                                                       2.2, 2.3, 0.024, 1.2,
-                                                       3.4, 52.0])
+        self.assertEqual(self.DUT._lst_lambdab_count, [
+            0.048, 0.16, 0.76, 0.36, 1.3, 0.36, 0.72, 1.4, 2.2, 2.3, 0.024,
+            1.2, 3.4, 52.0
+        ])
         self.assertEqual(self.DUT.subcategory, 39)
         self.assertEqual(self.DUT.n_taps, 3)
         self.assertEqual(self.DUT.specification, 0)
@@ -696,22 +676,19 @@ class TestVarFilmModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.75, 0.3, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3, 5, 1)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.75, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3, 5, 1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.n_taps, 5)
         self.assertEqual(self.DUT.specification, 1)
@@ -725,22 +702,19 @@ class TestVarFilmModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -750,22 +724,19 @@ class TestVarFilmModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3, 5, '')
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3, 5, '')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -776,14 +747,13 @@ class TestVarFilmModel(unittest.TestCase):
 
         _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
                    '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
-                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1,
-                   0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0,
-                   0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 3, 0, 0.0, 0.0)
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
+                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0,
+                   0.0, 30.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 3, 0, 0.0,
+                   0.0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 

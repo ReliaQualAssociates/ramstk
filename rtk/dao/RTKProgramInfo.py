@@ -16,7 +16,7 @@ from sqlalchemy import Column, Date, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKProgramInfo(RTK_BASE):
@@ -27,19 +27,23 @@ class RTKProgramInfo(RTK_BASE):
     __tablename__ = 'rtk_program_info'
     __table_args__ = {'extend_existing': True}
 
-    program_id = Column('fld_program_id', Integer, primary_key=True,
-                        autoincrement=True, nullable=False)
-    revision_prefix = Column('fld_revision_prefix', String(512),
-                             default='REVN')
+    program_id = Column(
+        'fld_program_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    revision_prefix = Column(
+        'fld_revision_prefix', String(512), default='REVN')
     revision_next_id = Column('fld_revision_next_id', Integer, default=0)
-    function_prefix = Column('fld_function_prefix', String(512),
-                             default='FUNC')
+    function_prefix = Column(
+        'fld_function_prefix', String(512), default='FUNC')
     function_next_id = Column('fld_function_next_id', Integer, default=0)
-    requirement_prefix = Column('fld_requirement_prefix', String(512),
-                             default='RQMT')
+    requirement_prefix = Column(
+        'fld_requirement_prefix', String(512), default='RQMT')
     requirement_next_id = Column('fld_requirement_next_id', Integer, default=0)
-    assembly_prefix = Column('fld_assembly_prefix', String(512),
-                             default='ASSY')
+    assembly_prefix = Column(
+        'fld_assembly_prefix', String(512), default='ASSY')
     assembly_next_id = Column('fld_assembly_next_id', Integer, default=0)
     part_prefix = Column('fld_part_prefix', String(512), default='PART')
     part_next_id = Column('fld_part_next_id', Integer, default=0)
@@ -51,8 +55,8 @@ class RTKProgramInfo(RTK_BASE):
     effect_next_id = Column('fld_effect_next_id', Integer, default=0)
     cause_prefix = Column('fld_cause_prefix', String(512), default='CAUSE')
     cause_next_id = Column('fld_cause_next_id', Integer, default=0)
-    software_prefix = Column('fld_software_prefix', String(512),
-                             default='MODULE')
+    software_prefix = Column(
+        'fld_software_prefix', String(512), default='MODULE')
     software_next_id = Column('fld_software_next_id', Integer, default=0)
     revision_active = Column('fld_revision_active', Integer, default=1)
     function_active = Column('fld_function_active', Integer, default=1)
@@ -122,32 +126,27 @@ class RTKProgramInfo(RTK_BASE):
             format(self.program_id)
 
         try:
-            self.revision_prefix = str(none_to_default(attributes[0],
-                                                       'REVISION'))
+            self.revision_prefix = str(
+                none_to_default(attributes[0], 'REVISION'))
             self.revision_next_id = int(none_to_default(attributes[1], 0))
-            self.function_prefix = str(none_to_default(attributes[2],
-                                                       'FUNCTION'))
+            self.function_prefix = str(
+                none_to_default(attributes[2], 'FUNCTION'))
             self.function_next_id = int(none_to_default(attributes[3], 0))
-            self.assembly_prefix = str(none_to_default(attributes[4],
-                                                       'ASSEMBLY'))
+            self.assembly_prefix = str(
+                none_to_default(attributes[4], 'ASSEMBLY'))
             self.assembly_next_id = int(none_to_default(attributes[5], 0))
-            self.part_prefix = str(none_to_default(attributes[6],
-                                                   'PART'))
+            self.part_prefix = str(none_to_default(attributes[6], 'PART'))
             self.part_next_id = int(none_to_default(attributes[7], 0))
-            self.fmeca_prefix = str(none_to_default(attributes[8],
-                                                    'FMECA'))
+            self.fmeca_prefix = str(none_to_default(attributes[8], 'FMECA'))
             self.fmeca_next_id = int(none_to_default(attributes[9], 0))
-            self.mode_prefix = str(none_to_default(attributes[10],
-                                                   'MODE'))
+            self.mode_prefix = str(none_to_default(attributes[10], 'MODE'))
             self.mode_next_id = int(none_to_default(attributes[11], 0))
-            self.effect_prefix = str(none_to_default(attributes[12],
-                                                     'EFECT'))
+            self.effect_prefix = str(none_to_default(attributes[12], 'EFECT'))
             self.effect_next_id = int(none_to_default(attributes[13], 0))
-            self.cause_prefix = str(none_to_default(attributes[14],
-                                                    'CAUSE'))
+            self.cause_prefix = str(none_to_default(attributes[14], 'CAUSE'))
             self.cause_next_id = int(none_to_default(attributes[15], 0))
-            self.software_prefix = str(none_to_default(attributes[16],
-                                                       'SOFTWARE'))
+            self.software_prefix = str(
+                none_to_default(attributes[16], 'SOFTWARE'))
             self.software_next_id = int(none_to_default(attributes[17], 0))
             self.revision_active = int(none_to_default(attributes[18], 1))
             self.function_active = int(none_to_default(attributes[19], 1))

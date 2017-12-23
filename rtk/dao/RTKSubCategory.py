@@ -11,11 +11,11 @@ The RTKSubCategory Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKSubCategory(RTK_BASE):
@@ -26,18 +26,24 @@ class RTKSubCategory(RTK_BASE):
     __tablename__ = 'rtk_subcategory'
     __table_args__ = {'extend_existing': True}
 
-    category_id = Column('fld_category_id', Integer,
-                         ForeignKey('rtk_category.fld_category_id'),
-                         nullable=False)
-    subcategory_id = Column('fld_subcategory_id', Integer, primary_key=True,
-                            autoincrement=True, nullable=False)
-    description = Column('fld_description', String(512),
-                         default='Type Description')
+    category_id = Column(
+        'fld_category_id',
+        Integer,
+        ForeignKey('rtk_category.fld_category_id'),
+        nullable=False)
+    subcategory_id = Column(
+        'fld_subcategory_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    description = Column(
+        'fld_description', String(512), default='Type Description')
 
     # Define the relationships to other tables in the RTK Program database.
     category = relationship('RTKCategory', back_populates='subcategory')
-    mode = relationship('RTKFailureMode', back_populates='subcategory',
-                        cascade='delete')
+    mode = relationship(
+        'RTKFailureMode', back_populates='subcategory', cascade='delete')
 
     def get_attributes(self):
         """

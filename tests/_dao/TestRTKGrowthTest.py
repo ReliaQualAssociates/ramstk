@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKGrowthTest module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date
 
@@ -37,9 +39,10 @@ class TestRTKGrowthTest(unittest.TestCase):
     Class for testing the RTKGrowthTest class.
     """
 
-    _attributes = (1, 1, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0, date.today(), date.today(), 0.0, 0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0)
+    _attributes = (1, 1, 0.0, 0.0, 0.0, 0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
+                   date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0, 0.0)
 
     def setUp(self):
         """
@@ -112,9 +115,10 @@ class TestRTKGrowthTest(unittest.TestCase):
         (TestRTKGrowthTest) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0, date.today(), date.today(), 0.0, 0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0)
+        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
+                       date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0, 0.0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
@@ -127,9 +131,10 @@ class TestRTKGrowthTest(unittest.TestCase):
         """
         (TestRTKGrowthTest) set_attributes should return a 10 error code when passed the wrong type
         """
-        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0, date.today(), date.today(), 0.0, 0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 'None', 0.0, 0.0, 0, 0.0)
+        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
+                       date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       'None', 0.0, 0.0, 0, 0.0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
@@ -144,9 +149,10 @@ class TestRTKGrowthTest(unittest.TestCase):
         (TestRTKGrowthTest) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0, date.today(), date.today(), 0.0, 0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0)
+        _attributes = (0.0, 0.0, 0.0, 0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, date.today(),
+                       date.today(), 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0, 0.0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

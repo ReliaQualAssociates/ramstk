@@ -12,30 +12,30 @@ Fuse Module Component Specific Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -126,8 +126,7 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Count Inputs") +
-                          "</span>")
+                          _(u"MIL-HDBK-217FN2 Part Count Inputs") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -155,7 +154,7 @@ class Inputs(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>""</span>")
+        _label.set_markup("<span weight='bold'>" "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -233,11 +232,14 @@ class Results(gtk.Frame):
         # Define private dictionary attributes.
 
         # Define private list attributes.
-        self._lst_count_labels = [u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub></span>",
-                                  u"\u03BB<sub>g</sub>:"]
-        self._lst_stress_labels = [u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
-                                   u"\u03BB<sub>b</sub>:",
-                                   u"\u03C0<sub>E</sub>:"]
+        self._lst_count_labels = [
+            u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub></span>",
+            u"\u03BB<sub>g</sub>:"
+        ]
+        self._lst_stress_labels = [
+            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>E</sub></span>",
+            u"\u03BB<sub>b</sub>:", u"\u03C0<sub>E</sub>:"
+        ]
 
         # Define private scalar attributes.
         self._hardware_model = model
@@ -248,15 +250,17 @@ class Results(gtk.Frame):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.txtLambdaB = Widgets.make_entry(width=100, editable=False,
-                                             bold=True)
+        self.txtLambdaB = Widgets.make_entry(
+            width=100, editable=False, bold=True)
         self.txtPiE = Widgets.make_entry(width=100, editable=False, bold=True)
 
         # Create the tooltips for all the results display widgets.
-        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
-                                           u"for the selected fuse."))
-        self.txtPiE.set_tooltip_text(_(u"Displays the environment factor for "
-                                       u"the selected fuse."))
+        self.txtLambdaB.set_tooltip_text(
+            _(u"Displays the base hazard rate "
+              u"for the selected fuse."))
+        self.txtPiE.set_tooltip_text(
+            _(u"Displays the environment factor for "
+              u"the selected fuse."))
 
     def create_217_count_results(self, x_pos=5):
         """
@@ -269,9 +273,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Parts Count Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Parts Count Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -286,8 +289,8 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 25)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed,
+                                               5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.
@@ -310,9 +313,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Stress Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Part Stress Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -327,8 +329,8 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 25)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed,
+                                               5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.

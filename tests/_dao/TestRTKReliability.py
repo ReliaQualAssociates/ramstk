@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKReliability module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -39,7 +41,6 @@ class TestRTKReliability(unittest.TestCase):
                    'Test HR Model', 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
                    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 0.0, 0, 1.0, 1.0,
                    0.0, 0.0, 0.0, 0.0, 0, 0.0)
-
 
     def setUp(self):
         """

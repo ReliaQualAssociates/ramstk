@@ -13,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date, timedelta
 
@@ -36,10 +39,10 @@ class TestRTKProgramInfo(unittest.TestCase):
     Class for testing the RTKProgramInfo class.
     """
 
-    _attributes =(1, 'REV', 0, 'FUNCTION', 0, 'ASSEMBLY', 0, 'PART', 0,
-                  'FMECA', 0, 'MODE', 0, 'EFFECT', 0, 'CAUSE', 0, 'MODULE', 0,
-                  1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, date.today(), '',
-                  date.today(), '', 'STANDARD')
+    _attributes = (1, 'REV', 0, 'FUNCTION', 0, 'ASSEMBLY', 0, 'PART', 0,
+                   'FMECA', 0, 'MODE', 0, 'EFFECT', 0, 'CAUSE', 0, 'MODULE', 0,
+                   1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, date.today(), '',
+                   date.today(), '', 'STANDARD')
 
     def setUp(self):
         """

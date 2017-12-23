@@ -4,7 +4,6 @@
 #       tests.unit.TestHardware.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing Hardware module algorithms and models.
 """
@@ -12,7 +11,10 @@ This is the test class for testing Hardware module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -31,8 +33,8 @@ class TestHardwareModel(unittest.TestCase):
     Class for testing the Hardware data model class.
     """
 
-    _general_values = (0, 1, u'Alt Part #', u'Attachments', u'CAGE Code',
-                       100, u'Comp Ref Des', 0.0, 0.0, 0.0, 0, u'Description',
+    _general_values = (0, 1, u'Alt Part #', u'Attachments', u'CAGE Code', 100,
+                       u'Comp Ref Des', 0.0, 0.0, 0.0, 0, u'Description',
                        100.0, u'Figure #', u'LCN', 0, 0, 100.0, u'Name',
                        u'NSN', u'Page #', 0, 0, u'Part #', 1, u'Ref Des',
                        u'Remarks', 0, u'Spec #', 102, 0, 0, 0.0, 2017)
@@ -67,9 +69,10 @@ class TestHardwareModel(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, Model))
 
-        self.assertEqual(self.DUT.user_float,
-                         [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+        self.assertEqual(self.DUT.user_float, [
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        ])
         self.assertEqual(self.DUT.user_int, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0])
         self.assertEqual(self.DUT.user_varchar, ['', '', '', '', ''])
 
@@ -160,8 +163,8 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_general_attributes should return a 0 error code on success
         """
 
-        (_error_code,
-         _error_msg) = self.DUT._set_general_attributes(self._general_values)
+        (_error_code, _error_msg) = self.DUT._set_general_attributes(
+            self._general_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(_error_msg, '')
 
@@ -171,8 +174,8 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_general_attributes should return a 10 error code when passed a wrong data type
         """
 
-        _general_values = (0, 1, 'Alt Part #', 'Attachments', 'CAGE Code',
-                           100, 'Comp Ref Des', 0.0, 0.0, 0.0, 0, 'Description',
+        _general_values = (0, 1, 'Alt Part #', 'Attachments', 'CAGE Code', 100,
+                           'Comp Ref Des', 0.0, 0.0, 0.0, 0, 'Description',
                            100.0, 'Figure #', 'LCN', 0, 0, 100.0, 'Name',
                            'NSN', 'Page #', 0, 0, 'Part #', 1, 'Ref Des',
                            'Remarks', 0, 'Spec #', 102, 0, 0, None, 2017)
@@ -180,8 +183,10 @@ class TestHardwareModel(unittest.TestCase):
         (_error_code,
          _error_msg) = self.DUT._set_general_attributes(_general_values)
         self.assertEqual(_error_code, 10)
-        self.assertEqual(_error_msg,
-                         "ERROR: Hardware._set_general_attributes(): Converting one or more general inputs to the correct data type.")
+        self.assertEqual(
+            _error_msg,
+            "ERROR: Hardware._set_general_attributes(): Converting one or more general inputs to the correct data type."
+        )
 
     @attr(all=True, static=True)
     def test04_set_general_attributes_missing_index(self):
@@ -189,18 +194,19 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_general_attributes should return a 40 error code when too few items are passed
         """
 
-        _general_values = (0, 1, 'Alt Part #', 'Attachments', 'CAGE Code',
-                           100, 'Comp Ref Des', 0.0, 0.0, 0.0, 0,
-                           'Description', 100.0, 'Figure #', 'LCN', 0, 0,
-                           100.0, 'Name', 'NSN', 'Page #', 0, 0, 'Part #', 1,
-                           'Ref Des', 'Remarks', 0, 'Spec #', 102, 0, 0.0,
-                           2017)
+        _general_values = (0, 1, 'Alt Part #', 'Attachments', 'CAGE Code', 100,
+                           'Comp Ref Des', 0.0, 0.0, 0.0, 0, 'Description',
+                           100.0, 'Figure #', 'LCN', 0, 0, 100.0, 'Name',
+                           'NSN', 'Page #', 0, 0, 'Part #', 1, 'Ref Des',
+                           'Remarks', 0, 'Spec #', 102, 0, 0.0, 2017)
 
         (_error_code,
          _error_msg) = self.DUT._set_general_attributes(_general_values)
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_error_msg,
-                         "ERROR: Hardware._set_general_attributes(): Insufficient number of general input values.  Require 34 only 33 were passed.")
+        self.assertEqual(
+            _error_msg,
+            "ERROR: Hardware._set_general_attributes(): Insufficient number of general input values.  Require 34 only 33 were passed."
+        )
 
     @attr(all=True, static=True)
     def test05_set_stress_attributes(self):
@@ -208,8 +214,8 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_stress_attributes should return a 0 error code on success
         """
 
-        (_error_code,
-         _error_msg) = self.DUT._set_stress_attributes(self._stress_values)
+        (_error_code, _error_msg) = self.DUT._set_stress_attributes(
+            self._stress_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(_error_msg, '')
 
@@ -224,7 +230,10 @@ class TestHardwareModel(unittest.TestCase):
         (_error_code,
          _error_msg) = self.DUT._set_stress_attributes(_stress_values)
         self.assertEqual(_error_code, 10)
-        self.assertEqual(_error_msg, 'ERROR: Hardware._set_stress_attributes: Converting one or more stress inputs to the correct data type.')
+        self.assertEqual(
+            _error_msg,
+            'ERROR: Hardware._set_stress_attributes: Converting one or more stress inputs to the correct data type.'
+        )
 
     @attr(all=True, static=True)
     def test07_set_stress_attributes_missing_index(self):
@@ -237,7 +246,10 @@ class TestHardwareModel(unittest.TestCase):
         (_error_code,
          _error_msg) = self.DUT._set_stress_attributes(_stress_values)
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_error_msg, 'ERROR: Hardware._set_stress_attributes: Insufficient stress input values.  Require six, only 5 were passed.')
+        self.assertEqual(
+            _error_msg,
+            'ERROR: Hardware._set_stress_attributes: Insufficient stress input values.  Require six, only 5 were passed.'
+        )
 
     @attr(all=True, static=True)
     def test08_set_reliability_attributes(self):
@@ -245,8 +257,8 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) _set_reliability_attributes should return a 0 error code on success
         """
 
-        (_error_code,
-         _error_msg) = self.DUT._set_reliability_attributes(self._rel_values)
+        (_error_code, _error_msg) = self.DUT._set_reliability_attributes(
+            self._rel_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(_error_msg, '')
 
@@ -264,7 +276,10 @@ class TestHardwareModel(unittest.TestCase):
         (_error_code,
          _error_msg) = self.DUT._set_reliability_attributes(_rel_values)
         self.assertEqual(_error_code, 10)
-        self.assertEqual(_error_msg, 'ERROR: Hardware._set_reliability_attributes: Converting one or more reliability inputs to the correct data type.')
+        self.assertEqual(
+            _error_msg,
+            'ERROR: Hardware._set_reliability_attributes: Converting one or more reliability inputs to the correct data type.'
+        )
 
     @attr(all=True, static=True)
     def test10_set_reliability_attributes_missing_index(self):
@@ -274,13 +289,16 @@ class TestHardwareModel(unittest.TestCase):
 
         _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
                        0.0, 0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 1.0, 0, 1.0, 1.0,
-                       0.0, 0.0, 0, 0.0)
+                       0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0, 1.0, 0, 1.0, 1.0, 0.0,
+                       0.0, 0, 0.0)
 
         (_error_code,
          _error_msg) = self.DUT._set_reliability_attributes(_rel_values)
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_error_msg, 'ERROR: Hardware._set_reliability_attributess: Insufficient reliability input values.  Require 39 only 38 were passed.')
+        self.assertEqual(
+            _error_msg,
+            'ERROR: Hardware._set_reliability_attributess: Insufficient reliability input values.  Require 39 only 38 were passed.'
+        )
 
     @attr(all=True, static=True)
     def test11_set_user_attributes(self):
@@ -289,12 +307,11 @@ class TestHardwareModel(unittest.TestCase):
         """
 
         _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
-                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two',
-                        'Three', '4')
+                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
+                        2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
+                        'Two', 'Three', '4')
 
-        (_error_code,
-         _error_msg) = self.DUT._set_user_attributes(_user_values)
+        (_error_code, _error_msg) = self.DUT._set_user_attributes(_user_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, static=True)
@@ -304,12 +321,11 @@ class TestHardwareModel(unittest.TestCase):
         """
 
         _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                        11, 12, None, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
-                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two',
-                        'Three', '4')
+                        11, 12, None, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
+                        2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
+                        'Two', 'Three', '4')
 
-        (_error_code,
-         _error_msg) = self.DUT._set_user_attributes(_user_values)
+        (_error_code, _error_msg) = self.DUT._set_user_attributes(_user_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, static=True)
@@ -319,12 +335,11 @@ class TestHardwareModel(unittest.TestCase):
         """
 
         _user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0, 2,
-                        3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One', 'Two',
-                        'Three')
+                        11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
+                        2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
+                        'Two', 'Three')
 
-        (_error_code,
-         _error_msg) = self.DUT._set_user_attributes(_user_values)
+        (_error_code, _error_msg) = self.DUT._set_user_attributes(_user_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, static=True)
@@ -336,8 +351,7 @@ class TestHardwareModel(unittest.TestCase):
         _all_values = self._general_values + self._stress_values + \
                       self._rel_values # + self._user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
 
         self.assertEqual(_error_code[0], 0)
         self.assertEqual(_error_code[1], 0)
@@ -378,8 +392,8 @@ class TestHardwareModel(unittest.TestCase):
 
         _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.00193411,
                        0.0, 0.00193411, 1, 0.0, 0.0, 0.0, 0.0, 1, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 517.033352, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       1.0, 0, 1.0, 0, 0.980845, 1.0, 0.0, 0.0, 0, 0.0)
+                       0.0, 0.0, 0.0, 517.033352, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                       0, 1.0, 0, 0.980845, 1.0, 0.0, 0.0, 0, 0.0)
 
         self.DUT.hardware_id = 2
 
@@ -411,11 +425,11 @@ class TestHardwareModel(unittest.TestCase):
         """
 
         _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
-                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
-                        30.0, 30.0, 0.0, 2014, 0, 0, 0, 0.0, 0, 0)
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 0,
+                        0, 0, 0.0, 0, 0)
         _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                           0.0, 1.0, 30.0, 25.0, 0.0, 25.0, '')
         _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -427,7 +441,7 @@ class TestHardwareModel(unittest.TestCase):
         #                2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
         #                'Two', 'Three', '4')
 
-        _all_values = _base_values + _stress_values + _rel_values # + _user_values
+        _all_values = _base_values + _stress_values + _rel_values  # + _user_values
 
         self.DUT.set_attributes(_all_values)
         _result = self.DUT.get_attributes()
@@ -472,7 +486,10 @@ class TestHardwareModel(unittest.TestCase):
 
         (_code, _msg) = self.DUT.calculate_reliability()
         self.assertEqual(_code, 10)
-        self.assertEqual(_msg, 'ERROR: Hardware._calculate_reliability(): Zero division error when calculating logistics MTBF.  Active hazard rate = 0.000000, dormant hazard rate = 0.000000, software hazard rate = 0.000000.')
+        self.assertEqual(
+            _msg,
+            'ERROR: Hardware._calculate_reliability(): Zero division error when calculating logistics MTBF.  Active hazard rate = 0.000000, dormant hazard rate = 0.000000, software hazard rate = 0.000000.'
+        )
 
     @attr(all=True, static=True)
     def test22_calculate_cost(self):
@@ -502,7 +519,10 @@ class TestHardwareModel(unittest.TestCase):
 
         (_code, _msg) = self.DUT.calculate_costs()
         self.assertEqual(_code, 10)
-        self.assertEqual(_msg, 'ERROR: Hardware._calculate_cost(): Zero division error when calculating cost per failure.  Logistics hazard rate = 0.000000, mission time = 100.000000.')
+        self.assertEqual(
+            _msg,
+            'ERROR: Hardware._calculate_cost(): Zero division error when calculating cost per failure.  Logistics hazard rate = 0.000000, mission time = 100.000000.'
+        )
 
     @attr(all=True, static=True)
     def test24_calculate_cost_zero_division_cost_per_hour(self):
@@ -516,7 +536,10 @@ class TestHardwareModel(unittest.TestCase):
 
         (_code, _msg) = self.DUT.calculate_costs()
         self.assertEqual(_code, 10)
-        self.assertEqual(_msg, 'ERROR: Hardware._calculate_cost(): Zero division error when calculating cost per hour.  Mission time = 0.000000.')
+        self.assertEqual(
+            _msg,
+            'ERROR: Hardware._calculate_cost(): Zero division error when calculating cost per hour.  Mission time = 0.000000.'
+        )
 
     @attr(all=True, static=True)
     def test25_calculate(self):
@@ -614,12 +637,14 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) add_hardware should return a 0 error code on success
         """
 
-        (_error_code,
-         _msg,
-         _item_id) = self.DUT.add_hardware(0, self._dao, 0, 0)
+        (_error_code, _msg, _item_id) = self.DUT.add_hardware(
+            0, self._dao, 0, 0)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'SUCCESS: Hardware.add_hardware: Succesfully added a Hardware record to the RTK Program database.')
+        self.assertEqual(
+            _msg,
+            'SUCCESS: Hardware.add_hardware: Succesfully added a Hardware record to the RTK Program database.'
+        )
         self.assertEqual(_item_id, 116)
 
     @attr(all=True, dynamic=True)
@@ -628,12 +653,14 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) add_hardware should return a 787 error code when there is a foreign key constraint failure
         """
 
-        (_error_code,
-         _msg,
-         _item_id) = self.DUT.add_hardware(-1, self._dao, 0, 0)
+        (_error_code, _msg, _item_id) = self.DUT.add_hardware(
+            -1, self._dao, 0, 0)
 
         self.assertEqual(_error_code, 787)
-        self.assertEqual(_msg, 'ERROR: Hardware.add_hardware(): Failed to add new record to table rtk_stress.  Database returned error code: 787')
+        self.assertEqual(
+            _msg,
+            'ERROR: Hardware.add_hardware(): Failed to add new record to table rtk_stress.  Database returned error code: 787'
+        )
         self.assertEqual(_item_id, -1)
 
     @attr(all=True, dynamic=True)
@@ -642,8 +669,10 @@ class TestHardwareModel(unittest.TestCase):
         (TestHardware) remove_hardware should return a 0 error code on success
         """
 
-        (_error_code,
-         _msg) = self.DUT.remove_hardware(116, self._dao)
+        (_error_code, _msg) = self.DUT.remove_hardware(116, self._dao)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, 'SUCCESS: Hardware.remove_hardware(): Succesfully removed record hardware_id=116 and all child records from the RTK Program database.')
+        self.assertEqual(
+            _msg,
+            'SUCCESS: Hardware.remove_hardware(): Succesfully removed record hardware_id=116 and all child records from the RTK Program database.'
+        )

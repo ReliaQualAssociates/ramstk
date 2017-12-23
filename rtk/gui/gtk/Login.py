@@ -30,8 +30,8 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-import Configuration                            # pylint: disable=E0401
-import gui.gtk.rtk.Widget as Widgets            # pylint: disable=E0401
+import Configuration  # pylint: disable=E0401
+import gui.gtk.rtk.Widget as Widgets  # pylint: disable=E0401
 
 _ = gettext.gettext
 
@@ -50,8 +50,7 @@ class Login(gtk.Dialog):
         :param str title:
         """
 
-        gtk.Dialog.__init__(self, title, None,
-                            gtk.DIALOG_MODAL,
+        gtk.Dialog.__init__(self, title, None, gtk.DIALOG_MODAL,
                             (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
                              gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
 

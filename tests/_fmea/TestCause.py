@@ -9,7 +9,10 @@
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -37,11 +40,13 @@ class TestCauseDataModel(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
@@ -96,7 +101,7 @@ class TestCauseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                               'the RTK Program database.')
+                         'the RTK Program database.')
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
@@ -107,7 +112,7 @@ class TestCauseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
-                               'Program database.')
+                         'Program database.')
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
@@ -118,7 +123,7 @@ class TestCauseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                               'Cause ID 300.')
+                         'Cause ID 300.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
@@ -143,7 +148,7 @@ class TestCauseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Cause ID 100.')
+                         'Cause ID 100.')
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):

@@ -12,30 +12,30 @@ Hazard Package Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
@@ -46,7 +46,7 @@ import locale
 try:
     import Configuration
     import Utilities
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
 
@@ -57,7 +57,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -346,6 +346,7 @@ class Hazard(object):
                   INNER JOIN rtk_reliability AS t3 \
                   ON t3.fld_hardware_id=t1.fld_hardware_id \
                   ORDER BY t1.fld_hazard_id"
+
         (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
@@ -358,7 +359,7 @@ class Hazard(object):
             _hazard.set_attributes(_results[i][0:40])
             self.dicHazard[(_hazard.hardware_id, _hazard.hazard_id)] = _hazard
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_hazard(self, hardware_id):
         """
@@ -372,17 +373,17 @@ class Hazard(object):
         _query = "INSERT INTO rtk_hazard \
                   (fld_hardware_id) \
                   VALUES({0:d})".format(hardware_id)
-        (_results, _error_code, _last_id) = self.dao.execute(_query,
-                                                             commit=True)
+        (_results, _error_code, _last_id) = self.dao.execute(
+            _query, commit=True)
 
         _hazard = Model()
-        _hazard.set_attributes((hardware_id, _last_id, '', '', '', 0, 0, 0,
-                                '', 0, 0, 0, '', 0, 0, 0, '', 0, 0, 0, '',
-                                '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
-                                '', '', '', 0.0, 0.0, 0.0, 0, 0, 0))
+        _hazard.set_attributes(
+            (hardware_id, _last_id, '', '', '', 0, 0, 0, '', 0, 0, 0, '', 0, 0,
+             0, '', 0, 0, 0, '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
+             '', '', '', 0.0, 0.0, 0.0, 0, 0, 0))
         self.dicHazard[(hardware_id, _last_id)] = _hazard
 
-        return(_results, _error_code, _last_id)
+        return (_results, _error_code, _last_id)
 
     def delete_hazard(self, hardware_id, hazard_id):
         """
@@ -402,7 +403,7 @@ class Hazard(object):
         except KeyError:
             _error_code = 60
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def calculate_hazard(self, hardware_id, hazard_id):
         """
@@ -460,35 +461,31 @@ class Hazard(object):
                       fld_user_float_3={34:f}, fld_user_int_1={35:d}, \
                       fld_user_int_2={36:d}, fld_user_int_3={37:d} \
                   WHERE fld_hazard_id={38:d}".format(
-                      _hazard.potential_hazard,
-                      _hazard.potential_cause.replace("'", r"''"),
-                      _hazard.assembly_effect.replace("'", r"''"),
-                      _hazard.assembly_severity, _hazard.assembly_probability,
-                      _hazard.assembly_hri,
-                      _hazard.assembly_mitigation.replace("'", r"''"),
-                      _hazard.assembly_severity_f,
-                      _hazard.assembly_probability_f, _hazard.assembly_hri_f,
-                      _hazard.system_effect.replace("'", r"''"),
-                      _hazard.system_severity, _hazard.system_probability,
-                      _hazard.system_hri,
-                      _hazard.system_mitigation.replace("'", r"''"),
-                      _hazard.system_severity_f, _hazard.system_probability_f,
-                      _hazard.system_hri_f,
-                      _hazard.remarks.replace("'", r"''"), _hazard.function_1,
-                      _hazard.function_2, _hazard.function_3,
-                      _hazard.function_4, _hazard.function_5, _hazard.result_1,
-                      _hazard.result_2, _hazard.result_3, _hazard.result_4,
-                      _hazard.result_5,
-                      _hazard.user_blob_1.replace("'", r"''"),
-                      _hazard.user_blob_2.replace("'", r"''"),
-                      _hazard.user_blob_3.replace("'", r"''"),
-                      _hazard.user_float_1, _hazard.user_float_2,
-                      _hazard.user_float_3, _hazard.user_int_1,
-                      _hazard.user_int_2, _hazard.user_int_3,
-                      _hazard.hazard_id)
+            _hazard.potential_hazard,
+            _hazard.potential_cause.replace("'", r"''"),
+            _hazard.assembly_effect.replace("'",
+                                            r"''"), _hazard.assembly_severity,
+            _hazard.assembly_probability, _hazard.assembly_hri,
+            _hazard.assembly_mitigation.replace(
+                "'", r"''"), _hazard.assembly_severity_f,
+            _hazard.assembly_probability_f, _hazard.assembly_hri_f,
+            _hazard.system_effect.replace("'", r"''"), _hazard.system_severity,
+            _hazard.system_probability, _hazard.system_hri,
+            _hazard.system_mitigation.replace(
+                "'", r"''"), _hazard.system_severity_f,
+            _hazard.system_probability_f, _hazard.system_hri_f,
+            _hazard.remarks.replace("'", r"''"), _hazard.function_1,
+            _hazard.function_2, _hazard.function_3, _hazard.function_4,
+            _hazard.function_5, _hazard.result_1, _hazard.result_2,
+            _hazard.result_3, _hazard.result_4, _hazard.result_5,
+            _hazard.user_blob_1.replace("'", r"''"),
+            _hazard.user_blob_2.replace("'", r"''"),
+            _hazard.user_blob_3.replace("'", r"''"), _hazard.user_float_1,
+            _hazard.user_float_2, _hazard.user_float_3, _hazard.user_int_1,
+            _hazard.user_int_2, _hazard.user_int_3, _hazard.hazard_id)
         (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_all_hazards(self):
         """

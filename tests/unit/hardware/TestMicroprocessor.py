@@ -4,7 +4,6 @@
 #       tests.unit.TestMicroprocessor.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing Microprocessor IC module algorithms and
 models.
@@ -13,7 +12,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -43,8 +45,8 @@ class TestMicroprocessorModel(unittest.TestCase):
                              10.0, 11, 12, 'Figure #', 14.0, 'LCN', 16, 17,
                              18.0, 'Name', 'NSN', 21, 'Page #', 23, 24,
                              'Part #', 26, 'Ref Des', 28.0, 29, 'Remarks',
-                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014,
-                             38, 39, 40, 41.0, 1, 1)
+                             31.0, 'Spec #', 33, 34.0, 35.0, 36.0, 2014, 38,
+                             39, 40, 41.0, 1, 1)
         self._stress_values = (44.0, 45.0, 46.0, 47.0, 48.0, 49.0, 50.0, 51.0,
                                52.0, 53.0, 54.0, 55.0, 56.0, 57.0, 58.0, 59.0,
                                'Sixty')
@@ -92,8 +94,7 @@ class TestMicroprocessorModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + self._user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 0)
         self.assertEqual(self.DUT.package_id, 120)
         self.assertEqual(self.DUT.n_pins, 121)
@@ -105,15 +106,14 @@ class TestMicroprocessorModel(unittest.TestCase):
         (TestMicroprocessor) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0,
-                        105.0, 106.0, 107.0, 108, 109, 110.0, 111, 112.0,
-                        113.0, 114.0, 115, 116.0, 117, 118, 119, 120)
+        _user_values = (97.0, 98.0, 99.0, 100.0, 101.0, 102, 103, 104.0, 105.0,
+                        106.0, 107.0, 108, 109, 110.0, 111, 112.0, 113.0,
+                        114.0, 115, 116.0, 117, 118, 119, 120)
 
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 40)
 
     @attr(all=True, unit=True)
@@ -131,8 +131,7 @@ class TestMicroprocessorModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
                       self._rel_values + _user_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[5], 10)
 
     @attr(all=True, unit=True)

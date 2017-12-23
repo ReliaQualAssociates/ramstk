@@ -42,7 +42,10 @@ from nose.plugins.attrib import attr
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import dao.DAO as _dao
 from survival.Record import Model, Record
@@ -105,8 +108,7 @@ class TestRecordModel(unittest.TestCase):
                    12.0, 13.0, 14.0, 15, 16, 17, "User String 1",
                    "User String 2", 'User String 3')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -119,8 +121,7 @@ class TestRecordModel(unittest.TestCase):
                    12.0, 13.0, 14.0, 15, 16, 17, "User String 1",
                    "User String 2", 'User String 3')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -133,8 +134,7 @@ class TestRecordModel(unittest.TestCase):
                    12.0, 13.0, 14.0, 15, 16, 17, "User String 1",
                    'User String 3')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)

@@ -12,30 +12,30 @@ Hazard Module Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -88,7 +88,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class WorkView(gtk.HBox):                   # pylint: disable=R0902
+class WorkView(gtk.HBox):  # pylint: disable=R0902
     """
     The Work Book view displays all the attributes for the selected
     Hazard Analysis.  The attributes of a Hazard Analysis Work Book view are:
@@ -142,8 +142,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         # Define public scalar attributes.
         self.dtcHazard = controller
 
-        self.btnCalculateHazard = Widgets.make_button(width=35,
-                                                      image='calculate')
+        self.btnCalculateHazard = Widgets.make_button(
+            width=35, image='calculate')
         self.btnAddHazard = Widgets.make_button(width=35, image='add')
         self.btnDeleteHazard = Widgets.make_button(width=35, image='remove')
         self.btnSaveHazard = Widgets.make_button(width=35, image='save')
@@ -152,7 +152,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         self.show_all()
 
-    def create_page(self):                  # pylint: disable=R0914
+    def create_page(self):  # pylint: disable=R0914
         """
         Method to create the page for displaying the hazard analysis for the
         selected Hardware item.
@@ -185,14 +185,16 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _types.append(_datatype[i].text)
 
         _gobject_types = []
-        _gobject_types = [gobject.type_from_name(_types[i])
-                          for i in range(len(_types))]
+        _gobject_types = [
+            gobject.type_from_name(_types[i]) for i in range(len(_types))
+        ]
 
         # Create the gtk.TreeModel() for the hazard analysis worksheet.
         _model = gtk.TreeStore(*_gobject_types)
         self.tvwHazard.set_model(_model)
-        self.tvwHazard.set_tooltip_text(_(u"Displays the hazard analysis for "
-                                          u"the selected assembly."))
+        self.tvwHazard.set_tooltip_text(
+            _(u"Displays the hazard analysis for "
+              u"the selected assembly."))
         self.tvwHazard.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         _columns = int(len(_heading))
@@ -207,9 +209,10 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _cellmodel.append([""])
                 if i == 3:
                     for j in range(len(Configuration.RTK_HAZARDS)):
-                        _cellmodel.append([Configuration.RTK_HAZARDS[j][0] +
-                                           ", " +
-                                           Configuration.RTK_HAZARDS[j][1]])
+                        _cellmodel.append([
+                            Configuration.RTK_HAZARDS[j][0] + ", " +
+                            Configuration.RTK_HAZARDS[j][1]
+                        ])
                 elif i == 6 or i == 10 or i == 14 or i == 18:
                     for j in range(len(Configuration.RTK_SEVERITY)):
                         _cellmodel.append([Configuration.RTK_SEVERITY[j][1]])
@@ -258,9 +261,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=int(_position[i].text))
 
-            _column.set_cell_data_func(_cell, Widgets.format_cell,
-                                       (int(_position[i].text),
-                                        _datatype[i].text))
+            _column.set_cell_data_func(
+                _cell, Widgets.format_cell,
+                (int(_position[i].text), _datatype[i].text))
             _column.set_resizable(True)
             _column.connect('notify::width', Widgets.resize_wrap, _cell)
 
@@ -300,14 +303,16 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _bbox.pack_start(self.btnSaveHazard, False, False)
         # _bbox.pack_start(self.btnTrickledown, False, False)
 
-        self.btnCalculateHazard.set_tooltip_text(_(u"Calculates the hazard "
-                                                   u"risk index (HRI) and "
-                                                   u"user-defined "
-                                                   u"calculations for the "
-                                                   u"selected hazard "
-                                                   u"analysis."))
-        self.btnSaveHazard.set_tooltip_text(_(u"Saves the selected hazard "
-                                              u"analysis."))
+        self.btnCalculateHazard.set_tooltip_text(
+            _(u"Calculates the hazard "
+              u"risk index (HRI) and "
+              u"user-defined "
+              u"calculations for the "
+              u"selected hazard "
+              u"analysis."))
+        self.btnSaveHazard.set_tooltip_text(
+            _(u"Saves the selected hazard "
+              u"analysis."))
         # self.btnTrickledown.set_tooltip_text(_(u"Sets the reliability, hazard "
         #                                        u"rate and MTBF goal of the "
         #                                        u"immediately subordinate "
@@ -317,24 +322,22 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         # Connect to callback functions.
         self._lst_handler_id.append(
-            self.btnAddHazard.connect('clicked',
-                                      self._on_button_clicked, 0))
+            self.btnAddHazard.connect('clicked', self._on_button_clicked, 0))
         self._lst_handler_id.append(
-            self.btnDeleteHazard.connect('clicked',
-                                         self._on_button_clicked, 1))
+            self.btnDeleteHazard.connect('clicked', self._on_button_clicked,
+                                         1))
         self._lst_handler_id.append(
-            self.btnCalculateHazard.connect('clicked',
-                                            self._on_button_clicked, 2))
+            self.btnCalculateHazard.connect('clicked', self._on_button_clicked,
+                                            2))
         self._lst_handler_id.append(
-            self.btnSaveHazard.connect('clicked',
-                                       self._on_button_clicked, 3))
+            self.btnSaveHazard.connect('clicked', self._on_button_clicked, 3))
         # self._lst_handler_id.append(
         #     self.btnTrickledown.connect('clicked',
         #                                 self._on_button_clicked, 4))
 
         return False
 
-    def load_page(self, controller, hardware_id, path=None):    # pylint: disable=R0914
+    def load_page(self, controller, hardware_id, path=None):  # pylint: disable=R0914
         """
         Method to load the Hazard Analysis gtk.TreeModel() with hazard
         information.
@@ -349,9 +352,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _model.clear()
 
         # Find all the hazards for the selected Hardware Item.
-        _hazards = [self.dtcHazard.dicHazard[_a]
-                    for _a in self.dtcHazard.dicHazard.keys()
-                    if self.dtcHazard.dicHazard[_a].hardware_id == hardware_id]
+        _hazards = [
+            self.dtcHazard.dicHazard[_a]
+            for _a in self.dtcHazard.dicHazard.keys()
+            if self.dtcHazard.dicHazard[_a].hardware_id == hardware_id
+        ]
 
         parent_row = None
         for _hazard in _hazards:
@@ -359,32 +364,40 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _hazard_rate = _hardware.hazard_rate_logistics
             _name = _hardware.name
 
-            _ass_sev = Configuration.RTK_SEVERITY[_hazard.assembly_severity - 1][1]
-            _ass_prob = Configuration.RTK_FAILURE_PROBABILITY[_hazard.assembly_probability - 1][1]
-            _ass_sev_f = Configuration.RTK_SEVERITY[_hazard.assembly_severity_f - 1][1]
-            _ass_prob_f = Configuration.RTK_FAILURE_PROBABILITY[_hazard.assembly_probability_f - 1][1]
-            _sys_sev = Configuration.RTK_SEVERITY[_hazard.system_severity - 1][1]
-            _sys_prob = Configuration.RTK_FAILURE_PROBABILITY[_hazard.system_probability - 1][1]
-            _sys_sev_f = Configuration.RTK_SEVERITY[_hazard.system_severity_f - 1][1]
-            _sys_prob_f = Configuration.RTK_FAILURE_PROBABILITY[_hazard.system_probability_f - 1][1]
+            _ass_sev = Configuration.RTK_SEVERITY[_hazard.assembly_severity
+                                                  - 1][1]
+            _ass_prob = Configuration.RTK_FAILURE_PROBABILITY[
+                _hazard.assembly_probability - 1][1]
+            _ass_sev_f = Configuration.RTK_SEVERITY[_hazard.assembly_severity_f
+                                                    - 1][1]
+            _ass_prob_f = Configuration.RTK_FAILURE_PROBABILITY[
+                _hazard.assembly_probability_f - 1][1]
+            _sys_sev = Configuration.RTK_SEVERITY[_hazard.system_severity
+                                                  - 1][1]
+            _sys_prob = Configuration.RTK_FAILURE_PROBABILITY[
+                _hazard.system_probability - 1][1]
+            _sys_sev_f = Configuration.RTK_SEVERITY[_hazard.system_severity_f
+                                                    - 1][1]
+            _sys_prob_f = Configuration.RTK_FAILURE_PROBABILITY[
+                _hazard.system_probability_f - 1][1]
 
-            _data = [_hazard.hazard_id, _name, _hazard_rate,
-                     _hazard.potential_hazard, _hazard.potential_cause,
-                     _hazard.assembly_effect, _ass_sev, _ass_prob,
-                     _hazard.assembly_hri, _hazard.assembly_mitigation,
-                     _ass_sev_f, _ass_prob_f, _hazard.assembly_hri_f,
-                     _hazard.system_effect, _sys_sev, _sys_prob,
-                     _hazard.system_hri, _hazard.system_mitigation,
-                     _sys_sev_f, _sys_prob_f, _hazard.system_hri_f,
-                     _hazard.remarks, _hazard.function_1, _hazard.function_2,
-                     _hazard.function_3, _hazard.function_4,
-                     _hazard.function_5, _hazard.result_1, _hazard.result_2,
-                     _hazard.result_3, _hazard.result_4, _hazard.result_5,
-                     _hazard.user_blob_1, _hazard.user_blob_2,
-                     _hazard.user_blob_3, _hazard.user_float_1,
-                     _hazard.user_float_2, _hazard.user_float_3,
-                     _hazard.user_int_1, _hazard.user_int_2,
-                     _hazard.user_int_3]
+            _data = [
+                _hazard.hazard_id, _name, _hazard_rate,
+                _hazard.potential_hazard, _hazard.potential_cause,
+                _hazard.assembly_effect, _ass_sev, _ass_prob,
+                _hazard.assembly_hri, _hazard.assembly_mitigation, _ass_sev_f,
+                _ass_prob_f, _hazard.assembly_hri_f, _hazard.system_effect,
+                _sys_sev, _sys_prob, _hazard.system_hri,
+                _hazard.system_mitigation, _sys_sev_f, _sys_prob_f,
+                _hazard.system_hri_f, _hazard.remarks, _hazard.function_1,
+                _hazard.function_2, _hazard.function_3, _hazard.function_4,
+                _hazard.function_5, _hazard.result_1, _hazard.result_2,
+                _hazard.result_3, _hazard.result_4, _hazard.result_5,
+                _hazard.user_blob_1, _hazard.user_blob_2, _hazard.user_blob_3,
+                _hazard.user_float_1, _hazard.user_float_2,
+                _hazard.user_float_3, _hazard.user_int_1, _hazard.user_int_2,
+                _hazard.user_int_3
+            ]
             _model.append(parent_row, _data)
 
         if path is None:
@@ -415,11 +428,10 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         # TODO: Consider refactoring _on_button_clicked; current McCabe Complexity metric = 14.
         _return = False
 
-        if index == 0:                      # Add hazard to analysis.
+        if index == 0:  # Add hazard to analysis.
             # Add the hazard.
-            (_results,
-             _error_code, _last_id) = self.dtcHazard.add_hazard(
-                 self._hardware_model.hardware_id)
+            (_results, _error_code, _last_id) = self.dtcHazard.add_hazard(
+                self._hardware_model.hardware_id)
 
             if _error_code != 0:
                 _content = "rtk.analyses.hazard.gui.gtk.WorkBook._on_button_clicked: " \
@@ -441,35 +453,35 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _model = self.tvwHazard.get_model()
 
                 # Get the attributes of the newly added hazard.
-                _attributes = self.dtcHazard.dicHazard[
-                    (self._hardware_model.hardware_id,
-                     _last_id)].get_attributes()
+                _attributes = self.dtcHazard.dicHazard[(
+                    self._hardware_model.hardware_id,
+                    _last_id)].get_attributes()
 
                 # Get some hardware information.
                 _hazard_rate = self._hardware_model.hazard_rate_logistics
                 _name = self._hardware_model.name
 
                 # Add the new hazard to the gtk.TreeView().
-                _data = [_last_id, _name, _hazard_rate, _attributes[2],
-                         _attributes[3], _attributes[4], '', '',
-                         _attributes[7], _attributes[8], '', '',
-                         _attributes[11], _attributes[12], '', '',
-                         _attributes[15], _attributes[16], '', '',
-                         _attributes[19], _attributes[20], _attributes[21],
-                         _attributes[22], _attributes[23], _attributes[24],
-                         _attributes[25], _attributes[26], _attributes[27],
-                         _attributes[28], _attributes[29], _attributes[30],
-                         _attributes[31], _attributes[32], _attributes[33],
-                         _attributes[34], _attributes[35], _attributes[36],
-                         _attributes[37], _attributes[38], _attributes[39]]
+                _data = [
+                    _last_id, _name, _hazard_rate, _attributes[2],
+                    _attributes[3], _attributes[4], '', '', _attributes[7],
+                    _attributes[8], '', '', _attributes[11], _attributes[12],
+                    '', '', _attributes[15], _attributes[16], '', '',
+                    _attributes[19], _attributes[20], _attributes[21],
+                    _attributes[22], _attributes[23], _attributes[24],
+                    _attributes[25], _attributes[26], _attributes[27],
+                    _attributes[28], _attributes[29], _attributes[30],
+                    _attributes[31], _attributes[32], _attributes[33],
+                    _attributes[34], _attributes[35], _attributes[36],
+                    _attributes[37], _attributes[38], _attributes[39]
+                ]
                 _model.append(None, _data)
 
-        elif index == 1:                    # Delete selected hazard.
+        elif index == 1:  # Delete selected hazard.
             (_model, _row) = self.tvwHazard.get_selection().get_selected()
             _hazard_id = _model.get_value(_row, 0)
-            (_results,
-             _error_code) = self.dtcHazard.delete_hazard(
-                 self._hardware_model.hardware_id, _hazard_id)
+            (_results, _error_code) = self.dtcHazard.delete_hazard(
+                self._hardware_model.hardware_id, _hazard_id)
 
             if _error_code != 0:
                 _content = "rtk.analyses.hazard.gui.gtk.WorkBook._on_button_clicked: " \
@@ -490,7 +502,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             else:
                 _model.remove(_row)
 
-        elif index == 2:                    # Calculate hazard analysis.
+        elif index == 2:  # Calculate hazard analysis.
             _hardware_id = self._hardware_model.hardware_id
             _model = self.tvwHazard.get_model()
             _row = _model.get_iter_root()
@@ -503,7 +515,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _model.set_value(_row, 16, _hazard.system_hri)
                 _model.set_value(_row, 20, _hazard.system_hri_f)
                 _row = _model.iter_next(_row)
-        elif index == 3:                    # Save hazard analysis.
+        elif index == 3:  # Save hazard analysis.
             _error_codes = self.dtcHazard.save_all_hazards()
             _error_codes = [_code for _code in _error_codes if _code[2] != 0]
 
@@ -523,7 +535,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         return _return
 
-    def _on_cell_edit(self, cell, path, new_text, index):   # pylint: disable=R0912
+    def _on_cell_edit(self, cell, path, new_text, index):  # pylint: disable=R0912
         """
         Method to respond to 'edited' signals from the Hazard gtk.TreeView().
 
@@ -549,15 +561,19 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             new_text = _cellmodel.get(new_text, 0)[0]
             if index in [6, 10, 14, 18]:
                 try:
-                    _score = [_s for _s in Configuration.RTK_SEVERITY
-                              if _s[1] == new_text][0][4]
+                    _score = [
+                        _s for _s in Configuration.RTK_SEVERITY
+                        if _s[1] == new_text
+                    ][0][4]
                 except IndexError:
                     _score = 0
             elif index in [7, 11, 15, 19]:
                 try:
-                    _score = [_score for _score
-                              in Configuration.RTK_FAILURE_PROBABILITY
-                              if _score[1] == new_text][0][2]
+                    _score = [
+                        _score
+                        for _score in Configuration.RTK_FAILURE_PROBABILITY
+                        if _score[1] == new_text
+                    ][0][2]
                 except IndexError:
                     _score = 0
 

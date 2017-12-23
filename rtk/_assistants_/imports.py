@@ -20,30 +20,30 @@ __copyright__ = 'Copyright 2012 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -109,6 +109,7 @@ def _missing_to_default(field, default):
     else:
         return field
 
+
 def _select_source_file(assistant):
     """
     Function to select the file containing the data to import to the open RTK
@@ -121,12 +122,11 @@ def _select_source_file(assistant):
     """
 
     # Get the user's selected file and write the results.
-    _dialog = gtk.FileChooserDialog(_(u"RTK: Import Hardware from File ..."),
-                                    None,
-                                    gtk.DIALOG_MODAL |
-                                    gtk.DIALOG_DESTROY_WITH_PARENT,
-                                    (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+    _dialog = gtk.FileChooserDialog(
+        _(u"RTK: Import Hardware from File ..."), None,
+        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+         gtk.RESPONSE_REJECT))
     _dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
     _dialog.set_current_folder(_conf.PROG_DIR)
 
@@ -174,6 +174,7 @@ def _select_source_file(assistant):
 
     return _headers, _contents
 
+
 # TODO: Move this to the Hardware class Assistant.
 class ImportHardware(gtk.Assistant):
     """
@@ -203,13 +204,16 @@ class ImportHardware(gtk.Assistant):
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _label = _widg.make_label(_(u"This is the RTK hardware import "
-                                    u"assistant.  It will help you import "
-                                    u"system hardware information to the "
-                                    u"database from external files.  Press "
-                                    u"'Forward' to continue or 'Cancel' to "
-                                    u"quit the assistant."),
-                                  width=600, height=-1, wrap=True)
+        _label = _widg.make_label(
+            _(u"This is the RTK hardware import "
+              u"assistant.  It will help you import "
+              u"system hardware information to the "
+              u"database from external files.  Press "
+              u"'Forward' to continue or 'Cancel' to "
+              u"quit the assistant."),
+            width=600,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -245,22 +249,24 @@ class ImportHardware(gtk.Assistant):
         _label = gtk.Label(_column.get_title())
         _label.set_line_wrap(True)
         _label.set_alignment(xalign=0.5, yalign=0.5)
-        _label.set_markup(u"<span weight='bold'>%s</span>" %
-                          _("Database\nField"))
+        _label.set_markup(
+            u"<span weight='bold'>%s</span>" % _("Database\nField"))
         _label.show_all()
         _column.set_widget(_label)
         self.tvwFileFields.append_column(_column)
 
         (_file_fields, self._file_contents) = _select_source_file(self)
         if len(_file_fields) == 0:
-            _util.rtk_information(_(u"Source file must have headings for each "
-                                    u"column of data.  Please add headings to "
-                                    u"the source file and try again."))
+            _util.rtk_information(
+                _(u"Source file must have headings for each "
+                  u"column of data.  Please add headings to "
+                  u"the source file and try again."))
             self._cancel()
         if len(self._file_contents) == 0:
-            _util.rtk_warning(_(u"No data was found in the source file.  "
-                                u"Please check the contents of the source "
-                                u"file and try again."))
+            _util.rtk_warning(
+                _(u"No data was found in the source file.  "
+                  u"Please check the contents of the source "
+                  u"file and try again."))
             self._cancel()
 
         _cell = gtk.CellRendererCombo()
@@ -288,57 +294,103 @@ class ImportHardware(gtk.Assistant):
 
         _cell.connect('changed', self._callback_combo_cell, 2, _model)
 
-        _db_fields = [_(u"Revision ID"), _(u"Assembly ID"),
-                      _(u"Additive Adjustment Factor"), _(u"Allocation Type"),
-                      _(u"Alternate Part Number"), _(u"Assembly Criticality"),
-                      _(u"Attachments"), _(u"Availability"),
-                      _(u"Availability, Mission"), _(u"CAGE Code"),
-                      _(u"Calculation Model"), _(u"Category"),
-                      _(u"Composite Reference Designator"), _(u"Cost, Unit"),
-                      _(u"Cost/Failure"), _(u"Cost/Hour"), _(u"Cost Type"),
-                      _(u"Description"), _(u"Detection Failure Rate"),
-                      _(u"Detection Percent"), _(u"Duty Cycle"),
-                      _(u"Entered By"), _(u"Environment, Active"),
-                      _(u"Environment, Dormant"), _(u"Failure Distribution"),
-                      _(u"Parameter 1 (Scale)"), _(u"Parameter 2 (Shape)"),
-                      _(u"Parameter 3 (Location)"), _(u"Failure Rate, Actve"),
-                      _(u"Failure Rate, Dormant"), _(u"Failure Rate, Mission"),
-                      _(u"Failure Rate, Percent"),
-                      _(u"Failure Rate, Predicted"),
-                      _(u"Failure Rate, Software"),
-                      _(u"Failure Rate, Specified"), _(u"Failure Rate Type"),
-                      _(u"Figure Number"), _(u"Humidity"), _(u"Image File"),
-                      _(u"Isolation Failure Rate"), _(u"Isolation Percent"),
-                      _(u"Logistics Control Number"), _(u"Level"),
-                      _(u"Manufacturer"),
-                      _(u"Mean Corrective Maintenance Time"),
-                      _(u"Mission Time"), _(u"Mean Maintenance Time"),
-                      _(u"Modified By"),
-                      _(u"Mean Preventive Maintenance Time"),
-                      _(u"MTBF, Mission"), _(u"MTBF, Predicted"),
-                      _(u"MTBF, Specified"), _(u"MTTR"),
-                      _(u"MTTR Additive Adjustment Factor"),
-                      _(u"MTTR, Multiplicative Adjustment Factor"),
-                      _(u"MTTR, Specified"), _(u"MTTR Type"),
-                      _(u"Multiplicative Adjustment Factor"), _(u"Name"),
-                      _(u"NSN"), _(u"Overstressed?"), _(u"Page Number"),
-                      _(u"Parent Assembly"), _(u"Part?"), _(u"Part Number"),
-                      _(u"Percent Isolation, Group"),
-                      _(u"Percent Isolation, Single"), _(u"Quantity"),
-                      _(u"Reference Designator"), _(u"Reliability, Mission"),
-                      _(u"Reliability, Predicted"), _(u"Remarks"),
-                      _(u"Repair Distribution"),
-                      _(u"Repair Parameter 1 (Scale)"),
-                      _(u"Repair Parameter 2 (Shape)"), _(u"Repairable?"),
-                      _(u"RPM"), _(u"Specification Number"), _(u"Subcategory"),
-                      _(u"Tagged?"), _(u"Temperature, Active"),
-                      _(u"Temperature, Dormant"), _(u"Total Part Quantity"),
-                      _(u"Total Power"), _(u"Vibration"),
-                      _(u"Weibull Data Set"), _(u"Weibull File"),
-                      _(u"Year of Manufacture"), _(u"Hazard Rate Model"),
-                      _(u"Reliability Goal Measure"), _(u"Reliability Goal"),
-                      _(u"MTBF LCL"), _(u"MTBF UCL"), _(u"h(t) LCL"),
-                      _(u"h(t) UCL")]
+        _db_fields = [
+            _(u"Revision ID"),
+            _(u"Assembly ID"),
+            _(u"Additive Adjustment Factor"),
+            _(u"Allocation Type"),
+            _(u"Alternate Part Number"),
+            _(u"Assembly Criticality"),
+            _(u"Attachments"),
+            _(u"Availability"),
+            _(u"Availability, Mission"),
+            _(u"CAGE Code"),
+            _(u"Calculation Model"),
+            _(u"Category"),
+            _(u"Composite Reference Designator"),
+            _(u"Cost, Unit"),
+            _(u"Cost/Failure"),
+            _(u"Cost/Hour"),
+            _(u"Cost Type"),
+            _(u"Description"),
+            _(u"Detection Failure Rate"),
+            _(u"Detection Percent"),
+            _(u"Duty Cycle"),
+            _(u"Entered By"),
+            _(u"Environment, Active"),
+            _(u"Environment, Dormant"),
+            _(u"Failure Distribution"),
+            _(u"Parameter 1 (Scale)"),
+            _(u"Parameter 2 (Shape)"),
+            _(u"Parameter 3 (Location)"),
+            _(u"Failure Rate, Actve"),
+            _(u"Failure Rate, Dormant"),
+            _(u"Failure Rate, Mission"),
+            _(u"Failure Rate, Percent"),
+            _(u"Failure Rate, Predicted"),
+            _(u"Failure Rate, Software"),
+            _(u"Failure Rate, Specified"),
+            _(u"Failure Rate Type"),
+            _(u"Figure Number"),
+            _(u"Humidity"),
+            _(u"Image File"),
+            _(u"Isolation Failure Rate"),
+            _(u"Isolation Percent"),
+            _(u"Logistics Control Number"),
+            _(u"Level"),
+            _(u"Manufacturer"),
+            _(u"Mean Corrective Maintenance Time"),
+            _(u"Mission Time"),
+            _(u"Mean Maintenance Time"),
+            _(u"Modified By"),
+            _(u"Mean Preventive Maintenance Time"),
+            _(u"MTBF, Mission"),
+            _(u"MTBF, Predicted"),
+            _(u"MTBF, Specified"),
+            _(u"MTTR"),
+            _(u"MTTR Additive Adjustment Factor"),
+            _(u"MTTR, Multiplicative Adjustment Factor"),
+            _(u"MTTR, Specified"),
+            _(u"MTTR Type"),
+            _(u"Multiplicative Adjustment Factor"),
+            _(u"Name"),
+            _(u"NSN"),
+            _(u"Overstressed?"),
+            _(u"Page Number"),
+            _(u"Parent Assembly"),
+            _(u"Part?"),
+            _(u"Part Number"),
+            _(u"Percent Isolation, Group"),
+            _(u"Percent Isolation, Single"),
+            _(u"Quantity"),
+            _(u"Reference Designator"),
+            _(u"Reliability, Mission"),
+            _(u"Reliability, Predicted"),
+            _(u"Remarks"),
+            _(u"Repair Distribution"),
+            _(u"Repair Parameter 1 (Scale)"),
+            _(u"Repair Parameter 2 (Shape)"),
+            _(u"Repairable?"),
+            _(u"RPM"),
+            _(u"Specification Number"),
+            _(u"Subcategory"),
+            _(u"Tagged?"),
+            _(u"Temperature, Active"),
+            _(u"Temperature, Dormant"),
+            _(u"Total Part Quantity"),
+            _(u"Total Power"),
+            _(u"Vibration"),
+            _(u"Weibull Data Set"),
+            _(u"Weibull File"),
+            _(u"Year of Manufacture"),
+            _(u"Hazard Rate Model"),
+            _(u"Reliability Goal Measure"),
+            _(u"Reliability Goal"),
+            _(u"MTBF LCL"),
+            _(u"MTBF UCL"),
+            _(u"h(t) LCL"),
+            _(u"h(t) UCL")
+        ]
 
         for i in range(len(_db_fields)):
             _model.append([i, _db_fields[i], ""])
@@ -350,10 +402,13 @@ class ImportHardware(gtk.Assistant):
 
         # Create the page to apply the import criteria.
         _fixed = gtk.Fixed()
-        _label = _widg.make_label(_(u"Press 'Apply' to import the requested "
-                                    u"data or 'Cancel' to quit the "
-                                    u"assistant."), width=600, height=-1,
-                                  wrap=True)
+        _label = _widg.make_label(
+            _(u"Press 'Apply' to import the requested "
+              u"data or 'Cancel' to quit the "
+              u"assistant."),
+            width=600,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
@@ -432,13 +487,16 @@ class ImportHardware(gtk.Assistant):
                     _temp.append('')
                 else:
                     try:
-                        _temp.append(self._file_contents[i][self._file_index[j]].rstrip('\t'))
+                        _temp.append(self._file_contents[i][self._file_index[
+                            j]].rstrip('\t'))
                     except IndexError:
                         _temp.append('')
 
             # Convert missing integer values to correct default value.
-            for i in [0, 1, 3, 5, 11, 22, 23, 24, 43, 60,
-                      63, 72, 75, 78, 79, 82, 89]:
+            for i in [
+                    0, 1, 3, 5, 11, 22, 23, 24, 43, 60, 63, 72, 75, 78, 79, 82,
+                    89
+            ]:
                 _temp[i] = _missing_to_default(_temp[i], 0)
 
             for i in [10, 16, 35, 42, 56, 67, 85]:
@@ -447,9 +505,11 @@ class ImportHardware(gtk.Assistant):
             _temp[87] = _missing_to_default(_temp[87], 2013)
 
             # Convert missing float values to correct default value.
-            for i in [2, 5, 13, 14, 15, 18, 25, 26, 27, 28, 29, 30, 31, 32, 33,
-                      34, 39, 40, 44, 46, 48, 49, 50, 51, 52, 54, 55, 65, 66,
-                      73, 74, 76, 83, 84, 91, 92, 93, 94]:
+            for i in [
+                    2, 5, 13, 14, 15, 18, 25, 26, 27, 28, 29, 30, 31, 32, 33,
+                    34, 39, 40, 44, 46, 48, 49, 50, 51, 52, 54, 55, 65, 66, 73,
+                    74, 76, 83, 84, 91, 92, 93, 94
+            ]:
                 _temp[i] = _missing_to_default(_temp[i], 0.0)
 
             for i in [7, 8, 53, 57, 69, 70, 90]:
@@ -561,10 +621,11 @@ class ImportHardware(gtk.Assistant):
                       fld_mtbf_ucl=%f, fld_failure_rate_lcl=%f, \
                       fld_failure_rate_ucl=%f \
                   WHERE fld_parent_assembly='-'" % _values
-        if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                          commit=True):
-            _util.rtk_error(_(u"Error importing hardware information to the "
-                              u"open RTK Program database."))
+        if not self._app.DB.execute_query(
+                _query, None, self._app.ProgCnx, commit=True):
+            _util.rtk_error(
+                _(u"Error importing hardware information to the "
+                  u"open RTK Program database."))
 
             _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
 
@@ -610,51 +671,42 @@ class ImportHardware(gtk.Assistant):
                                           ':' + str(i)
                 root[i][62] = str(_iter[_parent_id])
 
-            _values = (int(root[i][0]), int(root[i][1]),
-                       float(root[i][2]), int(root[i][3]),
-                       str(root[i][4]), float(root[i][5]),
-                       str(root[i][6]), float(root[i][7]),
-                       float(root[i][8]), str(root[i][9]),
-                       int(root[i][10]), int(root[i][11]),
-                       str(root[i][12]), float(root[i][13]),
-                       float(root[i][14]), float(root[i][15]),
-                       int(root[i][16]), str(root[i][17]),
+            _values = (int(root[i][0]), int(root[i][1]), float(root[i][2]),
+                       int(root[i][3]), str(root[i][4]), float(root[i][5]),
+                       str(root[i][6]), float(root[i][7]), float(root[i][8]),
+                       str(root[i][9]), int(root[i][10]), int(root[i][11]),
+                       str(root[i][12]),
+                       float(root[i][13]), float(root[i][14]),
+                       float(root[i][15]), int(root[i][16]), str(root[i][17]),
                        float(root[i][18]), float(root[i][19]),
-                       float(root[i][20]), str(root[i][21]),
-                       int(root[i][22]), int(root[i][23]),
-                       int(root[i][24]), float(root[i][25]),
+                       float(root[i][20]), str(root[i][21]), int(root[i][22]),
+                       int(root[i][23]), int(root[i][24]), float(root[i][25]),
                        float(root[i][26]), float(root[i][27]),
                        float(root[i][28]), float(root[i][29]),
                        float(root[i][30]), float(root[i][31]),
                        float(root[i][32]), float(root[i][33]),
-                       float(root[i][34]), int(root[i][35]),
-                       str(root[i][36]), float(root[i][37]),
-                       str(root[i][38]), float(root[i][39]),
-                       float(root[i][40]), str(root[i][41]),
-                       int(root[i][42]), int(root[i][43]),
-                       float(root[i][44]), float(root[i][45]),
-                       float(root[i][46]), str(root[i][47]),
-                       float(root[i][48]), float(root[i][49]),
-                       float(root[i][50]), float(root[i][51]),
-                       float(root[i][52]), float(root[i][53]),
-                       float(root[i][54]), float(root[i][55]),
-                       int(root[i][56]), float(root[i][57]),
-                       str(root[i][58]), str(root[i][59]),
-                       int(root[i][60]), str(root[i][61]),
-                       str(root[i][62]), int(root[i][63]),
-                       str(root[i][64]), float(root[i][65]),
-                       float(root[i][66]), int(root[i][67]),
-                       str(root[i][68]), float(root[i][69]),
-                       float(root[i][70]), str(root[i][71]),
-                       int(root[i][72]), float(root[i][73]),
-                       float(root[i][74]), int(root[i][75]),
-                       float(root[i][76]), str(root[i][77]),
-                       int(root[i][78]), int(root[i][79]),
-                       float(root[i][80]), float(root[i][81]),
-                       int(root[i][82]), float(root[i][83]),
-                       float(root[i][84]), int(root[i][85]),
-                       str(root[i][86]), int(root[i][87]),
-                       str(root[i][88]), int(root[i][89]),
+                       float(root[i][34]), int(root[i][35]), str(root[i][36]),
+                       float(root[i][37]), str(root[i][38]), float(
+                           root[i][39]), float(root[i][40]), str(root[i][41]),
+                       int(root[i][42]), int(root[i][43]), float(root[i][44]),
+                       float(root[i][45]), float(root[i][46]), str(
+                           root[i][47]), float(root[i][48]), float(
+                               root[i][49]), float(root[i][50]),
+                       float(root[i][51]), float(root[i][52]),
+                       float(root[i][53]), float(root[i][54]),
+                       float(root[i][55]), int(root[i][56]), float(
+                           root[i][57]), str(root[i][58]), str(root[i][59]),
+                       int(root[i][60]), str(root[i][61]), str(root[i][62]),
+                       int(root[i][63]), str(root[i][64]), float(root[i][65]),
+                       float(root[i][66]), int(root[i][67]), str(root[i][68]),
+                       float(root[i][69]), float(root[i][70]), str(
+                           root[i][71]), int(root[i][72]), float(root[i][73]),
+                       float(root[i][74]), int(root[i][75]), float(
+                           root[i][76]), str(root[i][77]), int(root[i][78]),
+                       int(root[i][79]), float(root[i][80]), float(
+                           root[i][81]), int(root[i][82]), float(root[i][83]),
+                       float(root[i][84]), int(root[i][85]), str(root[i][86]),
+                       int(root[i][87]), str(root[i][88]), int(root[i][89]),
                        float(root[i][90]), float(root[i][91]),
                        float(root[i][92]), float(root[i][93]),
                        float(root[i][94]))
@@ -672,12 +724,13 @@ class ImportHardware(gtk.Assistant):
                               %f, %f, %d, %f, '%s', %d, %d, %f, %f, \
                               %d, %f, %f, %d, '%s', %d, '%s', %d, \
                               %f, %f, %f, %f, %f)" % _values
-            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                              commit=True):
-                _util.rtk_error(_(u"Error importing hardware information to "
-                                  u"the open RTK Program database."))
-                self._app.import_log.error("Failed to import record: %d" %
-                                           int(root[i][1]))
+            if not self._app.DB.execute_query(
+                    _query, None, self._app.ProgCnx, commit=True):
+                _util.rtk_error(
+                    _(u"Error importing hardware information to "
+                      u"the open RTK Program database."))
+                self._app.import_log.error(
+                    "Failed to import record: %d" % int(root[i][1]))
                 return True
 
             else:
@@ -688,49 +741,46 @@ class ImportHardware(gtk.Assistant):
                 _query = "INSERT INTO tbl_allocation \
                           (fld_revision_id, fld_assembly_id) \
                           VALUES (%d, %d)" % _values
-                if not self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx,
-                                                  commit=True):
-                    self._app.import_log.error("Failed to import record: %d "
-                                               "to the Allocation Table" %
-                                               int(root[i][1]))
+                if not self._app.DB.execute_query(
+                        _query, None, self._app.ProgCnx, commit=True):
+                    self._app.import_log.error(
+                        "Failed to import record: %d "
+                        "to the Allocation Table" % int(root[i][1]))
                     _error = True
 
                 _query = "INSERT INTO tbl_risk_analysis \
                           (fld_revision_id, fld_assembly_id) \
                           VALUES (%d, %d)" % _values
-                if not self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx,
-                                                  commit=True):
-                    self._app.import_log.error("Failed to import record: %d "
-                                               "to the Risk Analysis Table" %
-                                               int(root[i][1]))
+                if not self._app.DB.execute_query(
+                        _query, None, self._app.ProgCnx, commit=True):
+                    self._app.import_log.error(
+                        "Failed to import record: %d "
+                        "to the Risk Analysis Table" % int(root[i][1]))
                     _error = True
 
                 _query = "INSERT INTO tbl_similar_item \
                           (fld_revision_id, fld_assembly_id) \
                           VALUES (%d, %d)" % _values
-                if not self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx,
-                                                  commit=True):
-                    self._app.import_log.error("Failed to import record: %d "
-                                               "to the Similar Item Table" %
-                                               int(root[i][1]))
+                if not self._app.DB.execute_query(
+                        _query, None, self._app.ProgCnx, commit=True):
+                    self._app.import_log.error(
+                        "Failed to import record: %d "
+                        "to the Similar Item Table" % int(root[i][1]))
                     _error = True
 
                 _query = "INSERT INTO tbl_functional_matrix \
                           (fld_revision_id, fld_assembly_id) \
                           VALUES(%d, %d)" % _values
-                if not self._app.DB.execute_query(_query, None,
-                                                  self._app.ProgCnx,
-                                                  commit=True):
+                if not self._app.DB.execute_query(
+                        _query, None, self._app.ProgCnx, commit=True):
                     self._app.import_log.error("Failed to import record: %d "
                                                "to the Functional Matrix "
                                                "Table" % int(root[i][1]))
                     _error = True
 
-            _children = [child for child in contents
-                         if child[62] == root[i][1]]
+            _children = [
+                child for child in contents if child[62] == root[i][1]
+            ]
             if len(_children) > 0:
                 self._add_children(_children, _iter, contents)
 

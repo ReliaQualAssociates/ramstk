@@ -38,7 +38,10 @@ This is the test class for testing the Physics of Failure Load class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -85,8 +88,7 @@ class TestLoadModel(unittest.TestCase):
 
         _values = (0, 1, 'Test Load', 2, 1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -97,8 +99,7 @@ class TestLoadModel(unittest.TestCase):
 
         _values = (0, 0, 'Test Load', 2)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -109,8 +110,7 @@ class TestLoadModel(unittest.TestCase):
 
         _values = (0, 0, 'Test Load', None, 1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -121,8 +121,7 @@ class TestLoadModel(unittest.TestCase):
 
         _values = (0, 0, 'Test Load', '', 1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)

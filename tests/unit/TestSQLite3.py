@@ -40,7 +40,10 @@ import os
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import sqlite3
 
@@ -75,8 +78,8 @@ class TestSQLite3Model(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, _dao))
-        self.assertTrue(isinstance(self.DUT.model.connection,
-                                   sqlite3.Connection))
+        self.assertTrue(
+            isinstance(self.DUT.model.connection, sqlite3.Connection))
 
     @attr(all=True, unit=True)
     def test_execute(self):

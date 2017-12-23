@@ -12,30 +12,30 @@ Survival Package Mean Cumulative Function (MCF) Distribution Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -47,7 +47,7 @@ import locale
 # Import modules for mathematics support.
 from math import fabs
 import numpy as np
-from scipy.stats import chi2, norm          # pylint: disable=E0611
+from scipy.stats import chi2, norm  # pylint: disable=E0611
 
 # Modules required for the GUI.
 try:
@@ -203,41 +203,54 @@ class Results(gtk.HPaned):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display analysis results.           #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of "
-                                                 u"failures in the dataset."))
-        self.txtMHB.set_tooltip_markup(_(u"Displays the value of the MIL-HDBK "
-                                         u"test for trend."))
-        self.txtChiSq.set_tooltip_markup(_(u"Displays the \u03C7<sup>2</sup> "
-                                           u"critical value for the MIL-HDBK "
-                                           u"test for trend."))
-        self.txtMHBPValue.set_tooltip_markup(_(u"Displays the p-value for the "
-                                               u"MIL-HDBK test for trend."))
-        self.txtLP.set_tooltip_markup(_(u"Displays the value of the LaPlace "
-                                        u"test for trend."))
-        self.txtZLPNorm.set_tooltip_markup(_(u"Displays the standard normal "
-                                             u"critical value for the LaPlace "
-                                             u"test for trend."))
-        self.txtZLPPValue.set_tooltip_markup(_(u"Displays the p-value for the "
-                                               u"LaPlace test for trend."))
-        self.txtLR.set_tooltip_markup(_(u"Displays the value of the "
-                                        u"Lewis-Robinson test for trend."))
-        self.txtZLRNorm.set_tooltip_markup(_(u"Displays the standard normal "
-                                             u"critical value for the "
-                                             u"Lewis-Robinson test for "
-                                             u"trend."))
-        self.txtZLRPValue.set_tooltip_markup(_(u"Displays the p-value for the "
-                                               u"Lewis-Robinson test for "
-                                               u"trend."))
-        self.txtRho.set_tooltip_markup(_(u"Displays the value of the lag 1 "
-                                         u"sample serial correlation "
-                                         u"coefficient."))
-        self.txtRhoNorm.set_tooltip_markup(_(u"Displays the standard normal "
-                                             u"critical value for the lag 1 "
-                                             u"sample serial correlation "
-                                             u"coefficient."))
-        self.txtRhoPValue.set_tooltip_markup(_(u"Displays the p-value for the "
-                                               u"lag 1 sample serial "
-                                               u"correlation coefficient."))
+        self.txtNumFailures.set_tooltip_markup(
+            _(u"Displays the number of "
+              u"failures in the dataset."))
+        self.txtMHB.set_tooltip_markup(
+            _(u"Displays the value of the MIL-HDBK "
+              u"test for trend."))
+        self.txtChiSq.set_tooltip_markup(
+            _(u"Displays the \u03C7<sup>2</sup> "
+              u"critical value for the MIL-HDBK "
+              u"test for trend."))
+        self.txtMHBPValue.set_tooltip_markup(
+            _(u"Displays the p-value for the "
+              u"MIL-HDBK test for trend."))
+        self.txtLP.set_tooltip_markup(
+            _(u"Displays the value of the LaPlace "
+              u"test for trend."))
+        self.txtZLPNorm.set_tooltip_markup(
+            _(u"Displays the standard normal "
+              u"critical value for the LaPlace "
+              u"test for trend."))
+        self.txtZLPPValue.set_tooltip_markup(
+            _(u"Displays the p-value for the "
+              u"LaPlace test for trend."))
+        self.txtLR.set_tooltip_markup(
+            _(u"Displays the value of the "
+              u"Lewis-Robinson test for trend."))
+        self.txtZLRNorm.set_tooltip_markup(
+            _(u"Displays the standard normal "
+              u"critical value for the "
+              u"Lewis-Robinson test for "
+              u"trend."))
+        self.txtZLRPValue.set_tooltip_markup(
+            _(u"Displays the p-value for the "
+              u"Lewis-Robinson test for "
+              u"trend."))
+        self.txtRho.set_tooltip_markup(
+            _(u"Displays the value of the lag 1 "
+              u"sample serial correlation "
+              u"coefficient."))
+        self.txtRhoNorm.set_tooltip_markup(
+            _(u"Displays the standard normal "
+              u"critical value for the lag 1 "
+              u"sample serial correlation "
+              u"coefficient."))
+        self.txtRhoPValue.set_tooltip_markup(
+            _(u"Displays the p-value for the "
+              u"lag 1 sample serial "
+              u"correlation coefficient."))
 
         # Place the summary of results widgets.
         _labels = [_(u"Number of Failures:")]
@@ -247,18 +260,26 @@ class Results(gtk.HPaned):
         _fxdSummary.put(self.txtNumFailures, _x_pos, _y_pos[0])
 
         # Place the non-parametric goodness of fit statistics.
-        _label = _widg.make_label(_(u"<u>Goodness of Fit Statistics</u>"),
-                                  width=-1, justify=gtk.JUSTIFY_CENTER)
+        _label = _widg.make_label(
+            _(u"<u>Goodness of Fit Statistics</u>"),
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, 275, 35)
 
-        _label = _widg.make_label(_(u"Test\nStatistic"), height=-1, width=150,
-                                  justify=gtk.JUSTIFY_CENTER)
+        _label = _widg.make_label(
+            _(u"Test\nStatistic"),
+            height=-1,
+            width=150,
+            justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, 130, 65)
-        _label = _widg.make_label(_(u"Critical Value"), height=-1, width=150,
-                                  justify=gtk.JUSTIFY_CENTER)
+        _label = _widg.make_label(
+            _(u"Critical Value"),
+            height=-1,
+            width=150,
+            justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, 280, 65)
-        _label = _widg.make_label(_(u"p-Value"), height=-1, width=150,
-                                  justify=gtk.JUSTIFY_CENTER)
+        _label = _widg.make_label(
+            _(u"p-Value"), height=-1, width=150, justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, 430, 65)
 
         _label = _widg.make_label(_(u"MIL-HDBK:"))
@@ -282,8 +303,8 @@ class Results(gtk.HPaned):
         _fxdSummary.put(self.txtZLRPValue, 455, 155)
         _fxdSummary.put(self.lblZLRResult, 605, 155)
 
-        _label = _widg.make_label(_(u"Serial\nCorrelation\nCoefficient:"),
-                                  height=-1)
+        _label = _widg.make_label(
+            _(u"Serial\nCorrelation\nCoefficient:"), height=-1)
         _fxdSummary.put(_label, 5, 185)
         _fxdSummary.put(self.txtRho, 155, 185)
         _fxdSummary.put(self.txtRhoNorm, 305, 185)
@@ -295,9 +316,13 @@ class Results(gtk.HPaned):
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT)
         self.tvwResults.set_model(_model)
-        _headings = [_(u"Time\n(t)"), _(u"Number of\nFailures"),
-                     _(u"MCF\nLower\nLimit"), _(u"MCF\nPoint\nEstimate"),
-                     _(u"MCF\nUpper\nLimit")]
+        _headings = [
+            _(u"Time\n(t)"),
+            _(u"Number of\nFailures"),
+            _(u"MCF\nLower\nLimit"),
+            _(u"MCF\nPoint\nEstimate"),
+            _(u"MCF\nUpper\nLimit")
+        ]
         for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
@@ -312,14 +337,15 @@ class Results(gtk.HPaned):
             self.tvwResults.append_column(_column)
 
         # Insert the tab.
-        self.lblPage.set_markup("<span weight='bold'>" + _(u"MCF\nResults") +
-                                "</span>")
+        self.lblPage.set_markup(
+            "<span weight='bold'>" + _(u"MCF\nResults") + "</span>")
         self.lblPage.set_alignment(xalign=0.5, yalign=0.5)
         self.lblPage.set_justify(gtk.JUSTIFY_CENTER)
         self.lblPage.show_all()
-        self.lblPage.set_tooltip_text(_(u"Displays Mean Cumulative Function "
-                                        u"analysis results for the selected "
-                                        u"dataset."))
+        self.lblPage.set_tooltip_text(
+            _(u"Displays Mean Cumulative Function "
+              u"analysis results for the selected "
+              u"dataset."))
 
         return False
 
@@ -347,8 +373,8 @@ class Results(gtk.HPaned):
                           2 * self._model.n_failures)
         _z_norm = norm.ppf(self._model.confidence)
 
-        _p_value[0] = float(chi2.cdf(self._model.mhb,
-                                     2 * self._model.n_failures))
+        _p_value[0] = float(
+            chi2.cdf(self._model.mhb, 2 * self._model.n_failures))
         _p_value[1] = float(norm.cdf(self._model.lp))
         _p_value[2] = float(norm.cdf(self._model.lr))
         _p_value[3] = norm.cdf(self._model.rho)
@@ -395,10 +421,13 @@ class Results(gtk.HPaned):
             _times = []
 
         for i in range(len(_times)):
-            _model.append([float(_times[i, 0]), int(self._model.mcf[i, 1]),
-                           float(self._model.mcf[i, 2]),
-                           float(self._model.mcf[i, 3]),
-                           float(self._model.mcf[i, 4])])
+            _model.append([
+                float(_times[i, 0]),
+                int(self._model.mcf[i, 1]),
+                float(self._model.mcf[i, 2]),
+                float(self._model.mcf[i, 3]),
+                float(self._model.mcf[i, 4])
+            ])
 
         return False
 
@@ -538,22 +567,30 @@ class Plots(gtk.HBox):
         self.axAxis1.cla()
 
         # Create a list of failure dates.
-        _dates = [x.failure_date
-                  for x in self._model.dicRecords.values()
-                  if x.interarrival_time != np.inf]
+        _dates = [
+            x.failure_date for x in self._model.dicRecords.values()
+            if x.interarrival_time != np.inf
+        ]
 
         # Create a list of interarrival times.
-        _tbf = [x.interarrival_time
-                for x in self._model.dicRecords.values()
-                if x.interarrival_time != np.inf]
+        _tbf = [
+            x.interarrival_time for x in self._model.dicRecords.values()
+            if x.interarrival_time != np.inf
+        ]
 
         if len(_dates) > 0 and len(_tbf) > 0:
             _plot_title = _(u"Run Sequence Plot for {0:s}").format(
                 self._model.description)
-            _widg.load_plot(self.axAxis1, self.pltPlot1, _dates, y1=_tbf,
-                            title=_plot_title, xlab=_(u"Date"),
-                            ylab=_(u"Time Between Failure"), ltype=[4],
-                            marker=['g-'])
+            _widg.load_plot(
+                self.axAxis1,
+                self.pltPlot1,
+                _dates,
+                y1=_tbf,
+                title=_plot_title,
+                xlab=_(u"Date"),
+                ylab=_(u"Time Between Failure"),
+                ltype=[4],
+                marker=['g-'])
 
         return False
 
@@ -568,18 +605,26 @@ class Plots(gtk.HBox):
         self.axAxis2.cla()
 
         # Create a list of interarrival times.
-        _tbf = sorted([x.interarrival_time
-                       for x in self._model.dicRecords.values()
-                       if x.interarrival_time != np.inf])
+        _tbf = sorted([
+            x.interarrival_time for x in self._model.dicRecords.values()
+            if x.interarrival_time != np.inf
+        ])
 
         if len(_tbf) > 0:
             _zero_line = _tbf[:-1]
-            _plot_title = _(u"Lag Plot for {0:s}").format(self._model.description)
-            _widg.load_plot(self.axAxis2, self.pltPlot2, _tbf[0:len(_tbf) - 1],
-                            y1=_tbf[1:len(_tbf)], y2=_zero_line, title=_plot_title,
-                            xlab=_(u"Lagged Time Between Failure"),
-                            ylab=_(u"Time Between Failure"), ltype=[2, 2],
-                            marker=['go', 'k-'])
+            _plot_title = _(u"Lag Plot for {0:s}").format(
+                self._model.description)
+            _widg.load_plot(
+                self.axAxis2,
+                self.pltPlot2,
+                _tbf[0:len(_tbf) - 1],
+                y1=_tbf[1:len(_tbf)],
+                y2=_zero_line,
+                title=_plot_title,
+                xlab=_(u"Lagged Time Between Failure"),
+                ylab=_(u"Time Between Failure"),
+                ltype=[2, 2],
+                marker=['go', 'k-'])
 
         return False
 
@@ -603,14 +648,24 @@ class Plots(gtk.HBox):
             # Plot the mean cumulative function with confidence bounds.
             _plot_title = _(u"MCF Plot for {0:s}").format(
                 self._model.description)
-            _widg.load_plot(self.axAxis3, self.pltPlot3, _times,
-                            y1=_muhatll, y2=_muhat, y3=_muhatul,
-                            title=_plot_title, xlab=_(u"Time"),
-                            ylab=_(u"Mean Cumulative Function [mu(t)]"),
-                            marker=['r:', 'g-', 'b:'])
+            _widg.load_plot(
+                self.axAxis3,
+                self.pltPlot3,
+                _times,
+                y1=_muhatll,
+                y2=_muhat,
+                y3=_muhatul,
+                title=_plot_title,
+                xlab=_(u"Time"),
+                ylab=_(u"Mean Cumulative Function [mu(t)]"),
+                marker=['r:', 'g-', 'b:'])
             _text = (u"MCF LCL", u"MCF", u"MCF UCL")
-            _widg.create_legend(self.axAxis3, _text, fontsize='medium',
-                                legframeon=True, location='lower right',
-                                legshadow=True)
+            _widg.create_legend(
+                self.axAxis3,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='lower right',
+                legshadow=True)
 
         return False

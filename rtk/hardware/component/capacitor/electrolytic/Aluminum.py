@@ -7,32 +7,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 #############################################
 Hardware Package Electrolytic Aluminum Module
@@ -45,7 +44,7 @@ import locale
 try:
     import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
@@ -57,7 +56,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -79,15 +78,19 @@ class Dry(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 14.0,
-            38.0, 690.0]
+    _piE = [
+        1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 14.0,
+        38.0, 690.0
+    ]
     _piQ = [3.0, 10.0]
-    _lambdab_count = [0.029, 0.081, 0.58, 0.24, 0.83, 0.73, 0.88, 4.3, 5.4,
-                      2.0, 0.015, 0.68, 2.8, 28.0]
+    _lambdab_count = [
+        0.029, 0.081, 0.58, 0.24, 0.83, 0.73, 0.88, 4.3, 5.4, 2.0, 0.015, 0.68,
+        2.8, 28.0
+    ]
     lst_ref_temp = [358]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 54                        # Subcategory ID in the common DB.
+    subcategory = 54  # Subcategory ID in the common DB.
 
     def __init__(self):
         """
@@ -98,7 +101,7 @@ class Dry(Capacitor):
         super(Dry, self).__init__()
 
         # Initialize public scalar attributes.
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -127,7 +130,7 @@ class Dry(Capacitor):
                     0.0028 * ((_stress / 0.55)**3 + 1) * \
                     exp(4.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5.9)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow and zero division errors.
                 return True
 
@@ -152,15 +155,19 @@ class Wet(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 14.0,
-            38.0, 690.0]
+    _piE = [
+        1.0, 2.0, 12.0, 6.0, 17.0, 10.0, 12.0, 28.0, 35.0, 27.0, 0.5, 14.0,
+        38.0, 690.0
+    ]
     _piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
-    _lambdab_count = [0.024, 0.061, 0.42, 0.18, 0.59, 0.46, 0.55, 2.1, 2.6,
-                      1.2, .012, 0.49, 1.7, 21.0]
+    _lambdab_count = [
+        0.024, 0.061, 0.42, 0.18, 0.59, 0.46, 0.55, 2.1, 2.6, 1.2, .012, 0.49,
+        1.7, 21.0
+    ]
     lst_ref_temp = [358.0, 378.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 53                        # Subcategory ID in rtkcom DB.
+    subcategory = 53  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -171,7 +178,7 @@ class Wet(Capacitor):
         super(Wet, self).__init__()
 
         # Define public scalar attributes.
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             if self.max_rated_temperature == 105.0:
                 self.reference_temperature = 378.0
             elif self.max_rated_temperature == 125.0:
@@ -205,7 +212,7 @@ class Wet(Capacitor):
                     0.00254 * ((_stress / 0.5)**3 + 1) * \
                     exp(5.09 * ((self.temperature_active + 273) /
                                 self.reference_temperature)**5)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow and zero division errors.
                 return True
 

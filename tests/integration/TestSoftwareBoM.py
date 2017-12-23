@@ -38,7 +38,10 @@ This is the test class for testing Software BoM module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -101,8 +104,7 @@ class TestBoMController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_bom(self._dao, 1)[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_software(self.DUT._last_id)
+        (_results, _error_code) = self.DUT.delete_software(self.DUT._last_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

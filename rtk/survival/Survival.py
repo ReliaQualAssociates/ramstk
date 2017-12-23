@@ -12,36 +12,36 @@ Survival Package Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 from collections import OrderedDict
 
 import numpy as np
-from scipy.stats import chi2                # pylint: disable=E0611
+from scipy.stats import chi2  # pylint: disable=E0611
 
 try:
     import Utilities
@@ -82,7 +82,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 
-class Model(object):                       # pylint: disable=R0902, R0904
+class Model(object):  # pylint: disable=R0902, R0904
     """
     The Survival data model contains the attributes and methods for an
     Survival. The attributes of an Survival model are:
@@ -179,35 +179,35 @@ class Model(object):                       # pylint: disable=R0902, R0904
         self.assembly_id = 0
         self.description = ''
         self.source = 0
-        self.distribution_id = 0            # 1=MCF, 2=Kaplan-Meier,
-                                            # 3=NHPP-Power Law,
-                                            # 4=NHPP-LogLinear, 5=Exponential,
-                                            # 6=Lognormal, 7=Normal, 8=Weibull,
-                                            # 9=WeiBayes
+        self.distribution_id = 0  # 1=MCF, 2=Kaplan-Meier,
+        # 3=NHPP-Power Law,
+        # 4=NHPP-LogLinear, 5=Exponential,
+        # 6=Lognormal, 7=Normal, 8=Weibull,
+        # 9=WeiBayes
         self.confidence = 0.75
-        self.confidence_type = 0            # 1=Lower, 2=Upper, 3=Two-sided
-        self.confidence_method = 0          # 1=Crow, 2=Duane, 3=Fisher,
-                                            # 4=Likelihood, 5=Bootstrap
-        self.fit_method = 0                 # 1=MLE, 2=Rank Regression
+        self.confidence_type = 0  # 1=Lower, 2=Upper, 3=Two-sided
+        self.confidence_method = 0  # 1=Crow, 2=Duane, 3=Fisher,
+        # 4=Likelihood, 5=Bootstrap
+        self.fit_method = 0  # 1=MLE, 2=Rank Regression
         self.rel_time = 100.0
         self.n_rel_points = 0
         self.n_suspensions = 0
         self.n_failures = 0
-        self.mhb = 0.0                      # MIL-HDBK trend statistic
-        self.lp = 0.0                       # Laplace trend statistic
-        self.lr = 0.0                       # Lewis-Robinson trend statistic
-        self.rho = 0.0                      # Serial correlation coefficient
-        self.aic = 0.0                      # Aikake information criterion
-        self.bic = 0.0                      # Bayesian information criterion
-        self.mle = 0.0                      # Maximum likelihood estimate
+        self.mhb = 0.0  # MIL-HDBK trend statistic
+        self.lp = 0.0  # Laplace trend statistic
+        self.lr = 0.0  # Lewis-Robinson trend statistic
+        self.rho = 0.0  # Serial correlation coefficient
+        self.aic = 0.0  # Aikake information criterion
+        self.bic = 0.0  # Bayesian information criterion
+        self.mle = 0.0  # Maximum likelihood estimate
         self.start_time = 0.0
         self.end_time = 0.0
         self.start_date = 0
         self.end_date = 0
         self.n_datasets = 0
-        self.chi_square = 0.0               # AMSAA chi-square statistic
-        self.cramer_vonmises = 0.0          # AMSAA Cramer-vonMises statistic
-        self.cvm_critical_value = 0.0       # AMSAA Cramer-vonMises critical value
+        self.chi_square = 0.0  # AMSAA chi-square statistic
+        self.cramer_vonmises = 0.0  # AMSAA Cramer-vonMises statistic
+        self.cvm_critical_value = 0.0  # AMSAA Cramer-vonMises critical value
         self.grouped = 0
 
     def calculate_tbf(self, previous_id, current_id):
@@ -226,8 +226,8 @@ class Model(object):                       # pylint: disable=R0902, R0904
         _p_record = self.dicRecords[previous_id]
         _c_record = self.dicRecords[current_id]
 
-        _c_record.interarrival_time = time_between_failures(_p_record,
-                                                            _c_record)
+        _c_record.interarrival_time = time_between_failures(
+            _p_record, _c_record)
 
         return False
 
@@ -242,21 +242,21 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
         _data = self._create_dataset()
 
-        if self.distribution_id == 1:       # MCF
+        if self.distribution_id == 1:  # MCF
             self.estimate_mcf()
-        elif self.distribution_id == 2:     # Kaplan-Meier
+        elif self.distribution_id == 2:  # Kaplan-Meier
             self.estimate_kaplan_meier()
-        elif self.distribution_id == 3:     # NHPP - Power Law
+        elif self.distribution_id == 3:  # NHPP - Power Law
             self.estimate_nhpp_power_law()
-        elif self.distribution_id == 4:     # NHPP - Log Linear
+        elif self.distribution_id == 4:  # NHPP - Log Linear
             print "NHPP - Log Linear"
-        elif self.distribution_id == 5:     # Exponential
+        elif self.distribution_id == 5:  # Exponential
             self.estimate_exponential(_data)
-        elif self.distribution_id == 6:     # LogNormal
+        elif self.distribution_id == 6:  # LogNormal
             self.estimate_lognormal(_data)
-        elif self.distribution_id == 7:     # Gaussian
+        elif self.distribution_id == 7:  # Gaussian
             self.estimate_gaussian(_data)
-        elif self.distribution_id == 8:     # Weibull
+        elif self.distribution_id == 8:  # Weibull
             self.estimate_weibull(_data)
 
         return False
@@ -278,59 +278,51 @@ class Model(object):                       # pylint: disable=R0902, R0904
         :rtype: bool
         """
         # TODO: Consider refactoring calculate_parameter_bounds; current McCabe Complexity metric=15.
-        if self.confidence_method == 3:     # Fisher
-            (self.scale[0],
-             self.scale[2]) = calculate_fisher_bounds(self.scale[1],
-                                                      self.variance[0],
-                                                      self.confidence)
+        if self.confidence_method == 3:  # Fisher
+            (self.scale[0], self.scale[2]) = calculate_fisher_bounds(
+                self.scale[1], self.variance[0], self.confidence)
 
-            (self.shape[0],
-             self.shape[2]) = calculate_fisher_bounds(self.shape[1],
-                                                      self.variance[1],
-                                                      self.confidence)
+            (self.shape[0], self.shape[2]) = calculate_fisher_bounds(
+                self.shape[1], self.variance[1], self.confidence)
 
-            (self.location[0],
-             self.location[2]) = calculate_fisher_bounds(self.location[1],
-                                                         self.variance[2],
-                                                         self.confidence)
+            (self.location[0], self.location[2]) = calculate_fisher_bounds(
+                self.location[1], self.variance[2], self.confidence)
 
-        elif self.confidence_method == 4:   # Likelihood ratio
-            if self.distribution_id == 5:     # Exponential
+        elif self.confidence_method == 4:  # Likelihood ratio
+            if self.distribution_id == 5:  # Exponential
                 (self.scale[0],
                  self.scale[2]) = Exponential().likelihood_bounds(
                      self.scale[1], self.location[1], self.confidence, data)
-            elif self.distribution_id == 6:     # LogNormal
-                (_lower,
-                 _upper) = LogNormal().likelihood_bounds([self.scale[1],
-                                                          self.shape[1]],
-                                                         self.confidence,
-                                                         data)
+            elif self.distribution_id == 6:  # LogNormal
+                (_lower, _upper) = LogNormal().likelihood_bounds(
+                    [self.scale[1], self.shape[1]], self.confidence, data)
                 self.scale[0] = min(_lower.values())
                 self.scale[2] = max(_upper.values())
-                self.shape[0] = [_key for _key in _lower.keys()
-                                 if _lower[_key] == min(_lower.values())][0]
-                self.shape[2] = [_key for _key in _upper.keys()
-                                 if _upper[_key] == max(_upper.values())][0]
-            elif self.distribution_id == 7:     # Gaussian
-                (_lower,
-                 _upper) = LogNormal().likelihood_bounds([self.scale[1],
-                                                          self.shape[1]],
-                                                         self.confidence,
-                                                         data)
+                self.shape[0] = [
+                    _key for _key in _lower.keys()
+                    if _lower[_key] == min(_lower.values())
+                ][0]
+                self.shape[2] = [
+                    _key for _key in _upper.keys()
+                    if _upper[_key] == max(_upper.values())
+                ][0]
+            elif self.distribution_id == 7:  # Gaussian
+                (_lower, _upper) = LogNormal().likelihood_bounds(
+                    [self.scale[1], self.shape[1]], self.confidence, data)
                 self.scale[0] = min(_lower.values())
                 self.scale[2] = max(_upper.values())
-                self.shape[0] = [_key for _key in _lower.keys()
-                                 if _lower[_key] == min(_lower.values())][0]
-                self.shape[2] = [_key for _key in _upper.keys()
-                                 if _upper[_key] == max(_upper.values())][0]
-            elif self.distribution_id == 8:     # Weibull
-                (self.scale[0],
-                 self.scale[2],
-                 self.shape[0],
-                 self.shape[2]) = Weibull().likelihood_bounds([self.scale[1],
-                                                               self.shape[1]],
-                                                              self.confidence,
-                                                              data)
+                self.shape[0] = [
+                    _key for _key in _lower.keys()
+                    if _lower[_key] == min(_lower.values())
+                ][0]
+                self.shape[2] = [
+                    _key for _key in _upper.keys()
+                    if _upper[_key] == max(_upper.values())
+                ][0]
+            elif self.distribution_id == 8:  # Weibull
+                (self.scale[0], self.scale[2], self.shape[0],
+                 self.shape[2]) = Weibull().likelihood_bounds(
+                     [self.scale[1], self.shape[1]], self.confidence, data)
 
         return False
 
@@ -351,20 +343,17 @@ class Model(object):                       # pylint: disable=R0902, R0904
         _probs = []
 
         if self.distribution_id == 5:
-            _probs = Exponential().theoretical_distribution(data,
-                                                            [self.scale[1]])
+            _probs = Exponential().theoretical_distribution(
+                data, [self.scale[1]])
         elif self.distribution_id == 6:
-            _probs = LogNormal().theoretical_distribution(data,
-                                                          [self.scale[1],
-                                                           self.shape[1]])
+            _probs = LogNormal().theoretical_distribution(
+                data, [self.scale[1], self.shape[1]])
         elif self.distribution_id == 7:
-            _probs = Gaussian().theoretical_distribution(data,
-                                                         [self.scale[1],
-                                                          self.shape[1]])
+            _probs = Gaussian().theoretical_distribution(
+                data, [self.scale[1], self.shape[1]])
         elif self.distribution_id == 8:
-            _probs = Weibull().theoretical_distribution(data,
-                                                        [self.scale[1],
-                                                         self.shape[1]])
+            _probs = Weibull().theoretical_distribution(
+                data, [self.scale[1], self.shape[1]])
 
         return _probs
 
@@ -381,26 +370,21 @@ class Model(object):                       # pylint: disable=R0902, R0904
         _step_time = int((self.rel_time - self.start_time) / self.n_rel_points)
 
         if self.distribution_id == 5:
-            self.dicHazard = Exponential().hazard_function(self.scale,
-                                                           self.start_time,
-                                                           self.rel_time + _step_time,
-                                                           _step_time)
+            self.dicHazard = Exponential().hazard_function(
+                self.scale, self.start_time, self.rel_time + _step_time,
+                _step_time)
         elif self.distribution_id == 6:
-            self.dicHazard = LogNormal().hazard_function(self.scale,
-                                                         self.shape,
-                                                         self.start_time,
-                                                         self.rel_time + _step_time,
-                                                         _step_time)
+            self.dicHazard = LogNormal().hazard_function(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
         elif self.distribution_id == 7:
-            self.dicHazard = Gaussian().hazard_function(self.scale, self.shape,
-                                                        self.start_time,
-                                                        self.rel_time + _step_time,
-                                                        _step_time)
+            self.dicHazard = Gaussian().hazard_function(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
         elif self.distribution_id == 8:
-            self.dicHazard = Weibull().hazard_function(self.scale, self.shape,
-                                                       self.start_time,
-                                                       self.rel_time + _step_time,
-                                                       _step_time)
+            self.dicHazard = Weibull().hazard_function(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
 
         return False
 
@@ -421,20 +405,17 @@ class Model(object):                       # pylint: disable=R0902, R0904
                                               self.rel_time + _step_time,
                                               _step_time)
         elif self.distribution_id == 6:
-            self.dicMTBF = LogNormal().mean(self.scale, self.shape,
-                                            self.start_time,
-                                            self.rel_time + _step_time,
-                                            _step_time)
+            self.dicMTBF = LogNormal().mean(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
         elif self.distribution_id == 7:
-            self.dicMTBF = Gaussian().mean(self.scale,
-                                           self.start_time,
+            self.dicMTBF = Gaussian().mean(self.scale, self.start_time,
                                            self.rel_time + _step_time,
                                            _step_time)
         elif self.distribution_id == 8:
-            self.dicMTBF = Weibull().mean(self.scale, self.shape,
-                                          self.start_time,
-                                          self.rel_time + _step_time,
-                                          _step_time)
+            self.dicMTBF = Weibull().mean(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
 
         return False
 
@@ -451,28 +432,21 @@ class Model(object):                       # pylint: disable=R0902, R0904
         _step_time = int((self.rel_time - self.start_time) / self.n_rel_points)
 
         if self.distribution_id == 5:
-            self.dicReliability = Exponential().reliability_function(self.scale,
-                                                                     self.start_time,
-                                                                     self.rel_time + _step_time,
-                                                                     _step_time)
+            self.dicReliability = Exponential().reliability_function(
+                self.scale, self.start_time, self.rel_time + _step_time,
+                _step_time)
         elif self.distribution_id == 6:
-            self.dicReliability = LogNormal().reliability_function(self.scale,
-                                                                   self.shape,
-                                                                   self.start_time,
-                                                                   self.rel_time + _step_time,
-                                                                   _step_time)
+            self.dicReliability = LogNormal().reliability_function(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
         elif self.distribution_id == 7:
-            self.dicReliability = Gaussian().reliability_function(self.scale,
-                                                                  self.shape,
-                                                                  self.start_time,
-                                                                  self.rel_time + _step_time,
-                                                                  _step_time)
+            self.dicReliability = Gaussian().reliability_function(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
         elif self.distribution_id == 8:
-            self.dicReliability = Weibull().reliability_function(self.scale,
-                                                                 self.shape,
-                                                                 self.start_time,
-                                                                 self.rel_time + _step_time,
-                                                                 _step_time)
+            self.dicReliability = Weibull().reliability_function(
+                self.scale, self.shape, self.start_time,
+                self.rel_time + _step_time, _step_time)
 
         return False
 
@@ -505,18 +479,15 @@ class Model(object):                       # pylint: disable=R0902, R0904
         :rtype: bool
         """
 
-        (_data,
-         self.n_failures,
-         self.n_suspensions) = _km.format_data(self.dicRecords)
+        (_data, self.n_failures, self.n_suspensions) = _km.format_data(
+            self.dicRecords)
 
         self.km, _rank = _km.kaplan_meier(_data, self.start_time,
                                           self.rel_time, self.confidence,
                                           self.confidence_type)
 
-        (self.scale[0],
-         self.scale[1],
-         self.scale[2]) = _km.kaplan_meier_mean(self.km, _rank,
-                                                self.confidence)
+        (self.scale[0], self.scale[1], self.scale[2]) = _km.kaplan_meier_mean(
+            self.km, _rank, self.confidence)
 
         self.hazard = _km.kaplan_meier_hazard(self.km)
 
@@ -534,56 +505,55 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
         _meanc = [0.0, 0.0, 0.0]
         _meani = [0.0, 0.0, 0.0]
-        _failures = [_record.n_failures
-                     for _record in self.dicRecords.values()]
-        _times = [_record.right_interval
-                  for _record in self.dicRecords.values()]
-        _dates = [_record.failure_date
-                  for _record in self.dicRecords.values()]
+        _failures = [
+            _record.n_failures for _record in self.dicRecords.values()
+        ]
+        _times = [
+            _record.right_interval for _record in self.dicRecords.values()
+        ]
+        _dates = [_record.failure_date for _record in self.dicRecords.values()]
         for _index, _time in enumerate(_times):
-            _NHPP = _nhpp.power_law(_failures[:_index + 1],
-                                    _times[:_index + 1],
-                                    self.confidence_method,
-                                    self.fit_method, self.confidence_type,
-                                    self.confidence, self.rel_time)
+            _NHPP = _nhpp.power_law(
+                _failures[:_index + 1], _times[:_index + 1],
+                self.confidence_method, self.fit_method, self.confidence_type,
+                self.confidence, self.rel_time)
 
             # Calculate the cumulative and instantaneous MTBF.
-            if self.fit_method == 1:    # MLE
-                _means = calculate_crow_amsaa_mean(self.rel_time,
-                                                   _NHPP[0][2],
+            if self.fit_method == 1:  # MLE
+                _means = calculate_crow_amsaa_mean(self.rel_time, _NHPP[0][2],
                                                    _NHPP[1][2])
                 _meanc[0] = _means[0]
                 _meani[0] = _means[1]
-                _means = calculate_crow_amsaa_mean(self.rel_time,
-                                                   _NHPP[0][1],
+                _means = calculate_crow_amsaa_mean(self.rel_time, _NHPP[0][1],
                                                    _NHPP[1][1])
                 _meanc[1] = _means[0]
                 _meani[1] = _means[1]
-                _means = calculate_crow_amsaa_mean(self.rel_time,
-                                                   _NHPP[0][0],
+                _means = calculate_crow_amsaa_mean(self.rel_time, _NHPP[0][0],
                                                    _NHPP[1][0])
                 _meanc[2] = _means[0]
                 _meani[2] = _means[1]
             elif self.fit_method == 2:  # Regression
-                _means = calculate_duane_mean(self.rel_time,
-                                              1.0 - _NHPP[1][2],
+                _means = calculate_duane_mean(self.rel_time, 1.0 - _NHPP[1][2],
                                               1.0 / _NHPP[0][2])
                 _meanc[0] = _means[0]
                 _meani[0] = _means[1]
-                _means = calculate_duane_mean(self.rel_time,
-                                              1.0 - _NHPP[1][1],
+                _means = calculate_duane_mean(self.rel_time, 1.0 - _NHPP[1][1],
                                               1.0 / _NHPP[0][1])
                 _meanc[1] = _means[0]
                 _meani[1] = _means[1]
-                _means = calculate_duane_mean(self.rel_time,
-                                              1.0 - _NHPP[1][0],
+                _means = calculate_duane_mean(self.rel_time, 1.0 - _NHPP[1][0],
                                               1.0 / _NHPP[0][0])
                 _meanc[2] = _means[0]
                 _meani[2] = _means[1]
 
-            self.nhpp.append([_time, sum(_failures[:_index + 1]),
-                              list(_NHPP[0]), list(_NHPP[1]),
-                              list(_meanc), list(_meani), _dates[_index]])
+            self.nhpp.append([
+                _time,
+                sum(_failures[:_index + 1]),
+                list(_NHPP[0]),
+                list(_NHPP[1]),
+                list(_meanc),
+                list(_meani), _dates[_index]
+            ])
 
         self.n_failures = sum(_failures)
 
@@ -597,27 +567,26 @@ class Model(object):                       # pylint: disable=R0902, R0904
         # Calculate trend statistic and critical values.
         _alpha_half = (1.0 - self.confidence) / 2.0
 
-        if self.grouped == 0:               # Individual failure times.
-            if self.end_time > 0.0:         # Time truncated test.
+        if self.grouped == 0:  # Individual failure times.
+            if self.end_time > 0.0:  # Time truncated test.
                 _df = 2.0 * self.n_failures
-            else:                           # Failure truncated test.
+            else:  # Failure truncated test.
                 _df = 2.0 * (self.n_failures - 1)
             _upper = _alpha_half
             _lower = self.confidence + _alpha_half
-        else:                               # Grouped failure times.
+        else:  # Grouped failure times.
             _df = len(_failures) - 1
             _upper = self.confidence
             _lower = 1.0 - self.confidence
 
-        self.chi_square = calculate_crow_amsaa_chi_square(_failures, _times,
-                                                          self.shape[1],
-                                                          max(_times))
+        self.chi_square = calculate_crow_amsaa_chi_square(
+            _failures, _times, self.shape[1], max(_times))
         self.chi2_critical_value[0] = chi2.ppf(_lower, _df)
         self.chi2_critical_value[1] = chi2.ppf(_upper, _df)
 
         # Calculate goodness of fit statistic and critical value.
-        self.cramer_vonmises = calculate_cramer_vonmises(self.n_failures,
-                                                         _times, self.shape[1])
+        self.cramer_vonmises = calculate_cramer_vonmises(
+            self.n_failures, _times, self.shape[1])
         self.cvm_critical_value = cramer_vonmises_critical_value(
             self.n_failures, self.confidence)
 
@@ -640,9 +609,8 @@ class Model(object):                       # pylint: disable=R0902, R0904
         """
 
         if self.fit_method == 1:
-            _results = Exponential().maximum_likelihood_estimate(data,
-                                                                 self.start_time,
-                                                                 self.rel_time)
+            _results = Exponential().maximum_likelihood_estimate(
+                data, self.start_time, self.rel_time)
 
             self.n_suspensions = _results[3]
             self.n_failures = _results[4]
@@ -690,15 +658,14 @@ class Model(object):                       # pylint: disable=R0902, R0904
         """
 
         if self.fit_method == 1:
-            _results = LogNormal().maximum_likelihood_estimate(data,
-                                                               self.start_time,
-                                                               self.rel_time)
+            _results = LogNormal().maximum_likelihood_estimate(
+                data, self.start_time, self.rel_time)
 
             self.n_suspensions = _results[3]
             self.n_failures = _results[4]
         elif self.fit_method == 2:
-            _results = regression(data, self.start_time, self.rel_time,
-                                  dist='lognormal')
+            _results = regression(
+                data, self.start_time, self.rel_time, dist='lognormal')
 
             self.rho = _results[3]
             self.n_suspensions = _results[4]
@@ -706,9 +673,9 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
         self.scale[1] = _results[0][0]
         self.shape[1] = _results[0][1]
-        self.variance[0] = _results[1][0]       # Scale
-        self.variance[1] = _results[1][2]       # Shape
-        self.covariance[0] = _results[1][1]     # Scale-Shape
+        self.variance[0] = _results[1][0]  # Scale
+        self.variance[1] = _results[1][2]  # Shape
+        self.covariance[0] = _results[1][1]  # Scale-Shape
         self.mle = _results[2][0]
         self.aic = _results[2][1]
         self.bic = _results[2][2]
@@ -737,15 +704,14 @@ class Model(object):                       # pylint: disable=R0902, R0904
         """
 
         if self.fit_method == 1:
-            _results = Gaussian().maximum_likelihood_estimate(data,
-                                                              self.start_time,
-                                                              self.rel_time)
+            _results = Gaussian().maximum_likelihood_estimate(
+                data, self.start_time, self.rel_time)
 
             self.n_suspensions = _results[3]
             self.n_failures = _results[4]
         elif self.fit_method == 2:
-            _results = regression(data, self.start_time, self.rel_time,
-                                  dist='normal')
+            _results = regression(
+                data, self.start_time, self.rel_time, dist='normal')
 
             self.rho = _results[3]
             self.n_suspensions = _results[4]
@@ -753,9 +719,9 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
         self.scale[1] = _results[0][0]
         self.shape[1] = _results[0][1]
-        self.variance[0] = _results[1][0]       # Scale
-        self.variance[1] = _results[1][2]       # Shape
-        self.covariance[0] = _results[1][1]     # Scale-Shape
+        self.variance[0] = _results[1][0]  # Scale
+        self.variance[1] = _results[1][2]  # Shape
+        self.covariance[0] = _results[1][1]  # Scale-Shape
         self.mle = _results[2][0]
         self.aic = _results[2][1]
         self.bic = _results[2][2]
@@ -784,15 +750,14 @@ class Model(object):                       # pylint: disable=R0902, R0904
         """
 
         if self.fit_method == 1:
-            _results = Weibull().maximum_likelihood_estimate(data,
-                                                             self.start_time,
-                                                             self.rel_time)
+            _results = Weibull().maximum_likelihood_estimate(
+                data, self.start_time, self.rel_time)
 
             self.n_suspensions = _results[3]
             self.n_failures = _results[4]
         elif self.fit_method == 2:
-            _results = regression(data, self.start_time, self.rel_time,
-                                  dist='normal')
+            _results = regression(
+                data, self.start_time, self.rel_time, dist='normal')
 
             self.rho = _results[3]
             self.n_suspensions = _results[4]
@@ -800,9 +765,9 @@ class Model(object):                       # pylint: disable=R0902, R0904
 
         self.scale[1] = _results[0][0]
         self.shape[1] = _results[0][1]
-        self.variance[0] = _results[1][0]       # Scale
-        self.variance[1] = _results[1][2]       # Shape
-        self.covariance[0] = _results[1][1]     # Scale-Shape
+        self.variance[0] = _results[1][0]  # Scale
+        self.variance[1] = _results[1][2]  # Shape
+        self.covariance[0] = _results[1][1]  # Scale-Shape
         self.mle = _results[2][0]
         self.aic = _results[2][1]
         self.bic = _results[2][2]
@@ -833,23 +798,25 @@ class Model(object):                       # pylint: disable=R0902, R0904
         for _record_id in self.dicRecords.keys():
             # Replace any string status values with integer status values.  Set
             # right censored end point to infinity.
-            if(self.dicRecords[_record_id].status == 'Right Censored' or
-               str(self.dicRecords[_record_id].status) == '2'):
+            if (self.dicRecords[_record_id].status == 'Right Censored'
+                    or str(self.dicRecords[_record_id].status) == '2'):
                 self.dicRecords[_record_id].interarrival_time = np.inf
                 self.dicRecords[_record_id].status = 2
-            elif(self.dicRecords[_record_id].status == 'Left Censored' or
-                 self.dicRecords[_record_id].status == 'Interval Censored' or
-                 str(self.dicRecords[_record_id].status) == '3' or
-                 str(self.dicRecords[_record_id].status) == '4'):
+            elif (self.dicRecords[_record_id].status == 'Left Censored'
+                  or self.dicRecords[_record_id].status == 'Interval Censored'
+                  or str(self.dicRecords[_record_id].status) == '3'
+                  or str(self.dicRecords[_record_id].status) == '4'):
                 self.dicRecords[_record_id].status = 3
             else:
                 self.dicRecords[_record_id].status = 1
 
-            _data.append([self.dicRecords[_record_id].left_interval,
-                          self.dicRecords[_record_id].right_interval,
-                          self.dicRecords[_record_id].n_failures,
-                          self.dicRecords[_record_id].status,
-                          self.dicRecords[_record_id].interarrival_time])
+            _data.append([
+                self.dicRecords[_record_id].left_interval,
+                self.dicRecords[_record_id].right_interval,
+                self.dicRecords[_record_id].n_failures,
+                self.dicRecords[_record_id].status,
+                self.dicRecords[_record_id].interarrival_time
+            ])
 
         # Convert the data set list of lists to a numpy array.
         _data = np.array(_data, dtype=float)
@@ -921,7 +888,7 @@ class Survival(object):
             _survival.set_attributes(_results[i])
             self.dicSurvival[_survival.survival_id] = _survival
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_survival(self, revision_id):
         """
@@ -934,7 +901,7 @@ class Survival(object):
 
         try:
             _description = "New Survival Analysis " + str(self._last_id + 1)
-        except TypeError:                   # No tasks exist.
+        except TypeError:  # No tasks exist.
             _description = "New Survival Analysis 1"
 
         _query = "INSERT INTO rtk_survival \
@@ -952,13 +919,13 @@ class Survival(object):
             self._last_id = self._dao.get_last_id('rtk_survival')[0]
 
             _survival = Model()
-            _survival.set_attributes((revision_id, self._last_id, 0,
-                                      _description, 0, 0, 0.75, 0, 2, 0, 100.0,
-                                      0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                      0.0, 0.0, 0, 0, 0))
+            _survival.set_attributes(
+                (revision_id, self._last_id, 0, _description, 0, 0, 0.75, 0, 2,
+                 0, 100.0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0,
+                 0, 0))
             self.dicSurvival[_survival.survival_id] = _survival
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_survival(self, survival_id):
         """
@@ -978,7 +945,7 @@ class Survival(object):
         if _results:
             self.dicSurvival.pop(survival_id)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_all_survivals(self):
         """
@@ -1026,33 +993,29 @@ class Survival(object):
                       fld_start_date={36:d}, fld_end_date={37:d} \
                   WHERE fld_revision_id={0:d} \
                   AND fld_survival_id={1:d}".format(
-                      _survival.revision_id, _survival.survival_id,
-                      _survival.assembly_id, _survival.description,
-                      _survival.source, _survival.distribution_id,
-                      _survival.confidence, _survival.confidence_type,
-                      _survival.confidence_method, _survival.fit_method,
-                      _survival.rel_time, _survival.n_rel_points,
-                      _survival.n_suspensions, int(_survival.n_failures),
-                      _survival.scale[0], _survival.scale[1],
-                      _survival.scale[2], _survival.shape[0],
-                      _survival.shape[1], _survival.shape[2],
-                      _survival.location[0], _survival.location[1],
-                      _survival.location[2], _survival.variance[0],
-                      _survival.variance[1], _survival.variance[2],
-                      _survival.covariance[0], _survival.covariance[1],
-                      _survival.covariance[2], _survival.mhb, _survival.lp,
-                      _survival.lr, _survival.aic, _survival.bic,
-                      _survival.mle, _survival.start_time,
-                      _survival.start_date, _survival.end_date)
+            _survival.revision_id, _survival.survival_id,
+            _survival.assembly_id, _survival.description, _survival.source,
+            _survival.distribution_id, _survival.confidence,
+            _survival.confidence_type, _survival.confidence_method,
+            _survival.fit_method, _survival.rel_time,
+            _survival.n_rel_points, _survival.n_suspensions,
+            int(_survival.n_failures), _survival.scale[0], _survival.scale[1],
+            _survival.scale[2], _survival.shape[0], _survival.shape[1],
+            _survival.shape[2], _survival.location[0], _survival.location[1],
+            _survival.location[2], _survival.variance[0],
+            _survival.variance[1], _survival.variance[2],
+            _survival.covariance[0], _survival.covariance[1],
+            _survival.covariance[2], _survival.mhb, _survival.lp, _survival.lr,
+            _survival.aic, _survival.bic, _survival.mle, _survival.start_time,
+            _survival.start_date, _survival.end_date)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         # Save all the records.
         for _record_id in _survival.dicRecords.keys():
-            (_results,
-             _error_code) = self.save_record(survival_id, _record_id,
-                                             _survival.dicRecords[_record_id])
+            (_results, _error_code) = self.save_record(
+                survival_id, _record_id, _survival.dicRecords[_record_id])
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def request_records(self, survival_id):
         """
@@ -1089,10 +1052,12 @@ class Survival(object):
             _record.set_attributes([survival_id] + list(_results[i][1:]))
             _survival.dicRecords[_results[i][0]] = _record
 
-        _survival.dicRecords = OrderedDict(sorted(_survival.dicRecords.items(),
-                                                  key=lambda r: r[1].right_interval))
+        _survival.dicRecords = OrderedDict(
+            sorted(
+                _survival.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_record(self, survival_id):
         """
@@ -1121,13 +1086,14 @@ class Survival(object):
 
         if _results:
             _record = Record()
-            _record.set_attributes([survival_id, 0, 719163, 0.0, 0.0, 0, 1,
-                                    0.0, 1, 0, 719163, 1, 719163, 0, 0.0, 0.0,
-                                    0.0, 0, 0, 0, '', '', ''])
+            _record.set_attributes([
+                survival_id, 0, 719163, 0.0, 0.0, 0, 1, 0.0, 1, 0, 719163, 1,
+                719163, 0, 0.0, 0.0, 0.0, 0, 0, 0, '', '', ''
+            ])
 
             self.dicSurvival[survival_id].dicRecords[_last_id] = _record
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_record(self, survival_id, record_id):
         """
@@ -1148,7 +1114,7 @@ class Survival(object):
         if _results:
             self.dicSurvival[survival_id].dicRecords.pop(record_id)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_record(self, survival_id, record_id, record):
         """
@@ -1174,33 +1140,21 @@ class Survival(object):
                       fld_user_string_1='{19:s}', fld_user_string_2='{20:s}', \
                       fld_user_string_3='{21:s}' \
                   WHERE fld_survival_id={0:d} \
-                  AND fld_record_id={1:d}".format(survival_id, record_id,
-                                                  record.assembly_name,
-                                                  record.failure_date,
-                                                  record.left_interval,
-                                                  record.right_interval,
-                                                  record.status,
-                                                  record.n_failures,
-                                                  record.interarrival_time,
-                                                  record.mode_type,
-                                                  record.nevada_chart,
-                                                  record.ship_date,
-                                                  record.return_date,
-                                                  record.user_float_1,
-                                                  record.user_float_2,
-                                                  record.user_float_3,
-                                                  record.user_integer_1,
-                                                  record.user_integer_2,
-                                                  record.user_integer_3,
-                                                  record.user_string_1,
-                                                  record.user_string_2,
-                                                  record.user_string_3)
+                  AND fld_record_id={1:d}".format(
+            survival_id, record_id, record.assembly_name, record.failure_date,
+            record.left_interval, record.right_interval, record.status,
+            record.n_failures, record.interarrival_time, record.mode_type,
+            record.nevada_chart, record.ship_date, record.return_date,
+            record.user_float_1, record.user_float_2, record.user_float_3,
+            record.user_integer_1, record.user_integer_2,
+            record.user_integer_3, record.user_string_1, record.user_string_2,
+            record.user_string_3)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         if not _results:
             print survival_id, record_id
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def consolidate_dataset(self, survival_id):
         """
@@ -1235,10 +1189,10 @@ class Survival(object):
             # the right intervals are the same, and the status are the same,
             # increment the count of records with the same failure times and
             # add the previous record id to the list of records to delete.
-            if(_results[i][1] == _results[i - 1][1] and
-               _results[i][2] == _results[i - 1][2] and
-               _results[i][3] == _results[i - 1][3] and
-               _results[i][4] == _results[i - 1][4]):
+            if (_results[i][1] == _results[i - 1][1]
+                    and _results[i][2] == _results[i - 1][2]
+                    and _results[i][3] == _results[i - 1][3]
+                    and _results[i][4] == _results[i - 1][4]):
                 _quantity += _results[i][5]
                 _delete_id.append(_results[i - 1][0])
             else:
@@ -1253,8 +1207,8 @@ class Survival(object):
         for i in range(_n_keep):
             _query = "UPDATE rtk_survival_data \
                       SET fld_quantity={0:d} \
-                      WHERE fld_record_id={1:d}".format(_keep_id[i][1],
-                                                        _keep_id[i][0])
+                      WHERE fld_record_id={1:d}".format(
+                _keep_id[i][1], _keep_id[i][0])
             self._dao.execute(_query, commit=True)
 
         # Delete the records that are "duplicates."

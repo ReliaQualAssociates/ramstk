@@ -11,11 +11,11 @@ The RTKHazardAnalysis Table
 """
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKHazardAnalysis(RTK_BASE):
@@ -29,35 +29,40 @@ class RTKHazardAnalysis(RTK_BASE):
     __tablename__ = 'rtk_hazard_analysis'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column('fld_hardware_id', Integer,
-                         ForeignKey('rtk_hardware.fld_hardware_id'),
-                         nullable=False)
-    hazard_id = Column('fld_hazard_id', Integer, primary_key=True,
-                       autoincrement=True, nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        ForeignKey('rtk_hardware.fld_hardware_id'),
+        nullable=False)
+    hazard_id = Column(
+        'fld_hazard_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     potential_hazard = Column('fld_potential_hazard', String(256), default='')
     potential_cause = Column('fld_potential_cause', String(512), default='')
     assembly_effect = Column('fld_assembly_effect', String(512), default='')
-    assembly_severity_id = Column('fld_assembly_severity', Integer,
-                                  default=4)
-    assembly_probability_id = Column('fld_assembly_probability', Integer,
-                                     default=5)
+    assembly_severity_id = Column('fld_assembly_severity', Integer, default=4)
+    assembly_probability_id = Column(
+        'fld_assembly_probability', Integer, default=5)
     assembly_hri = Column('fld_assembly_hri', Integer, default=20)
     assembly_mitigation = Column('fld_assembly_mitigation', BLOB, default='')
-    assembly_severity_id_f = Column('fld_assembly_severity_f', Integer,
-                                    default=4)
-    assembly_probability_id_f = Column('fld_assembly_probability_f',
-                                       Integer, default=5)
+    assembly_severity_id_f = Column(
+        'fld_assembly_severity_f', Integer, default=4)
+    assembly_probability_id_f = Column(
+        'fld_assembly_probability_f', Integer, default=5)
     assembly_hri_f = Column('fld_assembly_hri_f', Integer, default=4)
     system_effect = Column('fld_system_effect', String(512), default='')
     system_severity_id = Column('fld_system_severity', Integer, default=4)
-    system_probability_id = Column('fld_system_probability', Integer,
-                                   default=5)
+    system_probability_id = Column(
+        'fld_system_probability', Integer, default=5)
     system_hri = Column('fld_system_hri', Integer, default=20)
     system_mitigation = Column('fld_system_mitigation', BLOB, default='')
     system_severity_id_f = Column('fld_system_severity_f', Integer, default=4)
-    system_probability_id_f = Column('fld_system_probability_f', Integer,
-                                     default=5)
+    system_probability_id_f = Column(
+        'fld_system_probability_f', Integer, default=5)
     system_hri_f = Column('fld_system_hri_f', Integer, default=20)
     remarks = Column('fld_remarks', BLOB, default='')
     function_1 = Column('fld_function_1', String(128), default='')
@@ -142,24 +147,24 @@ class RTKHazardAnalysis(RTK_BASE):
             self.potential_cause = str(none_to_default(attributes[1], ''))
             self.assembly_effect = str(none_to_default(attributes[2], ''))
             self.assembly_severity_id = int(none_to_default(attributes[3], 0))
-            self.assembly_probability_id = int(none_to_default(attributes[4],
-                                                               0))
+            self.assembly_probability_id = int(
+                none_to_default(attributes[4], 0))
             self.assembly_hri = int(none_to_default(attributes[5], 0))
             self.assembly_mitigation = str(none_to_default(attributes[6], ''))
-            self.assembly_severity_id_f = int(none_to_default(attributes[7],
-                                                              0))
-            self.assembly_probability_id_f = int(none_to_default(attributes[8],
-                                                                 0))
+            self.assembly_severity_id_f = int(
+                none_to_default(attributes[7], 0))
+            self.assembly_probability_id_f = int(
+                none_to_default(attributes[8], 0))
             self.assembly_hri_f = int(none_to_default(attributes[9], 0))
             self.system_effect = str(none_to_default(attributes[10], ''))
             self.system_severity_id = int(none_to_default(attributes[11], 0))
-            self.system_probability_id = int(none_to_default(attributes[12],
-                                                             0))
+            self.system_probability_id = int(
+                none_to_default(attributes[12], 0))
             self.system_hri = int(none_to_default(attributes[13], 0))
             self.system_mitigation = str(none_to_default(attributes[14], ''))
             self.system_severity_id_f = int(none_to_default(attributes[15], 0))
-            self.system_probability_id_f = int(none_to_default(attributes[16],
-                                                               0))
+            self.system_probability_id_f = int(
+                none_to_default(attributes[16], 0))
             self.system_hri_f = int(none_to_default(attributes[17], 0))
             self.remarks = str(none_to_default(attributes[18], ''))
             self.function_1 = str(none_to_default(attributes[19], ''))

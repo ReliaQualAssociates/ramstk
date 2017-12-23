@@ -10,35 +10,35 @@ Contains functions for performing regression analysis.
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for mathematics.
 import numpy as np
-from scipy.stats import norm                # pylint: disable=E0611
+from scipy.stats import norm  # pylint: disable=E0611
 import scipy.optimize as optim
 
 __author__ = 'Andrew Rowland'
@@ -175,13 +175,13 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
                     [MLE, AIC, BIC], correlation coeff.]
     :rtype: list
     """
-# WARNING: Refactor regression; current McCabe Complexity metric=15.
+    # WARNING: Refactor regression; current McCabe Complexity metric=15.
     # Initialize lists to hold results.
-    _parameters = [0.0, 0.0, 0.0]           # Scale, shape, location.
-    _variance = [0.0, 0.0, 0.0]             # Scale variance, covariance,
-                                            # shape variance.
-    _gof = [0.0, 0.0, 0.0]                  # MLE, AIC, BIC
-    _rho_hat = 0.0                          # Correlation coefficient
+    _parameters = [0.0, 0.0, 0.0]  # Scale, shape, location.
+    _variance = [0.0, 0.0, 0.0]  # Scale variance, covariance,
+    # shape variance.
+    _gof = [0.0, 0.0, 0.0]  # MLE, AIC, BIC
+    _rho_hat = 0.0  # Correlation coefficient
 
     # Sort data by the right of the interval.  Remove records occurring before
     # the start time and after the end time.
@@ -192,8 +192,8 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
 
     # Count the number of suspensions, failures, and records.
     _n_suspensions = sum(x[2] for x in _data if x[3] == 2)
-    _n_failures = sum(x[2] for x in _data
-                      if x[3] == 1 or x[3] == 3 or x[3] == 4)
+    _n_failures = sum(
+        x[2] for x in _data if x[3] == 1 or x[3] == 3 or x[3] == 4)
     _n_records = len(_data)
 
     # Retrieve the failure times for all non-censored data.
@@ -224,10 +224,10 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
         _df = _n_records - 1
         _y_linear = -1.0 * np.log(1.0 / (1.0 - _median_rank))
 
-        _p, _covar, _info, __, __ = optim.leastsq(_error_function,
-                                                  [1.0, 1.0],
-                                                  args=(_x, _y_linear),
-                                                  full_output=True)
+        _p, _covar, _info, __, __ = optim.leastsq(
+            _error_function, [1.0, 1.0],
+            args=(_x, _y_linear),
+            full_output=True)
         _parameters[0] = -_p[1]
 
     elif dist == 'lognormal':
@@ -235,10 +235,10 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
         _x = np.log(_x)
         _y_linear = norm.ppf(_median_rank)
 
-        _p, _covar, _info, __, __ = optim.leastsq(_error_function,
-                                                  [1.0, 1.0],
-                                                  args=(_x, _y_linear),
-                                                  full_output=True)
+        _p, _covar, _info, __, __ = optim.leastsq(
+            _error_function, [1.0, 1.0],
+            args=(_x, _y_linear),
+            full_output=True)
         _parameters[1] = 1.0 / _p[1]
         _parameters[0] = -_p[0] * _parameters[1]
 
@@ -246,10 +246,10 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
         _df = _n_records - 2
         _y_linear = norm.ppf(_median_rank)
 
-        _p, _covar, _info, __, __ = optim.leastsq(_error_function,
-                                                  [1.0, 1.0],
-                                                  args=(_x, _y_linear),
-                                                  full_output=True)
+        _p, _covar, _info, __, __ = optim.leastsq(
+            _error_function, [1.0, 1.0],
+            args=(_x, _y_linear),
+            full_output=True)
         _parameters[1] = 1.0 / _p[1]
         _parameters[0] = -_p[0] * _parameters[1]
 
@@ -258,10 +258,10 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
         _x = np.log(_x)
         _y_linear = np.log(-1.0 * np.log((1.0 - _median_rank)))
 
-        _p, _covar, _info, __, __ = optim.leastsq(_error_function,
-                                                  [1.0, 1.0],
-                                                  args=(_x, _y_linear),
-                                                  full_output=True)
+        _p, _covar, _info, __, __ = optim.leastsq(
+            _error_function, [1.0, 1.0],
+            args=(_x, _y_linear),
+            full_output=True)
         _parameters[1] = _p[1]
         _parameters[0] = np.exp(-_p[0] / _p[1])
 
@@ -271,9 +271,9 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
     _SSE = np.sum(_yhat**2.0)
     _MSE = _SSE / _df
     _cov = _MSE * _covar
-    _variance[0] = _cov[1][1]               # Scale
-    _variance[1] = _cov[0][1]               # Scale-Shape
-    _variance[2] = _cov[0][0]               # Shape
+    _variance[0] = _cov[1][1]  # Scale
+    _variance[1] = _cov[0][1]  # Scale-Shape
+    _variance[2] = _cov[0][0]  # Shape
 
     # Calculate the log-likelihood, AIC, and BIC.
     _s2b = _SSE / _n_records
@@ -285,13 +285,14 @@ def regression(data, start, end, dist='exponential'):  # pylint: disable=R0914
     # Calculate the correlation coefficient (i.e., R)
     _rho_hat = np.corrcoef(_x, _y_linear)[0, 1]
 
-    _fit = [_parameters, _variance, _gof, _rho_hat, _n_suspensions,
-            _n_failures]
+    _fit = [
+        _parameters, _variance, _gof, _rho_hat, _n_suspensions, _n_failures
+    ]
 
     return _fit
 
 
-def rank_regression_y(x, y):                # pylint: disable=C0103
+def rank_regression_y(x, y):  # pylint: disable=C0103
     """
     Function to perform rank regression on y.
 

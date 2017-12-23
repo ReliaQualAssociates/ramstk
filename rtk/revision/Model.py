@@ -85,9 +85,10 @@ class RevisionDataModel(RTKDataModel):
         :rtype: (int, str)
         """
         _revision = RTKRevision()
-        _error_code, _msg = RTKDataModel.insert(self, entities=[
-            _revision,
-        ])
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _revision,
+            ])
 
         if _error_code == 0:
             self.tree.create_node(

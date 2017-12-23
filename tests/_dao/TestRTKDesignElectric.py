@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKDesignElectric module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -55,7 +57,6 @@ class TestRTKDesignElectric(unittest.TestCase):
         self.DUT.overstress = 1
 
         session.commit()
-
 
     @attr(all=True, unit=True)
     def test00_rtkdesignelectric_create(self):

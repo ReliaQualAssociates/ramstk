@@ -4,7 +4,6 @@
 #       tests.unit._dao.TestRTKStatus.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKStatus module algorithms and
 models.
@@ -13,7 +12,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -34,8 +36,7 @@ class TestRTKStatus(unittest.TestCase):
     Class for testing the RTKStatus class.
     """
 
-    attributes = (1, 'Initiated',
-                  'Incident has been initiated.', 'incident')
+    attributes = (1, 'Initiated', 'Incident has been initiated.', 'incident')
 
     def setUp(self):
         """

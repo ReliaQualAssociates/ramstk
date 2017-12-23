@@ -21,7 +21,8 @@ from nose.plugins.manager import PluginManager
 
 sys.path.insert(
     0,
-    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../', )
+    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../',
+)
 
 # pylint: disable=wrong-import-postion
 from test_setup import _create_program_database
@@ -81,21 +82,16 @@ def test_function_package(suites):
 if __name__ == '__main__':
 
     _db_suites = [
-            TestRTKAction,
-            TestRTKCause,
-            TestRTKControl,
-            TestRTKMechanism,
-            TestRTKMode
-        ]
+        TestRTKAction, TestRTKCause, TestRTKControl, TestRTKMechanism,
+        TestRTKMode
+    ]
     _model_suites = [
-            TestActionDataModel,
-            TestCauseDataModel,
-            TestControlDataModel,
-            TestMechanismDataModel,
-            TestModeDataModel,
-            TestFMEADataModel
-        ]
-    _controller_suites = [TestFMEADataController, ]
+        TestActionDataModel, TestCauseDataModel, TestControlDataModel,
+        TestMechanismDataModel, TestModeDataModel, TestFMEADataModel
+    ]
+    _controller_suites = [
+        TestFMEADataController,
+    ]
 
     # For the nosetest example.
     if str(sys.argv[1]) == 'db':

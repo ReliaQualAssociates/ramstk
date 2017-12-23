@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKIncidentAction module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date, timedelta
 
@@ -37,8 +39,8 @@ class TestRTKIncidentAction(unittest.TestCase):
     Class for testing the RTKIncidentAction class.
     """
 
-    _attributes = (1, 1, 0, 'Test Prescribed Action', '', 0, 0,
-                   date.today() + timedelta(days=30), 0, 0,
+    _attributes = (1, 1, 0, 'Test Prescribed Action',
+                   '', 0, 0, date.today() + timedelta(days=30), 0, 0,
                    date.today() + timedelta(days=30),
                    date.today() + timedelta(days=30), 0)
 
@@ -75,12 +77,12 @@ class TestRTKIncidentAction(unittest.TestCase):
         self.assertEqual(self.DUT.action_taken, '')
         self.assertEqual(self.DUT.approved, 0)
         self.assertEqual(self.DUT.approved_by, 0)
-        self.assertEqual(self.DUT.approved_date,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.approved_date, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.closed, 0)
         self.assertEqual(self.DUT.closed_by, 0)
-        self.assertEqual(self.DUT.closed_date,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.closed_date, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.due_date, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.status_id, 0)
 
@@ -99,8 +101,8 @@ class TestRTKIncidentAction(unittest.TestCase):
         (TestRTKIncidentAction) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0, 'Test Prescribed Action', '', 0, 0,
-                       date.today() + timedelta(days=30), 0, 0,
+        _attributes = (0, 'Test Prescribed Action', '',
+                       0, 0, date.today() + timedelta(days=30), 0, 0,
                        date.today() + timedelta(days=30),
                        date.today() + timedelta(days=30), 0)
 
@@ -116,8 +118,8 @@ class TestRTKIncidentAction(unittest.TestCase):
         (TestRTKIncidentAction) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0, 'Test Prescribed Action', '', 'zero', 0,
-                       date.today() + timedelta(days=30), 0, 0,
+        _attributes = (0, 'Test Prescribed Action', '',
+                       'zero', 0, date.today() + timedelta(days=30), 0, 0,
                        date.today() + timedelta(days=30),
                        date.today() + timedelta(days=30), 0)
 
@@ -134,8 +136,8 @@ class TestRTKIncidentAction(unittest.TestCase):
         (TestRTKIncidentAction) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (0, 'Test Prescribed Action', '', 0, 0,
-                       date.today() + timedelta(days=30), 0, 0,
+        _attributes = (0, 'Test Prescribed Action', '',
+                       0, 0, date.today() + timedelta(days=30), 0, 0,
                        date.today() + timedelta(days=30),
                        date.today() + timedelta(days=30))
 

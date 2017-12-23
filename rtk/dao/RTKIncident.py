@@ -13,11 +13,11 @@ The RTKIncident Table
 from datetime import date, timedelta
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Date, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 # pylint: disable=R0902
@@ -33,11 +33,17 @@ class RTKIncident(RTK_BASE):
     __tablename__ = 'rtk_incident'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column('fld_revision_id', Integer,
-                         ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
-    incident_id = Column('fld_incident_id', Integer, primary_key=True,
-                         autoincrement=True, nullable=False)
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    incident_id = Column(
+        'fld_incident_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     accepted = Column('fld_accepted', Integer, default=0)
     approved = Column('fld_approved', Integer, default=0)
@@ -59,16 +65,16 @@ class RTKIncident(RTK_BASE):
     complete_by = Column('fld_complete_by', Integer, default=0)
     cost = Column('fld_cost', Float, default=0.0)
     criticality_id = Column('fld_criticality_id', Integer, default=0)
-    date_approved = Column('fld_date_approved', Date,
-                           default=date.today() + timedelta(days=30))
-    date_complete = Column('fld_date_complete', Date,
-                           default=date.today() + timedelta(days=30))
+    date_approved = Column(
+        'fld_date_approved', Date, default=date.today() + timedelta(days=30))
+    date_complete = Column(
+        'fld_date_complete', Date, default=date.today() + timedelta(days=30))
     date_requested = Column('fld_date_requested', Date, default=date.today())
-    date_reviewed = Column('fld_date_reviewed', Date,
-                           default=date.today() + timedelta(days=30))
+    date_reviewed = Column(
+        'fld_date_reviewed', Date, default=date.today() + timedelta(days=30))
     description_long = Column('fld_description_long', BLOB, default='')
-    description_short = Column('fld_description_short', String(512),
-                               default='')
+    description_short = Column(
+        'fld_description_short', String(512), default='')
     detection_method_id = Column('fld_detection_method_id', Integer, default=0)
     execution_time = Column('fld_execution_time', Float, default=0)
     hardware_id = Column('fld_hardware_id', Integer, default=0)
@@ -108,10 +114,10 @@ class RTKIncident(RTK_BASE):
 
     # Define the relationships to other tables in the RTK Program database.
     revision = relationship('RTKRevision', back_populates='incident')
-    incident_detail = relationship('RTKIncidentDetail',
-                                   back_populates='incident')
-    incident_action = relationship('RTKIncidentAction',
-                                   back_populates='incident')
+    incident_detail = relationship(
+        'RTKIncidentDetail', back_populates='incident')
+    incident_action = relationship(
+        'RTKIncidentAction', back_populates='incident')
 
     def get_attributes(self):
         """
@@ -136,29 +142,26 @@ class RTKIncident(RTK_BASE):
         :rtype: tuple
         """
 
-        _attributes = (self.revision_id, self.incident_id, self.accepted,
-                       self.approved, self.approved_by, self.analysis,
-                       self.category_id, self.chargeable, self.chargeable_1,
-                       self.chargeable_2, self.chargeable_3, self.chargeable_4,
-                       self.chargeable_5, self.chargeable_6, self.chargeable_7,
-                       self.chargeable_8, self.chargeable_9,
-                       self.chargeable_10, self.complete, self.complete_by,
-                       self.cost, self.criticality_id, self.date_approved,
-                       self.date_complete, self.date_requested,
-                       self.date_reviewed, self.description_long,
-                       self.description_short, self.detection_method_id,
-                       self.execution_time, self.hardware_id,
-                       self.incident_age, self.life_cycle_id, self.relevant,
-                       self.relevant_1, self.relevant_2, self.relevant_3,
-                       self.relevant_4, self.relevant_5, self.relevant_6,
-                       self.relevant_7, self.relevant_8, self.relevant_9,
-                       self.relevant_10, self.relevant_11, self.relevant_12,
-                       self.relevant_13, self.relevant_14, self.relevant_15,
-                       self.relevant_16, self.relevant_17, self.relevant_18,
-                       self.relevant_19, self.relevant_20, self.remarks,
-                       self.request_by, self.reviewed, self.reviewed_by,
-                       self.software_id, self.status_id, self.test_case,
-                       self.test_found, self.type_id, self.unit)
+        _attributes = (
+            self.revision_id, self.incident_id, self.accepted, self.approved,
+            self.approved_by, self.analysis, self.category_id, self.chargeable,
+            self.chargeable_1, self.chargeable_2, self.chargeable_3,
+            self.chargeable_4, self.chargeable_5, self.chargeable_6,
+            self.chargeable_7, self.chargeable_8, self.chargeable_9,
+            self.chargeable_10, self.complete, self.complete_by, self.cost,
+            self.criticality_id, self.date_approved, self.date_complete,
+            self.date_requested, self.date_reviewed, self.description_long,
+            self.description_short, self.detection_method_id,
+            self.execution_time, self.hardware_id, self.incident_age,
+            self.life_cycle_id, self.relevant, self.relevant_1,
+            self.relevant_2, self.relevant_3, self.relevant_4, self.relevant_5,
+            self.relevant_6, self.relevant_7, self.relevant_8, self.relevant_9,
+            self.relevant_10, self.relevant_11, self.relevant_12,
+            self.relevant_13, self.relevant_14, self.relevant_15,
+            self.relevant_16, self.relevant_17, self.relevant_18,
+            self.relevant_19, self.relevant_20, self.remarks, self.request_by,
+            self.reviewed, self.reviewed_by, self.software_id, self.status_id,
+            self.test_case, self.test_found, self.type_id, self.unit)
 
         return _attributes
 

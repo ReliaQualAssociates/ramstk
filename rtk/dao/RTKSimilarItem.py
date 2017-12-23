@@ -11,11 +11,11 @@ The RTKSimilarItem Table
 """
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 # pylint: disable=R0902
@@ -29,9 +29,12 @@ class RTKSimilarItem(RTK_BASE):
     __tablename__ = 'rtk_similar_item'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column('fld_hardware_id', Integer,
-                         ForeignKey('rtk_hardware.fld_hardware_id'),
-                         primary_key=True, nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        ForeignKey('rtk_hardware.fld_hardware_id'),
+        primary_key=True,
+        nullable=False)
 
     change_description_1 = Column('fld_change_description_1', BLOB, default='')
     change_description_2 = Column('fld_change_description_2', BLOB, default='')
@@ -42,8 +45,8 @@ class RTKSimilarItem(RTK_BASE):
     change_description_7 = Column('fld_change_description_7', BLOB, default='')
     change_description_8 = Column('fld_change_description_8', BLOB, default='')
     change_description_9 = Column('fld_change_description_9', BLOB, default='')
-    change_description_10 = Column('fld_change_description_10', BLOB,
-                                   default='')
+    change_description_10 = Column(
+        'fld_change_description_10', BLOB, default='')
     change_factor_1 = Column('fld_change_factor_1', Float, default=1.0)
     change_factor_2 = Column('fld_change_factor_2', Float, default=1.0)
     change_factor_3 = Column('fld_change_factor_3', Float, default=1.0)

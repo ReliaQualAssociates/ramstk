@@ -12,30 +12,30 @@ Software Package Test Selection Matrix Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -94,48 +94,28 @@ class CSCITestSelection(gtk.ScrolledWindow):
                            display in the matrix.
     """
 
-    _lst_test_rankings = [[1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0,
-                           0, ''],
-                          [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0,
-                           0, ''],
-                          [0, 0, 1, 0, 0, 0, '16', '3', '2', '2', '-', '-', 0,
-                           0, ''],
-                          [0, 0, 0, 1, 0, 0, '32', '4', '3', '4', '2', '1', 0,
-                           0, ''],
-                          [0, 0, 0, 0, 1, 0, '58', '5', '1', '3', '1', '2', 0,
-                           0, ''],
-                          [0, 0, 0, 0, 0, 1, '44', '5', '5', '6', '3', '3', 0,
-                           0, ''],
-                          [1, 0, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0,
-                           0, ''],
-                          [0, 1, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0,
-                           0, ''],
-                          [1, 1, 0, 0, 0, 0, '-', '1', '1', '3', '-', '-', 0,
-                           0, ''],
-                          [0, 0, 1, 1, 0, 0, '-', '4', '6', '4', '7', '1', 0,
-                           0, ''],
-                          [0, 1, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0,
-                           0, ''],
-                          [1, 0, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0,
-                           0, ''],
-                          [0, 0, 1, 0, 0, 1, '-', '5', '3', '7', '10', '2', 0,
-                           0, ''],
-                          [1, 0, 0, 1, 0, 0, '-', '6', '10', '8', '7', '5', 0,
-                           0, ''],
-                          [0, 1, 0, 1, 0, 0, '-', '6', '9', '9', '7', '5', 0,
-                           0, ''],
-                          [0, 1, 1, 0, 1, 0, '-', '12', '12', '10', '3', '9',
-                           0, 0, ''],
-                          [0, 0, 0, 1, 1, 0, '-', '13', '12', '11', '1', '10',
-                           0, 0, ''],
-                          [1, 0, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0,
-                           0, ''],
-                          [0, 1, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0,
-                           0, ''],
-                          [0, 0, 0, 0, 1, 1, '-', '15', '11', '14', '1', '11',
-                           0, 0, ''],
-                          [0, 0, 0, 1, 0, 1, '-', '13', '2', '15', '6', '12',
-                           0, 0, '']]
+    _lst_test_rankings = [[
+        1, 0, 0, 0, 0, 0, '12', '1', '4', '1', '-', '-', 0, 0, ''
+    ], [0, 1, 0, 0, 0, 0, '18', '2', '6', '5', '-', '-', 0, 0,
+        ''], [0, 0, 1, 0, 0, 0, '16', '3', '2', '2', '-', '-', 0, 0, ''], [
+            0, 0, 0, 1, 0, 0, '32', '4', '3', '4', '2', '1', 0, 0, ''
+        ], [0, 0, 0, 0, 1, 0, '58', '5', '1', '3', '1', '2', 0, 0, ''], [
+            0, 0, 0, 0, 0, 1, '44', '5', '5', '6', '3', '3', 0, 0, ''
+        ], [1, 0, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''], [
+            0, 1, 1, 0, 0, 0, '-', '2', '7', '1', '-', '-', 0, 0, ''
+        ], [1, 1, 0, 0, 0, 0, '-', '1', '1', '3', '-', '-', 0, 0, ''], [
+            0, 0, 1, 1, 0, 0, '-', '4', '6', '4', '7', '1', 0, 0, ''
+        ], [0, 1, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''], [
+            1, 0, 0, 0, 1, 0, '-', '10', '14', '5', '3', '3', 0, 0, ''
+        ], [0, 0, 1, 0, 0, 1, '-', '5', '3', '7', '10', '2', 0, 0, ''], [
+            1, 0, 0, 1, 0, 0, '-', '6', '10', '8', '7', '5', 0, 0, ''
+        ], [0, 1, 0, 1, 0, 0, '-', '6', '9', '9', '7', '5', 0, 0, ''], [
+            0, 1, 1, 0, 1, 0, '-', '12', '12', '10', '3', '9', 0, 0, ''
+        ], [0, 0, 0, 1, 1, 0, '-', '13', '12', '11', '1', '10', 0, 0, ''], [
+            1, 0, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''
+        ], [0, 1, 0, 0, 0, 1, '-', '8', '3', '12', '10', '7', 0, 0, ''], [
+            0, 0, 0, 0, 1, 1, '-', '15', '11', '14', '1', '11', 0, 0, ''
+        ], [0, 0, 0, 1, 0, 1, '-', '13', '2', '15', '6', '12', 0, 0, '']]
 
     def __init__(self):
         """
@@ -169,26 +149,31 @@ class CSCITestSelection(gtk.ScrolledWindow):
         self._treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         # Create and load the Test Matrix for CSCI-level testing.
-        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_STRING)
+        _model = gtk.ListStore(
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_STRING)
         self._treeview.set_model(_model)
-        self._treeview.set_tooltip_text(_(u"Software module (CSCI) level test "
-                                          u"technique selection matrix."))
+        self._treeview.set_tooltip_text(
+            _(u"Software module (CSCI) level test "
+              u"technique selection matrix."))
 
-        _headings = [_(u"Error/Anomaly\nDetection"),
-                     _(u"Structure\nAnalysis &amp;\nDocumentation"),
-                     _(u"Code\nReviews"), _(u"Functional\nTesting"),
-                     _(u"Branch\nTesting"), _(u"Random\nTesting"),
-                     _(u"Stopping\nRule (Hours)"), _(u"Average\nEffort"),
-                     _(u"Average %\nErrors Found"),
-                     _(u"Detection\nEfficiency"),
-                     _(u"% Average\nCoverage"), _(u"Coverage\nEfficiency")]
+        _headings = [
+            _(u"Error/Anomaly\nDetection"),
+            _(u"Structure\nAnalysis &amp;\nDocumentation"),
+            _(u"Code\nReviews"),
+            _(u"Functional\nTesting"),
+            _(u"Branch\nTesting"),
+            _(u"Random\nTesting"),
+            _(u"Stopping\nRule (Hours)"),
+            _(u"Average\nEffort"),
+            _(u"Average %\nErrors Found"),
+            _(u"Detection\nEfficiency"),
+            _(u"% Average\nCoverage"),
+            _(u"Coverage\nEfficiency")
+        ]
 
         for i in range(len(_headings[:6])):
             _cell = gtk.CellRendererToggle()
@@ -199,8 +184,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup("<span weight='bold'>" +
-                              _headings[i] + "</span>")
+            _label.set_markup(
+                "<span weight='bold'>" + _headings[i] + "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -222,8 +207,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup("<span weight='bold'>" +
-                              _headings[i + 6] + "</span>")
+            _label.set_markup(
+                "<span weight='bold'>" + _headings[i + 6] + "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -244,9 +229,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_property('angle', 90)
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Recommended") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Recommended") + "</span>")
         _label.set_use_markup(True)
         _label.show_all()
         _column = gtk.TreeViewColumn()
@@ -269,9 +253,7 @@ class CSCITestSelection(gtk.ScrolledWindow):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_property('angle', 90)
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Selected") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Selected") + "</span>")
         _label.set_use_markup(True)
         _label.show_all()
         _column = gtk.TreeViewColumn()
@@ -343,7 +325,8 @@ class CSCITestSelection(gtk.ScrolledWindow):
             _selection = 1
         else:
             _selection = 0
-        self._software_model.lst_test_selection[int(path)][position - 12] = _selection
+        self._software_model.lst_test_selection[int(path)][position
+                                                           - 12] = _selection
 
         return False
 
@@ -361,51 +344,70 @@ class UnitTestSelection(gtk.ScrolledWindow):
                            display in the matrix.
     """
 
-    _lst_test_rankings = [[1, 0, 0, 0, 0, 0, '6', '2', '2', '1', '-', '-', 'L',
-                           'M', '', '', '', '', 'H', '', '', '', 0, 0, ''],
-                          [0, 1, 0, 0, 0, 0, '4', '1', '6', '2', '-', '-', '',
-                           'L', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 0, 1, 0, 0, 0, '8', '4', '1', '3', '-', '-', 'L',
-                           'H', '', 'L', 'H', '', 'L', 'M', '', 'L', 0, 0, ''],
-                          [0, 0, 0, 1, 0, 0, '16', '3', '4', '4', '2', '1',
-                           'L', 'L', '', 'L', 'H', '', '', 'H', '', 'L', 0, 0,
-                           ''],
-                          [0, 0, 0, 0, 1, 0, '29', '6', '3', '5', '1', '3',
-                           'L', 'M', '', '', 'H', 'L', '', 'H', '', 'L', 0, 0,
-                           ''],
-                          [0, 0, 0, 0, 0, 1, '22', '5', '5', '6', '2', '2',
-                           'L', '', 'L', '', 'M', 'L', '', 'M', '', 'L', 0, 0,
-                           ''],
-                          [1, 1, 0, 0, 0, 0, '-', '1', '9', '1', '-', '-', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [1, 0, 1, 0, 0, 0, '-', '3', '1', '2', '-', '-', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 1, 1, 0, 0, 0, '-', '2', '7', '3', '-', '-', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [1, 0, 0, 1, 0, 0, '-', '10', '2', '4', '7', '1', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 0, 1, 0, 0, 1, '-', '9', '4', '5', '7', '1', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [1, 0, 0, 0, 0, 1, '-', '5', '5', '6', '7', '1', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [1, 0, 0, 0, 1, 0, '-', '12', '3', '7', '3', '1', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 0, 1, 1, 0, 0, '-', '6', '6', '8', '7', '1', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 0, 0, 1, 0, 1, '-', '7', '10', '8', '6', '1', '',
-                           '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 1, 0, 1, 0, 0, '-', '8', '12', '10', '7', '1',
-                           '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 0, 0, 0, 1, 1, '-', '13', '11', '11', '1', '1',
-                           '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 1, 0, 0, 1, 0, '-', '11', '14', '12', '3', '1',
-                           '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 1, 0, 0, 0, 1, '-', '4', '15', '13', '7', '1',
-                           '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 0, 1, 0, 1, 0, '-', '15', '8', '14', '37', '11',
-                           '', '', '', '', '', '', '', '', '', '', 0, 0, ''],
-                          [0, 0, 0, 1, 1, 0, '-', '14', '13', '15', '1', '11',
-                           '', '', '', '', '', '', '', '', '', '', 0, 0, '']]
+    _lst_test_rankings = [[
+        1, 0, 0, 0, 0, 0, '6', '2', '2', '1', '-', '-', 'L', 'M', '', '', '',
+        '', 'H', '', '', '', 0, 0, ''
+    ], [
+        0, 1, 0, 0, 0, 0, '4', '1', '6', '2', '-', '-', '', 'L', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 0, 1, 0, 0, 0, '8', '4', '1', '3', '-', '-', 'L', 'H', '', 'L', 'H',
+        '', 'L', 'M', '', 'L', 0, 0, ''
+    ], [
+        0, 0, 0, 1, 0, 0, '16', '3', '4', '4', '2', '1', 'L', 'L', '', 'L',
+        'H', '', '', 'H', '', 'L', 0, 0, ''
+    ], [
+        0, 0, 0, 0, 1, 0, '29', '6', '3', '5', '1', '3', 'L', 'M', '', '', 'H',
+        'L', '', 'H', '', 'L', 0, 0, ''
+    ], [
+        0, 0, 0, 0, 0, 1, '22', '5', '5', '6', '2', '2', 'L', '', 'L', '', 'M',
+        'L', '', 'M', '', 'L', 0, 0, ''
+    ], [
+        1, 1, 0, 0, 0, 0, '-', '1', '9', '1', '-', '-', '', '', '', '', '', '',
+        '', '', '', '', 0, 0, ''
+    ], [
+        1, 0, 1, 0, 0, 0, '-', '3', '1', '2', '-', '-', '', '', '', '', '', '',
+        '', '', '', '', 0, 0, ''
+    ], [
+        0, 1, 1, 0, 0, 0, '-', '2', '7', '3', '-', '-', '', '', '', '', '', '',
+        '', '', '', '', 0, 0, ''
+    ], [
+        1, 0, 0, 1, 0, 0, '-', '10', '2', '4', '7', '1', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 0, 1, 0, 0, 1, '-', '9', '4', '5', '7', '1', '', '', '', '', '', '',
+        '', '', '', '', 0, 0, ''
+    ], [
+        1, 0, 0, 0, 0, 1, '-', '5', '5', '6', '7', '1', '', '', '', '', '', '',
+        '', '', '', '', 0, 0, ''
+    ], [
+        1, 0, 0, 0, 1, 0, '-', '12', '3', '7', '3', '1', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 0, 1, 1, 0, 0, '-', '6', '6', '8', '7', '1', '', '', '', '', '', '',
+        '', '', '', '', 0, 0, ''
+    ], [
+        0, 0, 0, 1, 0, 1, '-', '7', '10', '8', '6', '1', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 1, 0, 1, 0, 0, '-', '8', '12', '10', '7', '1', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 0, 0, 0, 1, 1, '-', '13', '11', '11', '1', '1', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 1, 0, 0, 1, 0, '-', '11', '14', '12', '3', '1', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 1, 0, 0, 0, 1, '-', '4', '15', '13', '7', '1', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 0, 1, 0, 1, 0, '-', '15', '8', '14', '37', '11', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ], [
+        0, 0, 0, 1, 1, 0, '-', '14', '13', '15', '1', '11', '', '', '', '', '',
+        '', '', '', '', '', 0, 0, ''
+    ]]
 
     def __init__(self):
         """
@@ -440,40 +442,45 @@ class UnitTestSelection(gtk.ScrolledWindow):
         self._treeview.set_grid_lines(gtk.TREE_VIEW_GRID_LINES_BOTH)
 
         # Create and load the Test Matrix for unit-level testing.
-        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_STRING,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_STRING)
+        _model = gtk.ListStore(
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_STRING, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_STRING)
         self._treeview.set_model(_model)
-        self._treeview.set_tooltip_text(_(u"Software unit-level test "
-                                          u"technique selection matrix."))
+        self._treeview.set_tooltip_text(
+            _(u"Software unit-level test "
+              u"technique selection matrix."))
 
-        _headings = [_(u"Error/Anomaly\nDetection"),
-                     _(u"Structure\nAnalysis &amp;\nDocumentation"),
-                     _(u"Code\nReviews"), _(u"Functional\nTesting"),
-                     _(u"Branch\nTesting"), _(u"Random\nTesting"),
-                     _(u"Stopping\nRule (Hours)"), _(u"Average\nEffort"),
-                     _(u"Average %\nErrors Found"),
-                     _(u"Detection\nEfficiency"),
-                     _(u"% Average\nCoverage"),
-                     _(u"Coverage\nEfficiency"),
-                     _(u"Computational\nErrors"),
-                     _(u"Logic\nErrors"), _(u"Data\nInput\nErrors"),
-                     _(u"Data\nVerification\nErrors"),
-                     _(u"Data\nHandling\nErrors"),
-                     _(u"Data\nOutput\nErrors"),
-                     _(u"Data\nDefinition\nErrors"),
-                     _(u"Interface\nErrors"),
-                     _(u"Database\nErrors"), _(u"Other\nErrors")]
+        _headings = [
+            _(u"Error/Anomaly\nDetection"),
+            _(u"Structure\nAnalysis &amp;\nDocumentation"),
+            _(u"Code\nReviews"),
+            _(u"Functional\nTesting"),
+            _(u"Branch\nTesting"),
+            _(u"Random\nTesting"),
+            _(u"Stopping\nRule (Hours)"),
+            _(u"Average\nEffort"),
+            _(u"Average %\nErrors Found"),
+            _(u"Detection\nEfficiency"),
+            _(u"% Average\nCoverage"),
+            _(u"Coverage\nEfficiency"),
+            _(u"Computational\nErrors"),
+            _(u"Logic\nErrors"),
+            _(u"Data\nInput\nErrors"),
+            _(u"Data\nVerification\nErrors"),
+            _(u"Data\nHandling\nErrors"),
+            _(u"Data\nOutput\nErrors"),
+            _(u"Data\nDefinition\nErrors"),
+            _(u"Interface\nErrors"),
+            _(u"Database\nErrors"),
+            _(u"Other\nErrors")
+        ]
 
         for i in range(len(_headings[:6])):
             _cell = gtk.CellRendererToggle()
@@ -482,8 +489,8 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup("<span weight='bold'>" +
-                              _headings[i] + "</span>")
+            _label.set_markup(
+                "<span weight='bold'>" + _headings[i] + "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -503,8 +510,8 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup("<span weight='bold'>" +
-                              _headings[i + 6] + "</span>")
+            _label.set_markup(
+                "<span weight='bold'>" + _headings[i + 6] + "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -524,8 +531,8 @@ class UnitTestSelection(gtk.ScrolledWindow):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_property('angle', 90)
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Recommended") + "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Recommended") + "</span>")
         _label.set_use_markup(True)
         _label.show_all()
         _column = gtk.TreeViewColumn()
@@ -546,8 +553,7 @@ class UnitTestSelection(gtk.ScrolledWindow):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_property('angle', 90)
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Selected") + "</span>")
+        _label.set_markup("<span weight='bold'>" + _(u"Selected") + "</span>")
         _label.set_use_markup(True)
         _label.show_all()
         _column = gtk.TreeViewColumn()
@@ -618,6 +624,7 @@ class UnitTestSelection(gtk.ScrolledWindow):
             _selection = 1
         else:
             _selection = 0
-        self._software_model.lst_test_selection[int(path)][position - 22] = _selection
+        self._software_model.lst_test_selection[int(path)][position
+                                                           - 22] = _selection
 
         return False

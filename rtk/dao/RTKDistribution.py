@@ -10,11 +10,11 @@ The RTKDistribution Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKDistribution(RTK_BASE):
@@ -25,10 +25,14 @@ class RTKDistribution(RTK_BASE):
     __tablename__ = 'rtk_distribution'
     __table_args__ = {'extend_existing': True}
 
-    distribution_id = Column('fld_distribution_id', Integer, primary_key=True,
-                             autoincrement=True, nullable=False)
-    description = Column('fld_description', String(512),
-                         default='Distribution Description')
+    distribution_id = Column(
+        'fld_distribution_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    description = Column(
+        'fld_description', String(512), default='Distribution Description')
     dist_type = Column('fld_type', Integer, default='unknown')
 
     def get_attributes(self):
@@ -59,8 +63,8 @@ class RTKDistribution(RTK_BASE):
             format(self.distribution_id)
 
         try:
-            self.description = str(none_to_default(attributes[0],
-                                                   'Distribution Description'))
+            self.description = str(
+                none_to_default(attributes[0], 'Distribution Description'))
             self.dist_type = str(none_to_default(attributes[1], 'unknown'))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

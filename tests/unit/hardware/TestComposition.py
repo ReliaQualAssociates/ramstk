@@ -13,7 +13,10 @@ algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -57,18 +60,18 @@ class TestCompositionModel(unittest.TestCase):
         # Verify the Carbon Composition resistor class was properly
         # initialized.
         self.assertEqual(self.DUT._lst_piR, [1.0, 1.1, 1.6, 2.5])
-        self.assertEqual(self.DUT._lst_piE, [1.0, 3.0, 8.0, 5.0, 13.0, 4.0,
-                                             5.0, 7.0, 11.0, 19.0, 0.5, 11.0,
-                                             27.0, 490.0])
-        self.assertEqual(self.DUT._lst_piQ_count, [0.03, 0.1, 0.3, 1.0, 3.0,
-                                                   10.0])
-        self.assertEqual(self.DUT._lst_piQ_stress, [0.03, 0.1, 0.3, 1.0, 5.0,
-                                                    15.0])
-        self.assertEqual(self.DUT._lst_lambdab_count, [0.0005, 0.0022, 0.0071,
-                                                       0.0037, 0.012, 0.0052,
-                                                       0.0065, 0.016, 0.025,
-                                                       0.025, 0.00025, 0.0098,
-                                                       0.035, 0.36])
+        self.assertEqual(self.DUT._lst_piE, [
+            1.0, 3.0, 8.0, 5.0, 13.0, 4.0, 5.0, 7.0, 11.0, 19.0, 0.5, 11.0,
+            27.0, 490.0
+        ])
+        self.assertEqual(self.DUT._lst_piQ_count,
+                         [0.03, 0.1, 0.3, 1.0, 3.0, 10.0])
+        self.assertEqual(self.DUT._lst_piQ_stress,
+                         [0.03, 0.1, 0.3, 1.0, 5.0, 15.0])
+        self.assertEqual(self.DUT._lst_lambdab_count, [
+            0.0005, 0.0022, 0.0071, 0.0037, 0.012, 0.0052, 0.0065, 0.016,
+            0.025, 0.025, 0.00025, 0.0098, 0.035, 0.36
+        ])
         self.assertEqual(self.DUT.subcategory, 25)
 
     @attr(all=True, unit=True)
@@ -225,16 +228,17 @@ class TestVarCompositionModel(unittest.TestCase):
 
         # Verify the VarComposition resistor class was properly
         # initialized.
-        self.assertEqual(self.DUT._lst_piE, [1.0, 2.0, 19.0, 8.0, 29.0, 40.0,
-                                             65.0, 48.0, 78.0, 46.0, 0.5, 25.0,
-                                             66.0, 1200.0])
-        self.assertEqual(self.DUT._lst_piQ_count, [0.03, 0.1, 0.3, 1.0, 3.0,
-                                                   10.0])
+        self.assertEqual(self.DUT._lst_piE, [
+            1.0, 2.0, 19.0, 8.0, 29.0, 40.0, 65.0, 48.0, 78.0, 46.0, 0.5, 25.0,
+            66.0, 1200.0
+        ])
+        self.assertEqual(self.DUT._lst_piQ_count,
+                         [0.03, 0.1, 0.3, 1.0, 3.0, 10.0])
         self.assertEqual(self.DUT._lst_piQ_stress, [2.5, 5.0])
-        self.assertEqual(self.DUT._lst_lambdab_count, [0.05, 0.11, 1.1, 0.45,
-                                                       1.7, 2.8, 4.6, 4.6, 7.5,
-                                                       3.3, 0.025, 1.5, 4.7,
-                                                       67.0])
+        self.assertEqual(self.DUT._lst_lambdab_count, [
+            0.05, 0.11, 1.1, 0.45, 1.7, 2.8, 4.6, 4.6, 7.5, 3.3, 0.025, 1.5,
+            4.7, 67.0
+        ])
         self.assertEqual(self.DUT.subcategory, 38)
         self.assertEqual(self.DUT.n_taps, 3)
         self.assertEqual(self.DUT.piTAPS, 0.0)
@@ -247,22 +251,19 @@ class TestVarCompositionModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.75, 0.3, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3, 5)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.75, 0.3, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3, 5)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.n_taps, 5)
         self.assertEqual(self.DUT.piTAPS, 0.75)
@@ -275,22 +276,19 @@ class TestVarCompositionModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3)
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -300,22 +298,19 @@ class TestVarCompositionModel(unittest.TestCase):
         """
 
         _values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                   0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
-                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                   'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 155.0, -25.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0,
-                   0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0, 1, 0.0,
-                   0, 0, 0.0, 30.0, 0.0, 358.0,
-                   1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1, 8.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 3, '')
+                   'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0, 0,
+                   'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN', 0,
+                   'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0, 'Remarks',
+                   0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 1.0, 155.0, -25.0,
+                   1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0,
+                   0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, '', 0.0,
+                   0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 1, 0.0, 0, 0,
+                   0.0, 30.0, 0.0, 358.0, 1.0, 125.0, 0.01, 2.0, 1.0, 1.0, 0.1,
+                   8.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 3, '')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -326,14 +321,12 @@ class TestVarCompositionModel(unittest.TestCase):
 
         _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
                    '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
-                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014,
-                   1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0,
-                   0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1,
-                   0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0,
-                   0, 0,
-                   0.0, 30.0, 0.0, 30.0,
-                   0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 3, 0.0, 0.0)
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
+                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, 0, 0, 0.0, 30.0,
+                   0.0, 30.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, '', 3, 0.0, 0.0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 

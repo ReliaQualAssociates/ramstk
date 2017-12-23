@@ -158,7 +158,6 @@ class RTKBaseMatrix(object):
             gtk.CellRendererText(),
         ], '')
 
-
         try:
             # pylint: disable=undefined-loop-variable
             _column.set_attributes(_cell, text=i + j + 1)

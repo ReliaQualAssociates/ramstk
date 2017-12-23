@@ -10,12 +10,12 @@ The RTKCategory Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKCategory(RTK_BASE):
@@ -30,19 +30,23 @@ class RTKCategory(RTK_BASE):
     __tablename__ = 'rtk_category'
     __table_args__ = {'extend_existing': True}
 
-    category_id = Column('fld_category_id', Integer, primary_key=True,
-                         autoincrement=True, nullable=False)
+    category_id = Column(
+        'fld_category_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     name = Column('fld_name', String(256), default='Category Name')
-    description = Column('fld_description', String(512),
-                         default='Category Description')
+    description = Column(
+        'fld_description', String(512), default='Category Description')
     cat_type = Column('fld_type', String(256), default='unknown')
     value = Column('fld_value', Integer, default=1)
 
     # Define the relationships to other tables in the RTK Program database.
-    subcategory = relationship('RTKSubCategory', back_populates='category',
-                               cascade='delete')
-    mode = relationship('RTKFailureMode', back_populates='category',
-                        cascade='delete')
+    subcategory = relationship(
+        'RTKSubCategory', back_populates='category', cascade='delete')
+    mode = relationship(
+        'RTKFailureMode', back_populates='category', cascade='delete')
 
     def get_attributes(self):
         """
@@ -74,8 +78,8 @@ class RTKCategory(RTK_BASE):
 
         try:
             self.name = str(none_to_default(attributes[0], 'Category Name'))
-            self.description = str(none_to_default(attributes[1],
-                                                   'Category Description'))
+            self.description = str(
+                none_to_default(attributes[1], 'Category Description'))
             self.cat_type = str(none_to_default(attributes[2], 'unknown'))
             self.value = int(none_to_default(attributes[3], 1))
         except IndexError as _err:

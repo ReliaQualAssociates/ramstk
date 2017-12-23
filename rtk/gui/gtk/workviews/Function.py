@@ -120,8 +120,8 @@ class GeneralData(RTKWorkView):
 
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" + _msg[1]
-                        + "\n\n").format(self._function_id)
+                        u"Function {0:d}. \n\n\t" + _msg[0] + "\n\t" +
+                        _msg[1] + "\n\n").format(self._function_id)
             _error_dialog = rtk.RTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:

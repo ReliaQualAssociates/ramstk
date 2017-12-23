@@ -38,7 +38,10 @@ This is the test class for testing the Physics of Failure (PoF) class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -80,8 +83,7 @@ class TestPoFController(unittest.TestCase):
         (TestPoF) request_pof raises ParentError for None input
         """
 
-        self.assertRaises(ParentError, self.DUT.request_pof, self._dao,
-                          None)
+        self.assertRaises(ParentError, self.DUT.request_pof, self._dao, None)
 
     @attr(all=True, integration=True)
     def test02_request_pof_parent_with_no_mechanisms(self):
@@ -128,8 +130,7 @@ class TestPoFController(unittest.TestCase):
 
         self.DUT.request_pof(self._dao, 0)
 
-        self.assertEqual(self.DUT.delete_mechanism(0, 1000),
-                         (True, 60))
+        self.assertEqual(self.DUT.delete_mechanism(0, 1000), (True, 60))
 
     @attr(all=True, integration=True)
     def test07_save_mechanism(self):
@@ -167,8 +168,8 @@ class TestPoFController(unittest.TestCase):
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
         (_results, _error_code, _last_id) = self.DUT.add_load(0, _mechanism_id)
 
-        self.assertEqual(self.DUT.delete_load(0, _mechanism_id, _last_id),
-                         (True, 0))
+        self.assertEqual(
+            self.DUT.delete_load(0, _mechanism_id, _last_id), (True, 0))
 
     @attr(all=True, integration=True)
     def test10_delete_non_existent_load(self):
@@ -180,8 +181,8 @@ class TestPoFController(unittest.TestCase):
         _n = max(self.DUT.dicPoF[0].dicMechanisms.keys())
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
 
-        self.assertEqual(self.DUT.delete_load(0, _mechanism_id, 1000),
-                         (True, 60))
+        self.assertEqual(
+            self.DUT.delete_load(0, _mechanism_id, 1000), (True, 60))
 
     @attr(all=True, integration=True)
     def test11_save_load(self):
@@ -192,7 +193,8 @@ class TestPoFController(unittest.TestCase):
         self.DUT.request_pof(self._dao, 0)
         _n = max(self.DUT.dicPoF[0].dicMechanisms.keys())
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
-        _n = max(self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads.keys())
+        _n = max(
+            self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads.keys())
         _load = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_n]
         _values = (10, 0, 'Load Description', 2, 5)
         _load.set_attributes(_values)
@@ -207,9 +209,7 @@ class TestPoFController(unittest.TestCase):
 
         self.DUT.request_pof(self._dao, 0)
 
-        (_results,
-         _error_code,
-         _last_id) = self.DUT.add_stress(0, 4, 5)
+        (_results, _error_code, _last_id) = self.DUT.add_stress(0, 4, 5)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, integration=True)
@@ -222,13 +222,14 @@ class TestPoFController(unittest.TestCase):
         _n = max(self.DUT.dicPoF[0].dicMechanisms.keys())
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
         _n = max(self.DUT.dicPoF[0].dicMechanisms[_n].dicLoads.keys())
-        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_n].load_id
-        (_results,
-         _error_code,
-         _last_id) = self.DUT.add_stress(0, _mechanism_id, _load_id)
+        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _n].load_id
+        (_results, _error_code, _last_id) = self.DUT.add_stress(
+            0, _mechanism_id, _load_id)
 
-        self.assertEqual(self.DUT.delete_stress(0, _mechanism_id, _load_id,
-                                                _last_id), (True, 0))
+        self.assertEqual(
+            self.DUT.delete_stress(0, _mechanism_id, _load_id, _last_id),
+            (True, 0))
 
     @attr(all=True, integration=True)
     def test14_delete_non_existent_stress(self):
@@ -240,10 +241,12 @@ class TestPoFController(unittest.TestCase):
         _n = max(self.DUT.dicPoF[0].dicMechanisms.keys())
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
         _n = max(self.DUT.dicPoF[0].dicMechanisms[_n].dicLoads.keys())
-        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_n].load_id
+        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _n].load_id
 
-        self.assertEqual(self.DUT.delete_stress(0, _mechanism_id, _load_id,
-                                                1000), (True, 60))
+        self.assertEqual(
+            self.DUT.delete_stress(0, _mechanism_id, _load_id, 1000),
+            (True, 60))
 
     @attr(all=True, integration=True)
     def test15_save_stress(self):
@@ -255,12 +258,13 @@ class TestPoFController(unittest.TestCase):
         _n = max(self.DUT.dicPoF[0].dicMechanisms.keys())
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
         _n = max(self.DUT.dicPoF[0].dicMechanisms[_n].dicLoads.keys())
-        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_n].load_id
+        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _n].load_id
 
-        (_results,
-         _error_code,
-         _last_id) = self.DUT.add_stress(0, _mechanism_id, _load_id)
-        _stress = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_load_id].dicStresses[_last_id]
+        (_results, _error_code, _last_id) = self.DUT.add_stress(
+            0, _mechanism_id, _load_id)
+        _stress = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _load_id].dicStresses[_last_id]
 
         _values = (3, _last_id, 'Stress Description', 2, 3, 'Remarks')
         _stress.set_attributes(_values)
@@ -275,8 +279,7 @@ class TestPoFController(unittest.TestCase):
 
         self.DUT.request_pof(self._dao, 0)
 
-        (_results, _error_code,
-         _last_id) = self.DUT.add_method(0, 1, 0, 0)
+        (_results, _error_code, _last_id) = self.DUT.add_method(0, 1, 0, 0)
         self.assertEqual(_error_code, 0)
 
     @attr(all=False, integration=False)
@@ -289,18 +292,19 @@ class TestPoFController(unittest.TestCase):
         _n = max(self.DUT.dicPoF[0].dicMechanisms.keys())
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
         _n = max(self.DUT.dicPoF[0].dicMechanisms[_n].dicLoads.keys())
-        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_n].load_id
-        _n = max(self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_load_id].dicStresses.keys())
-        _stress_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_load_id].dicStresses[_n].stress_id
+        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _n].load_id
+        _n = max(self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _load_id].dicStresses.keys())
+        _stress_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _load_id].dicStresses[_n].stress_id
 
-        (_results,
-         _error_code,
-         _last_id) = self.DUT.add_method(0, _mechanism_id,
-                                         _load_id, _stress_id)
+        (_results, _error_code, _last_id) = self.DUT.add_method(
+            0, _mechanism_id, _load_id, _stress_id)
 
-        self.assertEqual(self.DUT.delete_method(0, _mechanism_id, _load_id,
-                                                _stress_id, _last_id),
-                         (True, 0))
+        self.assertEqual(
+            self.DUT.delete_method(0, _mechanism_id, _load_id, _stress_id,
+                                   _last_id), (True, 0))
 
     @attr(all=True, integration=True)
     def test19_delete_non_existent_method(self):
@@ -312,13 +316,16 @@ class TestPoFController(unittest.TestCase):
         _n = max(self.DUT.dicPoF[0].dicMechanisms.keys())
         _mechanism_id = self.DUT.dicPoF[0].dicMechanisms[_n].mechanism_id
         _n = max(self.DUT.dicPoF[0].dicMechanisms[_n].dicLoads.keys())
-        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_n].load_id
-        _n = max(self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_load_id].dicStresses.keys())
-        _stress_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[_load_id].dicStresses[_n].stress_id
+        _load_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _n].load_id
+        _n = max(self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _load_id].dicStresses.keys())
+        _stress_id = self.DUT.dicPoF[0].dicMechanisms[_mechanism_id].dicLoads[
+            _load_id].dicStresses[_n].stress_id
 
-        self.assertEqual(self.DUT.delete_method(0, _mechanism_id, _load_id,
-                                                _stress_id, 1000),
-                         (True, 60))
+        self.assertEqual(
+            self.DUT.delete_method(0, _mechanism_id, _load_id, _stress_id,
+                                   1000), (True, 60))
 
     @attr(all=False, integration=True)
     def test20_save_method(self):
@@ -328,7 +335,8 @@ class TestPoFController(unittest.TestCase):
 
         self.DUT.request_pof(self._dao, 0)
 
-        _method = self.DUT.dicPoF[0].dicMechanisms[1].dicLoads[1].dicStresses[3].dicMethods[0]
+        _method = self.DUT.dicPoF[0].dicMechanisms[1].dicLoads[1].dicStresses[
+            3].dicMethods[0]
 
         _values = (3, 17, 'Test Description', 'Test Boundary Conditions',
                    'Test Remarks')

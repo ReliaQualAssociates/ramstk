@@ -12,30 +12,30 @@ Non-Homogoneous Poisson Process Calculations Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import module for NLS support.
@@ -44,7 +44,7 @@ import gettext
 # Import modules for mathematics support.
 import numpy as np
 from scipy.optimize import fsolve
-from scipy.stats import t                   # pylint: disable=E0611
+from scipy.stats import t  # pylint: disable=E0611
 
 # Import other RTK modules.
 try:
@@ -72,7 +72,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 _ = gettext.gettext
 
 
-def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   # pylint: disable=C0103, R0913, R0914
+def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):  # pylint: disable=C0103, R0913, R0914
     """
     Function to estimate the parameters (alpha and beta) of the NHPP power law
     model.  The NHPP power law model used in RTK is:
@@ -100,7 +100,7 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
              [_beta_lower, _beta_hat, _beta_upper]
     :rtype: tuple of lists
     """
-# TODO: Consider re-writing power_law; current McCabe complexity metric=10.
+    # TODO: Consider re-writing power_law; current McCabe complexity metric=10.
     # Initialize local variables.
     _typeii = False
 
@@ -126,39 +126,36 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
     else:
         _N = sum(F) - 2
 
+
 # TODO: Add support for one-sided bounds.
-    if fitmeth == 1:                        # MLE
+    if fitmeth == 1:  # MLE
         # Estimate the Crow-AMASAA parameters using exact failure time data.
         _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(F, X, t_star)
 
-        if confmeth == 1:                   # Crow bounds.
+        if confmeth == 1:  # Crow bounds.
             # Calculate the bounding values for the alpha (scale) parameter.
-            (_alpha_lower,
-             _alpha_upper) = calculate_crow_bounds(_N, t_star, _alpha_hat,
-                                                   _beta_hat, alpha, 2)
+            (_alpha_lower, _alpha_upper) = calculate_crow_bounds(
+                _N, t_star, _alpha_hat, _beta_hat, alpha, 2)
 
             # Calculate the bounding values for the beta (shape) parameter.
-            (_beta_lower,
-             _beta_upper) = calculate_crow_bounds(_N, t_star, _alpha_hat,
-                                                  _beta_hat, alpha, 1)
+            (_beta_lower, _beta_upper) = calculate_crow_bounds(
+                _N, t_star, _alpha_hat, _beta_hat, alpha, 1)
 
-        elif confmeth == 3:                 # Fisher matrix bounds.
+        elif confmeth == 3:  # Fisher matrix bounds.
             # Calculate the variance-covariance matrix for the NHPP - Power Law
             # parameters.
-            _var_covar = calculate_variance_covariance(sum(F), t_star,
-                                                       _alpha_hat, _beta_hat)
+            _var_covar = calculate_variance_covariance(
+                sum(F), t_star, _alpha_hat, _beta_hat)
 
             # Calculate the bounding values for the alpha (scale) parameter.
-            (_alpha_lower,
-             _alpha_upper) = calculate_fisher_bounds(_alpha_hat,
-                                                     _var_covar[0][0], alpha)
+            (_alpha_lower, _alpha_upper) = calculate_fisher_bounds(
+                _alpha_hat, _var_covar[0][0], alpha)
 
             # Calculate the bounding values for the beta (shape) parameter.
-            (_beta_lower,
-             _beta_upper) = calculate_fisher_bounds(_beta_hat,
-                                                    _var_covar[1][1], alpha)
+            (_beta_lower, _beta_upper) = calculate_fisher_bounds(
+                _beta_hat, _var_covar[1][1], alpha)
 
-    elif fitmeth == 2:                      # Regression
+    elif fitmeth == 2:  # Regression
         # Estimate the Duane parameters and transform to the NHPP - Power Law
         # parameters.  Parameters are returned scale, shape.
         _b_hat, _a_hat = calculate_duane_parameters(F, X)
@@ -172,8 +169,8 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
         _beta_hat = 1.0 - _a_hat
 
         # Calculate the standard errors on the parameter estimates.
-        _se_beta, _se_lnb = calculate_duane_standard_error(F, X, _a_hat,
-                                                           _b_hat)
+        _se_beta, _se_lnb = calculate_duane_standard_error(
+            F, X, _a_hat, _b_hat)
 
         # Calculate the bounding values for the beta (shape) parameter.
         try:
@@ -193,7 +190,7 @@ def power_law(F, X, confmeth, fitmeth=1, conftype=3, alpha=0.75, t_star=0.0):   
             [_beta_lower, _beta_hat, _beta_upper])
 
 
-def loglinear(F, X, confmeth, conftype=1, alpha=0.75, t_star=0.0):   # pylint: disable=C0103
+def loglinear(F, X, confmeth, conftype=1, alpha=0.75, t_star=0.0):  # pylint: disable=C0103
     """
     Function to estimate the parameters (gamma0 and gamma1) of the NHPP
     loglinear model.  There is no regression function for this model.
@@ -214,7 +211,7 @@ def loglinear(F, X, confmeth, conftype=1, alpha=0.75, t_star=0.0):   # pylint: d
     """
 
     # Define the function that will be set equal to zero and solved for gamma1.
-    def _gamma1(gamma1, T, r, Ta):          # pylint: disable=C0103
+    def _gamma1(gamma1, T, r, Ta):  # pylint: disable=C0103
         """
         Function for estimating the gamma1 value.
 
@@ -267,10 +264,10 @@ def loglinear(F, X, confmeth, conftype=1, alpha=0.75, t_star=0.0):   # pylint: d
     _g1[1] = fsolve(_gamma1, 0.001, args=(_T, _N, t_star))[0]
     _g0[1] = np.log((_N * _g1[1]) / (np.exp(_g1[1] * t_star) - 1.0))
 
-# TODO: Add support for one-sided bounds.
+    # TODO: Add support for one-sided bounds.
     #if confmeth == 1:                       # Crow bounds.
 
     #elif confmeth == 3:                     # Fisher matrix bounds.
 
     print _g0, _g1
-    return(_g0, _g1)
+    return (_g0, _g1)

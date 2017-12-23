@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKOpStress module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,7 +37,7 @@ class TestRTKOpStress(unittest.TestCase):
     Class for testing the RTKOpStress class.
     """
 
-    _attributes =(1, 1, 'Test Op Stress', 0, 0, '')
+    _attributes = (1, 1, 'Test Op Stress', 0, 0, '')
 
     def setUp(self):
         """

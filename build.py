@@ -15,11 +15,13 @@ use_plugin("python.sphinx")
 name = 'The Reliability ToolKit (RTK)'
 version = '2016.1'
 
-authors = [Author('Andrew "weibullguy" Rowland',
-                  'andrew.rowland@reliaqual.com')]
+authors = [
+    Author('Andrew "weibullguy" Rowland', 'andrew.rowland@reliaqual.com')
+]
 url = 'http://www.reliaqual.com/rtk'
 description = 'RTK is a suite of tools for performing and documenting RAMS \
                analyses.'
+
 license = 'Proprietary'
 summary = 'RAMS analysis tool'
 
@@ -51,7 +53,8 @@ def set_properties(project):
     project.set_property("nose_cover-min-percentage", 45)
     project.set_property("nose_attr", "unit=True")
     project.set_property("nose_with-html", True)
-    project.set_property("nose_html-file", "tests/_test_results/nosetests.html")
+    project.set_property("nose_html-file",
+                         "tests/_test_results/nosetests.html")
 
     project.set_property("sphinx_config_path", "docs/")
     project.set_property("sphinx_source_dir", "docs/source/")

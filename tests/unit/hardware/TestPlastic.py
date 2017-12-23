@@ -12,7 +12,10 @@ This is the test class for testing Plastic capacitor module algorithms and model
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -53,14 +56,15 @@ class TestPlasticFilmModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Plastic Button capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0,
-                                         11.0, 20.0, 20.0, 0.5, 11.0, 29.0,
-                                         530.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 11.0, 20.0, 20.0, 0.5, 11.0,
+            29.0, 530.0
+        ])
         self.assertEqual(self.DUT._piQ, [0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0021, 0.0042, 0.017,
-                                                   0.010, 0.030, 0.0068, 0.013,
-                                                   0.026, 0.048, 0.044, 0.0010,
-                                                   0.023, 0.063, 1.1])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0021, 0.0042, 0.017, 0.010, 0.030, 0.0068, 0.013, 0.026, 0.048,
+            0.044, 0.0010, 0.023, 0.063, 1.1
+        ])
         self.assertEqual(self.DUT.subcategory, 42)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -277,14 +281,15 @@ class TestPlasticPlasticModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Plastic capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 10.0, 5.0, 16.0, 6.0, 11.0,
-                                         18.0, 30.0, 23.0, 0.5, 13.0, 34.0,
-                                         610.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 10.0, 5.0, 16.0, 6.0, 11.0, 18.0, 30.0, 23.0, 0.5, 13.0,
+            34.0, 610.0
+        ])
         self.assertEqual(self.DUT._piQ, [0.03, 0.1, 0.3, 1.0, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0041, 0.0083, 0.042,
-                                                   0.021, 0.067, 0.026, 0.048,
-                                                   0.086, 0.14, 0.10, 0.0020,
-                                                   0.054, 0.15, 2.5])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0041, 0.0083, 0.042, 0.021, 0.067, 0.026, 0.048, 0.086, 0.14,
+            0.10, 0.0020, 0.054, 0.15, 2.5
+        ])
         self.assertEqual(self.DUT.subcategory, 44)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -422,14 +427,15 @@ class TestSuperMetallizedPlasticModel(unittest.TestCase):
 
         # Verify the Super-Metallized Plastic capacitor class was properly
         # initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 4.0, 8.0, 5.0, 14.0, 4.0, 6.0,
-                                         13.0, 20.0, 20.0, 0.5, 11.0, 29.0,
-                                         530.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 4.0, 8.0, 5.0, 14.0, 4.0, 6.0, 13.0, 20.0, 20.0, 0.5, 11.0,
+            29.0, 530.0
+        ])
         self.assertEqual(self.DUT._piQ, [0.02, 0.1, 0.3, 1.0, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0023, 0.0092, 0.019,
-                                                   0.012, 0.033, 0.0096, 0.014,
-                                                   0.034, 0.053, 0.048, 0.0011,
-                                                   0.026, 0.07, 1.2])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0023, 0.0092, 0.019, 0.012, 0.033, 0.0096, 0.014, 0.034, 0.053,
+            0.048, 0.0011, 0.026, 0.07, 1.2
+        ])
         self.assertEqual(self.DUT.subcategory, 45)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)

@@ -16,30 +16,30 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -81,6 +81,7 @@ except locale.Error:
 import gettext
 _ = gettext.gettext
 
+
 # TODO: Move this to the Survival class.
 class AssignMTBFResults(object):
     """
@@ -101,8 +102,9 @@ class AssignMTBFResults(object):
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_(u"RTK Survival Analysis Results Assignment "
-                                   u"Assistant"))
+        self.assistant.set_title(
+            _(u"RTK Survival Analysis Results Assignment "
+              u"Assistant"))
         self.assistant.connect('apply', self._assign)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
@@ -130,9 +132,8 @@ class AssignMTBFResults(object):
                  INNER JOIN tbl_revisions AS t2 \
                  WHERE t1.fld_revision_id=t2.fld_revision_id \
                  ORDER BY t1.fld_revision_id ASC"
-        results = self._app.DB.execute_query(query,
-                                             None,
-                                             self._app.ProgCnx)
+
+        results = self._app.DB.execute_query(query, None, self._app.ProgCnx)
 
         n_assemblies = len(results)
 
@@ -186,17 +187,19 @@ class AssignMTBFResults(object):
 
         self.assistant.append_page(frame)
         self.assistant.set_page_type(frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(frame, _(u"Select Assembly to Assign "
-                                               u"Results"))
+        self.assistant.set_page_title(frame,
+                                      _(u"Select Assembly to Assign "
+                                        u"Results"))
         self.assistant.set_page_complete(frame, True)
 
         # Create a page to select whether or not to assign the decomposed
         # results to the sub-assemblies.
         fixed = gtk.Fixed()
 
-        self.optSubAssembly = _widg.make_check_button(_(u"Assign decomposed "
-                                                        u"results to "
-                                                        u"subassemblies"))
+        self.optSubAssembly = _widg.make_check_button(
+            _(u"Assign decomposed "
+              u"results to "
+              u"subassemblies"))
         fixed.put(self.optSubAssembly, 5, 5)
 
         frame = _widg.make_frame(label=_(""))
@@ -215,8 +218,7 @@ class AssignMTBFResults(object):
         label = _widg.make_label(_text_, width=-1, height=-1, wrap=True)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONFIRM)
         self.assistant.set_page_title(fixed, _(u"Assign Results"))
         self.assistant.set_page_complete(fixed, True)
 
@@ -250,13 +252,12 @@ class AssignMTBFResults(object):
                             fld_failure_rate_active=%f, \
                             fld_failure_rate_predicted=%f \
                         WHERE fld_assembly_id=%d"
+
         _query_ = _base_query_ % (_mtbf_, _mtbfll_, _mtbful_, _fr_, _frll_,
                                   _frul_, _mtbf_, _fr_, _fr_,
                                   model.get_value(row, 2))
-        self._app.DB.execute_query(_query_,
-                                   None,
-                                   self._app.ProgCnx,
-                                   commit=True)
+        self._app.DB.execute_query(
+            _query_, None, self._app.ProgCnx, commit=True)
 
         # Create a dictionary to hold the assembly ID of the assemblies for the
         # revision selected to recieve the results.  The key is the noun name
@@ -268,8 +269,7 @@ class AssignMTBFResults(object):
             _query_ = "SELECT fld_revision_id \
                        FROM tbl_system \
                        WHERE fld_assembly_id=%d" % model.get_value(row, 2)
-            _revision_id_ = self._app.DB.execute_query(_query_,
-                                                       None,
+            _revision_id_ = self._app.DB.execute_query(_query_, None,
                                                        self._app.ProgCnx)
             _revision_id_ = _revision_id_[0][0]
 
@@ -278,8 +278,7 @@ class AssignMTBFResults(object):
             _query_ = "SELECT fld_name, fld_assembly_id \
                        FROM tbl_system \
                        WHERE fld_revision_id=%d" % _revision_id_
-            _results_ = self._app.DB.execute_query(_query_,
-                                                   None,
+            _results_ = self._app.DB.execute_query(_query_, None,
                                                    self._app.ProgCnx)
             for i in range(len(_results_)):
                 _assembly_id_[_results_[i][0]] = _results_[i][1]
@@ -304,10 +303,8 @@ class AssignMTBFResults(object):
                 _query_ = _base_query_ % (_mtbf_, _mtbfll_, _mtbful_, _fr_,
                                           _frll_, _frul_, _mtbf_, _fr_, _fr_,
                                           _id_)
-                self._app.DB.execute_query(_query_,
-                                           None,
-                                           self._app.ProgCnx,
-                                           commit=True)
+                self._app.DB.execute_query(
+                    _query_, None, self._app.ProgCnx, commit=True)
 
                 _row_ = _model_.iter_next(_row_)
 

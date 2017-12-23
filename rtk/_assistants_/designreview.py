@@ -15,30 +15,30 @@ __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -138,8 +138,7 @@ class DesignReview(gtk.Window):
         self.btnAddSibling = gtk.ToolButton()
         self.btnAddChild = gtk.ToolButton()
         self.btnRemoveCriteria = gtk.ToolButton()
-        _list = gtk.TreeStore(gobject.TYPE_INT,
-                              gobject.TYPE_STRING)
+        _list = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING)
         self.cmbGateways = gtk.ComboBoxEntry(_list, 1)
         self.cmbGateways.props.width_request = 200
         self.cmbGateways.props.height_request = 30
@@ -171,8 +170,9 @@ class DesignReview(gtk.Window):
 
         # Save review button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Saves the review gateways to the open "
-                                   u"RTK program database."))
+        _button.set_tooltip_text(
+            _(u"Saves the review gateways to the open "
+              u"RTK program database."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
@@ -183,8 +183,9 @@ class DesignReview(gtk.Window):
         _toolbar.insert(gtk.SeparatorToolItem(), _position)
         _position += 1
 
-        self.cmbGateways.set_tooltip_text(_(u"List of existing Program review "
-                                            u"gateways."))
+        self.cmbGateways.set_tooltip_text(
+            _(u"List of existing Program review "
+              u"gateways."))
         _alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
         _alignment.add(self.cmbGateways)
         _toolitem = gtk.ToolItem()
@@ -226,9 +227,16 @@ class DesignReview(gtk.Window):
         _query = "SELECT fld_group_name, fld_group_id FROM tbl_groups"
         _owners = self._app.COMDB.execute_query(_query, None, self._app.ComCnx)
 
-        _headers = [_(u"Criteria ID"), _(u"Criteria"), _(u"Rationale"),
-                    _(u"Satisfied"), _(u"Remarks"), _(u"Actions"),
-                    _(u"Due Date"), _(u"Owner")]
+        _headers = [
+            _(u"Criteria ID"),
+            _(u"Criteria"),
+            _(u"Rationale"),
+            _(u"Satisfied"),
+            _(u"Remarks"),
+            _(u"Actions"),
+            _(u"Due Date"),
+            _(u"Owner")
+        ]
         for j in range(len(_headers)):
             _column = gtk.TreeViewColumn()
             _label = _widg.make_column_heading(_headers[j])
@@ -356,18 +364,18 @@ class DesignReview(gtk.Window):
             for i in range(_n_criteria):
                 _query = "INSERT INTO tbl_reviews \
                           (fld_revision_id, fld_gateway_id, fld_concern_id) \
-                          VALUES (%d, %d, %d)" % \
+                          VALUES (%d, %d, %d)"                                               % \
                          (self._app.REVISION.revision_id, self.gateway_id,
                           _criteria[i][0])
-                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                           commit=True)
+                self._app.DB.execute_query(
+                    _query, None, self._app.ProgCnx, commit=True)
 
             _query = "SELECT fld_satisfied, fld_concern_id, fld_action, \
                              fld_due_date, fld_owner \
                       FROM tbl_reviews \
                       WHERE fld_revision_id=%d \
                       AND fld_gateway_id=%d \
-                      ORDER BY fld_concern_id" % \
+                      ORDER BY fld_concern_id"                                               % \
                      (self._app.REVISION.revision_id, self.gateway_id)
             _status = self._app.DB.execute_query(_query, None,
                                                  self._app.ProgCnx)
@@ -386,12 +394,14 @@ class DesignReview(gtk.Window):
                 _stat = _status[j][0]
             except IndexError:
                 _stat = 0
-            _data = [_criteria[j][0], _util.none_to_string(_criteria[j][1]),
-                     _util.none_to_string(_criteria[j][2]), _stat,
-                     _util.none_to_string(_criteria[j][3]),
-                     _util.none_to_string(_status[j][2]),
-                     _util.ordinal_to_date(_status[j][3]),
-                     _status[j][4]]
+            _data = [
+                _criteria[j][0],
+                _util.none_to_string(_criteria[j][1]),
+                _util.none_to_string(_criteria[j][2]), _stat,
+                _util.none_to_string(_criteria[j][3]),
+                _util.none_to_string(_status[j][2]),
+                _util.ordinal_to_date(_status[j][3]), _status[j][4]
+            ]
             _model.append(_parent, _data)
 
             # Add the RTK program database concern ID to the list.
@@ -446,7 +456,7 @@ class DesignReview(gtk.Window):
                               fld_due_date='%s', fld_owner='%s' \
                           WHERE fld_revision_id=%d \
                           AND fld_gateway_id=%d \
-                          AND fld_concern_id=%d" % \
+                          AND fld_concern_id=%d"                                                 % \
                          (_satisfied, _action, _due_date, _owner,
                           self._app.REVISION.revision_id, self.gateway_id,
                           _concern_id)
@@ -455,15 +465,15 @@ class DesignReview(gtk.Window):
                           (fld_revision_id, fld_gateway_id, \
                            fld_concern_id, fld_satisfied, fld_action, \
                            fld_due_date, fld_owner) \
-                          VALUES (%d, %d, %d, %d, '%s', '%s', '%s')" % \
+                          VALUES (%d, %d, %d, %d, '%s', '%s', '%s')"                                                                     % \
                          (self._app.REVISION.revision_id,
                           self.gateway_id, _concern_id, _satisfied, _action,
                           _due_date, _owner)
-            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                              commit=True):
-                _util.rtk_error(_(u"Error saving review criteria %d for "
-                                  u"review gateway %d.") %
-                                (_concern_id, self.gateway_id))
+            if not self._app.DB.execute_query(
+                    _query, None, self._app.ProgCnx, commit=True):
+                _util.rtk_error(
+                    _(u"Error saving review criteria %d for "
+                      u"review gateway %d.") % (_concern_id, self.gateway_id))
                 return True
 
             return False
@@ -499,8 +509,7 @@ class ReviewCriteria(gtk.Window):
         self.btnAddSibling = gtk.ToolButton()
         self.btnAddChild = gtk.ToolButton()
         self.btnRemoveCriteria = gtk.ToolButton()
-        _list = gtk.TreeStore(gobject.TYPE_INT,
-                              gobject.TYPE_STRING)
+        _list = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING)
         self.cmbGateways = gtk.ComboBoxEntry(_list, 1)
         self.cmbGateways.props.width_request = 200
         self.cmbGateways.props.height_request = 30
@@ -532,8 +541,9 @@ class ReviewCriteria(gtk.Window):
 
         # Add gateway button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Adds a new review gateway to the "
-                                   u"development program."))
+        _button.set_tooltip_text(
+            _(u"Adds a new review gateway to the "
+              u"development program."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/add.png')
         _button.set_icon_widget(_image)
@@ -543,8 +553,9 @@ class ReviewCriteria(gtk.Window):
 
         # Remove gateway button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Deletes the currently selected review "
-                                   u"gateway from the development program."))
+        _button.set_tooltip_text(
+            _(u"Deletes the currently selected review "
+              u"gateway from the development program."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         _button.set_icon_widget(_image)
@@ -556,11 +567,12 @@ class ReviewCriteria(gtk.Window):
         _position += 1
 
         # Add sibling criteria button.
-        self.btnAddSibling.set_tooltip_text(_(u"Adds a new review criteria "
-                                              u"to the active review gateway "
-                                              u"at the same level as the "
-                                              u"currently selected review "
-                                              u"criteria."))
+        self.btnAddSibling.set_tooltip_text(
+            _(u"Adds a new review criteria "
+              u"to the active review gateway "
+              u"at the same level as the "
+              u"currently selected review "
+              u"criteria."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert_sibling.png')
         self.btnAddSibling.set_icon_widget(_image)
@@ -569,11 +581,12 @@ class ReviewCriteria(gtk.Window):
         _position += 1
 
         # Add child criteria button.
-        self.btnAddChild.set_tooltip_text(_(u"Adds a new review criteria "
-                                            u"to the active review gateway "
-                                            u"one level subordinate to the "
-                                            u"currently selected review "
-                                            u"criteria."))
+        self.btnAddChild.set_tooltip_text(
+            _(u"Adds a new review criteria "
+              u"to the active review gateway "
+              u"one level subordinate to the "
+              u"currently selected review "
+              u"criteria."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/insert_child.png')
         self.btnAddChild.set_icon_widget(_image)
@@ -582,9 +595,10 @@ class ReviewCriteria(gtk.Window):
         _position += 1
 
         # Remove criteria button.
-        self.btnRemoveCriteria.set_tooltip_text(_(u"Deletes the currently "
-                                                  u"selected review "
-                                                  u"criteria."))
+        self.btnRemoveCriteria.set_tooltip_text(
+            _(u"Deletes the currently "
+              u"selected review "
+              u"criteria."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/remove.png')
         self.btnRemoveCriteria.set_icon_widget(_image)
@@ -597,8 +611,9 @@ class ReviewCriteria(gtk.Window):
 
         # Save review criteria button.
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Saves the review criteria for the "
-                                   u"selected review gateway."))
+        _button.set_tooltip_text(
+            _(u"Saves the review criteria for the "
+              u"selected review gateway."))
         _image = gtk.Image()
         _image.set_from_file(_conf.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
@@ -609,8 +624,9 @@ class ReviewCriteria(gtk.Window):
         _toolbar.insert(gtk.SeparatorToolItem(), _position)
         _position += 1
 
-        self.cmbGateways.set_tooltip_text(_(u"List of existing Program review "
-                                            u"gateways."))
+        self.cmbGateways.set_tooltip_text(
+            _(u"List of existing Program review "
+              u"gateways."))
         _alignment = gtk.Alignment(xalign=0.5, yalign=0.5)
         _alignment.add(self.cmbGateways)
         _toolitem = gtk.ToolItem()
@@ -737,8 +753,11 @@ class ReviewCriteria(gtk.Window):
                 _parent = None
             else:
                 _parent = _model.get_iter_from_string(_criteria[j][3])
-            _data = [_criteria[j][0], _util.none_to_string(_criteria[j][1]),
-                     _util.none_to_string(_criteria[j][2])]
+            _data = [
+                _criteria[j][0],
+                _util.none_to_string(_criteria[j][1]),
+                _util.none_to_string(_criteria[j][2])
+            ]
             _model.append(_parent, _data)
 
         if _model.get_iter_root() is not None:
@@ -763,8 +782,9 @@ class ReviewCriteria(gtk.Window):
                   (fld_gateway_name, fld_gateway_description) \
                   VALUES ('New Review Gateway', \
                           'This is a new gateway for the development program')"
-        if not self._app.COMDB.execute_query(_query, None, self._app.ComCnx,
-                                             commit=True):
+
+        if not self._app.COMDB.execute_query(
+                _query, None, self._app.ComCnx, commit=True):
             _util.rtk_error(_(u"Error creating new program review gateway."))
             return True
 
@@ -806,7 +826,7 @@ class ReviewCriteria(gtk.Window):
 
         _fixed.show_all()
 
-        _dialog.vbox.pack_start(_fixed)     # pylint: disable=E1101
+        _dialog.vbox.pack_start(_fixed)  # pylint: disable=E1101
 
         # Run the dialog and apply the changes if the 'OK' button is pressed.
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
@@ -830,15 +850,15 @@ class ReviewCriteria(gtk.Window):
             _query = "INSERT INTO tbl_reviews \
                       (fld_gateway_id, fld_concern, fld_rationale, \
                        fld_parent_id) \
-                      VALUES (%d, '%s', '%s', '%s')" % \
+                      VALUES (%d, '%s', '%s', '%s')"                                                     % \
                      (self.gateway_id, _concern, _rationale, _parent)
             _util.set_cursor(self._app, gtk.gdk.LEFT_PTR)
             _dialog.destroy()
-            if not self._app.COMDB.execute_query(_query, None,
-                                                 self._app.ComCnx,
-                                                 commit=True):
-                _util.rtk_error(_(u"Error creating new program review "
-                                  u"gateway."))
+            if not self._app.COMDB.execute_query(
+                    _query, None, self._app.ComCnx, commit=True):
+                _util.rtk_error(
+                    _(u"Error creating new program review "
+                      u"gateway."))
                 return True
 
             self._load_review_criteria(None)
@@ -860,10 +880,10 @@ class ReviewCriteria(gtk.Window):
 
         _query = "DELETE FROM tbl_gateways \
                   WHERE fld_gateway_id=%d" % self.gateway_id
-        if not self._app.COMDB.execute_query(_query, None, self._app.ComCnx,
-                                             commit=True):
-            _util.rtk_error(_(u"Error removing review gateway %d.") %
-                            self.gateway_id)
+        if not self._app.COMDB.execute_query(
+                _query, None, self._app.ComCnx, commit=True):
+            _util.rtk_error(
+                _(u"Error removing review gateway %d.") % self.gateway_id)
             return True
 
         self._load_gateways()
@@ -888,11 +908,11 @@ class ReviewCriteria(gtk.Window):
         _query = "DELETE FROM tbl_reviews \
                   WHERE fld_gateway_id=%d \
                   AND fld_concern_id=%d" % (self.gateway_id, _concern_id)
-        if not self._app.COMDB.execute_query(_query, None, self._app.ComCnx,
-                                             commit=True):
-            _util.rtk_error(_(u"Error removing review criteria %d from "
-                              u"review gateway %d.") %
-                            (_concern_id, self.gateway_id))
+        if not self._app.COMDB.execute_query(
+                _query, None, self._app.ComCnx, commit=True):
+            _util.rtk_error(
+                _(u"Error removing review criteria %d from "
+                  u"review gateway %d.") % (_concern_id, self.gateway_id))
             return True
 
         self._load_review_criteria(None)
@@ -923,13 +943,13 @@ class ReviewCriteria(gtk.Window):
 
             _query = "UPDATE tbl_reviews \
                       SET fld_concern='%s', fld_rationale='%s' \
-                      WHERE fld_concern_id=%d" % \
+                      WHERE fld_concern_id=%d"                                               % \
                      (_concern, _rationale, _concern_id)
-            if not self._app.COMDB.execute_query(_query, None,
-                                                 self._app.ComCnx,
-                                                 commit=True):
-                _util.rtk_error(_(u"Error saving review gateway %d criteria "
-                                  u"%d.") % (self.gateway_id, _concern_id))
+            if not self._app.COMDB.execute_query(
+                    _query, None, self._app.ComCnx, commit=True):
+                _util.rtk_error(
+                    _(u"Error saving review gateway %d criteria "
+                      u"%d.") % (self.gateway_id, _concern_id))
                 return True
 
             return False

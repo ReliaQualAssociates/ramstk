@@ -38,13 +38,16 @@ This is the test class for testing the Matrix class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
 
-import dao.DAO as _dao                          # pylint: disable=E0401
-from datamodels.matrix.Matrix import Matrix     # pylint: disable=E0401
+import dao.DAO as _dao  # pylint: disable=E0401
+from datamodels.matrix.Matrix import Matrix  # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -82,15 +85,11 @@ class TestMatrixController(unittest.TestCase):
         # created for the Hardware and Software matrices.
         self.assertEqual(self.DUT.dicMatrices.keys(), [0, 1, 2, 3, 4, 5])
         _matrix = self.DUT.dicMatrices[0]
-        self.assertEqual(_matrix.lstColumnHeaders, [u'System', u'Sub-System 1',
-                                                    u'Sub-System 2',
-                                                    u'Sub-System 3',
-                                                    u'Assembly 11',
-                                                    u'Assembly 12',
-                                                    u'Sub-System 4',
-                                                    u'Sub-Assembly 121',
-                                                    u'Sub-Assembly 111',
-                                                    u'Sub-Assembly 122'])
+        self.assertEqual(_matrix.lstColumnHeaders, [
+            u'System', u'Sub-System 1', u'Sub-System 2', u'Sub-System 3',
+            u'Assembly 11', u'Assembly 12', u'Sub-System 4',
+            u'Sub-Assembly 121', u'Sub-Assembly 111', u'Sub-Assembly 122'
+        ])
         _matrix = self.DUT.dicMatrices[1]
         self.assertEqual(_matrix.lstColumnHeaders, ['System Software'])
 

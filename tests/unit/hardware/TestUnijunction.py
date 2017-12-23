@@ -12,7 +12,10 @@ This is the test class for testing Unijunction module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -57,15 +60,16 @@ class TestUnijunctionModel(unittest.TestCase):
         self.assertEqual(self.DUT.piT, 0.0)
 
         # Verify the Unijunction Transistor class was properly initialized.
-        self.assertEqual(self.DUT._lst_piE, [1.0, 6.0, 9.0, 9.0, 19.0, 13.0,
-                                             29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
-                                             32.0, 320.0])
+        self.assertEqual(self.DUT._lst_piE, [
+            1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
+            32.0, 320.0
+        ])
         self.assertEqual(self.DUT._lst_piQ_count, [0.7, 1.0, 2.4, 5.5, 8.0])
         self.assertEqual(self.DUT._lst_piQ_stress, [0.7, 1.0, 2.4, 5.5, 8.0])
-        self.assertEqual(self.DUT._lst_lambdab_count, [0.016, 0.12, 0.20, 0.18,
-                                                       0.42, 0.35, 0.80, 0.74,
-                                                       1.6, 0.66, 0.0079, 0.31,
-                                                       0.88, 6.4])
+        self.assertEqual(self.DUT._lst_lambdab_count, [
+            0.016, 0.12, 0.20, 0.18, 0.42, 0.35, 0.80, 0.74, 1.6, 0.66, 0.0079,
+            0.31, 0.88, 6.4
+        ])
         self.assertEqual(self.DUT.subcategory, 16)
 
     @attr(all=True, unit=True)

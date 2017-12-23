@@ -11,11 +11,11 @@ The RTKReliability Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKReliability(RTK_BASE):
@@ -28,33 +28,36 @@ class RTKReliability(RTK_BASE):
     __tablename__ = 'rtk_reliability'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column('fld_hardware_id', Integer,
-                         ForeignKey('rtk_hardware.fld_hardware_id'),
-                         primary_key=True, nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        ForeignKey('rtk_hardware.fld_hardware_id'),
+        primary_key=True,
+        nullable=False)
 
     add_adj_factor = Column('fld_add_adj_factor', Float, default=0.0)
-    availability_logistics = Column('fld_availability_logistics', Float,
-                                    default=1.0)
-    availability_mission = Column('fld_availability_mission', Float,
-                                  default=1.0)
+    availability_logistics = Column(
+        'fld_availability_logistics', Float, default=1.0)
+    availability_mission = Column(
+        'fld_availability_mission', Float, default=1.0)
     avail_log_variance = Column('fld_avail_log_variance', Float, default=0.0)
     avail_mis_variance = Column('fld_avail_mis_variance', Float, default=0.0)
-    failure_distribution_id = Column('fld_failure_distribution_id', Integer,
-                                     default=0)
+    failure_distribution_id = Column(
+        'fld_failure_distribution_id', Integer, default=0)
     hazard_rate_active = Column('fld_hazard_rate_active', Float, default=0.0)
     hazard_rate_dormant = Column('fld_hazard_rate_dormant', Float, default=0.0)
-    hazard_rate_logistics = Column('fld_hazard_rate_logistics', Float,
-                                   default=0.0)
-    hazard_rate_method_id = Column('fld_hazard_rate_method_id', Integer,
-                                   default=0)
+    hazard_rate_logistics = Column(
+        'fld_hazard_rate_logistics', Float, default=0.0)
+    hazard_rate_method_id = Column(
+        'fld_hazard_rate_method_id', Integer, default=0)
     hazard_rate_mission = Column('fld_hazard_rate_mission', Float, default=0.0)
-    hazard_rate_model = Column('fld_hazard_rate_model', String(512),
-                               default='')
+    hazard_rate_model = Column(
+        'fld_hazard_rate_model', String(512), default='')
     hazard_rate_percent = Column('fld_hazard_rate_percent', Float, default=0.0)
-    hazard_rate_software = Column('fld_hazard_rate_software', Float,
-                                  default=0.0)
-    hazard_rate_specified = Column('fld_hazard_rate_specified', Float,
-                                   default=0.0)
+    hazard_rate_software = Column(
+        'fld_hazard_rate_software', Float, default=0.0)
+    hazard_rate_specified = Column(
+        'fld_hazard_rate_specified', Float, default=0.0)
     hazard_rate_type_id = Column('fld_hazard_rate_type_id', Integer, default=0)
     hr_active_variance = Column('fld_hr_active_variance', Float, default=0.0)
     hr_dormant_variance = Column('fld_hr_dormant_variance', Float, default=0.0)
@@ -72,19 +75,19 @@ class RTKReliability(RTK_BASE):
     mult_adj_factor = Column('fld_mult_adj_factor', Float, default=1.0)
     quality_id = Column('fld_quality_id', Integer, default=0)
     reliability_goal = Column('fld_reliability_goal', Float, default=0.0)
-    reliability_goal_measure_id = Column('fld_reliability_goal_measure_id',
-                                         Integer, default=0)
-    reliability_logistics = Column('fld_reliability_logistics', Float,
-                                   default=1.0)
+    reliability_goal_measure_id = Column(
+        'fld_reliability_goal_measure_id', Integer, default=0)
+    reliability_logistics = Column(
+        'fld_reliability_logistics', Float, default=1.0)
     reliability_mission = Column('fld_reliability_mission', Float, default=1.0)
-    reliability_log_variance = Column('fld_reliability_log_variance', Float,
-                                      default=0.0)
-    reliability_miss_variance = Column('fld_reliability_mis_variance', Float,
-                                       default=0.0)
+    reliability_log_variance = Column(
+        'fld_reliability_log_variance', Float, default=0.0)
+    reliability_miss_variance = Column(
+        'fld_reliability_mis_variance', Float, default=0.0)
     scale_parameter = Column('fld_scale_parameter', Float, default=0.0)
     shape_parameter = Column('fld_shape_parameter', Float, default=0.0)
-    survival_analysis_id = Column('fld_survival_analysis_id', Integer,
-                                  default=0)
+    survival_analysis_id = Column(
+        'fld_survival_analysis_id', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
     hardware = relationship('RTKHardware', back_populates='reliability')
@@ -155,71 +158,71 @@ class RTKReliability(RTK_BASE):
 
         try:
             self.add_adj_factor = float(none_to_default(attributes[0], 0.0))
-            self.availability_logistics = float(none_to_default(attributes[1],
-                                                                1.0))
-            self.availability_mission = float(none_to_default(attributes[2],
-                                                              1.0))
-            self.avail_log_variance = float(none_to_default(attributes[3],
-                                                            0.0))
-            self.avail_mis_variance = float(none_to_default(attributes[4],
-                                                            0.0))
-            self.failure_distribution_id = int(none_to_default(attributes[5],
-                                                               0))
-            self.hazard_rate_active = float(none_to_default(attributes[6],
-                                                            0.0))
-            self.hazard_rate_dormant = float(none_to_default(attributes[7],
-                                                             0.0))
-            self.hazard_rate_logistics = float(none_to_default(attributes[8],
-                                                               0.0))
+            self.availability_logistics = float(
+                none_to_default(attributes[1], 1.0))
+            self.availability_mission = float(
+                none_to_default(attributes[2], 1.0))
+            self.avail_log_variance = float(
+                none_to_default(attributes[3], 0.0))
+            self.avail_mis_variance = float(
+                none_to_default(attributes[4], 0.0))
+            self.failure_distribution_id = int(
+                none_to_default(attributes[5], 0))
+            self.hazard_rate_active = float(
+                none_to_default(attributes[6], 0.0))
+            self.hazard_rate_dormant = float(
+                none_to_default(attributes[7], 0.0))
+            self.hazard_rate_logistics = float(
+                none_to_default(attributes[8], 0.0))
             self.hazard_rate_method_id = int(none_to_default(attributes[9], 0))
-            self.hazard_rate_mission = float(none_to_default(attributes[10],
-                                                             0.0))
+            self.hazard_rate_mission = float(
+                none_to_default(attributes[10], 0.0))
             self.hazard_rate_model = str(none_to_default(attributes[11], ''))
-            self.hazard_rate_percent = float(none_to_default(attributes[12],
-                                                             0.0))
-            self.hazard_rate_software = float(none_to_default(attributes[13],
-                                                              0.0))
-            self.hazard_rate_specified = float(none_to_default(attributes[14],
-                                                               0.0))
+            self.hazard_rate_percent = float(
+                none_to_default(attributes[12], 0.0))
+            self.hazard_rate_software = float(
+                none_to_default(attributes[13], 0.0))
+            self.hazard_rate_specified = float(
+                none_to_default(attributes[14], 0.0))
             self.hazard_rate_type_id = int(none_to_default(attributes[15], 0))
-            self.hr_active_variance = float(none_to_default(attributes[16],
-                                                            0.0))
-            self.hr_dormant_variance = float(none_to_default(attributes[17],
-                                                             0.0))
-            self.hr_logistics_variance = float(none_to_default(attributes[18],
-                                                               0.0))
-            self.hr_mission_variance = float(none_to_default(attributes[19],
-                                                             0.0))
-            self.hr_specified_variance = float(none_to_default(attributes[20],
-                                                               0.0))
-            self.location_parameter = float(none_to_default(attributes[21],
-                                                            0.0))
+            self.hr_active_variance = float(
+                none_to_default(attributes[16], 0.0))
+            self.hr_dormant_variance = float(
+                none_to_default(attributes[17], 0.0))
+            self.hr_logistics_variance = float(
+                none_to_default(attributes[18], 0.0))
+            self.hr_mission_variance = float(
+                none_to_default(attributes[19], 0.0))
+            self.hr_specified_variance = float(
+                none_to_default(attributes[20], 0.0))
+            self.location_parameter = float(
+                none_to_default(attributes[21], 0.0))
             self.mtbf_logistics = float(none_to_default(attributes[22], 0.0))
             self.mtbf_mission = float(none_to_default(attributes[23], 0.0))
             self.mtbf_specified = float(none_to_default(attributes[24], 0.0))
-            self.mtbf_log_variance = float(none_to_default(attributes[25],
-                                                           0.0))
-            self.mtbf_miss_variance = float(none_to_default(attributes[26],
-                                                            0.0))
-            self.mtbf_spec_variance = float(none_to_default(attributes[27],
-                                                            0.0))
+            self.mtbf_log_variance = float(
+                none_to_default(attributes[25], 0.0))
+            self.mtbf_miss_variance = float(
+                none_to_default(attributes[26], 0.0))
+            self.mtbf_spec_variance = float(
+                none_to_default(attributes[27], 0.0))
             self.mult_adj_factor = float(none_to_default(attributes[28], 1.0))
             self.quality_id = int(none_to_default(attributes[29], 0))
             self.reliability_goal = float(none_to_default(attributes[30], 0.0))
             self.reliability_goal_measure_id = int(
                 none_to_default(attributes[31], 0))
-            self.reliability_logistics = float(none_to_default(attributes[32],
-                                                               1.0))
-            self.reliability_mission = float(none_to_default(attributes[33],
-                                                             1.0))
+            self.reliability_logistics = float(
+                none_to_default(attributes[32], 1.0))
+            self.reliability_mission = float(
+                none_to_default(attributes[33], 1.0))
             self.reliability_log_variance = float(
                 none_to_default(attributes[34], 0.0))
             self.reliability_miss_variance = float(
                 none_to_default(attributes[35], 0.0))
             self.scale_parameter = float(none_to_default(attributes[36], 0.0))
             self.shape_parameter = float(none_to_default(attributes[37], 0.0))
-            self.survival_analysis_id = int(none_to_default(attributes[38],
-                                                            0.0))
+            self.survival_analysis_id = int(
+                none_to_default(attributes[38], 0.0))
             self.lambda_b = float(none_to_default(attributes[39], 0.0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
