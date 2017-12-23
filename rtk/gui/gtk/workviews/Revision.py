@@ -151,14 +151,30 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        (_frame, _fixed, _x_pos, _y_pos) = RTKWorkView._make_general_data_page(
-            self, self._lst_gendata_labels)
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
+                                              5, 5)
+        _x_pos += 50
 
         _fixed.put(self.txtCode, _x_pos, _y_pos[0])
         _fixed.put(self.txtName, _x_pos, _y_pos[1])
         _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
 
         _fixed.show_all()
+
+        _label = rtk.RTKLabel(
+            _(u"General\nData"),
+            height=30,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER,
+            tooltip=_(u"Displays general information for the selected "
+                      u"revision."))
+        self.hbx_tab_label.pack_start(_label)
 
         return _frame
 

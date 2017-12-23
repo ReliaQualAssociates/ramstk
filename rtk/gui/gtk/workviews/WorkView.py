@@ -379,35 +379,6 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
 
-    def _make_general_data_page(self, labels):
-        """
-        Create the gtk.Notebook() page for displaying general data.
-
-        :param list labels: the list of labels to place on the general data
-                            page.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"General Information"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = rtk.make_label_group(labels, _fixed, 5, 5)
-        _x_pos += 50
-
-        _label = rtk.RTKLabel(
-            _(u"General\nData"),
-            height=30,
-            width=-1,
-            justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays general information for "
-                      u"the selected {0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label)
-
-        return _frame, _fixed, _x_pos, _y_pos
-
     def _on_select(self, module_id, **kwargs):  # pylint: disable=W0613
         """
         Respond to load the Work View gtk.Notebook() widgets.

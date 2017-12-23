@@ -438,10 +438,15 @@ class GeneralData(RTKWorkView):
         # Build the General Data page starting with the left half.
         _hbox = gtk.HBox()
 
-        (_frame, _fixed, _x_pos, _y_pos) = RTKWorkView._make_general_data_page(
-            self, self._lst_gendata_labels[0][:2])
-        _label = _frame.get_label_widget()
-        _label.set_text(_(u"Task Description"))
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"Task Description"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[0][:2],
+                                              _fixed, 5, 5)
+        _x_pos += 50
 
         _hbox.pack_start(_frame, expand=True, fill=True)
 
@@ -468,11 +473,15 @@ class GeneralData(RTKWorkView):
 
         # Now add the right hand side starting with the top pane.
         _vpaned = gtk.VPaned()
+        _fixed = gtk.Fixed()
 
-        (_frame, _fixed, _x_pos, _y_pos) = RTKWorkView._make_general_data_page(
-            self, self._lst_gendata_labels[1])
-        _label = _frame.get_label_widget()
-        _label.set_text(_(u"Task Effort"))
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"Task Effort"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[1],
+                                              _fixed, 5, 5)
+        _x_pos += 50
 
         _vpaned.pack1(_frame, True, True)
 
@@ -504,10 +513,15 @@ class GeneralData(RTKWorkView):
         self.spnStatus.set_snap_to_ticks(True)
 
         # Now add the bottom pane to the right side.
-        (_frame, _fixed, _x_pos, _y_pos) = RTKWorkView._make_general_data_page(
-            self, self._lst_gendata_labels[2])
-        _label = _frame.get_label_widget()
-        _label.set_text(_(u"Project Effort"))
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"Project Effort"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[2],
+                                              _fixed, 5, 5)
+        _x_pos += 50
 
         _vpaned.pack2(_frame, True, True)
 
@@ -522,10 +536,14 @@ class GeneralData(RTKWorkView):
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
-        # We need to remove two of the labels added to the gtk.Notebook() tab
-        # since we called the Work View meta-class method three times.
-        for _tab_label in self.hbx_tab_label.get_children()[:2]:
-            self.hbx_tab_label.remove(_tab_label)
+        _label = rtk.RTKLabel(
+            _(u"General\nData"),
+            height=30,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER,
+            tooltip=_(u"Displays general information for the selected "
+                      u"validation."))
+        self.hbx_tab_label.pack_start(_label)
 
         return _hbox
 
