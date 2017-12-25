@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKIncident module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date, timedelta
 
@@ -37,8 +39,8 @@ class TestRTKIncident(unittest.TestCase):
     Class for testing the RTKIncident class.
     """
 
-    _attributes = (1, 1, 0, 0, 0, 'Incident Analysis', 0, -1, -1, -1, -1, -1,
-                   -1, -1, -1, -1, -1, -1, 0, 0, 0.0, 0,
+    _attributes = (1, 1, 0, 0, 0, 'Incident Analysis', 0, -1, -1,
+                   -1, -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0.0, 0,
                    date.today() + timedelta(days=30),
                    date.today() + timedelta(days=30), date.today(),
                    date.today() + timedelta(days=30), '', '', 0, 0, 0, 0, 0,
@@ -93,13 +95,13 @@ class TestRTKIncident(unittest.TestCase):
         self.assertEqual(self.DUT.complete_by, 0)
         self.assertEqual(self.DUT.cost, 0)
         self.assertEqual(self.DUT.criticality_id, 0)
-        self.assertEqual(self.DUT.date_approved,
-                         date.today() + timedelta(days=30))
-        self.assertEqual(self.DUT.date_complete,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.date_approved, date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.date_complete, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.date_requested, date.today())
-        self.assertEqual(self.DUT.date_reviewed,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.date_reviewed, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.description_long, '')
         self.assertEqual(self.DUT.description_short, '')
         self.assertEqual(self.DUT.detection_method_id, 0)
@@ -153,8 +155,8 @@ class TestRTKIncident(unittest.TestCase):
         (TestRTKIncident) set_attributes should return a zero error code on success
         """
 
-        _attributes = (0, 0, 0, 'Incident Analysis', 0, -1, -1, -1, -1, -1, -1,
-                       -1, -1, -1, -1, -1, 0, 0, 0.0, 0,
+        _attributes = (0, 0, 0, 'Incident Analysis', 0, -1, -1, -1,
+                       -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0.0, 0,
                        date.today() + timedelta(days=30),
                        date.today() + timedelta(days=30), date.today(),
                        date.today() + timedelta(days=30), '', '', 0, 0, 0, 0,
@@ -174,8 +176,8 @@ class TestRTKIncident(unittest.TestCase):
         (TestRTKIncident) set_attributes should return a 10 error code when passed the wrong type
         """
 
-        _attributes = (0, 0, 0, 'Incident Analysis', 0, -1, -1, -1, -1, -1, -1,
-                       -1, -1, -1, -1, -1, 0, 0, 0.0, 'zero',
+        _attributes = (0, 0, 0, 'Incident Analysis', 0, -1, -1, -1, -1,
+                       -1, -1, -1, -1, -1, -1, -1, 0, 0, 0.0, 'zero',
                        date.today() + timedelta(days=30),
                        date.today() + timedelta(days=30), date.today(),
                        date.today() + timedelta(days=30), '', '', 0, 0, 0, 0,
@@ -196,8 +198,8 @@ class TestRTKIncident(unittest.TestCase):
         (TestRTKIncident) set_attributes should return a 40 error code when passed too few attributes
         """
 
-        _attributes = (0, 0, 0, 'Incident Analysis', 0, -1, -1, -1, -1, -1, -1,
-                       -1, -1, -1, -1, -1, 0, 0, 0.0, 0,
+        _attributes = (0, 0, 0, 'Incident Analysis', 0, -1, -1, -1,
+                       -1, -1, -1, -1, -1, -1, -1, -1, 0, 0, 0.0, 0,
                        date.today() + timedelta(days=30),
                        date.today() + timedelta(days=30), date.today(),
                        date.today() + timedelta(days=30), '', '', 0, 0, 0, 0,

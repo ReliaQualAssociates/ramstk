@@ -12,30 +12,30 @@ Incident Package Assistants Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -117,13 +117,16 @@ class AddIncident(object):
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _label = Widgets.make_label(_(u"This is the RTK incident addition "
-                                      u"assistant.  It will help you add a "
-                                      u"new hardware or software incident to "
-                                      u"the database.  Press 'Forward' to "
-                                      u"continue or 'Cancel' to quit the "
-                                      u"assistant."),
-                                    width=-1, height=-1, wrap=True)
+        _label = Widgets.make_label(
+            _(u"This is the RTK incident addition "
+              u"assistant.  It will help you add a "
+              u"new hardware or software incident to "
+              u"the database.  Press 'Forward' to "
+              u"continue or 'Cancel' to quit the "
+              u"assistant."),
+            width=-1,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -188,45 +191,62 @@ class AddIncident(object):
         # Create and place the labels.
         self.fxdPageGeneral = gtk.Fixed()
 
-        _labels = [_(u"Incident Date*:"), _(u"Reported By*:"),
-                   _(u"Incident Category*:"), _(u"Incident Type:"),
-                   _(u"Incident Criticality:"), _(u"Life Cycle:"),
-                   _(u"Affected Unit:"), _(u"Affected Assembly*:"),
-                   _(u"Affected Software:"), _(u"Detection Method*:"),
-                   _(u"Test Procedure:"), _(u"Test Case:"),
-                   _(u"Execution Time*:")]
-        (_x_pos, _y_pos) = Widgets.make_labels(_labels,
-                                               self.fxdPageGeneral, 5, 5)
+        _labels = [
+            _(u"Incident Date*:"),
+            _(u"Reported By*:"),
+            _(u"Incident Category*:"),
+            _(u"Incident Type:"),
+            _(u"Incident Criticality:"),
+            _(u"Life Cycle:"),
+            _(u"Affected Unit:"),
+            _(u"Affected Assembly*:"),
+            _(u"Affected Software:"),
+            _(u"Detection Method*:"),
+            _(u"Test Procedure:"),
+            _(u"Test Case:"),
+            _(u"Execution Time*:")
+        ]
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, self.fxdPageGeneral, 5,
+                                               5)
         _x_pos += 40
 
-        self.txtIncidentDate.set_tooltip_text(_(u"Enter the date the incident "
-                                                u"occurred."))
-        self.cmbReportedBy.set_tooltip_text(_(u"Enter the name of the person "
-                                              u"reporting the incident.  "
-                                              u"Defaults to currently logged "
-                                              u"in user."))
-        self.cmbCategory.set_tooltip_text(_(u"Select the category this "
-                                            u"incident represents."))
-        self.cmbType.set_tooltip_text(_(u"Select the type of problem this "
-                                        u"incident represents."))
-        self.cmbCriticality.set_tooltip_text(_(u"Select the severity of the "
-                                               u"discrepancy."))
-        self.txtTestProcedure.set_tooltip_text(_(u"Enter the test procedure "
-                                                 u"being run when the "
-                                                 u"incident occurred."))
-        self.txtTestCase.set_tooltip_text(_(u"Enter the test case being run "
-                                            u"when the incident occurred."))
-        self.txtExecutionTime.set_tooltip_text(_(u"Enter the execution time "
-                                                 u"when the incident "
-                                                 u"occurred."))
+        self.txtIncidentDate.set_tooltip_text(
+            _(u"Enter the date the incident "
+              u"occurred."))
+        self.cmbReportedBy.set_tooltip_text(
+            _(u"Enter the name of the person "
+              u"reporting the incident.  "
+              u"Defaults to currently logged "
+              u"in user."))
+        self.cmbCategory.set_tooltip_text(
+            _(u"Select the category this "
+              u"incident represents."))
+        self.cmbType.set_tooltip_text(
+            _(u"Select the type of problem this "
+              u"incident represents."))
+        self.cmbCriticality.set_tooltip_text(
+            _(u"Select the severity of the "
+              u"discrepancy."))
+        self.txtTestProcedure.set_tooltip_text(
+            _(u"Enter the test procedure "
+              u"being run when the "
+              u"incident occurred."))
+        self.txtTestCase.set_tooltip_text(
+            _(u"Enter the test case being run "
+              u"when the incident occurred."))
+        self.txtExecutionTime.set_tooltip_text(
+            _(u"Enter the execution time "
+              u"when the incident "
+              u"occurred."))
 
         # Add a calendar widget for date selection if we are on a posix
         # platform.  The calendar widget doesn't work for shit on Windoze.
         if name == 'posix':
-            self.btnCalendar = Widgets.make_button(height=25, width=25,
-                                                   label="...", image=None)
-            self.btnCalendar.set_tooltip_text(_(u"Launch a calendar to select "
-                                                u"the incident date"))
+            self.btnCalendar = Widgets.make_button(
+                height=25, width=25, label="...", image=None)
+            self.btnCalendar.set_tooltip_text(
+                _(u"Launch a calendar to select "
+                  u"the incident date"))
             self.btnCalendar.connect('clicked', Widgets.date_select, None,
                                      self.txtIncidentDate)
             self.fxdPageGeneral.put(self.btnCalendar, _x_pos + 105, _y_pos[0])
@@ -256,10 +276,11 @@ class AddIncident(object):
         self.assistant.append_page(self.fxdPageGeneral)
         self.assistant.set_page_type(self.fxdPageGeneral,
                                      gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(self.fxdPageGeneral, _(u"Program "
-                                                             u"Incident: "
-                                                             u"General "
-                                                             u"Information"))
+        self.assistant.set_page_title(self.fxdPageGeneral,
+                                      _(u"Program "
+                                        u"Incident: "
+                                        u"General "
+                                        u"Information"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the incident descriptions page.                            #
@@ -269,9 +290,10 @@ class AddIncident(object):
         self.txtRemarks = gtk.TextBuffer()
 
         # Assign tooltips to the widgets.
-        self.txtDescription.set_tooltip_text(_(u"Enter a brief description of "
-                                               u"the incident being "
-                                               u"reported."))
+        self.txtDescription.set_tooltip_text(
+            _(u"Enter a brief description of "
+              u"the incident being "
+              u"reported."))
 
         # Place the widgets.
         self.fxdPageDescription = gtk.Fixed()
@@ -287,17 +309,19 @@ class AddIncident(object):
         self.fxdPageDescription.put(_label, 5, 370)
 
         self.fxdPageDescription.put(self.txtDescription, _x_pos, 5)
-        _textview = Widgets.make_text_view(txvbuffer=self.txtDetails,
-                                           width=795, height=300)
-        _textview.set_tooltip_text(_(u"Enter a detailed description of the "
-                                     u"incident being reported."))
+        _textview = Widgets.make_text_view(
+            txvbuffer=self.txtDetails, width=795, height=300)
+        _textview.set_tooltip_text(
+            _(u"Enter a detailed description of the "
+              u"incident being reported."))
         self.fxdPageDescription.put(_textview, 5, 65)
 
-        _textview = Widgets.make_text_view(txvbuffer=self.txtRemarks,
-                                           width=795, height=150)
-        _textview.set_tooltip_text(_(u"Enter any additional, pertinent "
-                                     u"remarks related to the incident being "
-                                     u"reported."))
+        _textview = Widgets.make_text_view(
+            txvbuffer=self.txtRemarks, width=795, height=150)
+        _textview.set_tooltip_text(
+            _(u"Enter any additional, pertinent "
+              u"remarks related to the incident being "
+              u"reported."))
         self.fxdPageDescription.put(_textview, 5, 400)
 
         self.txtDescription.connect('focus_out_event', self._check_ready, 3)
@@ -315,17 +339,20 @@ class AddIncident(object):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fixed = gtk.Fixed()
 
-        _label = Widgets.make_label(_(u"Press 'Apply' to create the incident "
-                                      u"or 'Cancel' to quit the assistant "
-                                      u"without adding the incident."),
-                                    width=-1, height=-1, wrap=True)
+        _label = Widgets.make_label(
+            _(u"Press 'Apply' to create the incident "
+              u"or 'Cancel' to quit the assistant "
+              u"without adding the incident."),
+            width=-1,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
 
         self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(_fixed, _(u"Incident: Confirm Addition "
-                                                u"of New Incident"))
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(_fixed,
+                                      _(u"Incident: Confirm Addition "
+                                        u"of New Incident"))
         self.assistant.set_page_complete(_fixed, True)
 
         self.assistant.show_all()
@@ -349,7 +376,7 @@ class AddIncident(object):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# WARNING: Refactor _check_ready; current McCabe Complexity metric = 12.
+        # WARNING: Refactor _check_ready; current McCabe Complexity metric = 12.
         if self.cmbSoftware.get_active() > 0:
             self.cmbDetectMethod.set_sensitive(True)
             self.txtTestProcedure.set_sensitive(True)
@@ -362,26 +389,27 @@ class AddIncident(object):
             self.txtExecutionTime.set_sensitive(False)
 
         if page == 2 and self.cmbSoftware.get_active() <= 0:
-            if(self.txtIncidentDate.get_text() != '' and
-               self.cmbReportedBy.get_active_text() != '' and
-               self.cmbCategory.get_active() > 0 and
-               self.cmbHardware.get_active() > 0):
+            if (self.txtIncidentDate.get_text() != ''
+                    and self.cmbReportedBy.get_active_text() != ''
+                    and self.cmbCategory.get_active() > 0
+                    and self.cmbHardware.get_active() > 0):
                 self.assistant.set_page_complete(self.fxdPageGeneral, True)
             else:
                 self.assistant.set_page_complete(self.fxdPageGeneral, False)
         elif page == 2 and self.cmbSoftware.get_active() > 0:
-            if(self.txtIncidentDate.get_text() != '' and
-               self.cmbReportedBy.get_active_text() != '' and
-               self.cmbCategory.get_active() > 0 and
-               self.cmbHardware.get_active() > 0 and
-               self.cmbDetectMethod.get_active() > 0 and
-               self.txtExecutionTime.get_text() != ''):
+            if (self.txtIncidentDate.get_text() != ''
+                    and self.cmbReportedBy.get_active_text() != ''
+                    and self.cmbCategory.get_active() > 0
+                    and self.cmbHardware.get_active() > 0
+                    and self.cmbDetectMethod.get_active() > 0
+                    and self.txtExecutionTime.get_text() != ''):
                 self.assistant.set_page_complete(self.fxdPageGeneral, True)
             else:
                 self.assistant.set_page_complete(self.fxdPageGeneral, False)
         elif page == 3:
-            if(self.txtDescription.get_text() != '' and
-               self.txtDetails.get_text(*self.txtDetails.get_bounds()) != ''):
+            if (self.txtDescription.get_text() != ''
+                    and self.txtDetails.get_text(
+                        *self.txtDetails.get_bounds()) != ''):
                 self.assistant.set_page_complete(self.fxdPageDescription, True)
             else:
                 self.assistant.set_page_complete(self.fxdPageDescription,
@@ -399,8 +427,9 @@ class AddIncident(object):
         :rtype: bool
         """
 
-        _report_date = int(datetime.strptime(self.txtIncidentDate.get_text(),
-                                             '%Y-%m-%d').toordinal())
+        _report_date = int(
+            datetime.strptime(self.txtIncidentDate.get_text(),
+                              '%Y-%m-%d').toordinal())
 
         # Retrieve the hardware ID.
         _model = self.cmbHardware.get_model()
@@ -440,24 +469,17 @@ class AddIncident(object):
                   VALUES ({0:d}, {1:d}, {2:d}, {3:d}, {4:d}, '{5:s}', \
                           '{6:s}', {7:d}, {8:d}, '{9:s}', 1, {10:d}, {11:d}, \
                           '{12:s}', '{13:s}', {14:f}, {15:d}, {16:d}, {17:d}, \
-                          {18:d})".format(self._revision_id, _hardware_id,
-                                          _software_id,
-                                          self.cmbCategory.get_active(),
-                                          self.cmbType.get_active(),
-                                          self.txtDescription.get_text(),
-                                          _description,
-                                          self.cmbCriticality.get_active(),
-                                          _detect_method,
-                                          _remarks,
-                                          self.cmbReportedBy.get_active(),
-                                          _report_date,
-                                          self.txtTestProcedure.get_text(),
-                                          self.txtTestCase.get_text(),
-                                          _execution_time, _report_date + 30,
-                                          _report_date + 30, _report_date + 30,
-                                          self.cmbLifeCycle.get_active())
-        (_results, _error_code, _last_id) = self._dao.execute(_query,
-                                                              commit=True)
+                          {18:d})".format(
+            self._revision_id, _hardware_id, _software_id,
+            self.cmbCategory.get_active(), self.cmbType.get_active(),
+            self.txtDescription.get_text(), _description,
+            self.cmbCriticality.get_active(), _detect_method, _remarks,
+            self.cmbReportedBy.get_active(), _report_date,
+            self.txtTestProcedure.get_text(), self.txtTestCase.get_text(),
+            _execution_time, _report_date + 30, _report_date + 30,
+            _report_date + 30, self.cmbLifeCycle.get_active())
+        (_results, _error_code, _last_id) = self._dao.execute(
+            _query, commit=True)
 
         # Reload the Incident class gtk.TreeView().
         self._modulebook.request_load_data(self._dao, self._revision_id)
@@ -511,13 +533,16 @@ class AddComponents(object):
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _label = Widgets.make_label(_(u"This is the RTK incident affected "
-                                      u"component assistant.  It will help "
-                                      u"you add an affected component to the "
-                                      u"currently selected program Incident.  "
-                                      u"Press 'Forward' to continue or "
-                                      u"'Cancel' to quit the assistant."),
-                                    width=-1, height=-1, wrap=True)
+        _label = Widgets.make_label(
+            _(u"This is the RTK incident affected "
+              u"component assistant.  It will help "
+              u"you add an affected component to the "
+              u"currently selected program Incident.  "
+              u"Press 'Forward' to continue or "
+              u"'Cancel' to quit the assistant."),
+            width=-1,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -542,8 +567,8 @@ class AddComponents(object):
         self.fxdPageGeneral = gtk.Fixed()
 
         _labels = [_(u"Select Component*:")]
-        (_x_pos, _y_pos) = Widgets.make_labels(_labels,
-                                               self.fxdPageGeneral, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(_labels, self.fxdPageGeneral, 5,
+                                               5)
         _x_pos += 40
 
         self.fxdPageGeneral.put(self.cmbHardware, _x_pos, _y_pos[0])
@@ -554,26 +579,30 @@ class AddComponents(object):
         self.assistant.append_page(self.fxdPageGeneral)
         self.assistant.set_page_type(self.fxdPageGeneral,
                                      gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(self.fxdPageGeneral, _(u"Select "
-                                                             u"Component"))
+        self.assistant.set_page_title(self.fxdPageGeneral,
+                                      _(u"Select "
+                                        u"Component"))
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the confirmation page.                                     #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fixed = gtk.Fixed()
 
-        _label = Widgets.make_label(_(u"Press 'Apply' to add the affected "
-                                      u"component or 'Cancel' to quit the "
-                                      u"assistant without adding the "
-                                      u"component."),
-                                    width=-1, height=-1, wrap=True)
+        _label = Widgets.make_label(
+            _(u"Press 'Apply' to add the affected "
+              u"component or 'Cancel' to quit the "
+              u"assistant without adding the "
+              u"component."),
+            width=-1,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
 
         self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
-        self.assistant.set_page_title(_fixed, _(u"Confirm Addition of the New "
-                                                u"Component"))
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_title(_fixed,
+                                      _(u"Confirm Addition of the New "
+                                        u"Component"))
         self.assistant.set_page_complete(_fixed, True)
 
         self.assistant.show_all()
@@ -640,25 +669,38 @@ class FilterIncident(object):
     """
 
     # Lists of search criteria to use for the various gtk.Combo widgets.
-    _criteria0 = [["="], ["!="], [">"], ["<"], [">="], ["<="],
-                  [_("LIKE")], [_("NOT LIKE")]]
+    _criteria0 = [["="], ["!="], [">"], ["<"], [">="], ["<="], [_("LIKE")],
+                  [_("NOT LIKE")]]
     _criteria1 = [[_("LIKE")], [_("NOT LIKE")]]
     _criteria2 = [["="], ["!="], [">"], ["<"], [">="], ["<="]]
     _criteria3 = [["="], ["!="]]
 
     _compound = [[_("AND")], [_("OR")]]
 
-    _fi_tab_labels = [[_("Incident ID:"), _("Incident Category:"),
-                       _("Incident Type:"), _("Incident Status:"),
-                       _("Incident Criticality:"), _("Incident Age:"),
-                       _("Incident Lifecycle:"), _("Affected Assembly:")],
-                      [_("Short Description:"), _("Long Description:"),
-                       _("Remarks:"), _("Analysis:")],
-                      [_("Found in Test:"), _("Found in Test Case:")],
-                      [_("Requested By:"), _("Requested Date:"),
-                       _("Reviewed By:"), _("Reviewed Date:"),
-                       _("Approved By:"), _("Approved Date:"),
-                       _("Closed By:"), _("Closed Date:")]]
+    _fi_tab_labels = [[
+        _("Incident ID:"),
+        _("Incident Category:"),
+        _("Incident Type:"),
+        _("Incident Status:"),
+        _("Incident Criticality:"),
+        _("Incident Age:"),
+        _("Incident Lifecycle:"),
+        _("Affected Assembly:")
+    ], [
+        _("Short Description:"),
+        _("Long Description:"),
+        _("Remarks:"),
+        _("Analysis:")
+    ], [_("Found in Test:"), _("Found in Test Case:")], [
+        _("Requested By:"),
+        _("Requested Date:"),
+        _("Reviewed By:"),
+        _("Reviewed Date:"),
+        _("Approved By:"),
+        _("Approved Date:"),
+        _("Closed By:"),
+        _("Closed Date:")
+    ]]
 
     def __init__(self, revision_id, modulebook):
         """
@@ -669,7 +711,7 @@ class FilterIncident(object):
         :param modulebook: the :py:class:`rtk.Incident.ModuleBook` to add the
                            the new incident to.
         """
-# WARNING: Refactor __init__; current McCabe Complexity metric = 13.
+        # WARNING: Refactor __init__; current McCabe Complexity metric = 13.
         self._revision_id = revision_id
         self._modulebook = modulebook
 
@@ -791,28 +833,36 @@ class FilterIncident(object):
             self.cmbFilterLifeCycle.append_text(Configuration.RTK_LIFECYCLE[i])
 
         Widgets.load_combo(self.cmbCriteriaAssembly, self._criteria3)
-        Widgets.load_combo(self.cmbAssembly, Configuration.RTK_HARDWARE_LIST,
-                           simple=False)
+        Widgets.load_combo(
+            self.cmbAssembly, Configuration.RTK_HARDWARE_LIST, simple=False)
 
         # Set the tooltips.
-        self.txtFilterID.set_tooltip_text(_(u"Sets the incident ID filter "
-                                            u"criterion."))
-        self.cmbFilterCategory.set_tooltip_text(_(u"Sets the incident "
-                                                  u"category filter "
-                                                  u"criterion."))
-        self.cmbFilterType.set_tooltip_text(_(u"Sets the incident type filter "
-                                              u"criterion."))
-        self.cmbFilterStatus.set_tooltip_text(_(u"Sets the incident status "
-                                                u"filter criterion."))
-        self.cmbFilterCriticality.set_tooltip_text(_(u"Sets the incident "
-                                                     u"criticality filter "
-                                                     u"criterion."))
-        self.txtFilterAge.set_tooltip_text(_(u"Sets the incident age filter "
-                                             u"criterion."))
-        self.cmbFilterLifeCycle.set_tooltip_text(_(u"Sets the incident life "
-                                                   u"cycle filter criterion."))
-        self.cmbAssembly.set_tooltip_text(_(u"Sets the affected assembly "
-                                            u"filter criterion."))
+        self.txtFilterID.set_tooltip_text(
+            _(u"Sets the incident ID filter "
+              u"criterion."))
+        self.cmbFilterCategory.set_tooltip_text(
+            _(u"Sets the incident "
+              u"category filter "
+              u"criterion."))
+        self.cmbFilterType.set_tooltip_text(
+            _(u"Sets the incident type filter "
+              u"criterion."))
+        self.cmbFilterStatus.set_tooltip_text(
+            _(u"Sets the incident status "
+              u"filter criterion."))
+        self.cmbFilterCriticality.set_tooltip_text(
+            _(u"Sets the incident "
+              u"criticality filter "
+              u"criterion."))
+        self.txtFilterAge.set_tooltip_text(
+            _(u"Sets the incident age filter "
+              u"criterion."))
+        self.cmbFilterLifeCycle.set_tooltip_text(
+            _(u"Sets the incident life "
+              u"cycle filter criterion."))
+        self.cmbAssembly.set_tooltip_text(
+            _(u"Sets the affected assembly "
+              u"filter criterion."))
 
         fixed = gtk.Fixed()
 
@@ -862,8 +912,9 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed, _(u"Set Filter Criteria: "
-                                               u"Incident Details"))
+        self.assistant.set_page_title(fixed,
+                                      _(u"Set Filter Criteria: "
+                                        u"Incident Details"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to select filter criteria related to the short
@@ -871,29 +922,33 @@ class FilterIncident(object):
         self.cmbCriteriaShortDesc = Widgets.make_combo(width=100)
         Widgets.load_combo(self.cmbCriteriaShortDesc, self._criteria1)
         self.txtFilterShortDesc = Widgets.make_entry(width=100)
-        self.txtFilterShortDesc.set_tooltip_text(_(u"Sets the field incident "
-                                                   u"short description filter "
-                                                   u"criterion."))
+        self.txtFilterShortDesc.set_tooltip_text(
+            _(u"Sets the field incident "
+              u"short description filter "
+              u"criterion."))
 
         self.cmbCriteriaLongDesc = Widgets.make_combo(width=100)
         Widgets.load_combo(self.cmbCriteriaLongDesc, self._criteria1)
         self.txtFilterLongDesc = Widgets.make_entry(width=100)
-        self.txtFilterLongDesc.set_tooltip_text(_(u"Sets the incident long "
-                                                  u"description filter "
-                                                  u"criterion."))
+        self.txtFilterLongDesc.set_tooltip_text(
+            _(u"Sets the incident long "
+              u"description filter "
+              u"criterion."))
 
         self.cmbCriteriaRemarks = Widgets.make_combo(width=100)
         Widgets.load_combo(self.cmbCriteriaRemarks, self._criteria1)
         self.txtFilterRemarks = Widgets.make_entry(width=100)
-        self.txtFilterRemarks.set_tooltip_text(_(u"Sets the incident closure "
-                                                 u"remarks filter criterion."))
+        self.txtFilterRemarks.set_tooltip_text(
+            _(u"Sets the incident closure "
+              u"remarks filter criterion."))
 
         self.cmbCriteriaAnalysis = Widgets.make_combo(width=100)
         Widgets.load_combo(self.cmbCriteriaAnalysis, self._criteria1)
         self.txtFilterAnalysis = Widgets.make_entry(width=100)
-        self.txtFilterAnalysis.set_tooltip_text(_(u"Sets the incident "
-                                                  u"analysis filter "
-                                                  u"criterion."))
+        self.txtFilterAnalysis.set_tooltip_text(
+            _(u"Sets the incident "
+              u"analysis filter "
+              u"criterion."))
 
         fixed = gtk.Fixed()
 
@@ -924,9 +979,10 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed, _(u"Set Filter Criteria: "
-                                               u"Descriptions, Remarks, and "
-                                               u"Analysis"))
+        self.assistant.set_page_title(fixed,
+                                      _(u"Set Filter Criteria: "
+                                        u"Descriptions, Remarks, and "
+                                        u"Analysis"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to select filter criteria related to the test and
@@ -934,14 +990,16 @@ class FilterIncident(object):
         self.cmbCriteriaTest = Widgets.make_combo(width=100)
         Widgets.load_combo(self.cmbCriteriaTest, self._criteria1)
         self.txtFilterTest = Widgets.make_entry(width=100)
-        self.txtFilterTest.set_tooltip_text(_(u"Sets the incident test filter "
-                                              u"criterion."))
+        self.txtFilterTest.set_tooltip_text(
+            _(u"Sets the incident test filter "
+              u"criterion."))
 
         self.cmbCriteriaTestCase = Widgets.make_combo(width=100)
         Widgets.load_combo(self.cmbCriteriaTestCase, self._criteria1)
         self.txtFilterTestCase = Widgets.make_entry(width=100)
-        self.txtFilterTestCase.set_tooltip_text(_(u"Sets the incident test "
-                                                  u"case filter criterion."))
+        self.txtFilterTestCase.set_tooltip_text(
+            _(u"Sets the incident test "
+              u"case filter criterion."))
 
         fixed = gtk.Fixed()
 
@@ -962,8 +1020,9 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed, _(u"Set Filter Criteria: Test "
-                                               u"Information"))
+        self.assistant.set_page_title(fixed,
+                                      _(u"Set Filter Criteria: Test "
+                                        u"Information"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to select filter criteria reliated to the request by,
@@ -1018,32 +1077,42 @@ class FilterIncident(object):
         Widgets.load_combo(self.cmbCriteriaCloseDate, self._criteria2)
 
         # Set the tooltips
-        self.cmbFilterRequestBy.set_tooltip_text(_(u"Sets the incident "
-                                                   u"requested by filter "
-                                                   u"criterion."))
-        self.txtFilterRequestDate.set_tooltip_text(_(u"Sets the incident "
-                                                     u"requested date filter "
-                                                     u"criterion."))
-        self.cmbFilterReviewBy.set_tooltip_text(_(u"Sets the incident "
-                                                  u"reviewed by filter "
-                                                  u"criterion."))
-        self.txtFilterReviewDate.set_tooltip_text(_(u"Sets the incident "
-                                                    u"reviewed date filter "
-                                                    u"criterion."))
-        self.cmbFilterApproveBy.set_tooltip_text(_(u"Sets the incident "
-                                                   u"approved by filter "
-                                                   u"criterion."))
-        self.txtFilterApproveDate.set_tooltip_text(_(u"Sets the incident "
-                                                     u"approved date filter "
-                                                     u"criterion."))
-        self.cmbFilterCloseBy.set_tooltip_text(_(u"Sets the incident closed "
-                                                 u"by filter criterion."))
-        self.txtFilterCloseDate.set_tooltip_text(_(u"Sets the incident closed "
-                                                   u"date filter criterion."))
-        self.chkFilterAccepted.set_tooltip_text(_(u"Only return accepted or "
-                                                  u"unaccepted incidents."))
-        self.chkFilterReviewed.set_tooltip_text(_(u"Only return reviewed or "
-                                                  u"unreviewed incidents."))
+        self.cmbFilterRequestBy.set_tooltip_text(
+            _(u"Sets the incident "
+              u"requested by filter "
+              u"criterion."))
+        self.txtFilterRequestDate.set_tooltip_text(
+            _(u"Sets the incident "
+              u"requested date filter "
+              u"criterion."))
+        self.cmbFilterReviewBy.set_tooltip_text(
+            _(u"Sets the incident "
+              u"reviewed by filter "
+              u"criterion."))
+        self.txtFilterReviewDate.set_tooltip_text(
+            _(u"Sets the incident "
+              u"reviewed date filter "
+              u"criterion."))
+        self.cmbFilterApproveBy.set_tooltip_text(
+            _(u"Sets the incident "
+              u"approved by filter "
+              u"criterion."))
+        self.txtFilterApproveDate.set_tooltip_text(
+            _(u"Sets the incident "
+              u"approved date filter "
+              u"criterion."))
+        self.cmbFilterCloseBy.set_tooltip_text(
+            _(u"Sets the incident closed "
+              u"by filter criterion."))
+        self.txtFilterCloseDate.set_tooltip_text(
+            _(u"Sets the incident closed "
+              u"date filter criterion."))
+        self.chkFilterAccepted.set_tooltip_text(
+            _(u"Only return accepted or "
+              u"unaccepted incidents."))
+        self.chkFilterReviewed.set_tooltip_text(
+            _(u"Only return reviewed or "
+              u"unreviewed incidents."))
 
         fixed = gtk.Fixed()
 
@@ -1098,8 +1167,9 @@ class FilterIncident(object):
 
         self.assistant.append_page(fixed)
         self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(fixed, _(u"Set Filter Criteria: People "
-                                               u"and Dates"))
+        self.assistant.set_page_title(fixed,
+                                      _(u"Set Filter Criteria: People "
+                                        u"and Dates"))
         self.assistant.set_page_complete(fixed, True)
 
         # Create the page to apply the filter criteria.
@@ -1121,7 +1191,7 @@ class FilterIncident(object):
 
         :param gtk.Button __button: the gtk.Button() that called this method.
         """
-# WARNING: Refactor _filter; current McCabe Complexity metric = 54.
+        # WARNING: Refactor _filter; current McCabe Complexity metric = 54.
         _criteria = []
         _inputs = []
         _compound = []
@@ -1233,7 +1303,7 @@ class FilterIncident(object):
         elif Configuration.RTK_MODULES[0] == 1:
             query = "SELECT * FROM rtk_incident \
                      WHERE fld_revision_id={0:d} AND ".format(
-                         self._revision_id)
+                self._revision_id)
         else:
             query = "SELECT * FROM rtk_incident \
                      WHERE fld_revision_id=0 AND "
@@ -1420,13 +1490,16 @@ class ImportIncident(gtk.Assistant):
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _label = Widgets.make_label(_(u"This is the RTK incident import "
-                                      u"assistant.  It will help you import "
-                                      u"program incidents to the database "
-                                      u"from external files.  Press 'Forward' "
-                                      u"to continue or 'Cancel' to quit the "
-                                      u"assistant."), width=600, height=-1,
-                                    wrap=True)
+        _label = Widgets.make_label(
+            _(u"This is the RTK incident import "
+              u"assistant.  It will help you import "
+              u"program incidents to the database "
+              u"from external files.  Press 'Forward' "
+              u"to continue or 'Cancel' to quit the "
+              u"assistant."),
+            width=600,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -1469,18 +1542,20 @@ class ImportIncident(gtk.Assistant):
         self.tvwFileFields.append_column(_column)
 
         _title = _(u"RTK: Import Hardware from File ...")
-        (_file_fields,
-         self._file_contents) = Widgets.select_source_file(self, _title)
+        (_file_fields, self._file_contents) = Widgets.select_source_file(
+            self, _title)
         if len(_file_fields) == 0:
-            Widgets.rtk_information(_(u"Source file must have headings for "
-                                      u"each column of data.  Please add "
-                                      u"headings to the source file and try "
-                                      u"again."))
+            Widgets.rtk_information(
+                _(u"Source file must have headings for "
+                  u"each column of data.  Please add "
+                  u"headings to the source file and try "
+                  u"again."))
             self._cancel()
         if len(self._file_contents) == 0:
-            Widgets.rtk_warning(_(u"No data was found in the source file.  "
-                                  u"Please check the contents of the source "
-                                  u"file and try again."))
+            Widgets.rtk_warning(
+                _(u"No data was found in the source file.  "
+                  u"Please check the contents of the source "
+                  u"file and try again."))
             self._cancel()
 
         _cell = gtk.CellRendererCombo()
@@ -1509,22 +1584,48 @@ class ImportIncident(gtk.Assistant):
 
         _cell.connect('changed', self._callback_combo_cell, 2, _model)
 
-        _db_fields = [_(u"Revision ID"), _(u"Incident ID"),
-                      _(u"Incident Category"), _(u"Incident Type"),
-                      _(u"Short Description"), _(u"Long Description"),
-                      _(u"Criticality"), _(u"Detection Method"),
-                      _(u"Remarks"), _(u"Status"), _(u"Found During Test"),
-                      _(u"Found During Test Case"), _(u"Execution Time"),
-                      _(u"Affected Unit"), _(u"Incident Cost"),
-                      _(u"Incident Age"), _(u"Hardware ID"), _(u"Software ID"),
-                      _(u"Requested By"), _(u"Request Date"), _(u"Reviewed"),
-                      _(u"Reviewed By"), _(u"Reviewed Date"), _(u"Approved"),
-                      _(u"Approved By"), _(u"Approved Date"), _(u"Closed"),
-                      _(u"Closed By"), _(u"Closed Date"), _(u"Life Cycle"),
-                      _(u"Analysis"), _(u"Accepted"), _(u"Part Number"),
-                      _(u"Age at Incident"), _(u"Failure"), _(u"Suspension"),
-                      _(u"No Fault Found"), _(u"Out of Calibration"),
-                      _(u"Initial Installation"), _(u"Interval Censored")]
+        _db_fields = [
+            _(u"Revision ID"),
+            _(u"Incident ID"),
+            _(u"Incident Category"),
+            _(u"Incident Type"),
+            _(u"Short Description"),
+            _(u"Long Description"),
+            _(u"Criticality"),
+            _(u"Detection Method"),
+            _(u"Remarks"),
+            _(u"Status"),
+            _(u"Found During Test"),
+            _(u"Found During Test Case"),
+            _(u"Execution Time"),
+            _(u"Affected Unit"),
+            _(u"Incident Cost"),
+            _(u"Incident Age"),
+            _(u"Hardware ID"),
+            _(u"Software ID"),
+            _(u"Requested By"),
+            _(u"Request Date"),
+            _(u"Reviewed"),
+            _(u"Reviewed By"),
+            _(u"Reviewed Date"),
+            _(u"Approved"),
+            _(u"Approved By"),
+            _(u"Approved Date"),
+            _(u"Closed"),
+            _(u"Closed By"),
+            _(u"Closed Date"),
+            _(u"Life Cycle"),
+            _(u"Analysis"),
+            _(u"Accepted"),
+            _(u"Part Number"),
+            _(u"Age at Incident"),
+            _(u"Failure"),
+            _(u"Suspension"),
+            _(u"No Fault Found"),
+            _(u"Out of Calibration"),
+            _(u"Initial Installation"),
+            _(u"Interval Censored")
+        ]
 
         for _index, _fields in enumerate(_db_fields):
             _model.append([_index, _fields, ""])
@@ -1536,10 +1637,13 @@ class ImportIncident(gtk.Assistant):
 
         # Create the page to apply the import criteria.
         _fixed = gtk.Fixed()
-        _label = Widgets.make_label(_(u"Press 'Apply' to import the requested "
-                                      u"data or 'Cancel' to quit the "
-                                      u"assistant."),
-                                    width=600, height=-1, wrap=True)
+        _label = Widgets.make_label(
+            _(u"Press 'Apply' to import the requested "
+              u"data or 'Cancel' to quit the "
+              u"assistant."),
+            width=600,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
@@ -1603,7 +1707,7 @@ class ImportIncident(gtk.Assistant):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# WARNING: Refactor _import; current McCabe Complexity metric = 18.
+        # WARNING: Refactor _import; current McCabe Complexity metric = 18.
         Widgets.set_cursor(self.modulebook.mdcRTK, gtk.gdk.WATCH)
 
         _import_errors = 0
@@ -1616,8 +1720,9 @@ class ImportIncident(gtk.Assistant):
         elif Configuration.BACKEND == 'sqlite3':
             _query = "SELECT COALESCE(MAX(fld_incident_id)+1, 0) \
                       FROM rtk_incident"
-        (_num_incidents, _error_code, __) = self._dao.execute(_query,
-                                                              commit=False)
+
+        (_num_incidents, _error_code, __) = self._dao.execute(
+            _query, commit=False)
         for i in range(len(self._file_contents) - 1):
             _contents = []
 
@@ -1635,7 +1740,7 @@ class ImportIncident(gtk.Assistant):
 
             # Remove any single and double quotes from the description and
             # remarks fields.
-            for j in[4, 5, 8]:
+            for j in [4, 5, 8]:
                 _contents[j] = _contents[j].replace('\'', '')
                 _contents[j] = _contents[j].replace('\"', '')
 
@@ -1648,8 +1753,10 @@ class ImportIncident(gtk.Assistant):
                 _contents[j] = Utilities.date_to_ordinal(_contents[j])
 
             # Convert missing values to correct default value.
-            for j in [0, 1, 2, 3, 6, 7, 13, 15, 18, 20, 21, 23, 24, 26, 27,
-                      29, 31, 32, 35, 36, 37, 38, 39]:
+            for j in [
+                    0, 1, 2, 3, 6, 7, 13, 15, 18, 20, 21, 23, 24, 26, 27, 29,
+                    31, 32, 35, 36, 37, 38, 39
+            ]:
                 try:
                     _contents[j] = Utilities.missing_to_default(
                         int(_contents[j]), 0)
@@ -1699,24 +1806,17 @@ class ImportIncident(gtk.Assistant):
                               {16:d}, {17:d}, {18:d}, {19:d}, {20:d}, \
                               {21:d}, {22:d}, {23:d}, {24:d}, {25:d}, \
                               {26:d}, {27:d}, {28:d}, {29:d}, '{30:s}', \
-                              {31:d})".format(_contents[0], _contents[1],
-                                              _contents[2], _contents[3],
-                                              _contents[4], _contents[5],
-                                              _contents[6], _contents[7],
-                                              _contents[8], _contents[9],
-                                              _contents[10], _contents[11],
-                                              _contents[12], _contents[13],
-                                              _contents[14], _contents[15],
-                                              _contents[16], _contents[17],
-                                              _contents[18], _contents[19],
-                                              _contents[20], _contents[21],
-                                              _contents[22], _contents[23],
-                                              _contents[24], _contents[25],
-                                              _contents[26], _contents[27],
-                                              _contents[28], _contents[29],
-                                              _contents[30], _contents[31])
-            (_results,
-             _error_code, __) = self._dao.execute(_query, commit=True)
+                              {31:d})".format(
+                _contents[0], _contents[1], _contents[2], _contents[3],
+                _contents[4], _contents[5], _contents[6], _contents[7],
+                _contents[8], _contents[9], _contents[10], _contents[11],
+                _contents[12], _contents[13], _contents[14], _contents[15],
+                _contents[16], _contents[17], _contents[18], _contents[19],
+                _contents[20], _contents[21], _contents[22], _contents[23],
+                _contents[24], _contents[25], _contents[26], _contents[27],
+                _contents[28], _contents[29], _contents[30], _contents[31])
+            (_results, _error_code, __) = self._dao.execute(
+                _query, commit=True)
 
             if _error_code == 0:
                 _query = "INSERT INTO rtk_incident_detail \
@@ -1726,23 +1826,23 @@ class ImportIncident(gtk.Assistant):
                            fld_initial_installation, fld_interval_censored) \
                           VALUES ({0:d}, {1:d}, {2:f}, {3:d}, \
                                   {4:d}, {5:d}, {6:d}, {7:d}, \
-                                  {8:d})".format(_contents[1], _contents[32],
-                                                 _contents[33], _contents[34],
-                                                 _contents[35], _contents[36],
-                                                 _contents[37], _contents[38],
-                                                 _contents[39])
-                (_results,
-                 _error_code, __) = self._dao.execute(_query, commit=True)
+                                  {8:d})".format(
+                    _contents[1], _contents[32], _contents[33], _contents[34],
+                    _contents[35], _contents[36], _contents[37], _contents[38],
+                    _contents[39])
+                (_results, _error_code, __) = self._dao.execute(
+                    _query, commit=True)
             else:
-                self._import_log.info('{0:d} - {1:s}'.format(_contents[1],
-                                                             _contents[4]))
+                self._import_log.info('{0:d} - {1:s}'.format(
+                    _contents[1], _contents[4]))
                 _import_errors += 1
 
         if _import_errors > 0:
-            Widgets.rtk_information(_(u"Error importing {0:d} program "
-                                      u"incidents.  Refer to the import log "
-                                      u"{1:s} for more details.").format(
-                                          _import_errors, self._import_log))
+            Widgets.rtk_information(
+                _(u"Error importing {0:d} program "
+                  u"incidents.  Refer to the import log "
+                  u"{1:s} for more details.").format(_import_errors,
+                                                     self._import_log))
 
         Widgets.set_cursor(self.modulebook.mdcRTK, gtk.gdk.LEFT_PTR)
 
@@ -1785,21 +1885,25 @@ class CreateDataSet(object):
         self._error_log = self._mdcRTK.debug_log
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_(u"RTK Survival Data Set Creation "
-                                   u"Assistant"))
+        self.assistant.set_title(
+            _(u"RTK Survival Data Set Creation "
+              u"Assistant"))
         self.assistant.connect('apply', self._create)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _label = Widgets.make_label(_(u"This is the RTK survival data set "
-                                      u"assistant.  It will help you create a "
-                                      u"data set for survival (Weibull) "
-                                      u"analysis from the Program Incidents.  "
-                                      u"Press 'Forward' to continue or "
-                                      u"'Cancel' to quit the assistant."),
-                                    width=600, height=150, wrap=True)
+        _label = Widgets.make_label(
+            _(u"This is the RTK survival data set "
+              u"assistant.  It will help you create a "
+              u"data set for survival (Weibull) "
+              u"analysis from the Program Incidents.  "
+              u"Press 'Forward' to continue or "
+              u"'Cancel' to quit the assistant."),
+            width=600,
+            height=150,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -1814,29 +1918,34 @@ class CreateDataSet(object):
         _frame.add(_fixed)
 
         # Create the radio buttons that select the output as database or file.
-        self.optDatabase = gtk.RadioButton(label=_(u"Save Data Set to "
-                                                   u"Database"))
-        self.optFile = gtk.RadioButton(group=self.optDatabase,
-                                       label=_(u"Save Data Set to File"))
-        self.chkNevadaChart = Widgets.make_check_button(label=_(u"Create "
-                                                                u"Nevada "
-                                                                u"chart from "
-                                                                u"data."))
+        self.optDatabase = gtk.RadioButton(
+            label=_(u"Save Data Set to "
+                    u"Database"))
+        self.optFile = gtk.RadioButton(
+            group=self.optDatabase, label=_(u"Save Data Set to File"))
+        self.chkNevadaChart = Widgets.make_check_button(
+            label=_(u"Create "
+                    u"Nevada "
+                    u"chart from "
+                    u"data."))
 
         _fixed.put(self.optDatabase, 5, 5)
         _fixed.put(self.optFile, 5, 35)
         _fixed.put(self.chkNevadaChart, 5, 65)
 
         # Create the radio buttons that allow choice of MTTF or MTBF estimates.
-        self.optMTTF = gtk.RadioButton(label=_(u"Include only the first "
-                                               u"failure time for each unit."))
-        self.optMTBBD = gtk.RadioButton(group=self.optMTTF,
-                                        label=_(u"Include only distinct "
-                                                u"failure times for each "
-                                                u"unit."))
-        self.optMTBF = gtk.RadioButton(group=self.optMTTF,
-                                       label=_(u"Include all failure times "
-                                               u"for each unit."))
+        self.optMTTF = gtk.RadioButton(
+            label=_(u"Include only the first "
+                    u"failure time for each unit."))
+        self.optMTBBD = gtk.RadioButton(
+            group=self.optMTTF,
+            label=_(u"Include only distinct "
+                    u"failure times for each "
+                    u"unit."))
+        self.optMTBF = gtk.RadioButton(
+            group=self.optMTTF,
+            label=_(u"Include all failure times "
+                    u"for each unit."))
 
         _fixed.put(self.optMTTF, 5, 105)
         _fixed.put(self.optMTBBD, 5, 135)
@@ -1851,8 +1960,9 @@ class CreateDataSet(object):
 
         self.assistant.append_page(_frame)
         self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(_frame, _(u"Select Where to Save Data "
-                                                u"Set"))
+        self.assistant.set_page_title(_frame,
+                                      _(u"Select Where to Save Data "
+                                        u"Set"))
         self.assistant.set_page_complete(_frame, True)
 
         # Create a page to select where data set should be saved.
@@ -1892,13 +2002,15 @@ class CreateDataSet(object):
 
         # Create the page to apply the import criteria.
         _fixed = gtk.Fixed()
-        _label = Widgets.make_label(_(u"Press 'Apply' to create the requested "
-                                      u"data set or 'Cancel' to quit the "
-                                      u"assistant."), width=600, height=150)
+        _label = Widgets.make_label(
+            _(u"Press 'Apply' to create the requested "
+              u"data set or 'Cancel' to quit the "
+              u"assistant."),
+            width=600,
+            height=150)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
         self.assistant.set_page_title(_fixed, _(u"Create Data Set"))
         self.assistant.set_page_complete(_fixed, True)
 
@@ -1938,23 +2050,22 @@ class CreateDataSet(object):
         _window.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
         if _n_inconsistent > 0:
-            Widgets.rtk_information(_(u"There were {0:d} records with "
-                                      u"inconsistent information.  These "
-                                      u"were not used in the creation of "
-                                      u"the dataset. Please see file "
-                                      u"{1:s} for "
-                                      u"details.".format(
-                                          _n_inconsistent,
-                                          Configuration.LOG_DIR +
-                                          'RTK_error.log')))
+            Widgets.rtk_information(
+                _(u"There were {0:d} records with "
+                  u"inconsistent information.  These "
+                  u"were not used in the creation of "
+                  u"the dataset. Please see file "
+                  u"{1:s} for "
+                  u"details.".format(_n_inconsistent,
+                                     Configuration.LOG_DIR + 'RTK_error.log')))
 
         # Load the dataset gtk.TreeView with the newly created dataset if it
         # was created in the RTK Program database.
         #if self.optDatabase.get_active():
-            # self._mdcRTK.load_tree()
-            # self._app.DATASET.load_notebook()
-            # _page = sum(Configuration.RTK_MODULES[:11])
-            # self._app.winTree.notebook.set_current_page(_page)
+        # self._mdcRTK.load_tree()
+        # self._app.DATASET.load_notebook()
+        # _page = sum(Configuration.RTK_MODULES[:11])
+        # self._app.winTree.notebook.set_current_page(_page)
 
         return False
 
@@ -2044,7 +2155,7 @@ class CreateDataSet(object):
 
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def _create_database_dataset(self, records):
         """
@@ -2094,8 +2205,7 @@ class CreateDataSet(object):
                   (fld_survival_id, fld_assembly_id, fld_description, \
                    fld_confidence) \
                   VALUES ({0:d}, {1:d}, '{2:s}', {3:f})".format(
-                      _survival_id, _assembly_id, _description,
-                      _confidence)
+            _survival_id, _assembly_id, _description, _confidence)
         (_results, __, __) = self._dao.execute(_query, commit=True)
 
         if not _results:
@@ -2112,6 +2222,7 @@ class CreateDataSet(object):
                             fld_failure_date) \
                            VALUES ({0:d}, {1:d}, {2:f}, {3:f}, {4:d}, {5:d}, \
                                    {6:f}, {7:d})"
+
             _values = (0, _survival_id, 0.0, float(records[0][2]), 3, 1,
                        float(records[0][2]), _failure_date)
 
@@ -2145,7 +2256,7 @@ class CreateDataSet(object):
                 _values = (i, _survival_id, _left, _right, 3, 1, _tbf,
                            _failure_date)
 
-        return(_error_codes, _n_inconsistent)
+        return (_error_codes, _n_inconsistent)
 
     def _create_file_dataset(self, records):
         """
@@ -2173,12 +2284,11 @@ class CreateDataSet(object):
         _n_inconsistent = 0
         _n_records = len(records)
 
-        _dialog = gtk.FileChooserDialog(_(u"RTK: Save Data Set to File ..."),
-                                        None,
-                                        gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                        (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                         gtk.STOCK_CANCEL,
-                                         gtk.RESPONSE_REJECT))
+        _dialog = gtk.FileChooserDialog(
+            _(u"RTK: Save Data Set to File ..."), None,
+            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+             gtk.RESPONSE_REJECT))
         _dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
             _filename = _dialog.get_filename()
@@ -2186,10 +2296,12 @@ class CreateDataSet(object):
         _dialog.destroy()
 
         _file = open(_filename, 'w')
-        _file.write("Data Set Description: " +
-                    self.txtDescription.get_text() + "\n")
+        _file.write(
+            "Data Set Description: " + self.txtDescription.get_text() + "\n")
         _file.write("\n")
-        _file.write("Record_ID\tRequest_Date\tLeft\tRight\tStatus\tQuantity\tUnit\tTBF\tAssembly_ID\n")
+        _file.write(
+            "Record_ID\tRequest_Date\tLeft\tRight\tStatus\tQuantity\tUnit\tTBF\tAssembly_ID\n"
+        )
 
         # Write the first record to the open file.
         _file.write('0\t' + str(records[0][9]) + '0\t' + str(records[0][2]) +
@@ -2208,12 +2320,12 @@ class CreateDataSet(object):
                                         records[i][2], records[i - 1][2])
             _right = float(records[i][2])
             _tbf = _right - _left
-            _file.write(str(i) + '\t' + str(records[0][9]) + str(_left) +
-                        '\t' + str(_right) + '\t3\t1\t' +
-                        str(records[0][0]) + '\t' + str(_tbf) + '\t' +
-                        str(records[0][10]) + '\n')
+            _file.write(
+                str(i) + '\t' + str(records[0][9]) + str(_left) + '\t' +
+                str(_right) + '\t3\t1\t' + str(records[0][0]) + '\t' +
+                str(_tbf) + '\t' + str(records[0][10]) + '\n')
 
-        return(_error_codes, _n_inconsistent)
+        return (_error_codes, _n_inconsistent)
 
     def _interval_left(self, current_id, previous_id, current_time,
                        previous_time):
@@ -2232,7 +2344,7 @@ class CreateDataSet(object):
         _left = 0.0
 
         # Create the next set of values to insert to the RTK Program database.
-        if current_id == previous_id:       # Same assembly.
+        if current_id == previous_id:  # Same assembly.
             # Failures occurred at same time.
             if current_time == previous_time:
                 _left = float(current_time)
@@ -2262,9 +2374,9 @@ class CreateDataSet(object):
                         u"on {1:s} is earlier than the failure time of record "
                         "#{2:d}, which occurred on {3:s} for unit {4:s}.  "
                         u"Failure dates should not decrease over "
-                        u"time.".format(int(results2[1]), _current_date,
-                                        int(results1[1]), _previous_date,
-                                        results2[0]))
+                        u"time.".format(
+                            int(results2[1]), _current_date, int(results1[1]),
+                            _previous_date, results2[0]))
             _return = True
 
         if _return:

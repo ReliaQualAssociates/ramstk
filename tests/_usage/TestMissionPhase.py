@@ -13,7 +13,10 @@ This is the test class for testing the Phase class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -45,11 +48,13 @@ class TestMissionPhaseDataModel(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
@@ -62,8 +67,8 @@ class TestMissionPhaseDataModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
 
         self.DUT = dtmMissionPhase(self.dao)
@@ -128,7 +133,7 @@ class TestMissionPhaseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                               'the RTK Program database.')
+                         'the RTK Program database.')
         self.assertEqual(self.DUT.last_id, 2)
 
     @attr(all=True, unit=True)
@@ -142,7 +147,7 @@ class TestMissionPhaseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
-                               'Program database.')
+                         'Program database.')
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
@@ -155,7 +160,7 @@ class TestMissionPhaseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                               'Mission Phase ID 300.')
+                         'Mission Phase ID 300.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
@@ -184,7 +189,7 @@ class TestMissionPhaseDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Mission Phase ID 100.')
+                         'Mission Phase ID 100.')
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):

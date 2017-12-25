@@ -10,11 +10,11 @@ The RTKLoadHistory Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKLoadHistory(RTK_BASE):
@@ -25,10 +25,14 @@ class RTKLoadHistory(RTK_BASE):
     __tablename__ = 'rtk_load_history'
     __table_args__ = {'extend_existing': True}
 
-    history_id = Column('fld_load_history_id', Integer, primary_key=True,
-                        autoincrement=True, nullable=False)
-    description = Column('fld_description', String(512),
-                         default='Load History Description')
+    history_id = Column(
+        'fld_load_history_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    description = Column(
+        'fld_description', String(512), default='Load History Description')
 
     def get_attributes(self):
         """
@@ -58,8 +62,8 @@ class RTKLoadHistory(RTK_BASE):
             format(self.history_id)
 
         try:
-            self.description = str(none_to_default(attributes[0],
-                                                   'Load History Description'))
+            self.description = str(
+                none_to_default(attributes[0], 'Load History Description'))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

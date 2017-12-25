@@ -11,11 +11,11 @@ The RTKTest Table
 """
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKTest(RTK_BASE):
@@ -29,11 +29,17 @@ class RTKTest(RTK_BASE):
     __tablename__ = 'rtk_test'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column('fld_revision_id', Integer,
-                         ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
-    test_id = Column('fld_test_id', Integer, primary_key=True,
-                     autoincrement=True, nullable=False)
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    test_id = Column(
+        'fld_test_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     assess_model_id = Column('fld_assess_model_id', Integer, default=0)
     attachment = Column('fld_attachment', String(512), default='')

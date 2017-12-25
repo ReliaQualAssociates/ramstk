@@ -4,7 +4,6 @@
 #       tests.unit.TestCeramic.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing Ceramic capacitor module algorithms and models.
 """
@@ -12,7 +11,10 @@ This is the test class for testing Ceramic capacitor module algorithms and model
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -54,15 +56,15 @@ class TestCeramicChipModel(unittest.TestCase):
 
         # Verify the Fixed Paper Bypass capacitor class was properly
         # initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 10.0, 5.0, 17.0, 4.0, 8.0,
-                                         16.0, 35.0, 24.0, 0.5, 13.0, 34.0,
-                                         610.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 10.0, 5.0, 17.0, 4.0, 8.0, 16.0, 35.0, 24.0, 0.5, 13.0,
+            34.0, 610.0
+        ])
         self.assertEqual(self.DUT._piQ, [0.03, 0.1, 0.3, 1.0, 3.0, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.00078, 0.0022, 0.013,
-                                                   0.0056, 0.023, 0.0077,
-                                                   0.015, 0.053, 0.12, 0.048,
-                                                   0.00039, 0.017, 0.065,
-                                                   0.68])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.00078, 0.0022, 0.013, 0.0056, 0.023, 0.0077, 0.015, 0.053, 0.12,
+            0.048, 0.00039, 0.017, 0.065, 0.68
+        ])
         self.assertEqual(self.DUT.subcategory, 50)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -199,14 +201,15 @@ class TestCeramicGeneralModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the General Ceramic capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 9.0, 5.0, 15.0, 4.0, 4.0,
-                                         8.0, 12.0, 20.0, 0.4, 13.0, 34.0,
-                                         610.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 9.0, 5.0, 15.0, 4.0, 4.0, 8.0, 12.0, 20.0, 0.4, 13.0,
+            34.0, 610.0
+        ])
         self.assertEqual(self.DUT._piQ, [0.03, 0.1, 0.3, 1.0, 3.0, 3.0, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0036, 0.0074, 0.034,
-                                                   0.019, 0.056, 0.015, 0.015,
-                                                   0.032, 0.048, 0.077, 0.0014,
-                                                   0.049, 0.13, 2.3])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0036, 0.0074, 0.034, 0.019, 0.056, 0.015, 0.015, 0.032, 0.048,
+            0.077, 0.0014, 0.049, 0.13, 2.3
+        ])
         self.assertEqual(self.DUT.subcategory, 49)
         self.assertEqual(self.DUT.reference_temperature, 358.0)
 

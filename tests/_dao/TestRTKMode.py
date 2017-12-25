@@ -13,7 +13,8 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -148,8 +149,8 @@ class TestRTKMode(unittest.TestCase):
 
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'remarks' in "
-                               "attribute dictionary passed to "
-                               "RTKMode.set_attributes().")
+                         "attribute dictionary passed to "
+                         "RTKMode.set_attributes().")
 
     @attr(all=True, unit=True)
     def test03a_calculate_criticality(self):

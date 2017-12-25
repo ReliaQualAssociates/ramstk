@@ -15,36 +15,36 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import mathematical functions.
 import lifelines as nonpar
 import numpy as np
-from scipy.stats import norm                # pylint: disable=E0611
+from scipy.stats import norm  # pylint: disable=E0611
 from math import sqrt
 
 
@@ -78,17 +78,17 @@ def turnbull_s(_tau_):
     for i in range(len(_So_) - 1):
         _p_.append([_So_[i] - _So_[i + 1]])
 
-    return(_p_)
+    return (_p_)
 
 
 def interv(x, inf, sup):
 
-    if(x[0] >= inf and x[1] <= sup):
+    if (x[0] >= inf and x[1] <= sup):
         _interv_ = 1
     else:
         _interv_ = 0
 
-    return(_interv_)
+    return (_interv_)
 
 
 def turnbull_A(_dataset_, _tau_):
@@ -104,16 +104,16 @@ def turnbull_A(_dataset_, _tau_):
         _idx_start_ = _tau_.index(_dataset_[i][0])
         _idx_stop_ = _tau_.index(_dataset_[i][1]) - 1
 
-        _a_ = [0]*(len(_left_) - 1)
+        _a_ = [0] * (len(_left_) - 1)
         for j in range(_idx_start_, _idx_stop_):
             _a_[j] = 1
 
-        if((_idx_stop_ - _idx_start_) == 0):
+        if ((_idx_stop_ - _idx_start_) == 0):
             _a_[_idx_start_] = 1
 
         _A_.append(_a_)
 
-    return(_A_)
+    return (_A_)
 
 
 def turnbull(_dataset_, _reltime_, _conf_=0.75, eps=1E-13, iter_max=200):
@@ -127,17 +127,17 @@ def turnbull(_dataset_, _reltime_, _conf_=0.75, eps=1E-13, iter_max=200):
 
     _l_ = [i[0] for i in _dataset_]
     _r_ = [i[1] for i in _dataset_]
-    _tau_ = list(set(_l_+_r_))
+    _tau_ = list(set(_l_ + _r_))
     _p_ = matrix(turnbull_s(_tau_))
     _A_ = matrix(turnbull_A(_dataset_, _tau_))
 
     _n_ = len(_dataset_)
     _m_ = len(_tau_) - 1
-    _Q_ = matrix([1]*_m_)
+    _Q_ = matrix([1] * _m_)
 
     i = 0
     _maxdiff_ = 1
-    while(_maxdiff_ >= eps and i < iter_max):
+    while (_maxdiff_ >= eps and i < iter_max):
 
         i += 1
         _diff_ = _Q_ - _p_

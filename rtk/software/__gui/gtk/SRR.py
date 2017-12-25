@@ -12,30 +12,30 @@ Software Package Risk Analysis Requirements Review Specific Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -234,17 +234,16 @@ class RiskAnalysis(gtk.VPaned):
         self._lst_handler_id.append(
             self.chkSRRQCQ8.connect('toggled', self._on_toggled, 30))
         self._lst_handler_id.append(
-            self.txtSRRQCQ9.connect('focus-out-event',
-                                    self._on_focus_out, 31))
+            self.txtSRRQCQ9.connect('focus-out-event', self._on_focus_out, 31))
         self._lst_handler_id.append(
-            self.txtSRRQCQ10.connect('focus-out-event',
-                                     self._on_focus_out, 32))
+            self.txtSRRQCQ10.connect('focus-out-event', self._on_focus_out,
+                                     32))
         self._lst_handler_id.append(
-            self.txtSRRQCQ11.connect('focus-out-event',
-                                     self._on_focus_out, 33))
+            self.txtSRRQCQ11.connect('focus-out-event', self._on_focus_out,
+                                     33))
         self._lst_handler_id.append(
-            self.txtSRRQCQ12.connect('focus-out-event',
-                                     self._on_focus_out, 34))
+            self.txtSRRQCQ12.connect('focus-out-event', self._on_focus_out,
+                                     34))
         self._lst_handler_id.append(
             self.chkSRRQCQ13.connect('toggled', self._on_toggled, 35))
         self._lst_handler_id.append(
@@ -307,68 +306,70 @@ class RiskAnalysis(gtk.VPaned):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Place the widgets used to display risk analysis information.  #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
-        _labels = [_(u" 1. Number of instances of different processes (or "
-                     u"functions, subfunctions) which are required to be\n"
-                     u"executed at the same time (i.e., concurrent "
-                     u"processing):"),
-                   _(u" 2. Number of instances of concurrent processing "
-                     u"required to be centrally controlled:"),
-                   _(u" 3. Number of error conditions required to be "
-                     u"recognized/identified:"),
-                   _(u" 4. Number of recognized error conditions that "
-                     u"require recovery or repair:"),
-                   _(u" 5. There is a standard for handling recognized "
-                     u"errors such that all error conditions are passed "
-                     u"to\nthe calling function."),
-                   _(u" 6. Number of instances of the same process (or "
-                     u"function, subfunction) being required to execute\n"
-                     u"more than once for comparison purposes (i.e., "
-                     u"polling of parallel or redundant\nprocessing "
-                     u"results):"),
-                   _(u" 7. Number of instances of parallel/redundant "
-                     u"processing that are required to be centrally "
-                     u"controlled:"),
-                   _(u" 8. Error tolerances are specified for all "
-                     u"applicable external input data\n(i.e., range of "
-                     u"numerical values, legal  combinations of "
-                     u"alphanumerical values)."),
-                   _(u" 9. There are requirements for detection of and/or "
-                     u"recovery from all computational failures."),
-                   _(u"10. There are requirements to range test all "
-                     u"critical loop and multiple transfer index "
-                     u"parameters before used."),
-                   _(u"11. There are requirements to range test all "
-                     u"critical subscript values before use."),
-                   _(u"12. There are requirements to range test all "
-                     u"critical output data before final outputting."),
-                   _(u"13. There are requirements for recovery from all "
-                     u"detected hardware faults."),
-                   _(u"14. There are requirements for recovery from all "
-                     u"I/O divide errors."),
-                   _(u"15. There are requirements for recovery from all "
-                     u"communication transmission errors."),
-                   _(u"16. There are requirements for recovery from all "
-                     u"failures to communicate with other nodes or other "
-                     u"systems."),
-                   _(u"17. There are requirements to periodically check "
-                     u"adjacent nodes or operating system for operational "
-                     u"status."),
-                   _(u"18. There are requirements to provide a strategy "
-                     u"for alternating routing of messages."),
-                   _(u"19. There are requirements to ensure communication "
-                     u"paths to all remaining\nnodes/communication links "
-                     u"in the event of a failure of one node/link."),
-                   _(u"20. There are requirements for maintaining the "
-                     u"integrity of all data values following the\n"
-                     u"occurence of anomalous conditions."),
-                   _(u"21. There are requirements to enable all "
-                     u"disconnected nodes to rejoin the network after "
-                     u"recovery, such\nthat the processing functions of "
-                     u"the system are not interrupted."),
-                   _(u"22. There are requirements to replicate all "
-                     u"critical data at two or more distinct nodes.")]
-        (_x_pos,
-         _y_pos1) = Widgets.make_labels(_labels, _fixed1, 5, 5, wrap=False)
+        _labels = [
+            _(u" 1. Number of instances of different processes (or "
+              u"functions, subfunctions) which are required to be\n"
+              u"executed at the same time (i.e., concurrent "
+              u"processing):"),
+            _(u" 2. Number of instances of concurrent processing "
+              u"required to be centrally controlled:"),
+            _(u" 3. Number of error conditions required to be "
+              u"recognized/identified:"),
+            _(u" 4. Number of recognized error conditions that "
+              u"require recovery or repair:"),
+            _(u" 5. There is a standard for handling recognized "
+              u"errors such that all error conditions are passed "
+              u"to\nthe calling function."),
+            _(u" 6. Number of instances of the same process (or "
+              u"function, subfunction) being required to execute\n"
+              u"more than once for comparison purposes (i.e., "
+              u"polling of parallel or redundant\nprocessing "
+              u"results):"),
+            _(u" 7. Number of instances of parallel/redundant "
+              u"processing that are required to be centrally "
+              u"controlled:"),
+            _(u" 8. Error tolerances are specified for all "
+              u"applicable external input data\n(i.e., range of "
+              u"numerical values, legal  combinations of "
+              u"alphanumerical values)."),
+            _(u" 9. There are requirements for detection of and/or "
+              u"recovery from all computational failures."),
+            _(u"10. There are requirements to range test all "
+              u"critical loop and multiple transfer index "
+              u"parameters before used."),
+            _(u"11. There are requirements to range test all "
+              u"critical subscript values before use."),
+            _(u"12. There are requirements to range test all "
+              u"critical output data before final outputting."),
+            _(u"13. There are requirements for recovery from all "
+              u"detected hardware faults."),
+            _(u"14. There are requirements for recovery from all "
+              u"I/O divide errors."),
+            _(u"15. There are requirements for recovery from all "
+              u"communication transmission errors."),
+            _(u"16. There are requirements for recovery from all "
+              u"failures to communicate with other nodes or other "
+              u"systems."),
+            _(u"17. There are requirements to periodically check "
+              u"adjacent nodes or operating system for operational "
+              u"status."),
+            _(u"18. There are requirements to provide a strategy "
+              u"for alternating routing of messages."),
+            _(u"19. There are requirements to ensure communication "
+              u"paths to all remaining\nnodes/communication links "
+              u"in the event of a failure of one node/link."),
+            _(u"20. There are requirements for maintaining the "
+              u"integrity of all data values following the\n"
+              u"occurence of anomalous conditions."),
+            _(u"21. There are requirements to enable all "
+              u"disconnected nodes to rejoin the network after "
+              u"recovery, such\nthat the processing functions of "
+              u"the system are not interrupted."),
+            _(u"22. There are requirements to replicate all "
+              u"critical data at two or more distinct nodes.")
+        ]
+        (_x_pos, _y_pos1) = Widgets.make_labels(
+            _labels, _fixed1, 5, 5, wrap=False)
 
         # Create the quality control risk pane.
         _fixed2 = gtk.Fixed()
@@ -383,77 +384,79 @@ class RiskAnalysis(gtk.VPaned):
 
         self.pack2(_frame, resize=True, shrink=True)
 
-        _labels = [_(u" 1. There is a table(s) tracing all requirements "
-                     u"to the parent system or subsystem specification."),
-                   _(u" 2. There are quantitative accuracy requirements "
-                     u"for all inputs associated with each function."),
-                   _(u" 3. There are quantitative accuracy requirements "
-                     u"for all outputs associated with each function."),
-                   _(u" 4. There are quantitative accuracy requirements "
-                     u"for all constants associated with each function."),
-                   _(u" 5. The existing math library routines which are "
-                     u"planned for use provide enough precision to "
-                     u"support\naccuracy objectives."),
-                   _(u" 6. All processes and functions are partitioned to "
-                     u"be logically complete and self contained so as to\n"
-                     u"minimize interface complexity."),
-                   _(u" 7. There are requirements for each operational "
-                     u"CPU/System to have a separate power source."),
-                   _(u" 8. There are requirements for the executive "
-                     u"software to perform testing of its own operation "
-                     u"and of\nthecommunication links, memory devices, "
-                     u"and peripheral devices."),
-                   _(u" 9. All inputs, processing, and outputs are "
-                     u"clearly and precisely defined."),
-                   _(u"10. Number of data references that are identified:"),
-                   _(u"11. Number of identified data references that are "
-                     u"documented with regard to source, meaning, and "
-                     u"format:"),
-                   _(u"12. Number of data items that are identified "
-                     u"(e.g., documented with regard to source, meaning, "
-                     u"and format):"),
-                   _(u"13. Number of data items that are referenced:"),
-                   _(u"14. All defined functions have been referenced."),
-                   _(u"15. All system functions allocated to this module "
-                     u"have been allocated to software functions "
-                     u"within\nthis module."),
-                   _(u"16. All referenced functions have been defined "
-                     u"(i.e., documented with precise inputs, processing,"
-                     u"\nand output requirements)."),
-                   _(u"17. The flow of processing (algorithms) and all "
-                     u"decision points (conditions and alternate paths) "
-                     u"in the flow\nis described for all functions."),
-                   _(u"18. Specific standards have been established for "
-                     u"design representations (e.g., HIPO charts, program "
-                     u"\ndesign language, flow charts, data flow "
-                     u"diagrams)."),
-                   _(u"19. Specific standards have been established for "
-                     u"calling sequence protocol between software units."),
-                   _(u"20. Specific standards have been established for "
-                     u"external I/O protocol and format for all software "
-                     u"units."),
-                   _(u"21. Specific standards have been established for "
-                     u"error handling for all software units."),
-                   _(u"22. All references to the same function use a "
-                     u"single, unique name."),
-                   _(u"23. Specific standards have been established for "
-                     u"all data representation in the design."),
-                   _(u"24. Specific standards have been established for "
-                     u"the naming of all data."),
-                   _(u"25. Specific standards have been established for "
-                     u"the definition and use of global variables."),
-                   _(u"26. There are procedures for establishing "
-                     u"consistency and concurrency of multiple copies\n"
-                     u"(e.g., copies at different nodes) of the same "
-                     u"software or database version."),
-                   _(u"27. There are procedures for verifying consistency "
-                     u"and concurrency of multiple copies\n(e.g., copies "
-                     u"at different nodes) of the same software or "
-                     u"database version."),
-                   _(u"28. All references to the same data use a single, "
-                     u"unique name.")]
-        (_x_pos2,
-         _y_pos2) = Widgets.make_labels(_labels, _fixed2, 5, 5, wrap=False)
+        _labels = [
+            _(u" 1. There is a table(s) tracing all requirements "
+              u"to the parent system or subsystem specification."),
+            _(u" 2. There are quantitative accuracy requirements "
+              u"for all inputs associated with each function."),
+            _(u" 3. There are quantitative accuracy requirements "
+              u"for all outputs associated with each function."),
+            _(u" 4. There are quantitative accuracy requirements "
+              u"for all constants associated with each function."),
+            _(u" 5. The existing math library routines which are "
+              u"planned for use provide enough precision to "
+              u"support\naccuracy objectives."),
+            _(u" 6. All processes and functions are partitioned to "
+              u"be logically complete and self contained so as to\n"
+              u"minimize interface complexity."),
+            _(u" 7. There are requirements for each operational "
+              u"CPU/System to have a separate power source."),
+            _(u" 8. There are requirements for the executive "
+              u"software to perform testing of its own operation "
+              u"and of\nthecommunication links, memory devices, "
+              u"and peripheral devices."),
+            _(u" 9. All inputs, processing, and outputs are "
+              u"clearly and precisely defined."),
+            _(u"10. Number of data references that are identified:"),
+            _(u"11. Number of identified data references that are "
+              u"documented with regard to source, meaning, and "
+              u"format:"),
+            _(u"12. Number of data items that are identified "
+              u"(e.g., documented with regard to source, meaning, "
+              u"and format):"),
+            _(u"13. Number of data items that are referenced:"),
+            _(u"14. All defined functions have been referenced."),
+            _(u"15. All system functions allocated to this module "
+              u"have been allocated to software functions "
+              u"within\nthis module."),
+            _(u"16. All referenced functions have been defined "
+              u"(i.e., documented with precise inputs, processing,"
+              u"\nand output requirements)."),
+            _(u"17. The flow of processing (algorithms) and all "
+              u"decision points (conditions and alternate paths) "
+              u"in the flow\nis described for all functions."),
+            _(u"18. Specific standards have been established for "
+              u"design representations (e.g., HIPO charts, program "
+              u"\ndesign language, flow charts, data flow "
+              u"diagrams)."),
+            _(u"19. Specific standards have been established for "
+              u"calling sequence protocol between software units."),
+            _(u"20. Specific standards have been established for "
+              u"external I/O protocol and format for all software "
+              u"units."),
+            _(u"21. Specific standards have been established for "
+              u"error handling for all software units."),
+            _(u"22. All references to the same function use a "
+              u"single, unique name."),
+            _(u"23. Specific standards have been established for "
+              u"all data representation in the design."),
+            _(u"24. Specific standards have been established for "
+              u"the naming of all data."),
+            _(u"25. Specific standards have been established for "
+              u"the definition and use of global variables."),
+            _(u"26. There are procedures for establishing "
+              u"consistency and concurrency of multiple copies\n"
+              u"(e.g., copies at different nodes) of the same "
+              u"software or database version."),
+            _(u"27. There are procedures for verifying consistency "
+              u"and concurrency of multiple copies\n(e.g., copies "
+              u"at different nodes) of the same software or "
+              u"database version."),
+            _(u"28. All references to the same data use a single, "
+              u"unique name.")
+        ]
+        (_x_pos2, _y_pos2) = Widgets.make_labels(
+            _labels, _fixed2, 5, 5, wrap=False)
         _x_pos = max(_x_pos, _x_pos2) + 125
 
         # Place the anomaly management widgets.
@@ -511,15 +514,15 @@ class RiskAnalysis(gtk.VPaned):
         _fixed2.put(self.chkSRRQCQ27, _x_pos, _y_pos2[27])
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _("Requirements\nReview") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _("Requirements\nReview") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_angle(0)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Allows assessment of the reliability risk "
-                                  u"at the requirements review phase."))
+        _label.set_tooltip_text(
+            _(u"Allows assessment of the reliability risk "
+              u"at the requirements review phase."))
 
         notebook.insert_page(self, tab_label=_label, position=-1)
 
@@ -610,9 +613,11 @@ class RiskAnalysis(gtk.VPaned):
         entry.handler_block(self._lst_handler_id[index])
 
         if index in [0, 1, 2, 3, 5, 6]:
-            self._software_model.lst_anomaly_mgmt[0][index] = int(entry.get_text())
+            self._software_model.lst_anomaly_mgmt[0][index] = int(
+                entry.get_text())
         elif index in [31, 32, 33, 34]:
-            self._software_model.lst_sftw_quality[0][index - 23] = int(entry.get_text())
+            self._software_model.lst_sftw_quality[0][index - 23] = int(
+                entry.get_text())
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -633,14 +638,20 @@ class RiskAnalysis(gtk.VPaned):
 
         check.handler_block(self._lst_handler_id[index])
 
-        if index in [4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                     21]:
-            self._software_model.lst_anomaly_mgmt[0][index] = int(check.get_active())
+        if index in [
+                4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+        ]:
+            self._software_model.lst_anomaly_mgmt[0][index] = int(
+                check.get_active())
         elif index == 22:
-            self._software_model.lst_traceability[0][index - 22] = int(check.get_active())
-        elif index in [23, 24, 25, 26, 27, 28, 29, 30, 35, 36, 37, 38, 39, 40,
-                       41, 42, 43, 44, 45, 46, 47, 48, 49]:
-            self._software_model.lst_sftw_quality[0][index - 23] = int(check.get_active())
+            self._software_model.lst_traceability[0][index - 22] = int(
+                check.get_active())
+        elif index in [
+                23, 24, 25, 26, 27, 28, 29, 30, 35, 36, 37, 38, 39, 40, 41, 42,
+                43, 44, 45, 46, 47, 48, 49
+        ]:
+            self._software_model.lst_sftw_quality[0][index - 23] = int(
+                check.get_active())
 
         check.handler_unblock(self._lst_handler_id[index])
 

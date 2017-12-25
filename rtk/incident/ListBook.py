@@ -12,30 +12,30 @@ Incident Package List Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -171,30 +171,34 @@ class ListView(gtk.VBox):
         self.tvwActionList = gtk.TreeView()
 
         # Set tooltips for the gtk.Widgets().
-        self.btnAddComponent.set_tooltip_text(_(u"Adds an affected component "
-                                                u"to the selected incident."))
-        self.btnRemoveComponent.set_tooltip_text(_(u"Removes the selected "
-                                                   u"component from the list "
-                                                   u"of affected components "
-                                                   u"for the selected "
-                                                   u"incident."))
-        self.btnSaveComponents.set_tooltip_text(_(u"Saves the affected "
-                                                  u"component list to the "
-                                                  u"open RTK Program "
-                                                  u"database."))
-        self.btnAddAction.set_tooltip_text(_(u"Adds an action to the selected "
-                                             u"incident."))
+        self.btnAddComponent.set_tooltip_text(
+            _(u"Adds an affected component "
+              u"to the selected incident."))
+        self.btnRemoveComponent.set_tooltip_text(
+            _(u"Removes the selected "
+              u"component from the list "
+              u"of affected components "
+              u"for the selected "
+              u"incident."))
+        self.btnSaveComponents.set_tooltip_text(
+            _(u"Saves the affected "
+              u"component list to the "
+              u"open RTK Program "
+              u"database."))
+        self.btnAddAction.set_tooltip_text(
+            _(u"Adds an action to the selected "
+              u"incident."))
 
         # Connect widget signals to callback methods.
         self._lst_handler_id.append(
-            self.btnAddComponent.connect('clicked',
-                                         self._on_button_clicked, 0))
+            self.btnAddComponent.connect('clicked', self._on_button_clicked,
+                                         0))
         self._lst_handler_id.append(
-            self.btnRemoveComponent.connect('clicked',
-                                            self._on_button_clicked, 1))
+            self.btnRemoveComponent.connect('clicked', self._on_button_clicked,
+                                            1))
         self._lst_handler_id.append(
-            self.btnSaveComponents.connect('clicked',
-                                           self._on_button_clicked, 2))
+            self.btnSaveComponents.connect('clicked', self._on_button_clicked,
+                                           2))
         self._lst_handler_id.append(
             self.btnAddAction.connect('clicked', self._on_button_clicked, 3))
 
@@ -202,8 +206,8 @@ class ListView(gtk.VBox):
                                       self._on_component_select, None, None)
         self.tvwComponentList.connect('row_activated',
                                       self._on_component_select)
-        self.tvwActionList.connect('cursor_changed',
-                                   self._on_action_select, None, None)
+        self.tvwActionList.connect('cursor_changed', self._on_action_select,
+                                   None, None)
         self.tvwActionList.connect('row_activated', self._on_action_select)
 
         # Put it all together.
@@ -268,20 +272,27 @@ class ListView(gtk.VBox):
         _hbox.pack_end(_frame, True, True)
 
         # Add the component list.
-        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
+        _model = gtk.ListStore(
+            gobject.TYPE_INT, gobject.TYPE_STRING, gobject.TYPE_INT,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_INT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
         self.tvwComponentList.set_model(_model)
 
-        _headings = [_(u"Component\nID"), _(u"Part\nNumber"),
-                     _(u"Initial\nInstall"), _(u"Failure"), _(u"Suspension"),
-                     _(u"OOT\nFailure"), _("CND/NFF"),
-                     _(u"Interval\nCensored"), _(u"Use\nOperating\nTime"),
-                     _(u"Use\nCalendar\nTime"), _(u"Time to\nFailure"),
-                     _(u"Age at\nFailure")]
+        _headings = [
+            _(u"Component\nID"),
+            _(u"Part\nNumber"),
+            _(u"Initial\nInstall"),
+            _(u"Failure"),
+            _(u"Suspension"),
+            _(u"OOT\nFailure"),
+            _("CND/NFF"),
+            _(u"Interval\nCensored"),
+            _(u"Use\nOperating\nTime"),
+            _(u"Use\nCalendar\nTime"),
+            _(u"Time to\nFailure"),
+            _(u"Age at\nFailure")
+        ]
         for _index, _heading in enumerate(_headings):
             _column = gtk.TreeViewColumn()
 
@@ -312,13 +323,15 @@ class ListView(gtk.VBox):
 
         # Add the Incident component list page to the gtk.Notebook().
         _label = gtk.Label()
-        _label.set_markup(_(u"<span weight='bold'>"
-                            u"Affected\nComponents</span>"))
+        _label.set_markup(
+            _(u"<span weight='bold'>"
+              u"Affected\nComponents</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the list of components impacted "
-                                  u"by the selected program incident."))
+        _label.set_tooltip_text(
+            _(u"Displays the list of components impacted "
+              u"by the selected program incident."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -364,11 +377,18 @@ class ListView(gtk.VBox):
                                gobject.TYPE_STRING, gobject.TYPE_STRING)
         self.tvwActionList.set_model(_model)
 
-        _headings = [_(u"Action\nID"), _(u"Prescribed\nAction"),
-                     _(u"Action\nTaken"), _(u"Action\nOwner"), _(u"Due Date"),
-                     _(u"Action\nStatus"), _("Approved By"),
-                     _(u"Approval\nDate"), _(u"Closed By"),
-                     _(u"Closure\nDate")]
+        _headings = [
+            _(u"Action\nID"),
+            _(u"Prescribed\nAction"),
+            _(u"Action\nTaken"),
+            _(u"Action\nOwner"),
+            _(u"Due Date"),
+            _(u"Action\nStatus"),
+            _("Approved By"),
+            _(u"Approval\nDate"),
+            _(u"Closed By"),
+            _(u"Closure\nDate")
+        ]
         for _index, _heading in enumerate(_headings):
             _column = gtk.TreeViewColumn()
 
@@ -391,13 +411,14 @@ class ListView(gtk.VBox):
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Incident\nActions") + "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Incident\nActions") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays actions related to the selected "
-                                  u"incident."))
+        _label.set_tooltip_text(
+            _(u"Displays actions related to the selected "
+              u"incident."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -474,8 +495,8 @@ class ListView(gtk.VBox):
             if _action[10] > 0:
                 _closer = Configuration.RTK_USERS[_action[10] - 1]
 
-            _data = (_action[1], _action[2], _action[3],
-                     _owner, Utilities.ordinal_to_date(_action[5]),
+            _data = (_action[1], _action[2], _action[3], _owner,
+                     Utilities.ordinal_to_date(_action[5]),
                      Configuration.RTK_INCIDENT_STATUS[_action[6]], _approver,
                      Utilities.ordinal_to_date(_action[8]), _closer,
                      Utilities.ordinal_to_date(_action[11]))
@@ -507,8 +528,8 @@ class ListView(gtk.VBox):
 
         if index == 0:
             AddComponents(self._model.revision_id, self._model.incident_id,
-                          self._modulebook._dao,
-                          self._mdcRTK.dtcComponent, self)
+                          self._modulebook._dao, self._mdcRTK.dtcComponent,
+                          self)
         elif index == 1:
             (_model,
              _row) = self.tvwComponentList.get_selection().get_selected()
@@ -550,7 +571,8 @@ class ListView(gtk.VBox):
 
         if _row is not None:
             _component_id = _model.get_value(_row, 0)
-            self._component = self._mdcRTK.dtcComponent.dicComponents[_component_id]
+            self._component = self._mdcRTK.dtcComponent.dicComponents[
+                _component_id]
 
         return False
 
@@ -584,7 +606,7 @@ class ListView(gtk.VBox):
         _value = not cell.get_active()
         model[path][position] = _value
 
-        if position == 2:                   # Initial installation.
+        if position == 2:  # Initial installation.
             self._component.initial_installation = 1
             self._component.failure = 0
             self._component.suspension = 0
@@ -596,7 +618,7 @@ class ListView(gtk.VBox):
             model[path][5] = 0
             model[path][6] = 0
             model[path][7] = 0
-        elif position == 3:                 # Failure.
+        elif position == 3:  # Failure.
             self._component.initial_installation = 0
             self._component.failure = 1
             self._component.suspension = 0
@@ -608,7 +630,7 @@ class ListView(gtk.VBox):
             model[path][5] = 0
             model[path][6] = 0
             model[path][7] = 0
-        elif position == 4:                 # Suspension (right).
+        elif position == 4:  # Suspension (right).
             self._component.initial_installation = 0
             self._component.failure = 0
             self._component.suspension = 1
@@ -620,7 +642,7 @@ class ListView(gtk.VBox):
             model[path][5] = 0
             model[path][6] = 0
             model[path][7] = 0
-        elif position == 5:                 # OCC fault.
+        elif position == 5:  # OCC fault.
             self._component.initial_installation = 0
             self._component.failure = 0
             self._component.suspension = 0
@@ -632,7 +654,7 @@ class ListView(gtk.VBox):
             model[path][4] = 0
             model[path][6] = 0
             model[path][7] = 0
-        elif position == 6:                 # CND/NFF fault.
+        elif position == 6:  # CND/NFF fault.
             self._component.initial_installation = 0
             self._component.failure = 0
             self._component.suspension = 0
@@ -644,7 +666,7 @@ class ListView(gtk.VBox):
             model[path][4] = 0
             model[path][5] = 0
             model[path][7] = 0
-        elif position == 7:                 # Interval censored.
+        elif position == 7:  # Interval censored.
             self._component.initial_installation = 0
             self._component.failure = 0
             self._component.suspension = 0
@@ -656,11 +678,11 @@ class ListView(gtk.VBox):
             model[path][4] = 0
             model[path][5] = 0
             model[path][6] = 0
-        elif position == 8:                 # Use operating time.
+        elif position == 8:  # Use operating time.
             self._component.use_op_time = 1
             self._component.use_cal_time = 0
             model[path][9] = 0
-        elif position == 9:                 # Use calendar time.
+        elif position == 9:  # Use calendar time.
             self._component.use_op_time = 0
             self._component.use_cal_time = 1
             model[path][8] = 0

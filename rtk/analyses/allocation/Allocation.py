@@ -12,30 +12,30 @@ Allocation Package Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
@@ -46,7 +46,7 @@ import locale
 try:
     import Configuration
     import Utilities
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
 
@@ -57,7 +57,7 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -140,13 +140,13 @@ class Model(object):
         except ZeroDivisionError:
             return True
 
-        self.reliability_alloc = parent_goal ** _weight_i
+        self.reliability_alloc = parent_goal**_weight_i
 
         try:
             self.hazard_rate_alloc = -1.0 * log(self.reliability_alloc) / \
                                      self.mission_time
             self.mtbf_alloc = 1.0 / self.hazard_rate_alloc
-        except(ZeroDivisionError, ValueError):
+        except (ZeroDivisionError, ValueError):
             return True
 
         return False
@@ -170,7 +170,7 @@ class Model(object):
         try:
             self.mtbf_alloc = (n_children * self.weight_factor * _time_i) / \
                               (-1.0 * self.n_sub_elements * log(parent_goal))
-        except(ValueError, ZeroDivisionError):
+        except (ValueError, ZeroDivisionError):
             return True
 
         try:
@@ -178,8 +178,8 @@ class Model(object):
         except ZeroDivisionError:
             return True
 
-        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc *
-                                     self.mission_time)
+        self.reliability_alloc = exp(
+            -1.0 * self.hazard_rate_alloc * self.mission_time)
 
         return False
 
@@ -209,8 +209,8 @@ class Model(object):
         except ZeroDivisionError:
             return True
 
-        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc *
-                                     self.mission_time)
+        self.reliability_alloc = exp(
+            -1.0 * self.hazard_rate_alloc * self.mission_time)
 
         return False
 
@@ -227,7 +227,7 @@ class Model(object):
         """
 
         from math import exp
-# TODO: Add range check on input factors.
+        # TODO: Add range check on input factors.
         # First calculate the system failure rate and weighting factor for each
         # sub-system.
         self.weight_factor = self.int_factor * self.soa_factor * \
@@ -246,8 +246,8 @@ class Model(object):
         except ZeroDivisionError:
             return True
 
-        self.reliability_alloc = exp(-1.0 * self.hazard_rate_alloc *
-                                     self.mission_time)
+        self.reliability_alloc = exp(
+            -1.0 * self.hazard_rate_alloc * self.mission_time)
 
         return False
 
@@ -262,32 +262,32 @@ class Model(object):
 
         from math import exp, log
 
-        if self.goal_measure == 1:          # Reliability goal
+        if self.goal_measure == 1:  # Reliability goal
             try:
                 self.mtbf_goal = -1.0 * self.mission_time / \
                                  log(self.reliability_goal)
-            except(ValueError, ZeroDivisionError):
+            except (ValueError, ZeroDivisionError):
                 return True
 
             self.hazard_rate_goal = 1.0 / self.mtbf_goal
 
-        elif self.goal_measure == 2:        # Hazard rate goal
+        elif self.goal_measure == 2:  # Hazard rate goal
             try:
                 self.mtbf_goal = 1.0 / self.hazard_rate_goal
             except ZeroDivisionError:
                 return True
 
-            self.reliability_goal = exp(-1.0 * self.mission_time /
-                                        self.mtbf_goal)
+            self.reliability_goal = exp(
+                -1.0 * self.mission_time / self.mtbf_goal)
 
-        elif self.goal_measure == 3:        # MTBF goal
+        elif self.goal_measure == 3:  # MTBF goal
             try:
                 self.hazard_rate_goal = 1.0 / self.mtbf_goal
             except ZeroDivisionError:
                 return True
 
-            self.reliability_goal = exp(-1.0 * self.mission_time /
-                                        self.mtbf_goal)
+            self.reliability_goal = exp(
+                -1.0 * self.mission_time / self.mtbf_goal)
 
         return False
 
@@ -316,7 +316,7 @@ class Allocation(object):
         # Initialize private list attributes.
 
         # Initialize private scalar attributes.
-        
+
         # Initialize public dictionary attributes.
         self.dicAllocation = {}
 
@@ -324,7 +324,7 @@ class Allocation(object):
 
         # Initialize public scalar attributes.
         self.dao = None
-        
+
     def request_allocation(self):
         """
         Method to read the RTK Project database and loads all the Allocation.
@@ -361,6 +361,7 @@ class Allocation(object):
                   ON t2.fld_hardware_id=t1.fld_hardware_id \
                   INNER JOIN rtk_reliability AS t3 \
                   ON t3.fld_hardware_id=t1.fld_hardware_id"
+
         (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
@@ -373,7 +374,7 @@ class Allocation(object):
             _allocation.set_attributes(_results[i][0:23])
             self.dicAllocation[_allocation.hardware_id] = _allocation
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_allocation(self, hardware_id, parent_id):
         """
@@ -399,7 +400,7 @@ class Allocation(object):
             _allocation.parent_id = parent_id
             self.dicAllocation[_allocation.hardware_id] = _allocation
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_allocation(self, hardware_id):
         """
@@ -429,11 +430,14 @@ class Allocation(object):
         _parent_goal = _allocation.reliability_goal
         _parent_hr = _allocation.hazard_rate
 
-        _children = [_a for _a in self.dicAllocation.values()
-                     if _a.parent_id == hardware_id]
-        _allocation.weight_factor = sum([_a.int_factor * _a.soa_factor *
-                                         _a.op_time_factor * _a.env_factor
-                                         for _a in _children])
+        _children = [
+            _a for _a in self.dicAllocation.values()
+            if _a.parent_id == hardware_id
+        ]
+        _allocation.weight_factor = sum([
+            _a.int_factor * _a.soa_factor * _a.op_time_factor * _a.env_factor
+            for _a in _children
+        ])
         _n_children = len(_children)
         for _child in _children:
             if _allocation.method == 1:
@@ -475,17 +479,16 @@ class Allocation(object):
                       fld_parent_id={16:d}, fld_method={17:d}, \
                       fld_goal_measure={18:d} \
                   WHERE fld_hardware_id={19:d}".format(
-                      _allocation.reliability_goal,
-                      _allocation.hazard_rate_goal, _allocation.mtbf_goal,
-                      _allocation.included, _allocation.n_sub_systems,
-                      _allocation.n_sub_elements, _allocation.weight_factor,
-                      _allocation.percent_wt_factor, _allocation.int_factor,
-                      _allocation.soa_factor, _allocation.op_time_factor,
-                      _allocation.env_factor, _allocation.availability_alloc,
-                      _allocation.reliability_alloc,
-                      _allocation.hazard_rate_alloc, _allocation.mtbf_alloc,
-                      _allocation.parent_id, _allocation.method,
-                      _allocation.goal_measure, hardware_id)
+            _allocation.reliability_goal, _allocation.hazard_rate_goal,
+            _allocation.mtbf_goal, _allocation.included,
+            _allocation.n_sub_systems, _allocation.n_sub_elements,
+            _allocation.weight_factor, _allocation.percent_wt_factor,
+            _allocation.int_factor, _allocation.soa_factor,
+            _allocation.op_time_factor, _allocation.env_factor,
+            _allocation.availability_alloc, _allocation.reliability_alloc,
+            _allocation.hazard_rate_alloc, _allocation.mtbf_alloc,
+            _allocation.parent_id, _allocation.method,
+            _allocation.goal_measure, hardware_id)
         (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return (_results, _error_code)
@@ -501,8 +504,8 @@ class Allocation(object):
         _error_codes = []
 
         for _allocation in self.dicAllocation.values():
-            (_results,
-             _error_code) = self.save_allocation(_allocation.hardware_id)
+            (_results, _error_code) = self.save_allocation(
+                _allocation.hardware_id)
             _error_codes.append((_allocation.hardware_id, _error_code))
 
         return _error_codes
@@ -517,8 +520,10 @@ class Allocation(object):
         :rtype: bool
         """
 
-        _children = [_a for _a in self.dicAllocation.values()
-                     if _a.parent_id == hardware_id]
+        _children = [
+            _a for _a in self.dicAllocation.values()
+            if _a.parent_id == hardware_id
+        ]
         for _child in _children:
             _child.reliability_goal = _child.reliability_alloc
             if _child.method == 0:

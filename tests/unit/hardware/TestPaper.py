@@ -12,7 +12,10 @@ This is the test class for testing Paper capacitor module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -54,18 +57,18 @@ class TestPaperBypassModel(unittest.TestCase):
 
         # Verify the Fixed Paper Bypass capacitor class was properly
         # initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 9.0, 5.0, 15.0, 6.0, 8.0,
-                                         17.0, 32.0, 22.0, 0.5, 12.0, 32.0,
-                                         670.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 9.0, 5.0, 15.0, 6.0, 8.0, 17.0, 32.0, 22.0, 0.5, 12.0,
+            32.0, 670.0
+        ])
         self.assertEqual(self.DUT._piQ, [3.0, 7.0])
-        self.assertEqual(self.DUT._lambdab_count, [[0.0036, 0.0072, 0.330,
-                                                    0.016, 0.055, 0.023,
-                                                    0.030, 0.07, 0.13, 0.083,
-                                                    0.0018, 0.044, 0.12, 2.1],
-                                                   [0.0039, 0.0087, 0.042,
-                                                    0.022, 0.070, 0.035,
-                                                    0.047, 0.19, 0.35, 0.130,
-                                                    0.0020, 0.056, 0.19, 2.5]])
+        self.assertEqual(self.DUT._lambdab_count, [[
+            0.0036, 0.0072, 0.330, 0.016, 0.055, 0.023, 0.030, 0.07, 0.13,
+            0.083, 0.0018, 0.044, 0.12, 2.1
+        ], [
+            0.0039, 0.0087, 0.042, 0.022, 0.070, 0.035, 0.047, 0.19, 0.35,
+            0.130, 0.0020, 0.056, 0.19, 2.5
+        ]])
         self.assertEqual(self.DUT.subcategory, 40)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -220,14 +223,15 @@ class TestPaperFeedthroughModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Fixed Paper Feedthrough capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 9.0, 7.0, 15.0, 6.0, 8.0,
-                                         17.0, 28.0, 22.0, 0.5, 12.0, 32.0,
-                                         570.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 9.0, 7.0, 15.0, 6.0, 8.0, 17.0, 28.0, 22.0, 0.5, 12.0,
+            32.0, 570.0
+        ])
         self.assertEqual(self.DUT._piQ, [1.0, 3.0, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0047, 0.0096, 0.044,
-                                                   0.034, 0.073, 0.030, 0.040,
-                                                   0.094, 0.15, 0.11, 0.0024,
-                                                   0.058, 0.18, 2.7])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0047, 0.0096, 0.044, 0.034, 0.073, 0.030, 0.040, 0.094, 0.15,
+            0.11, 0.0024, 0.058, 0.18, 2.7
+        ])
         self.assertEqual(self.DUT.subcategory, 41)
         self.assertEqual(self.DUT.reference_temperature, 358.0)
 
@@ -382,14 +386,15 @@ class TestPaperMetallizedModel(unittest.TestCase):
 
         # Verify the Fixed Paper Bypass capacitor class was properly
         # initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 6.0,
-                                         11.0, 20.0, 20.0, 0.5, 11.0, 29.0,
-                                         530.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 6.0, 11.0, 20.0, 20.0, 0.5, 11.0,
+            29.0, 530.0
+        ])
         self.assertEqual(self.DUT._piQ, [0.03, 0.1, 0.3, 1.0, 3.0, 7.0, 20.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0029, 0.0058, 0.023,
-                                                   0.014, 0.041, 0.012, 0.018,
-                                                   0.037, 0.066, 0.060, 0.0014,
-                                                   0.032, 0.088, 1.5])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0029, 0.0058, 0.023, 0.014, 0.041, 0.012, 0.018, 0.037, 0.066,
+            0.060, 0.0014, 0.032, 0.088, 1.5
+        ])
         self.assertEqual(self.DUT.subcategory, 43)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)

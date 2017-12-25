@@ -24,30 +24,30 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -96,6 +96,7 @@ except locale.Error:
 
 _ = gettext.gettext
 
+
 # TODO: Move this to the Incident class.
 class CreateDataSet(object):
     """
@@ -115,21 +116,25 @@ class CreateDataSet(object):
         self._app = app
 
         self.assistant = gtk.Assistant()
-        self.assistant.set_title(_(u"RTK Survival Data Set Creation "
-                                   u"Assistant"))
+        self.assistant.set_title(
+            _(u"RTK Survival Data Set Creation "
+              u"Assistant"))
         self.assistant.connect('apply', self._create)
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
         # Create the introduction page.
         _fixed = gtk.Fixed()
-        _label = _widg.make_label(_(u"This is the RTK survival data set "
-                                    u"assistant.  It will help you create a "
-                                    u"data set for survival (Weibull) "
-                                    u"analysis from the Program Incidents.  "
-                                    u"Press 'Forward' to continue or 'Cancel' "
-                                    u"to quit the assistant."),
-                                  width=600, height=150, wrap=True)
+        _label = _widg.make_label(
+            _(u"This is the RTK survival data set "
+              u"assistant.  It will help you create a "
+              u"data set for survival (Weibull) "
+              u"analysis from the Program Incidents.  "
+              u"Press 'Forward' to continue or 'Cancel' "
+              u"to quit the assistant."),
+            width=600,
+            height=150,
+            wrap=True)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
         self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_INTRO)
@@ -144,28 +149,33 @@ class CreateDataSet(object):
         _frame.add(_fixed)
 
         # Create the radio buttons that select the output as database or file.
-        self.optDatabase = gtk.RadioButton(label=_(u"Save Data Set to "
-                                                   u"Database"))
-        self.optFile = gtk.RadioButton(group=self.optDatabase,
-                                       label=_(u"Save Data Set to File"))
-        self.chkNevadaChart = _widg.make_check_button(label=_(u"Create Nevada "
-                                                              u"chart from "
-                                                              u"data."))
+        self.optDatabase = gtk.RadioButton(
+            label=_(u"Save Data Set to "
+                    u"Database"))
+        self.optFile = gtk.RadioButton(
+            group=self.optDatabase, label=_(u"Save Data Set to File"))
+        self.chkNevadaChart = _widg.make_check_button(
+            label=_(u"Create Nevada "
+                    u"chart from "
+                    u"data."))
 
         _fixed.put(self.optDatabase, 5, 5)
         _fixed.put(self.optFile, 5, 35)
         _fixed.put(self.chkNevadaChart, 5, 65)
 
         # Create the radio buttons that allow choice of MTTF or MTBF estimates.
-        self.optMTTF = gtk.RadioButton(label=_(u"Include only the first "
-                                               u"failure time for each unit."))
-        self.optMTBBD = gtk.RadioButton(group=self.optMTTF,
-                                        label=_(u"Include only distinct "
-                                                u"failure times for each "
-                                                u"unit."))
-        self.optMTBF = gtk.RadioButton(group=self.optMTTF,
-                                       label=_(u"Include all failure times "
-                                               u"for each unit."))
+        self.optMTTF = gtk.RadioButton(
+            label=_(u"Include only the first "
+                    u"failure time for each unit."))
+        self.optMTBBD = gtk.RadioButton(
+            group=self.optMTTF,
+            label=_(u"Include only distinct "
+                    u"failure times for each "
+                    u"unit."))
+        self.optMTBF = gtk.RadioButton(
+            group=self.optMTTF,
+            label=_(u"Include all failure times "
+                    u"for each unit."))
 
         _fixed.put(self.optMTTF, 5, 105)
         _fixed.put(self.optMTBBD, 5, 135)
@@ -180,8 +190,9 @@ class CreateDataSet(object):
 
         self.assistant.append_page(_frame)
         self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(_frame, _(u"Select Where to Save Data "
-                                                u"Set"))
+        self.assistant.set_page_title(_frame,
+                                      _(u"Select Where to Save Data "
+                                        u"Set"))
         self.assistant.set_page_complete(_frame, True)
 
         # Create a page to select where data set should be saved.
@@ -196,9 +207,7 @@ class CreateDataSet(object):
         _query = "SELECT fld_name, fld_assembly_id, fld_description \
                   FROM tbl_system \
                   WHERE fld_revision_id=%d" % self._app.REVISION.revision_id
-        _results = self._app.DB.execute_query(_query,
-                                              None,
-                                              self._app.ProgCnx)
+        _results = self._app.DB.execute_query(_query, None, self._app.ProgCnx)
         _widg.load_combo(self.cmbAssembly, _results, simple=False)
 
         self.txtDescription = _widg.make_entry()
@@ -218,19 +227,20 @@ class CreateDataSet(object):
 
         self.assistant.append_page(_frame)
         self.assistant.set_page_type(_frame, gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(_frame,
-                                      _(u"Describe the Data Set"))
+        self.assistant.set_page_title(_frame, _(u"Describe the Data Set"))
         self.assistant.set_page_complete(_frame, True)
 
         # Create the page to apply the import criteria.
         _fixed = gtk.Fixed()
-        _label = _widg.make_label(_(u"Press 'Apply' to create the requested "
-                                    u"data set or 'Cancel' to quit the "
-                                    u"assistant."), width=600, height=150)
+        _label = _widg.make_label(
+            _(u"Press 'Apply' to create the requested "
+              u"data set or 'Cancel' to quit the "
+              u"assistant."),
+            width=600,
+            height=150)
         _fixed.put(_label, 5, 5)
         self.assistant.append_page(_fixed)
-        self.assistant.set_page_type(_fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONFIRM)
         self.assistant.set_page_title(_fixed, _(u"Create Data Set"))
         self.assistant.set_page_complete(_fixed, True)
 
@@ -270,15 +280,16 @@ class CreateDataSet(object):
                 _query = "INSERT INTO tbl_dataset (fld_assembly_id, \
                                                    fld_description, \
                                                    fld_confidence) \
-                          VALUES (%d, '%s', %f)" % \
+                          VALUES (%d, '%s', %f)"                                                 % \
                          (_assembly_id, _description, _confidence)
 
             elif _conf.BACKEND == 'sqlite3':
                 # First find the last dataset id in the table.
                 _query = "SELECT MAX(fld_dataset_id) \
                            FROM tbl_dataset"
-                _dataset_id = self._app.DB.execute_query(_query, None,
-                                                         self._app.ProgCnx)
+
+                _dataset_id = self._app.DB.execute_query(
+                    _query, None, self._app.ProgCnx)
                 _dataset_id = _dataset_id[0][0]
                 if _dataset_id is None or not _dataset_id or _dataset_id == '':
                     _dataset_id = 1
@@ -289,12 +300,12 @@ class CreateDataSet(object):
                                                    fld_assembly_id, \
                                                    fld_description, \
                                                    fld_confidence) \
-                          VALUES (%d, %d, '%s', %f)" % \
+                          VALUES (%d, %d, '%s', %f)"                                                     % \
                          (_dataset_id, _assembly_id, _description,
                           _confidence)
 
-            if not self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                              commit=True):
+            if not self._app.DB.execute_query(
+                    _query, None, self._app.ProgCnx, commit=True):
                 _util.rtk_error(_(u"Error creating new data set."))
                 return True
 
@@ -303,17 +314,16 @@ class CreateDataSet(object):
             # fld_dataset_id in tbl_survival_data.
             if _conf.BACKEND == 'mysql':
                 _query = "SELECT LAST_INSERT_ID()"
-                _dataset_id = self._app.DB.execute_query(_query, None,
-                                                         self._app.ProgCnx)
+                _dataset_id = self._app.DB.execute_query(
+                    _query, None, self._app.ProgCnx)
                 _dataset_id = _dataset_id[0][0]
         else:
-            _dialog = gtk.FileChooserDialog(_(u"RTK: Save Data Set to "
-                                              u"File ..."),
-                                            None,
-                                            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                            (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                             gtk.STOCK_CANCEL,
-                                             gtk.RESPONSE_REJECT))
+            _dialog = gtk.FileChooserDialog(
+                _(u"RTK: Save Data Set to "
+                  u"File ..."), None,
+                gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+                (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+                 gtk.RESPONSE_REJECT))
             _dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
             if _dialog.run() == gtk.RESPONSE_ACCEPT:
                 _filename = _dialog.get_filename()
@@ -326,7 +336,9 @@ class CreateDataSet(object):
             _file.write("Data Set Description: " +
                         self.txtDescription.get_text() + "\n")
             _file.write("\n")
-            _file.write("Record_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tTBF\tAssembly_ID\tRequest_Date\tAssembly_ID\n")
+            _file.write(
+                "Record_ID\tLeft\tRight\tStatus\tQuantity\tUnit\tTBF\tAssembly_ID\tRequest_Date\tAssembly_ID\n"
+            )
 
         _starttime = 0.01
         if self.chkIncludeZeroHour.get_active():
@@ -429,10 +441,10 @@ class CreateDataSet(object):
                             fld_assembly_id, fld_request_date) \
                            VALUES (%d, %d, %f, %f, '%s', %d, '%s', %f, %d, \
                                    %d)"
+
             _values = (0, _dataset_id, 0.0, float(_results[0][3]),
                        "Interval Censored", 1, _results[0][0],
-                       float(_results[0][3]), _results[0][11],
-                       _results[0][10])
+                       float(_results[0][3]), _results[0][11], _results[0][10])
 
             # Add the remaining records to the survival data table in the
             # open RTK Program database.
@@ -441,8 +453,8 @@ class CreateDataSet(object):
             for i in range(1, _n_records):
                 # Add the current record to the database.
                 _query = _base_query % _values
-                self._app.DB.execute_query(_query, None, self._app.ProgCnx,
-                                           commit=True)
+                self._app.DB.execute_query(
+                    _query, None, self._app.ProgCnx, commit=True)
 
                 # Create the next set of values to insert to the RTK
                 # Program database.
@@ -458,7 +470,7 @@ class CreateDataSet(object):
                     if self._consistency_check(_results[i - 1], _results[i]):
                         _n_inconsistent += 1
 
-                else:                       # Different units.
+                else:  # Different units.
                     _left = 0.0
                     if i < _n_records - 1:  # Not the last record.
                         # If the failure date of the current record is greater
@@ -475,12 +487,11 @@ class CreateDataSet(object):
                                         u"date of record #%d, which occurred "
                                         u"on '%s' on unit '%s'.  Failure "
                                         u"dates should not decrease over "
-                                        u"time." % (int(_results[i][1]),
-                                                    _current_date,
-                                                    _results[i][0],
-                                                    int(_results[i + 1][1]),
-                                                    _next_date,
-                                                    _results[i + 1][0]))
+                                        u"time." %
+                                        (int(_results[i][1]),
+                                         _current_date, _results[i][0],
+                                         int(_results[i + 1][1]), _next_date,
+                                         _results[i + 1][0]))
                             self._app.user_log.error(_errmsg)
                             _n_inconsistent += 1
 
@@ -493,10 +504,9 @@ class CreateDataSet(object):
         else:
             # Write the first record to the open file.
             _file.write('0\t0\t' + str(_results[0][3]) + '\t' +
-                        'Interval Censored\t1\t' + str(_results[0][0]) +
-                        '\t' + str(_results[0][3]) + '\t' +
-                        str(_results[0][11]) + '\t' +
-                        str(_results[0][10]) + '\n')
+                        'Interval Censored\t1\t' + str(_results[0][0]) + '\t' +
+                        str(_results[0][3]) + '\t' + str(_results[0][11]) +
+                        '\t' + str(_results[0][10]) + '\n')
 
             # Write the remaining records to the open file.
             _n_inconsistent = 0
@@ -511,20 +521,19 @@ class CreateDataSet(object):
                         _left = float(_results[i - 1][3])
 
                     _tbf = float(_results[i][3]) - float(_results[i - 1][3])
-                    _file.write(str(i) + '\t' + str(_results[i - 1][3]) +
-                                '\t' + str(_results[i][3]) +
-                                '\tInterval Censored\t1\t' +
-                                str(_results[i][0]) + '\t' +
-                                str(_tbf) + '\t' +
-                                str(_results[i][11]) + '\t' +
-                                str(_results[i][10]) + '\n')
+                    _file.write(
+                        str(i) + '\t' + str(_results[i - 1][3]) + '\t' +
+                        str(_results[i][3]) + '\tInterval Censored\t1\t' +
+                        str(_results[i][0]) + '\t' + str(_tbf) + '\t' + str(
+                            _results[i][11]) + '\t' + str(_results[i][10]) +
+                        '\n')
                     # Check the consistency of the two adjacent records.  Any
                     # inconsistent records will be logged, but they are always
                     # added to the dataset.
                     if self._consistency_check(_results[i - n], _results[i]):
                         _n_inconsistent += 1
 
-                else:                       # Different unit.
+                else:  # Different unit.
                     if i < _n_records - 1:  # Not the last record.
                         # The failure date of the current record is less than
                         # the next record's failure date.
@@ -539,32 +548,31 @@ class CreateDataSet(object):
                                         u"date of record #%d, which occurred "
                                         u"on '%s' on unit '%s'.  Failure "
                                         u"dates should not decrease over "
-                                        u"time." % (int(_results[i][1]),
-                                                    _current_date,
-                                                    _results[i][0],
-                                                    int(_results[i + 1][1]),
-                                                    _next_date,
-                                                    _results[i + 1][0]))
+                                        u"time." %
+                                        (int(_results[i][1]),
+                                         _current_date, _results[i][0],
+                                         int(_results[i + 1][1]), _next_date,
+                                         _results[i + 1][0]))
                             self._app.user_log.error(_errmsg)
                             _n_inconsistent += 1
 
                     _right = float(_results[i][3])
                     _tbf = float(_results[i][3])
-                    _file.write(str(i) + '\t0.0\t' + str(_right) +
-                                '\tInterval Censored\t1\t' +
-                                str(_results[i][0]) + '\t' + str(_tbf) + '\t' +
-                                str(_results[i][11]) + '\t' +
-                                str(_results[i][10]) + '\n')
+                    _file.write(
+                        str(i) + '\t0.0\t' + str(_right) +
+                        '\tInterval Censored\t1\t' + str(_results[i][0]) +
+                        '\t' + str(_tbf) + '\t' + str(_results[i][11]) + '\t' +
+                        str(_results[i][10]) + '\n')
 
         _window_.set_cursor(gtk.gdk.Cursor(gtk.gdk.LEFT_PTR))
 
         if _n_inconsistent > 0:
-            _util.rtk_information(_(u"There were %d records with inconsistent "
-                                    u"information.  These were not used in "
-                                    u"the creation of the dataset. Please see "
-                                    u"file '%s' for details." %
-                                    (_n_inconsistent,
-                                     _conf.LOG_DIR + 'RTK_error.log')))
+            _util.rtk_information(
+                _(u"There were %d records with inconsistent "
+                  u"information.  These were not used in "
+                  u"the creation of the dataset. Please see "
+                  u"file '%s' for details." %
+                  (_n_inconsistent, _conf.LOG_DIR + 'RTK_error.log')))
 
         # Load the dataset gtk.TreeView with the newly created dataset if it
         # was created in the RTK Program database.
@@ -588,16 +596,16 @@ class CreateDataSet(object):
 
         _err = False
 
-        if results2[10] < results1[10]:     # Failure dates are descending.
+        if results2[10] < results1[10]:  # Failure dates are descending.
             _previous_date = _util.ordinal_to_date(results1[10])
             _current_date = _util.ordinal_to_date(results2[10])
             _errmsg = _(u"The failure date of record #%d, which occurred on "
                         u"'%s' on unit '%s', is earlier than the failure time "
                         u"of record #%d, which occurred on '%s' on unit "
                         u"'%s'.  Failure dates should not decrease over "
-                        u"time." % (int(results2[1]), _current_date,
-                                    results2[0], int(results1[1]),
-                                    _previous_date, results2[0]))
+                        u"time." %
+                        (int(results2[1]), _current_date, results2[0],
+                         int(results1[1]), _previous_date, results2[0]))
             _err = True
 
         if _err:

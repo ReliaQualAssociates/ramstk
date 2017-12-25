@@ -12,7 +12,10 @@ This is the test class for testing Component module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -83,8 +86,7 @@ class TestComponentModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
             self._rel_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[0], 0)
         self.assertEqual(_error_code[1], 0)
         self.assertEqual(_error_code[2], 0)
@@ -100,8 +102,7 @@ class TestComponentModel(unittest.TestCase):
                           10.0, 11.0, 12.0, 13.0, 14.0, 15.0, '')
         _all_values = self._base_values + _stress_values + self._rel_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code, [0, 10, 0, 0])
 
     @attr(all=True, unit=True)
@@ -116,8 +117,7 @@ class TestComponentModel(unittest.TestCase):
                        0)
         _all_values = self._base_values + self._stress_values + _rel_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code, [0, 0, 40, 0])
 
     @attr(all=True, unit=True)

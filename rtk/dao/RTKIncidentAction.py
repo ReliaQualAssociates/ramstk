@@ -13,11 +13,11 @@ The RTKIncidentAction Table
 from datetime import date, timedelta
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Date, ForeignKey, Integer
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKIncidentAction(RTK_BASE):
@@ -31,25 +31,31 @@ class RTKIncidentAction(RTK_BASE):
     __tablename__ = 'rtk_incident_action'
     __table_args__ = {'extend_existing': True}
 
-    incident_id = Column('fld_incident_id', Integer,
-                         ForeignKey('rtk_incident.fld_incident_id'),
-                         nullable=False)
-    action_id = Column('fld_action_id', Integer, primary_key=True,
-                       autoincrement=True, nullable=False)
+    incident_id = Column(
+        'fld_incident_id',
+        Integer,
+        ForeignKey('rtk_incident.fld_incident_id'),
+        nullable=False)
+    action_id = Column(
+        'fld_action_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     action_owner = Column('fld_action_owner', Integer, default=0)
     action_prescribed = Column('fld_action_prescribed', BLOB, default='')
     action_taken = Column('fld_action_taken', BLOB, default='')
     approved = Column('fld_approved', Integer, default=0)
     approved_by = Column('fld_approved_by', Integer, default=0)
-    approved_date = Column('fld_approved_date', Date,
-                           default=date.today() + timedelta(days=30))
+    approved_date = Column(
+        'fld_approved_date', Date, default=date.today() + timedelta(days=30))
     closed = Column('fld_closed', Integer, default=0)
     closed_by = Column('fld_closed_by', Integer, default=0)
-    closed_date = Column('fld_closed_date', Date,
-                         default=date.today() + timedelta(days=30))
-    due_date = Column('fld_due_date', Date,
-                      default=date.today() + timedelta(days=30))
+    closed_date = Column(
+        'fld_closed_date', Date, default=date.today() + timedelta(days=30))
+    due_date = Column(
+        'fld_due_date', Date, default=date.today() + timedelta(days=30))
     status_id = Column('fld_status_id', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.

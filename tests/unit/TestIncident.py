@@ -38,7 +38,10 @@ This is the test class for testing Incident module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -70,9 +73,10 @@ class TestIncidentModel(unittest.TestCase):
         """
 
         self.assertTrue(isinstance(self.DUT, Model))
-        self.assertEqual(self.DUT.lstRelevant,
-                         [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                          -1, -1, -1, -1, -1, -1, -1])
+        self.assertEqual(self.DUT.lstRelevant, [
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1
+        ])
         self.assertEqual(self.DUT.lstChargeable,
                          [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1])
         self.assertEqual(self.DUT.revision_id, None)
@@ -123,8 +127,7 @@ class TestIncidentModel(unittest.TestCase):
                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                    -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -140,8 +143,7 @@ class TestIncidentModel(unittest.TestCase):
                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -153,12 +155,11 @@ class TestIncidentModel(unittest.TestCase):
         _values = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
                    5, 'Remarks', 6, 'Test', 'Test Case', 7.0, 8, 9.0, 10.0, 11,
                    12, 0, 719163, True, 0, 719163, False, 0, 719164, False, 0,
-                   719163, 3, 'Analysis', -1, -1, -1, -1, -1, -1, -1, -1,
+                   719163, 3, 'Analysis', -1, -1, -1, -1, -1, -1, -1, -1, -1,
                    -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                   -1, -1, -1, -1, -1, -1, -1, -1, -1)
+                   -1, -1, -1, -1, -1, -1, -1, -1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -170,10 +171,10 @@ class TestIncidentModel(unittest.TestCase):
         self.assertEqual(self.DUT.get_attributes(),
                          (None, None, 0, 0, '', '', 0, 0, '', 0, '', '', 0.0,
                           '', 0.0, 0.0, 0, 0, 0, 0, False, 0, 0, False, 0, 0,
-                          False, 0, 0, 0, '', False, -1, -1,
-                          [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                           -1, -1, -1, -1, -1, -1, -1],
-                          [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]))
+                          False, 0, 0, 0, '', False, -1, -1, [
+                              -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                              -1, -1, -1, -1, -1, -1, -1, -1
+                          ], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]))
 
     @attr(all=True, unit=True)
     def test05_sanity(self):
@@ -190,10 +191,10 @@ class TestIncidentModel(unittest.TestCase):
         _output = (0, 1, 2, 3, 'Short Description', 'Detailed Description', 4,
                    5, 'Remarks', 6, 'Test', 'Test Case', 7.0, '8', 9.0, 10.0,
                    11, 12, 0, 719163, True, 0, 719163, False, 0, 719164, False,
-                   0, 719163, 3, 'Analysis', True, -1, -1,
-                   [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                    -1, -1, -1, -1, -1],
-                   [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1])
+                   0, 719163, 3, 'Analysis', True, -1, -1, [
+                       -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+                       -1, -1, -1, -1, -1, -1
+                   ], [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1])
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()

@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKTestMethod module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,7 +37,7 @@ class TestRTKTestMethod(unittest.TestCase):
     Class for testing the RTKTestMethod class.
     """
 
-    _attributes =(1, 1, 'Test Test Method', '', '')
+    _attributes = (1, 1, 'Test Test Method', '', '')
 
     def setUp(self):
         """

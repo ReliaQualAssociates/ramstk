@@ -39,7 +39,10 @@ This is the test class for testing Allocation module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -105,8 +108,7 @@ class TestAllocationModel(unittest.TestCase):
         _values = (32, 0.95, 1, 0.005, 200.0, 2, 2, 8, 5, 9, 6, 0.8, 0.2,
                    0.975, 0.982, 0.05, 200.0, 0, 50.0, 0.005, 25.0, 1, 2)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -118,8 +120,7 @@ class TestAllocationModel(unittest.TestCase):
         _values = (32, 0.95, 1, 1, 2, 2, 8, 5, 9, 6, 0.8, 0.2, 0.975, None,
                    0.05, 200.0, 0)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -131,8 +132,7 @@ class TestAllocationModel(unittest.TestCase):
         _values = (32, 0.95, 1, 1, 2, 2, 8, 9, 6, 0.8, 0.2, 0.975, 0.982, 0.05,
                    200.0, 0)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -141,8 +141,8 @@ class TestAllocationModel(unittest.TestCase):
         (TestAllocation) get_attributes should return a tuple of attribute values
         """
 
-        _values = (None, 1.0, 0.0, 0.0, 1, 1, 1, 1.0, 1.0, 1, 1, 1, 1,
-                   0.0, 0.0, 0.0, 0.0, -1, 0, 0)
+        _values = (None, 1.0, 0.0, 0.0, 1, 1, 1, 1.0, 1.0, 1, 1, 1, 1, 0.0,
+                   0.0, 0.0, 0.0, -1, 0, 0)
 
         self.assertEqual(self.DUT.get_attributes(), _values)
 

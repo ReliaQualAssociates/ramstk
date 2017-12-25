@@ -87,9 +87,10 @@ class FailureDefinitionDataModel(RTKDataModel):
         _revision_id = kwargs['revision_id']
         _definition = RTKFailureDefinition()
         _definition.revision_id = _revision_id
-        _error_code, _msg = RTKDataModel.insert(self, entities=[
-            _definition,
-        ])
+        _error_code, _msg = RTKDataModel.insert(
+            self, entities=[
+                _definition,
+            ])
 
         if _error_code == 0:
             self.tree.create_node(

@@ -223,9 +223,9 @@ class ModuleView(RTKModuleView):
         if _response == gtk.RESPONSE_YES:
             _dialog.do_destroy()
             if self._dtc_data_controller.request_delete(self._requirement_id):
-                _prompt = _(
-                    u"An error occurred when attempting to delete "
-                    u"Requirement {0:d}.").format(self._requirement_id)
+                _prompt = _(u"An error occurred when attempting to delete "
+                            u"Requirement {0:d}.").format(
+                                self._requirement_id)
                 _error_dialog = rtk.RTKMessageDialog(
                     _prompt, self._dic_icons['error'], 'error')
                 if _error_dialog.do_run() == gtk.RESPONSE_OK:

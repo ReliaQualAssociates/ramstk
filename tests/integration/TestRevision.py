@@ -31,7 +31,6 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This is the test class for testing Revision module algorithms and models.
 """
@@ -39,7 +38,10 @@ This is the test class for testing Revision module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -85,14 +87,13 @@ class TestRevisionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_revisions()[1], 0)
-        (_results,
-         _error_code,
-         _revision_id) = self.DUT.add_revision(code='-', name='Original',
-                                               remarks="This is the baseline \
+        (_results, _error_code, _revision_id) = self.DUT.add_revision(
+            code='-',
+            name='Original',
+            remarks="This is the baseline \
                                                         revision")
 
-        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
-                                   Model))
+        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id], Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
@@ -103,14 +104,13 @@ class TestRevisionController(unittest.TestCase):
         """
         # TODO: Requires configuration file values to set the default code.
         self.assertEqual(self.DUT.request_revisions()[1], 0)
-        (_results,
-         _error_code,
-         _revision_id) = self.DUT.add_revision(None, name='Original',
-                                               remarks="This is the baseline \
+        (_results, _error_code, _revision_id) = self.DUT.add_revision(
+            None,
+            name='Original',
+            remarks="This is the baseline \
                                                         revision")
 
-        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
-                                   Model))
+        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id], Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
@@ -121,14 +121,13 @@ class TestRevisionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_revisions()[1], 0)
-        (_results,
-         _error_code,
-         _revision_id) = self.DUT.add_revision(code='-', name=None,
-                                               remarks="This is the baseline \
+        (_results, _error_code, _revision_id) = self.DUT.add_revision(
+            code='-',
+            name=None,
+            remarks="This is the baseline \
                                                         revision")
 
-        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id],
-                                   Model))
+        self.assertTrue(isinstance(self.DUT.dicRevisions[_revision_id], Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
         self.assertEqual(self.DUT.dicRevisions[_revision_id].name,
@@ -141,8 +140,7 @@ class TestRevisionController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_revisions()[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_revision(self.DUT._last_id)
+        (_results, _error_code) = self.DUT.delete_revision(self.DUT._last_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

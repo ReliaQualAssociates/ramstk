@@ -10,11 +10,11 @@ The RTKHazard Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKHazards(RTK_BASE):
@@ -25,12 +25,15 @@ class RTKHazards(RTK_BASE):
     __tablename__ = 'rtk_hazards'
     __table_args__ = {'extend_existing': True}
 
-    hazard_id = Column('fld_hazard_id', Integer, primary_key=True,
-                       autoincrement=True, nullable=False)
-    category = Column('fld_category', String(512),
-                      default='Hazard Category')
-    subcategory = Column('fld_subcategory', String(512),
-                         default='Hazard Subcategory')
+    hazard_id = Column(
+        'fld_hazard_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    category = Column('fld_category', String(512), default='Hazard Category')
+    subcategory = Column(
+        'fld_subcategory', String(512), default='Hazard Subcategory')
 
     def get_attributes(self):
         """
@@ -61,10 +64,10 @@ class RTKHazards(RTK_BASE):
             format(self.hazard_id)
 
         try:
-            self.category = str(none_to_default(attributes[0],
-                                                'Hazard Category'))
-            self.subcategory = str(none_to_default(attributes[1],
-                                                   'Hazard Subcategory'))
+            self.category = str(
+                none_to_default(attributes[0], 'Hazard Category'))
+            self.subcategory = str(
+                none_to_default(attributes[1], 'Hazard Subcategory'))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

@@ -13,30 +13,30 @@ Hardware.Component.Capacitor.Fixed Package Paper Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -45,7 +45,7 @@ import locale
 try:
     import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
@@ -57,7 +57,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -87,17 +87,22 @@ class Bypass(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 9.0, 5.0, 15.0, 6.0, 8.0, 17.0, 32.0, 22.0, 0.5, 12.0,
-            32.0, 670.0]
+    _piE = [
+        1.0, 2.0, 9.0, 5.0, 15.0, 6.0, 8.0, 17.0, 32.0, 22.0, 0.5, 12.0, 32.0,
+        670.0
+    ]
     _piQ = [3.0, 7.0]
-    _lambdab_count = [[0.0036, 0.0072, 0.330, 0.016, 0.055, 0.023, 0.030, 0.07,
-                       0.13, 0.083, 0.0018, 0.044, 0.12, 2.1],
-                      [0.0039, 0.0087, 0.042, 0.022, 0.070, 0.035, 0.047, 0.19,
-                       0.35, 0.130, 0.0020, 0.056, 0.19, 2.5]]
+    _lambdab_count = [[
+        0.0036, 0.0072, 0.330, 0.016, 0.055, 0.023, 0.030, 0.07, 0.13, 0.083,
+        0.0018, 0.044, 0.12, 2.1
+    ], [
+        0.0039, 0.0087, 0.042, 0.022, 0.070, 0.035, 0.047, 0.19, 0.35, 0.130,
+        0.0020, 0.056, 0.19, 2.5
+    ]]
     lst_ref_temp = [358.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 40                        # Subcategory ID in the common DB.
+    subcategory = 40  # Subcategory ID in the common DB.
 
     def __init__(self):
         """
@@ -108,9 +113,9 @@ class Bypass(Capacitor):
         super(Bypass, self).__init__()
 
         # Initialize public scalar attributes.
-        self.specification = 0              # MIL-C-25 or MIL-C-12889.
-        self.spec_sheet = 0                 #
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        self.specification = 0  # MIL-C-25 or MIL-C-12889.
+        self.spec_sheet = 0  #
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             self.reference_temperature = 358.0
 
 #    def set_attributes(self, values):
@@ -123,12 +128,12 @@ class Bypass(Capacitor):
         :rtype: tuple
         """
 
- #       _code = 0
-  #      _msg = ''
+#       _code = 0
+#      _msg = ''
 
-   #     (_code, _msg) = Capacitor.set_attributes(self, values[:119])
+#     (_code, _msg) = Capacitor.set_attributes(self, values[:119])
 
-    #    return(_code, _msg)
+#    return(_code, _msg)
 
     def calculate_part(self):
         """
@@ -159,7 +164,7 @@ class Bypass(Capacitor):
                     0.00086 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow and zero division errors.
                 return True
 
@@ -194,15 +199,19 @@ class Feedthrough(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 9.0, 7.0, 15.0, 6.0, 8.0, 17.0, 28.0, 22.0, 0.5, 12.0,
-            32.0, 570.0]
+    _piE = [
+        1.0, 2.0, 9.0, 7.0, 15.0, 6.0, 8.0, 17.0, 28.0, 22.0, 0.5, 12.0, 32.0,
+        570.0
+    ]
     _piQ = [1.0, 3.0, 10.0]
-    _lambdab_count = [0.0047, 0.0096, 0.044, 0.034, 0.073, 0.030, 0.040, 0.094,
-                      0.15, 0.11, 0.0024, 0.058, 0.18, 2.7]
+    _lambdab_count = [
+        0.0047, 0.0096, 0.044, 0.034, 0.073, 0.030, 0.040, 0.094, 0.15, 0.11,
+        0.0024, 0.058, 0.18, 2.7
+    ]
     lst_ref_temp = [358.0, 398.0, 423.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 41                        # Subcategory ID in rtkcom DB.
+    subcategory = 41  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -213,8 +222,8 @@ class Feedthrough(Capacitor):
         super(Feedthrough, self).__init__()
 
         # Initialize public scalar attributes.
-        self.spec_sheet = 0                 # Characteristic E, K, P, or W.
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        self.spec_sheet = 0  # Characteristic E, K, P, or W.
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -243,7 +252,7 @@ class Feedthrough(Capacitor):
                     0.00115 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 
@@ -278,15 +287,19 @@ class Metallized(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 6.0, 11.0, 20.0, 20.0, 0.5, 11.0,
-            29.0, 530.0]
+    _piE = [
+        1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 6.0, 11.0, 20.0, 20.0, 0.5, 11.0, 29.0,
+        530.0
+    ]
     _piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 7.0, 20.0]
-    _lambdab_count = [0.0029, 0.0058, 0.023, 0.014, 0.041, 0.012, 0.018, 0.037,
-                      0.066, 0.060, 0.0014, 0.032, 0.088, 1.5]
+    _lambdab_count = [
+        0.0029, 0.0058, 0.023, 0.014, 0.041, 0.012, 0.018, 0.037, 0.066, 0.060,
+        0.0014, 0.032, 0.088, 1.5
+    ]
     lst_ref_temp = [358.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 43               # Subcategory ID in rtkcom DB.
+    subcategory = 43  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -298,7 +311,7 @@ class Metallized(Capacitor):
 
         # Initialize public scalar attributes.
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -327,7 +340,7 @@ class Metallized(Capacitor):
                     0.00069 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 

@@ -38,7 +38,10 @@ This is the test class for testing Survival module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -61,37 +64,33 @@ class TestSurvivalModel(unittest.TestCase):
     Class for testing the Survival data model class.
     """
 
-    KAPLANMEIER = [(1, 'Sub-System 1', 735835, 56.7, 56.7, 1, 1, 56.7, 1, 0,
-                    719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None',
-                    'None'),
-                   (1, 'Sub-System 1', 735623, 198.4, 198.4, 1, 3, 141.7, 1, 0,
-                    719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None',
-                    'None'),
-                   (1, 'Sub-System 1', 735682, 286.1, 286.1, 1, 2,
-                    87.70000000000002, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0,
-                    0, 0, 'None', 'None', 'None'),
-                   (1, 'Sub-System 1', 735698, 322.9, 322.9, 1, 6,
-                    36.799999999999955, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0,
-                    0, 0, 'None', 'None', 'None'),
-                   (1, 'Sub-System 1', 735710, 343.6, 343.6, 1, 1,
-                    20.700000000000045, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0,
-                    0, 0, 'None', 'None', 'None'),
-                   (1, 'Sub-System 1', 735734, 389.7, 389.7, 1, 3,
-                    46.099999999999966, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0,
-                    0, 0, 'None', 'None', 'None'),
-                   (1, 'Sub-System 1', 735749, 421.0, 421.0, 1, 1,
-                    31.30000000000001, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0,
-                    0, 0, 'None', 'None', 'None')]
+    KAPLANMEIER = [
+        (1, 'Sub-System 1', 735835, 56.7, 56.7, 1, 1, 56.7, 1, 0, 719163,
+         719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None',
+         'None'), (1, 'Sub-System 1', 735623, 198.4, 198.4, 1, 3, 141.7, 1, 0,
+                   719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None',
+                   'None'), (1, 'Sub-System 1', 735682, 286.1, 286.1, 1, 2,
+                             87.70000000000002, 1, 0, 719163, 719163, 0.0, 0.0,
+                             0.0, 0, 0, 0, 'None', 'None', 'None'),
+        (1, 'Sub-System 1', 735698, 322.9, 322.9, 1, 6, 36.799999999999955, 1,
+         0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+        (1, 'Sub-System 1', 735710, 343.6, 343.6, 1, 1, 20.700000000000045, 1,
+         0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+        (1, 'Sub-System 1', 735734, 389.7, 389.7, 1, 3, 46.099999999999966, 1,
+         0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None',
+         'None'), (1, 'Sub-System 1', 735749, 421.0, 421.0, 1, 1,
+                   31.30000000000001, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0,
+                   0, 0, 'None', 'None', 'None')
+    ]
 
-    NHPPPL = [(2, 'MIL-HDBK-217FN2 Example System', 735903, 53.0, 53.0, 1, 3,
-               53.0, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None',
-               'None', 'None'),
-              (2, 'MIL-HDBK-217FN2 Example System', 735912, 93.0, 93.0, 1, 2,
-               40.0, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None',
-               'None', 'None'),
-              (2, 'MIL-HDBK-217FN2 Example System', 735917, 120.0, 120.0, 1, 6,
-               27.0, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None',
-               'None', 'None')]
+    NHPPPL = [
+        (2, 'MIL-HDBK-217FN2 Example System', 735903, 53.0, 53.0, 1, 3, 53.0,
+         1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+        (2, 'MIL-HDBK-217FN2 Example System', 735912, 93.0, 93.0, 1, 2, 40.0,
+         1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'),
+        (2, 'MIL-HDBK-217FN2 Example System', 735917, 120.0, 120.0, 1, 6, 27.0,
+         1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None')
+    ]
 
     EXP = [(3, 'MIL-HDBK-217FN2 Example System', 719163, 0.0, 20.0, 1, 1, 20.0,
             1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None',
@@ -99,40 +98,42 @@ class TestSurvivalModel(unittest.TestCase):
            (3, 'MIL-HDBK-217FN2 Example System', 719163, 0.0, 40.0, 1, 1, 40.0,
             1, 0, 719163, 1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
            (3, 'MIL-HDBK-217FN2 Example System', 719163, 0.0, 60.0, 1, 1, 60.0,
-            1, 0, 719163, 1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-           (3, 'MIL-HDBK-217FN2 Example System', 719163, 0.0, 100.0, 1, 1,
-            100.0, 1, 0, 719163, 1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-           (3, 'MIL-HDBK-217FN2 Example System', 719163, 0.0, 150.0, 1, 1,
-            150.0, 1, 0, 719163, 1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', '')]
+            1, 0, 719163, 1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+            ''), (3, 'MIL-HDBK-217FN2 Example System', 719163, 0.0, 100.0, 1,
+                  1, 100.0, 1, 0, 719163, 1, 719163.0, 0.0, 0.0, 0, 0, 0, '0',
+                  '0', ''), (3, 'MIL-HDBK-217FN2 Example System', 719163, 0.0,
+                             150.0, 1, 1, 150.0, 1, 0, 719163, 1, 719163.0,
+                             0.0, 0.0, 0, 0, 0, '0', '0', '')]
 
     LOGN = [(184, '0', 719163, 0.0, 5.0, 1, 1, 5.0, 1, 0, 719163, 1, 719163.0,
              0.0, 0.0, 0, 0, 0, '0', '0', ''),
             (184, '0', 719163, 0.0, 10.0, 1, 1, 10.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 15.0, 1, 1, 15.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 20.0, 1, 1, 20.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
+             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+             ''), (184, '0', 719163, 0.0, 15.0, 1, 1, 15.0, 1, 0, 719163, 1,
+                   719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+                   ''), (184, '0', 719163, 0.0, 20.0, 1, 1, 20.0, 1, 0, 719163,
+                         1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
             (184, '0', 719163, 0.0, 25.0, 1, 1, 25.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 30.0, 1, 1, 30.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 35.0, 1, 1, 35.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
+             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+             ''), (184, '0', 719163, 0.0, 30.0, 1, 1, 30.0, 1, 0, 719163, 1,
+                   719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+                   ''), (184, '0', 719163, 0.0, 35.0, 1, 1, 35.0, 1, 0, 719163,
+                         1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
             (184, '0', 719163, 0.0, 40.0, 1, 1, 40.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 50.0, 1, 1, 50.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 60.0, 1, 1, 60.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
+             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+             ''), (184, '0', 719163, 0.0, 50.0, 1, 1, 50.0, 1, 0, 719163, 1,
+                   719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+                   ''), (184, '0', 719163, 0.0, 60.0, 1, 1, 60.0, 1, 0, 719163,
+                         1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
             (184, '0', 719163, 0.0, 70.0, 1, 1, 70.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 80.0, 1, 1, 80.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 90.0, 1, 1, 90.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', ''),
-            (184, '0', 719163, 0.0, 100.0, 1, 1, 100.0, 1, 0, 719163, 1,
-             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0', '')]
+             719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+             ''), (184, '0', 719163, 0.0, 80.0, 1, 1, 80.0, 1, 0, 719163, 1,
+                   719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+                   ''), (184, '0', 719163, 0.0, 90.0, 1, 1, 90.0, 1, 0, 719163,
+                         1, 719163.0, 0.0, 0.0, 0, 0, 0, '0', '0',
+                         ''), (184, '0', 719163, 0.0, 100.0, 1, 1, 100.0, 1, 0,
+                               719163, 1, 719163.0, 0.0, 0.0, 0, 0, 0, '0',
+                               '0', '')]
 
     def setUp(self):
         """
@@ -204,8 +205,7 @@ class TestSurvivalModel(unittest.TestCase):
                    23, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0,
                    33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -219,8 +219,7 @@ class TestSurvivalModel(unittest.TestCase):
                    23, 24.0, 25.0, 26.0, 27.0, 28.0, None, 30.0, 31.0, 32.0,
                    33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 1)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -234,8 +233,7 @@ class TestSurvivalModel(unittest.TestCase):
                    24.0, 25.0, 26.0, 27.0, 28.0, 30.0, 31.0, 32.0, 33.0, 34.0,
                    35.0, 36.0, 37.0, 38.0, 39.0, 0)
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -244,11 +242,12 @@ class TestSurvivalModel(unittest.TestCase):
         (TestSurvival) get_attributes should return a tuple of attribute values
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (0, 0, 0, '', 0, 0, 0.75, 0, 0, 0, 100.0, 0, 0, 0,
-                          0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0,
-                          0, [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0],
-                          [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]))
+        self.assertEqual(
+            self.DUT.get_attributes(),
+            (0, 0, 0, '', 0, 0, 0.75, 0, 0, 0, 100.0, 0, 0, 0, 0.0, 0.0, 0.0,
+             0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0, [0.0, 0.0, 0.0], [
+                 0.0, 0.0, 0.0
+             ], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0], [0.0, 0.0, 0.0]))
 
     @attr(all=True, unit=True)
     def test04_sanity(self):
@@ -256,15 +255,14 @@ class TestSurvivalModel(unittest.TestCase):
         (TestSurvival) get_attributes(set_attributes(values)) == values
         """
 
-        _values = (0, 1, 2, 'Description', 4, 5, 60.0, 7, 8, 9, 10.0, 11,
-                   12, 13, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22,
-                   23, 24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0,
-                   33.0, 34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 0)
-        _results = (0, 1, 2, 'Description', 4, 5, 60.0, 7, 8, 9, 10.0, 11,
-                    12, 13, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0,
-                    37.0, 38.0, 39.0, 0, [14.0, 15.0, 16.0],
-                    [17.0, 18.0, 19.0], [20.0, 21.0, 22.0], [23.0, 24.0, 25.0],
-                    [26.0, 27.0, 28.0])
+        _values = (0, 1, 2, 'Description', 4, 5, 60.0, 7, 8, 9, 10.0, 11, 12,
+                   13, 14.0, 15.0, 16.0, 17.0, 18.0, 19.0, 20.0, 21, 22, 23,
+                   24.0, 25.0, 26.0, 27.0, 28.0, 29.0, 30.0, 31.0, 32.0, 33.0,
+                   34.0, 35.0, 36.0, 37.0, 38.0, 39.0, 0)
+        _results = (0, 1, 2, 'Description', 4, 5, 60.0, 7, 8, 9, 10.0, 11, 12,
+                    13, 29.0, 30.0, 31.0, 32.0, 33.0, 34.0, 35.0, 36.0, 37.0,
+                    38.0, 39.0, 0, [14.0, 15.0, 16.0], [17.0, 18.0, 19.0],
+                    [20.0, 21.0, 22.0], [23.0, 24.0, 25.0], [26.0, 27.0, 28.0])
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
@@ -277,17 +275,19 @@ class TestSurvivalModel(unittest.TestCase):
         """
 
         _record = Record()
-        _record.set_attributes((1, 'Sub-System 1', 735835, 56.7, 56.7, 1, 1,
-                                56.7, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0,
-                                0, 0, 'None', 'None', 'None'))
+        _record.set_attributes(
+            (1, 'Sub-System 1', 735835, 56.7, 56.7, 1, 1, 56.7, 1, 0, 719163,
+             719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'))
         self.DUT.dicRecords[1] = _record
         _record = Record()
-        _record.set_attributes((1, 'Sub-System 1', 735623, 198.4, 198.4, 1, 3,
-                                0.0, 1, 0, 719163, 719163, 0.0, 0.0, 0.0, 0, 0,
-                                0, 'None', 'None', 'None'))
+        _record.set_attributes(
+            (1, 'Sub-System 1', 735623, 198.4, 198.4, 1, 3, 0.0, 1, 0, 719163,
+             719163, 0.0, 0.0, 0.0, 0, 0, 0, 'None', 'None', 'None'))
         self.DUT.dicRecords[2] = _record
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.calculate_tbf(1, 2))
         self.assertAlmostEqual(self.DUT.dicRecords[2].interarrival_time, 141.7)
@@ -317,8 +317,10 @@ class TestSurvivalModel(unittest.TestCase):
             _record.set_attributes(_data)
             self.DUT.dicRecords[_index] = _record
 
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
         self.assertEqual(self.DUT.n_failures, 17.0)
@@ -346,8 +348,10 @@ class TestSurvivalModel(unittest.TestCase):
             _record.set_attributes(_data)
             self.DUT.dicRecords[_index] = _record
 
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
         self.assertEqual(self.DUT.n_failures, 11)
@@ -375,8 +379,10 @@ class TestSurvivalModel(unittest.TestCase):
             _record.set_attributes(_data)
             self.DUT.dicRecords[_index] = _record
 
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
         self.assertEqual(self.DUT.n_failures, 11)
@@ -405,8 +411,10 @@ class TestSurvivalModel(unittest.TestCase):
             _record.set_attributes(_data)
             self.DUT.dicRecords[_index] = _record
 
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
         self.assertEqual(self.DUT.n_failures, 5.0)
@@ -435,8 +443,10 @@ class TestSurvivalModel(unittest.TestCase):
             _record.set_attributes(_data)
             self.DUT.dicRecords[_index] = _record
 
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
         self.assertEqual(self.DUT.n_failures, 14.0)
@@ -465,8 +475,10 @@ class TestSurvivalModel(unittest.TestCase):
             _record.set_attributes(_data)
             self.DUT.dicRecords[_index] = _record
 
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
         self.assertEqual(self.DUT.n_failures, 14.0)
@@ -495,8 +507,10 @@ class TestSurvivalModel(unittest.TestCase):
             _record.set_attributes(_data)
             self.DUT.dicRecords[_index] = _record
 
-        self.DUT.dicRecords = OrderedDict(sorted(self.DUT.dicRecords.items(),
-                                                 key=lambda r: r[1].right_interval))
+        self.DUT.dicRecords = OrderedDict(
+            sorted(
+                self.DUT.dicRecords.items(),
+                key=lambda r: r[1].right_interval))
 
         self.assertFalse(self.DUT.estimate_parameters())
         self.assertEqual(self.DUT.n_failures, 14.0)

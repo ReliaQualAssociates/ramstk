@@ -12,7 +12,10 @@ This is the test class for testing Assembly module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -65,11 +68,11 @@ class TestAssemblyModel(unittest.TestCase):
         """
 
         _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
-                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
-                        30.0, 30.0, 0.0, 2014, 0, 0, 0, 0.0, 0, 0)
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 0,
+                        0, 0, 0.0, 0, 0)
         _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                           0.0, 1.0, 30.0, 25.0, 0.0, 25.0, "")
         _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -83,8 +86,7 @@ class TestAssemblyModel(unittest.TestCase):
 
         _all_values = _base_values + _stress_values + _rel_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[0], 0)
         self.assertEqual(_error_code[1], 0)
         self.assertEqual(_error_code[2], 0)
@@ -97,11 +99,11 @@ class TestAssemblyModel(unittest.TestCase):
         """
 
         _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
-                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
-                        30.0, 30.0, 0.0, 2014, 0, 0, 0, 0.0, 0, 0)
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 0,
+                        0, 0, 0.0, 0, 0)
         _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                           0.0, 1.0, 30.0, 25.0, 0.0, 25.0, "")
         _rel_values = (0.0, 1.0, 1.0, None, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -115,8 +117,7 @@ class TestAssemblyModel(unittest.TestCase):
 
         _all_values = _base_values + _stress_values + _rel_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[0], 0)
         self.assertEqual(_error_code[1], 0)
         self.assertEqual(_error_code[2], 10)
@@ -129,11 +130,11 @@ class TestAssemblyModel(unittest.TestCase):
         """
 
         _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
-                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
-                        30.0, 30.0, 0.0, 2014, 0, 0, 0, 0.0, 0, 0)
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 0,
+                        0, 0, 0.0, 0, 0)
         _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                           0.0, 1.0, 30.0, 25.0, 0.0, 25.0, "")
         _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
@@ -147,8 +148,7 @@ class TestAssemblyModel(unittest.TestCase):
 
         _all_values = _base_values + _stress_values + _rel_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values[:10])
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values[:10])
         self.assertEqual(_error_code[0], 40)
         self.assertEqual(_error_code[1], 40)
         self.assertEqual(_error_code[2], 40)
@@ -178,11 +178,11 @@ class TestAssemblyModel(unittest.TestCase):
         """
 
         _base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
-                        100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
-                        'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
-                        'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
-                        30.0, 30.0, 0.0, 2014, 0, 0, 0, 0.0, 0, 0)
+                        'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
+                        0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
+                        0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
+                        'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014, 0,
+                        0, 0, 0.0, 0, 0)
         _stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
                           0.0, 1.0, 30.0, 25.0, 0.0, 25.0, "")
         _rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,

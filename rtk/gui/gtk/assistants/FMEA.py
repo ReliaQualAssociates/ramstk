@@ -29,7 +29,7 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-from gui.gtk import rtk                     # pylint: disable=E0401
+from gui.gtk import rtk  # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -51,8 +51,9 @@ class AddControlAction(rtk.RTKDialog):
         Assistant.
         """
 
-        rtk.RTKDialog.__init__(self, _(u"RTK FMEA/FMECA Design Control and "
-                                       u"Action Addition Assistant"))
+        rtk.RTKDialog.__init__(self,
+                               _(u"RTK FMEA/FMECA Design Control and "
+                                 u"Action Addition Assistant"))
 
         # Initialize private dictionary attributes.
 
@@ -74,19 +75,24 @@ class AddControlAction(rtk.RTKDialog):
         _fixed = gtk.Fixed()
         self.vbox.pack_start(_fixed)
 
-        _label = rtk.RTKLabel(_(u"This is the RTK Design Control and Action "
-                                u"Addition Assistant.  Enter the information "
-                                u"requested below and then press 'OK' to add "
-                                u"a new design control or action to the RTK "
-                                u"Program database."), width=600, height=-1,
-                              wrap=True)
+        _label = rtk.RTKLabel(
+            _(u"This is the RTK Design Control and Action "
+              u"Addition Assistant.  Enter the information "
+              u"requested below and then press 'OK' to add "
+              u"a new design control or action to the RTK "
+              u"Program database."),
+            width=600,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 10)
         _y_pos = _label.size_request()[1] + 50
 
-        self.rdoControl.set_tooltip_text(_(u"Select to add a design control "
-                                           u"to the selected failure cause."))
-        self.rdoAction.set_tooltip_text(_(u"Select to add an Action to the "
-                                          u"selected failure cause."))
+        self.rdoControl.set_tooltip_text(
+            _(u"Select to add a design control "
+              u"to the selected failure cause."))
+        self.rdoAction.set_tooltip_text(
+            _(u"Select to add an Action to the "
+              u"selected failure cause."))
 
         _fixed.put(self.rdoControl, 10, _y_pos)
         _fixed.put(self.rdoAction, 10, _y_pos + 35)

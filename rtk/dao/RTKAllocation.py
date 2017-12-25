@@ -12,11 +12,11 @@ The RTKAllocation Table
 
 # pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKAllocation(RTK_BASE):
@@ -29,9 +29,12 @@ class RTKAllocation(RTK_BASE):
     __tablename__ = 'rtk_allocation'
     __table_args__ = {'extend_existing': True}
 
-    hardware_id = Column('fld_hardware_id', Integer,
-                         ForeignKey('rtk_hardware.fld_hardware_id'),
-                         primary_key=True, nullable=False)
+    hardware_id = Column(
+        'fld_hardware_id',
+        Integer,
+        ForeignKey('rtk_hardware.fld_hardware_id'),
+        primary_key=True,
+        nullable=False)
 
     availability_alloc = Column('fld_availability_alloc', Float, default=0.0)
     env_factor = Column('fld_env_factor', Integer, default=1)
@@ -46,8 +49,8 @@ class RTKAllocation(RTK_BASE):
     n_sub_systems = Column('fld_n_sub_systems', Integer, default=1)
     n_sub_elements = Column('fld_n_sub_elements', Integer, default=1)
     parent_id = Column('fld_parent_id', Integer, default=1)
-    percent_weight_factor = Column('fld_percent_weight_factor', Float,
-                                   default=0.0)
+    percent_weight_factor = Column(
+        'fld_percent_weight_factor', Float, default=0.0)
     reliability_alloc = Column('fld_reliability_alloc', Float, default=0.0)
     reliability_goal = Column('fld_reliability_goal', Float, default=1.0)
     op_time_factor = Column('fld_op_time_factor', Integer, default=1)
@@ -98,8 +101,8 @@ class RTKAllocation(RTK_BASE):
                format(self.hardware_id)
 
         try:
-            self.availability_alloc = float(none_to_default(attributes[0],
-                                                            0.0))
+            self.availability_alloc = float(
+                none_to_default(attributes[0], 0.0))
             self.env_factor = int(none_to_default(attributes[1], 1))
             self.goal_measure_id = int(none_to_default(attributes[2], 0))
             self.hazard_rate_alloc = float(none_to_default(attributes[3], 0.0))
@@ -112,10 +115,10 @@ class RTKAllocation(RTK_BASE):
             self.n_sub_systems = int(none_to_default(attributes[10], 1))
             self.n_sub_elements = int(none_to_default(attributes[11], 1))
             self.parent_id = int(none_to_default(attributes[12], 1))
-            self.percent_weight_factor = float(none_to_default(attributes[13],
-                                                               0.0))
-            self.reliability_alloc = float(none_to_default(attributes[14],
-                                                           0.0))
+            self.percent_weight_factor = float(
+                none_to_default(attributes[13], 0.0))
+            self.reliability_alloc = float(
+                none_to_default(attributes[14], 0.0))
             self.reliability_goal = float(none_to_default(attributes[15], 1.0))
             self.op_time_factor = int(none_to_default(attributes[16], 1))
             self.soa_factor = int(none_to_default(attributes[17], 1))

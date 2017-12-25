@@ -12,30 +12,30 @@ Software Package Bill of Materials (BoM) Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
@@ -48,7 +48,7 @@ try:
     from software.Software import Model as Software
     from software.CSCI import Model as CSCI
     from software.Unit import Model as Unit
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     from rtk.software.Software import Model as Software
     from rtk.software.CSCI import Model as CSCI
@@ -61,7 +61,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -162,11 +162,11 @@ class BoM(object):
             _n_modules = 0
 
         for i in range(_n_modules):
-            if _results[i][2] == 1:         # System
+            if _results[i][2] == 1:  # System
                 _software = Software()
-            elif _results[i][2] == 2:       # CSCI
+            elif _results[i][2] == 2:  # CSCI
                 _software = CSCI()
-            elif _results[i][2] == 3:       # Unit
+            elif _results[i][2] == 3:  # Unit
                 _software = Unit()
             _software.set_attributes(_results[i])
             self.dicSoftware[_software.software_id] = _software
@@ -175,18 +175,22 @@ class BoM(object):
             _software = self.dicSoftware[_key]
             for _key2 in self.dicSoftware.keys():
                 _software2 = self.dicSoftware[_key2]
-                if(_software2.parent_id == _software.software_id and
-                   _software2.level_id == 2):
+                if (_software2.parent_id == _software.software_id
+                        and _software2.level_id == 2):
                     try:
-                        _software.dicCSCI[_software.software_id].append(_software2)
+                        _software.dicCSCI[_software.software_id].append(
+                            _software2)
                     except KeyError:
                         _software.dicCSCI[_software.software_id] = [_software2]
-                elif(_software2.parent_id == _software.software_id and
-                     _software2.level_id == 3):
+                elif (_software2.parent_id == _software.software_id
+                      and _software2.level_id == 3):
                     try:
-                        _software.dicUnits[_software.software_id].append(_software2)
+                        _software.dicUnits[_software.software_id].append(
+                            _software2)
                     except KeyError:
-                        _software.dicUnits[_software.software_id] = [_software2]
+                        _software.dicUnits[_software.software_id] = [
+                            _software2
+                        ]
 
             self._load_development_questions(_software)
             self._load_srr_questions(_software)
@@ -195,7 +199,7 @@ class BoM(object):
             self._load_trr_questions(_software)
             self._load_test_matrix(_software)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def _load_development_questions(self, software):
         """
@@ -245,16 +249,19 @@ class BoM(object):
         for i in range(_n_questions):
             if i in [0, 1, 2, 3, 5, 6]:
                 software.lst_anomaly_mgmt[0][i] = _results[i][1]
-            elif i in [4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20,
-                       21]:
+            elif i in [
+                    4, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21
+            ]:
                 software.lst_anomaly_mgmt[0][i] = _results[i][0]
 
             software.lst_traceability[0][0] = _results[22][0]
 
             if i in [31, 32, 33, 34]:
                 software.lst_sftw_quality[0][i - 23] = _results[i][1]
-            elif i in [23, 24, 25, 26, 27, 28, 29, 30, 35, 36, 37, 38, 39, 40,
-                       41, 42, 43, 44, 45, 46, 47, 48, 49]:
+            elif i in [
+                    23, 24, 25, 26, 27, 28, 29, 30, 35, 36, 37, 38, 39, 40, 41,
+                    42, 43, 44, 45, 46, 47, 48, 49
+            ]:
                 software.lst_sftw_quality[0][i - 23] = _results[i][0]
 
         return False
@@ -302,7 +309,7 @@ class BoM(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _load_cdr_questions; current McCabe Complexity metric = 16.
+        # WARNING: Refactor _load_cdr_questions; current McCabe Complexity metric = 16.
         _query = "SELECT fld_y, fld_value FROM rtk_cdr \
                   WHERE fld_software_id={0:d}".format(software.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=False)
@@ -312,20 +319,22 @@ class BoM(object):
         except TypeError:
             _n_questions = 0
 
-        if software.level_id == 1:          # System
+        if software.level_id == 1:  # System
             _am_check = []
             _am_value = []
             _tr_check = []
             _qc_check = []
             _qc_value = []
-        elif software.level_id == 2:        # CSCI
+        elif software.level_id == 2:  # CSCI
             _am_check = [2, 3, 4, 5, 6, 8, 9, 10]
             _am_value = [0, 1, 7]
             _tr_check = [11, 12]
             _qc_check = []
-            _qc_value = [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25,
-                         26, 27, 28, 29, 30, 31, 32, 33, 34, 35, 36]
-        elif software.level_id == 3:        # Unit
+            _qc_value = [
+                13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28,
+                29, 30, 31, 32, 33, 34, 35, 36
+            ]
+        elif software.level_id == 3:  # Unit
             _am_check = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
             _am_value = []
             _tr_check = [10]
@@ -339,9 +348,9 @@ class BoM(object):
                 software.lst_anomaly_mgmt[2][i] = _results[i][1]
 
             if i in _tr_check:
-                if software.level_id == 2:      # CSCI
+                if software.level_id == 2:  # CSCI
                     software.lst_traceability[2][i - 11] = _results[i][0]
-                elif software.level_id == 3:    # Unit
+                elif software.level_id == 3:  # Unit
                     software.lst_traceability[2][i - 10] = _results[i][0]
 
             if i in _qc_value:
@@ -377,15 +386,15 @@ class BoM(object):
         except TypeError:
             _n_questions = 0
 
-        if software.level_id == 1:          # System
+        if software.level_id == 1:  # System
             _am_check = []
             _qc_check = []
             _lt_value = []
-        elif software.level_id == 2:        # CSCI
+        elif software.level_id == 2:  # CSCI
             _am_check = []
             _qc_check = []
             _lt_value = [0, 1, 2, 3]
-        elif software.level_id == 3:        # Unit
+        elif software.level_id == 3:  # Unit
             _am_check = [3, 4]
             _qc_check = [5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18]
             _lt_value = [0, 1, 2]
@@ -443,11 +452,11 @@ class BoM(object):
         :return: (_results, _error_code)
         :rtype: tuple
         """
-# WARNING: Refactor add_software; current McCabe Complexity metric = 19.
+        # WARNING: Refactor add_software; current McCabe Complexity metric = 19.
         # By default we add the new Software item as an immediate child of the
         # top-level assembly.
         if parent_id is None:
-# TODO: Replace this with an RTK error or warning dialog and then return.
+            # TODO: Replace this with an RTK error or warning dialog and then return.
             parent_id = 0
 
         if software_type == 1:
@@ -461,8 +470,8 @@ class BoM(object):
                   VALUES({0:d}, '{1:s}', {2:d}, \
                          {3:d})".format(revision_id, _description, parent_id,
                                         software_type + 1)
-        (_results, _error_code, _software_id) = self._dao.execute(_query,
-                                                                  commit=True)
+        (_results, _error_code, _software_id) = self._dao.execute(
+            _query, commit=True)
 
         # If the new software item was added successfully to the RTK Project
         # database, add a record to the development environment risk analysis
@@ -472,8 +481,8 @@ class BoM(object):
                 _query = "INSERT INTO rtk_software_development \
                           (fld_software_id, fld_question_id) \
                           VALUES({0:d}, {1:d})".format(_software_id, i)
-                (_results,
-                 _error_code, _) = self._dao.execute(_query, commit=True)
+                (_results, _error_code, _) = self._dao.execute(
+                    _query, commit=True)
 
         # If the record was successfully added to the development environment
         # table, add a record to the requirements review table.
@@ -482,8 +491,8 @@ class BoM(object):
                 _query = "INSERT INTO rtk_srr_ssr \
                           (fld_software_id, fld_question_id) \
                           VALUES({0:d}, {1:d})".format(_software_id, i)
-                (_results,
-                 _error_code, _) = self._dao.execute(_query, commit=True)
+                (_results, _error_code, _) = self._dao.execute(
+                    _query, commit=True)
 
         # If the record was successfully added to the requirements review
         # table, add a record to the preliminary design review table.
@@ -492,8 +501,8 @@ class BoM(object):
                 _query = "INSERT INTO rtk_pdr \
                           (fld_software_id, fld_question_id) \
                           VALUES({0:d}, {1:d})".format(_software_id, i)
-                (_results,
-                 _error_code, _) = self._dao.execute(_query, commit=True)
+                (_results, _error_code, _) = self._dao.execute(
+                    _query, commit=True)
 
         # If the record was successfully added to the preliminary design review
         # table, add a record to the critical design review table.
@@ -502,8 +511,8 @@ class BoM(object):
                 _query = "INSERT INTO rtk_cdr \
                           (fld_software_id, fld_question_id) \
                           VALUES({0:d}, {1:d})".format(_software_id, i)
-                (_results,
-                 _error_code, _) = self._dao.execute(_query, commit=True)
+                (_results, _error_code, _) = self._dao.execute(
+                    _query, commit=True)
 
         # If the record was successfully added to the critical design review
         # table, add a record to the test readiness review table.
@@ -512,8 +521,8 @@ class BoM(object):
                 _query = "INSERT INTO rtk_trr \
                           (fld_software_id, fld_question_id) \
                           VALUES({0:d}, {1:d})".format(_software_id, i)
-                (_results,
-                 _error_code, _) = self._dao.execute(_query, commit=True)
+                (_results, _error_code, _) = self._dao.execute(
+                    _query, commit=True)
 
         # If the record was successfully added to the test readiness review
         # table, add a record to the test planning table.
@@ -522,8 +531,8 @@ class BoM(object):
                 _query = "INSERT INTO rtk_software_tests \
                           (fld_software_id, fld_technique_id) \
                           VALUES({0:d}, {1:d})".format(_software_id, i)
-                (_results,
-                 _error_code, _) = self._dao.execute(_query, commit=True)
+                (_results, _error_code, _) = self._dao.execute(
+                    _query, commit=True)
 
         # If the new software item was added successfully to all the tables in
         # the RTK Project database:
@@ -539,19 +548,16 @@ class BoM(object):
                 _software = CSCI()
             elif software_type == 2:
                 _software = Unit()
-            _software.set_attributes((revision_id, self._last_id,
-                                      software_type, _description, 0, 0, 0.0,
-                                      0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                      0.0, 0.0, 0, 0, 0, 0.0, 0, 0, 0, 0, 0.0,
-                                      0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                      parent_id, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0,
-                                      0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0, 0,
-                                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                      0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0,
-                                      0))
+            _software.set_attributes(
+                (revision_id, self._last_id, software_type, _description, 0, 0,
+                 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0,
+                 0.0, 0, 0, 0, 0, 0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 parent_id, 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0, 0, 0, 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0))
             self.dicSoftware[_software.software_id] = _software
 
-        return(_software, _error_code)
+        return (_software, _error_code)
 
     def delete_software(self, software_id):
         """
@@ -574,7 +580,7 @@ class BoM(object):
 
         self.dicSoftware.pop(software_id)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def copy_software(self, revision_id):
         """
@@ -587,8 +593,8 @@ class BoM(object):
         """
         # TODO: Consider refactoring copy_software; current McCabe Complexity metric = 11.
         _query = "SELECT MAX(fld_software_id) FROM rtk_software"
-        (_software_id, _error_code, __) = self._dao.execute(_query,
-                                                            commit=False)
+        (_software_id, _error_code, __) = self._dao.execute(
+            _query, commit=False)
 
         if _software_id[0][0] is not None:
             _software_id = _software_id[0][0] + 1
@@ -603,13 +609,12 @@ class BoM(object):
                       (fld_revision_id, fld_level_id, fld_description, \
                        fld_parent_id, fld_application_id, fld_development_id) \
                       VALUES ({0:d}, {1:d}, '{2:s}', {3:d}, {4:d}, \
-                              {5:d})".format(revision_id, _software.level_id,
-                                             _software.description,
-                                             _software.parent_id,
-                                             _software.application_id,
-                                             _software.development_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=True)
+                              {5:d})".format(
+                revision_id, _software.level_id, _software.description,
+                _software.parent_id, _software.application_id,
+                _software.development_id)
+            (_results, _error_code, __) = self._dao.execute(
+                _query, commit=True)
 
             if not _results:
                 # Add the new software module to each of risk analysis tables.
@@ -617,45 +622,40 @@ class BoM(object):
                     _query = "INSERT INTO rtk_software_development \
                              (fld_software_id, fld_question_id, fld_y) \
                              VALUES ({0:d}, {1:d}, 0)".format(_software_id, i)
-                    (_results,
-                     _error_code,
-                     __) = self._dao.execute(_query, commit=True)
+                    (_results, _error_code, __) = self._dao.execute(
+                        _query, commit=True)
                 for i in range(50):
                     _query = "INSERT INTO rtk_srr_ssr \
                              (fld_software_id, fld_question_id, fld_y, \
                               fld_value) \
-                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
-                                                                 i)
-                    (_results,
-                     _error_code,
-                     __) = self._dao.execute(_query, commit=True)
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(
+                        _software_id, i)
+                    (_results, _error_code, __) = self._dao.execute(
+                        _query, commit=True)
                 for i in range(39):
                     _query = "INSERT INTO rtk_pdr \
                              (fld_software_id, fld_question_id, fld_y, \
                               fld_value) \
-                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
-                                                                 i)
-                    (_results,
-                     _error_code,
-                     __) = self._dao.execute(_query, commit=True)
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(
+                        _software_id, i)
+                    (_results, _error_code, __) = self._dao.execute(
+                        _query, commit=True)
                 for i in range(72):
                     _query = "INSERT INTO rtk_cdr \
                              (fld_software_id, fld_question_id, fld_y, \
                               fld_value) \
-                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
-                                                                 i)
-                    (_results,
-                     _error_code,
-                     __) = self._dao.execute(_query, commit=True)
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(
+                        _software_id, i)
+                    (_results, _error_code, __) = self._dao.execute(
+                        _query, commit=True)
                 for i in range(24):
                     _query = "INSERT INTO rtk_trr \
                              (fld_software_id, fld_question_id, fld_y, \
                               fld_value) \
-                             VALUES ({0:d}, {1:d}, 0, 0)".format(_software_id,
-                                                                 i)
-                    (_results,
-                     _error_code,
-                     __) = self._dao.execute(_query, commit=True)
+                             VALUES ({0:d}, {1:d}, 0, 0)".format(
+                        _software_id, i)
+                    (_results, _error_code, __) = self._dao.execute(
+                        _query, commit=True)
 
             # Add an entry to the Hardware ID cross-reference dictionary for
             # for the newly added Hardware item.
@@ -670,10 +670,10 @@ class BoM(object):
             _query = "UPDATE rtk_software \
                       SET fld_parent_id={0:d} \
                       WHERE fld_parent_id={1:d} \
-                      AND fld_revision_id={2:d}".format(_dic_index_xref[_key],
-                                                        _key, revision_id)
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=True)
+                      AND fld_revision_id={2:d}".format(
+                _dic_index_xref[_key], _key, revision_id)
+            (_results, _error_code, __) = self._dao.execute(
+                _query, commit=True)
 
         return False
 
@@ -720,43 +720,36 @@ class BoM(object):
                       fld_cb={67:d}, fld_ncb={68:d}, fld_dr_test={69:d}, \
                       fld_test_time={70:f}, fld_dr_eot={71:d}, \
                       fld_test_time_eot={72:f}".format(
-                          _software.description, _software.application_id,
-                          _software.development_id, _software.a_risk,
-                          _software.do, _software.dd, _software.dc,
-                          _software.d_risk, _software.am, _software.sa,
-                          _software.st, _software.dr, _software.sq,
-                          _software.s1, _software.hloc, _software.aloc,
-                          _software.sloc, _software.sl, _software.ax,
-                          _software.bx, _software.cx, _software.nm,
-                          _software.sx, _software.um, _software.wm,
-                          _software.xm, _software.sm, _software.df,
-                          _software.sr, _software.s2, _software.rpfom,
-                          _software.parent_id, _software.dev_assess_type,
-                          _software.phase_id, _software.tcl,
-                          _software.test_path, _software.category,
-                          _software.test_effort, _software.test_approach,
-                          _software.labor_hours_test,
-                          _software.labor_hours_dev, _software.budget_test,
-                          _software.budget_dev, _software.schedule_test,
-                          _software.schedule_dev, _software.branches,
-                          _software.branches_test, _software.inputs,
-                          _software.inputs_test, _software.nm_test,
-                          _software.interfaces, _software.interfaces_test,
-                          _software.te, _software.tm, _software.tc,
-                          _software.t_risk, _software.ft1, _software.ft2,
-                          _software.ren_avg, _software.ren_eot, _software.ec,
-                          _software.ev, _software.et, _software.os,
-                          _software.ew, _software.e_risk,
-                          _software.failure_rate, _software.cb, _software.ncb,
-                          _software.dr_test, _software.test_time,
-                          _software.dr_eot, _software.test_time_eot)
+            _software.description, _software.application_id,
+            _software.development_id, _software.a_risk, _software.do,
+            _software.dd, _software.dc, _software.d_risk, _software.am,
+            _software.sa, _software.st, _software.dr, _software.sq,
+            _software.s1, _software.hloc, _software.aloc, _software.sloc,
+            _software.sl, _software.ax, _software.bx, _software.cx,
+            _software.nm, _software.sx, _software.um, _software.wm,
+            _software.xm, _software.sm, _software.df, _software.sr,
+            _software.s2, _software.rpfom, _software.parent_id,
+            _software.dev_assess_type, _software.phase_id, _software.tcl,
+            _software.test_path, _software.category, _software.test_effort,
+            _software.test_approach, _software.labor_hours_test,
+            _software.labor_hours_dev, _software.budget_test,
+            _software.budget_dev, _software.schedule_test,
+            _software.schedule_dev, _software.branches,
+            _software.branches_test, _software.inputs, _software.inputs_test,
+            _software.nm_test, _software.interfaces, _software.interfaces_test,
+            _software.te, _software.tm, _software.tc, _software.t_risk,
+            _software.ft1, _software.ft2, _software.ren_avg, _software.ren_eot,
+            _software.ec, _software.ev, _software.et, _software.os,
+            _software.ew, _software.e_risk, _software.failure_rate,
+            _software.cb, _software.ncb, _software.dr_test,
+            _software.test_time, _software.dr_eot, _software.test_time_eot)
 
         _query = _query + " WHERE fld_revision_id={0:d} \
                             AND fld_software_id={1:d}".format(
-                                _software.revision_id, software_id)
+            _software.revision_id, software_id)
 
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def save_bom(self):
@@ -768,8 +761,8 @@ class BoM(object):
         """
 
         for _software in self.dicSoftware.values():
-            (_results,
-             _error_code) = self.save_software_item(_software.software_id)
+            (_results, _error_code) = self.save_software_item(
+                _software.software_id)
 
         return False
 
@@ -815,30 +808,30 @@ class BoM(object):
                                             27, 28, 29, 30, 31, 32, 33, 34, \
                                             35, 36, 37, 38, 39, 40, 41, 42) \
                   AND fld_software_id={43:d}".format(
-                      _sftwr.lst_development[0], _sftwr.lst_development[1],
-                      _sftwr.lst_development[2], _sftwr.lst_development[3],
-                      _sftwr.lst_development[4], _sftwr.lst_development[5],
-                      _sftwr.lst_development[6], _sftwr.lst_development[7],
-                      _sftwr.lst_development[8], _sftwr.lst_development[9],
-                      _sftwr.lst_development[10], _sftwr.lst_development[11],
-                      _sftwr.lst_development[12], _sftwr.lst_development[13],
-                      _sftwr.lst_development[14], _sftwr.lst_development[15],
-                      _sftwr.lst_development[16], _sftwr.lst_development[17],
-                      _sftwr.lst_development[18], _sftwr.lst_development[19],
-                      _sftwr.lst_development[20], _sftwr.lst_development[21],
-                      _sftwr.lst_development[22], _sftwr.lst_development[23],
-                      _sftwr.lst_development[24], _sftwr.lst_development[25],
-                      _sftwr.lst_development[26], _sftwr.lst_development[27],
-                      _sftwr.lst_development[28], _sftwr.lst_development[29],
-                      _sftwr.lst_development[30], _sftwr.lst_development[31],
-                      _sftwr.lst_development[32], _sftwr.lst_development[33],
-                      _sftwr.lst_development[34], _sftwr.lst_development[35],
-                      _sftwr.lst_development[36], _sftwr.lst_development[37],
-                      _sftwr.lst_development[38], _sftwr.lst_development[39],
-                      _sftwr.lst_development[40], _sftwr.lst_development[41],
-                      _sftwr.lst_development[42], _sftwr.software_id)
+            _sftwr.lst_development[0], _sftwr.lst_development[1],
+            _sftwr.lst_development[2], _sftwr.lst_development[3],
+            _sftwr.lst_development[4], _sftwr.lst_development[5],
+            _sftwr.lst_development[6], _sftwr.lst_development[7],
+            _sftwr.lst_development[8], _sftwr.lst_development[9],
+            _sftwr.lst_development[10], _sftwr.lst_development[11],
+            _sftwr.lst_development[12], _sftwr.lst_development[13],
+            _sftwr.lst_development[14], _sftwr.lst_development[15],
+            _sftwr.lst_development[16], _sftwr.lst_development[17],
+            _sftwr.lst_development[18], _sftwr.lst_development[19],
+            _sftwr.lst_development[20], _sftwr.lst_development[21],
+            _sftwr.lst_development[22], _sftwr.lst_development[23],
+            _sftwr.lst_development[24], _sftwr.lst_development[25],
+            _sftwr.lst_development[26], _sftwr.lst_development[27],
+            _sftwr.lst_development[28], _sftwr.lst_development[29],
+            _sftwr.lst_development[30], _sftwr.lst_development[31],
+            _sftwr.lst_development[32], _sftwr.lst_development[33],
+            _sftwr.lst_development[34], _sftwr.lst_development[35],
+            _sftwr.lst_development[36], _sftwr.lst_development[37],
+            _sftwr.lst_development[38], _sftwr.lst_development[39],
+            _sftwr.lst_development[40], _sftwr.lst_development[41],
+            _sftwr.lst_development[42], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def save_srr_risk(self, software_id):
@@ -867,22 +860,15 @@ class BoM(object):
                   WHERE fld_question_id IN (4, 7, 8, 9, 10, 11, 12, 13, 14, \
                                             15, 16, 17, 18, 19, 20, 21) \
                   AND fld_software_id={16:d}".format(
-                      _sftwr.lst_anomaly_mgmt[0][4],
-                      _sftwr.lst_anomaly_mgmt[0][7],
-                      _sftwr.lst_anomaly_mgmt[0][8],
-                      _sftwr.lst_anomaly_mgmt[0][9],
-                      _sftwr.lst_anomaly_mgmt[0][10],
-                      _sftwr.lst_anomaly_mgmt[0][11],
-                      _sftwr.lst_anomaly_mgmt[0][12],
-                      _sftwr.lst_anomaly_mgmt[0][13],
-                      _sftwr.lst_anomaly_mgmt[0][14],
-                      _sftwr.lst_anomaly_mgmt[0][15],
-                      _sftwr.lst_anomaly_mgmt[0][16],
-                      _sftwr.lst_anomaly_mgmt[0][17],
-                      _sftwr.lst_anomaly_mgmt[0][18],
-                      _sftwr.lst_anomaly_mgmt[0][19],
-                      _sftwr.lst_anomaly_mgmt[0][20],
-                      _sftwr.lst_anomaly_mgmt[0][21], _sftwr.software_id)
+            _sftwr.lst_anomaly_mgmt[0][4], _sftwr.lst_anomaly_mgmt[0][7],
+            _sftwr.lst_anomaly_mgmt[0][8], _sftwr.lst_anomaly_mgmt[0][9],
+            _sftwr.lst_anomaly_mgmt[0][10], _sftwr.lst_anomaly_mgmt[0][11],
+            _sftwr.lst_anomaly_mgmt[0][12], _sftwr.lst_anomaly_mgmt[0][13],
+            _sftwr.lst_anomaly_mgmt[0][14], _sftwr.lst_anomaly_mgmt[0][15],
+            _sftwr.lst_anomaly_mgmt[0][16], _sftwr.lst_anomaly_mgmt[0][17],
+            _sftwr.lst_anomaly_mgmt[0][18], _sftwr.lst_anomaly_mgmt[0][19],
+            _sftwr.lst_anomaly_mgmt[0][20], _sftwr.lst_anomaly_mgmt[0][21],
+            _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         _query = "UPDATE rtk_srr_ssr \
@@ -892,19 +878,17 @@ class BoM(object):
                     END \
                   WHERE fld_question_id IN (0, 1, 2, 3, 5, 6) \
                   AND fld_software_id={6:d}".format(
-                      _sftwr.lst_anomaly_mgmt[0][0],
-                      _sftwr.lst_anomaly_mgmt[0][1],
-                      _sftwr.lst_anomaly_mgmt[0][2],
-                      _sftwr.lst_anomaly_mgmt[0][3],
-                      _sftwr.lst_anomaly_mgmt[0][5],
-                      _sftwr.lst_anomaly_mgmt[0][6], _sftwr.software_id)
+            _sftwr.lst_anomaly_mgmt[0][0], _sftwr.lst_anomaly_mgmt[0][1],
+            _sftwr.lst_anomaly_mgmt[0][2], _sftwr.lst_anomaly_mgmt[0][3],
+            _sftwr.lst_anomaly_mgmt[0][5], _sftwr.lst_anomaly_mgmt[0][6],
+            _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         _query = "UPDATE rtk_srr_ssr \
                   SET fld_y={0:d} \
                   WHERE fld_software_id={1:d} \
-                  AND fld_question_id=22".format(
-                      _sftwr.lst_traceability[0][0], _sftwr.software_id)
+                  AND fld_question_id=22".format(_sftwr.lst_traceability[0][0],
+                                                 _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         _query = "UPDATE rtk_srr_ssr \
@@ -926,29 +910,18 @@ class BoM(object):
                                             35, 36, 37, 38, 39, 40, 41, 42, \
                                             43, 44, 45, 46, 47, 48, 49) \
                   AND fld_software_id={23:d}".format(
-                      _sftwr.lst_sftw_quality[0][0],
-                      _sftwr.lst_sftw_quality[0][1],
-                      _sftwr.lst_sftw_quality[0][2],
-                      _sftwr.lst_sftw_quality[0][3],
-                      _sftwr.lst_sftw_quality[0][4],
-                      _sftwr.lst_sftw_quality[0][5],
-                      _sftwr.lst_sftw_quality[0][6],
-                      _sftwr.lst_sftw_quality[0][7],
-                      _sftwr.lst_sftw_quality[0][12],
-                      _sftwr.lst_sftw_quality[0][13],
-                      _sftwr.lst_sftw_quality[0][14],
-                      _sftwr.lst_sftw_quality[0][15],
-                      _sftwr.lst_sftw_quality[0][16],
-                      _sftwr.lst_sftw_quality[0][17],
-                      _sftwr.lst_sftw_quality[0][18],
-                      _sftwr.lst_sftw_quality[0][19],
-                      _sftwr.lst_sftw_quality[0][20],
-                      _sftwr.lst_sftw_quality[0][21],
-                      _sftwr.lst_sftw_quality[0][22],
-                      _sftwr.lst_sftw_quality[0][23],
-                      _sftwr.lst_sftw_quality[0][24],
-                      _sftwr.lst_sftw_quality[0][25],
-                      _sftwr.lst_sftw_quality[0][26], _sftwr.software_id)
+            _sftwr.lst_sftw_quality[0][0], _sftwr.lst_sftw_quality[0][1],
+            _sftwr.lst_sftw_quality[0][2], _sftwr.lst_sftw_quality[0][3],
+            _sftwr.lst_sftw_quality[0][4], _sftwr.lst_sftw_quality[0][5],
+            _sftwr.lst_sftw_quality[0][6], _sftwr.lst_sftw_quality[0][7],
+            _sftwr.lst_sftw_quality[0][12], _sftwr.lst_sftw_quality[0][13],
+            _sftwr.lst_sftw_quality[0][14], _sftwr.lst_sftw_quality[0][15],
+            _sftwr.lst_sftw_quality[0][16], _sftwr.lst_sftw_quality[0][17],
+            _sftwr.lst_sftw_quality[0][18], _sftwr.lst_sftw_quality[0][19],
+            _sftwr.lst_sftw_quality[0][20], _sftwr.lst_sftw_quality[0][21],
+            _sftwr.lst_sftw_quality[0][22], _sftwr.lst_sftw_quality[0][23],
+            _sftwr.lst_sftw_quality[0][24], _sftwr.lst_sftw_quality[0][25],
+            _sftwr.lst_sftw_quality[0][26], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         _query = "UPDATE rtk_srr_ssr \
@@ -958,12 +931,11 @@ class BoM(object):
                     END \
                   WHERE fld_question_id IN (31, 32, 33, 34) \
                   AND fld_software_id={4:d}".format(
-                      _sftwr.lst_sftw_quality[0][8],
-                      _sftwr.lst_sftw_quality[0][9],
-                      _sftwr.lst_sftw_quality[0][10],
-                      _sftwr.lst_sftw_quality[0][11], _sftwr.software_id)
+            _sftwr.lst_sftw_quality[0][8], _sftwr.lst_sftw_quality[0][9],
+            _sftwr.lst_sftw_quality[0][10], _sftwr.lst_sftw_quality[0][11],
+            _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def save_pdr_risk(self, software_id):
@@ -1000,35 +972,21 @@ class BoM(object):
                                             19, 20, 21, 22, 23, 24, 25, 26, \
                                             27, 28) \
                   AND fld_software_id={29:d}".format(
-                      _sftwr.lst_anomaly_mgmt[1][0],
-                      _sftwr.lst_anomaly_mgmt[1][1],
-                      _sftwr.lst_anomaly_mgmt[1][2],
-                      _sftwr.lst_anomaly_mgmt[1][3],
-                      _sftwr.lst_anomaly_mgmt[1][4],
-                      _sftwr.lst_anomaly_mgmt[1][5],
-                      _sftwr.lst_anomaly_mgmt[1][6],
-                      _sftwr.lst_anomaly_mgmt[1][7],
-                      _sftwr.lst_anomaly_mgmt[1][8],
-                      _sftwr.lst_anomaly_mgmt[1][9],
-                      _sftwr.lst_anomaly_mgmt[1][10],
-                      _sftwr.lst_anomaly_mgmt[1][11],
-                      _sftwr.lst_anomaly_mgmt[1][12],
-                      _sftwr.lst_anomaly_mgmt[1][13],
-                      _sftwr.lst_traceability[1][0],
-                      _sftwr.lst_sftw_quality[1][0],
-                      _sftwr.lst_sftw_quality[1][1],
-                      _sftwr.lst_sftw_quality[1][4],
-                      _sftwr.lst_sftw_quality[1][5],
-                      _sftwr.lst_sftw_quality[1][12],
-                      _sftwr.lst_sftw_quality[1][13],
-                      _sftwr.lst_sftw_quality[1][16],
-                      _sftwr.lst_sftw_quality[1][17],
-                      _sftwr.lst_sftw_quality[1][18],
-                      _sftwr.lst_sftw_quality[1][19],
-                      _sftwr.lst_sftw_quality[1][20],
-                      _sftwr.lst_sftw_quality[1][21],
-                      _sftwr.lst_sftw_quality[1][22],
-                      _sftwr.lst_sftw_quality[1][23], _sftwr.software_id)
+            _sftwr.lst_anomaly_mgmt[1][0], _sftwr.lst_anomaly_mgmt[1][1],
+            _sftwr.lst_anomaly_mgmt[1][2], _sftwr.lst_anomaly_mgmt[1][3],
+            _sftwr.lst_anomaly_mgmt[1][4], _sftwr.lst_anomaly_mgmt[1][5],
+            _sftwr.lst_anomaly_mgmt[1][6], _sftwr.lst_anomaly_mgmt[1][7],
+            _sftwr.lst_anomaly_mgmt[1][8], _sftwr.lst_anomaly_mgmt[1][9],
+            _sftwr.lst_anomaly_mgmt[1][10], _sftwr.lst_anomaly_mgmt[1][11],
+            _sftwr.lst_anomaly_mgmt[1][12], _sftwr.lst_anomaly_mgmt[1][13],
+            _sftwr.lst_traceability[1][0], _sftwr.lst_sftw_quality[1][0],
+            _sftwr.lst_sftw_quality[1][1], _sftwr.lst_sftw_quality[1][4],
+            _sftwr.lst_sftw_quality[1][5], _sftwr.lst_sftw_quality[1][12],
+            _sftwr.lst_sftw_quality[1][13], _sftwr.lst_sftw_quality[1][16],
+            _sftwr.lst_sftw_quality[1][17], _sftwr.lst_sftw_quality[1][18],
+            _sftwr.lst_sftw_quality[1][19], _sftwr.lst_sftw_quality[1][20],
+            _sftwr.lst_sftw_quality[1][21], _sftwr.lst_sftw_quality[1][22],
+            _sftwr.lst_sftw_quality[1][23], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         _query = "UPDATE rtk_pdr \
@@ -1042,18 +1000,14 @@ class BoM(object):
                   WHERE fld_question_id IN (17, 18, 21, 22, 23, 24, 25, 26, \
                                             29, 30) \
                   AND fld_software_id={10:d}".format(
-                      _sftwr.lst_sftw_quality[1][2],
-                      _sftwr.lst_sftw_quality[1][3],
-                      _sftwr.lst_sftw_quality[1][6],
-                      _sftwr.lst_sftw_quality[1][7],
-                      _sftwr.lst_sftw_quality[1][8],
-                      _sftwr.lst_sftw_quality[1][9],
-                      _sftwr.lst_sftw_quality[1][10],
-                      _sftwr.lst_sftw_quality[1][11],
-                      _sftwr.lst_sftw_quality[1][14],
-                      _sftwr.lst_sftw_quality[1][15], _sftwr.software_id)
+            _sftwr.lst_sftw_quality[1][2], _sftwr.lst_sftw_quality[1][3],
+            _sftwr.lst_sftw_quality[1][6], _sftwr.lst_sftw_quality[1][7],
+            _sftwr.lst_sftw_quality[1][8], _sftwr.lst_sftw_quality[1][9],
+            _sftwr.lst_sftw_quality[1][10], _sftwr.lst_sftw_quality[1][11],
+            _sftwr.lst_sftw_quality[1][14], _sftwr.lst_sftw_quality[1][15],
+            _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def save_cdr_risk(self, software_id):
@@ -1069,7 +1023,7 @@ class BoM(object):
         _sftwr = self.dicSoftware[software_id]
 
         # Build the queries to save the risk analysis answers.
-        if _sftwr.level_id == 2:            # CSCI
+        if _sftwr.level_id == 2:  # CSCI
             _query0 = "UPDATE rtk_cdr \
                        SET fld_y=CASE fld_question_id \
                              WHEN 2 THEN {0:d} WHEN 3 THEN {1:d} \
@@ -1081,16 +1035,12 @@ class BoM(object):
                        WHERE fld_question_id IN (2, 3, 4, 5, 6, 8, 9, 10, 11, \
                                                  12) \
                        AND fld_software_id={10:d}".format(
-                           _sftwr.lst_anomaly_mgmt[2][2],
-                           _sftwr.lst_anomaly_mgmt[2][3],
-                           _sftwr.lst_anomaly_mgmt[2][4],
-                           _sftwr.lst_anomaly_mgmt[2][5],
-                           _sftwr.lst_anomaly_mgmt[2][6],
-                           _sftwr.lst_anomaly_mgmt[2][8],
-                           _sftwr.lst_anomaly_mgmt[2][9],
-                           _sftwr.lst_anomaly_mgmt[2][10],
-                           _sftwr.lst_traceability[2][0],
-                           _sftwr.lst_traceability[2][1], _sftwr.software_id)
+                _sftwr.lst_anomaly_mgmt[2][2], _sftwr.lst_anomaly_mgmt[2][3],
+                _sftwr.lst_anomaly_mgmt[2][4], _sftwr.lst_anomaly_mgmt[2][5],
+                _sftwr.lst_anomaly_mgmt[2][6], _sftwr.lst_anomaly_mgmt[2][8],
+                _sftwr.lst_anomaly_mgmt[2][9], _sftwr.lst_anomaly_mgmt[2][10],
+                _sftwr.lst_traceability[2][0], _sftwr.lst_traceability[2][1],
+                _sftwr.software_id)
 
             _query1 = "UPDATE rtk_cdr \
                        SET fld_value=CASE fld_question_id \
@@ -1114,34 +1064,21 @@ class BoM(object):
                                                  25, 26, 27, 28, 29, 30, 31, \
                                                  32, 33, 34, 35, 36) \
                        AND fld_software_id={27:d}".format(
-                           _sftwr.lst_anomaly_mgmt[2][0],
-                           _sftwr.lst_anomaly_mgmt[2][1],
-                           _sftwr.lst_anomaly_mgmt[2][7],
-                           _sftwr.lst_sftw_quality[2][0],
-                           _sftwr.lst_sftw_quality[2][1],
-                           _sftwr.lst_sftw_quality[2][2],
-                           _sftwr.lst_sftw_quality[2][3],
-                           _sftwr.lst_sftw_quality[2][4],
-                           _sftwr.lst_sftw_quality[2][5],
-                           _sftwr.lst_sftw_quality[2][6],
-                           _sftwr.lst_sftw_quality[2][7],
-                           _sftwr.lst_sftw_quality[2][8],
-                           _sftwr.lst_sftw_quality[2][9],
-                           _sftwr.lst_sftw_quality[2][10],
-                           _sftwr.lst_sftw_quality[2][11],
-                           _sftwr.lst_sftw_quality[2][12],
-                           _sftwr.lst_sftw_quality[2][13],
-                           _sftwr.lst_sftw_quality[2][14],
-                           _sftwr.lst_sftw_quality[2][15],
-                           _sftwr.lst_sftw_quality[2][16],
-                           _sftwr.lst_sftw_quality[2][17],
-                           _sftwr.lst_sftw_quality[2][18],
-                           _sftwr.lst_sftw_quality[2][19],
-                           _sftwr.lst_sftw_quality[2][20],
-                           _sftwr.lst_sftw_quality[2][21],
-                           _sftwr.lst_sftw_quality[2][22],
-                           _sftwr.lst_sftw_quality[2][23], _sftwr.software_id)
-        elif _sftwr.level_id == 3:          # Unit
+                _sftwr.lst_anomaly_mgmt[2][0], _sftwr.lst_anomaly_mgmt[2][1],
+                _sftwr.lst_anomaly_mgmt[2][7], _sftwr.lst_sftw_quality[2][0],
+                _sftwr.lst_sftw_quality[2][1], _sftwr.lst_sftw_quality[2][2],
+                _sftwr.lst_sftw_quality[2][3], _sftwr.lst_sftw_quality[2][4],
+                _sftwr.lst_sftw_quality[2][5], _sftwr.lst_sftw_quality[2][6],
+                _sftwr.lst_sftw_quality[2][7], _sftwr.lst_sftw_quality[2][8],
+                _sftwr.lst_sftw_quality[2][9], _sftwr.lst_sftw_quality[2][10],
+                _sftwr.lst_sftw_quality[2][11], _sftwr.lst_sftw_quality[2][12],
+                _sftwr.lst_sftw_quality[2][13], _sftwr.lst_sftw_quality[2][14],
+                _sftwr.lst_sftw_quality[2][15], _sftwr.lst_sftw_quality[2][16],
+                _sftwr.lst_sftw_quality[2][17], _sftwr.lst_sftw_quality[2][18],
+                _sftwr.lst_sftw_quality[2][19], _sftwr.lst_sftw_quality[2][20],
+                _sftwr.lst_sftw_quality[2][21], _sftwr.lst_sftw_quality[2][22],
+                _sftwr.lst_sftw_quality[2][23], _sftwr.software_id)
+        elif _sftwr.level_id == 3:  # Unit
             _query0 = "UPDATE rtk_cdr \
                        SET fld_y=CASE fld_question_id \
                              WHEN 0 THEN {0:d} WHEN 1 THEN {1:d} \
@@ -1161,29 +1098,18 @@ class BoM(object):
                                                  9, 10, 13, 16, 23, 24, 27, \
                                                  28, 29, 30, 31, 32, 33, 34) \
                        AND fld_software_id={23:d}".format(
-                           _sftwr.lst_anomaly_mgmt[2][0],
-                           _sftwr.lst_anomaly_mgmt[2][1],
-                           _sftwr.lst_anomaly_mgmt[2][2],
-                           _sftwr.lst_anomaly_mgmt[2][3],
-                           _sftwr.lst_anomaly_mgmt[2][4],
-                           _sftwr.lst_anomaly_mgmt[2][5],
-                           _sftwr.lst_anomaly_mgmt[2][6],
-                           _sftwr.lst_anomaly_mgmt[2][7],
-                           _sftwr.lst_anomaly_mgmt[2][8],
-                           _sftwr.lst_anomaly_mgmt[2][9],
-                           _sftwr.lst_traceability[2][0],
-                           _sftwr.lst_sftw_quality[2][2],
-                           _sftwr.lst_sftw_quality[2][5],
-                           _sftwr.lst_sftw_quality[2][12],
-                           _sftwr.lst_sftw_quality[2][13],
-                           _sftwr.lst_sftw_quality[2][16],
-                           _sftwr.lst_sftw_quality[2][17],
-                           _sftwr.lst_sftw_quality[2][18],
-                           _sftwr.lst_sftw_quality[2][19],
-                           _sftwr.lst_sftw_quality[2][20],
-                           _sftwr.lst_sftw_quality[2][21],
-                           _sftwr.lst_sftw_quality[2][22],
-                           _sftwr.lst_sftw_quality[2][23], _sftwr.software_id)
+                _sftwr.lst_anomaly_mgmt[2][0], _sftwr.lst_anomaly_mgmt[2][1],
+                _sftwr.lst_anomaly_mgmt[2][2], _sftwr.lst_anomaly_mgmt[2][3],
+                _sftwr.lst_anomaly_mgmt[2][4], _sftwr.lst_anomaly_mgmt[2][5],
+                _sftwr.lst_anomaly_mgmt[2][6], _sftwr.lst_anomaly_mgmt[2][7],
+                _sftwr.lst_anomaly_mgmt[2][8], _sftwr.lst_anomaly_mgmt[2][9],
+                _sftwr.lst_traceability[2][0], _sftwr.lst_sftw_quality[2][2],
+                _sftwr.lst_sftw_quality[2][5], _sftwr.lst_sftw_quality[2][12],
+                _sftwr.lst_sftw_quality[2][13], _sftwr.lst_sftw_quality[2][16],
+                _sftwr.lst_sftw_quality[2][17], _sftwr.lst_sftw_quality[2][18],
+                _sftwr.lst_sftw_quality[2][19], _sftwr.lst_sftw_quality[2][20],
+                _sftwr.lst_sftw_quality[2][21], _sftwr.lst_sftw_quality[2][22],
+                _sftwr.lst_sftw_quality[2][23], _sftwr.software_id)
 
             _query1 = "UPDATE rtk_cdr \
                        SET fld_value=CASE fld_question_id \
@@ -1197,23 +1123,18 @@ class BoM(object):
                        WHERE fld_question_id IN (11, 12, 14, 15, 17, 18, 19, \
                                                  20, 21, 22, 25, 26) \
                        AND fld_software_id={12:d}".format(
-                           _sftwr.lst_sftw_quality[2][0],
-                           _sftwr.lst_sftw_quality[2][1],
-                           _sftwr.lst_sftw_quality[2][3],
-                           _sftwr.lst_sftw_quality[2][4],
-                           _sftwr.lst_sftw_quality[2][6],
-                           _sftwr.lst_sftw_quality[2][7],
-                           _sftwr.lst_sftw_quality[2][8],
-                           _sftwr.lst_sftw_quality[2][9],
-                           _sftwr.lst_sftw_quality[2][10],
-                           _sftwr.lst_sftw_quality[2][11],
-                           _sftwr.lst_sftw_quality[2][14],
-                           _sftwr.lst_sftw_quality[2][15], _sftwr.software_id)
+                _sftwr.lst_sftw_quality[2][0], _sftwr.lst_sftw_quality[2][1],
+                _sftwr.lst_sftw_quality[2][3], _sftwr.lst_sftw_quality[2][4],
+                _sftwr.lst_sftw_quality[2][6], _sftwr.lst_sftw_quality[2][7],
+                _sftwr.lst_sftw_quality[2][8], _sftwr.lst_sftw_quality[2][9],
+                _sftwr.lst_sftw_quality[2][10], _sftwr.lst_sftw_quality[2][11],
+                _sftwr.lst_sftw_quality[2][14], _sftwr.lst_sftw_quality[2][15],
+                _sftwr.software_id)
 
         # Execute each query.
         (_results, _error_code, __) = self._dao.execute(_query0, commit=True)
         (_results, _error_code, __) = self._dao.execute(_query1, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def save_trr_risk(self, software_id):
@@ -1229,7 +1150,7 @@ class BoM(object):
         _sftwr = self.dicSoftware[software_id]
 
         # Build the queries to save the risk analysis answers.
-        if _sftwr.level_id == 2:            # CSCI
+        if _sftwr.level_id == 2:  # CSCI
             _query1 = "UPDATE rtk_trr \
                        SET fld_value=CASE fld_question_id \
                              WHEN 0 THEN {0:d} WHEN 1 THEN {1:d} \
@@ -1237,11 +1158,11 @@ class BoM(object):
                          END \
                        WHERE fld_question_id IN (0, 1, 2, 3) \
                        AND fld_software_id={4:d}".format(
-                           _sftwr.lst_modularity[0], _sftwr.lst_modularity[1],
-                           _sftwr.lst_modularity[2], _sftwr.lst_modularity[3],
-                           _sftwr.software_id)
+                _sftwr.lst_modularity[0], _sftwr.lst_modularity[1],
+                _sftwr.lst_modularity[2], _sftwr.lst_modularity[3],
+                _sftwr.software_id)
 
-        elif _sftwr.level_id == 3:          # Unit
+        elif _sftwr.level_id == 3:  # Unit
             _query0 = "UPDATE rtk_trr \
                        SET fld_y=CASE fld_question_id \
                              WHEN 0 THEN {0:d} WHEN 1 THEN {1:d} \
@@ -1249,8 +1170,8 @@ class BoM(object):
                          END \
                        WHERE fld_question_id IN (0, 1, 2) \
                        AND fld_software_id={3:d}".format(
-                           _sftwr.lst_modularity[0], _sftwr.lst_modularity[1],
-                           _sftwr.lst_modularity[2], _sftwr.software_id)
+                _sftwr.lst_modularity[0], _sftwr.lst_modularity[1],
+                _sftwr.lst_modularity[2], _sftwr.software_id)
             _query1 = "UPDATE rtk_trr \
                        SET fld_value=CASE fld_question_id \
                              WHEN 3 THEN {0:d} WHEN 4 THEN {1:d} \
@@ -1265,27 +1186,20 @@ class BoM(object):
                        WHERE fld_question_id IN (3, 4, 5, 6, 7, 8, 9, 10, 11, \
                                                  12, 13, 14, 15, 16, 17, 18) \
                        AND fld_software_id={16:d}".format(
-                           _sftwr.lst_anomaly_mgmt[3][0],
-                           _sftwr.lst_anomaly_mgmt[3][1],
-                           _sftwr.lst_sftw_quality[3][0],
-                           _sftwr.lst_sftw_quality[3][1],
-                           _sftwr.lst_sftw_quality[3][2],
-                           _sftwr.lst_sftw_quality[3][3],
-                           _sftwr.lst_sftw_quality[3][4],
-                           _sftwr.lst_sftw_quality[3][5],
-                           _sftwr.lst_sftw_quality[3][6],
-                           _sftwr.lst_sftw_quality[3][7],
-                           _sftwr.lst_sftw_quality[3][8],
-                           _sftwr.lst_sftw_quality[3][9],
-                           _sftwr.lst_sftw_quality[3][10],
-                           _sftwr.lst_sftw_quality[3][11],
-                           _sftwr.lst_sftw_quality[3][12],
-                           _sftwr.lst_sftw_quality[3][13], _sftwr.software_id)
-            (_results,
-             _error_code, __) = self._dao.execute(_query0, commit=True)
+                _sftwr.lst_anomaly_mgmt[3][0], _sftwr.lst_anomaly_mgmt[3][1],
+                _sftwr.lst_sftw_quality[3][0], _sftwr.lst_sftw_quality[3][1],
+                _sftwr.lst_sftw_quality[3][2], _sftwr.lst_sftw_quality[3][3],
+                _sftwr.lst_sftw_quality[3][4], _sftwr.lst_sftw_quality[3][5],
+                _sftwr.lst_sftw_quality[3][6], _sftwr.lst_sftw_quality[3][7],
+                _sftwr.lst_sftw_quality[3][8], _sftwr.lst_sftw_quality[3][9],
+                _sftwr.lst_sftw_quality[3][10], _sftwr.lst_sftw_quality[3][11],
+                _sftwr.lst_sftw_quality[3][12], _sftwr.lst_sftw_quality[3][13],
+                _sftwr.software_id)
+            (_results, _error_code, __) = self._dao.execute(
+                _query0, commit=True)
 
         (_results, _error_code, __) = self._dao.execute(_query1, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def save_test_selections(self, software_id):
@@ -1318,28 +1232,17 @@ class BoM(object):
                                              10, 11, 12, 13, 14, 15, 16, 17, \
                                              18, 19, 20) \
                   AND fld_software_id={21:d}".format(
-                      _sftwr.lst_test_selection[0][0],
-                      _sftwr.lst_test_selection[1][0],
-                      _sftwr.lst_test_selection[2][0],
-                      _sftwr.lst_test_selection[3][0],
-                      _sftwr.lst_test_selection[4][0],
-                      _sftwr.lst_test_selection[5][0],
-                      _sftwr.lst_test_selection[6][0],
-                      _sftwr.lst_test_selection[7][0],
-                      _sftwr.lst_test_selection[8][0],
-                      _sftwr.lst_test_selection[9][0],
-                      _sftwr.lst_test_selection[10][0],
-                      _sftwr.lst_test_selection[11][0],
-                      _sftwr.lst_test_selection[12][0],
-                      _sftwr.lst_test_selection[13][0],
-                      _sftwr.lst_test_selection[14][0],
-                      _sftwr.lst_test_selection[15][0],
-                      _sftwr.lst_test_selection[16][0],
-                      _sftwr.lst_test_selection[17][0],
-                      _sftwr.lst_test_selection[18][0],
-                      _sftwr.lst_test_selection[19][0],
-                      _sftwr.lst_test_selection[20][0],
-                      _sftwr.software_id)
+            _sftwr.lst_test_selection[0][0], _sftwr.lst_test_selection[1][0],
+            _sftwr.lst_test_selection[2][0], _sftwr.lst_test_selection[3][0],
+            _sftwr.lst_test_selection[4][0], _sftwr.lst_test_selection[5][0],
+            _sftwr.lst_test_selection[6][0], _sftwr.lst_test_selection[7][0],
+            _sftwr.lst_test_selection[8][0], _sftwr.lst_test_selection[9][0],
+            _sftwr.lst_test_selection[10][0], _sftwr.lst_test_selection[11][0],
+            _sftwr.lst_test_selection[12][0], _sftwr.lst_test_selection[13][0],
+            _sftwr.lst_test_selection[14][0], _sftwr.lst_test_selection[15][0],
+            _sftwr.lst_test_selection[16][0], _sftwr.lst_test_selection[17][0],
+            _sftwr.lst_test_selection[18][0], _sftwr.lst_test_selection[19][0],
+            _sftwr.lst_test_selection[20][0], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         _query = "UPDATE rtk_software_tests \
@@ -1360,30 +1263,19 @@ class BoM(object):
                                              10, 11, 12, 13, 14, 15, 16, 17, \
                                              18, 19, 20) \
                   AND fld_software_id={21:d}".format(
-                      _sftwr.lst_test_selection[0][1],
-                      _sftwr.lst_test_selection[1][1],
-                      _sftwr.lst_test_selection[2][1],
-                      _sftwr.lst_test_selection[3][1],
-                      _sftwr.lst_test_selection[4][1],
-                      _sftwr.lst_test_selection[5][1],
-                      _sftwr.lst_test_selection[6][1],
-                      _sftwr.lst_test_selection[7][1],
-                      _sftwr.lst_test_selection[8][1],
-                      _sftwr.lst_test_selection[9][1],
-                      _sftwr.lst_test_selection[10][1],
-                      _sftwr.lst_test_selection[11][1],
-                      _sftwr.lst_test_selection[12][1],
-                      _sftwr.lst_test_selection[13][1],
-                      _sftwr.lst_test_selection[14][1],
-                      _sftwr.lst_test_selection[15][1],
-                      _sftwr.lst_test_selection[16][1],
-                      _sftwr.lst_test_selection[17][1],
-                      _sftwr.lst_test_selection[18][1],
-                      _sftwr.lst_test_selection[19][1],
-                      _sftwr.lst_test_selection[20][1],
-                      _sftwr.software_id)
+            _sftwr.lst_test_selection[0][1], _sftwr.lst_test_selection[1][1],
+            _sftwr.lst_test_selection[2][1], _sftwr.lst_test_selection[3][1],
+            _sftwr.lst_test_selection[4][1], _sftwr.lst_test_selection[5][1],
+            _sftwr.lst_test_selection[6][1], _sftwr.lst_test_selection[7][1],
+            _sftwr.lst_test_selection[8][1], _sftwr.lst_test_selection[9][1],
+            _sftwr.lst_test_selection[10][1], _sftwr.lst_test_selection[11][1],
+            _sftwr.lst_test_selection[12][1], _sftwr.lst_test_selection[13][1],
+            _sftwr.lst_test_selection[14][1], _sftwr.lst_test_selection[15][1],
+            _sftwr.lst_test_selection[16][1], _sftwr.lst_test_selection[17][1],
+            _sftwr.lst_test_selection[18][1], _sftwr.lst_test_selection[19][1],
+            _sftwr.lst_test_selection[20][1], _sftwr.software_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
-# TODO: Handle errors.
+        # TODO: Handle errors.
         return (_results, _error_code)
 
     def request_calculate(self):

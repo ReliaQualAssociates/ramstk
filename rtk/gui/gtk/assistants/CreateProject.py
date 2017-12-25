@@ -13,9 +13,10 @@ RTK Assistants Module
 from os import remove
 
 # Import other RTK modules.
-import Utilities                                    # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk, set_cursor   # pylint: disable=E0401
-from gui.gtk import rtk                             # pylint: disable=E0401
+import Utilities  # pylint: disable=E0401
+from gui.gtk.rtk.Widget import _, gtk, set_cursor  # pylint: disable=E0401
+from gui.gtk import rtk  # pylint: disable=E0401
+
 
 class CreateProject(object):
     """
@@ -59,8 +60,8 @@ class CreateProject(object):
         _dialog = gtk.FileChooserDialog(
             title=_(u"Create a RTK Program Database"),
             action=gtk.FILE_CHOOSER_ACTION_SAVE,
-            buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT,
-                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+            buttons=(gtk.STOCK_NEW, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_REJECT))
         _dialog.set_current_folder(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_DIR)
 
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
@@ -70,15 +71,17 @@ class CreateProject(object):
             if Utilities.file_exists(_new_program):
                 _dlgConfirm = rtk.RTKDialog(
                     _(u"RTK - Confirm Overwrite"),
-                    dlgbuttons=(gtk.STOCK_YES, gtk.RESPONSE_YES,
-                                gtk.STOCK_NO, gtk.RESPONSE_NO))
+                    dlgbuttons=(gtk.STOCK_YES, gtk.RESPONSE_YES, gtk.STOCK_NO,
+                                gtk.RESPONSE_NO))
 
-                _label = rtk.RTLabel(_(u"RTK Program database already exists. "
-                                       u"\n\n{0:s}\n\nOverwrite?").format(
-                                           _new_program),
-                                     width=-1, height=-1, bold=False,
-                                     wrap=True)
-                _dlgConfirm.vbox.pack_start(_label)     # pylint: disable=E1101
+                _label = rtk.RTLabel(
+                    _(u"RTK Program database already exists. "
+                      u"\n\n{0:s}\n\nOverwrite?").format(_new_program),
+                    width=-1,
+                    height=-1,
+                    bold=False,
+                    wrap=True)
+                _dlgConfirm.vbox.pack_start(_label)  # pylint: disable=E1101
                 _label.show()
 
                 if _dlgConfirm.run() == gtk.RESPONSE_YES:

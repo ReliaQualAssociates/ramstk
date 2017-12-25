@@ -39,7 +39,10 @@ This is the test class for testing Incident module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -102,8 +105,8 @@ class TestIncidentController(unittest.TestCase):
         _incident = self.DUT.dicIncidents[min(self.DUT.dicIncidents.keys())]
         _incident.set_attributes(_values)
 
-        (_results, _error_code) = self.DUT.save_incident(min(
-                                                self.DUT.dicIncidents.keys()))
+        (_results, _error_code) = self.DUT.save_incident(
+            min(self.DUT.dicIncidents.keys()))
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

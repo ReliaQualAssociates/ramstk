@@ -13,30 +13,30 @@ Semiconductor Package Diode Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -47,7 +47,7 @@ try:
     import Utilities
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
@@ -61,7 +61,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -88,24 +88,34 @@ class LowFrequency(Semiconductor):
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_lambdab = [0.0038, 0.0010, 0.069, 0.003, 0.005, 0.0013, 0.0034, 0.002]
     _lst_piC = [1.0, 2.0]
-    _lst_piE = [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5,
-                14.0, 32.0, 320.0]
+    _lst_piE = [
+        1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
+        32.0, 320.0
+    ]
     _lst_piQ_count = [0.7, 1.0, 2.4, 5.5, 8.0]
     _lst_piQ_stress = [0.7, 1.0, 2.4, 5.5, 8.0]
-    _lambda_count = [[0.00360, 0.0280, 0.049, 0.043, 0.100, 0.092, 0.210,
-                      0.200, 0.44, 0.170, 0.00180, 0.076, 0.23, 1.50],
-                     [0.00094, 0.0075, 0.013, 0.011, 0.027, 0.024, 0.054,
-                      0.054, 0.12, 0.045, 0.00047, 0.020, 0.06, 0.40],
-                     [0.06500, 0.5200, 0.890, 0.780, 1.900, 1.700, 3.700,
-                      3.700, 8.00, 3.100, 0.03200, 1.400, 4.10, 28.0],
-                     [0.00280, 0.0220, 0.039, 0.034, 0.062, 0.073, 0.160,
-                      0.160, 0.35, 0.130, 0.00140, 0.060, 0.18, 1.20],
-                     [0.00290, 0.0230, 0.040, 0.035, 0.084, 0.075, 0.170,
-                      0.170, 0.36, 0.140, 0.00150, 0.062, 0.18, 1.20],
-                     [0.00330, 0.0240, 0.039, 0.035, 0.082, 0.066, 0.150,
-                      0.130, 0.27, 0.120, 0.00160, 0.060, 0.16, 1.30],
-                     [0.00560, 0.0400, 0.066, 0.060, 0.140, 0.110, 0.250,
-                      0.220, 0.460, 0.21, 0.00280, 0.100, 0.28, 2.10]]
+    _lambda_count = [[
+        0.00360, 0.0280, 0.049, 0.043, 0.100, 0.092, 0.210, 0.200, 0.44, 0.170,
+        0.00180, 0.076, 0.23, 1.50
+    ], [
+        0.00094, 0.0075, 0.013, 0.011, 0.027, 0.024, 0.054, 0.054, 0.12, 0.045,
+        0.00047, 0.020, 0.06, 0.40
+    ], [
+        0.06500, 0.5200, 0.890, 0.780, 1.900, 1.700, 3.700, 3.700, 8.00, 3.100,
+        0.03200, 1.400, 4.10, 28.0
+    ], [
+        0.00280, 0.0220, 0.039, 0.034, 0.062, 0.073, 0.160, 0.160, 0.35, 0.130,
+        0.00140, 0.060, 0.18, 1.20
+    ], [
+        0.00290, 0.0230, 0.040, 0.035, 0.084, 0.075, 0.170, 0.170, 0.36, 0.140,
+        0.00150, 0.062, 0.18, 1.20
+    ], [
+        0.00330, 0.0240, 0.039, 0.035, 0.082, 0.066, 0.150, 0.130, 0.27, 0.120,
+        0.00160, 0.060, 0.16, 1.30
+    ], [
+        0.00560, 0.0400, 0.066, 0.060, 0.140, 0.110, 0.250, 0.220, 0.460, 0.21,
+        0.00280, 0.100, 0.28, 2.10
+    ]]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     subcategory = 12
@@ -129,10 +139,10 @@ class LowFrequency(Semiconductor):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.application = 0                # Application index.
-        self.construction = 0               # Construction index.
-        self.piS = 0.0                      # Electrical stress pi factor.
-        self.piC = 0.0                      # Contact construction pi factor.
+        self.application = 0  # Application index.
+        self.construction = 0  # Construction index.
+        self.piS = 0.0  # Electrical stress pi factor.
+        self.piC = 0.0  # Contact construction pi factor.
 
     def set_attributes(self, values):
         """
@@ -157,11 +167,11 @@ class LowFrequency(Semiconductor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -197,7 +207,8 @@ class LowFrequency(Semiconductor):
             self._lst_lambdab_count = self._lambda_count[self.application - 1]
 
         elif self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piT * piS * piC * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piT * piS * piC * piQ * piE'
 
             # Set the base hazard rate for the model.
             self.base_hr = self._lst_lambdab[self.application - 1]
@@ -205,11 +216,13 @@ class LowFrequency(Semiconductor):
 
             # Set the temperature factor for the model.
             if self.application < 7:
-                self.piT = exp(-3091.0 * ((1.0 / (self.junction_temperature +
-                                                  273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-3091.0 *
+                               ((1.0 / (self.junction_temperature + 273.0)) -
+                                (1.0 / 298.0)))
             else:
-                self.piT = exp(-1925.0 * ((1.0 / (self.junction_temperature +
-                                                  273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-1925.0 *
+                               ((1.0 / (self.junction_temperature + 273.0)) -
+                                (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the voltage stress factor for the model.
@@ -288,22 +301,31 @@ class HighFrequency(Semiconductor):
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_lambdab = [0.22, 0.18, 0.0023, 0.0081, 0.027, 0.0025, 0.0025]
     _lst_piA = [0.5, 2.5, 1.0]
-    _lst_piE = [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0,
-                24.0, 250.0]
+    _lst_piE = [
+        1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0, 24.0,
+        250.0
+    ]
     _piQ_count = [[0.5, 1.0, 5.0, 25, 50], [0.5, 1.0, 1.8, 2.5]]
     _lst_piQ_stress = [0.5, 1.0, 1.8, 2.5, 1.0]
-    _lambda_count = [[0.86, 2.80, 8.9, 5.6, 20.0, 11.0, 14.0, 36.0, 62.0, 44.0,
-                      0.43, 16.0, 67.0, 350.0],
-                     [0.31, 0.76, 2.1, 1.5, 4.60, 2.00, 2.50, 4.50, 7.60, 7.90,
-                      0.16, 3.70, 12.0, 94.00],
-                     [0.004, 0.0096, 0.0026, 0.0019, 0.058, 0.025, 0.032,
-                      0.057, 0.097, 0.10, 0.002, 0.048, 0.15, 1.2],
-                     [0.028, 0.068, 0.19, 0.14, 0.41, 0.18, 0.22, 0.40, 0.69,
-                      0.71, 0.014, 0.34, 1.1, 8.5],
-                     [0.047, 0.11, 0.31, 0.23, 0.68, 0.3, 0.37, 0.67, 1.1, 1.2,
-                      0.023, 0.56, 1.8, 14.0],
-                     [0.0043, 0.010, 0.029, 0.021, 0.063, 0.028, 0.034, 0.062,
-                      0.11, 0.11, 0.0022, 0.052, 0.17, 1.3]]
+    _lambda_count = [[
+        0.86, 2.80, 8.9, 5.6, 20.0, 11.0, 14.0, 36.0, 62.0, 44.0, 0.43, 16.0,
+        67.0, 350.0
+    ], [
+        0.31, 0.76, 2.1, 1.5, 4.60, 2.00, 2.50, 4.50, 7.60, 7.90, 0.16, 3.70,
+        12.0, 94.00
+    ], [
+        0.004, 0.0096, 0.0026, 0.0019, 0.058, 0.025, 0.032, 0.057, 0.097, 0.10,
+        0.002, 0.048, 0.15, 1.2
+    ], [
+        0.028, 0.068, 0.19, 0.14, 0.41, 0.18, 0.22, 0.40, 0.69, 0.71, 0.014,
+        0.34, 1.1, 8.5
+    ], [
+        0.047, 0.11, 0.31, 0.23, 0.68, 0.3, 0.37, 0.67, 1.1, 1.2, 0.023, 0.56,
+        1.8, 14.0
+    ], [
+        0.0043, 0.010, 0.029, 0.021, 0.063, 0.028, 0.034, 0.062, 0.11, 0.11,
+        0.0022, 0.052, 0.17, 1.3
+    ]]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     subcategory = 13
@@ -320,10 +342,10 @@ class HighFrequency(Semiconductor):
         self._lst_piQ_count = []
 
         # Initialize public scalar attributes.
-        self.application = 0                # Application index.
-        self.type = 0                       # Type index.
-        self.piA = 0.0                      # Electrical stress pi factor.
-        self.piR = 0.0                      # Contact construction pi factor.
+        self.application = 0  # Application index.
+        self.type = 0  # Type index.
+        self.piA = 0.0  # Electrical stress pi factor.
+        self.piR = 0.0  # Contact construction pi factor.
 
     def set_attributes(self, values):
         """
@@ -348,11 +370,11 @@ class HighFrequency(Semiconductor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -377,7 +399,7 @@ class HighFrequency(Semiconductor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
         from math import exp, log
 
         self.hazard_rate_model = {}
@@ -392,7 +414,8 @@ class HighFrequency(Semiconductor):
                 self._lst_piQ_count = self._piQ_count[0]
 
         elif self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piT * piA * piR * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piT * piA * piR * piQ * piE'
 
             # Set the base hazard rate for the model.
             self.base_hr = self._lst_lambdab[self.application - 1]
@@ -400,19 +423,21 @@ class HighFrequency(Semiconductor):
 
             # Set the temperature factor for the model.
             if self.type == 1:
-                self.piT = exp(-2100.0 * ((1.0 / (self.junction_temperature +
-                                                  273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-2100.0 *
+                               ((1.0 / (self.junction_temperature + 273.0)) -
+                                (1.0 / 298.0)))
             else:
-                self.piT = exp(-5260.0 * ((1.0 / (self.junction_temperature +
-                                                  273.0)) - (1.0 / 298.0)))
+                self.piT = exp(-5260.0 *
+                               ((1.0 / (self.junction_temperature + 273.0)) -
+                                (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the application factor for the model.
-            if self.application == 6:       # pragma: no cover
+            if self.application == 6:  # pragma: no cover
                 self.piA = 0.5
             elif self.application == 7:
                 self.piA = 2.5
-            else:                           # pragma: no cover
+            else:  # pragma: no cover
                 self.piA = 1.0
             self.hazard_rate_model['piA'] = self.piA
 
@@ -462,6 +487,5 @@ class HighFrequency(Semiconductor):
                               ". Operating power > 90% rated power.\n"
 
         self.reason = _reason
-
 
         return False

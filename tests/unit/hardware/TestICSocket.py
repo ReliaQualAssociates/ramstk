@@ -4,7 +4,6 @@
 #       tests.unit.TestSocket.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing IC Socket Connection module algorithms and models.
 """
@@ -12,7 +11,10 @@ This is the test class for testing IC Socket Connection module algorithms and mo
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -38,20 +40,21 @@ class TestSocketModel(unittest.TestCase):
         self.DUT = Socket()
 
         self._base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                             0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                             0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                             'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
-        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                               0.0, 1.0)
-        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                            0.0, 0)
-        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
-                             'Two', 'Three', '4')
+                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
+                             100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
+                             'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
+                             'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
+                             30.0, 30.0, 0.0, 2014)
+        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+                               1.0, 0.0, 1.0)
+        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                            1.0, 1.0, 0.0, 0.0, 0)
+        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0,
+                             10.0, 11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18,
+                             19.0, 0.0, 1.0, 2, 3, 440.0, 50, 60, 7.0, 80.0,
+                             90, 'Zero', 'One', 'Two', 'Three', '4')
         self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
         self._connection_values = (0.0, 0.00042, 0.0, 0.0, 0, "")
 
@@ -83,13 +86,12 @@ class TestSocketModel(unittest.TestCase):
         (TestSocket) set_attributes should return a 0 error code on success
         """
 
-        _my_values = (1.0,  30)
+        _my_values = (1.0, 30)
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._connection_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -101,8 +103,7 @@ class TestSocketModel(unittest.TestCase):
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._connection_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -111,13 +112,12 @@ class TestSocketModel(unittest.TestCase):
         (TestSocket) set_attributes should return a 10 error code when the wrong type is passed
         """
 
-        _my_values = (None,  30)
+        _my_values = (None, 30)
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._connection_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -127,15 +127,17 @@ class TestSocketModel(unittest.TestCase):
         """
 
         _my_values = (0, 0.0)
-        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
-                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '',
-                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0,
-                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0,
+        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
+                   '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
+                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, [
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+                   ], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                       ], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 30.0,
                    0.0, 0.00042, 1.0, 0.0, 0, "") + _my_values
 
         self.assertEqual(self.DUT.get_attributes(), _values)
@@ -196,8 +198,7 @@ class TestSocketModel(unittest.TestCase):
         self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piP')
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.00042)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.00042)
         self.assertEqual(self.DUT.hazard_rate_model['piE'], 3.0)
         self.assertAlmostEqual(self.DUT.hazard_rate_model['piP'], 4.0062301)
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 0.000000005)
@@ -216,8 +217,7 @@ class TestSocketModel(unittest.TestCase):
         self.assertFalse(self.DUT.calculate_part())
         self.assertEqual(self.DUT.hazard_rate_model['equation'],
                          'lambdab * piE * piP')
-        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'],
-                               0.00042)
+        self.assertAlmostEqual(self.DUT.hazard_rate_model['lambdab'], 0.00042)
         self.assertEqual(self.DUT.hazard_rate_model['piE'], 3.0)
         self.assertAlmostEqual(self.DUT.hazard_rate_model['piP'], 0.0)
         self.assertAlmostEqual(self.DUT.hazard_rate_active, 0.0)

@@ -38,7 +38,10 @@ This is the test class for testing Testing module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -93,8 +96,7 @@ class TestTestingModel(unittest.TestCase):
 
         _values = (0, 0, 1, 'Testing', 'Description', 2, 'Attachment', 40.2,
                    2.0, 0.6, 0.8, 0.9)
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -105,8 +107,7 @@ class TestTestingModel(unittest.TestCase):
 
         _values = (0, 0, 1, 'Testing', 'Description', 2, 'Attachment', 40.2,
                    2.0, 0.6, None, 0.9)
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -117,8 +118,7 @@ class TestTestingModel(unittest.TestCase):
 
         _values = (0, 0, 1, 'Testing', 'Description', 2, 'Attachment', 40.2,
                    2.0, 0.6, 0.8)
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -127,9 +127,9 @@ class TestTestingModel(unittest.TestCase):
         (TestTesting) get_attributes should return a tuple of attribute values
         """
 
-        self.assertEqual(self.DUT.get_attributes(),
-                         (None, None, 0, '', '', 0, '', 0.0, 0.0, 0.75, 0.0,
-                          0.0))
+        self.assertEqual(
+            self.DUT.get_attributes(),
+            (None, None, 0, '', '', 0, '', 0.0, 0.0, 0.75, 0.0, 0.0))
 
     @attr(all=True, unit=True)
     def test_sanity(self):

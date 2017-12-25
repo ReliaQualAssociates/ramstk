@@ -13,30 +13,30 @@ Hardware.Component.Resistor.Variable Package Wirewound Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -46,7 +46,7 @@ try:
     import Configuration
     import Utilities
     from hardware.component.resistor.Resistor import Model as Resistor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
@@ -59,7 +59,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -93,15 +93,19 @@ class VarWirewound(Resistor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_piE = [1.0, 2.0, 12.0, 6.0, 20.0, 5.0, 8.0, 9.0, 15.0, 33.0, 0.5,
-                18.0, 48.0, 870.0]
+    _lst_piE = [
+        1.0, 2.0, 12.0, 6.0, 20.0, 5.0, 8.0, 9.0, 15.0, 33.0, 0.5, 18.0, 48.0,
+        870.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [0.02, 0.06, 0.2, 0.6, 3.0, 10.0]
-    _lst_lambdab_count = [0.025, 0.055, 0.35, 0.15, 0.58, 0.16, 0.26, 0.35,
-                          0.58, 1.1, 0.013, 0.52, 1.6, 24.0]
+    _lst_lambdab_count = [
+        0.025, 0.055, 0.35, 0.15, 0.58, 0.16, 0.26, 0.35, 0.58, 1.1, 0.013,
+        0.52, 1.6, 24.0
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 33                        # Subcategory ID in rtkcom DB.
+    subcategory = 33  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -136,11 +140,11 @@ class VarWirewound(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -165,13 +169,14 @@ class VarWirewound(Resistor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piTAPS * piR * piV * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piTAPS * piR * piV * piQ * piE'
 
             # Base hazard rate.
             _stress = self.operating_power / self.rated_power
@@ -203,20 +208,20 @@ class VarWirewound(Resistor):
             _v_applied = sqrt(self.resistance * self.operating_power)
             if _v_applied / self.rated_voltage <= 0.1:
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.1 and
-                 _v_applied / self.rated_voltage <= 0.2):
+            elif (_v_applied / self.rated_voltage > 0.1
+                  and _v_applied / self.rated_voltage <= 0.2):
                 self.piV = 1.05
-            elif(_v_applied / self.rated_voltage > 0.2 and
-                 _v_applied / self.rated_voltage <= 0.6):
+            elif (_v_applied / self.rated_voltage > 0.2
+                  and _v_applied / self.rated_voltage <= 0.6):
                 self.piV = 1.00
-            elif(_v_applied / self.rated_voltage > 0.6 and
-                 _v_applied / self.rated_voltage <= 0.7):
+            elif (_v_applied / self.rated_voltage > 0.6
+                  and _v_applied / self.rated_voltage <= 0.7):
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.7 and
-                 _v_applied / self.rated_voltage <= 0.8):
+            elif (_v_applied / self.rated_voltage > 0.7
+                  and _v_applied / self.rated_voltage <= 0.8):
                 self.piV = 1.22
-            elif(_v_applied / self.rated_voltage > 0.8 and
-                 _v_applied / self.rated_voltage <= 0.9):
+            elif (_v_applied / self.rated_voltage > 0.8
+                  and _v_applied / self.rated_voltage <= 0.9):
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00
@@ -258,15 +263,19 @@ class PrecisionWirewound(Resistor):
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piC = [2.0, 1.0, 3.0, 1.5]
-    _lst_piE = [1.0, 2.0, 18.0, 8.0, 30.0, 8.0, 12.0, 13.0, 18.0, 53.0, 0.5,
-                29.0, 76.0, 1400.0]
+    _lst_piE = [
+        1.0, 2.0, 18.0, 8.0, 30.0, 8.0, 12.0, 13.0, 18.0, 53.0, 0.5, 29.0,
+        76.0, 1400.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [2.5, 5.0]
-    _lst_lambdab_count = [0.33, 0.73, 7.0, 2.9, 12.0, 3.5, 5.3, 7.1, 9.8, 23.0,
-                          0.16, 11.0, 33.0, 510.0]
+    _lst_lambdab_count = [
+        0.33, 0.73, 7.0, 2.9, 12.0, 3.5, 5.3, 7.1, 9.8, 23.0, 0.16, 11.0, 33.0,
+        510.0
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 34                        # Subcategory ID in rtkcom DB.
+    subcategory = 34  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -307,11 +316,11 @@ class PrecisionWirewound(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -337,13 +346,14 @@ class PrecisionWirewound(Resistor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 15.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 15.
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piTAPS * piC * piR * piV * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piTAPS * piC * piR * piV * piQ * piE'
 
             # Base hazard rate.
             _stress = self.operating_power / self.rated_power
@@ -382,20 +392,20 @@ class PrecisionWirewound(Resistor):
             _v_applied = sqrt(self.resistance * self.operating_power)
             if _v_applied / self.rated_voltage <= 0.1:
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.1 and
-                 _v_applied / self.rated_voltage <= 0.2):
+            elif (_v_applied / self.rated_voltage > 0.1
+                  and _v_applied / self.rated_voltage <= 0.2):
                 self.piV = 1.05
-            elif(_v_applied / self.rated_voltage > 0.2 and
-                 _v_applied / self.rated_voltage <= 0.6):
+            elif (_v_applied / self.rated_voltage > 0.2
+                  and _v_applied / self.rated_voltage <= 0.6):
                 self.piV = 1.00
-            elif(_v_applied / self.rated_voltage > 0.6 and
-                 _v_applied / self.rated_voltage <= 0.7):
+            elif (_v_applied / self.rated_voltage > 0.6
+                  and _v_applied / self.rated_voltage <= 0.7):
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.7 and
-                 _v_applied / self.rated_voltage <= 0.8):
+            elif (_v_applied / self.rated_voltage > 0.7
+                  and _v_applied / self.rated_voltage <= 0.8):
                 self.piV = 1.22
-            elif(_v_applied / self.rated_voltage > 0.8 and
-                 _v_applied / self.rated_voltage <= 0.9):
+            elif (_v_applied / self.rated_voltage > 0.8
+                  and _v_applied / self.rated_voltage <= 0.9):
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00
@@ -436,15 +446,19 @@ class SemiPrecisionWirewound(Resistor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_piE = [1.0, 2.0, 16.0, 7.0, 28.0, 8.0, 12.0, 0.0, 0.0, 38.0, 0.5,
-                0.0, 0.0, 0.0]
+    _lst_piE = [
+        1.0, 2.0, 16.0, 7.0, 28.0, 8.0, 12.0, 0.0, 0.0, 38.0, 0.5, 0.0, 0.0,
+        0.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [2.0, 4.0]
-    _lst_lambdab_count = [0.15, 0.35, 3.1, 1.2, 5.4, 1.9, 2.8, 0.0, 0.0, 9.0,
-                          0.075, 0.0, 0.0, 0.0]
+    _lst_lambdab_count = [
+        0.15, 0.35, 3.1, 1.2, 5.4, 1.9, 2.8, 0.0, 0.0, 9.0, 0.075, 0.0, 0.0,
+        0.0
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 35                        # Subcategory ID in rtkcom DB.
+    subcategory = 35  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -481,11 +495,11 @@ class SemiPrecisionWirewound(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -510,13 +524,14 @@ class SemiPrecisionWirewound(Resistor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piTAPS * piR * piV * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piTAPS * piR * piV * piQ * piE'
 
             # Base hazard rate.
             _stress = self.operating_power / self.rated_power
@@ -529,7 +544,7 @@ class SemiPrecisionWirewound(Resistor):
                                     273.0)**4.46)
                 self.hazard_rate_model['lambdab'] = self.base_hr
             except OverflowError:
-# TODO: Handle overflow error.
+                # TODO: Handle overflow error.
                 print "OverflowError in Semiprecision Wirewound."
                 return True
 
@@ -550,20 +565,20 @@ class SemiPrecisionWirewound(Resistor):
             _v_applied = sqrt(self.resistance * self.operating_power)
             if _v_applied / self.rated_voltage <= 0.1:
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.1 and
-                 _v_applied / self.rated_voltage <= 0.2):
+            elif (_v_applied / self.rated_voltage > 0.1
+                  and _v_applied / self.rated_voltage <= 0.2):
                 self.piV = 1.05
-            elif(_v_applied / self.rated_voltage > 0.2 and
-                 _v_applied / self.rated_voltage <= 0.6):
+            elif (_v_applied / self.rated_voltage > 0.2
+                  and _v_applied / self.rated_voltage <= 0.6):
                 self.piV = 1.00
-            elif(_v_applied / self.rated_voltage > 0.6 and
-                 _v_applied / self.rated_voltage <= 0.7):
+            elif (_v_applied / self.rated_voltage > 0.6
+                  and _v_applied / self.rated_voltage <= 0.7):
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.7 and
-                 _v_applied / self.rated_voltage <= 0.8):
+            elif (_v_applied / self.rated_voltage > 0.7
+                  and _v_applied / self.rated_voltage <= 0.8):
                 self.piV = 1.22
-            elif(_v_applied / self.rated_voltage > 0.8 and
-                 _v_applied / self.rated_voltage <= 0.9):
+            elif (_v_applied / self.rated_voltage > 0.8
+                  and _v_applied / self.rated_voltage <= 0.9):
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00
@@ -605,15 +620,19 @@ class PowerWirewound(Resistor):
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piC = [2.0, 1.0]
-    _lst_piE = [1.0, 3.0, 16.0, 7.0, 28.0, 8.0, 12.0, 0.0, 0.0, 38.0, 0.5, 0.0,
-                0.0, 0.0]
+    _lst_piE = [
+        1.0, 3.0, 16.0, 7.0, 28.0, 8.0, 12.0, 0.0, 0.0, 38.0, 0.5, 0.0, 0.0,
+        0.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [2.0, 4.0]
-    _lst_lambdab_count = [0.15, 0.34, 2.9, 1.2, 5.0, 1.6, 2.4, 0.0, 0.0, 7.6,
-                          0.076, 0.0, 0.0, 0.0]
+    _lst_lambdab_count = [
+        0.15, 0.34, 2.9, 1.2, 5.0, 1.6, 2.4, 0.0, 0.0, 7.6, 0.076, 0.0, 0.0,
+        0.0
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 36                        # Subcategory ID in rtkcom DB.
+    subcategory = 36  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -654,11 +673,11 @@ class PowerWirewound(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -685,13 +704,14 @@ class PowerWirewound(Resistor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 12.
         from math import exp, sqrt
 
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piTAPS * piC * piR * piV * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piTAPS * piC * piR * piV * piQ * piE'
 
             # Base hazard rate.
             _stress = self.operating_power / self.rated_power
@@ -725,20 +745,20 @@ class PowerWirewound(Resistor):
             _v_applied = sqrt(self.resistance * self.operating_power)
             if _v_applied / self.rated_voltage <= 0.1:
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.1 and
-                 _v_applied / self.rated_voltage <= 0.2):
+            elif (_v_applied / self.rated_voltage > 0.1
+                  and _v_applied / self.rated_voltage <= 0.2):
                 self.piV = 1.05
-            elif(_v_applied / self.rated_voltage > 0.2 and
-                 _v_applied / self.rated_voltage <= 0.6):
+            elif (_v_applied / self.rated_voltage > 0.2
+                  and _v_applied / self.rated_voltage <= 0.6):
                 self.piV = 1.00
-            elif(_v_applied / self.rated_voltage > 0.6 and
-                 _v_applied / self.rated_voltage <= 0.7):
+            elif (_v_applied / self.rated_voltage > 0.6
+                  and _v_applied / self.rated_voltage <= 0.7):
                 self.piV = 1.10
-            elif(_v_applied / self.rated_voltage > 0.7 and
-                 _v_applied / self.rated_voltage <= 0.8):
+            elif (_v_applied / self.rated_voltage > 0.7
+                  and _v_applied / self.rated_voltage <= 0.8):
                 self.piV = 1.22
-            elif(_v_applied / self.rated_voltage > 0.8 and
-                 _v_applied / self.rated_voltage <= 0.9):
+            elif (_v_applied / self.rated_voltage > 0.8
+                  and _v_applied / self.rated_voltage <= 0.9):
                 self.piV = 1.40
             elif _v_applied / self.rated_voltage > 0.9:
                 self.piV = 2.00

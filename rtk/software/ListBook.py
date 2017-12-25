@@ -12,30 +12,30 @@ Software Package List Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -87,7 +87,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-def _set_risk_icon(risk, module):          # pylint: disable=R0912
+def _set_risk_icon(risk, module):  # pylint: disable=R0912
     """
     Function to find the hexadecimal code for the risk level colors.
 
@@ -109,11 +109,17 @@ def _set_risk_icon(risk, module):          # pylint: disable=R0912
     _icon = Configuration.ICON_DIR + '32x32/high.png'
     _lst_risk_icons.append(gtk.gdk.pixbuf_new_from_file_at_size(_icon, 22, 22))
 
-    _icon = {'A': _lst_risk_icons[0], 'D': _lst_risk_icons[0],
-             'SA': _lst_risk_icons[0], 'ST': _lst_risk_icons[0],
-             'SQ': _lst_risk_icons[0], 'SL': _lst_risk_icons[0],
-             'SX': _lst_risk_icons[0], 'SM': _lst_risk_icons[0],
-             'Risk': _lst_risk_icons[0]}
+    _icon = {
+        'A': _lst_risk_icons[0],
+        'D': _lst_risk_icons[0],
+        'SA': _lst_risk_icons[0],
+        'ST': _lst_risk_icons[0],
+        'SQ': _lst_risk_icons[0],
+        'SL': _lst_risk_icons[0],
+        'SX': _lst_risk_icons[0],
+        'SM': _lst_risk_icons[0],
+        'Risk': _lst_risk_icons[0]
+    }
 
     # Find the Application risk level.
     _icon['A'] = _lst_risk_icons[_set_application_risk_icon(risk[module][0])]
@@ -392,18 +398,18 @@ class ListView(gtk.VBox):
         self.tvwRiskMap = gtk.TreeView()
 
         # Set tooltips for the gtk.Widgets().
-        self.btnCalcRisk.set_tooltip_text(_(u"Calculate the reliability "
-                                            u"risk assessment."))
-        self.tvwRiskMap.set_tooltip_markup(_(u"Displays the risk associated "
-                                             u"with the software system."))
+        self.btnCalcRisk.set_tooltip_text(
+            _(u"Calculate the reliability "
+              u"risk assessment."))
+        self.tvwRiskMap.set_tooltip_markup(
+            _(u"Displays the risk associated "
+              u"with the software system."))
 
         # Connect widget signals to callback methods.
         self._lst_handler_id.append(
-            self.btnCalcRisk.connect('clicked',
-                                     self._on_button_clicked, 0))
+            self.btnCalcRisk.connect('clicked', self._on_button_clicked, 0))
         self._lst_handler_id.append(
-            self.btnSaveTest.connect('clicked',
-                                     self._on_button_clicked, 1))
+            self.btnSaveTest.connect('clicked', self._on_button_clicked, 1))
 
         # Put it all together.
         _notebook = self._create_notebook()
@@ -465,11 +471,18 @@ class ListView(gtk.VBox):
         _hbox.pack_end(_frame, True, True)
 
         # Add the risk map.
-        _headings = [_(u"Software\nModule"), _(u"Application\nRisk"),
-                     _(u"Organization\nRisk"), _(u"Anomaly\nManagement\nRisk"),
-                     _(u"Traceability\nRisk"), _(u"Quality\nAssurance\nRisk"),
-                     _(u"Language\nRisk"), _(u"Code\nComplexity\nRisk"),
-                     _(u"Modularity\nRisk"), _(u"Overall\nRisk")]
+        _headings = [
+            _(u"Software\nModule"),
+            _(u"Application\nRisk"),
+            _(u"Organization\nRisk"),
+            _(u"Anomaly\nManagement\nRisk"),
+            _(u"Traceability\nRisk"),
+            _(u"Quality\nAssurance\nRisk"),
+            _(u"Language\nRisk"),
+            _(u"Code\nComplexity\nRisk"),
+            _(u"Modularity\nRisk"),
+            _(u"Overall\nRisk")
+        ]
 
         _model = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                gtk.gdk.Pixbuf, gtk.gdk.Pixbuf, gtk.gdk.Pixbuf,
@@ -511,9 +524,8 @@ class ListView(gtk.VBox):
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
             _label.set_property('angle', 90)
-            _label.set_markup("<span weight='bold'>" +
-                              _headings[i - 1] +
-                              "</span>")
+            _label.set_markup(
+                "<span weight='bold'>" + _headings[i - 1] + "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column = gtk.TreeViewColumn()
@@ -534,9 +546,10 @@ class ListView(gtk.VBox):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the matrix showing risk "
-                                  u"between system functions and system "
-                                  u"software items."))
+        _label.set_tooltip_text(
+            _(u"Displays the matrix showing risk "
+              u"between system functions and system "
+              u"software items."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -566,9 +579,10 @@ class ListView(gtk.VBox):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the matrix showing relationships "
-                                  u"between system software and system "
-                                  u"tests."))
+        _label.set_tooltip_text(
+            _(u"Displays the matrix showing relationships "
+              u"between system software and system "
+              u"tests."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -613,16 +627,16 @@ class ListView(gtk.VBox):
 
         for _software in parents:
             _data = [_software.software_id, _software.description]
-            _dicRisk[_software.software_id] = [_software.a_risk,
-                                               _software.d_risk, _software.sa,
-                                               _software.st, _software.sq,
-                                               _software.sl, _software.sx,
-                                               _software.sm, _software.rpfom]
+            _dicRisk[_software.software_id] = [
+                _software.a_risk, _software.d_risk, _software.sa, _software.st,
+                _software.sq, _software.sl, _software.sx, _software.sm,
+                _software.rpfom
+            ]
 
             # Get the hexidecimal color code for each risk factor.
             _color = _set_risk_icon(_dicRisk, _software.software_id)
 
-            if _software.parent_id == -1:   # It's the top level element.
+            if _software.parent_id == -1:  # It's the top level element.
                 row = None
 
             _data.append(_color['A'])
@@ -637,8 +651,9 @@ class ListView(gtk.VBox):
 
             _piter = model.append(row, _data)
 
-            _parents = [_s for _s in software
-                        if _s.parent_id == _software.software_id]
+            _parents = [
+                _s for _s in software if _s.parent_id == _software.software_id
+            ]
             self._load_risk_map(_parents, software, model, _piter)
 
         self.tvwRiskMap.expand_all()
@@ -655,10 +670,10 @@ class ListView(gtk.VBox):
 
         for _child in self.fraTestSelection.get_children():
             self.fraTestSelection.remove(_child)
-        if self._model.level_id == 2:       # CSCI
+        if self._model.level_id == 2:  # CSCI
             self.scwCSCITestSelection.load_test_selections(self._model)
             self.fraTestSelection.add(self.scwCSCITestSelection)
-        elif self._model.level_id == 3:     # Unit
+        elif self._model.level_id == 3:  # Unit
             self.scwUnitTestSelection.load_test_selections(self._model)
             self.fraTestSelection.add(self.scwUnitTestSelection)
 
@@ -676,7 +691,7 @@ class ListView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 14.
+        # WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 14.
         _return = False
 
         button.handler_block(self._lst_handler_id[index])

@@ -12,30 +12,30 @@ Testing Package Reliability Growth Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
@@ -46,7 +46,7 @@ import locale
 from math import exp, log, sqrt
 import numpy as np
 from scipy.optimize import fsolve
-from scipy.stats import chi2                # pylint: disable=E0611
+from scipy.stats import chi2  # pylint: disable=E0611
 
 # Import other RTK modules.
 try:
@@ -57,7 +57,7 @@ try:
     import analyses.statistics.growth.SPLAN as SPLAN
     from testing.Testing import Model as Testing
     from testing.Testing import Testing as dtcTesting
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     import rtk.analyses.statistics.Bounds as Bounds
@@ -73,7 +73,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -102,7 +102,7 @@ def running_sum(values):
         yield _total
 
 
-class Model(Testing):                       # pylint: disable=R0902, R0904
+class Model(Testing):  # pylint: disable=R0902, R0904
     """
     The Reliability Growth data model contains the attributes and methods for
     planning and assessing a reliability growth test. The attributes of a
@@ -192,28 +192,28 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         # Initialize public list attributes.
         # The following lists are used for holding ideal growth data for each
         # test phase.
-        self.lst_i_mtbfi = [0.0] * n_phases         # Initial phase MTBF.
-        self.lst_i_mtbff = [0.0] * n_phases         # Final phase MTBF.
-        self.lst_i_mtbfa = [0.0] * n_phases         # Average phase MTBF.
-        self.lst_i_n_failures = [0] * n_phases      # Expected number of failures.
+        self.lst_i_mtbfi = [0.0] * n_phases  # Initial phase MTBF.
+        self.lst_i_mtbff = [0.0] * n_phases  # Final phase MTBF.
+        self.lst_i_mtbfa = [0.0] * n_phases  # Average phase MTBF.
+        self.lst_i_n_failures = [0] * n_phases  # Expected number of failures.
 
         # The following lists are used for holding planned growth data for each
         # test phase.
         self.lst_p_growth_rate = [0.0] * n_phases
-        self.lst_p_ms = [0.0] * n_phases            # Planned management strategy.
-        self.lst_p_fef = [0.0] * n_phases           # Planned fix effectiveness factor.
+        self.lst_p_ms = [0.0] * n_phases  # Planned management strategy.
+        self.lst_p_fef = [0.0] * n_phases  # Planned fix effectiveness factor.
         self.lst_p_prob = [0.0] * n_phases
-        self.lst_p_mtbfi = [0.0] * n_phases         # Initial phase MTBF.
+        self.lst_p_mtbfi = [0.0] * n_phases  # Initial phase MTBF.
         self.lst_p_mtbff = [0.0] * n_phases
         self.lst_p_mtbfa = [0.0] * n_phases
-        self.lst_p_test_time = [0.0] * n_phases     # Planned test time.
-        self.lst_p_n_failures = [0] * n_phases      # Expected number of failures.
+        self.lst_p_test_time = [0.0] * n_phases  # Planned test time.
+        self.lst_p_n_failures = [0] * n_phases  # Expected number of failures.
         self.lst_p_start_date = [0] * n_phases
         self.lst_p_end_date = [0] * n_phases
         self.lst_p_weeks = [0.0] * n_phases
         self.lst_p_n_test_units = [0] * n_phases
-        self.lst_p_tpu = [0.0] * n_phases   # Test time per unit.
-        self.lst_p_tpupw = [0.0] * n_phases     # Test time per unit per week.
+        self.lst_p_tpu = [0.0] * n_phases  # Test time per unit.
+        self.lst_p_tpupw = [0.0] * n_phases  # Test time per unit per week.
 
         # The following lists are used for holding observed growth data for
         # each test phase.
@@ -223,11 +223,12 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         self.lst_o_mtbfi = [0.0] * n_phases
         self.lst_o_mtbff = [0.0] * n_phases
         self.lst_o_mtbfa = [0.0] * n_phases
-        self.lst_o_test_time = [0.0] * n_phases     # Actual test time.
-        self.lst_o_n_failures = [0] * n_phases      # Observed number of failures.
+        self.lst_o_test_time = [0.0] * n_phases  # Actual test time.
+        self.lst_o_n_failures = [0] * n_phases  # Observed number of failures.
 
-        self.lst_fixed_values = [True, True, True, True, True, True, True,
-                                 True]
+        self.lst_fixed_values = [
+            True, True, True, True, True, True, True, True
+        ]
 
         # The following lists are used for holding model parameter estimates.
         # The format is [lower bound, point estimate, upper bound].
@@ -241,16 +242,16 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         # Initialize public scalar attributes.
         self.rg_plan_model = 0
         self.rg_assess_model = 0
-        self.tr = 0.0                       # Program technical requirement MTBF.
-        self.mtbfg = 0.0                    # Program goal MTBF.
-        self.mtbfgp = 0.0                   # Growth potential MTBF.
+        self.tr = 0.0  # Program technical requirement MTBF.
+        self.mtbfg = 0.0  # Program goal MTBF.
+        self.mtbfgp = 0.0  # Growth potential MTBF.
         self.n_phases = n_phases
-        self.ttt = 0.0                      # Total time on test.
-        self.avg_growth = 0.0               # Average growth rate across all test phases.
-        self.avg_ms = 0.75                  # Average management strategy across all test phases.
-        self.avg_fef = 0.7                  # Average fix effectiveness factor across all test phases.
-        self.probability = 0.75             # Probability of observing a failure.
-        self.ttff = 0.0                     # Time to first fix.
+        self.ttt = 0.0  # Total time on test.
+        self.avg_growth = 0.0  # Average growth rate across all test phases.
+        self.avg_ms = 0.75  # Average management strategy across all test phases.
+        self.avg_fef = 0.7  # Average fix effectiveness factor across all test phases.
+        self.probability = 0.75  # Probability of observing a failure.
+        self.ttff = 0.0  # Time to first fix.
         self.grouped = 0
         self.group_interval = 0.0
         self.se_scale = 0.0
@@ -270,40 +271,36 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         :return: _ideal
         :rtype: list of floats
         """
-# WARNING: Refactor calculate_idealized_growth_curve; current McCabe Complexity metric=17.
+        # WARNING: Refactor calculate_idealized_growth_curve; current McCabe Complexity metric=17.
         _ideal = []
 
         # Verify the first phase average MTBF is greater than zero.  If not,
         # attempt to calculate the average MTBF.
         if self.lst_i_mtbfa[0] <= 0.0:
-            _mtbfa = CrowAMSAA.calculate_initial_mtbf(self.avg_growth,
-                                                      self.mtbfg, self.ttt,
-                                                      self.lst_p_test_time[0])
+            _mtbfa = CrowAMSAA.calculate_initial_mtbf(
+                self.avg_growth, self.mtbfg, self.ttt, self.lst_p_test_time[0])
             self.lst_i_mtbfa[0] = _mtbfa
 
         # Verify the program final (goal) MTBF is greater than zero.  If not,
         # attempt to calculate the final MTBF.
         if self.mtbfg <= 0.0:
-            _mtbfg = CrowAMSAA.calculate_final_mtbf(self.avg_growth,
-                                                    self.lst_i_mtbfa[0],
-                                                    self.ttt,
-                                                    self.lst_p_test_time[0])
+            _mtbfg = CrowAMSAA.calculate_final_mtbf(
+                self.avg_growth, self.lst_i_mtbfa[0], self.ttt,
+                self.lst_p_test_time[0])
             self.mtbfg = _mtbfg
 
         # Verify the program total time on test is greater than zero.  If not,
         # attempt to calculate the total time on test.
         if self.ttt <= 0.0:
-            self.ttt = CrowAMSAA.calculate_total_time(self.avg_growth,
-                                                      self.lst_i_mtbfa[0],
-                                                      self.mtbfg,
-                                                      self.lst_p_test_time[0])
+            self.ttt = CrowAMSAA.calculate_total_time(
+                self.avg_growth, self.lst_i_mtbfa[0], self.mtbfg,
+                self.lst_p_test_time[0])
 
         # Verify the first phase test time is greater than zero.  If not,
         # attempt to calculate the first phase test time.
         if self.lst_p_test_time[0] <= 0.0:
-            _time = CrowAMSAA.calculate_t1(self.avg_growth,
-                                           self.lst_i_mtbfa[0],
-                                           self.mtbfg, self.ttt)
+            _time = CrowAMSAA.calculate_t1(
+                self.avg_growth, self.lst_i_mtbfa[0], self.mtbfg, self.ttt)
             self.lst_p_test_time[0] = _time
 
         # Verify the program average growth rate is greater than zero.  If not,
@@ -320,18 +317,19 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         # numpy's not a number to force a jump in the plot.  If the time is
         # greater than the time to first failure, the idealized value is
         # calculated from the inputs read above.
-        if(self.lst_i_mtbfa[0] > 0.0 and self.lst_p_test_time[0] > 0.0 and
-           self.mtbfg > 0.0 and self.ttt > 0.0 and self.avg_growth > 0.0):
+        if (self.lst_i_mtbfa[0] > 0.0 and self.lst_p_test_time[0] > 0.0
+                and self.mtbfg > 0.0 and self.ttt > 0.0
+                and self.avg_growth > 0.0):
             for _time in range(int(self.ttt)):
                 if _time < int(self.lst_p_test_time[0]):
                     _ideal.append(self.lst_i_mtbfa[0])
                 elif _time == int(self.lst_p_test_time[0]):
                     _ideal.append(np.nan)
                 else:
-                    _ideal.append((self.lst_i_mtbfa[0] *
-                                   (float(_time) /
-                                    self.lst_p_test_time[0])**self.avg_growth) /
-                                  (1.0 - self.avg_growth))
+                    _ideal.append(
+                        (self.lst_i_mtbfa[0] *
+                         (float(_time) / self.lst_p_test_time[0]
+                          )**self.avg_growth) / (1.0 - self.avg_growth))
 
             # Convert to failure intensity if that has been called for.
             if not mtbf:
@@ -344,8 +342,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
             self.lst_i_n_failures = [0.0] * self.n_phases
             for _index in range(self.n_phases):
                 _time = sum(self.lst_p_test_time[:_index + 1])
-                _mtbf = CrowAMSAA.calculate_final_mtbf(self.avg_growth,
-                                                       _mtbfa, _time, _t1)
+                _mtbf = CrowAMSAA.calculate_final_mtbf(self.avg_growth, _mtbfa,
+                                                       _time, _t1)
                 if _index < self.n_phases - 1:
                     self.lst_i_mtbfi[_index + 1] = _mtbf
 
@@ -353,9 +351,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
                     self.lst_i_mtbff[_index] = _mtbf
 
                 _cum_fails = sum(self.lst_i_n_failures[:_index + 1])
-                _n_failures = CrowAMSAA.calculate_n_failures(self.avg_growth,
-                                                             _mtbfa, _time,
-                                                             _t1, _cum_fails)
+                _n_failures = CrowAMSAA.calculate_n_failures(
+                    self.avg_growth, _mtbfa, _time, _t1, _cum_fails)
                 self.lst_i_n_failures[_index] = _n_failures
 
             for _index in range(self.n_phases):
@@ -363,8 +360,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
                 _n_failures = self.lst_i_n_failures[_index]
                 _mtbfi = self.lst_i_mtbfi[_index]
                 _mtbff = self.lst_i_mtbff[_index]
-                _mtbfa = CrowAMSAA.calculate_average_mtbf(_time, _n_failures,
-                                                          _mtbfi, _mtbff)
+                _mtbfa = CrowAMSAA.calculate_average_mtbf(
+                    _time, _n_failures, _mtbfi, _mtbff)
                 self.lst_i_mtbfa[_index] = _mtbfa
 
         return _ideal
@@ -391,13 +388,13 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
             _cum_time = sum(self.lst_p_test_time[:i + 1])
 
             if _mtbff <= 0.0:
-                _mtbff = CrowAMSAA.calculate_final_mtbf(_alpha, _mtbf1,
-                                                        _cum_time, _t1)
+                _mtbff = CrowAMSAA.calculate_final_mtbf(
+                    _alpha, _mtbf1, _cum_time, _t1)
                 self.lst_p_mtbff[i] = _mtbff
 
             if _mtbfa <= 0.0:
-                _mtbfa = CrowAMSAA.calculate_average_mtbf(0.0, 0, _mtbfi,
-                                                          _mtbff)
+                _mtbfa = CrowAMSAA.calculate_average_mtbf(
+                    0.0, 0, _mtbfi, _mtbff)
                 self.lst_p_mtbfa[i] = _mtbfa
 
             if _mtbfi <= 0.0:
@@ -405,8 +402,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
                 self.lst_p_mtbfi[i] = _mtbfi
 
             if _alpha <= 0.0:
-                _alpha = CrowAMSAA.calculate_growth_rate(_mtbfi, _mtbff,
-                                                         _time, _t1)
+                _alpha = CrowAMSAA.calculate_growth_rate(
+                    _mtbfi, _mtbff, _time, _t1)
                 self.lst_p_growth_rate[i] = _alpha
 
         return False
@@ -438,7 +435,7 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
 
                 _time += 1.0
 
-            _plan.append(np.nan)            # pylint: disable=E1101
+            _plan.append(np.nan)  # pylint: disable=E1101
 
         return _plan
 
@@ -479,8 +476,9 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
         # per week.
         for _phase in range(self.n_phases):
             # Assess logistics of test plan.
-            _weeks = (self.lst_p_end_date[_phase] -
-                      self.lst_p_start_date[_phase]) / 7.0
+            _weeks = (
+                self.lst_p_end_date[_phase] - self.lst_p_start_date[_phase]
+            ) / 7.0
 
             try:
                 self.lst_p_tpu[_phase] = self.lst_p_test_time[_phase] / \
@@ -500,8 +498,8 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
                 _fef = self.lst_p_fef[_phase]
                 _mtbfa = self.lst_p_mtbfa[_phase]
 
-                _ms = SPLAN.calculate_management_strategy(_fef, _mtbfa,
-                                                          self.mtbfgp)
+                _ms = SPLAN.calculate_management_strategy(
+                    _fef, _mtbfa, self.mtbfgp)
                 self.lst_p_ms[_phase] = _ms
 
             if self.lst_p_fef[_phase] <= 0.0 or self.lst_p_fef[_phase] > 0.0:
@@ -540,15 +538,13 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
          self.beta_hat[1]) = CrowAMSAA.calculate_crow_amsaa_parameters(
              _failures, _times, 0.0, self.grouped)
 
-        (self.beta_hat[0],
-         self.beta_hat[2]) = Bounds.calculate_crow_bounds(
-             sum(_failures), _times[-1], self.alpha_hat[1],
-             self.beta_hat[1], self.confidence, 1)
+        (self.beta_hat[0], self.beta_hat[2]) = Bounds.calculate_crow_bounds(
+            sum(_failures), _times[-1], self.alpha_hat[1], self.beta_hat[1],
+            self.confidence, 1)
 
-        (self.alpha_hat[0],
-         self.alpha_hat[2]) = Bounds.calculate_crow_bounds(
-             self.cum_failures, self.cum_time, self.alpha_hat[1],
-             self.beta_hat[1], self.confidence, 2)
+        (self.alpha_hat[0], self.alpha_hat[2]) = Bounds.calculate_crow_bounds(
+            self.cum_failures, self.cum_time, self.alpha_hat[1],
+            self.beta_hat[1], self.confidence, 2)
 
         return False
 
@@ -581,14 +577,16 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
             _cum_mean_ll = 1.0 / _upper
             _cum_mean_ul = 1.0 / _lower
 
-            _i_mean_ll = 1.0 / (self.alpha_hat[2] * self.beta_hat[2] *
-                                _times[-1]**(self.beta_hat[2] - 1.0))
-            _i_mean_ul = 1.0 / (self.alpha_hat[0] * self.beta_hat[0] *
-                                _times[-1]**(self.beta_hat[0] - 1.0))
+            _i_mean_ll = 1.0 / (
+                self.alpha_hat[2] * self.beta_hat[2] * _times[-1]**
+                (self.beta_hat[2] - 1.0))
+            _i_mean_ul = 1.0 / (
+                self.alpha_hat[0] * self.beta_hat[0] * _times[-1]**
+                (self.beta_hat[0] - 1.0))
 
             self.cum_mean.append([_cum_mean_ll, _cum_mean, _cum_mean_ul])
-            self.instantaneous_mean.append([_i_mean_ll, _instantaneous_mean,
-                                            _i_mean_ul])
+            self.instantaneous_mean.append(
+                [_i_mean_ll, _instantaneous_mean, _i_mean_ul])
 
         return False
 
@@ -651,14 +649,14 @@ class Model(Testing):                       # pylint: disable=R0902, R0904
 
         _alpha_half = (1.0 - self.confidence) / 2.0
 
-        if self.grouped == 0:               # Individual failure times.
-            if self.test_termination_time > 0.0:    # Time truncated test.
+        if self.grouped == 0:  # Individual failure times.
+            if self.test_termination_time > 0.0:  # Time truncated test.
                 _df = 2.0 * self.cum_failures
-            else:                                   # Failure truncated test.
+            else:  # Failure truncated test.
                 _df = 2.0 * (self.cum_failures - 1)
             _upper = _alpha_half
             _lower = self.confidence + _alpha_half
-        else:                               # Grouped failure times.
+        else:  # Grouped failure times.
             _df = len(_failures) - 1
             _upper = self.confidence
             _lower = 1.0 - self.confidence
@@ -697,7 +695,7 @@ class Growth(dtcTesting):
                     instance.
     """
 
-    def __init__(self):                     # pylint: disable=E1002
+    def __init__(self):  # pylint: disable=E1002
         """
         Method to initialize a Growth data controller instance.
         """
@@ -742,8 +740,7 @@ class Growth(dtcTesting):
         # Gather the Growth model phase attributes.
         _query = "SELECT * FROM rtk_growth_testing \
                   WHERE fld_test_id={0:d}".format(growth_test[2])
-        (_phases,
-         _error_code, __) = self._dao.execute(_query, commit=False)
+        (_phases, _error_code, __) = self._dao.execute(_query, commit=False)
 
         try:
             _n_phases = len(_phases)
@@ -755,7 +752,7 @@ class Growth(dtcTesting):
 
         self._request_test_data(_test.test_id)
 
-        return(_phases, _error_code)
+        return (_phases, _error_code)
 
     def _request_test_data(self, test_id):
         """
@@ -785,11 +782,12 @@ class Growth(dtcTesting):
             _n_records = 0
 
         for i in range(_n_records):
-            _test.dic_test_data[i] = [_results[i][0], _results[i][1],
-                                      _results[i][2], _results[i][3],
-                                      _results[i][4]]
+            _test.dic_test_data[i] = [
+                _results[i][0], _results[i][1], _results[i][2], _results[i][3],
+                _results[i][4]
+            ]
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_test(self, revision_id, assembly_id):
         """
@@ -803,8 +801,8 @@ class Growth(dtcTesting):
 
         _query = "INSERT INTO rtk_tests \
                   (fld_revision_id, fld_assembly_id, fld_name, fld_test_type) \
-                  VALUES ({0:d}, {1:d}, 'Test Plan', 4)".format(revision_id,
-                                                                assembly_id)
+                  VALUES ({0:d}, {1:d}, 'Test Plan', 4)".format(
+            revision_id, assembly_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         # If the new test was added successfully to the RTK Project database:
@@ -822,7 +820,7 @@ class Growth(dtcTesting):
                                   '', 4, '', 0.0, 0.0, 0.75, 0.0, 0.0))
             self.dicTests[_test.test_id] = _test
 
-        return(_test, _error_code)
+        return (_test, _error_code)
 
     def add_test_phase(self, test_id, phase_id=0):
         """
@@ -841,9 +839,13 @@ class Growth(dtcTesting):
                   VALUES ({0:d}, {1:d})".format(test_id, phase_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
-    def add_test_record(self, test_id, date, time, n_failures,
+    def add_test_record(self,
+                        test_id,
+                        date,
+                        time,
+                        n_failures,
                         additional=False):
         """
         Method to add a new record to the selected Reliability Growth test.
@@ -884,8 +886,8 @@ class Growth(dtcTesting):
                    fld_right_interval, fld_quantity, fld_mode_type, \
                    fld_failure_date, fld_source) \
                   VALUES ({0:d}, {1:d}, {2:f}, {3:f}, {4:d}, {5:d}, \
-                          {6:d}, 1)".format(_last_id, test_id, 0.0,
-                                            time, n_failures, 0, date)
+                          {6:d}, 1)".format(_last_id, test_id, 0.0, time,
+                                            n_failures, 0, date)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         try:
@@ -894,7 +896,7 @@ class Growth(dtcTesting):
             _id = 0
         _test.dic_test_data[_id] = [_last_id, date, 0.0, time, n_failures]
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_test(self, test_id):
         """
@@ -917,7 +919,7 @@ class Growth(dtcTesting):
 
         self.dicTests.pop(test_id)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_test_phase(self, test_id, phase_id):
         """
@@ -934,7 +936,7 @@ class Growth(dtcTesting):
                   AND fld_phase_id={1:d}".format(test_id, phase_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_test_record(self, record_id, dataset_id):
         """
@@ -952,7 +954,7 @@ class Growth(dtcTesting):
                   AND fld_source=1".format(record_id, dataset_id)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def request_calculate(self, test_id, mtbf=True):
         """
@@ -972,7 +974,7 @@ class Growth(dtcTesting):
         if not _test.calculate_planned_growth_curve():
             _plan = _test.create_planned_values(mtbf)
 
-        return(_ideal, _plan)
+        return (_ideal, _plan)
 
     def request_assessment(self, test_id):
         """
@@ -1034,24 +1036,20 @@ class Growth(dtcTesting):
                       fld_cum_mean_ul={38:f}, fld_inst_mean_ll={39:f}, \
                       fld_inst_mean={40:f}, fld_inst_mean_ul={41:f} \
                   WHERE fld_test_id={0:d}".format(
-                      _test.test_id, _test.name, _test.description,
-                      _test.test_type, _test.attachment, _test.cum_time,
-                      _test.cum_failures, _test.confidence,
-                      _test.consumer_risk, _test.producer_risk,
-                      _test.rg_plan_model, _test.rg_assess_model, _test.tr,
-                      _test.mtbfg, _test.mtbfgp, _test.n_phases, _test.ttt,
-                      _test.avg_growth, _test.avg_ms, _test.avg_fef,
-                      _test.probability, _test.ttff, _test.grouped,
-                      _test.group_interval, _test.se_scale, _test.se_shape,
-                      _test.se_cum_mean, _test.se_inst_mean,
-                      _test.cramer_vonmises, _test.chi_square,
-                      _test.alpha_hat[0], _test.alpha_hat[1],
-                      _test.alpha_hat[2], _test.beta_hat[0],
-                      _test.beta_hat[1], _test.beta_hat[2],
-                      _test.cum_mean[-1][0], _test.cum_mean[-1][1],
-                      _test.cum_mean[-1][2], _test.instantaneous_mean[-1][0],
-                      _test.instantaneous_mean[-1][1],
-                      _test.instantaneous_mean[-1][2])
+            _test.test_id, _test.name, _test.description, _test.test_type,
+            _test.attachment, _test.cum_time, _test.cum_failures,
+            _test.confidence, _test.consumer_risk, _test.producer_risk,
+            _test.rg_plan_model, _test.rg_assess_model, _test.tr, _test.mtbfg,
+            _test.mtbfgp, _test.n_phases, _test.ttt, _test.avg_growth,
+            _test.avg_ms, _test.avg_fef, _test.probability, _test.ttff,
+            _test.grouped, _test.group_interval, _test.se_scale,
+            _test.se_shape, _test.se_cum_mean, _test.se_inst_mean,
+            _test.cramer_vonmises, _test.chi_square, _test.alpha_hat[0],
+            _test.alpha_hat[1], _test.alpha_hat[2], _test.beta_hat[0],
+            _test.beta_hat[1], _test.beta_hat[2], _test.cum_mean[-1][0],
+            _test.cum_mean[-1][1], _test.cum_mean[-1][2],
+            _test.instantaneous_mean[-1][0], _test.instantaneous_mean[-1][1],
+            _test.instantaneous_mean[-1][2])
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
         # Save the phase-specific information.
@@ -1071,24 +1069,22 @@ class Growth(dtcTesting):
                           fld_i_num_fails={26:d} \
                       WHERE fld_test_id={0:d} \
                       AND fld_phase_id={1:d}".format(
-                          _test.test_id, i, _test.lst_p_growth_rate[i],
-                          _test.lst_p_ms[i], _test.lst_p_fef[i],
-                          _test.lst_p_prob[i], _test.lst_p_mtbfi[i],
-                          _test.lst_p_mtbff[i], _test.lst_p_mtbfa[i],
-                          _test.lst_p_test_time[i],
-                          int(_test.lst_p_n_failures[i]),
-                          _test.lst_p_start_date[i], _test.lst_p_end_date[i],
-                          _test.lst_p_weeks[i], _test.lst_p_n_test_units[i],
-                          _test.lst_p_tpu[i], _test.lst_p_tpupw[i],
-                          _test.lst_o_ms[i], _test.lst_o_fef[i],
-                          _test.lst_o_mtbfi[i], _test.lst_o_mtbff[i],
-                          _test.lst_o_mtbfa[i], _test.ttff,
-                          _test.lst_i_mtbfi[i], _test.lst_i_mtbff[i],
-                          _test.lst_i_mtbfa[i], int(_test.lst_i_n_failures[i]))
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=True)
+                _test.test_id, i, _test.lst_p_growth_rate[i],
+                _test.lst_p_ms[i], _test.lst_p_fef[i], _test.lst_p_prob[i],
+                _test.lst_p_mtbfi[i], _test.lst_p_mtbff[i],
+                _test.lst_p_mtbfa[i], _test.lst_p_test_time[i],
+                int(_test.lst_p_n_failures[i]), _test.lst_p_start_date[i],
+                _test.lst_p_end_date[i], _test.lst_p_weeks[i],
+                _test.lst_p_n_test_units[i], _test.lst_p_tpu[i],
+                _test.lst_p_tpupw[i], _test.lst_o_ms[i], _test.lst_o_fef[i],
+                _test.lst_o_mtbfi[i], _test.lst_o_mtbff[i],
+                _test.lst_o_mtbfa[i], _test.ttff, _test.lst_i_mtbfi[i],
+                _test.lst_i_mtbff[i], _test.lst_i_mtbfa[i],
+                int(_test.lst_i_n_failures[i]))
+            (_results, _error_code, __) = self._dao.execute(
+                _query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_test_data(self, test_id):
         """
@@ -1112,15 +1108,13 @@ class Growth(dtcTesting):
                       WHERE fld_dataset_id={0:d} \
                       AND fld_record_id={1:d} \
                       AND fld_source=1".format(
-                          _test.test_id, _test.dic_test_data[_key][0],
-                          _test.dic_test_data[_key][1],
-                          _test.dic_test_data[_key][2],
-                          _test.dic_test_data[_key][3],
-                          _test.dic_test_data[_key][4])
-            (_results, _error_code, __) = self._dao.execute(_query,
-                                                            commit=True)
+                _test.test_id, _test.dic_test_data[_key][0],
+                _test.dic_test_data[_key][1], _test.dic_test_data[_key][2],
+                _test.dic_test_data[_key][3], _test.dic_test_data[_key][4])
+            (_results, _error_code, __) = self._dao.execute(
+                _query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_all_tests(self):
         """

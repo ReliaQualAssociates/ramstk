@@ -10,11 +10,11 @@ The RTKType Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKType(RTK_BASE):
@@ -25,11 +25,15 @@ class RTKType(RTK_BASE):
     __tablename__ = 'rtk_type'
     __table_args__ = {'extend_existing': True}
 
-    type_id = Column('fld_model_id', Integer, primary_key=True,
-                     autoincrement=True, nullable=False)
+    type_id = Column(
+        'fld_model_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     code = Column('fld_code', String(256), default='Type Code')
-    description = Column('fld_description', String(512),
-                         default='Type Description')
+    description = Column(
+        'fld_description', String(512), default='Type Description')
     type_type = Column('fld_type', Integer, default='unknown')
 
     def get_attributes(self):

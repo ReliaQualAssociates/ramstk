@@ -11,11 +11,11 @@ The RTKOpLoad Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKOpLoad(RTK_BASE):
@@ -29,11 +29,17 @@ class RTKOpLoad(RTK_BASE):
     __tablename__ = 'rtk_op_load'
     __table_args__ = {'extend_existing': True}
 
-    mechanism_id = Column('fld_mechanism_id', Integer,
-                          ForeignKey('rtk_mechanism.fld_mechanism_id'),
-                          nullable=False)
-    load_id = Column('fld_load_id', Integer, primary_key=True,
-                     autoincrement=True, nullable=False)
+    mechanism_id = Column(
+        'fld_mechanism_id',
+        Integer,
+        ForeignKey('rtk_mechanism.fld_mechanism_id'),
+        nullable=False)
+    load_id = Column(
+        'fld_load_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     description = Column('fld_description', String(512), default='')
     damage_model = Column('fld_damage_model', Integer, default=0)

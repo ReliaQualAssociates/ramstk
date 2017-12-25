@@ -54,8 +54,9 @@ def calculate_variance_covariance(n_failures, max_time, alpha, beta):
 
     _del_beta_alpha = -max_time**beta * log(max_time)
 
-    _var_covar = inv(np.array([[-_del_alpha, -_del_beta_alpha],
-                               [-_del_beta_alpha, -_del_beta]]))
+    _var_covar = inv(
+        np.array([[-_del_alpha, -_del_beta_alpha],
+                  [-_del_beta_alpha, -_del_beta]]))
 
     return _var_covar
 
@@ -78,8 +79,8 @@ def calculate_nhpp_mean_variance(n_failures, max_time, alpha, beta, metric=1):
     :rtype: float
     """
 
-    _var_covar = calculate_variance_covariance(n_failures, max_time,
-                                               alpha, beta)
+    _var_covar = calculate_variance_covariance(n_failures, max_time, alpha,
+                                               beta)
 
     if metric == 1:
         _del_mean_beta = -(1.0 / alpha) * max_time**(1.0 - beta) * \
@@ -127,7 +128,12 @@ def calculate_fisher_bounds(metric, variance, alpha):
     return _fisher_l, _fisher_u
 
 
-def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
+def calculate_crow_bounds(n_failures,
+                          t_star,
+                          _lambda,
+                          beta,
+                          alpha,
+                          metric,
                           data=2):
     """
     Function to calculate confidence bounds based on Dr. Larry Crow's methods.
@@ -149,7 +155,7 @@ def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
     :return: _crow_l, _crow_u; the lower and upper bound on the metric.
     :rtype: tuple of floats
     """
-# WARNING: Refactor calculate_crow_bounds; current McCabe Complexity metric=11.
+    # WARNING: Refactor calculate_crow_bounds; current McCabe Complexity metric=11.
     # Set default values so a value is returned in case something goes wrong.
     _crow_l = 1.0
     _crow_u = 1.0
@@ -158,10 +164,10 @@ def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
     if alpha > 1.0:
         alpha = alpha / 100.0
 
-    _alpha_l = (1.0 - alpha) / 2.0          # For lower bounds.
-    _alpha_u = 1.0 - _alpha_l               # For upper bounds.
+    _alpha_l = (1.0 - alpha) / 2.0  # For lower bounds.
+    _alpha_u = 1.0 - _alpha_l  # For upper bounds.
 
-    if metric == 1:                         # Shape
+    if metric == 1:  # Shape
         if data == 1:
             _chi2 = chi2.ppf(_alpha_l, 2.0 * n_failures)
             _crow_l = beta * (_chi2 / (2.0 * (n_failures - 1)))
@@ -171,14 +177,14 @@ def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
 
         elif data == 2:
             _chi2 = chi2.ppf(_alpha_l, 2.0 * (n_failures - 1))
-            _crow_l = beta * ((n_failures * _chi2) /
-                              (2.0 * (n_failures - 1) * (n_failures - 2)))
+            _crow_l = beta * ((n_failures * _chi2) / (2.0 * (n_failures - 1) *
+                                                      (n_failures - 2)))
 
             _chi2 = chi2.ppf(_alpha_u, 2.0 * (n_failures - 1))
-            _crow_u = beta * ((n_failures * _chi2) /
-                              (2.0 * (n_failures - 1) * (n_failures - 2)))
+            _crow_u = beta * ((n_failures * _chi2) / (2.0 * (n_failures - 1) *
+                                                      (n_failures - 2)))
 
-    elif metric == 2:                       # Scale
+    elif metric == 2:  # Scale
         # Calculate the lower bound.  It is the same regardless of the type.
         _chi2 = chi2.ppf(_alpha_l, 2.0 * n_failures)
         _crow_l = _chi2 / (2.0 * t_star**beta)
@@ -190,7 +196,7 @@ def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
             _chi2 = chi2.ppf(_alpha_u, 2.0 * n_failures)
             _crow_u = _chi2 / (2.0 * t_star**beta)
 
-    elif metric == 3:                       # Cum. failure intensity
+    elif metric == 3:  # Cum. failure intensity
         # Calculate the lower bound.  It is the same regardless of the type.
         _chi2 = chi2.ppf(_alpha_l, 2.0 * n_failures)
         _crow_l = _chi2 / (2.0 * t_star)
@@ -205,7 +211,7 @@ def calculate_crow_bounds(n_failures, t_star, _lambda, beta, alpha, metric,
     return _crow_l, _crow_u
 
 
-def calculate_beta_bounds(a, m, b, alpha):            # pylint: disable=C0103
+def calculate_beta_bounds(a, m, b, alpha):  # pylint: disable=C0103
     """
     Calculate the mean, standard error, and bounds of the beta distribution.
 

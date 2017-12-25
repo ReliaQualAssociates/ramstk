@@ -10,11 +10,11 @@ The RTKLevel Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKLevel(RTK_BASE):
@@ -25,10 +25,14 @@ class RTKLevel(RTK_BASE):
     __tablename__ = 'rtk_level'
     __table_args__ = {'extend_existing': True}
 
-    level_id = Column('fld_level_id', Integer, primary_key=True,
-                      autoincrement=True, nullable=False)
-    description = Column('fld_description', String(512),
-                         default='Level Description')
+    level_id = Column(
+        'fld_level_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    description = Column(
+        'fld_description', String(512), default='Level Description')
     level_type = Column('fld_type', String(256), default='')
     value = Column('fld_value', Integer, default=0)
 
@@ -61,8 +65,8 @@ class RTKLevel(RTK_BASE):
             format(self.level_id)
 
         try:
-            self.description = str(none_to_default(attributes[0],
-                                                   'Level Description'))
+            self.description = str(
+                none_to_default(attributes[0], 'Level Description'))
             self.level_type = str(none_to_default(attributes[1], ''))
             self.value = int(none_to_default(attributes[2], 0))
         except IndexError as _err:

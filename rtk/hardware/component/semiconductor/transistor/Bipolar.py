@@ -13,30 +13,30 @@ Transistor Package Bipolar Transistor Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -47,7 +47,7 @@ try:
     import Utilities
     from hardware.component.semiconductor.Semiconductor import Model as \
         Semiconductor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.semiconductor.Semiconductor import Model as \
@@ -61,7 +61,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -90,14 +90,19 @@ class LFBipolar(Semiconductor):
 
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piA = [1.5, 0.7]
-    _lst_piE = [1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5,
-                14.0, 32.0, 320.0]
+    _lst_piE = [
+        1.0, 6.0, 9.0, 9.0, 19.0, 13.0, 29.0, 20.0, 43.0, 24.0, 0.5, 14.0,
+        32.0, 320.0
+    ]
     _lst_piQ_count = [0.7, 1.0, 2.4, 5.5, 8.0]
     _lst_piQ_stress = [0.7, 1.0, 2.4, 5.5, 8.0]
-    _lambdab_count = [[0.00015, 0.0011, 0.0017, 0.0017, 0.0037, 0.0030, 0.0067,
-                       0.0060, 0.013, 0.0056, 0.000073, 0.0027, 0.0074, 0.056],
-                      [0.0057, 0.042, 0.069, 0.063, 0.15, 0.12, 0.26, 0.23,
-                       0.50, 0.22, 0.0029, 0.11, 0.29, 1.1]]
+    _lambdab_count = [[
+        0.00015, 0.0011, 0.0017, 0.0017, 0.0037, 0.0030, 0.0067, 0.0060, 0.013,
+        0.0056, 0.000073, 0.0027, 0.0074, 0.056
+    ], [
+        0.0057, 0.042, 0.069, 0.063, 0.15, 0.12, 0.26, 0.23, 0.50, 0.22,
+        0.0029, 0.11, 0.29, 1.1
+    ]]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     subcategory = 14
@@ -114,11 +119,11 @@ class LFBipolar(Semiconductor):
         self._lst_lambdab_count = []
 
         # Initialize public scalar attributes.
-        self.base_hr = 0.00074              # Base hazard rate.
-        self.application = 0                # Application index.
-        self.piA = 0.0                      # Application pi factor
-        self.piR = 0.0                      # Power rating pi factor.
-        self.piS = 0.0                      # Voltage stress pi factor.
+        self.base_hr = 0.00074  # Base hazard rate.
+        self.application = 0  # Application index.
+        self.piA = 0.0  # Application pi factor
+        self.piR = 0.0  # Power rating pi factor.
+        self.piS = 0.0  # Voltage stress pi factor.
 
     def set_attributes(self, values):
         """
@@ -144,11 +149,11 @@ class LFBipolar(Semiconductor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -185,14 +190,16 @@ class LFBipolar(Semiconductor):
                 self._lst_lambdab_count = self._lambdab_count[1]
 
         elif self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piT * piA * piR * piS * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piT * piA * piR * piS * piQ * piE'
 
             # Set the base hazard rate for the model.
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
-            self.piT = exp(-2114.0 * ((1.0 / (self.junction_temperature +
-                                              273.0)) - (1.0 / 298.0)))
+            self.piT = exp(-2114.0 * ((1.0 /
+                                       (self.junction_temperature + 273.0)) -
+                                      (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the application factor for the model.
@@ -287,12 +294,16 @@ class HFLNBipolar(Semiconductor):
     # MIL-HDBK-217FN2 hazard rate calculation variables.
 
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_piE = [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0,
-                24.0, 250.0]
+    _lst_piE = [
+        1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0, 24.0,
+        250.0
+    ]
     _lst_piQ_count = [0.7, 1.0, 2.4, 5.5, 8.0]
     _lst_piQ_stress = [0.5, 1.0, 2.0, 5.0]
-    _lst_lambdab_count = [0.094, 0.23, 0.63, 0.46, 1.4, 0.60, 0.75, 1.3, 2.3,
-                          2.4, 0.047, 1.1, 3.6, 28.0]
+    _lst_lambdab_count = [
+        0.094, 0.23, 0.63, 0.46, 1.4, 0.60, 0.75, 1.3, 2.3, 2.4, 0.047, 1.1,
+        3.6, 28.0
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     subcategory = 17
@@ -306,9 +317,9 @@ class HFLNBipolar(Semiconductor):
         super(HFLNBipolar, self).__init__()
 
         # Initialize public scalar attributes.
-        self.base_hr = 0.18                 # Base hazard rate.
-        self.piR = 0.0                      # Power rating pi factor.
-        self.piS = 0.0                      # Voltage stress pi factor.
+        self.base_hr = 0.18  # Base hazard rate.
+        self.piR = 0.0  # Power rating pi factor.
+        self.piS = 0.0  # Voltage stress pi factor.
 
     def set_attributes(self, values):
         """
@@ -332,11 +343,11 @@ class HFLNBipolar(Semiconductor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -367,14 +378,16 @@ class HFLNBipolar(Semiconductor):
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piT * piR * piS * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piT * piR * piS * piQ * piE'
 
             # Set the base hazard rate for the model.
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
-            self.piT = exp(-2114.0 * ((1.0 / (self.junction_temperature +
-                                              273.0)) - (1.0 / 298.0)))
+            self.piT = exp(-2114.0 * ((1.0 /
+                                       (self.junction_temperature + 273.0)) -
+                                      (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the power rating factor for the model.
@@ -470,12 +483,16 @@ class HFHPBipolar(Semiconductor):
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piM = [1.0, 2.0, 4.0]
-    _lst_piE = [1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0,
-                24.0, 250.0]
+    _lst_piE = [
+        1.0, 2.0, 5.0, 4.0, 11.0, 4.0, 5.0, 7.0, 12.0, 16.0, 0.5, 9.0, 24.0,
+        250.0
+    ]
     _lst_piQ_count = [0.7, 1.0, 2.4, 5.5, 8.0]
     _lst_piQ_stress = [0.5, 1.0, 2.0, 5.0]
-    _lst_lambdab_count = [0.074, 0.15, 0.37, 0.29, 0.81, 0.29, 0.37, 0.52,
-                          0.88, 0.037, 0.33, 0.66, 1.8, 18.0]
+    _lst_lambdab_count = [
+        0.074, 0.15, 0.37, 0.29, 0.81, 0.29, 0.37, 0.52, 0.88, 0.037, 0.33,
+        0.66, 1.8, 18.0
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
     subcategory = 18
@@ -489,12 +506,12 @@ class HFHPBipolar(Semiconductor):
         super(HFHPBipolar, self).__init__()
 
         # Initialize public scalar attributes.
-        self.construction = 0               # Construction index.
-        self.application = 0                # Application index.
-        self.matching = 0                   # Matching index.
-        self.frequency = 0.0                # Operating frequency.
-        self.piA = 0.0                      # Application pi factor.
-        self.piM = 0.0                      # Matching network pi factor.
+        self.construction = 0  # Construction index.
+        self.application = 0  # Application index.
+        self.matching = 0  # Matching index.
+        self.frequency = 0.0  # Operating frequency.
+        self.piA = 0.0  # Application pi factor.
+        self.piM = 0.0  # Matching network pi factor.
 
     def set_attributes(self, values):
         """
@@ -522,11 +539,11 @@ class HFHPBipolar(Semiconductor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -558,23 +575,26 @@ class HFHPBipolar(Semiconductor):
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambdab * piT * piA * piM * piQ * piE'
+            self.hazard_rate_model[
+                'equation'] = 'lambdab * piT * piA * piM * piQ * piE'
 
             # Set the base hazard rate for the model.
-            self.base_hr = 0.032 * exp(0.354 * self.frequency +
-                                       0.00558 * self.operating_power)
+            self.base_hr = 0.032 * exp(
+                0.354 * self.frequency + 0.00558 * self.operating_power)
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Set the temperature factor for the model.
-# TODO: Adjust equation to account for CR voltages as in MIL-HDBK-217F.
+            # TODO: Adjust equation to account for CR voltages as in MIL-HDBK-217F.
             if self.construction == 1:
-                self.piT = 0.1 * exp(-2903.0 * ((1.0 /
-                                                 (self.junction_temperature +
-                                                  273.0)) - (1.0 / 373.0)))
+                self.piT = 0.1 * exp(-2903.0 *
+                                     ((1.0 /
+                                       (self.junction_temperature + 273.0)) -
+                                      (1.0 / 373.0)))
             else:
-                self.piT = 0.38 * exp(-5794.0 * ((1.0 /
-                                                  (self.junction_temperature +
-                                                   273.0)) - (1.0 / 373.0)))
+                self.piT = 0.38 * exp(-5794.0 *
+                                      ((1.0 /
+                                        (self.junction_temperature + 273.0)) -
+                                       (1.0 / 373.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Set the power rating factor for the model.

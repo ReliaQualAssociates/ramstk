@@ -11,36 +11,36 @@ and testing for trend.
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for mathematics.
 from math import log, sqrt
 import numpy as np
-from scipy.stats import norm                # pylint: disable=E0611
+from scipy.stats import norm  # pylint: disable=E0611
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -66,19 +66,21 @@ def format_data(data):
         _times = []
 
         # Add the failure times.
-        _records = [x for x in data.values()
-                    if x.assembly_id == _id and x.status == 1]
+        _records = [
+            x for x in data.values() if x.assembly_id == _id and x.status == 1
+        ]
         for _record in _records:
             _times.extend([_record.right_interval] * _record.n_failures)
 
         # Add the censoring times.
-        _records = [x for x in data.values()
-                    if x.assembly_id == _id and x.status == 2]
+        _records = [
+            x for x in data.values() if x.assembly_id == _id and x.status == 2
+        ]
         for _record in _records:
-            _times.extend([str(_record.right_interval) + '+'] *
-                          _record.n_failures)
+            _times.extend(
+                [str(_record.right_interval) + '+'] * _record.n_failures)
 
-        _data[_id] = _times     # pylint: disable=W0631
+        _data[_id] = _times  # pylint: disable=W0631
 
     return _data
 
@@ -200,8 +202,9 @@ def mean_cumulative_function(data, conf=0.75):
 
     # Create the d matrix and the delta matrix for the data set.
     _times = reduce(lambda x, y: x + y, data.values())
-    _times = set([float(f) for f in _times
-                  if isinstance(f, float) or isinstance(f, int)])
+    _times = set([
+        float(f) for f in _times if isinstance(f, float) or isinstance(f, int)
+    ])
     _times = sorted(list(_times))
 
     _d_matrix = d_matrix(data, _times)

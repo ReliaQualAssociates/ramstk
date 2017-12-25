@@ -10,11 +10,11 @@ The RTKCondition Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKCondition(RTK_BASE):
@@ -25,10 +25,14 @@ class RTKCondition(RTK_BASE):
     __tablename__ = 'rtk_condition'
     __table_args__ = {'extend_existing': True}
 
-    condition_id = Column('fld_condition_id', Integer, primary_key=True,
-                          autoincrement=True, nullable=False)
-    description = Column('fld_description', String(512),
-                         default='Condition Decription')
+    condition_id = Column(
+        'fld_condition_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    description = Column(
+        'fld_description', String(512), default='Condition Decription')
     cond_type = Column('fld_type', String(256), default='')
 
     def get_attributes(self):
@@ -59,8 +63,8 @@ class RTKCondition(RTK_BASE):
             format(self.condition_id)
 
         try:
-            self.description = str(none_to_default(attributes[0],
-                                                   'Condition Description'))
+            self.description = str(
+                none_to_default(attributes[0], 'Condition Description'))
             self.cond_type = str(none_to_default(attributes[1], ''))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

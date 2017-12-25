@@ -19,7 +19,8 @@ from nose.plugins.manager import PluginManager
 
 sys.path.insert(
     0,
-    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../', )
+    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../',
+)
 
 # pylint: disable=wrong-import-postion
 from test_setup import _create_program_database
@@ -53,8 +54,7 @@ def test_package(suites):
     args = [
         '', '-v', '-a unit=True', '--with-coverage', '--cover-branches',
         '--cover-xml', '--cover-package=dao.RTKValidation',
-        '--cover-package=dao.RTKProgramStatus',
-        '--cover-package=validation'
+        '--cover-package=dao.RTKProgramStatus', '--cover-package=validation'
     ]
     nose.runmodule(argv=args, suite=suite, plugins=plugin_mgr)
 
@@ -64,8 +64,12 @@ def test_package(suites):
 if __name__ == '__main__':
 
     _db_suites = [TestRTKValidation, TestRTKProgramStatus]
-    _model_suites = [TestValidationDataModel, ]
-    _controller_suites = [TestValidationDataController, ]
+    _model_suites = [
+        TestValidationDataModel,
+    ]
+    _controller_suites = [
+        TestValidationDataController,
+    ]
 
     # For the nosetest example.
     if str(sys.argv[1]) == 'db':

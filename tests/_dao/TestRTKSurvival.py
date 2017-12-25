@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKSurvival module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date, timedelta
 
@@ -37,10 +39,10 @@ class TestRTKSurvival(unittest.TestCase):
     Class for testing the RTKSurvival class.
     """
 
-    _attributes =(1, 1, 1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
-                  0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                  date.today(), date.today() + timedelta(days=30), 0)
+    _attributes = (1, 1, 1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
+                   0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   date.today(), date.today() + timedelta(days=30), 0)
 
     def setUp(self):
         """
@@ -106,8 +108,8 @@ class TestRTKSurvival(unittest.TestCase):
             self.assertEqual(self.DUT.mle, 0.0)
             self.assertEqual(self.DUT.start_time, 0.0)
             self.assertEqual(self.DUT.start_date, date.today())
-            self.assertEqual(self.DUT.end_date,
-                             date.today() + timedelta(days=30))
+            self.assertEqual(
+                self.DUT.end_date, date.today() + timedelta(days=30))
             self.assertEqual(self.DUT.nevada_chart, 0)
 
     @attr(all=True, unit=True)
@@ -126,8 +128,8 @@ class TestRTKSurvival(unittest.TestCase):
 
         _attributes = (1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
                        0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, date.today(),
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, date.today(),
                        date.today() + timedelta(days=30), 0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
@@ -144,8 +146,8 @@ class TestRTKSurvival(unittest.TestCase):
 
         _attributes = (1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
                        0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 'None', 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, date.today(),
+                       0.0, 0.0, 0.0, 0.0, 'None', 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, date.today(),
                        date.today() + timedelta(days=30), 0)
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
@@ -163,8 +165,8 @@ class TestRTKSurvival(unittest.TestCase):
 
         _attributes = (1, 'Test Survival Analysis', 0, 0, 75.0, 0, 0, 0, 0.0,
                        0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, date.today(),
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, date.today(),
                        date.today() + timedelta(days=30))
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)

@@ -10,11 +10,11 @@ The RTKRPN Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKRPN(RTK_BASE):
@@ -25,11 +25,15 @@ class RTKRPN(RTK_BASE):
     __tablename__ = 'rtk_rpn'
     __table_args__ = {'extend_existing': True}
 
-    rpn_id = Column('fld_rpn_id', Integer, primary_key=True,
-                    autoincrement=True, nullable=False)
+    rpn_id = Column(
+        'fld_rpn_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     name = Column('fld_name', String(512), default='RPN Name')
-    description = Column('fld_description', String(512),
-                         default='RPN Description')
+    description = Column(
+        'fld_description', String(512), default='RPN Description')
     rpn_type = Column('fld_type', String(256), default='')
     value = Column('fld_value', Integer, default=0)
 
@@ -63,8 +67,8 @@ class RTKRPN(RTK_BASE):
 
         try:
             self.name = str(none_to_default(attributes[0], 'RPN Name'))
-            self.description = str(none_to_default(attributes[1],
-                                                   'RPN Description'))
+            self.description = str(
+                none_to_default(attributes[1], 'RPN Description'))
             self.rpn_type = str(none_to_default(attributes[2], ''))
             self.value = int(none_to_default(attributes[3], 0))
         except IndexError as _err:

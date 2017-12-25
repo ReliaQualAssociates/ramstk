@@ -16,7 +16,7 @@ from sqlalchemy import Column, Date, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKSiteInfo(RTK_BASE):
@@ -27,11 +27,15 @@ class RTKSiteInfo(RTK_BASE):
     __tablename__ = 'rtk_site_info'
     __table_args__ = {'extend_existing': True}
 
-    site_id = Column('fld_site_id', Integer, primary_key=True,
-                     autoincrement=True, nullable=False)
+    site_id = Column(
+        'fld_site_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     product_key = Column('fld_product_key', String(512), default='')
-    expire_on = Column('fld_expire_on', Date,
-                       default=date.today() + timedelta(30))
+    expire_on = Column(
+        'fld_expire_on', Date, default=date.today() + timedelta(30))
 
     def get_attributes(self):
         """

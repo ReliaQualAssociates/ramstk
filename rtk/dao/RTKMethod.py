@@ -10,11 +10,11 @@ The RTKMethod Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKMethod(RTK_BASE):
@@ -25,11 +25,15 @@ class RTKMethod(RTK_BASE):
     __tablename__ = 'rtk_method'
     __table_args__ = {'extend_existing': True}
 
-    method_id = Column('fld_method_id', Integer, primary_key=True,
-                       autoincrement=True, nullable=False)
+    method_id = Column(
+        'fld_method_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     name = Column('fld_name', String(256), default='Method Name')
-    description = Column('fld_description', String(512),
-                         default='Method Description')
+    description = Column(
+        'fld_description', String(512), default='Method Description')
     method_type = Column('fld_type', String(256), default='unknown')
 
     def get_attributes(self):
@@ -62,8 +66,8 @@ class RTKMethod(RTK_BASE):
 
         try:
             self.name = str(none_to_default(attributes[0], 'Method Name'))
-            self.description = str(none_to_default(attributes[1],
-                                                   'Method Description'))
+            self.description = str(
+                none_to_default(attributes[1], 'Method Description'))
             self.method_type = str(none_to_default(attributes[2], 'unknown'))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

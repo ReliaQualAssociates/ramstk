@@ -13,30 +13,30 @@ Hardware.Component.Capacitor.Fixed Package Ceramic Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -45,7 +45,7 @@ import locale
 try:
     import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
@@ -57,7 +57,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -87,15 +87,19 @@ class Chip(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 10.0, 5.0, 17.0, 4.0, 8.0, 16.0, 35.0, 24.0, 0.5, 13.0,
-            34.0, 610.0]
+    _piE = [
+        1.0, 2.0, 10.0, 5.0, 17.0, 4.0, 8.0, 16.0, 35.0, 24.0, 0.5, 13.0, 34.0,
+        610.0
+    ]
     _piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
-    _lambdab_count = [0.00078, 0.0022, 0.013, 0.0056, 0.023, 0.0077, 0.015,
-                      0.053, 0.12, 0.048, 0.00039, 0.017, 0.065, 0.68]
+    _lambdab_count = [
+        0.00078, 0.0022, 0.013, 0.0056, 0.023, 0.0077, 0.015, 0.053, 0.12,
+        0.048, 0.00039, 0.017, 0.065, 0.68
+    ]
     lst_ref_temp = [358.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 50                        # Subcategory ID in rtkcom DB.
+    subcategory = 50  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -107,7 +111,7 @@ class Chip(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -136,7 +140,7 @@ class Chip(Capacitor):
                     0.0000000025 * ((_stress / 0.3)**3 + 1) * \
                     exp(14.3 * ((self.temperature_active + 273) /
                                 self.reference_temperature))
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 
@@ -171,15 +175,19 @@ class General(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----------------------------------------------------------------- #
-    _piE = [1.0, 2.0, 9.0, 5.0, 15.0, 4.0, 4.0, 8.0, 12.0, 20.0, 0.4, 13.0,
-            34.0, 610.0]
+    _piE = [
+        1.0, 2.0, 9.0, 5.0, 15.0, 4.0, 4.0, 8.0, 12.0, 20.0, 0.4, 13.0, 34.0,
+        610.0
+    ]
     _piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 3.0, 10.0]
-    _lambdab_count = [0.0036, 0.0074, 0.034, 0.019, 0.056, 0.015, 0.015, 0.032,
-                      0.048, 0.077, 0.0014, 0.049, 0.13, 2.3]
+    _lambdab_count = [
+        0.0036, 0.0074, 0.034, 0.019, 0.056, 0.015, 0.015, 0.032, 0.048, 0.077,
+        0.0014, 0.049, 0.13, 2.3
+    ]
     lst_ref_temp = [358.0, 398.0, 423.0]
     # ----------------------------------------------------------------- #
 
-    subcategory = 49                        # Subcategory ID in rtkcom DB.
+    subcategory = 49  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -191,7 +199,7 @@ class General(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -220,7 +228,7 @@ class General(Capacitor):
                     0.0003 * ((_stress / 0.3)**3 + 1) * \
                     exp(((self.temperature_active + 273) /
                          self.reference_temperature))
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 

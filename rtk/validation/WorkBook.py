@@ -12,30 +12,30 @@ Validation Package Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -91,7 +91,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
+class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected
     Validation item.  The attributes of a Work Book view are:
@@ -208,10 +208,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.mdcRTK = modulebook.mdcRTK
 
         # General Data tab widgets.
-        self.btnEndDate = Widgets.make_button(height=25, width=25,
-                                              label="...", image=None)
-        self.btnStartDate = Widgets.make_button(height=25, width=25,
-                                                label="...", image=None)
+        self.btnEndDate = Widgets.make_button(
+            height=25, width=25, label="...", image=None)
+        self.btnStartDate = Widgets.make_button(
+            height=25, width=25, label="...", image=None)
 
         self.cmbTaskType = Widgets.make_combo()
         self.cmbMeasurementUnit = Widgets.make_combo()
@@ -247,59 +247,79 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtProjectCostUL = Widgets.make_entry(width=100, editable=False)
 
         # Set gtk.Widget() tooltips.
-        self.txtID.set_tooltip_text(_(u"Displays the unique code for the "
-                                      u"selected V&V activity."))
-        self.txtTask.set_tooltip_text(_(u"Displays the description of the "
-                                        u"selected V&V activity."))
-        self.cmbTaskType.set_tooltip_text(_(u"Selects and displays the type "
-                                            u"of task for the selected V&V "
-                                            u"activity."))
-        self.txtSpecification.set_tooltip_text(_(u"Displays the internal or "
-                                                 u"industry specification or "
-                                                 u"procedure governing the "
-                                                 u"selected V&V activity."))
-        self.cmbMeasurementUnit.set_tooltip_text(_(u"Selects and displays the "
-                                                   u"measurement unit for the "
-                                                   u"selected V&V activity "
-                                                   u"acceptance parameter."))
-        self.txtMinAcceptable.set_tooltip_text(_(u"Displays the minimum "
-                                                 u"acceptable value for the "
-                                                 u"selected V&V activity."))
-        self.txtMeanAcceptable.set_tooltip_text(_(u"Displays the mean "
-                                                  u"acceptable value for the "
-                                                  u"selected V&V activity."))
-        self.txtMaxAcceptable.set_tooltip_text(_(u"Displays the maximum "
-                                                 u"acceptable value for the "
-                                                 u"selected V&V activity."))
-        self.txtVarAcceptable.set_tooltip_text(_(u"Displays the acceptable "
-                                                 u"variance for the selected "
-                                                 u"V&V activity."))
-        self.btnEndDate.set_tooltip_text(_(u"Launches the calendar to select "
-                                           u"the date the task was "
-                                           u"completed."))
-        self.btnStartDate.set_tooltip_text(_(u"Launches the calendar to "
-                                             u"select the date the task was "
-                                             u"started."))
-        self.txtStartDate.set_tooltip_text(_(u"Displays the date the selected "
-                                             u"V&V activity is scheduled to "
-                                             u"start."))
-        self.txtEndDate.set_tooltip_text(_(u"Displays the date the selected "
-                                           u"V&V activity is scheduled to "
-                                           u"end."))
-        self.spnStatus.set_tooltip_text(_(u"Displays % complete of the "
-                                          u"selected V&V activity."))
-        self.txtMinTime.set_tooltip_text(_(u"Minimum person-time needed to "
-                                           u"complete the selected task."))
-        self.txtExpTime.set_tooltip_text(_(u"Most likely person-time needed "
-                                           u"to complete the selected task."))
-        self.txtMaxTime.set_tooltip_text(_(u"Maximum person-time needed to "
-                                           u"complete the selected task."))
-        self.txtMinCost.set_tooltip_text(_(u"Minimim cost of the selected "
-                                           u"task."))
-        self.txtExpCost.set_tooltip_text(_(u"Most likely cost of the selected "
-                                           u"task."))
-        self.txtMaxCost.set_tooltip_text(_(u"Maximum cost of the selected "
-                                           u"task."))
+        self.txtID.set_tooltip_text(
+            _(u"Displays the unique code for the "
+              u"selected V&V activity."))
+        self.txtTask.set_tooltip_text(
+            _(u"Displays the description of the "
+              u"selected V&V activity."))
+        self.cmbTaskType.set_tooltip_text(
+            _(u"Selects and displays the type "
+              u"of task for the selected V&V "
+              u"activity."))
+        self.txtSpecification.set_tooltip_text(
+            _(u"Displays the internal or "
+              u"industry specification or "
+              u"procedure governing the "
+              u"selected V&V activity."))
+        self.cmbMeasurementUnit.set_tooltip_text(
+            _(u"Selects and displays the "
+              u"measurement unit for the "
+              u"selected V&V activity "
+              u"acceptance parameter."))
+        self.txtMinAcceptable.set_tooltip_text(
+            _(u"Displays the minimum "
+              u"acceptable value for the "
+              u"selected V&V activity."))
+        self.txtMeanAcceptable.set_tooltip_text(
+            _(u"Displays the mean "
+              u"acceptable value for the "
+              u"selected V&V activity."))
+        self.txtMaxAcceptable.set_tooltip_text(
+            _(u"Displays the maximum "
+              u"acceptable value for the "
+              u"selected V&V activity."))
+        self.txtVarAcceptable.set_tooltip_text(
+            _(u"Displays the acceptable "
+              u"variance for the selected "
+              u"V&V activity."))
+        self.btnEndDate.set_tooltip_text(
+            _(u"Launches the calendar to select "
+              u"the date the task was "
+              u"completed."))
+        self.btnStartDate.set_tooltip_text(
+            _(u"Launches the calendar to "
+              u"select the date the task was "
+              u"started."))
+        self.txtStartDate.set_tooltip_text(
+            _(u"Displays the date the selected "
+              u"V&V activity is scheduled to "
+              u"start."))
+        self.txtEndDate.set_tooltip_text(
+            _(u"Displays the date the selected "
+              u"V&V activity is scheduled to "
+              u"end."))
+        self.spnStatus.set_tooltip_text(
+            _(u"Displays % complete of the "
+              u"selected V&V activity."))
+        self.txtMinTime.set_tooltip_text(
+            _(u"Minimum person-time needed to "
+              u"complete the selected task."))
+        self.txtExpTime.set_tooltip_text(
+            _(u"Most likely person-time needed "
+              u"to complete the selected task."))
+        self.txtMaxTime.set_tooltip_text(
+            _(u"Maximum person-time needed to "
+              u"complete the selected task."))
+        self.txtMinCost.set_tooltip_text(
+            _(u"Minimim cost of the selected "
+              u"task."))
+        self.txtExpCost.set_tooltip_text(
+            _(u"Most likely cost of the selected "
+              u"task."))
+        self.txtMaxCost.set_tooltip_text(
+            _(u"Maximum cost of the selected "
+              u"task."))
         # self.txtMeanCost.set_tooltip_text(_(u"Average estimated cost to "
         #                                    u"complete the project."))
         # self.txtMeanTime.set_tooltip_text(_(u"Average estimated time "
@@ -308,16 +328,16 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Connect gtk.Widget() signals to callback methods.
         _buffer = self.txtTask.get_child().get_child()
-        self._lst_handler_id.append(_buffer.connect('focus-out-event',
-                                                    self._on_focus_out, 0))
-        self._lst_handler_id.append(self.cmbTaskType.connect(
-            'changed', self._on_combo_changed, 1))
+        self._lst_handler_id.append(
+            _buffer.connect('focus-out-event', self._on_focus_out, 0))
+        self._lst_handler_id.append(
+            self.cmbTaskType.connect('changed', self._on_combo_changed, 1))
         self._lst_handler_id.append(
             self.txtSpecification.connect('focus-out-event',
                                           self._on_focus_out, 2))
         self._lst_handler_id.append(
-            self.cmbMeasurementUnit.connect('changed',
-                                            self._on_combo_changed, 3))
+            self.cmbMeasurementUnit.connect('changed', self._on_combo_changed,
+                                            3))
         self._lst_handler_id.append(
             self.txtMinAcceptable.connect('focus-out-event',
                                           self._on_focus_out, 4))
@@ -332,36 +352,30 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
                                           self._on_focus_out, 7))
         self.btnEndDate.connect('button-release-event', Widgets.date_select,
                                 self.txtEndDate)
-        self.btnStartDate.connect('button-release-event',
-                                  Widgets.date_select, self.txtStartDate)
+        self.btnStartDate.connect('button-release-event', Widgets.date_select,
+                                  self.txtStartDate)
         self.txtStartDate.connect('changed', self._on_focus_out, None, 8)
         self._lst_handler_id.append(
-            self.txtStartDate.connect('focus-out-event',
-                                      self._on_focus_out, 8))
+            self.txtStartDate.connect('focus-out-event', self._on_focus_out,
+                                      8))
         self.txtEndDate.connect('changed', self._on_focus_out, None, 9)
-        self._lst_handler_id.append(self.txtEndDate.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            9))
-        self._lst_handler_id.append(self.spnStatus.connect(
-            'value-changed', self._on_value_changed, 10))
-        self._lst_handler_id.append(self.txtMinTime.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            11))
-        self._lst_handler_id.append(self.txtExpTime.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            12))
-        self._lst_handler_id.append(self.txtMaxTime.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            13))
-        self._lst_handler_id.append(self.txtMinCost.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            14))
-        self._lst_handler_id.append(self.txtExpCost.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            15))
-        self._lst_handler_id.append(self.txtMaxCost.connect('focus-out-event',
-                                                            self._on_focus_out,
-                                                            16))
+        self._lst_handler_id.append(
+            self.txtEndDate.connect('focus-out-event', self._on_focus_out, 9))
+        self._lst_handler_id.append(
+            self.spnStatus.connect('value-changed', self._on_value_changed,
+                                   10))
+        self._lst_handler_id.append(
+            self.txtMinTime.connect('focus-out-event', self._on_focus_out, 11))
+        self._lst_handler_id.append(
+            self.txtExpTime.connect('focus-out-event', self._on_focus_out, 12))
+        self._lst_handler_id.append(
+            self.txtMaxTime.connect('focus-out-event', self._on_focus_out, 13))
+        self._lst_handler_id.append(
+            self.txtMinCost.connect('focus-out-event', self._on_focus_out, 14))
+        self._lst_handler_id.append(
+            self.txtExpCost.connect('focus-out-event', self._on_focus_out, 15))
+        self._lst_handler_id.append(
+            self.txtMaxCost.connect('focus-out-event', self._on_focus_out, 16))
 
         # Create the Plot tab widgets.
         _figure = Figure()
@@ -420,9 +434,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _button.set_icon_widget(_image)
         _button.set_name('Analyze')
         _button.connect('clicked', self._on_button_clicked, 2)
-        _button.set_tooltip_text(_(u"Calculates program Verification & "
-                                   u"Validation effort and plots the "
-                                   u"results."))
+        _button.set_tooltip_text(
+            _(u"Calculates program Verification & "
+              u"Validation effort and plots the "
+              u"results."))
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -437,8 +452,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _button.set_icon_widget(_image)
         _button.set_name('Save')
         _button.connect('clicked', self._on_button_clicked, 3)
-        _button.set_tooltip_text(_(u"Saves all Verification & Validation "
-                                   u"tasks."))
+        _button.set_tooltip_text(
+            _(u"Saves all Verification & Validation "
+              u"tasks."))
         _toolbar.insert(_button, _position)
 
         _toolbar.show()
@@ -540,18 +556,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         self.cmbMeasurementUnit.append_text("")
         for i in range(len(Configuration.RTK_MEASUREMENT_UNITS)):
-            self.cmbMeasurementUnit.append_text(Configuration.RTK_MEASUREMENT_UNITS[i])
+            self.cmbMeasurementUnit.append_text(
+                Configuration.RTK_MEASUREMENT_UNITS[i])
 
         # Create the labels for quadrant #1.
-        _labels = [_(u"Task ID:"), _(u"Task Description:"), _(u"Task Type:"),
-                   _(u"Specification:"), _(u"Measurement Unit:"),
-                   _(u"Minimum Acceptable:"), _(u"Maximum Acceptable:"),
-                   _(u"Mean Acceptable:"), _(u"Variance:")]
+        _labels = [
+            _(u"Task ID:"),
+            _(u"Task Description:"),
+            _(u"Task Type:"),
+            _(u"Specification:"),
+            _(u"Measurement Unit:"),
+            _(u"Minimum Acceptable:"),
+            _(u"Maximum Acceptable:"),
+            _(u"Mean Acceptable:"),
+            _(u"Variance:")
+        ]
 
         _max1 = 0
         _max2 = 0
-        (_max1, _y_pos) = Widgets.make_labels(_labels[2:],
-                                              _fxdGenDataQuad1, 5, 140)
+        (_max1, _y_pos) = Widgets.make_labels(_labels[2:], _fxdGenDataQuad1, 5,
+                                              140)
 
         _label = Widgets.make_label(_labels[0], -1, 25)
         _fxdGenDataQuad1.put(_label, 5, 5)
@@ -577,16 +601,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fxdGenDataQuad1.show_all()
 
         # Create the labels for quadrant #2.
-        _labels = [_(u"Start Date:"), _(u"End Date:"), _(u"% Complete:"),
-                   _(u"Minimum Task Time:"), _(u"Most Likely Task Time:"),
-                   _(u"Maximum Task Time:"), _(u"Task Time (95% Confidence):"),
-                   _(u"Minimum Task Cost:"), _(u"Most Likely Task Cost:"),
-                   _(u"Maximum Task Cost:"), _(u"Task Cost (95% Confidence):")]
+        _labels = [
+            _(u"Start Date:"),
+            _(u"End Date:"),
+            _(u"% Complete:"),
+            _(u"Minimum Task Time:"),
+            _(u"Most Likely Task Time:"),
+            _(u"Maximum Task Time:"),
+            _(u"Task Time (95% Confidence):"),
+            _(u"Minimum Task Cost:"),
+            _(u"Most Likely Task Cost:"),
+            _(u"Maximum Task Cost:"),
+            _(u"Task Cost (95% Confidence):")
+        ]
         (_max1, _y_pos1) = Widgets.make_labels(_labels, _fxdGenDataQuad2, 5, 5)
 
         # Create the labels for quadrant #4.
-        _labels = [_(u"Project Time (95% Confidence):"),
-                   _(u"Project Cost (95% Confidence):")]
+        _labels = [
+            _(u"Project Time (95% Confidence):"),
+            _(u"Project Cost (95% Confidence):")
+        ]
         (_max2, _y_pos2) = Widgets.make_labels(_labels, _fxdGenDataQuad4, 5, 5)
         _x_pos = max(_max1, _max2) + 40
 
@@ -630,13 +664,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"General\nData") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"General\nData") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays general information about the "
-                                  u"selected V&V task."))
+        _label.set_tooltip_text(
+            _(u"Displays general information about the "
+              u"selected V&V task."))
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
         return False
@@ -659,14 +694,15 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" + _(u"Program\nProgress") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Program\nProgress") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Shows a plot of the total expected time "
-                                  u"to complete all V&amp;V tasks and the "
-                                  u"current progress."))
+        _label.set_tooltip_text(
+            _(u"Shows a plot of the total expected time "
+              u"to complete all V&amp;V tasks and the "
+              u"current progress."))
         notebook.insert_page(_frame, tab_label=_label, position=-1)
 
         return False
@@ -683,7 +719,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         """
 
         from math import sqrt
-        from scipy.stats import norm        # pylint: disable=E0611
+        from scipy.stats import norm  # pylint: disable=E0611
 
         self._model = model
 
@@ -740,17 +776,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Calculate expected project time confidence limits assuming a beta
         # distribution.
-        _min = sum([x.minimum_time
-                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
-        _avg = sum([x.average_time
-                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
-        _max = sum([x.maximum_time
-                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
+        _min = sum([
+            x.minimum_time
+            for x in self.mdcRTK.dtcValidation.dicTasks.values()
+        ])
+        _avg = sum([
+            x.average_time
+            for x in self.mdcRTK.dtcValidation.dicTasks.values()
+        ])
+        _max = sum([
+            x.maximum_time
+            for x in self.mdcRTK.dtcValidation.dicTasks.values()
+        ])
 
-        (_meanll,
-         _mean,
-         _meanul,
-         __) = calculate_beta_bounds(_min, _avg, _max, model.confidence)
+        (_meanll, _mean, _meanul, __) = calculate_beta_bounds(
+            _min, _avg, _max, model.confidence)
 
         self.txtProjectTimeLL.set_text(str(fmt.format(_meanll)))
         self.txtProjectTime.set_text(str(fmt.format(_mean)))
@@ -758,17 +798,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Calculate expected project cost confidence limits assuming a beta
         # distribution.
-        _min = sum([x.minimum_cost
-                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
-        _avg = sum([x.average_cost
-                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
-        _max = sum([x.maximum_cost
-                    for x in self.mdcRTK.dtcValidation.dicTasks.values()])
+        _min = sum([
+            x.minimum_cost
+            for x in self.mdcRTK.dtcValidation.dicTasks.values()
+        ])
+        _avg = sum([
+            x.average_cost
+            for x in self.mdcRTK.dtcValidation.dicTasks.values()
+        ])
+        _max = sum([
+            x.maximum_cost
+            for x in self.mdcRTK.dtcValidation.dicTasks.values()
+        ])
 
-        (_meanll,
-         _mean,
-         _meanul,
-         __) = calculate_beta_bounds(_min, _avg, _max, model.confidence)
+        (_meanll, _mean, _meanul, __) = calculate_beta_bounds(
+            _min, _avg, _max, model.confidence)
 
         self.txtProjectCostLL.set_text(str(fmt.format(_meanll)))
         self.txtProjectCost.set_text(str(fmt.format(_mean)))
@@ -785,35 +829,51 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# WARNING: Refactor _load_progress_plot; McCabe Complexity metric = 15.
+        # WARNING: Refactor _load_progress_plot; McCabe Complexity metric = 15.
         fmt = '{0:0.' + str(Configuration.PLACES) + 'g}'
 
         _assess_dates = []
         _targets = []
 
         for _task in self.mdcRTK.dtcValidation.dicTasks.values():
-            if Configuration.RTK_TASK_TYPE[_task.task_type] == 'Reliability, Assessment':
+            if Configuration.RTK_TASK_TYPE[
+                    _task.task_type] == 'Reliability, Assessment':
                 _assess_dates.append(Utilities.date_to_ordinal(_task.end_date))
             _targets.append([_task.min_acceptable, _task.max_acceptable])
 
         # Find the earliest start date, the total number of hours for minimum,
         # most likely, and maximum task time.
         try:
-            _x = [min([_task.start_date
-                       for _task
-                       in self.mdcRTK.dtcValidation.dicTasks.values()])]
-            _y1 = [sum([_task.minimum_time
-                        for _task
-                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
-            _y2 = [sum([_task.average_time
-                        for _task
-                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
-            _y3 = [sum([_task.maximum_time
-                        for _task
-                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
-            _y4 = [sum([_task.average_time
-                        for _task
-                        in self.mdcRTK.dtcValidation.dicTasks.values()])]
+            _x = [
+                min([
+                    _task.start_date
+                    for _task in self.mdcRTK.dtcValidation.dicTasks.values()
+                ])
+            ]
+            _y1 = [
+                sum([
+                    _task.minimum_time
+                    for _task in self.mdcRTK.dtcValidation.dicTasks.values()
+                ])
+            ]
+            _y2 = [
+                sum([
+                    _task.average_time
+                    for _task in self.mdcRTK.dtcValidation.dicTasks.values()
+                ])
+            ]
+            _y3 = [
+                sum([
+                    _task.maximum_time
+                    for _task in self.mdcRTK.dtcValidation.dicTasks.values()
+                ])
+            ]
+            _y4 = [
+                sum([
+                    _task.average_time
+                    for _task in self.mdcRTK.dtcValidation.dicTasks.values()
+                ])
+            ]
         except ValueError:
             _x = [719163]
             _y1 = [0]
@@ -827,8 +887,12 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Get a sorted list of unique end dates and then find the total number
         # of hours that should be completed on each unique end date.
-        _uniq_end = sorted(list(set([_task.end_date for _task in
-                                     self.mdcRTK.dtcValidation.dicTasks.values()])))
+        _uniq_end = sorted(
+            list(
+                set([
+                    _task.end_date
+                    for _task in self.mdcRTK.dtcValidation.dicTasks.values()
+                ])))
 
         for _index, _end in enumerate(_uniq_end):
             _sum_time = [0.0, 0.0, 0.0, 0.0]
@@ -845,21 +909,29 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             _y4.append(_y4[_index] - _sum_time[3])
 
         # Plot the expected time and expected time limits.
-        Widgets.load_plot(self.axAxis1, self.pltPlot1, _x, _y3, _y2, _y1,
-                          None, title=_(u"Total Validation Effort"),
-                          xlab=_(u"Date"),
-                          ylab=_(u"Total Time for All Tasks "),
-                          marker=['r--', 'b-', 'g--'],
-                          ltype=[4, 4, 4, 4])
+        Widgets.load_plot(
+            self.axAxis1,
+            self.pltPlot1,
+            _x,
+            _y3,
+            _y2,
+            _y1,
+            None,
+            title=_(u"Total Validation Effort"),
+            xlab=_(u"Date"),
+            ylab=_(u"Total Time for All Tasks "),
+            marker=['r--', 'b-', 'g--'],
+            ltype=[4, 4, 4, 4])
 
         # Plot the actual burn-down of total hours.
-        self.mdcRTK.dtcValidation.dicStatus[date.today().toordinal()] = _y4[len(_y4) - 1]
+        self.mdcRTK.dtcValidation.dicStatus[date.today().toordinal()] = _y4[
+            len(_y4) - 1]
 
         _x = self.mdcRTK.dtcValidation.dicStatus.keys()
         _y4 = self.mdcRTK.dtcValidation.dicStatus.values()
 
-        _line = matplotlib.lines.Line2D(_x, _y4, lw=0.0, color='k',
-                                        marker='^', markersize=10)
+        _line = matplotlib.lines.Line2D(
+            _x, _y4, lw=0.0, color='k', marker='^', markersize=10)
         self.axAxis1.add_line(_line)
 
         # Plot a vertical line at the scheduled end-date for each task
@@ -867,36 +939,45 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # showing the minimum required and goal values for each milestone.
         if len(_assess_dates) > 0:
             for __, _dates in enumerate(_assess_dates):
-                self.axAxis1.axvline(x=_dates, ymin=0, ymax=1.05 * _y3[0],
-                                     color='m', linewidth=2.5, linestyle=':')
+                self.axAxis1.axvline(
+                    x=_dates,
+                    ymin=0,
+                    ymax=1.05 * _y3[0],
+                    color='m',
+                    linewidth=2.5,
+                    linestyle=':')
 
             for _index, _target in enumerate(_targets):
-                self.axAxis1.annotate(str(fmt.format(_target[0])) + "\n" +
-                                      str(fmt.format(_target[1])),
-                                      xy=(_assess_dates[_index],
-                                          0.95 * max(_y3)),
-                                      xycoords='data',
-                                      xytext=(-55, 0),
-                                      textcoords='offset points',
-                                      size=12, va="center",
-                                      bbox=dict(boxstyle="round",
-                                                fc='#E5E5E5',
-                                                ec='None',
-                                                alpha=0.5),
-                                      arrowprops=dict(
-                                          arrowstyle="wedge,tail_width=1.",
-                                          fc='#E5E5E5', ec='None',
-                                          alpha=0.5,
-                                          patchA=None,
-                                          patchB=Ellipse((2, -1), 0.5, 0.5),
-                                          relpos=(0.2, 0.5)))
+                self.axAxis1.annotate(
+                    str(fmt.format(_target[0])) + "\n" +
+                    str(fmt.format(_target[1])),
+                    xy=(_assess_dates[_index], 0.95 * max(_y3)),
+                    xycoords='data',
+                    xytext=(-55, 0),
+                    textcoords='offset points',
+                    size=12,
+                    va="center",
+                    bbox=dict(
+                        boxstyle="round", fc='#E5E5E5', ec='None', alpha=0.5),
+                    arrowprops=dict(
+                        arrowstyle="wedge,tail_width=1.",
+                        fc='#E5E5E5',
+                        ec='None',
+                        alpha=0.5,
+                        patchA=None,
+                        patchB=Ellipse((2, -1), 0.5, 0.5),
+                        relpos=(0.2, 0.5)))
 
         # Create the plot legend.
         _text = (_(u"Maximum Expected Time"), _(u"Expected Time"),
                  _(u"Minimum Expected Time"), _(u"Actual Remaining Time"))
-        Widgets.create_legend(self.axAxis1, _text, fontsize='medium',
-                              legframeon=True, location='lower left',
-                              legshadow=True)
+        Widgets.create_legend(
+            self.axAxis1,
+            _text,
+            fontsize='medium',
+            legframeon=True,
+            location='lower left',
+            legshadow=True)
 
         self.axAxis1.set_ylim(bottom=0.0, top=1.05 * _y3[0])
 
@@ -953,13 +1034,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._modulebook.update(index + 2, _new_text)
         elif index == 3:
             self._model.measurement_unit = combo.get_active()
-            _new_text = Configuration.RTK_MEASUREMENT_UNITS[combo.get_active() - 1]
+            _new_text = Configuration.RTK_MEASUREMENT_UNITS[combo.get_active()
+                                                            - 1]
 
         combo.handler_unblock(self._lst_handler_id[index])
 
         return False
 
-    def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
+    def _on_focus_out(self, entry, __event, index):  # pylint: disable=R0912
         """
         Method to respond to gtk.Entry() 'focus_out' signals.
 
@@ -972,7 +1054,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True is an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_focus_out; McCabe Complexity metric = 15.
+        # WARNING: Refactor _on_focus_out; McCabe Complexity metric = 15.
         entry.handler_block(self._lst_handler_id[index])
 
         if index == 0:

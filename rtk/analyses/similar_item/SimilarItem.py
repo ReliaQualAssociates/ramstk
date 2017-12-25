@@ -12,30 +12,30 @@ Similar Item Package Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
@@ -46,7 +46,7 @@ import locale
 try:
     import Configuration
     import Utilities
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
 
@@ -57,13 +57,13 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
 
 
-class Model(object):                        # pylint: disable=R0902
+class Model(object):  # pylint: disable=R0902
     """
     The Similar Item data model contains the attributes and methods of an
     similar item analysis.  The attributes of a Similar Item are:
@@ -176,49 +176,113 @@ class Model(object):                        # pylint: disable=R0902
         """
 
         # Define private dict attributes.
-        self._quality_convert = {(1, 1): 1.0, (1, 2): 0.8, (1, 3): 0.5,
-                                 (1, 4): 0.2, (2, 1): 1.3, (2, 2): 1.0,
-                                 (2, 3): 0.6, (2, 4): 0.3, (3, 1): 2.0,
-                                 (3, 2): 1.7, (3, 3): 1.0, (3, 4): 0.4,
-                                 (4, 1): 5.0, (4, 2): 3.3, (4, 3): 2.5,
-                                 (4, 4): 1.0}
-        self._environment_convert = {(1, 1): 1.0, (1, 2): 0.2, (1, 3): 0.3,
-                                     (1, 4): 0.3, (1, 5): 0.1, (1, 6): 1.1,
-                                     (2, 1): 5.0, (2, 2): 1.0, (2, 3): 1.4,
-                                     (2, 4): 1.4, (2, 5): 0.5, (2, 6): 5.0,
-                                     (3, 1): 3.3, (3, 2): 0.7, (3, 3): 1.0,
-                                     (3, 4): 1.0, (3, 5): 0.3, (3, 6): 3.3,
-                                     (4, 1): 3.3, (4, 2): 0.7, (4, 3): 1.0,
-                                     (4, 4): 1.0, (4, 5): 0.3, (4, 6): 3.3,
-                                     (5, 1): 10.0, (5, 2): 2.0, (5, 3): 3.3,
-                                     (5, 4): 3.3, (5, 5): 1.0, (5, 6): 10.0,
-                                     (6, 1): 0.9, (6, 2): 0.2, (6, 3): 0.3,
-                                     (6, 4): 0.3, (6, 5): 0.1, (6, 6): 1.0}
-        self._temperature_convert = {(10.0, 10.0): 1.0, (10.0, 20.0): 0.9,
-                                     (10.0, 30.0): 0.8, (10.0, 40.0): 0.8,
-                                     (10.0, 50.0): 0.7, (10.0, 60.0): 0.5,
-                                     (10.0, 70.0): 0.4, (20.0, 10.0): 1.1,
-                                     (20.0, 20.0): 1.0, (20.0, 30.0): 0.9,
-                                     (20.0, 40.0): 0.8, (20.0, 50.0): 0.7,
-                                     (20.0, 60.0): 0.6, (20.0, 70.0): 0.5,
-                                     (30.0, 10.0): 1.2, (30.0, 20.0): 1.1,
-                                     (30.0, 30.0): 1.0, (30.0, 40.0): 0.9,
-                                     (30.0, 50.0): 0.8, (30.0, 60.0): 0.6,
-                                     (30.0, 70.0): 0.5, (40.0, 10.0): 1.3,
-                                     (40.0, 20.0): 1.2, (40.0, 30.0): 1.1,
-                                     (40.0, 40.0): 1.0, (40.0, 50.0): 0.9,
-                                     (40.0, 60.0): 0.7, (40.0, 70.0): 0.6,
-                                     (50.0, 10.0): 1.5, (50.0, 20.0): 1.4,
-                                     (50.0, 30.0): 1.2, (50.0, 40.0): 1.1,
-                                     (50.0, 50.0): 1.0, (50.0, 60.0): 0.8,
-                                     (50.0, 70.0): 0.7, (60.0, 10.0): 1.9,
-                                     (60.0, 20.0): 1.7, (60.0, 30.0): 1.6,
-                                     (60.0, 40.0): 1.5, (60.0, 50.0): 1.2,
-                                     (60.0, 60.0): 1.0, (60.0, 70.0): 0.8,
-                                     (70.0, 10.0): 2.4, (70.0, 20.0): 2.2,
-                                     (70.0, 30.0): 1.9, (70.0, 40.0): 1.8,
-                                     (70.0, 50.0): 1.5, (70.0, 60.0): 1.2,
-                                     (70.0, 70.0): 1.0}
+        self._quality_convert = {
+            (1, 1): 1.0,
+            (1, 2): 0.8,
+            (1, 3): 0.5,
+            (1, 4): 0.2,
+            (2, 1): 1.3,
+            (2, 2): 1.0,
+            (2, 3): 0.6,
+            (2, 4): 0.3,
+            (3, 1): 2.0,
+            (3, 2): 1.7,
+            (3, 3): 1.0,
+            (3, 4): 0.4,
+            (4, 1): 5.0,
+            (4, 2): 3.3,
+            (4, 3): 2.5,
+            (4, 4): 1.0
+        }
+        self._environment_convert = {
+            (1, 1): 1.0,
+            (1, 2): 0.2,
+            (1, 3): 0.3,
+            (1, 4): 0.3,
+            (1, 5): 0.1,
+            (1, 6): 1.1,
+            (2, 1): 5.0,
+            (2, 2): 1.0,
+            (2, 3): 1.4,
+            (2, 4): 1.4,
+            (2, 5): 0.5,
+            (2, 6): 5.0,
+            (3, 1): 3.3,
+            (3, 2): 0.7,
+            (3, 3): 1.0,
+            (3, 4): 1.0,
+            (3, 5): 0.3,
+            (3, 6): 3.3,
+            (4, 1): 3.3,
+            (4, 2): 0.7,
+            (4, 3): 1.0,
+            (4, 4): 1.0,
+            (4, 5): 0.3,
+            (4, 6): 3.3,
+            (5, 1): 10.0,
+            (5, 2): 2.0,
+            (5, 3): 3.3,
+            (5, 4): 3.3,
+            (5, 5): 1.0,
+            (5, 6): 10.0,
+            (6, 1): 0.9,
+            (6, 2): 0.2,
+            (6, 3): 0.3,
+            (6, 4): 0.3,
+            (6, 5): 0.1,
+            (6, 6): 1.0
+        }
+        self._temperature_convert = {
+            (10.0, 10.0): 1.0,
+            (10.0, 20.0): 0.9,
+            (10.0, 30.0): 0.8,
+            (10.0, 40.0): 0.8,
+            (10.0, 50.0): 0.7,
+            (10.0, 60.0): 0.5,
+            (10.0, 70.0): 0.4,
+            (20.0, 10.0): 1.1,
+            (20.0, 20.0): 1.0,
+            (20.0, 30.0): 0.9,
+            (20.0, 40.0): 0.8,
+            (20.0, 50.0): 0.7,
+            (20.0, 60.0): 0.6,
+            (20.0, 70.0): 0.5,
+            (30.0, 10.0): 1.2,
+            (30.0, 20.0): 1.1,
+            (30.0, 30.0): 1.0,
+            (30.0, 40.0): 0.9,
+            (30.0, 50.0): 0.8,
+            (30.0, 60.0): 0.6,
+            (30.0, 70.0): 0.5,
+            (40.0, 10.0): 1.3,
+            (40.0, 20.0): 1.2,
+            (40.0, 30.0): 1.1,
+            (40.0, 40.0): 1.0,
+            (40.0, 50.0): 0.9,
+            (40.0, 60.0): 0.7,
+            (40.0, 70.0): 0.6,
+            (50.0, 10.0): 1.5,
+            (50.0, 20.0): 1.4,
+            (50.0, 30.0): 1.2,
+            (50.0, 40.0): 1.1,
+            (50.0, 50.0): 1.0,
+            (50.0, 60.0): 0.8,
+            (50.0, 70.0): 0.7,
+            (60.0, 10.0): 1.9,
+            (60.0, 20.0): 1.7,
+            (60.0, 30.0): 1.6,
+            (60.0, 40.0): 1.5,
+            (60.0, 50.0): 1.2,
+            (60.0, 60.0): 1.0,
+            (60.0, 70.0): 0.8,
+            (70.0, 10.0): 2.4,
+            (70.0, 20.0): 2.2,
+            (70.0, 30.0): 1.9,
+            (70.0, 40.0): 1.8,
+            (70.0, 50.0): 1.5,
+            (70.0, 60.0): 1.2,
+            (70.0, 70.0): 1.0
+        }
 
         # Define private list attributes.
 
@@ -306,19 +370,18 @@ class Model(object):                        # pylint: disable=R0902
             self.change_factor_1 = 1.0
 
         try:
-            self.change_factor_2 = self._environment_convert[
-                (self.from_environment, self.to_environment)]
+            self.change_factor_2 = self._environment_convert[(
+                self.from_environment, self.to_environment)]
         except KeyError:
             self.change_factor_2 = 1.0
         try:
-            self.change_factor_3 = self._temperature_convert[
-                (self.from_temperature, self.to_temperature)]
+            self.change_factor_3 = self._temperature_convert[(
+                self.from_temperature, self.to_temperature)]
         except KeyError:
             self.change_factor_3 = 1.0
 
-        self.result_1 = hazard_rate / (self.change_factor_1 *
-                                       self.change_factor_2 *
-                                       self.change_factor_3)
+        self.result_1 = hazard_rate / (
+            self.change_factor_1 * self.change_factor_2 * self.change_factor_3)
 
         return False
 
@@ -485,6 +548,7 @@ class SimilarItem(object):
                          fld_user_int_2, fld_user_int_3, fld_user_int_4, \
                          fld_user_int_5, fld_parent_id, fld_method \
                   FROM rtk_similar_item"
+
         (_results, _error_code, __) = self.dao.execute(_query, commit=False)
 
         try:
@@ -497,7 +561,7 @@ class SimilarItem(object):
             _similar_item.set_attributes(_results[i])
             self.dicSimilarItem[_similar_item.hardware_id] = _similar_item
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_similar_item(self, hardware_id, parent_id):
         """
@@ -514,8 +578,8 @@ class SimilarItem(object):
         _query = "INSERT INTO rtk_similar_item \
                   (fld_hardware_id, fld_parent_id) \
                   VALUES ({0:d}, {1:d})".format(hardware_id, parent_id)
-        (_results, _error_code, _sia_id) = self.dao.execute(_query,
-                                                            commit=True)
+        (_results, _error_code, _sia_id) = self.dao.execute(
+            _query, commit=True)
 
         # If the new record was added successfully to the RTK Project database:
         #   1. Retrieve the ID of the newly inserted similar item record.
@@ -526,16 +590,14 @@ class SimilarItem(object):
         if _error_code == 0:
             self._last_id = _sia_id
             _similar_item = Model()
-            _similar_item.set_attributes((hardware_id, self._last_id, 0, 0, 0,
-                                          0, 30, 30.0, 'No changes', 1.0,
-                                          'No changes', 1.0, 'No changes', 1.0,
-                                          'No changes', 1.0, 'No changes', 1.0,
-                                          'No changes', 1.0, 'No changes', 1.0,
-                                          'No changes', 1.0, 'No changes', 1.0,
-                                          'No changes', 1.0, '', '', '', '',
-                                          '', 0.0, 0.0, 0.0, 0.0, 0.0, '', '',
-                                          '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
-                                          0, 0, 0, 0, 0, parent_id))
+            _similar_item.set_attributes(
+                (hardware_id, self._last_id, 0, 0, 0, 0, 30, 30.0,
+                 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0,
+                 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0,
+                 'No changes', 1.0, 'No changes', 1.0, 'No changes', 1.0,
+                 'No changes', 1.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
+                 0.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0,
+                 0, parent_id))
             self.dicSimilarItem[_similar_item.hardware_id] = _similar_item
 
         return (_results, _error_code)
@@ -624,45 +686,33 @@ class SimilarItem(object):
                       fld_user_int_4={49:d}, fld_user_int_5={50:d}, \
                       fld_parent_id={51:d}, fld_method={52:d} \
                   WHERE fld_hardware_id={53:d}".format(
-                      _similar_item.from_quality, _similar_item.to_quality,
-                      _similar_item.from_environment,
-                      _similar_item.to_environment,
-                      _similar_item.from_temperature,
-                      _similar_item.to_temperature,
-                      _similar_item.change_desc_1,
-                      _similar_item.change_factor_1,
-                      _similar_item.change_desc_2,
-                      _similar_item.change_factor_2,
-                      _similar_item.change_desc_3,
-                      _similar_item.change_factor_3,
-                      _similar_item.change_desc_4,
-                      _similar_item.change_factor_4,
-                      _similar_item.change_desc_5,
-                      _similar_item.change_factor_5,
-                      _similar_item.change_desc_6,
-                      _similar_item.change_factor_6,
-                      _similar_item.change_desc_7,
-                      _similar_item.change_factor_7,
-                      _similar_item.change_desc_8,
-                      _similar_item.change_factor_8,
-                      _similar_item.change_desc_9,
-                      _similar_item.change_factor_9,
-                      _similar_item.change_desc_10,
-                      _similar_item.change_factor_10, _similar_item.function_1,
-                      _similar_item.function_2, _similar_item.function_3,
-                      _similar_item.function_4, _similar_item.function_5,
-                      _similar_item.result_1, _similar_item.result_2,
-                      _similar_item.result_3, _similar_item.result_4,
-                      _similar_item.result_5, _similar_item.user_blob_1,
-                      _similar_item.user_blob_2, _similar_item.user_blob_3,
-                      _similar_item.user_blob_4, _similar_item.user_blob_5,
-                      _similar_item.user_float_1, _similar_item.user_float_2,
-                      _similar_item.user_float_3, _similar_item.user_float_4,
-                      _similar_item.user_float_5, _similar_item.user_int_1,
-                      _similar_item.user_int_2, _similar_item.user_int_3,
-                      _similar_item.user_int_4, _similar_item.user_int_5,
-                      _similar_item.parent_id, _similar_item.method,
-                      hardware_id)
+            _similar_item.from_quality, _similar_item.to_quality,
+            _similar_item.from_environment, _similar_item.to_environment,
+            _similar_item.from_temperature, _similar_item.to_temperature,
+            _similar_item.change_desc_1, _similar_item.change_factor_1,
+            _similar_item.change_desc_2, _similar_item.change_factor_2,
+            _similar_item.change_desc_3, _similar_item.change_factor_3,
+            _similar_item.change_desc_4, _similar_item.change_factor_4,
+            _similar_item.change_desc_5, _similar_item.change_factor_5,
+            _similar_item.change_desc_6, _similar_item.change_factor_6,
+            _similar_item.change_desc_7, _similar_item.change_factor_7,
+            _similar_item.change_desc_8, _similar_item.change_factor_8,
+            _similar_item.change_desc_9, _similar_item.change_factor_9,
+            _similar_item.change_desc_10, _similar_item.change_factor_10,
+            _similar_item.function_1, _similar_item.function_2,
+            _similar_item.function_3, _similar_item.function_4,
+            _similar_item.function_5, _similar_item.result_1,
+            _similar_item.result_2, _similar_item.result_3,
+            _similar_item.result_4, _similar_item.result_5,
+            _similar_item.user_blob_1, _similar_item.user_blob_2,
+            _similar_item.user_blob_3, _similar_item.user_blob_4,
+            _similar_item.user_blob_5, _similar_item.user_float_1,
+            _similar_item.user_float_2, _similar_item.user_float_3,
+            _similar_item.user_float_4, _similar_item.user_float_5,
+            _similar_item.user_int_1, _similar_item.user_int_2,
+            _similar_item.user_int_3, _similar_item.user_int_4,
+            _similar_item.user_int_5, _similar_item.parent_id,
+            _similar_item.method, hardware_id)
         (_results, _error_code, __) = self.dao.execute(_query, commit=True)
 
         return (_results, _error_code)
@@ -678,8 +728,8 @@ class SimilarItem(object):
         _error_codes = []
 
         for _similar_item in self.dicSimilarItem.values():
-            (_results,
-             _error_code) = self.save_similar_item(_similar_item.hardware_id)
+            (_results, _error_code) = self.save_similar_item(
+                _similar_item.hardware_id)
             _error_codes.append((_similar_item.hardware_id, _error_code))
 
         return _error_codes

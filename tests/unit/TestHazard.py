@@ -39,7 +39,10 @@ This is the test class for testing Hazard module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -123,9 +126,9 @@ class TestHazardModel(unittest.TestCase):
         (TestHazard) set_attributes should return (0, '') on success
         """
 
-        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20,
-                   '', 4, 5, 20, '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
-                   0.0, '', '', '', 0.0, 0.0, 0.0, 0, 0, 0)
+        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20, '',
+                   4, 5, 20, '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
+                   '', '', '', 0.0, 0.0, 0.0, 0, 0, 0)
 
         self.assertEqual(self.DUT.set_attributes(_values), (0, ''))
 
@@ -135,9 +138,9 @@ class TestHazardModel(unittest.TestCase):
         (TestHazard) set_attributes should return 10 when the wrong data type is passed
         """
 
-        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20,
-                   '', 4, 5, 20, '', '', '', '', '', '', 0.0, None, 0.0, 0.0,
-                   0.0, '', '', '', 0.0, 0.0, 0.0, 0, 0, 0)
+        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20, '',
+                   4, 5, 20, '', '', '', '', '', '', 0.0, None, 0.0, 0.0, 0.0,
+                   '', '', '', 0.0, 0.0, 0.0, 0, 0, 0)
 
         self.assertEqual(self.DUT.set_attributes(_values)[0], 10)
 
@@ -147,9 +150,9 @@ class TestHazardModel(unittest.TestCase):
         (TestHazard) set_attributes should return 40 when one or more values is missing
         """
 
-        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20,
-                   '', 4, 5, 20, '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
-                   0.0, '', '', '', 0.0, 0.0, 0.0, 0)
+        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20, '',
+                   4, 5, 20, '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
+                   '', '', '', 0.0, 0.0, 0.0, 0)
 
         self.assertEqual(self.DUT.set_attributes(_values)[0], 40)
 
@@ -171,9 +174,9 @@ class TestHazardModel(unittest.TestCase):
         (TestHazard) get_attributes(set_attributes(values)) == values
         """
 
-        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20,
-                   '', 4, 5, 20, '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0,
-                   0.0, '', '', '', 0.0, 0.0, 0.0, 0, 0, 0)
+        _values = (0, 32, '', '', '', 4, 5, 20, '', 4, 5, 20, '', 4, 5, 20, '',
+                   4, 5, 20, '', '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0,
+                   '', '', '', 0.0, 0.0, 0.0, 0, 0, 0)
 
         self.DUT.set_attributes(_values)
         _result = self.DUT.get_attributes()
@@ -313,4 +316,3 @@ class TestHazardController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, Hazard))
         self.assertEqual(self.DUT.dicHazard, {})
         self.assertEqual(self.DUT.dao, None)
-

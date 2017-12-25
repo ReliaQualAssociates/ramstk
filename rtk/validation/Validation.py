@@ -38,12 +38,11 @@ Validation Package Data Module
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-
 # Import other RTK modules.
 try:
     import Utilities
     from analyses.statistics.Bounds import calculate_beta_bounds
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Utilities as Utilities
     from rtk.analyses.statistics.Bounds import calculate_beta_bounds
 
@@ -53,7 +52,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 
-class Model(object):                       # pylint: disable=R0902, R0904
+class Model(object):  # pylint: disable=R0902, R0904
     """
     The Validation data model contains the attributes and methods for a
     verification and validation task. The attributes of a Validation model
@@ -153,21 +152,17 @@ class Model(object):                       # pylint: disable=R0902, R0904
         """
 
         # Calculate mean task time assuming a beta distribution.
-        (_meanll, _mean,
-         _meanul, _sd) = calculate_beta_bounds(self.minimum_time,
-                                               self.average_time,
-                                               self.maximum_time,
-                                               self.confidence)
+        (_meanll, _mean, _meanul, _sd) = calculate_beta_bounds(
+            self.minimum_time, self.average_time, self.maximum_time,
+            self.confidence)
 
         self.mean_time = _mean
         self.time_variance = _sd**2.0
 
         # Calculate mean task cost assuming a beta distribution.
-        (_meanll, _mean,
-         _meanul, _sd) = calculate_beta_bounds(self.minimum_cost,
-                                               self.average_cost,
-                                               self.maximum_cost,
-                                               self.confidence)
+        (_meanll, _mean, _meanul, _sd) = calculate_beta_bounds(
+            self.minimum_cost, self.average_cost, self.maximum_cost,
+            self.confidence)
 
         self.mean_cost = _mean
         self.cost_variance = _sd**2.0
@@ -252,7 +247,7 @@ class Validation(object):
             _task.set_attributes(_results[i])
             self.dicTasks[_task.validation_id] = _task
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def request_status(self, revision_id):
         """
@@ -286,7 +281,7 @@ class Validation(object):
         for i in range(_n_updates):
             self.dicStatus[_results[i][0]] = _results[i][1]
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_task(self, revision_id):
         """
@@ -299,7 +294,7 @@ class Validation(object):
 
         try:
             _task_name = "New V&V Activity " + str(self._last_id + 1)
-        except TypeError:                   # No tasks exist.
+        except TypeError:  # No tasks exist.
             _task_name = "New V&V Activity 1"
 
         _query = "INSERT INTO rtk_validation \
@@ -316,13 +311,13 @@ class Validation(object):
             self._last_id = self._dao.get_last_id('rtk_validation')[0]
 
             _task = Model()
-            _task.set_attributes((self._last_id, _task_name, 0, '', 0, 0.0,
-                                  0.0, 0.0, 0.0, 719163, 719163, 0.0, 0.0, 0.0,
-                                  0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                                  95.0))
+            _task.set_attributes(
+                (self._last_id, _task_name, 0, '', 0, 0.0, 0.0, 0.0, 0.0,
+                 719163, 719163, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0, 0.0, 95.0))
             self.dicTasks[_task.validation_id] = _task
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def delete_task(self, validation_id):
         """
@@ -341,7 +336,7 @@ class Validation(object):
         if _results:
             self.dicTasks.pop(validation_id)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_task(self, validation_id):
         """
@@ -369,19 +364,17 @@ class Validation(object):
                       fld_mean_cost={20:f}, fld_cost_variance={21:f}, \
                       fld_confidence={22:f} \
                   WHERE fld_validation_id={0:d}".format(
-                      _task.validation_id, _task.task_description,
-                      _task.task_type, _task.task_specification,
-                      _task.measurement_unit, _task.min_acceptable,
-                      _task.mean_acceptable, _task.max_acceptable,
-                      _task.variance_acceptable, _task.start_date,
-                      _task.end_date, _task.status, _task.minimum_time,
-                      _task.average_time, _task.maximum_time, _task.mean_time,
-                      _task.time_variance, _task.minimum_cost,
-                      _task.average_cost, _task.maximum_cost, _task.mean_cost,
-                      _task.cost_variance, _task.confidence)
+            _task.validation_id, _task.task_description, _task.task_type,
+            _task.task_specification, _task.measurement_unit,
+            _task.min_acceptable, _task.mean_acceptable, _task.max_acceptable,
+            _task.variance_acceptable, _task.start_date, _task.end_date,
+            _task.status, _task.minimum_time, _task.average_time,
+            _task.maximum_time, _task.mean_time, _task.time_variance,
+            _task.minimum_cost, _task.average_cost, _task.maximum_cost,
+            _task.mean_cost, _task.cost_variance, _task.confidence)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_all_tasks(self):
         """
@@ -410,19 +403,19 @@ class Validation(object):
                       SET fld_time_remaining={0:f} \
                       WHERE fld_update_date={1:d} \
                       AND fld_revision_id={2:d}".format(
-                          self.dicStatus[self.dicStatus.keys()[i]],
-                          self.dicStatus.keys()[i], revision_id)
-            (_results,
-             _error_code, __) = self._dao.execute(_query, commit=True)
+                self.dicStatus[self.dicStatus.keys()[i]],
+                self.dicStatus.keys()[i], revision_id)
+            (_results, _error_code, __) = self._dao.execute(
+                _query, commit=True)
 
             if _results:
                 _query = "INSERT INTO rtk_validation_status \
                                       (fld_time_remaining, fld_update_date, \
                                        fld_revision_id) \
                           VALUES({0:f}, {1:d}, {2:d})".format(
-                              self.dicStatus[self.dicStatus.keys()[i]],
-                              self.dicStatus.keys()[i], revision_id)
-                (_results,
-                 _error_code, __) = self._dao.execute(_query, commit=True)
+                    self.dicStatus[self.dicStatus.keys()[i]],
+                    self.dicStatus.keys()[i], revision_id)
+                (_results, _error_code, __) = self._dao.execute(
+                    _query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)

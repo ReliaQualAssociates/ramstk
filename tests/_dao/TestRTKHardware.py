@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKHardware module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date
 
@@ -37,41 +39,41 @@ class TestRTKHardware(unittest.TestCase):
     Class for testing the RTKHardware class.
     """
     _attributes = {
-            'revision_id': 1,
-            'hardware_id': 1,
-            'alt_part_num': '',
-            'attachments': '',
-            'cage_code': '',
-            'category_id': 0,
-            'comp_ref_des': 'S1',
-            'cost': 0.0,
-            'cost_failure': 0.0,
-            'cost_hour': 0.0,
-            'cost_type_id': 0,
-            'description': 'Description',
-            'duty_cycle': 100.0,
-            'figure_number': '',
-            'lcn': '',
-            'level': 0,
-            'manufacturer_id': 0,
-            'mission_time': 100.0,
-            'name': '',
-            'nsn': '',
-            'page_number': '',
-            'parent_id': 0,
-            'part': 0,
-            'part_number': '',
-            'quantity': 1,
-            'ref_des': '',
-            'remarks': '',
-            'repairable': 0,
-            'specification_number': '',
-            'subcategory_id': 0,
-            'tagged_part': 0,
-            'total_part_count': 0,
-            'total_power_dissipation': 0,
-            'year_of_manufacture': date.today().year
-        }
+        'revision_id': 1,
+        'hardware_id': 1,
+        'alt_part_num': '',
+        'attachments': '',
+        'cage_code': '',
+        'category_id': 0,
+        'comp_ref_des': 'S1',
+        'cost': 0.0,
+        'cost_failure': 0.0,
+        'cost_hour': 0.0,
+        'cost_type_id': 0,
+        'description': 'Description',
+        'duty_cycle': 100.0,
+        'figure_number': '',
+        'lcn': '',
+        'level': 0,
+        'manufacturer_id': 0,
+        'mission_time': 100.0,
+        'name': '',
+        'nsn': '',
+        'page_number': '',
+        'parent_id': 0,
+        'part': 0,
+        'part_number': '',
+        'quantity': 1,
+        'ref_des': '',
+        'remarks': '',
+        'repairable': 0,
+        'specification_number': '',
+        'subcategory_id': 0,
+        'tagged_part': 0,
+        'total_part_count': 0,
+        'total_power_dissipation': 0,
+        'year_of_manufacture': date.today().year
+    }
 
     def setUp(self):
         """
@@ -161,5 +163,5 @@ class TestRTKHardware(unittest.TestCase):
 
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'name' in "
-                               "attribute dictionary passed to "
-                               "RTKHardware.set_attributes().")
+                         "attribute dictionary passed to "
+                         "RTKHardware.set_attributes().")

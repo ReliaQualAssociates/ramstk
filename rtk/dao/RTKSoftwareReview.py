@@ -11,11 +11,11 @@ The RTKSoftwareReview Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKSoftwareReview(RTK_BASE):
@@ -32,11 +32,17 @@ class RTKSoftwareReview(RTK_BASE):
     __tablename__ = 'rtk_software_review'
     __table_args__ = {'extend_existing': True}
 
-    software_id = Column('fld_software_id', Integer,
-                         ForeignKey('rtk_software.fld_software_id'),
-                         nullable=False)
-    question_id = Column('fld_question_id', Integer, primary_key=True,
-                         autoincrement=True, nullable=False)
+    software_id = Column(
+        'fld_software_id',
+        Integer,
+        ForeignKey('rtk_software.fld_software_id'),
+        nullable=False)
+    question_id = Column(
+        'fld_question_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     answer = Column('fld_answer', Integer, default=0)
     value = Column('fld_value', Integer, default=0)
     review_type = Column('fld_type', String(256), default='')

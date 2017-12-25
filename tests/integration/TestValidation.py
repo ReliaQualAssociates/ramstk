@@ -39,7 +39,10 @@ This is the test class for testing Validation module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -104,15 +107,16 @@ class TestValidationController(unittest.TestCase):
         (TestValidation) save_task returns 0 on success
         """
 
-        _values = (0, 0, 'Description', 0, 'Specification', 0, 0.0, 0.0,
-                   0.0, 0.0, 719163, 738163, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 90.0)
+        _values = (0, 0, 'Description', 0, 'Specification', 0, 0.0, 0.0, 0.0,
+                   0.0, 719163, 738163, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 90.0)
 
         self.assertEqual(self.DUT.request_tasks(self._dao, 0)[1], 0)
         _task = self.DUT.dicTasks[min(self.DUT.dicTasks.keys())]
         _task.set_attributes(_values)
 
-        (_results, _error_code) = self.DUT.save_task(min(self.DUT.dicTasks.keys()))
+        (_results, _error_code) = self.DUT.save_task(
+            min(self.DUT.dicTasks.keys()))
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

@@ -19,7 +19,8 @@ from nose.plugins.attrib import attr
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 # pylint: disable=E0401,wrong-import-position
 from dao.RTKProgramStatus import RTKProgramStatus

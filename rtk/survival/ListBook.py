@@ -12,30 +12,30 @@ Survival Package List Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -140,8 +140,13 @@ class ListView(gtk.VBox):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_status = ["", _(u"Event"), _(u"Right Censored"),
-                            _(u"Left Censored"), _(u"Interval Censored")]
+        self._lst_status = [
+            "",
+            _(u"Event"),
+            _(u"Right Censored"),
+            _(u"Left Censored"),
+            _(u"Interval Censored")
+        ]
         self._lst_handler_id = []
 
         # Initialize private scalar attributes.
@@ -155,15 +160,16 @@ class ListView(gtk.VBox):
         # Initialize public scalar attributes.
         self.btnAddRecord = Widgets.make_button(width=35, image='add')
         self.btnDeleteRecord = Widgets.make_button(width=35, image='remove')
-        self.btnConsolidate = Widgets.make_button(width=35,
-                                                  image='insert-assembly')
+        self.btnConsolidate = Widgets.make_button(
+            width=35, image='insert-assembly')
         self.btnCalculate = Widgets.make_button(width=35, image='calculate')
         self.btnSave = Widgets.make_button(width=35, image='save')
         self.btnAssignAssembly = Widgets.make_button(width=35, image="assign")
         self.btnAssignComponent = Widgets.make_button(width=35, image="assign")
 
-        self.chkGrouped = Widgets.make_check_button(label=_(u"Failure data is "
-                                                            u"grouped"))
+        self.chkGrouped = Widgets.make_check_button(
+            label=_(u"Failure data is "
+                    u"grouped"))
 
         self.tvwSurvivalRecords = gtk.TreeView()
         self.tvwNevadaChart = gtk.TreeView()
@@ -171,39 +177,46 @@ class ListView(gtk.VBox):
         self.tvwResultsByPart = gtk.TreeView()
 
         # Set tooltips for the gtk.Widgets().
-        self.btnAddRecord.set_tooltip_markup(_(u"Launches the Add Record "
-                                               u"wizard to allow the user to "
-                                               u"add a new incident record to "
-                                               u"the selected survival "
-                                               u"analysis."))
-        self.btnDeleteRecord.set_tooltip_markup(_(u"Deletes the selected "
-                                                  u"records from the list of "
-                                                  u"incidents associated with "
-                                                  u"the selected survival "
-                                                  u"analysis."))
-        self.btnCalculate.set_tooltip_text(_(u"Calculates interarrival times "
-                                             u"for the selected dataset."))
+        self.btnAddRecord.set_tooltip_markup(
+            _(u"Launches the Add Record "
+              u"wizard to allow the user to "
+              u"add a new incident record to "
+              u"the selected survival "
+              u"analysis."))
+        self.btnDeleteRecord.set_tooltip_markup(
+            _(u"Deletes the selected "
+              u"records from the list of "
+              u"incidents associated with "
+              u"the selected survival "
+              u"analysis."))
+        self.btnCalculate.set_tooltip_text(
+            _(u"Calculates interarrival times "
+              u"for the selected dataset."))
         self.btnSave.set_tooltip_markup(_(u"Saves the selected record set."))
-        self.btnAssignAssembly.set_tooltip_markup(_(u"Assigns results to "
-                                                    u"assemblies in the "
-                                                    u"Hardware module."))
-        self.btnAssignComponent.set_tooltip_markup(_(u"Assigns results to "
-                                                     u"components in the "
-                                                     u"Hardware module."))
+        self.btnAssignAssembly.set_tooltip_markup(
+            _(u"Assigns results to "
+              u"assemblies in the "
+              u"Hardware module."))
+        self.btnAssignComponent.set_tooltip_markup(
+            _(u"Assigns results to "
+              u"components in the "
+              u"Hardware module."))
 
-        self.chkGrouped.set_tooltip_text(_(u"Indicates whether the failure "
-                                           u"and suspension data is grouped."))
-        self.tvwSurvivalRecords.set_tooltip_markup(_(u"Displays the list of "
-                                                     u"records associated "
-                                                     u"with the selected "
-                                                     u"survival analysis."))
+        self.chkGrouped.set_tooltip_text(
+            _(u"Indicates whether the failure "
+              u"and suspension data is grouped."))
+        self.tvwSurvivalRecords.set_tooltip_markup(
+            _(u"Displays the list of "
+              u"records associated "
+              u"with the selected "
+              u"survival analysis."))
 
         # Connect gtk.Widget() signals to callback methods.
         self._lst_handler_id.append(
             self.btnAddRecord.connect('clicked', self._on_button_clicked, 0))
         self._lst_handler_id.append(
-            self.btnDeleteRecord.connect('clicked',
-                                         self._on_button_clicked, 1))
+            self.btnDeleteRecord.connect('clicked', self._on_button_clicked,
+                                         1))
         self._lst_handler_id.append(
             self.btnConsolidate.connect('clicked', self._on_button_clicked, 2))
         self._lst_handler_id.append(
@@ -211,11 +224,11 @@ class ListView(gtk.VBox):
         self._lst_handler_id.append(
             self.btnSave.connect('clicked', self._on_button_clicked, 4))
         self._lst_handler_id.append(
-            self.btnAssignAssembly.connect('clicked',
-                                           self._on_button_clicked, 5))
+            self.btnAssignAssembly.connect('clicked', self._on_button_clicked,
+                                           5))
         self._lst_handler_id.append(
-            self.btnAssignComponent.connect('clicked',
-                                            self._on_button_clicked, 6))
+            self.btnAssignComponent.connect('clicked', self._on_button_clicked,
+                                            6))
         self._lst_handler_id.append(
             self.chkGrouped.connect('toggled', self._on_toggled, 7))
 
@@ -309,10 +322,16 @@ class ListView(gtk.VBox):
         #    6. Number of Failures During Interval (editable)
         #    7. Status of Incident (editable)
         # =============================================================== #
-        _labels = [_(u"Record\nID"), _(u"Event\nDate"),
-                   _(u"Affected\nAssembly"), _(u"Left of\nInterval"),
-                   _(u"Right of\nInterval"), _(u"Interarrival\nTime"),
-                   _(u"Quantity"), _(u"Status")]
+        _labels = [
+            _(u"Record\nID"),
+            _(u"Event\nDate"),
+            _(u"Affected\nAssembly"),
+            _(u"Left of\nInterval"),
+            _(u"Right of\nInterval"),
+            _(u"Interarrival\nTime"),
+            _(u"Quantity"),
+            _(u"Status")
+        ]
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                gobject.TYPE_STRING, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -350,8 +369,8 @@ class ListView(gtk.VBox):
                 _cell.set_property('editable', 1)
                 _cell.set_property('visible', 1)
 
-            _cell.connect('edited', self._on_cellrenderer_edited,
-                          _index, _model)
+            _cell.connect('edited', self._on_cellrenderer_edited, _index,
+                          _model)
             _column = gtk.TreeViewColumn()
             _label = Widgets.make_column_heading(_label)
             _column.set_widget(_label)
@@ -421,12 +440,17 @@ class ListView(gtk.VBox):
         #    9. Cell background color
         # =============================================================== #
         # Table of results allocated to each assembly.
-        _labels = [_(u"Hardware\nItem"), _(u"Number of\nFailures"), _(u""),
-                   _(u"MTBF\nLower Bound"), _(u"MTBF"),
-                   _(u"MTBF\nUpper Bound"),
-                   _(u"Failure Intensity\nLower Bound"),
-                   _(u"Failure\nIntensity"),
-                   _(u"Failure Intensity\nUpper Bound")]
+        _labels = [
+            _(u"Hardware\nItem"),
+            _(u"Number of\nFailures"),
+            _(u""),
+            _(u"MTBF\nLower Bound"),
+            _(u"MTBF"),
+            _(u"MTBF\nUpper Bound"),
+            _(u"Failure Intensity\nLower Bound"),
+            _(u"Failure\nIntensity"),
+            _(u"Failure Intensity\nUpper Bound")
+        ]
         _model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                                gobject.TYPE_INT, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -450,14 +474,16 @@ class ListView(gtk.VBox):
         # Add the results breakdown by child assembly page to the
         # gtk.Notebook().
         _label = gtk.Label()
-        _label.set_markup(_(u"<span weight='bold'>"
-                            u"Results by\nChild Assembly</span>"))
+        _label.set_markup(
+            _(u"<span weight='bold'>"
+              u"Results by\nChild Assembly</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays analysis results for the "
-                                  u"selected data set broken down by child "
-                                  u"assembly."))
+        _label.set_tooltip_text(
+            _(u"Displays analysis results for the "
+              u"selected data set broken down by child "
+              u"assembly."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -507,12 +533,17 @@ class ListView(gtk.VBox):
         #    9. Cell background color
         # =============================================================== #
         # Table of results allocated to each part.
-        _labels = [_(u"Part\nNumber"), _(u"Number of\nFailures"), _(u""),
-                   _(u"MTBF\nLower Bound"), _(u"MTBF"),
-                   _(u"MTBF\nUpper Bound"),
-                   _(u"Failure Intensity\nLower Bound"),
-                   _(u"Failure\nIntensity"),
-                   _(u"Failure Intensity\nUpper Bound")]
+        _labels = [
+            _(u"Part\nNumber"),
+            _(u"Number of\nFailures"),
+            _(u""),
+            _(u"MTBF\nLower Bound"),
+            _(u"MTBF"),
+            _(u"MTBF\nUpper Bound"),
+            _(u"Failure Intensity\nLower Bound"),
+            _(u"Failure\nIntensity"),
+            _(u"Failure Intensity\nUpper Bound")
+        ]
         _model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                                gobject.TYPE_INT, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -539,14 +570,16 @@ class ListView(gtk.VBox):
         # Add the results breakdown by child assembly page to the
         # gtk.Notebook().
         _label = gtk.Label()
-        _label.set_markup(_(u"<span weight='bold'>"
-                            u"Results by\nPart Number</span>"))
+        _label.set_markup(
+            _(u"<span weight='bold'>"
+              u"Results by\nPart Number</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays analysis results for the "
-                                  u"selected data set broken down by "
-                                  u"part number."))
+        _label.set_tooltip_text(
+            _(u"Displays analysis results for the "
+              u"selected data set broken down by "
+              u"part number."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -591,19 +624,24 @@ class ListView(gtk.VBox):
         _model.clear()
         for _key in self._survival_model.dicRecords.keys():
             _record = self._survival_model.dicRecords[_key]
-            _date = str(datetime.fromordinal(_record.failure_date).strftime('%Y-%m-%d'))
+            _date = str(
+                datetime.fromordinal(
+                    _record.failure_date).strftime('%Y-%m-%d'))
             _status = self._lst_status[_record.status]
             try:
-                _record.assembly_id = [x[1] for x in
-                                       Configuration.RTK_HARDWARE_LIST if
-                                       x[0] == _record.assembly_name][0]
+                _record.assembly_id = [
+                    x[1] for x in Configuration.RTK_HARDWARE_LIST
+                    if x[0] == _record.assembly_name
+                ][0]
             except IndexError:
                 _record.assembly_name = ''
                 _record.assembly_id = 0
 
-            _data = [_key, _date, _record.assembly_name, _record.left_interval,
-                     _record.right_interval, _record.interarrival_time,
-                     _record.n_failures, _status]
+            _data = [
+                _key, _date, _record.assembly_name, _record.left_interval,
+                _record.right_interval, _record.interarrival_time,
+                _record.n_failures, _status
+            ]
             _model.append(_data)
 
         self.tvwSurvivalRecords.set_cursor('0', None, False)
@@ -616,7 +654,7 @@ class ListView(gtk.VBox):
 
         return False
 
-    def _load_nevada_chart(self):           # pylint: disable=R0914
+    def _load_nevada_chart(self):  # pylint: disable=R0914
         """
         Method to load the Survival analysis records into the Nevada chart
         gtk.TreeView().
@@ -661,8 +699,10 @@ class ListView(gtk.VBox):
         #
         # Create a list of GObject types to use for creating the gtkListStore()
         # used to display the Nevada chart.
-        _gobject_types = [gobject.TYPE_STRING, gobject.TYPE_STRING,
-                          gobject.TYPE_INT, gobject.TYPE_STRING]
+        _gobject_types = [
+            gobject.TYPE_STRING, gobject.TYPE_STRING, gobject.TYPE_INT,
+            gobject.TYPE_STRING
+        ]
         for i in range(_n_periods):
             _date_ship = datetime.strftime(
                 date.fromordinal(_ships[i][0]), '%b-%y')
@@ -687,7 +727,7 @@ class ListView(gtk.VBox):
         j = 0
         _model = gtk.ListStore(*_gobject_types)
         for i in range(_n_cols):
-            _cell = gtk.CellRendererText()       # Value to be displayed.
+            _cell = gtk.CellRendererText()  # Value to be displayed.
             _cell.set_property('editable', 0)
             _cell.set_property('wrap-width', 250)
             _cell.set_property('wrap-mode', pango.WRAP_WORD_CHAR)
@@ -699,8 +739,8 @@ class ListView(gtk.VBox):
             _label.set_line_wrap(True)
             _label.set_alignment(xalign=0.5, yalign=0.5)
             _label.set_justify(gtk.JUSTIFY_CENTER)
-            _label.set_markup("<span weight='bold'>" +
-                              _headings[i] + "</span>")
+            _label.set_markup(
+                "<span weight='bold'>" + _headings[i] + "</span>")
             _label.set_use_markup(True)
             _label.show_all()
             _column.setWidgetset(_label)
@@ -709,7 +749,7 @@ class ListView(gtk.VBox):
             _column.set_resizable(True)
             _column.set_alignment(0.5)
 
-            _cell = gtk.CellRendererText()       # Cell background color.
+            _cell = gtk.CellRendererText()  # Cell background color.
             _cell.set_property('visible', False)
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=j + 1)
@@ -725,14 +765,17 @@ class ListView(gtk.VBox):
         _date_return = _headings[2:]
         for _index, _sdate in enumerate(_date_ship):
             _returns = _nevada[_date_ship[_index]][1].keys()
-            _data = [_date_ship[_index], 'light gray',
-                     _nevada[_date_ship[_index]][0], 'light gray']
+            _data = [
+                _date_ship[_index], 'light gray',
+                _nevada[_date_ship[_index]][0], 'light gray'
+            ]
             for _jndex, _rdate in enumerate(_date_return):
                 if _date_return[_jndex] not in _returns:
                     _data.append(0)
                     _data.append('light gray')
                 else:
-                    _data.append(_nevada[_date_ship[_index]][1][_date_return[_jndex]])
+                    _data.append(
+                        _nevada[_date_ship[_index]][1][_date_return[_jndex]])
                     _data.append('#FFFFFF')
             _model.append(_data)
 
@@ -777,9 +820,8 @@ class ListView(gtk.VBox):
             _survival_id = self._survival_model.survival_id
             for _record_id in self._survival_model.dicRecords.keys():
                 _record = self._survival_model.dicRecords[_record_id]
-                (_results,
-                 _error_code) = self._mdcRTK.dtcSurvival.save_record(
-                     _survival_id, _record_id, _record)
+                (_results, _error_code) = self._mdcRTK.dtcSurvival.save_record(
+                    _survival_id, _record_id, _record)
         elif index == 5:
             print "Assign results to assemblies"
         elif index == 6:
@@ -805,19 +847,20 @@ class ListView(gtk.VBox):
         :return: False if successful or True if an error is encountered.
         :rtype: boolean
         """
-# WARNING: Refactor _on_cellrenderer_edited; current McCabe Complexity metric=13.
+        # WARNING: Refactor _on_cellrenderer_edited; current McCabe Complexity metric=13.
         _record_id = model[path][0]
 
         _record = self._survival_model.dicRecords[_record_id]
 
-        if position == 1:                   # Failure date.
+        if position == 1:  # Failure date.
             _date = Utilities.date_to_ordinal(new_text)
             _record.failure_date = _date
             model[path][position] = new_text
-        elif position == 2:                 # Affected assembly.
-            _record.assembly_id = [x[1] for x in
-                                   Configuration.RTK_HARDWARE_LIST if
-                                   x[0] == new_text][0]
+        elif position == 2:  # Affected assembly.
+            _record.assembly_id = [
+                x[1] for x in Configuration.RTK_HARDWARE_LIST
+                if x[0] == new_text
+            ][0]
             _record.assembly_name = new_text
             model[path][position] = _record.assembly_name
         elif position == 3:
@@ -832,7 +875,7 @@ class ListView(gtk.VBox):
         elif position == 6:
             _record.n_failures = int(new_text)
             model[path][position] = _record.n_failures
-        elif position == 7:                 # Event status.
+        elif position == 7:  # Event status.
             for j in (i for i, x in enumerate(self._lst_status)
                       if x == new_text):
                 _record.status = int(j)

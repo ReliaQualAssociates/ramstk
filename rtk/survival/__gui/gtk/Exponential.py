@@ -12,30 +12,30 @@ Survival Package Exponential Distribution Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -100,7 +100,7 @@ _ = gettext.gettext
 matplotlib.use('GTK')
 
 
-class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
+class Results(gtk.HPaned):  # pylint: disable=R0902, R0904
     """
     The Work Book page to display all the attributes for an Exponential
     distribution.  The attributes of an Exponential Results page are:
@@ -182,64 +182,86 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         self.tvwReliability = gtk.TreeView()
 
         # Create gtk.Widget() tooltip text.
-        self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number "
-                                                    u"of suspensions in "
-                                                    u"the dataset."))
-        self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of "
-                                                 u"failures in the dataset."))
-        self.txtMTBFLL.set_tooltip_markup(_(u"Displays the lower "
-                                            u"<span>\u03B1</span>% bound "
-                                            u"on the MTBF."))
-        self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate "
-                                          u"of the MTBF."))
-        self.txtMTBFUL.set_tooltip_markup(_(u"Displays the upper "
-                                            u"<span>\u03B1</span>% bound "
-                                            u"on the MTBF."))
-        self.txtHazardRateLL.set_tooltip_markup(_(u"Displays the lower "
-                                                  u"<span>\u03B1</span>% "
-                                                  u"bound on the hazard "
-                                                  u"rate."))
-        self.txtHazardRate.set_tooltip_markup(_(u"Displays the point "
-                                                u"estimate of the hazard "
-                                                u"rate."))
-        self.txtHazardRateUL.set_tooltip_markup(_(u"Displays the upper "
-                                                  u"<span>\u03B1</span>% "
-                                                  u"bound on the hazard "
-                                                  u"rate."))
-        self.txtLambdaLL.set_tooltip_markup(_(u"Displays the lower "
-                                              u"<span>\u03B1</span>% bound on "
-                                              u"the scale parameter."))
-        self.txtLambda.set_tooltip_markup(_(u"Displays the point estimate of "
-                                            u"the scale parameter."))
-        self.txtLambdaUL.set_tooltip_markup(_(u"Displays the upper "
-                                              u"<span>\u03B1</span>% bound on "
-                                              u"the scale parameter."))
-        self.txtGammaLL.set_tooltip_markup(_(u"Displays the lower "
-                                             u"<span>\u03B1</span>% bound on "
-                                             u"the location parameter."))
-        self.txtGamma.set_tooltip_markup(_(u"Displays the point estimate of "
-                                           u"the location parameter."))
-        self.txtGammaUL.set_tooltip_markup(_(u"Displays the upper "
-                                             u"<span>\u03B1</span>% bound on "
-                                             u"the location parameter."))
-        self.txtLambdaLambda.set_tooltip_markup(_(u"Displays the variance "
-                                                  u"of the scale parameter."))
-        self.txtLambdaGamma.set_tooltip_markup(_(u"Displays the covariance of "
-                                                 u"the scale and location "
-                                                 u"parameters."))
-        self.txtGammaLambda.set_tooltip_markup(_(u"Displays the covariance of "
-                                                 u"the location and scale "
-                                                 u"parameters."))
-        self.txtGammaGamma.set_tooltip_markup(_(u"Displays the variance of "
-                                                u"the location parameter."))
-        self.txtAIC.set_tooltip_markup(_(u"Displays the value of Aikike's "
-                                         u"information criterion."))
-        self.txtBIC.set_tooltip_markup(_(u"Displays the value of Bayes' "
-                                         u"information criterion."))
-        self.txtMLE.set_tooltip_markup(_(u"Displays the likelihood "
-                                         u"value."))
-        self.txtRho.set_tooltip_markup(_(u"Displays the correlation "
-                                         u"coefficient."))
+        self.txtNumSuspensions.set_tooltip_markup(
+            _(u"Displays the number "
+              u"of suspensions in "
+              u"the dataset."))
+        self.txtNumFailures.set_tooltip_markup(
+            _(u"Displays the number of "
+              u"failures in the dataset."))
+        self.txtMTBFLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% bound "
+              u"on the MTBF."))
+        self.txtMTBF.set_tooltip_markup(
+            _(u"Displays the point estimate "
+              u"of the MTBF."))
+        self.txtMTBFUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% bound "
+              u"on the MTBF."))
+        self.txtHazardRateLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% "
+              u"bound on the hazard "
+              u"rate."))
+        self.txtHazardRate.set_tooltip_markup(
+            _(u"Displays the point "
+              u"estimate of the hazard "
+              u"rate."))
+        self.txtHazardRateUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% "
+              u"bound on the hazard "
+              u"rate."))
+        self.txtLambdaLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% bound on "
+              u"the scale parameter."))
+        self.txtLambda.set_tooltip_markup(
+            _(u"Displays the point estimate of "
+              u"the scale parameter."))
+        self.txtLambdaUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% bound on "
+              u"the scale parameter."))
+        self.txtGammaLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% bound on "
+              u"the location parameter."))
+        self.txtGamma.set_tooltip_markup(
+            _(u"Displays the point estimate of "
+              u"the location parameter."))
+        self.txtGammaUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% bound on "
+              u"the location parameter."))
+        self.txtLambdaLambda.set_tooltip_markup(
+            _(u"Displays the variance "
+              u"of the scale parameter."))
+        self.txtLambdaGamma.set_tooltip_markup(
+            _(u"Displays the covariance of "
+              u"the scale and location "
+              u"parameters."))
+        self.txtGammaLambda.set_tooltip_markup(
+            _(u"Displays the covariance of "
+              u"the location and scale "
+              u"parameters."))
+        self.txtGammaGamma.set_tooltip_markup(
+            _(u"Displays the variance of "
+              u"the location parameter."))
+        self.txtAIC.set_tooltip_markup(
+            _(u"Displays the value of Aikike's "
+              u"information criterion."))
+        self.txtBIC.set_tooltip_markup(
+            _(u"Displays the value of Bayes' "
+              u"information criterion."))
+        self.txtMLE.set_tooltip_markup(
+            _(u"Displays the likelihood "
+              u"value."))
+        self.txtRho.set_tooltip_markup(
+            _(u"Displays the correlation "
+              u"coefficient."))
 
     def create_results_page(self):
         """
@@ -298,14 +320,17 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         _fxdSummary.put(self.txtNumFailures, _x_pos, _y_pos[0])
         _fxdSummary.put(self.txtNumSuspensions, _x_pos, _y_pos[1])
 
-        _label = Widgets.make_label(_(u"LCL"), width=-1,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"LCL"), width=-1, justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 35, _y_pos[1] + 35)
-        _label = Widgets.make_label(_(u"Point\nEstimate"), height=-1,
-                                    width=-1, justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"Point\nEstimate"),
+            height=-1,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 125, _y_pos[1] + 35)
-        _label = Widgets.make_label(_(u"UCL"), width=-1,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"UCL"), width=-1, justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 240, _y_pos[1] + 35)
 
         _label = Widgets.make_label(_(u"MTBF:"))
@@ -322,18 +347,23 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         _fxdSummary.put(self.txtHazardRateUL, _x_pos + 210, _y_pos[1] + 100)
 
         # Place the parameter estimates widgets.
-        _labels = [_(u"Scale Parameter (<span>\u03BB</span>):"),
-                   _(u"Location Parameter (<span>\u03B3</span>):")]
+        _labels = [
+            _(u"Scale Parameter (<span>\u03BB</span>):"),
+            _(u"Location Parameter (<span>\u03B3</span>):")
+        ]
         (__, _y_pos) = Widgets.make_labels(_labels, _fxdEstimates, 5, 45)
 
-        _label = Widgets.make_label(_(u"LCL"), width=-1,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"LCL"), width=-1, justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, _x_pos + 35, 5)
-        _label = Widgets.make_label(_(u"Point\nEstimate"), height=-1,
-                                    width=-1, justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"Point\nEstimate"),
+            height=-1,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, _x_pos + 125, 5)
-        _label = Widgets.make_label(_(u"UCL"), width=-1,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"UCL"), width=-1, justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, _x_pos + 240, 5)
 
         _fxdEstimates.put(self.txtLambdaLL, _x_pos, _y_pos[0])
@@ -345,24 +375,24 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         _fxdEstimates.put(self.txtGammaUL, _x_pos + 210, _y_pos[1])
 
         # Place the variance-covariance matrix.
-        _label = Widgets.make_label(_(u"<u>Variance-Covariance Matrix</u>"),
-                                    width=-1)
+        _label = Widgets.make_label(
+            _(u"<u>Variance-Covariance Matrix</u>"), width=-1)
         _fxdEstimates.put(_label, 5, _y_pos[1] + 60)
 
         # Column labels.
-        _label = Widgets.make_label(_(u"<span>\u03BB</span>"), width=100,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"<span>\u03BB</span>"), width=100, justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, 25, _y_pos[1] + 90)
-        _label = Widgets.make_label(_(u"<span>\u03B3</span>"), width=100,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"<span>\u03B3</span>"), width=100, justify=gtk.JUSTIFY_CENTER)
         _fxdEstimates.put(_label, 130, _y_pos[1] + 90)
 
         # Row labels.
-        _label = Widgets.make_label(_(u"<span>\u03BB</span>"), width=10,
-                                    justify=gtk.JUSTIFY_RIGHT)
+        _label = Widgets.make_label(
+            _(u"<span>\u03BB</span>"), width=10, justify=gtk.JUSTIFY_RIGHT)
         _fxdEstimates.put(_label, 5, _y_pos[1] + 120)
-        _label = Widgets.make_label(_(u"<span>\u03B3</span>"), width=10,
-                                    justify=gtk.JUSTIFY_RIGHT)
+        _label = Widgets.make_label(
+            _(u"<span>\u03B3</span>"), width=10, justify=gtk.JUSTIFY_RIGHT)
         _fxdEstimates.put(_label, 5, _y_pos[1] + 150)
 
         _fxdEstimates.put(self.txtLambdaLambda, 25, _y_pos[1] + 120)
@@ -371,8 +401,8 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         _fxdEstimates.put(self.txtGammaGamma, 130, _y_pos[1] + 150)
 
         # Place the parametric goodness of fit statistics.
-        _label = Widgets.make_label(_(u"<u>Goodness of Fit Statistics</u>"),
-                                    width=-1)
+        _label = Widgets.make_label(
+            _(u"<u>Goodness of Fit Statistics</u>"), width=-1)
         _fxdEstimates.put(_label, _x_pos + 210, _y_pos[1] + 60)
         _label = Widgets.make_label(_(u"Maximum Likelihood:"))
         _fxdEstimates.put(_label, _x_pos + 210, _y_pos[1] + 90)
@@ -391,8 +421,12 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
         self.tvwReliability.set_model(_model)
-        _headings = [_(u"Time\n(t)"), _(u"R(t)\nLower\nLimit"),
-                     _(u"R(t)\nPoint\nEstimate"), _(u"R(t)\nUpper\nLimit")]
+        _headings = [
+            _(u"Time\n(t)"),
+            _(u"R(t)\nLower\nLimit"),
+            _(u"R(t)\nPoint\nEstimate"),
+            _(u"R(t)\nUpper\nLimit")
+        ]
         for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
@@ -407,14 +441,15 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
             self.tvwReliability.append_column(_column)
 
         # Insert the tab.
-        self.lblPage.set_markup("<span weight='bold'>" +
-                                _(u"Exponential\nResults") + "</span>")
+        self.lblPage.set_markup(
+            "<span weight='bold'>" + _(u"Exponential\nResults") + "</span>")
         self.lblPage.set_alignment(xalign=0.5, yalign=0.5)
         self.lblPage.set_justify(gtk.JUSTIFY_CENTER)
         self.lblPage.show_all()
-        self.lblPage.set_tooltip_text(_(u"Displays Exponential distribution "
-                                        u"analysis results for the selected "
-                                        u"dataset."))
+        self.lblPage.set_tooltip_text(
+            _(u"Displays Exponential distribution "
+              u"analysis results for the selected "
+              u"dataset."))
 
         return False
 
@@ -492,14 +527,16 @@ class Results(gtk.HPaned):                  # pylint: disable=R0902, R0904
         _model = self.tvwReliability.get_model()
         _model.clear()
         for _key in self._model.dicReliability.keys():
-            _model.append([_key, self._model.dicReliability[_key][2],
-                           self._model.dicReliability[_key][1],
-                           self._model.dicReliability[_key][0]])
+            _model.append([
+                _key, self._model.dicReliability[_key][2],
+                self._model.dicReliability[_key][1],
+                self._model.dicReliability[_key][0]
+            ])
 
         return False
 
 
-class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
+class Plots(gtk.HBox):  # pylint: disable=R0902, R0904
     """
     The Work Book page to display plots for an Exponential distribution.  The
     attributes of an Exponential Plot page are:
@@ -663,11 +700,16 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
 
         _title = _(u"Histogram of Failure Times "
                    u"for {0:s}").format(self._model.description)
-        Widgets.load_plot(self.axAxis1, self.pltPlot1,
-                          times, y1=_bin_edges, title=_title,
-                          xlab=_(u"Failure Times"),
-                          ylab=_(u"Count of Failures"), ltype=[3],
-                          marker=['g'])
+        Widgets.load_plot(
+            self.axAxis1,
+            self.pltPlot1,
+            times,
+            y1=_bin_edges,
+            title=_title,
+            xlab=_(u"Failure Times"),
+            ylab=_(u"Count of Failures"),
+            ltype=[3],
+            marker=['g'])
 
         return False
 
@@ -689,10 +731,17 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
 
         _title = _(u"Exponential Empirical CDF of Failure Times "
                    u"for {0:s}").format(self._model.description)
-        Widgets.load_plot(self.axAxis2, self.pltPlot2,
-                          _ecdf.x[1:], y1=_ecdf.y[1:], y2=theoretical,
-                          title=_title, xlab=_(u"Time (t)"), ylab=_(u"F(t) "),
-                          ltype=[1, 2], marker=['b-', 'r:'])
+        Widgets.load_plot(
+            self.axAxis2,
+            self.pltPlot2,
+            _ecdf.x[1:],
+            y1=_ecdf.y[1:],
+            y2=theoretical,
+            title=_title,
+            xlab=_(u"Time (t)"),
+            ylab=_(u"F(t) "),
+            ltype=[1, 2],
+            marker=['b-', 'r:'])
 
         _legend = (_(u"Empirical CDF"), _(u"Theoretical CDF"))
         _leg = self.axAxis2.legend(_legend, loc='best', shadow=True)
@@ -718,9 +767,13 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
 
         _title = _(u"Exponential Probability Plot of Failure Times "
                    u"for {0:s}").format(self._model.description)
-        self.axAxis3.set_title(_title, {'fontsize': 16, 'fontweight': 'bold',
-                                        'verticalalignment': 'baseline',
-                                        'horizontalalignment': 'center'})
+        self.axAxis3.set_title(
+            _title, {
+                'fontsize': 16,
+                'fontweight': 'bold',
+                'verticalalignment': 'baseline',
+                'horizontalalignment': 'center'
+            })
         self.axAxis3.set_xlabel(_(u"Quantiles"))
         self.axAxis3.set_ylabel(_(u"Observed Values"))
 
@@ -754,11 +807,18 @@ class Plots(gtk.HBox):                      # pylint: disable=R0902, R0904
                    u"{1:0.1f}% Bounds").format(self._model.description,
                                                self._model.confidence * 100.0)
         if _times:
-            Widgets.load_plot(self.axAxis4, self.pltPlot4,
-                              _times, y1=_r_ll, y2=_r, y3=_r_ul,
-                              title=_title, xlab=_(u"Time (t)"),
-                              ylab=_(u"R(t) "), ltype=[2, 2, 2],
-                              marker=['b:', 'g-', 'r:'])
+            Widgets.load_plot(
+                self.axAxis4,
+                self.pltPlot4,
+                _times,
+                y1=_r_ll,
+                y2=_r,
+                y3=_r_ul,
+                title=_title,
+                xlab=_(u"Time (t)"),
+                ylab=_(u"R(t) "),
+                ltype=[2, 2, 2],
+                marker=['b:', 'g-', 'r:'])
 
         _legend = (_(u"{0:0.1f}% Upper Bound on "
                      u"Reliability").format(self._model.confidence * 100.0),

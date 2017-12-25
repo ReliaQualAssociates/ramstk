@@ -6,32 +6,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ##################################
 Revision Package Assistants Module
@@ -62,8 +61,8 @@ try:
     import Configuration
     import gui.gtk.Widgets as Widgets
 except ImportError:
-    import rtk.Configuration as Configuration   # pylint: disable=E0401
-    import rtk.gui.gtk.Widgets as Widgets       # pylint: disable=E0401
+    import rtk.Configuration as Configuration  # pylint: disable=E0401
+    import rtk.gui.gtk.Widgets as Widgets  # pylint: disable=E0401
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -80,7 +79,6 @@ _ = gettext.gettext
 
 
 class AddRevision(object):
-
     """
     This is the assistant that walks the user through the process of adding
     a new Revision to the open RTK Project database.
@@ -120,9 +118,10 @@ class AddRevision(object):
         # Create the page to select other information to add.
         y_pos = 5
         self.fxdPageOtherInfo = gtk.Fixed()
-        _label = Widgets.make_label(_(u"Select additional information "
-                                      u"to copy from old revision..."),
-                                    width=300)
+        _label = Widgets.make_label(
+            _(u"Select additional information "
+              u"to copy from old revision..."),
+            width=300)
         self.fxdPageOtherInfo.put(_label, 5, y_pos)
         y_pos += 30
 
@@ -146,8 +145,9 @@ class AddRevision(object):
         self.fxdPageOtherInfo.put(self.chkSoftware, 5, y_pos)
         y_pos += 30
 
-        self.chkFailureInfo = gtk.CheckButton(_(u"Include reliability "
-                                                u"information"))
+        self.chkFailureInfo = gtk.CheckButton(
+            _(u"Include reliability "
+              u"information"))
         self.fxdPageOtherInfo.put(self.chkFailureInfo, 5, y_pos)
         y_pos += 30
 
@@ -166,35 +166,38 @@ class AddRevision(object):
         self.fxdPageSetValues = gtk.Fixed()
         _label = Widgets.make_label(_(u"Revision Code:"))
         self.txtRevisionCode = Widgets.make_entry(width=100)
-        self.txtRevisionCode.set_tooltip_text(_(u"Enter a code for the new "
-                                                u"revision.  Leave blank to "
-                                                u"use the default revision "
-                                                u"code."))
+        self.txtRevisionCode.set_tooltip_text(
+            _(u"Enter a code for the new "
+              u"revision.  Leave blank to "
+              u"use the default revision "
+              u"code."))
         self.fxdPageSetValues.put(_label, 5, 5)
         self.fxdPageSetValues.put(self.txtRevisionCode, 200, 5)
 
         _label = Widgets.make_label(_(u"Revision Name:"))
         self.txtRevisionName = Widgets.make_entry()
-        self.txtRevisionName.set_tooltip_text(_(u"Enter a name for the new "
-                                                u"revision.  Leave blank to "
-                                                u"use the default revision "
-                                                u"name."))
+        self.txtRevisionName.set_tooltip_text(
+            _(u"Enter a name for the new "
+              u"revision.  Leave blank to "
+              u"use the default revision "
+              u"name."))
         self.fxdPageSetValues.put(_label, 5, 35)
         self.fxdPageSetValues.put(self.txtRevisionName, 200, 35)
 
         _label = Widgets.make_label(_(u"Remarks:"))
         self.txtRemarks = gtk.TextBuffer()
         self.fxdPageSetValues.put(_label, 5, 65)
-        _textview = Widgets.make_text_view(txvbuffer=self.txtRemarks,
-                                           width=300, height=100)
+        _textview = Widgets.make_text_view(
+            txvbuffer=self.txtRemarks, width=300, height=100)
         self.fxdPageSetValues.put(_textview, 200, 65)
 
         self.assistant.append_page(self.fxdPageSetValues)
         self.assistant.set_page_type(self.fxdPageSetValues,
                                      gtk.ASSISTANT_PAGE_CONTENT)
-        self.assistant.set_page_title(self.fxdPageSetValues, _(u"Set Values "
-                                                               u"for New "
-                                                               u"Revision"))
+        self.assistant.set_page_title(self.fxdPageSetValues,
+                                      _(u"Set Values "
+                                        u"for New "
+                                        u"Revision"))
         self.assistant.set_page_complete(self.fxdPageSetValues, True)
 
         _fixed = gtk.Fixed()
@@ -220,8 +223,9 @@ class AddRevision(object):
         # Create the Revision code.
         _code = self.txtRevisionCode.get_text()
         if _code == '' or _code is None:
-            _code = '{0:s} {1:s}'.format(str(Configuration.RTK_PREFIX[0]),
-                                         str(Configuration.RTK_PREFIX[1]))
+            _code = '{0:s} {1:s}'.format(
+                str(Configuration.RTK_PREFIX[0]),
+                str(Configuration.RTK_PREFIX[1]))
 
             # Increment the Revision index.
             Configuration.RTK_PREFIX[1] += 1
@@ -233,11 +237,9 @@ class AddRevision(object):
         _remarks = self.txtRemarks.get_text(*self.txtRemarks.get_bounds())
 
         # Add the new Revision.
-        (_results,
-         _error_code,
-         _revision_id) = self._controller.dtcRevision.add_revision(_code,
-                                                                   _name,
-                                                                   _remarks)
+        (_results, _error_code,
+         _revision_id) = self._controller.dtcRevision.add_revision(
+             _code, _name, _remarks)
 
         if _error_code != 0:
             _prompt = _(u"An error occurred while attempting to add the new "
@@ -248,7 +250,7 @@ class AddRevision(object):
             # FIXME: See bug 184.
             if self.chkFunction.get_active():
                 _dic_f_xref = self._controller.dtcFunction.copy_function(
-                                _revision_id)
+                    _revision_id)
                 if self.chkFMEA.get_active():
                     for _key in _dic_f_xref.keys():
                         _new_id = _dic_f_xref[_key]
@@ -260,9 +262,8 @@ class AddRevision(object):
             if self.chkHardware.get_active():
                 _failure_info = self.chkFailureInfo.get_active()
                 _matrices = self.chkFunctionMatrix.get_active()
-                self._controller.dtcHardwareBoM.copy_hardware(_revision_id,
-                                                              _failure_info,
-                                                              _matrices)
+                self._controller.dtcHardwareBoM.copy_hardware(
+                    _revision_id, _failure_info, _matrices)
 
             if self.chkSoftware.get_active():
                 self._controller.dtcSoftwareBoM.copy_software(_revision_id)

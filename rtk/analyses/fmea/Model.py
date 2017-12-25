@@ -228,7 +228,10 @@ class MechanismDataModel(RTKDataModel):
             _attributes = _mechanism.get_attributes()
             _mechanism.set_attributes(_attributes)
             self.tree.create_node(
-                _mechanism.description, _mechanism.mechanism_id, parent=0, data=_mechanism)
+                _mechanism.description,
+                _mechanism.mechanism_id,
+                parent=0,
+                data=_mechanism)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -254,7 +257,10 @@ class MechanismDataModel(RTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(
-                _mechanism.description, _mechanism.mechanism_id, parent=0, data=_mechanism)
+                _mechanism.description,
+                _mechanism.mechanism_id,
+                parent=0,
+                data=_mechanism)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -1087,7 +1093,8 @@ class FMEADataModel(RTKDataModel):
                    'control, or action.'.format(_level)
 
         try:
-            self.tree.create_node(_tag, _node_id, parent=_parent_id, data=_entity)
+            self.tree.create_node(
+                _tag, _node_id, parent=_parent_id, data=_entity)
         except tree.NodeIDAbsentError:
             _error_code = 2005
             _msg = 'RTK ERROR: Attempted to add an item under non-existent ' \
@@ -1187,7 +1194,7 @@ class FMEADataModel(RTKDataModel):
                'ID {0:s}'.format(node_id)
 
         for _node in self.tree.children(node_id):
-            _error_code, _msg = _node.data.calculate_rpn(severity,
-                                                         severity_new)
+            _error_code, _msg = _node.data.calculate_rpn(
+                severity, severity_new)
 
         return _error_code, _msg

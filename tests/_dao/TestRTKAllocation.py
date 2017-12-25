@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKAllocation module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,8 +37,8 @@ class TestRTKAllocation(unittest.TestCase):
     Class for testing the RTKAllocation class.
     """
 
-    _attributes =(1, 0.0, 10, 1, 0.0, 0.0, 1, 1, 1, 0.0, 0.0, 1, 1, 1, 0.0,
-                  0.0, 1.0, 1, 1, 1)
+    _attributes = (1, 0.0, 10, 1, 0.0, 0.0, 1, 1, 1, 0.0, 0.0, 1, 1, 1, 0.0,
+                   0.0, 1.0, 1, 1, 1)
 
     def setUp(self):
         """

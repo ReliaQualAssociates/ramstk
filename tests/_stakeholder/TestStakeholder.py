@@ -18,7 +18,8 @@ from treelib import Tree
 
 sys.path.insert(
     0,
-    dirname(dirname(__file__)) + "/rtk", )
+    dirname(dirname(__file__)) + "/rtk",
+)
 
 import Utilities as Utilities  # pylint: disable=E0401
 from Configuration import Configuration  # pylint: disable=E0401

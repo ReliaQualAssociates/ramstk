@@ -12,30 +12,30 @@ Filter Module Component Specific Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -109,10 +109,15 @@ class Inputs(gtk.Frame):
 
     _lst_quality = ['', u"MIL-SPEC", _(u"Lower")]
     _lst_specification = [u"", u"MIL-F-15733", u"MIL-F-18327"]
-    _lst_style = [[u"", _(u"Ceramic-Ferrite Construction"),
-                   _(u"Discrete LC Components")],
-                  [u"", _(u"Discrete LC Components"),
-                   _(u"Discrete LC and Crystal Components")]]
+    _lst_style = [[
+        u"",
+        _(u"Ceramic-Ferrite Construction"),
+        _(u"Discrete LC Components")
+    ], [
+        u"",
+        _(u"Discrete LC Components"),
+        _(u"Discrete LC and Crystal Components")
+    ]]
 
     def __init__(self, model):
         """
@@ -130,9 +135,12 @@ class Inputs(gtk.Frame):
 
         # Define private list attributes.
         self._lst_count_labels = [_(u"Quality:")]
-        self._lst_stress_labels = [_(u"Quality:"),
-                                   _(u"\u03C0<sub>Q</sub> Override:"),
-                                   _(u"Specification:"), _(u"Style:")]
+        self._lst_stress_labels = [
+            _(u"Quality:"),
+            _(u"\u03C0<sub>Q</sub> Override:"),
+            _(u"Specification:"),
+            _(u"Style:")
+        ]
         self._lst_handler_id = []
 
         # Define private scalar attributes.
@@ -150,17 +158,21 @@ class Inputs(gtk.Frame):
         self.txtCommercialPiQ = Widgets.make_entry(width=100)
 
         # Create the tooltips for all the input widgets.
-        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality"
-                                           u"level for the selected filter."))
-        self.cmbSpecification.set_tooltip_text(_(u"Select and display the "
-                                                 u"governing specification "
-                                                 u"for the selected filter."))
-        self.cmbStyle.set_tooltip_text(_(u"Select and display the "
-                                         u"construction style for the "
-                                         u"selected filter."))
-        self.txtCommercialPiQ.set_tooltip_text(_(u"User-defined quality "
-                                                 u"factor for the selected "
-                                                 u"filter."))
+        self.cmbQuality.set_tooltip_text(
+            _(u"Select and display the quality"
+              u"level for the selected filter."))
+        self.cmbSpecification.set_tooltip_text(
+            _(u"Select and display the "
+              u"governing specification "
+              u"for the selected filter."))
+        self.cmbStyle.set_tooltip_text(
+            _(u"Select and display the "
+              u"construction style for the "
+              u"selected filter."))
+        self.txtCommercialPiQ.set_tooltip_text(
+            _(u"User-defined quality "
+              u"factor for the selected "
+              u"filter."))
 
         # Load the gtk.ComboBox().
         for i in range(len(self._lst_quality)):
@@ -176,8 +188,8 @@ class Inputs(gtk.Frame):
             self.txtCommercialPiQ.connect('focus-out-event',
                                           self._on_focus_out, 1))
         self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed',
-                                          self._on_combo_changed, 2))
+            self.cmbSpecification.connect('changed', self._on_combo_changed,
+                                          2))
         self._lst_handler_id.append(
             self.cmbStyle.connect('changed', self._on_combo_changed, 3))
 
@@ -193,8 +205,7 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Parts Count Inputs") +
-                          "</span>")
+                          _(u"MIL-HDBK-217FN2 Parts Count Inputs") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -209,8 +220,8 @@ class Inputs(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed,
+                                               5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
@@ -234,8 +245,7 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Stress Inputs") +
-                          "</span>")
+                          _(u"MIL-HDBK-217FN2 Part Stress Inputs") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -250,8 +260,8 @@ class Inputs(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed,
+                                               5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
@@ -370,10 +380,10 @@ class Inputs(gtk.Frame):
         # Load the new entries.
         _n_styles = len(self._lst_style[specification])
         for i in range(_n_styles):
-            self.cmbStyle.insert_text(
-                i, self._lst_style[specification][i])
+            self.cmbStyle.insert_text(i, self._lst_style[specification][i])
 
         return False
+
 
 class Results(gtk.Frame):
     """
@@ -396,13 +406,15 @@ class Results(gtk.Frame):
         # Define private dictionary attributes.
 
         # Define private list attributes.
-        self._lst_count_labels = [u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>",
-                                  u"\u03BB<sub>g</sub>:",
-                                  u"\u03C0<sub>Q</sub>:"]
-        self._lst_stress_labels = [u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
-                                   u"\u03BB<sub>b</sub>:",
-                                   u"\u03C0<sub>Q</sub>:",
-                                   u"\u03C0<sub>E</sub>:"]
+        self._lst_count_labels = [
+            u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>",
+            u"\u03BB<sub>g</sub>:", u"\u03C0<sub>Q</sub>:"
+        ]
+        self._lst_stress_labels = [
+            u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+            u"\u03BB<sub>b</sub>:", u"\u03C0<sub>Q</sub>:",
+            u"\u03C0<sub>E</sub>:"
+        ]
 
         # Define private scalar attributes.
         self._hardware_model = model
@@ -413,18 +425,21 @@ class Results(gtk.Frame):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.txtLambdaB = Widgets.make_entry(width=100, editable=False,
-                                             bold=True)
+        self.txtLambdaB = Widgets.make_entry(
+            width=100, editable=False, bold=True)
         self.txtPiQ = Widgets.make_entry(width=100, editable=False, bold=True)
         self.txtPiE = Widgets.make_entry(width=100, editable=False, bold=True)
 
         # Create the tooltips for all the results display widgets.
-        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
-                                           u"for the selected filter."))
-        self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for "
-                                       u"the selected filter."))
-        self.txtPiE.set_tooltip_text(_(u"Displays the environment factor for "
-                                       u"the selected filter."))
+        self.txtLambdaB.set_tooltip_text(
+            _(u"Displays the base hazard rate "
+              u"for the selected filter."))
+        self.txtPiQ.set_tooltip_text(
+            _(u"Displays the quality factor for "
+              u"the selected filter."))
+        self.txtPiE.set_tooltip_text(
+            _(u"Displays the environment factor for "
+              u"the selected filter."))
 
     def create_217_count_results(self, x_pos=5):
         """
@@ -437,9 +452,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Parts Count Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Parts Count Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -454,7 +468,8 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
+        self._lst_stress_labels[
+            0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub></span>"
         (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels[:3],
                                                _fixed, 5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
@@ -483,9 +498,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Stress Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Part Stress Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -500,8 +514,8 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 25)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed,
+                                               5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Place the reliability result display widgets.

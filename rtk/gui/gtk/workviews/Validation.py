@@ -136,12 +136,14 @@ class GeneralData(RTKWorkView):
             _(u"Launches the calendar to select the date the task was started."
               ))
 
-        self.cmbTaskType = rtk.RTKComboBox(tooltip=_(
-            u"Selects and displays the type of task for the selected V&amp;V "
-            u"activity."))
-        self.cmbMeasurementUnit = rtk.RTKComboBox(tooltip=_(
-            u"Selects and displays the measurement unit for the selected "
-            u"V&amp;V activity acceptance parameter."))
+        self.cmbTaskType = rtk.RTKComboBox(
+            tooltip=
+            _(u"Selects and displays the type of task for the selected V&amp;V "
+              u"activity."))
+        self.cmbMeasurementUnit = rtk.RTKComboBox(
+            tooltip=_(
+                u"Selects and displays the measurement unit for the selected "
+                u"V&amp;V activity acceptance parameter."))
 
         self.spnStatus = gtk.SpinButton()
         self.spnStatus.set_tooltip_text(
@@ -170,9 +172,10 @@ class GeneralData(RTKWorkView):
             width=100,
             tooltip=_(u"Displays the acceptable variance for the selected "
                       u"V&amp;V activity."))
-        self.txtSpecification = rtk.RTKEntry(tooltip=_(
-            u"Displays the internal or industry specification or procedure "
-            u"governing the selected V&amp;V activity."))
+        self.txtSpecification = rtk.RTKEntry(
+            tooltip=_(
+                u"Displays the internal or industry specification or procedure "
+                u"governing the selected V&amp;V activity."))
         self.txtTask = rtk.RTKTextView(
             gtk.TextBuffer(),
             width=600,
