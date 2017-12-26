@@ -18,6 +18,7 @@ from gui.gtk.workviews import wvwFMEA
 from gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
 from gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
 from gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
+from gui.gtk.workviews import wvwHardwareGD, wvwHardwareAI, wvwHardwareAR
 from gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
 
 _ = gettext.gettext
@@ -53,6 +54,9 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
             'requirement':
             [wvwRequirementGD(controller),
              wvwRequirementAnalysis(controller)],
+            'hardware': [wvwHardwareGD(controller),
+                         wvwHardwareAI(controller),
+                         wvwHardwareAR(controller)],
             'validation':
             [wvwValidationGD(controller),
              wvwBurndownCurve(controller)]
