@@ -491,7 +491,7 @@ def _build_hardware_bom(session, revision_id):
     """
     _hardware = RTKHardware()
     _hardware.revision_id = revision_id
-    _hardware.comp_ref_des = 'S1'
+    _hardware.ref_des = 'S1'
     session.add(_hardware)
     session.commit()
     _parent_id = _hardware.hardware_id
@@ -519,7 +519,7 @@ def _build_hardware_bom(session, revision_id):
     _hardware = RTKHardware()
     _hardware.parent_id = _parent_id
     _hardware.revision_id = revision_id
-    _hardware.comp_ref_des = 'S1:SS1'
+    _hardware.ref_des = 'SS1'
     session.add(_hardware)
     session.commit()
 
@@ -546,7 +546,7 @@ def _build_hardware_bom(session, revision_id):
     _hardware = RTKHardware()
     _hardware.parent_id = _parent_id
     _hardware.revision_id = revision_id
-    _hardware.comp_ref_des = 'S1:SS2'
+    _hardware.ref_des = 'SS2'
     session.add(_hardware)
     session.commit()
 

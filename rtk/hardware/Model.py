@@ -128,9 +128,25 @@ class HardwareBoMDataModel(RTKDataModel):
         """
         _revision_id = kwargs['revision_id']
         _parent_id = kwargs['parent_id']
+        _part = kwargs['part']
 
-        _error_code, _msg = self.dtm_hardware.insert(
-            revision_id=_revision_id, parent_id=_parent_id)
+        _parent = self.dtm_hardware.select(_parent_id)
+        try:
+            _parent_is_part = _parent.part
+        except AttributeError:
+            _parent_is_part = 0
+
+        if _parent_is_part == 1 and _part == 0:
+            _error_code = 3006
+            _msg = 'RTK ERROR: You can not have a hardware assembly as a ' \
+                   'child of a component/piece part.'
+        elif _parent_is_part == 1 and _part == 1:
+            _error_code = 3006
+            _msg = 'RTK ERROR: You can not have a component/piece part as a ' \
+                   'child of another component/piece part.'
+        else:
+            _error_code, _msg = self.dtm_hardware.insert(
+                revision_id=_revision_id, parent_id=_parent_id, part=_part)
 
         if _error_code == 0:
             _hardware_id = self.dtm_hardware.last_id
@@ -390,6 +406,7 @@ class HardwareDataModel(RTKDataModel):
         _hardware = RTKHardware()
         _hardware.revision_id = kwargs['revision_id']
         _hardware.parent_id = kwargs['parent_id']
+        _hardware.part = kwargs['part']
         _error_code, _msg = RTKDataModel.insert(
             self, entities=[
                 _hardware,
@@ -471,6 +488,34 @@ class HardwareDataModel(RTKDataModel):
                       'rtk.hardware.Model.HardwareDataModel.update_all().'
 
         return _error_code, _msg
+
+    def make_composite_ref_des(self, node_id=1):
+        """
+        Make the composite reference designator.
+
+        :keyword int node_id: the ID of the node to make the composite
+                              reference designator.
+        :return: False if successful or True if an error is encountered
+        :rtype: bool
+        """
+        _return = False
+        _pref_des = ''
+
+        # Retrieve the parent hardware item's composite reference designator.
+        _node = self.tree.get_node(node_id)
+        if self.tree.get_node(_node.bpointer).data is not None:
+            _pref_des = self.tree.get_node(_node.bpointer).data.comp_ref_des
+
+        if _pref_des != '':
+            _node.data.comp_ref_des = _pref_des + ':' + _node.data.ref_des
+        else:
+            _node.data.comp_ref_des = _node.data.ref_des
+
+        # Now make the composite reference designator for all the chil nodes.
+        for _child_node in self.tree.children(node_id):
+            self.make_composite_ref_des(node_id=_child_node.identifier)
+
+        return _return
 
 
 class DesignElectricDataModel(RTKDataModel):
@@ -1145,7 +1190,10 @@ class ReliabilityDataModel(RTKDataModel):
         for _reliability in _session.query(RTKReliability).\
                 filter(RTKReliability.hardware_id == hardware_id).all():
             self.tree.create_node(
-                _reliability.hardware_id, _reliability.hardware_id, parent=0, data=_reliability)
+                _reliability.hardware_id,
+                _reliability.hardware_id,
+                parent=0,
+                data=_reliability)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -1171,7 +1219,10 @@ class ReliabilityDataModel(RTKDataModel):
 
         if _error_code == 0:
             self.tree.create_node(
-                _reliability.hardware_id, _reliability.hardware_id, parent=0, data=_reliability)
+                _reliability.hardware_id,
+                _reliability.hardware_id,
+                parent=0,
+                data=_reliability)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__

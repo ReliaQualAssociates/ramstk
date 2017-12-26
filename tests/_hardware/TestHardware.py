@@ -97,11 +97,11 @@ class TestHardwareDataModel(unittest.TestCase):
         self.assertEqual(_hardware, None)
 
     @attr(all=True, unit=True)
-    def test03a_insert_sibling(self):
-        """(TestHardwareDataModel) insert() should return False on success when inserting a sibling Hardware."""
+    def test03a_insert_sibling_assembly(self):
+        """(TestHardwareDataModel) insert() should return False on success when inserting a sibling Hardware assembly."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=0)
+        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=0, part=0)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
@@ -111,11 +111,11 @@ class TestHardwareDataModel(unittest.TestCase):
         self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
-    def test03b_insert_child(self):
-        """(TestHardwareDataModel) insert() should return False on success when inserting a child Hardware."""
+    def test03b_insert_child_assembly(self):
+        """(TestHardwareDataModel) insert() should return False on success when inserting a child Hardware assembly."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=1)
+        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=1, part=0)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
@@ -125,10 +125,10 @@ class TestHardwareDataModel(unittest.TestCase):
         self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
-    def test04a_delete(self):
-        """(TestHardwareDataModel) delete() should return a zero error code on success."""
+    def test04a_delete_assembly(self):
+        """(TestHardwareDataModel) delete() should return a zero error code on success when deleting a Hardware assembly."""
         self.DUT.select_all(1)
-        self.DUT.insert(revision_id=1, parent_id=1)
+        self.DUT.insert(revision_id=1, parent_id=1, part=0)
 
         _error_code, _msg = self.DUT.delete(self.DUT.last_id)
 
@@ -137,8 +137,8 @@ class TestHardwareDataModel(unittest.TestCase):
                          'Program database.')
 
     @attr(all=True, unit=True)
-    def test04b_delete_non_existent_id(self):
-        """(TestHardwareDataModel) delete() should return a non-zero error code when passed a Hardware ID that doesn't exist."""
+    def test04b_delete_assembly_non_existent_id(self):
+        """(TestHardwareDataModel) delete() should return a non-zero error code when passed a Hardware assembly with an ID that doesn't exist."""
         self.DUT.select_all(1)
 
         _error_code, _msg = self.DUT.delete(300)
@@ -182,3 +182,10 @@ class TestHardwareDataModel(unittest.TestCase):
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
                          'RTK SUCCESS: Updating the RTK Program database.')
+
+    @attr(all=True, unit=True)
+    def test07a_make_composite_reference_designator(self):
+        """(TestHardwareDataModel) make_composite_ref_des() should return False on success."""
+        self.DUT.select_all(1)
+
+        self.assertFalse(self.DUT.make_composite_ref_des())

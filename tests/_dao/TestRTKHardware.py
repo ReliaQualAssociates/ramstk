@@ -40,7 +40,7 @@ class TestRTKHardware(unittest.TestCase):
         'attachments': '',
         'cage_code': '',
         'category_id': 0,
-        'comp_ref_des': 'S1',
+        'comp_ref_des': '',
         'cost': 0.0,
         'cost_failure': 0.0,
         'cost_hour': 0.0,
@@ -59,7 +59,7 @@ class TestRTKHardware(unittest.TestCase):
         'part': 0,
         'part_number': '',
         'quantity': 1,
-        'ref_des': '',
+        'ref_des': 'S1',
         'remarks': '',
         'repairable': 0,
         'specification_number': '',
@@ -95,7 +95,7 @@ class TestRTKHardware(unittest.TestCase):
         self.assertEqual(self.DUT.alt_part_number, '')
         self.assertEqual(self.DUT.attachments, '')
         self.assertEqual(self.DUT.cage_code, '')
-        self.assertEqual(self.DUT.comp_ref_des, 'S1')
+        self.assertEqual(self.DUT.comp_ref_des, '')
         self.assertEqual(self.DUT.category_id, 0)
         self.assertEqual(self.DUT.cost, 0.0)
         self.assertEqual(self.DUT.cost_failure, 0.0)
@@ -115,7 +115,7 @@ class TestRTKHardware(unittest.TestCase):
         self.assertEqual(self.DUT.part, 0)
         self.assertEqual(self.DUT.part_number, '')
         self.assertEqual(self.DUT.quantity, 1)
-        self.assertEqual(self.DUT.ref_des, '')
+        self.assertEqual(self.DUT.ref_des, 'S1')
         self.assertEqual(self.DUT.remarks, '')
         self.assertEqual(self.DUT.repairable, 0)
         self.assertEqual(self.DUT.specification_number, '')

@@ -38,6 +38,9 @@ class ModuleView(RTKModuleView):
         # Initialize private dictionary attributes.
         self._dic_icons['tab'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
             '/32x32/hardware.png'
+        self._dic_icons['insert_part'] = \
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/insert_part.png'
 
         # Initialize private list attributes.
 
@@ -51,7 +54,6 @@ class ModuleView(RTKModuleView):
 
         # Initialize public scalar attributes.
 
-        #self._make_treeview()
         self.treeview.set_tooltip_text(
             _(u"Displays the hierarchical list of "
               u"hardware items."))
@@ -197,12 +199,14 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert(self, sibling=True):
+    def _do_request_insert(self, sibling=True, part=0):
         """
         Send request to insert a new Hardware into the RTK Program database.
 
         :param bool sibling: indicates whether to insert a sibling (default)
-                             Hardware or a child Hardware.
+                             Hardware item or a child Hardware item.
+        :param int part: indicates whether the item to insert is an
+                         assembly (default) or a component/part.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -211,12 +215,12 @@ class ModuleView(RTKModuleView):
         _hardware = self._dtc_data_controller.request_select(self._hardware_id)
 
         if sibling:
-            _parent_id = _hardware.parent_id
+            _parent_id = _hardware['parent_id']
         else:
-            _parent_id = _hardware.hardware_id
+            _parent_id = _hardware['hardware_id']
 
         if not self._dtc_data_controller.request_insert(
-                self._revision_id, _parent_id):
+                self._revision_id, _parent_id, part):
             # TODO: Add code to the FMEA Class to respond to the 'insertedHardware' pubsub message and insert a set of hardwareal failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedHardware' pubsub message and insert a record into each of the Hardware-X matrices.
             self._on_select_revision(self._revision_id)
@@ -236,27 +240,49 @@ class ModuleView(RTKModuleView):
 
         return _return
 
-    def _do_request_insert_child(self, __button):
+    def _do_request_insert_child_assembly(self, __button):
         """
-        Send request to insert a new chid Hardware.
+        Send request to insert a new child Hardware assembly.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(False)
+        return self._do_request_insert(False, 0)
 
-    def _do_request_insert_sibling(self, __button):
+    def _do_request_insert_child_part(self, __button):
         """
-        Send request to insert a new sibling Hardware.
+        Send request to insert a new child Hardware component.
 
         :param __button: the gtk.ToolButton() that called this method.
         :type __button: :class:`gtk.ToolButton`
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        return self._do_request_insert(True)
+        return self._do_request_insert(False, 1)
+
+    def _do_request_insert_sibling_assembly(self, __button):
+        """
+        Send request to insert a new sibling Hardware assembly.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(True, 0)
+
+    def _do_request_insert_sibling_part(self, __button):
+        """
+        Send request to insert a new sibling Hardware component.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._do_request_insert(True, 1)
 
     def _do_request_update(self, __button):
         """
@@ -289,20 +315,29 @@ class ModuleView(RTKModuleView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
-            _(u"Adds a new Hardware at the same hierarchy level as "
+            _(u"Adds a new Hardware assembly at the same hierarchy level as "
               u"the selected Hardware (i.e., a sibling Hardware)."),
-            _(u"Adds a new Hardware one level subordinate to the "
+            _(u"Adds a new Hardware assembly one level subordinate to the "
               u"selected Hardware (i.e., a child hardware)."),
-            _(u"Remove the currently selected Hardware."),
-            _(u"Save the currently selected Hardware to the open "
+            _(u"Adds a new Hardware component/part at the same hierarchy "
+              u"level as the selected Hardware component/part (i.e., a "
+              u"sibling component/part)."),
+            _(u"Adds a new Hardware component/part one level subordinate to "
+              u"selected Hardware component/part (i.e., a child "
+              u"component/part)."),
+            _(u"Remove the currently selected Hardware item and any "
+              u"children."),
+            _(u"Save the currently selected Hardware item to the open "
               u"RTK Program database."),
-            _(u"Saves all Hardwares to the open RTK Program "
+            _(u"Saves all Hardware items to the open RTK Program "
               u"database.")
         ]
         _callbacks = [
-            self._do_request_insert_sibling, self._do_request_insert_child,
-            self._do_request_delete, self._do_request_update,
-            self._do_request_update_all
+            self._do_request_insert_sibling_assembly,
+            self._do_request_insert_child_assembly,
+            self._do_request_insert_sibling_part,
+            self._do_request_insert_child_part, self._do_request_delete,
+            self._do_request_update, self._do_request_update_all
         ]
         _icons = [
             'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
@@ -370,20 +405,43 @@ class ModuleView(RTKModuleView):
             _menu_item = gtk.ImageMenuItem()
             _image = gtk.Image()
             _image.set_from_file(self._dic_icons['insert_sibling'])
-            _menu_item.set_label(_(u"Add Sibling Hardware"))
+            _menu_item.set_label(_(u"Add Sibling Assembly"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.connect('activate',
+                               self._do_request_insert_sibling_assembly)
             _menu_item.show()
             _menu.append(_menu_item)
 
             _menu_item = gtk.ImageMenuItem()
             _image = gtk.Image()
             _image.set_from_file(self._dic_icons['insert_child'])
-            _menu_item.set_label(_(u"Add Child Hardware"))
+            _menu_item.set_label(_(u"Add Child Assembly"))
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
-            _menu_item.connect('activate', self._do_request_insert)
+            _menu_item.connect('activate',
+                               self._do_request_insert_child_assembly)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_part'])
+            _menu_item.set_label(_(u"Add Sibling Piece Part"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate',
+                               self._do_request_insert_sibling_part)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['insert_part'])
+            _menu_item.set_label(_(u"Add Child Piece Part"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_insert_child_part)
             _menu_item.show()
             _menu.append(_menu_item)
 
@@ -431,11 +489,15 @@ class ModuleView(RTKModuleView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _model, _row = self.treeview.get_selection().get_selected()
+        _return = False
+        if position is not None:
+            _model, _row = self.treeview.get_selection().get_selected()
+            try:
+                _model.set(_row, self._lst_col_order[position], new_text)
+            except TypeError:
+                _return = True
 
-        _model.set(_row, self._lst_col_order[position], new_text)
-
-        return False
+        return _return
 
     def _on_select_revision(self, module_id):  # pylint: disable=W0221
         """

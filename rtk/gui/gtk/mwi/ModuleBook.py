@@ -279,10 +279,6 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu_item.connect('activate', Options, self._mdcRTK)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(
-            label=_(u"_Composite Ref Des"), use_underline=True)
-        _menu_item.connect('activate', self._create_comp_ref_des)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(
             label=_(u"_Update Design Review Criteria"), use_underline=True)
         # _menu_item.connect('activate', ReviewCriteria, self._app)
 
@@ -492,49 +488,5 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         :rtype: bool
         """
         self._mdcRTK.close_project()
-
-        return False
-
-    def _create_comp_ref_des(self, __widget):
-        """
-        Create composite reference designators.
-
-        :param gtk.Widget __widget: the gtk.Widget() that called this function.
-        :return: False if successful or True if an error is encounterd.
-        """
-        # TODO: Move this to the Hardware module.
-        _hardware = self._mdcRTK.RTK_CONFIGURATION.RTK_MODULES[3]
-        _model = _hardware.treeview.get_model()
-
-        _model.foreach(self._build_composite_ref_des)
-
-        return False
-
-    def _build_composite_ref_des(self, model, __path, row):
-        """
-        Build the composite reference designator.
-
-        :return: False if successful or True if an error is encountered
-        :rtype: bool
-        """
-        # TODO: Move this to the Hardware class.
-        _hardware_id = model.get_value(row, 1)
-        _hardware_model = self._mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
-
-        _ref_des = model.get_value(row, 27)
-
-        # If the currently selected row has no parent, the composite reference
-        # designator is the same as the reference designator.  Otherwise, build
-        # the composite reference designator by appending the current row's
-        # reference designator to the parent's composite reference designator.
-        if not model.iter_parent(row):
-            _comp_ref_des = _ref_des
-        else:
-            _p_row = model.iter_parent(row)
-            _p_comp_ref_des = model.get_value(_p_row, 5)
-            _comp_ref_des = _p_comp_ref_des + ":" + _ref_des
-
-        model.set_value(row, 5, _comp_ref_des)
-        _hardware_model.comp_ref_des = _comp_ref_des
 
         return False

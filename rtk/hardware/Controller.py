@@ -102,7 +102,7 @@ class HardwareBoMDataController(RTKDataController):
 
         return (_matrix, _column_hdrs, _row_hdrs)
 
-    def request_insert(self, revision_id=0, parent_id=0):
+    def request_insert(self, revision_id=0, parent_id=0, part=0):
         """
         Request to add an RTKHardware table record.
 
@@ -110,14 +110,15 @@ class HardwareBoMDataController(RTKDataController):
         :rtype: bool
         """
         _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id, parent_id=parent_id)
+            revision_id=revision_id, parent_id=parent_id, part=part)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
 
             if not self._test:
                 pub.sendMessage(
-                    'insertedHardware', hardware_id=self.dtm_hardware.last_id)
+                    'insertedHardware',
+                    hardware_id=self._dtm_data_model.dtm_hardware.last_id)
         else:
             _msg = _msg + '  Failed to add a new Hardware item to the RTK ' \
                 'Program database.'
@@ -342,5 +343,26 @@ class HardwareBoMDataController(RTKDataController):
         elif table == 'reliability':
             _error_code, _msg = self._dtm_data_model.dtm_reliability.select(
                 node_id).set_attributes(attributes)
+
+        return _error_code, _msg
+
+    def request_make_composite_reference_designator(self, node_id=1):
+        """
+        Request the composite reference designators be created.
+
+        :keyword int node_id: the Treelib tree() node ID to start with to make
+                              composite reference designators.  Defaults to the
+                              top node.
+        :return: (_error_code, _msg); the error code and associated message.
+        :rtype: (int, str)
+        """
+        _error_code = 0
+        _msg = ''
+
+        if self._dtm_data_model.dtm_hardware.make_composite_ref_des(node_id):
+            _error_code = 3005
+            _msg = 'RTK ERROR: Failed to create all composite reference ' \
+                   'designators for Node ID {0:d} and ' \
+                   'children.'.format(node_id)
 
         return _error_code, _msg

@@ -106,7 +106,7 @@ class TestHardwareBoMDataModel(unittest.TestCase):
         _hardware = self.DUT.select(1)
 
         self.assertTrue(isinstance(_hardware, dict))
-        self.assertEqual(_hardware['comp_ref_des'], 'S1')
+        self.assertEqual(_hardware['ref_des'], 'S1')
         self.assertEqual(_hardware['cage_code'], '')
 
     @attr(all=True, unit=True)
@@ -117,11 +117,11 @@ class TestHardwareBoMDataModel(unittest.TestCase):
         self.assertEqual(_hardware, None)
 
     @attr(all=True, unit=True)
-    def test03a_insert_sibling(self):
-        """(TestHardwareBoMDataModel) insert() should return a zero error code on success when inserting a sibling Hardware."""
+    def test03a_insert_sibling_assembly(self):
+        """(TestHardwareBoMDataModel) insert() should return a zero error code on success when inserting a sibling Hardware assembly."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=0)
+        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=0, part=0)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
@@ -131,16 +131,30 @@ class TestHardwareBoMDataModel(unittest.TestCase):
         self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
-    def test03b_insert_child(self):
-        """(TestHardwareBoMDataModel) insert() should return a zero error code on success when inserting a child Hardware."""
+    def test03b_insert_child_assembly(self):
+        """(TestHardwareBoMDataModel) insert() should return a zero error code on success when inserting a child Hardware assembly."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=1)
+        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=1, part=0)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
         self.assertEqual(self.DUT.last_id, 4)
+
+    @attr(all=True, unit=True)
+    def test03c_insert_part(self):
+        """(TestHardwareBoMDataModel) insert() should return a zero error code on success when inserting a child Hardware piece part."""
+        self.DUT.select_all(1)
+
+        _error_code, _msg = self.DUT.insert(revision_id=1, parent_id=1, part=1)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
+                         'the RTK Program database.')
+        self.assertEqual(self.DUT.last_id, 5)
+
+        self.DUT.delete(self.DUT.last_id)
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
@@ -188,12 +202,10 @@ class TestHardwareBoMDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(
-            _msg,
-            'RTK ERROR: Problem saving Hardware BoM ID 100.  Error when '
+            _msg, 'RTK ERROR: Problem saving Hardware BoM ID 100.  Error when '
             'saving: RTKHardware record, RTKDesignElectric record, '
             'RTKDesignMechanic record, RTKMilHdbkF record, RTKNSWC record, '
-            'RTKReliability record.'
-        )
+            'RTKReliability record.')
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
@@ -262,7 +274,7 @@ class TestHardwareBoMDataController(unittest.TestCase):
 
         self.assertTrue(isinstance(_matrix, pd.DataFrame))
         self.assertEqual(_column_hdrs, {1: 'Test Validation Task'})
-        self.assertEqual(_row_hdrs, {1: u'S1', 2: u'S1:SS1', 3: u'S1:SS2'})
+        self.assertEqual(_row_hdrs, {1: u'', 2: u'', 3: u''})
 
     @attr(all=True, unit=True)
     def test02a_request_select(self):
@@ -773,3 +785,18 @@ class TestHardwareBoMDataController(unittest.TestCase):
         self.DUT.request_select_all(1)
 
         self.assertFalse(self.DUT.request_update_all())
+
+    @attr(all=True, unit=True)
+    def test09a_request_make_composite_reference_designator(self):
+        """(TestHardwareBoMDataController) request_make_composite_reference_designator() should return a zero error code on success."""
+        self.DUT.request_select_all(1)
+
+        (_error_code,
+         _msg) = self.DUT.request_make_composite_reference_designator(
+             node_id=1)
+
+        self.assertEqual(_error_code, 0)
+        self.assertEqual(_msg, '')
+        self.assertEqual(
+            self.DUT.request_get_attributes(2, 'general')['comp_ref_des'],
+            'S1:SS1')
