@@ -78,8 +78,7 @@ class RTKLabel(gtk.Label):
                  bold=True,
                  wrap=False,
                  justify=gtk.JUSTIFY_LEFT,
-                 tooltip='RTK WARNING: Missing tooltip.  '
-                 'Please register an Enhancement type bug.'):
+                 tooltip=''):
         """
         Method to create Label() widgets.
 
@@ -94,6 +93,7 @@ class RTKLabel(gtk.Label):
                         contains more than one line.  Default is
                         JUSTIFY_LEFT.
         :type justify: GTK Justification Constant
+        :param str tooltip: the tooltip, if any, for the label.
         """
 
         gtk.Label.__init__(self)

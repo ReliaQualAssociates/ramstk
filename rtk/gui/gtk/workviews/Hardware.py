@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Hardware Work View."""
 
+import locale  # pragma: no cover
+
 from datetime import date  # pragma: no cover
 
 from pubsub import pub  # pylint: disable=E0401
@@ -773,7 +775,7 @@ class GeneralData(RTKWorkView):
         self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
 
         self.txtCost.handler_block(self._lst_handler_id[10])
-        self.txtCost.set_text(str(_hardware['cost']))
+        self.txtCost.set_text(str(locale.currency(_hardware['cost'])))
         self.txtCost.handler_unblock(self._lst_handler_id[10])
 
         _textbuffer = self.txtDescription.do_get_buffer()
@@ -968,7 +970,9 @@ class AssessmentInputs(RTKWorkView):
         _(u"Active Environment:"),
         _(u"Dormant Environment:"),
         _(u"Active Temperature (\u00B0C):"),
-        _(u"Dormant Temperature (\u00B0C):")
+        _(u"Dormant Temperature (\u00B0C):"),
+        _(u"Mission Time:"),
+        _(u"Duty Cycle:")
     ]]
 
     def __init__(self, controller):
@@ -1006,8 +1010,8 @@ class AssessmentInputs(RTKWorkView):
         self.cmbHRMethod = rtk.RTKComboBox(tooltip=_(
             u"The assessment method to use for the selected hardware item."))
 
-        self.fraDesignRatings = rtk.RTKFrame(label=_(u"Design Ratings"))
-        self.fraOperatingStress = rtk.RTKFrame(label=_(u"Operating Stresses"))
+        self.scwDesignRatings = rtk.RTKScrolledWindow(None)
+        self.scwOperatingStress = rtk.RTKScrolledWindow(None)
 
         self.txtActiveTemp = rtk.RTKEntry(
             width=125,
@@ -1021,6 +1025,9 @@ class AssessmentInputs(RTKWorkView):
         self.txtDormantTemp = rtk.RTKEntry(
             width=125,
             tooltip=_(u"The ambient temperature in the storage environment."))
+        self.txtDutyCycle = rtk.RTKEntry(
+            width=125,
+            tooltip=_(u"The duty cycle of the selected hardware item."))
         self.txtFailScale = rtk.RTKEntry(
             width=125,
             tooltip=_(
@@ -1035,6 +1042,9 @@ class AssessmentInputs(RTKWorkView):
             width=125,
             tooltip=_(u"The location parameter of the statistical failure "
                       u"distribution."))
+        self.txtMissionTime = rtk.RTKEntry(
+            width=125,
+            tooltip=_(u"The mission time of the selected hardware item."))
         self.txtMultAdjFactor = rtk.RTKEntry(
             width=125,
             tooltip=_(
@@ -1088,6 +1098,10 @@ class AssessmentInputs(RTKWorkView):
         self._lst_handler_id.append(
             self.txtSpecifiedMTBFVar.connect('changed', self._on_focus_out,
                                              15))
+        self._lst_handler_id.append(
+            self.txtDutyCycle.connect('changed', self._on_focus_out, 16))
+        self._lst_handler_id.append(
+            self.txtMissionTime.connect('changed', self._on_focus_out, 17))
 
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_start(
@@ -1095,7 +1109,7 @@ class AssessmentInputs(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
-        #pub.subscribe(self._on_edit, 'mvwEditedHardware')
+        # pub.subscribe(self._on_edit, 'mvwEditedHardware')
 
     def _do_request_calculate(self, __button):
         """
@@ -1292,10 +1306,9 @@ class AssessmentInputs(RTKWorkView):
 
         # Now add the bottom left pane.  This is just an RTKFrame() and will be
         # the container for component-specific design attributes.
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        self.fraDesignRatings.add(_scrollwindow)
-
-        _vpaned.pack2(self.fraDesignRatings, True, True)
+        _frame = rtk.RTKFrame(label=_(u"Design Ratings"))
+        _frame.add(self.scwDesignRatings)
+        _vpaned.pack2(_frame, True, True)
 
         # Now add the top right pane.
         _vpaned = gtk.VPaned()
@@ -1313,6 +1326,8 @@ class AssessmentInputs(RTKWorkView):
         _fixed.put(self.cmbDormantEnviron, _x_pos, _y_pos[1])
         _fixed.put(self.txtActiveTemp, _x_pos, _y_pos[2])
         _fixed.put(self.txtDormantTemp, _x_pos, _y_pos[3])
+        _fixed.put(self.txtDutyCycle, _x_pos, _y_pos[4])
+        _fixed.put(self.txtMissionTime, _x_pos, _y_pos[5])
 
         _fixed.show_all()
 
@@ -1320,10 +1335,9 @@ class AssessmentInputs(RTKWorkView):
 
         # Finally, add the bottom right pane.  This is just an RTKFrame() and
         # will be the container for component-specific design attributes.
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        self.fraOperatingStress.add(_scrollwindow)
-
-        _vpaned.pack2(self.fraOperatingStress, True, True)
+        _frame = rtk.RTKFrame(label=_(u"Operating Stresses"))
+        _frame.add(self.scwOperatingStress)
+        _vpaned.pack2(_frame, True, True)
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
@@ -1437,17 +1451,19 @@ class AssessmentInputs(RTKWorkView):
             +---------+---------------------+---------+---------------------+
             |  Index  | Widget              |  Index  | Widget              |
             +=========+=====================+=========+=====================+
-            |    5    | txtActiveTemp       |   11    | txtMultAdjFactor    |
+            |    5    | txtActiveTemp       |   12    | txtSpecifiedHt      |
             +---------+---------------------+---------+---------------------+
-            |    6    | txtAddAdjFactor     |   12    | txtSpecifiedHt      |
+            |    6    | txtAddAdjFactor     |   13    | txtSpecifiedHtVar   |
             +---------+---------------------+---------+---------------------+
-            |    7    | txtDormantTemp      |   13    | txtSpecifiedHtVar   |
+            |    7    | txtDormantTemp      |   14    | txtSpecifiedMTBF    |
             +---------+---------------------+---------+---------------------+
-            |    8    | txtFailScale        |   14    | txtSpecifiedMTBF    |
+            |    8    | txtFailScale        |   15    | txtSpecifiedMTBFVar |
             +---------+---------------------+---------+---------------------+
-            |    9    | txtFailShape        |   15    | txtSpecifiedMTBFVar |
+            |    9    | txtFailShape        |   16    | txtDutyCycle        |
             +---------+---------------------+---------+---------------------+
-            |   10    | txtFailLocation     |         |                     |
+            |   10    | txtFailLocation     |   17    | txtMissionTime      |
+            +---------+---------------------+---------+---------------------+
+            |   11    | txtMultAdjFactor    |         |                     |
             +---------+---------------------+---------+---------------------+
 
         :return: False if successful or True if an error is encountered.
@@ -1463,81 +1479,48 @@ class AssessmentInputs(RTKWorkView):
             _hardware = self._dtc_data_controller.request_select(
                 self._hardware_id)
 
+            try:
+                _text = float(entry.get_text())
+            except ValueError:
+                _text = 0.0
+
             if index == 5:
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['temperature_active'] = _text
             elif index == 6:
                 _position = 30
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['add_adj_factor'] = _text
             elif index == 7:
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['temperature_dormant'] = _text
             elif index == 8:
                 _position = 60
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['scale_parameter'] = _text
             elif index == 9:
                 _position = 61
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['shape_parameter'] = _text
             elif index == 10:
                 _position = 47
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['location_parameter'] = _text
             elif index == 11:
                 _position = 54
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['mult_adj_factor'] = _text
             elif index == 12:
                 _position = 41
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['hazard_rate_specified'] = _text
             elif index == 13:
                 _position = 46
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['hr_specified_variance'] = _text
             elif index == 14:
                 _position = 50
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['mtbf_specified'] = _text
             elif index == 15:
                 _position = 53
-                try:
-                    _text = float(entry.get_text())
-                except ValueError:
-                    _text = 0.0
                 _hardware['mtbf_spec_variance'] = _text
+            elif index == 16:
+                _position = 9
+                _hardware['duty_cycle'] = _text
+            elif index == 17:
+                _position = 14
+                _hardware['mission_time'] = _text
 
             self._dtc_data_controller.request_set_attributes(
                 self._hardware_id, _hardware, 'reliability')
@@ -1566,6 +1549,18 @@ class AssessmentInputs(RTKWorkView):
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
         _hardware = self._dtc_data_controller.request_select(self._hardware_id)
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id, 'general')
+
+        self.txtDutyCycle.handler_block(self._lst_handler_id[16])
+        self.txtDutyCycle.set_text(self.fmt.format(_attributes['duty_cycle']))
+        self.txtDutyCycle.handler_unblock(self._lst_handler_id[16])
+
+        self.txtMissionTime.handler_block(self._lst_handler_id[17])
+        self.txtMissionTime.set_text(
+            self.fmt.format(_attributes['mission_time']))
+        self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
 
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id, 'electrical_design')
@@ -1668,32 +1663,80 @@ class AssessmentResults(RTKWorkView):
                             results widget labels.
 
     :ivar int _hardware_id: the ID of the Hardware currently being displayed.
+
+    :ivar txtActiveHt: displays the active failure intensity for the selected
+                       hardware item.
+    :ivar txtActiveHtVar: displays the active failure intensity variance.
+    :ivar txtDormantHt: displays the dormant failure intensity for the selected
+                        hardware item.
+    :ivar txtDormantHtVar: displays the dormant failure intensity variance.
+    :ivar txtSoftwareHt: displays the software failure intensity for the
+                         selected hardware item."))
+    :ivar txtLogisticsHt: displays the logistics failure intensity for the
+                          selected hardware item.  This is the sum of the
+                          active, dormant, and software hazard rates.
+    :ivar txtLogisticsHtVar: displays the logistics failure intensity variance.
+    :ivar txtMissionHt: displays the mission failure intensity for the selected
+                        hardware item.
+    :ivar txtMissionHtVar: displays the mission failure intensity variance.
+    :ivar txtLogisticsMTBF: displays the logistics mean time between failure
+                            (MTBF) for the selected hardware item.
+    :ivar txtLogisticsMTBFVar: displays the logistics MTBF variance.
+    :ivar txtMissionMTBF: displays the mission mean time between failure (MTBF)
+                          for the selected hardware item.
+    :ivar txtMissionMTBFVar: displays the mission MTBF variance.
+    :ivar txtLogisticsRt: displays the logistics reliability for the selected
+                          hardware item.
+    :ivar txtLogisticsRtVar: displays the logistics reliability variance.
+    :ivar txtMissionRt: displays the mission reliability for the selected
+                        hardware item.
+    :ivar txtMissionRtVar: displays the mission reliability variance.
+    :ivar txtMPMT: displays the mean preventive maintenance time (MPMT) for the
+                   selected hardware item.
+    :ivar txtMCMT: displays the mean corrective maintenance time (MCMT) for the
+                   selected hardware item.
+    :ivar txtMTTR: displays the mean time to repair (MTTR) for the selected
+                   hardware item.
+    :ivar txtMMT: displays the mean maintenance time (MMT) for the selected
+                  hardware item.  This includes preventive and corrective
+                  maintenance.
+    :ivar txtLogisticsAt: displays the logistics availability for the selected
+                          hardware item.
+    :ivar txtLogisticsAtVar: displays the logistics availability variance.
+    :ivar txtMissionAt: displays the mission availability for the selected
+                        hardware item.
+    :ivar txtMissionAtVar: displays the mission availability variance.
+    :ivar txtPartCount: displays the total part count for the selected hardware
+                        item.
+    :ivar txtPercentHt: the percentage of the system failure intensity the
+                        selected hardware item represents.
+    :ivar txtTotalCost: displays the total cost of the selected hardware item.
+    :ivar txtCostFailure: displays the cost per failure of the selected
+                          hardware item.
+    :ivar txtCostHour: displays the failure cost per mission hour for the
+                       selected hardware item.
     """
 
     # Define private list attributes.
     _lst_labels = [[
-            _(u"Active Failure Intensity [\u039B(t)]:"),
-            _(u"Dormant \u039B(t):"),
-            _(u"Software \u039B(t):"),
-            _(u"Predicted h(t):"),
-            _(u"Mission h(t):"),
-            _(u"MTBF:"),
-            _(u"Mission MTBF:"),
-            _(u"Reliability [R(t)]:"),
-            _(u"Mission R(t):"),
-            _(u"Total Parts:")
-        ], [
-            _(u"Mean Preventive Maintenance Time [MPMT]:"),
-            _(u"Mean Corrective Maintenance Time [MCMT]:"),
-            _(u"Mean Time to Repair [MTTR]:"),
-            _(u"Mean Maintenance Time [MMT]:"),
-            _(u"Availability [A(t)]:"),
-            _(u"Mission A(t):"),
-            _(u"Total Cost:"),
-            _(u"Cost/Failure:"),
-            _(u"Cost/Hour:"),
-            _(u"Total Mode Count:")
-        ]]
+        _(u"Active Failure Intensity [\u03BB(t)]:"),
+        _(u"Dormant \u03BB(t):"),
+        _(u"Software \u03BB(t):"),
+        _(u"Logistics \u03BB(t):"),
+        _(u"Mission \u03BB(t):"),
+        _(u"Percent \u03BB(t):"),
+        _(u"Logistics MTBF:"),
+        _(u"Mission MTBF:"),
+        _(u"Logistics Reliability [R(t)]:"),
+        _(u"Mission R(t):")
+    ], [
+        _(u"Logistics Availability [A(t)]:"),
+        _(u"Mission A(t):"),
+        _(u"Total Cost:"),
+        _(u"Cost/Failure:"),
+        _(u"Cost/Hour:"),
+        _(u"Total # of Parts:")
+    ]]
 
     def __init__(self, controller):
         """
@@ -1716,152 +1759,197 @@ class AssessmentResults(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
+        self.chkOverstress = rtk.RTKCheckButton(
+            label=_(u"Overstressed"),
+            tooltip=_(u"Indicates whether or not the selected hardware item "
+                      u"is overstressed."))
+
+        self.scwReliability = rtk.RTKScrolledWindow(None)
+        self.scwStress = rtk.RTKScrolledWindow(None)
+
         self.txtActiveHt = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the active "
-                      u"failure intensity for the "
+            tooltip=_(u"Displays the active failure intensity for the "
+                      u"selected hardware item."))
+        self.txtActiveHtVar = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the variance on the active failure intensity "
+                      u"for the selected hardware item."))
+        self.txtCostFailure = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            tooltip=_(u"Displays the cost per failure of the selected "
+                      u"hardware item."))
+        self.txtCostHour = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            tooltip=_(u"Displays the failure cost per operating hour for the "
                       u"selected hardware item."))
         self.txtDormantHt = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the dormant "
-                      u"failure intensity for "
-                      u"the selected hardware item."))
-        self.txtSoftwareHt = rtk.RTKEntry(
+            tooltip=_(u"Displays the dormant failure intensity for the "
+                      u"selected hardware item."))
+        self.txtDormantHtVar = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the software "
-                      u"failure intensity for "
-                      u"the selected hardware item."))
-        self.txtPredictedHt = rtk.RTKEntry(
+            tooltip=_(
+                u"Displays the variance on the dormant failure intensity "
+                u"for the selected hardware item."))
+        self.txtLogisticsAt = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics "
-                      u"failure intensity for "
-                      u"the selected {0:s}.  "
-                      u"This is the sum of the "
-                      u"active, dormant, and "
-                      u"software hazard "
-                      u"rates.").format(self._module))
+            tooltip=_(u"Displays the logistics availability for the selected "
+                      u"hardware item."))
+        self.txtLogisticsAtVar = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the variance on the logistics availability "
+                      u"for the selected hardware item."))
+        self.txtLogisticsHt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the logistics failure intensity for the "
+                      u"selected hardware item.  This is the sum of the "
+                      u"active, dormant, and software hazard rates."))
+        self.txtLogisticsHtVar = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the variance on the logistics failure "
+                      u"intensity for the selected hardware item."))
+        self.txtLogisticsMTBF = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the logistics mean time between failure "
+                      u"(MTBF) for the selected hardware item."))
+        self.txtLogisticsMTBFVar = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the variance on the logistics MTBF for the "
+                      u"selected hardware item."))
+        self.txtLogisticsRt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the logistics reliability for the selected "
+                      u"hardware item."))
+        self.txtLogisticsRtVar = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the variance on the logistics reliability "
+                      u"for the selected hardware item."))
+        self.txtMCMT = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mean corrective maintenance time (MCMT) "
+                      u"for the selected hardware item."))
+        self.txtMissionAt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mission availability for the selected "
+                      u"hardware item."))
+        self.txtMissionAtVar = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the variance on the mission availability for "
+                      u"the selected hardware item."))
         self.txtMissionHt = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"failure intensity for "
-                      u"the selected hardware item."))
-        self.txtMTBF = rtk.RTKEntry(
+            tooltip=_(u"Displays the mission failure intensity for the "
+                      u"selected hardware item."))
+        self.txtMissionHtVar = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics mean "
-                      u"time between failure (MTBF) "
-                      u"for the selected hardware item."))
+            tooltip=_(u"Displays the variance on the mission failure "
+                      u"intensity for the selected hardware item."))
         self.txtMissionMTBF = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"mean time between "
-                      u"failure (MTBF) for the "
-                      u"selected hardware item."))
-        self.txtReliability = rtk.RTKEntry(
+            tooltip=_(u"Displays the mission mean time between failure (MTBF) "
+                      u"for the selected hardware item."))
+        self.txtMissionMTBFVar = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the logistics "
-                      u"reliability for the "
+            tooltip=_(u"Displays the variance on the mission MTBF for the "
                       u"selected hardware item."))
         self.txtMissionRt = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"reliability for the "
-                      u"selected hardware item."))
-
-        self.txtMPMT = rtk.RTKEntry(
+            tooltip=_(u"Displays the mission reliability for the selected "
+                      u"hardware item."))
+        self.txtMissionRtVar = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean preventive "
-                      u"maintenance time (MPMT) for "
+            tooltip=_(u"Displays the variance on the mission reliability for "
                       u"the selected hardware item."))
-        self.txtMCMT = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"Displays the mean corrective "
-                      u"maintenance time (MCMT) for "
-                      u"the selected hardware item."))
-        self.txtMTTR = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"Displays the mean time to "
-                      u"repair (MTTR) for the "
-                      u"selected hardware item."))
         self.txtMMT = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mean maintenance "
-                      u"time (MMT) for the selected "
-                      u"{0:s}.  This includes "
-                      u"preventive and corrective "
-                      u"maintenance.").format(self._module))
-        self.txtAvailability = rtk.RTKEntry(
+            tooltip=_(u"Displays the mean maintenance time (MMT) for the "
+                      u"selected hardware item.  This includes preventive and "
+                      u"corrective maintenance."))
+        self.txtMPMT = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the "
-                      u"logistics "
-                      u"availability for the "
-                      u"selected hardware item."))
-        self.txtMissionAt = rtk.RTKEntry(
+            tooltip=_(u"Displays the mean preventive maintenance time (MPMT) "
+                      u"for the selected hardware item."))
+        self.txtMTTR = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the mission "
-                      u"availability for the "
+            tooltip=_(u"Displays the mean time to repair (MTTR) for the "
                       u"selected hardware item."))
         self.txtPartCount = rtk.RTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the total part "
-                      u"count for the selected "
+            tooltip=_(u"Displays the total part count for the selected "
                       u"hardware item."))
-        self.txtTotalCost = rtk.RTKEntry(
+        self.txtPercentHt = rtk.RTKEntry(
             width=125,
             editable=False,
-            tooltip=_(u"Displays the total cost "
-                      u"of the selected "
-                      u"hardware item."))
-        self.txtCostFailure = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            tooltip=_(u"Displays the cost per "
-                      u"failure of the "
-                      u"selected hardware item."))
-        self.txtCostHour = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            tooltip=_(u"Displays the failure cost "
-                      u"per operating hour for "
-                      u"the selected hardware item."))
-        self.txtModeCount = rtk.RTKEntry(
+            tooltip=_(u"Displays the percentage of the system failure "
+                      u"intensity the selected hardware item represents."))
+        self.txtReason = rtk.RTKTextView(
+            gtk.TextBuffer(),
+            width=600,
+            tooltip=_(u"The reason(s) the selected hardware item is "
+                      u"overstressed."))
+        self.txtSoftwareHt = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"Displays the total "
-                      u"number of failure modes "
-                      u"associated with the "
-                      u"selected Hardware item."))
+            tooltip=_(u"Displays the software failure intensity for the "
+                      u"selected hardware item."))
+        self.txtTotalCost = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            tooltip=_(u"Displays the total cost of the selected hardware "
+                      u"item."))
 
         self.pack_start(
             self._make_assessment_results_page(), expand=True, fill=True)
@@ -1877,19 +1965,92 @@ class AssessmentResults(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        (_hbx_page, __, _fxd_right, ___, _x_pos_r, __,
-         _y_pos_r) = RTKWorkView._make_assessment_results_page(self)
+        _hbox = gtk.HBox()
 
-        _fxd_right.put(self.txtModeCount, _x_pos_r, _y_pos_r[8] + 30)
-        _fxd_right.show_all()
+        # Build the assessment results page starting with the top left half.
+        _vpaned = gtk.VPaned()
 
-        self.txtActiveHt.set_sensitive(False)
-        self.txtDormantHt.set_sensitive(False)
-        self.txtSoftwareHt.set_sensitive(False)
-        self.txtReliability.set_sensitive(False)
-        self.txtMissionRt.set_sensitive(False)
+        _frame = rtk.RTKFrame(label=_(u"Reliability Results"))
+        _frame.add(_vpaned)
 
-        return _hbx_page
+        _fixed = gtk.Fixed()
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _vpaned.pack1(_scrollwindow, True, True)
+
+        _hbox.pack_start(_frame, expand=True, fill=True)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[0], _fixed, 5,
+                                              5)
+        _x_pos += 50
+
+        _fixed.put(self.txtActiveHt, _x_pos, _y_pos[0])
+        _fixed.put(self.txtActiveHtVar, _x_pos + 135, _y_pos[0])
+        _fixed.put(self.txtDormantHt, _x_pos, _y_pos[1])
+        _fixed.put(self.txtDormantHtVar, _x_pos + 135, _y_pos[1])
+        _fixed.put(self.txtSoftwareHt, _x_pos, _y_pos[2])
+        _fixed.put(self.txtLogisticsHt, _x_pos, _y_pos[3])
+        _fixed.put(self.txtLogisticsHtVar, _x_pos + 135, _y_pos[3])
+        _fixed.put(self.txtMissionHt, _x_pos, _y_pos[4])
+        _fixed.put(self.txtMissionHtVar, _x_pos + 135, _y_pos[4])
+        _fixed.put(self.txtPercentHt, _x_pos, _y_pos[5])
+        _fixed.put(self.txtLogisticsMTBF, _x_pos, _y_pos[6])
+        _fixed.put(self.txtLogisticsMTBFVar, _x_pos + 135, _y_pos[6])
+        _fixed.put(self.txtMissionMTBF, _x_pos, _y_pos[7])
+        _fixed.put(self.txtMissionMTBFVar, _x_pos + 135, _y_pos[7])
+        _fixed.put(self.txtLogisticsRt, _x_pos, _y_pos[8])
+        _fixed.put(self.txtLogisticsRtVar, _x_pos + 135, _y_pos[8])
+        _fixed.put(self.txtMissionRt, _x_pos, _y_pos[9])
+        _fixed.put(self.txtMissionRtVar, _x_pos + 135, _y_pos[9])
+
+        _fixed.show_all()
+
+        # Now add the bottom left pane.  This is just an RTKScrolledwindow()
+        # and will be the container for component-specific reliability results.
+        _vpaned.pack2(self.scwReliability, True, True)
+
+        # Now add the top right pane.
+        _vpaned = gtk.VPaned()
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"Availability Results"))
+        _frame.add(_scrollwindow)
+
+        _vpaned.pack1(_frame, True, True)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[1], _fixed, 5,
+                                              5)
+        _x_pos += 50
+
+        _fixed.put(self.txtLogisticsAt, _x_pos, _y_pos[0])
+        _fixed.put(self.txtLogisticsAtVar, _x_pos + 135, _y_pos[0])
+        _fixed.put(self.txtMissionAt, _x_pos, _y_pos[1])
+        _fixed.put(self.txtMissionAtVar, _x_pos + 135, _y_pos[1])
+        _fixed.put(self.txtTotalCost, _x_pos, _y_pos[2])
+        _fixed.put(self.txtCostFailure, _x_pos, _y_pos[3])
+        _fixed.put(self.txtCostHour, _x_pos, _y_pos[4])
+        _fixed.put(self.txtPartCount, _x_pos, _y_pos[5])
+
+        # Finally, add the bottom right pane.  This is just an RTKFrame() and
+        # will be the container for component-specific design attributes.
+        _frame = rtk.RTKFrame(label=_(u"Stress Results"))
+        _frame.add(self.scwStress)
+        _vpaned.pack2(_frame, True, True)
+
+        _hbox.pack_end(_vpaned, expand=True, fill=True)
+
+        _label = rtk.RTKLabel(
+            _(u"Assessment\nResults"),
+            height=30,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER,
+            tooltip=_(u"Displays reliability, "
+                      u"maintainability, and availability "
+                      u"assessment results for the selected "
+                      u"{0:s}.").format(self._module))
+        self.hbx_tab_label.pack_start(_label)
+
+        return _hbox
 
     def _on_select(self, module_id, **kwargs):
         """
@@ -1909,28 +2070,68 @@ class AssessmentResults(RTKWorkView):
         self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
         _hardware = self._dtc_data_controller.request_select(self._hardware_id)
 
-        #self.txtAvailability.set_text(
-        #    str(self.fmt.format(_hardware.availability_logistics)))
-        #self.txtMissionAt.set_text(
-        #    str(self.fmt.format(_hardware.availability_mission)))
-        #self.txtMissionHt.set_text(
-        #    str(self.fmt.format(_hardware.hazard_rate_mission)))
-        #self.txtPredictedHt.set_text(
-        #    str(self.fmt.format(_hardware.hazard_rate_logistics)))
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id, 'general')
 
-        #self.txtMMT.set_text(str(self.fmt.format(_hardware.mmt)))
-        #self.txtMCMT.set_text(str(self.fmt.format(_hardware.mcmt)))
-        #self.txtMPMT.set_text(str(self.fmt.format(_hardware.mpmt)))
+        self.txtTotalCost.set_text(str(locale.currency(_attributes['cost'])))
+        self.txtCostFailure.set_text(
+            str(locale.currency(_attributes['cost_failure'])))
+        self.txtCostHour.set_text(
+            str(locale.currency(_attributes['cost_hour'])))
+        self.txtPartCount.set_text(
+            str('{0:d}'.format(_attributes['total_part_count'])))
 
-        #self.txtMissionMTBF.set_text(
-        #    str(self.fmt.format(_hardware.mtbf_mission)))
-        #self.txtMTBF.set_text(str(self.fmt.format(_hardware.mtbf_logistics)))
-        #self.txtMTTR.set_text(str(self.fmt.format(_hardware.mttr)))
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id, 'reliability')
 
-        #self.txtTotalCost.set_text(str(locale.currency(_hardware.cost)))
-        #self.txtModeCount.set_text(
-        #    str('{0:d}'.format(_hardware.total_mode_count)))
-        #self.txtPartCount.set_text(
-        #    str('{0:d}'.format(_hardware.total_part_count)))
+        self.txtActiveHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_active'])))
+        self.txtActiveHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_active_variance'])))
+
+        self.txtDormantHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_dormant'])))
+        self.txtDormantHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_dormant_variance'])))
+
+        self.txtSoftwareHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_software'])))
+
+        self.txtPercentHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_percent'])))
+
+        self.txtLogisticsAt.set_text(
+            str(self.fmt.format(_attributes['availability_logistics'])))
+        self.txtLogisticsAtVar.set_text(
+            str(self.fmt.format(_attributes['avail_log_variance'])))
+        self.txtLogisticsHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_logistics'])))
+        self.txtLogisticsHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_logistics_variance'])))
+        self.txtLogisticsMTBF.set_text(
+            str(self.fmt.format(_attributes['mtbf_logistics'])))
+        self.txtLogisticsMTBFVar.set_text(
+            str(self.fmt.format(_attributes['mtbf_log_variance'])))
+        self.txtLogisticsRt.set_text(
+            str(self.fmt.format(_attributes['reliability_logistics'])))
+        self.txtLogisticsRtVar.set_text(
+            str(self.fmt.format(_attributes['reliability_log_variance'])))
+
+        self.txtMissionAt.set_text(
+            str(self.fmt.format(_attributes['availability_mission'])))
+        self.txtMissionAtVar.set_text(
+            str(self.fmt.format(_attributes['avail_mis_variance'])))
+        self.txtMissionHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_mission'])))
+        self.txtMissionHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_mission_variance'])))
+        self.txtMissionMTBF.set_text(
+            str(self.fmt.format(_attributes['mtbf_mission'])))
+        self.txtMissionMTBFVar.set_text(
+            str(self.fmt.format(_attributes['mtbf_miss_variance'])))
+        self.txtMissionRt.set_text(
+            str(self.fmt.format(_attributes['reliability_mission'])))
+        self.txtMissionRtVar.set_text(
+            str(self.fmt.format(_attributes['reliability_miss_variance'])))
 
         return _return
