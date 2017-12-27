@@ -1,4 +1,4 @@
-RTK Hardware Sub-Package
+Hardware Package
 ===============================================================================
 
 .. toctree::
