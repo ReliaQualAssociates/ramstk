@@ -13,3 +13,9 @@ from .TestRTKRevision import TestRTKRevision
 from .TestRTKStakeholder import TestRTKStakeholder
 from .TestRTKValidation import TestRTKValidation
 from .TestRTKProgramStatus import TestRTKProgramStatus
+from .TestRTKHardware import TestRTKHardware
+from .TestRTKDesignElectric import TestRTKDesignElectric
+from .TestRTKDesignMechanic import TestRTKDesignMechanic
+from .TestRTKReliability import TestRTKReliability
+from .TestRTKMilHdbkF import TestRTKMilHdbkF
+from .TestRTKNSWC import TestRTKNSWC

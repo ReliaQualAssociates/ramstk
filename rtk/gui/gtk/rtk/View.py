@@ -109,7 +109,6 @@ class RTKBaseView(object):
                 self.treeview = RTKTreeView(_fmt_path, 0, _fmt_file, _bg_color,
                                             _fg_color)
                 self._lst_col_order = self.treeview.order
-
             except KeyError:
                 self.treeview = gtk.TreeView()
 

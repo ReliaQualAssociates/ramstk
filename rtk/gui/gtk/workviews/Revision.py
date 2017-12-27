@@ -14,6 +14,7 @@ from pubsub import pub  # pylint: disable=E0401
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
+
 # from Assistants import AddRevision
 
 
@@ -51,6 +52,11 @@ class GeneralData(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_gendata_labels = [
+            _(u"Revision Code:"),
+            _(u"Revision Name:"),
+            _(u"Remarks:")
+        ]
 
         # Initialize private scalar attributes.
         self._revision_id = None
@@ -60,7 +66,15 @@ class GeneralData(RTKWorkView):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.txtName.props.width_request = 800
+        self.txtCode = rtk.RTKEntry(
+            width=125, tooltip=_(u"A unique code for the selected revision."))
+        self.txtName = rtk.RTKEntry(
+            width=800, tooltip=_(u"The name of the selected revision."))
+        self.txtRemarks = rtk.RTKTextView(
+            gtk.TextBuffer(),
+            width=400,
+            tooltip=_(u"Enter any remarks associated with the "
+                      u"selected revision."))
 
         self._lst_handler_id.append(
             self.txtName.connect('focus-out-event', self._on_focus_out, 0))
@@ -137,8 +151,30 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        (_frame, _fixed, _x_pos,
-         _y_pos) = RTKWorkView._make_general_data_page(self)
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
+                                              5, 5)
+        _x_pos += 50
+
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
+        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
+
+        _fixed.show_all()
+
+        _label = rtk.RTKLabel(
+            _(u"General\nData"),
+            height=30,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER,
+            tooltip=_(u"Displays general information for the selected "
+                      u"revision."))
+        self.hbx_tab_label.pack_start(_label)
 
         return _frame
 

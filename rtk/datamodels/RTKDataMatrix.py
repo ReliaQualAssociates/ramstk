@@ -36,7 +36,8 @@ class RTKDataMatrix(object):
     :ivar int n_row: the number of rows in the Matrix.
     :ivar int n_col: the number of columns in the Matrix.
 
-    There are currently 10 matrices as defined by their matrix type.  These are:
+    There are currently 10 matrices as defined by their matrix type.  These
+    are:
 
         +-------------+--------------+--------------+
         |  Row Table  | Column Table |  Matrix Type |
@@ -214,7 +215,6 @@ class RTKDataMatrix(object):
             else:
                 self.dic_row_hdrs[item_id] = heading
                 _values = [0] * len(self.dtf_matrix.columns)
-
                 try:
                     self.dtf_matrix.loc[item_id] = _values
                     self.n_row = len(self.dtf_matrix.index)

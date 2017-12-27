@@ -4,9 +4,9 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKHardware Table Module."""
+"""RTKHardware Table Module."""  # pragma: no cover
 
-from datetime import date
+from datetime import date  # pragma: no cover
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship  # pylint: disable=E0401
@@ -32,7 +32,7 @@ class RTKHardware(RTK_BASE):
     """
 
     __tablename__ = 'rtk_hardware'
-    __table_args__ = {'extend_existing': True}
+    __table_args__ = {'extend_existing': True}  # pragma: no cover
 
     revision_id = Column(
         'fld_revision_id',
@@ -86,25 +86,44 @@ class RTKHardware(RTK_BASE):
     revision = relationship('RTKRevision', back_populates='hardware')
 
     # One-to-one relationships.
-    allocation = relationship('RTKAllocation', back_populates='hardware')
-    hazard = relationship('RTKHazardAnalysis', back_populates='hardware')
-    sia = relationship('RTKSimilarItem', back_populates='hardware')
-    mode = relationship('RTKMode', back_populates='hardware')
+    allocation = relationship(
+        'RTKAllocation', back_populates='hardware', cascade='all,delete')
+    hazard = relationship(
+        'RTKHazardAnalysis', back_populates='hardware', cascade='all,delete')
+    sia = relationship(
+        'RTKSimilarItem', back_populates='hardware', cascade='all,delete')
+    mode = relationship(
+        'RTKMode', back_populates='hardware', cascade='all,delete')
 
     reliability = relationship(
-        'RTKReliability', uselist=False, back_populates='hardware')
+        'RTKReliability',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
     milhdbkf = relationship(
-        'RTKMilHdbkF', uselist=False, back_populates='hardware')
-    nswc = relationship('RTKNSWC', uselist=False, back_populates='hardware')
+        'RTKMilHdbkF',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
+    nswc = relationship(
+        'RTKNSWC',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
     design_electric = relationship(
-        'RTKDesignElectric', uselist=False, back_populates='hardware')
+        'RTKDesignElectric',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
     design_mechanic = relationship(
-        'RTKDesignMechanic', uselist=False, back_populates='hardware')
+        'RTKDesignMechanic',
+        uselist=False,
+        back_populates='hardware',
+        cascade='all,delete')
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKHardware data model
-        attributes.
+        Retrieve the current values of the RTKHardware data model attributes.
 
         :return: {revision_id, hardware_id, alt_part_number, attachments,
                   cage_code, category_id, comp_ref_des, cost, cost_failure,
@@ -114,9 +133,8 @@ class RTKHardware(RTK_BASE):
                   quantity, ref_des, remarks, repairable, specification_number,
                   subcategory_id, tagged_part, total_part_count,
                   total_power_dissipation, year_of_manufacture} pairs.
-        :rtype: tuple
+        :rtype: dict
         """
-
         _attributes = {
             'revision_id': self.revision_id,
             'hardware_id': self.hardware_id,
@@ -158,14 +176,13 @@ class RTKHardware(RTK_BASE):
 
     def set_attributes(self, attributes):
         """
-        Method to set the RTKHardware data model attributes.
+        Set the current values of the RTKHardware data model attributes.
 
         :param tuple attributes: tuple of attribute values to assign to the
                                  Hardware instance attributes.
         :return: (_code, _msg; the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKHardware {0:d} attributes.". \
                format(self.hardware_id)

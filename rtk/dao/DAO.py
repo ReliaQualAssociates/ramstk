@@ -595,7 +595,8 @@ class DAO(object):
         try:
             session.delete(item)
             session.commit()
-        except exc.SQLAlchemyError:
+        except(exc.SQLAlchemyError, exc.DBAPIError) as error:
+            print error
             session.rollback()
             _error_code = 1005
             _msg = "RTK ERROR: Deleting an item from the RTK Program database."

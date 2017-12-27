@@ -84,11 +84,14 @@ class RTKMode(RTK_BASE):
     # Define the relationships to other tables in the RTK Program database.
     function = relationship('RTKFunction', back_populates='mode')
     hardware = relationship('RTKHardware', back_populates='mode')
-    mechanism = relationship('RTKMechanism', back_populates='mode')
+    mechanism = relationship(
+        'RTKMechanism', back_populates='mode', cascade='all,delete')
 
     # The following are required for functional FMEA.
-    control = relationship('RTKControl', back_populates='mode')
-    action = relationship('RTKAction', back_populates='mode')
+    control = relationship(
+        'RTKControl', back_populates='mode', cascade='all,delete')
+    action = relationship(
+        'RTKAction', back_populates='mode', cascade='all,delete')
 
     is_mode = True
     is_mechanism = False

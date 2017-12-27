@@ -24,6 +24,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>revision_id</key>
         </column>
         <column>
             <defaulttitle>Hardware ID</defaulttitle>
@@ -33,6 +34,7 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>1</visible>
+            <key>hardware_id</key>
         </column>
         <column>
             <defaulttitle>Alternate Part Number</defaulttitle>
@@ -42,1160 +44,597 @@ experience. -->
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Attachments</defaulttitle>
-            <usertitle>Attachments</usertitle>
-            <datatype>gchararray</datatype>
-            <position>3</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <key>alt_part_num</key>
         </column>
         <column>
             <defaulttitle>CAGE Code</defaulttitle>
             <usertitle>CAGE Code</usertitle>
             <datatype>gchararray</datatype>
-            <position>4</position>
+            <position>3</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cage_code</key>
         </column>
         <column>
             <defaulttitle>Composite Ref. Des.</defaulttitle>
             <usertitle>Composite Ref. Des.</usertitle>
             <datatype>gchararray</datatype>
-            <position>5</position>
+            <position>4</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>comp_ref_des</key>
         </column>
         <column>
             <defaulttitle>Cost</defaulttitle>
             <usertitle>Cost</usertitle>
             <datatype>gfloat</datatype>
-            <position>6</position>
+            <position>5</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost</key>
         </column>
         <column>
             <defaulttitle>Cost/Failure</defaulttitle>
             <usertitle>Cost/Failure</usertitle>
             <datatype>gfloat</datatype>
-            <position>7</position>
+            <position>6</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost_failure</key>
         </column>
         <column>
             <defaulttitle>Cost/Hour</defaulttitle>
             <usertitle>Cost/Hour</usertitle>
             <datatype>gfloat</datatype>
-            <position>8</position>
+            <position>7</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>cost_hour</key>
         </column>
         <column>
             <defaulttitle>Description</defaulttitle>
             <usertitle>Description</usertitle>
             <datatype>gchararray</datatype>
-            <position>9</position>
+            <position>8</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>0</visible>
+            <key>description</key>
         </column>
         <column>
             <defaulttitle>Duty Cycle</defaulttitle>
             <usertitle>Duty Cycle</usertitle>
             <datatype>gfloat</datatype>
-            <position>10</position>
+            <position>9</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Environment, Active</defaulttitle>
-            <usertitle>Environment, Active</usertitle>
-            <datatype>gint</datatype>
-            <position>11</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Environment, Dormant</defaulttitle>
-            <usertitle>Environment, Dormant</usertitle>
-            <datatype>gint</datatype>
-            <position>12</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <key>duty_cycle</key>
         </column>
         <column>
             <defaulttitle>Figure Number</defaulttitle>
             <usertitle>Figure Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>13</position>
+            <position>10</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Humidity</defaulttitle>
-            <usertitle>Humidity</usertitle>
-            <datatype>gfloat</datatype>
-            <position>14</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <key>figure_number</key>
         </column>
         <column>
             <defaulttitle>LCN</defaulttitle>
             <usertitle>LCN</usertitle>
             <datatype>gchararray</datatype>
-            <position>15</position>
+            <position>11</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>lcn</key>
         </column>
         <column>
             <defaulttitle>Level</defaulttitle>
             <usertitle>Level</usertitle>
             <datatype>gint</datatype>
-            <position>16</position>
+            <position>12</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>level</key>
         </column>
         <column>
             <defaulttitle>Manufacturer</defaulttitle>
             <usertitle>Manufacturer</usertitle>
             <datatype>gint</datatype>
-            <position>17</position>
+            <position>13</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>manufacturer_id</key>
         </column>
         <column>
             <defaulttitle>Mission Time</defaulttitle>
             <usertitle>Mission Time</usertitle>
             <datatype>gfloat</datatype>
-            <position>18</position>
+            <position>14</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mission_time</key>
         </column>
         <column>
             <defaulttitle>Name</defaulttitle>
             <usertitle>Name</usertitle>
             <datatype>gchararray</datatype>
-            <position>19</position>
+            <position>15</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>name</key>
         </column>
         <column>
             <defaulttitle>NSN</defaulttitle>
             <usertitle>NSN</usertitle>
             <datatype>gchararray</datatype>
-            <position>20</position>
+            <position>16</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Overstress</defaulttitle>
-            <usertitle>Overstress</usertitle>
-            <datatype>gint</datatype>
-            <position>21</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <key>nsn</key>
         </column>
         <column>
             <defaulttitle>Page Number</defaulttitle>
             <usertitle>Page Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>22</position>
+            <position>17</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>page_number</key>
         </column>
         <column>
             <defaulttitle>Parent Assembly</defaulttitle>
             <usertitle>Parent Assembly</usertitle>
             <datatype>gchararray</datatype>
-            <position>23</position>
+            <position>18</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>parent_id</key>
         </column>
         <column>
             <defaulttitle>Part</defaulttitle>
             <usertitle>Part</usertitle>
             <datatype>gint</datatype>
-            <position>24</position>
+            <position>19</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>part</key>
         </column>
         <column>
             <defaulttitle>Part Number</defaulttitle>
             <usertitle>Part Number</usertitle>
             <datatype>gchararray</datatype>
-            <position>25</position>
+            <position>20</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
+            <key>part_number</key>
         </column>
         <column>
             <defaulttitle>Quantity</defaulttitle>
             <usertitle>Quantity</usertitle>
             <datatype>gint</datatype>
-            <position>26</position>
+            <position>21</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>quantity</key>
         </column>
         <column>
             <defaulttitle>Reference Designator</defaulttitle>
             <usertitle>Reference Designator</usertitle>
             <datatype>gchararray</datatype>
-            <position>27</position>
+            <position>22</position>
             <widget>text</widget>
             <editable>1</editable>
             <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Reliability Goal</defaulttitle>
-            <usertitle>Reliability Goal</usertitle>
-            <datatype>gfloat</datatype>
-            <position>28</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Reliability Goal Measure</defaulttitle>
-            <usertitle>Reliability Goal Measure</usertitle>
-            <datatype>gint</datatype>
-            <position>29</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <key>ref_des</key>
         </column>
         <column>
             <defaulttitle>Remarks</defaulttitle>
             <usertitle>Remarks</usertitle>
             <datatype>gchararray</datatype>
-            <position>30</position>
+            <position>23</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>remarks</key>
         </column>
         <column>
-            <defaulttitle>RPM</defaulttitle>
-            <usertitle>RPM</usertitle>
-            <datatype>gfloat</datatype>
-            <position>31</position>
+            <defaulttitle>Repairable</defaulttitle>
+            <usertitle>Repairable</usertitle>
+            <datatype>gint</datatype>
+            <position>24</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>repairable</key>
         </column>
         <column>
             <defaulttitle>Specification</defaulttitle>
             <usertitle>Specification</usertitle>
             <datatype>gchararray</datatype>
-            <position>32</position>
+            <position>25</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>specification_number</key>
         </column>
         <column>
             <defaulttitle>Tagged Part</defaulttitle>
             <usertitle>Tagged Part</usertitle>
             <datatype>gint</datatype>
-            <position>33</position>
+            <position>26</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>tagged_part</key>
         </column>
         <column>
-            <defaulttitle>Temperature, Active</defaulttitle>
-            <usertitle>Temperature, Active</usertitle>
-            <datatype>gfloat</datatype>
-            <position>34</position>
+            <defaulttitle>Part Count</defaulttitle>
+            <usertitle>Part Count</usertitle>
+            <datatype>gint</datatype>
+            <position>27</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>total_part_count</key>
         </column>
         <column>
-            <defaulttitle>Temperature, Dormant</defaulttitle>
-            <usertitle>Temperature, Dormant</usertitle>
+            <defaulttitle>Power Dissipation</defaulttitle>
+            <usertitle>Power Dissipation</usertitle>
             <datatype>gfloat</datatype>
-            <position>35</position>
+            <position>28</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Vibration</defaulttitle>
-            <usertitle>Vibration</usertitle>
-            <datatype>gfloat</datatype>
-            <position>36</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <key>total_power_dissipation</key>
         </column>
         <column>
             <defaulttitle>Year of Manufacture</defaulttitle>
             <usertitle>Year of Manufacture</usertitle>
             <datatype>gint</datatype>
-            <position>37</position>
+            <position>29</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>year_of_manufacture</key>
         </column>
         <column>
-            <defaulttitle>Current Ratio</defaulttitle>
-            <usertitle>Current Ratio</usertitle>
+            <defaulttitle>Additive Adj. Factor</defaulttitle>
+            <usertitle>Additive Adj. Factor</usertitle>
+            <datatype>gfloat</datatype>
+            <position>30</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>add_adj_factor</key>
+        </column>
+        <column>
+            <defaulttitle>Logistics A(t)</defaulttitle>
+            <usertitle>Logistics A(t)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>31</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>availability_logistics</key>
+        </column>
+        <column>
+            <defaulttitle>Mission A(t)</defaulttitle>
+            <usertitle>Mission A(t)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>32</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>availability_mission</key>
+        </column>
+        <column>
+            <defaulttitle>Logistics A(t) Variance</defaulttitle>
+            <usertitle>Logistics A(t) Variance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>33</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>avail_log_variance</key>
+        </column>
+        <column>
+            <defaulttitle>Mission A(t) Variance</defaulttitle>
+            <usertitle>Mission A(t) Variance</usertitle>
+            <datatype>gfloat</datatype>
+            <position>34</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>avail_mis_variance</key>
+        </column>
+        <column>
+            <defaulttitle>Active h(t)</defaulttitle>
+            <usertitle>Active h(t)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>35</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+            <key>hazard_rate_active</key>
+        </column>
+        <column>
+            <defaulttitle>Dormant h(t)</defaulttitle>
+            <usertitle>Dormant h(t)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>36</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>0</visible>
+            <key>hazard_rate_dormant</key>
+        </column>
+        <column>
+            <defaulttitle>Logistics h(t)</defaulttitle>
+            <usertitle>Logistics h(t)</usertitle>
+            <datatype>gfloat</datatype>
+            <position>37</position>
+            <widget>text</widget>
+            <editable>0</editable>
+            <visible>1</visible>
+            <key>hazard_rate_logistics</key>
+        </column>
+        <column>
+            <defaulttitle>Mission h(t)</defaulttitle>
+            <usertitle>Mission h(t)</usertitle>
             <datatype>gfloat</datatype>
             <position>38</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hazard_rate_mission</key>
         </column>
         <column>
-            <defaulttitle>Maximum Rated Temperature</defaulttitle>
-            <usertitle>Maximum Rated Temperature</usertitle>
+            <defaulttitle>h(t) Percent</defaulttitle>
+            <usertitle>h(t) Percent</usertitle>
             <datatype>gfloat</datatype>
             <position>39</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hazard_rate_percent</key>
         </column>
         <column>
-            <defaulttitle>Minimum Rated Temperature</defaulttitle>
-            <usertitle>Minimum Rated Temperature</usertitle>
+            <defaulttitle>Software h(t)</defaulttitle>
+            <usertitle>Software h(t)</usertitle>
             <datatype>gfloat</datatype>
             <position>40</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hazard_rate_software</key>
         </column>
         <column>
-            <defaulttitle>Operating Current</defaulttitle>
-            <usertitle>Operating Current</usertitle>
+            <defaulttitle>Stated h(t)</defaulttitle>
+            <usertitle>Stated h(t)</usertitle>
             <datatype>gfloat</datatype>
             <position>41</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hazard_rate_specified</key>
         </column>
         <column>
-            <defaulttitle>Operating Power</defaulttitle>
-            <usertitle>Operating Power</usertitle>
+            <defaulttitle>Active h(t) Variance</defaulttitle>
+            <usertitle>Active h(t) Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>42</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>hr_active_variance</key>
         </column>
         <column>
-            <defaulttitle>Operating Voltage</defaulttitle>
-            <usertitle>Operating Voltage</usertitle>
+            <defaulttitle>Dormant h(t) Variance</defaulttitle>
+            <usertitle>Dormant h(t) Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>43</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hr_dormant_variance</key>
         </column>
         <column>
-            <defaulttitle>Power Ratio</defaulttitle>
-            <usertitle>Power Ratio</usertitle>
+            <defaulttitle>Logistics h(t) Variance</defaulttitle>
+            <usertitle>Logistics h(t) Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>44</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>hr_logistics_variance</key>
         </column>
         <column>
-            <defaulttitle>Rated Current</defaulttitle>
-            <usertitle>Rated Current</usertitle>
+            <defaulttitle>Mission h(t) Variance</defaulttitle>
+            <usertitle>Mission h(t) Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>45</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hr_mission_variance</key>
         </column>
         <column>
-            <defaulttitle>Rated Power</defaulttitle>
-            <usertitle>Rated Power</usertitle>
+            <defaulttitle>Stated h(t) Variance</defaulttitle>
+            <usertitle>Stated h(t) Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>46</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>hr_specified_variance</key>
         </column>
         <column>
-            <defaulttitle>Rated Voltage</defaulttitle>
-            <usertitle>Rated Voltage</usertitle>
+            <defaulttitle>Location Parameter</defaulttitle>
+            <usertitle>Location Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>47</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>location_parameter</key>
         </column>
         <column>
-            <defaulttitle>Temperature Rise</defaulttitle>
-            <usertitle>Temperature Rise</usertitle>
+            <defaulttitle>Logistics MTBF</defaulttitle>
+            <usertitle>Logistics MTBF</usertitle>
             <datatype>gfloat</datatype>
             <position>48</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>mtbf_logistics</key>
         </column>
         <column>
-            <defaulttitle>Voltage Ratio</defaulttitle>
-            <usertitle>Voltage Ratio</usertitle>
+            <defaulttitle>Mission MBTF</defaulttitle>
+            <usertitle>Mission MTBF</usertitle>
             <datatype>gfloat</datatype>
             <position>49</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>mtbf_mission</key>
         </column>
         <column>
-            <defaulttitle>Additive Adjustment Factor</defaulttitle>
-            <usertitle>Additive Adjustment Factor</usertitle>
+            <defaulttitle>Stated MTBF</defaulttitle>
+            <usertitle>Stated MTBF</usertitle>
             <datatype>gfloat</datatype>
             <position>50</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mtbf_specified</key>
         </column>
         <column>
-            <defaulttitle>Availability, Logistics</defaulttitle>
-            <usertitle>Availability, Logistics</usertitle>
+            <defaulttitle>Logistics MTBF Variance</defaulttitle>
+            <usertitle>Logistics MTBF Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>51</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>mtbf_log_variance</key>
         </column>
         <column>
-            <defaulttitle>Availability, Mission</defaulttitle>
-            <usertitle>Availability, Mission</usertitle>
+            <defaulttitle>Mission MTBF Variance</defaulttitle>
+            <usertitle>Mission MTBF Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>52</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>mtbf_miss_variance</key>
         </column>
         <column>
-            <defaulttitle>Variance, Availability, Logistics</defaulttitle>
-            <usertitle>Variance, Availability, Logistics</usertitle>
+            <defaulttitle>Stated MTBF Variance</defaulttitle>
+            <usertitle>Stated MTBF Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>53</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mtbf_spec_variance</key>
         </column>
         <column>
-            <defaulttitle>Variance, Availability, Mission</defaulttitle>
-            <usertitle>Variance, Availability, Mission</usertitle>
+            <defaulttitle>Multiplicative Adj. Factor</defaulttitle>
+            <usertitle>Multiplicative Adj. Factor</usertitle>
             <datatype>gfloat</datatype>
             <position>54</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>mult_adj_factor</key>
         </column>
         <column>
-            <defaulttitle>Failure Distribution</defaulttitle>
-            <usertitle>Failure Distribution</usertitle>
-            <datatype>gint</datatype>
+            <defaulttitle>Reliability Goal</defaulttitle>
+            <usertitle>Reliability Goal</usertitle>
+            <datatype>gfloat</datatype>
             <position>55</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>reliability_goal</key>
         </column>
         <column>
-            <defaulttitle>Failure Parameter 1</defaulttitle>
-            <usertitle>Failure Parameter 1</usertitle>
+            <defaulttitle>Logistics R(t)</defaulttitle>
+            <usertitle>Logistics R(t)</usertitle>
             <datatype>gfloat</datatype>
             <position>56</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>reliability_logistics</key>
         </column>
         <column>
-            <defaulttitle>Failure Parameter 2</defaulttitle>
-            <usertitle>Failure Parameter 2</usertitle>
+            <defaulttitle>Mission R(t)</defaulttitle>
+            <usertitle>Mission R(t)</usertitle>
             <datatype>gfloat</datatype>
             <position>57</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>0</visible>
+            <visible>1</visible>
+            <key>reliability_mission</key>
         </column>
         <column>
-            <defaulttitle>Failure Parameter 3</defaulttitle>
-            <usertitle>Failure Parameter 3</usertitle>
+            <defaulttitle>Logistics R(t) Variance</defaulttitle>
+            <usertitle>Logistics R(t) Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>58</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>reliability_log_variance</key>
         </column>
         <column>
-            <defaulttitle>Failure Rate, Active</defaulttitle>
-            <usertitle>Failure Rate, Active</usertitle>
+            <defaulttitle>Mission R(t) Variance</defaulttitle>
+            <usertitle>Mission R(t) Variance</usertitle>
             <datatype>gfloat</datatype>
             <position>59</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>reliability_miss_variance</key>
         </column>
         <column>
-            <defaulttitle>Failure Rate, Dormant</defaulttitle>
-            <usertitle>Failure Rate, Dormant</usertitle>
+            <defaulttitle>Scale Parameter</defaulttitle>
+            <usertitle>Scale Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>60</position>
             <widget>text</widget>
             <editable>0</editable>
             <visible>0</visible>
+            <key>scale_parameter</key>
         </column>
         <column>
-            <defaulttitle>Failure Rate, Logistics</defaulttitle>
-            <usertitle>Failure Rate, Logistics</usertitle>
+            <defaulttitle>Shape Parameter</defaulttitle>
+            <usertitle>Shape Parameter</usertitle>
             <datatype>gfloat</datatype>
             <position>61</position>
             <widget>text</widget>
             <editable>0</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Hazard Rate Method</defaulttitle>
-            <usertitle>Hazard Rate Method</usertitle>
-            <datatype>gint</datatype>
-            <position>62</position>
-            <widget>text</widget>
-            <editable>0</editable>
             <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Failure Rate, Mission</defaulttitle>
-            <usertitle>Failure Rate, Mission</usertitle>
-            <datatype>gfloat</datatype>
-            <position>63</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Hazard Rate Model</defaulttitle>
-            <usertitle>Hazard Rate Model</usertitle>
-            <datatype>gchararray</datatype>
-            <position>64</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Failure Rate, Percent</defaulttitle>
-            <usertitle>Failure Rate, Percent</usertitle>
-            <datatype>gfloat</datatype>
-            <position>65</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Failure Rate, Software</defaulttitle>
-            <usertitle>Failure Rate, Software</usertitle>
-            <datatype>gfloat</datatype>
-            <position>66</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Failure Rate, Specified</defaulttitle>
-            <usertitle>Failure Rate, Specified</usertitle>
-            <datatype>gfloat</datatype>
-            <position>67</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Failure Rate Type</defaulttitle>
-            <usertitle>Failure Rate Type</usertitle>
-            <datatype>gint</datatype>
-            <position>68</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, Failure Rate, Active</defaulttitle>
-            <usertitle>Variance, Failure Rate, Active</usertitle>
-            <datatype>gfloat</datatype>
-            <position>69</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, Failure Rate, Dormant</defaulttitle>
-            <usertitle>Variance, Failure Rate, Dormant</usertitle>
-            <datatype>gfloat</datatype>
-            <position>70</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, Failure Rate, Logistics</defaulttitle>
-            <usertitle>Variance, Failure Rate, Logistics</usertitle>
-            <datatype>gfloat</datatype>
-            <position>71</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, Failure Rate, Mission</defaulttitle>
-            <usertitle>Variance, Failure Rate, Mission</usertitle>
-            <datatype>gfloat</datatype>
-            <position>72</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, Failure Rate, Specified</defaulttitle>
-            <usertitle>Variance, Failure Rate, Specified</usertitle>
-            <datatype>gfloat</datatype>
-            <position>73</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>MTBF, Logistics</defaulttitle>
-            <usertitle>MTBF, Logistics</usertitle>
-            <datatype>gfloat</datatype>
-            <position>74</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>MTBF, Mission</defaulttitle>
-            <usertitle>MTBF, Mission</usertitle>
-            <datatype>gfloat</datatype>
-            <position>75</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>MTBF, Specified</defaulttitle>
-            <usertitle>MTBF, Specified</usertitle>
-            <datatype>gfloat</datatype>
-            <position>76</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, MTBF, Logistics</defaulttitle>
-            <usertitle>Variance, MTBF, Logistics</usertitle>
-            <datatype>gfloat</datatype>
-            <position>77</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, MTBF, Mission</defaulttitle>
-            <usertitle>Variance, MTBF, Mission</usertitle>
-            <datatype>gfloat</datatype>
-            <position>78</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, MTBF, Specified</defaulttitle>
-            <usertitle>Variance, MTBF, Specified</usertitle>
-            <datatype>gfloat</datatype>
-            <position>79</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Mult. Adj. Factor</defaulttitle>
-            <usertitle>Mult. Adj. Factor</usertitle>
-            <datatype>gfloat</datatype>
-            <position>80</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Reliability, Logistics</defaulttitle>
-            <usertitle>Reliability, Logistics</usertitle>
-            <datatype>gfloat</datatype>
-            <position>81</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>1</visible>
-        </column>
-        <column>
-            <defaulttitle>Reliability, Mission</defaulttitle>
-            <usertitle>Reliability, Mission</usertitle>
-            <datatype>gfloat</datatype>
-            <position>82</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, Reliability, Logistics</defaulttitle>
-            <usertitle>Variance, Reliability, Logistics</usertitle>
-            <datatype>gfloat</datatype>
-            <position>83</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Variance, Reliability, Mission</defaulttitle>
-            <usertitle>Variance, Reliability, Mission</usertitle>
-            <datatype>gfloat</datatype>
-            <position>84</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Survival Analysis Data Set</defaulttitle>
-            <usertitle>Survival Analysis Data Set</usertitle>
-            <datatype>gint</datatype>
-            <position>85</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Cost Type</defaulttitle>
-            <usertitle>Cost Type</usertitle>
-            <datatype>gint</datatype>
-            <position>86</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Repairable?</defaulttitle>
-            <usertitle>Repairable?</usertitle>
-            <datatype>gint</datatype>
-            <position>87</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Total Number of Parts</defaulttitle>
-            <usertitle>Total Number of Parts</usertitle>
-            <datatype>gint</datatype>
-            <position>88</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Total Power Dissipation</defaulttitle>
-            <usertitle>Total Power Dissipation</usertitle>
-            <datatype>gfloat</datatype>
-            <position>89</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-
-        <column>
-            <defaulttitle>Category ID</defaulttitle>
-            <usertitle>Category ID</usertitle>
-            <datatype>gint</datatype>
-            <position>90</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Subcategory ID</defaulttitle>
-            <usertitle>Subcategory ID</usertitle>
-            <datatype>gint</datatype>
-            <position>91</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Junction Temperature</defaulttitle>
-            <usertitle>Junction Temperature</usertitle>
-            <datatype>gfloat</datatype>
-            <position>92</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Knee Temperature</defaulttitle>
-            <usertitle>Knee Temperature</usertitle>
-            <datatype>gfloat</datatype>
-            <position>93</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Thermal Resistance</defaulttitle>
-            <usertitle>Thermal Resistance</usertitle>
-            <datatype>gfloat</datatype>
-            <position>94</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Reference Temperature</defaulttitle>
-            <usertitle>Reference Temperature</usertitle>
-            <datatype>gfloat</datatype>
-            <position>95</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-
-        <column>
-            <defaulttitle>Float Input 1</defaulttitle>
-            <usertitle>Float Input 1</usertitle>
-            <datatype>gfloat</datatype>
-            <position>96</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 2</defaulttitle>
-            <usertitle>Float Input 2</usertitle>
-            <datatype>gfloat</datatype>
-            <position>97</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 3</defaulttitle>
-            <usertitle>Float Input 3</usertitle>
-            <datatype>gfloat</datatype>
-            <position>98</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 4</defaulttitle>
-            <usertitle>Float Input 4</usertitle>
-            <datatype>gfloat</datatype>
-            <position>99</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 5</defaulttitle>
-            <usertitle>Float Input 5</usertitle>
-            <datatype>gfloat</datatype>
-            <position>100</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 6</defaulttitle>
-            <usertitle>Float Input 6</usertitle>
-            <datatype>gfloat</datatype>
-            <position>101</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 7</defaulttitle>
-            <usertitle>Float Input 7</usertitle>
-            <datatype>gfloat</datatype>
-            <position>102</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 8</defaulttitle>
-            <usertitle>Float Input 8</usertitle>
-            <datatype>gfloat</datatype>
-            <position>103</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 9</defaulttitle>
-            <usertitle>Float Input 9</usertitle>
-            <datatype>gfloat</datatype>
-            <position>104</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Input 10</defaulttitle>
-            <usertitle>Float Input 10</usertitle>
-            <datatype>gfloat</datatype>
-            <position>105</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 1</defaulttitle>
-            <usertitle>Float Result 1</usertitle>
-            <datatype>gfloat</datatype>
-            <position>106</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 2</defaulttitle>
-            <usertitle>Float Result 2</usertitle>
-            <datatype>gfloat</datatype>
-            <position>107</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 3</defaulttitle>
-            <usertitle>Float Result 3</usertitle>
-            <datatype>gfloat</datatype>
-            <position>108</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 4</defaulttitle>
-            <usertitle>Float Result 4</usertitle>
-            <datatype>gfloat</datatype>
-            <position>109</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 5</defaulttitle>
-            <usertitle>Float Result 5</usertitle>
-            <datatype>gfloat</datatype>
-            <position>110</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 6</defaulttitle>
-            <usertitle>Float Result 6</usertitle>
-            <datatype>gfloat</datatype>
-            <position>111</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 7</defaulttitle>
-            <usertitle>Float Result 7</usertitle>
-            <datatype>gfloat</datatype>
-            <position>112</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 8</defaulttitle>
-            <usertitle>Float Result 8</usertitle>
-            <datatype>gfloat</datatype>
-            <position>113</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 9</defaulttitle>
-            <usertitle>Float Result 9</usertitle>
-            <datatype>gfloat</datatype>
-            <position>114</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Float Result 10</defaulttitle>
-            <usertitle>Float Result 10</usertitle>
-            <datatype>gfloat</datatype>
-            <position>115</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Input 1</defaulttitle>
-            <usertitle>Integer Input 1</usertitle>
-            <datatype>gint</datatype>
-            <position>116</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Input 2</defaulttitle>
-            <usertitle>Integer Input 2</usertitle>
-            <datatype>gint</datatype>
-            <position>117</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Input 3</defaulttitle>
-            <usertitle>Integer Input 3</usertitle>
-            <datatype>gint</datatype>
-            <position>118</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Input 4</defaulttitle>
-            <usertitle>Integer Input 4</usertitle>
-            <datatype>gint</datatype>
-            <position>119</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Input 5</defaulttitle>
-            <usertitle>Integer Input 5</usertitle>
-            <datatype>gint</datatype>
-            <position>120</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Result 1</defaulttitle>
-            <usertitle>Integer Result 1</usertitle>
-            <datatype>gint</datatype>
-            <position>121</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Result 2</defaulttitle>
-            <usertitle>Integer Result 2</usertitle>
-            <datatype>gint</datatype>
-            <position>122</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Result 3</defaulttitle>
-            <usertitle>Integer Result 3</usertitle>
-            <datatype>gint</datatype>
-            <position>123</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Result 4</defaulttitle>
-            <usertitle>Integer Result 4</usertitle>
-            <datatype>gint</datatype>
-            <position>124</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>Integer Result 5</defaulttitle>
-            <usertitle>Integer Result 5</usertitle>
-            <datatype>gint</datatype>
-            <position>125</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>String Input 1</defaulttitle>
-            <usertitle>String Input 1</usertitle>
-            <datatype>gchararray</datatype>
-            <position>126</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>String Input 2</defaulttitle>
-            <usertitle>String Input 2</usertitle>
-            <datatype>gchararray</datatype>
-            <position>127</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>String Input 3</defaulttitle>
-            <usertitle>String Input 3</usertitle>
-            <datatype>gchararray</datatype>
-            <position>128</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>String Input 4</defaulttitle>
-            <usertitle>String Input 4</usertitle>
-            <datatype>gchararray</datatype>
-            <position>129</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
-        </column>
-        <column>
-            <defaulttitle>String Input 5</defaulttitle>
-            <usertitle>String Input 5</usertitle>
-            <datatype>gchararray</datatype>
-            <position>130</position>
-            <widget>text</widget>
-            <editable>0</editable>
-            <visible>0</visible>
+            <key>shape_parameter</key>
         </column>
     </tree>
 </root>

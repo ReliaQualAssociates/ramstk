@@ -65,7 +65,8 @@ class ListBook(RTKBook):  # pylint: disable=R0904
                 RequirementSoftware(controller, matrix_type='rqrmnt_sftwr'),
                 RequirementValidation(controller, matrix_type='rqrmnt_vldtn')
             ],
-            'validation': []
+            'validation': [],
+            'hardware': []
         }
 
         # Initialize public list attributes.

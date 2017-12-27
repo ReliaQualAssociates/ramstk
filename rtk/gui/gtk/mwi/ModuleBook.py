@@ -34,6 +34,7 @@ from gui.gtk.rtk import RTKBook, destroy
 from gui.gtk.moduleviews import mvwRevision
 from gui.gtk.moduleviews import mvwFunction
 from gui.gtk.moduleviews import mvwRequirement
+from gui.gtk.moduleviews import mvwHardware
 from gui.gtk.moduleviews import mvwValidation
 from gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
     Options
@@ -75,16 +76,15 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_module_views = [[mvwRevision(controller), 0],
+                                  [mvwFunction(controller), 1],
+                                  [mvwRequirement(controller), 2],
+                                  [mvwHardware(controller), 3],
+                                  [mvwValidation(controller), 4]]
 
         # Initialize private scalar attributes.
 
         # Initialize public dictionary attributes.
-        self.dic_module_views = {
-            'revision': [mvwRevision(controller), 0],
-            'function': [mvwFunction(controller), 1],
-            'requirement': [mvwRequirement(controller), 2],
-            'validation': [mvwValidation(controller), 4]
-        }
 
         # Initialize public list attributes.
 
@@ -124,8 +124,7 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
             self.notebook.connect('switch-page', self._on_switch_page))
 
         # Insert a page for each of the active RTK Modules.
-        for _page in self.dic_module_views:
-            _object = self.dic_module_views[_page]
+        for _object in self._lst_module_views:
             self.notebook.insert_page(
                 _object[0],
                 tab_label=_object[0].hbx_tab_label,
@@ -278,10 +277,6 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         _menu = gtk.Menu()
         _menu_item = gtk.MenuItem(label=_(u"_Options"), use_underline=True)
         _menu_item.connect('activate', Options, self._mdcRTK)
-        _menu.append(_menu_item)
-        _menu_item = gtk.MenuItem(
-            label=_(u"_Composite Ref Des"), use_underline=True)
-        _menu_item.connect('activate', self._create_comp_ref_des)
         _menu.append(_menu_item)
         _menu_item = gtk.MenuItem(
             label=_(u"_Update Design Review Criteria"), use_underline=True)
@@ -458,7 +453,9 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
                 _module = 'function'
             elif page_num == 2:
                 _module = 'requirement'
-            elif page_num == 3:  # TODO: Change this as other modules are added.
+            elif page_num == 3:
+                _module = 'hardware'
+            elif page_num == 4:  # TODO: Change this as other modules are added.
                 _module = 'validation'
 
         pub.sendMessage('mvwSwitchedPage', module=_module)
@@ -491,49 +488,5 @@ class ModuleBook(RTKBook):  # pylint: disable=R0904
         :rtype: bool
         """
         self._mdcRTK.close_project()
-
-        return False
-
-    def _create_comp_ref_des(self, __widget):
-        """
-        Create composite reference designators.
-
-        :param gtk.Widget __widget: the gtk.Widget() that called this function.
-        :return: False if successful or True if an error is encounterd.
-        """
-        # TODO: Move this to the Hardware module.
-        _hardware = self._mdcRTK.RTK_CONFIGURATION.RTK_MODULES[3]
-        _model = _hardware.treeview.get_model()
-
-        _model.foreach(self._build_composite_ref_des)
-
-        return False
-
-    def _build_composite_ref_des(self, model, __path, row):
-        """
-        Build the composite reference designator.
-
-        :return: False if successful or True if an error is encountered
-        :rtype: bool
-        """
-        # TODO: Move this to the Hardware class.
-        _hardware_id = model.get_value(row, 1)
-        _hardware_model = self._mdcRTK.dtcHardwareBoM.dicHardware[_hardware_id]
-
-        _ref_des = model.get_value(row, 27)
-
-        # If the currently selected row has no parent, the composite reference
-        # designator is the same as the reference designator.  Otherwise, build
-        # the composite reference designator by appending the current row's
-        # reference designator to the parent's composite reference designator.
-        if not model.iter_parent(row):
-            _comp_ref_des = _ref_des
-        else:
-            _p_row = model.iter_parent(row)
-            _p_comp_ref_des = model.get_value(_p_row, 5)
-            _comp_ref_des = _p_comp_ref_des + ":" + _ref_des
-
-        model.set_value(row, 5, _comp_ref_des)
-        _hardware_model.comp_ref_des = _comp_ref_des
 
         return False

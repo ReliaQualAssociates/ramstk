@@ -4,10 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-RTKWorkView Meta-Class Module
--------------------------------------------------------------------------------
-"""
+"""RTKWorkView Meta-Class Module."""
 
 # Import other RTK modules.
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
@@ -378,40 +375,6 @@ class RTKWorkView(gtk.HBox, rtk.RTKBaseView):
 
         return (_hbox, _fxd_left, _fxd_right, _x_pos_l, _x_pos_r, _y_pos_l,
                 _y_pos_r)
-
-    def _make_general_data_page(self):
-        """
-        Create the gtk.Notebook() page for displaying general data.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"General Information"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
-                                              5, 5)
-        _x_pos += 50
-
-        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
-        _fixed.put(self.txtName, _x_pos, _y_pos[1])
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[-1])
-
-        _fixed.show_all()
-
-        _label = rtk.RTKLabel(
-            _(u"General\nData"),
-            height=30,
-            width=-1,
-            justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays general information for "
-                      u"the selected {0:s}.").format(self._module))
-        self.hbx_tab_label.pack_start(_label)
-
-        return _frame, _fixed, _x_pos, _y_pos
 
     def _on_select(self, module_id, **kwargs):  # pylint: disable=W0613
         """

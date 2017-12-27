@@ -43,7 +43,7 @@ class FunctionDataModel(RTKDataModel):
 
         # Initialize public scalar attributes.
 
-    def select_all(self, function_id):  # pylint: disable=unused-argument
+    def select_all(self, revision_id):  # pylint: disable=unused-argument
         """
         Retrieve all the Functions from the RTK Program database.
 
@@ -51,14 +51,14 @@ class FunctionDataModel(RTKDataModel):
         connected RTK Program database.  It then add each to the Function data
         model treelib.Tree().
 
-        :param int function_id: unused, only required for compatibility with
-                                underlying RTKDataModel.
+        :param int revision_id: the Revision ID to select the Functions for.
         :return: tree; the Tree() of RTKFunction data models.
         :rtype: :class:`treelib.Tree`
         """
         _session = RTKDataModel.select_all(self)
 
-        for _function in _session.query(RTKFunction).all():
+        for _function in _session.query(RTKFunction).filter(
+                RTKFunction.revision_id == revision_id).all():
             # We get and then set the attributes to replace any None values
             # (NULL fields in the database) with their default value.
             _attributes = _function.get_attributes()
@@ -66,7 +66,7 @@ class FunctionDataModel(RTKDataModel):
             self.tree.create_node(
                 _function.name,
                 _function.function_id,
-                parent=0,
+                parent=_function.parent_id,
                 data=_function)
 
             # pylint: disable=attribute-defined-outside-init
@@ -96,7 +96,7 @@ class FunctionDataModel(RTKDataModel):
             self.tree.create_node(
                 _function.name,
                 _function.function_id,
-                parent=0,
+                parent=_function.parent_id,
                 data=_function)
 
             # pylint: disable=attribute-defined-outside-init

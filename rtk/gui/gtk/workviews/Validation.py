@@ -440,18 +440,15 @@ class GeneralData(RTKWorkView):
 
         _fixed = gtk.Fixed()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
         _frame = rtk.RTKFrame(label=_(u"Task Description"))
         _frame.add(_scrollwindow)
-
-        _hbox.pack_start(_frame, expand=True, fill=True)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[0][:2],
                                               _fixed, 5, 5)
         _x_pos += 50
+
+        _hbox.pack_start(_frame, expand=True, fill=True)
 
         _fixed.put(self.txtID, _x_pos, _y_pos[0])
         _fixed.put(self.txtTask.scrollwindow, _x_pos, _y_pos[1])
@@ -476,21 +473,17 @@ class GeneralData(RTKWorkView):
 
         # Now add the right hand side starting with the top pane.
         _vpaned = gtk.VPaned()
-
         _fixed = gtk.Fixed()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
         _frame = rtk.RTKFrame(label=_(u"Task Effort"))
         _frame.add(_scrollwindow)
-
-        _vpaned.pack1(_frame, True, True)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[1],
                                               _fixed, 5, 5)
         _x_pos += 50
+
+        _vpaned.pack1(_frame, True, True)
 
         _fixed.put(self.btnEndDate, _x_pos + 105, _y_pos[1])
         _fixed.put(self.btnStartDate, _x_pos + 105, _y_pos[0])
@@ -522,18 +515,15 @@ class GeneralData(RTKWorkView):
         # Now add the bottom pane to the right side.
         _fixed = gtk.Fixed()
 
-        _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        _scrollwindow.add_with_viewport(_fixed)
-
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
         _frame = rtk.RTKFrame(label=_(u"Project Effort"))
         _frame.add(_scrollwindow)
-
-        _vpaned.pack2(_frame, True, True)
 
         _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[2],
                                               _fixed, 5, 5)
         _x_pos += 50
+
+        _vpaned.pack2(_frame, True, True)
 
         _fixed.put(self.txtProjectTimeLL, _x_pos, _y_pos[0])
         _fixed.put(self.txtProjectTime, _x_pos + 105, _y_pos[0])
@@ -552,7 +542,7 @@ class GeneralData(RTKWorkView):
             width=-1,
             justify=gtk.JUSTIFY_CENTER,
             tooltip=_(u"Displays general information for the selected "
-                      u"Validation task."))
+                      u"validation."))
         self.hbx_tab_label.pack_start(_label)
 
         return _hbox

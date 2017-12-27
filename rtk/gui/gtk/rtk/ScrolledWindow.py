@@ -36,7 +36,8 @@ class RTKScrolledWindow(gtk.ScrolledWindow):
 
         self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
 
-        if viewport:
-            self.add_with_viewport(child)
-        else:
-            self.add(child)
+        if child is not None:
+            if viewport:
+                self.add_with_viewport(child)
+            else:
+                self.add(child)

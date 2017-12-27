@@ -59,8 +59,10 @@ class RTKMechanism(RTK_BASE):
 
     # Define the relationships to other tables in the RTK Program database.
     mode = relationship('RTKMode', back_populates='mechanism')
-    cause = relationship('RTKCause', back_populates='mechanism')
-    op_load = relationship('RTKOpLoad', back_populates='mechanism')
+    cause = relationship(
+        'RTKCause', back_populates='mechanism', cascade='all,delete')
+    op_load = relationship(
+        'RTKOpLoad', back_populates='mechanism', cascade='all,delete')
 
     is_mode = False
     is_mechanism = True

@@ -63,7 +63,7 @@ from function import dtcFunction
 from analyses.fmea import dtcFMEA
 from requirement import dtcRequirement
 from stakeholder import dtcStakeholder
-# from hardware.BoM import BoM as HardwareBoM
+from hardware import dtcHardwareBoM
 # from analyses.allocation.Allocation import Allocation
 # from analyses.hazard.Hazard import Hazard
 # from analyses.similar_item.SimilarItem import SimilarItem
@@ -310,44 +310,35 @@ class Model(object):
         # Build the component category, component subcategory, failure modes  #
         # tree.                                                               #
         # ------------------------------------------------------------------- #
-        self.tree.create_node('Components', -1)
         for _record in self.site_session.query(RTKCategory).\
                 filter(RTKCategory.cat_type == 'hardware').all():
-            self.tree.create_node(
-                _record.name,
-                _record.category_id,
-                parent=-1,
-                data=_record.get_attributes()[1:])
 
-        for _record in self.site_session.query(RTKSubCategory).all():
-            # We need to create a unique identifer for each subcategory because
-            # we can't have two nodes in the tree with the same ID, but we can
-            # have a category and subcategory with the same ID in the database.
-            # This simple method guarantees a unique ID for the subcategory for
-            # the tree.
-            _identifier = str(_record.category_id) + str(
-                _record.subcategory_id)
-            self.tree.create_node(
-                _record.description,
-                _identifier,
-                parent=_record.category_id,
-                data=_record.get_attributes()[2:])
+            _subcats = {}
+            configuration.RTK_FAILURE_MODES[_record.category_id] = {}
 
-        for _record in self.site_session.query(RTKFailureMode).all():
-            # We need to create a unique identifer for each mode because
-            # we can't have two nodes in the tree with the same ID, but we can
-            # have a category, subcategory, and/or mode with the same ID in the
-            # database.  This simple method guarantees a unique ID for the mode
-            # for the tree.  For the same reason we have to create the parent
-            # ID.
-            _identifier = str(_record.category_id) + \
-                str(_record.subcategory_id) + str(_record.mode_id)
-            _parent = str(_record.category_id) + str(_record.subcategory_id)
-            self.tree.create_node(
-                _record.description,
-                _identifier,
-                parent=_parent,
-                data=_record.get_attributes()[3:])
+            for _subcat in self.site_session.query(RTKSubCategory).\
+                    filter(RTKSubCategory.category_id == _record.category_id).\
+                    all():
+                _subcats[_subcat.subcategory_id] = _subcat.description
+
+                _modes = {}
+                configuration.RTK_FAILURE_MODES[_record.category_id][
+                    _subcat.subcategory_id] = {}
+
+                for _mode in self.site_session.query(RTKFailureMode).\
+                        filter(RTKFailureMode.category_id == _record.category_id).\
+                        filter(RTKFailureMode.subcategory_id == _subcat.subcategory_id).\
+                        all():
+                    _modes[_mode.mode_id] = [
+                        _mode.description, _mode.mode_ratio, _mode.source
+                    ]
+
+                configuration.RTK_FAILURE_MODES[_record.category_id][
+                    _subcat.subcategory_id] = _modes
+
+            configuration.RTK_CATEGORIES[
+                _record.category_id] = _record.description
+            configuration.RTK_SUBCATEGORIES[_record.category_id] = _subcats
 
         for _record in self.site_session.query(RTKStakeholders).all():
             configuration.RTK_STAKEHOLDERS[_record.stakeholders_id] = \
@@ -435,6 +426,7 @@ class Model(object):
                 filter(RTKModel.model_type == 'allocation').all():
             configuration.RTK_ALLOCATION_MODELS[_record.model_id] = \
                 _record.get_attributes()[1:]
+
         for _record in self.site_session.query(RTKModel).\
                 filter(RTKModel.model_type == 'rprediction').all():
             configuration.RTK_HR_MODEL[_record.model_id] = \
@@ -789,7 +781,8 @@ class RTK(object):
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             self.dic_controllers['requirement'] = dtcRequirement(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['hardware'] = HardwareBoM()
+            self.dic_controllers['hardware'] = dtcHardwareBoM(
+                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['software'] = SoftwareBoM()
             # self.dic_controllers['test'] = Test()
             self.dic_controllers['validation'] = dtcValidation(

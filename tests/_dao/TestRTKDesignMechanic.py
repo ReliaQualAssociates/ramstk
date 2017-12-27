@@ -2,25 +2,23 @@
 # -*- coding: utf-8 -*-
 #
 #       tests.unit._dao.TestRTKDesignMechanic.py is part of The RTK Project
-
 #
 # All rights reserved.
-
-"""
-This is the test class for testing the RTKDesignMechanic module algorithms and
-models.
-"""
+"""Test class for testing the RTKDesignMechanic module algorithms and models."""
 
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+import unittest
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
-import unittest
 from nose.plugins.attrib import attr
+
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
 
 from dao.RTKDesignMechanic import RTKDesignMechanic
 
@@ -31,20 +29,66 @@ __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
 
 class TestRTKDesignMechanic(unittest.TestCase):
-    """
-    Class for testing the RTKDesignMechanic class.
-    """
+    """Class for testing the RTKDesignMechanic class."""
 
-    _attributes = (1, 0.0, 0, 0, 0.0, 0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0, 0,
-                   0, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0, 0.0, 0.0, 0, 0.0, 0, 0, 0.0, 0.0, 0.0, 0.0)
+    _attributes = {
+        'pressure_upstream': 0.0,
+        'frequency_operating': 0.0,
+        'surface_finish': 0.0,
+        'friction': 0.0,
+        'length_compressed': 0.0,
+        'load_id': 0,
+        'n_cycles': 0,
+        'balance_id': 0,
+        'lubrication_id': 0,
+        'water_per_cent': 0.0,
+        'misalignment_angle': 0.0,
+        'type_id': 0,
+        'rpm_design': 0.0,
+        'pressure_downstream': 0.0,
+        'diameter_coil': 0.0,
+        'manufacturing_id': 0,
+        'pressure_contact': 0.0,
+        'meyer_hardness': 0.0,
+        'rpm_operating': 0.0,
+        'length_relaxed': 0.0,
+        'impact_id': 0,
+        'n_ten': 0,
+        'material_id': 0,
+        'technology_id': 0,
+        'service_id': 0,
+        'flow_design': 0.0,
+        'application_id': 0,
+        'diameter_wire': 0.0,
+        'deflection': 0.04,
+        'filter_size': 0.0,
+        'diameter_inner': 0.0,
+        'pressure_rated': 0.0,
+        'hardware_id': 1,
+        'altitude_operating': 0.0,
+        'thickness': 0.0,
+        'diameter_outer': 0.0,
+        'n_elements': 0,
+        'contact_pressure': 0.0,
+        'particle_size': 0.0,
+        'casing_id': 0,
+        'viscosity_dynamic': 0.0,
+        'viscosity_design': 0.0,
+        'torque_id': 0,
+        'leakage_allowable': 0.0,
+        'offset': 0.0,
+        'width_minimum': 0.0,
+        'load_operating': 0.0,
+        'spring_index': 0.0,
+        'flow_operating': 0.0,
+        'pressure_delta': 0.0,
+        'length': 0.0,
+        'load_design': 0.0,
+        'clearance': 0.0
+    }
 
     def setUp(self):
-        """
-        Sets up the test fixture for the RTKDesignMechanic class.
-        """
-
+        """(TestRTKDesignMechanic) Set up the test fixture for the RTKDesignMechanic class."""
         engine = create_engine('sqlite:////tmp/TestDB.rtk', echo=False)
         session = scoped_session(sessionmaker())
 
@@ -58,10 +102,7 @@ class TestRTKDesignMechanic(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test00_rtkdesignmechanic_create(self):
-        """
-        (TestRTKDesignMechanic) __init__ should create an RTKDesignMechanic model.
-        """
-
+        """(TestRTKDesignMechanic) __init__ should create an RTKDesignMechanic model."""
         self.assertTrue(isinstance(self.DUT, RTKDesignMechanic))
 
         # Verify class attributes are properly initialized.
@@ -122,63 +163,28 @@ class TestRTKDesignMechanic(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test01_get_attributes(self):
-        """
-        (TestRTKDesignMechanic) get_attributes should return a tuple of attribute values.
-        """
-
+        """(TestRTKDesignMechanic) get_attributes should return a tuple of attribute values."""
         self.assertEqual(self.DUT.get_attributes(), self._attributes)
 
     @attr(all=True, unit=True)
     def test02a_set_attributes(self):
-        """
-        (TestRTKDesignMechanic) set_attributes should return a zero error code on success
-        """
-
-        _attributes = (0.0, 0, 0, 0.0, 0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0,
-                       0, 0, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0, 0.0, 0, 0, 0.0, 0.0,
-                       0.0, 0.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        """(TestRTKDesignMechanic) set_attributes should return a zero error code on success."""
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 0)
-        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKDesignMechanic {0:d} " \
-                               "attributes.".format(self.DUT.hardware_id))
+        self.assertEqual(_msg, "RTK SUCCESS: Updating RTKDesignMechanic {0:d} "
+                         "attributes.".format(self.DUT.hardware_id))
 
     @attr(all=True, unit=True)
-    def test02b_set_attributes_wrong_type(self):
-        """
-        (TestRTKDesignMechanic) set_attributes should return a 10 error code when passed the wrong type
-        """
+    def test02b_set_attributes_missing_key(self):
+        """(TestRTKDesignMechanic) set_attributes should return a 40 error code when passed a dict with a missing key."""
+        self._attributes.pop('length')
 
-        _attributes = (0.0, 0, 0, 0.0, 0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0,
-                       0, 0, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 'zero', 0.0, 0.0, 0, 0.0, 0, 0, 0.0,
-                       0.0, 0.0, 0.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
-
-        self.assertEqual(_error_code, 10)
-        self.assertEqual(_msg, "RTK ERROR: Incorrect data type when " \
-                               "converting one or more RTKDesignMechanic " \
-                               "attributes.")
-
-    @attr(all=True, unit=True)
-    def test02c_set_attributes_too_few_passed(self):
-        """
-        (TestRTKDesignMechanic) set_attributes should return a 40 error code when passed too few attributes
-        """
-
-        _attributes = (0.0, 0, 0, 0.0, 0, 0.0, 0.04, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0.0,
-                       0, 0, 0, 0.0, 0.0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                       0.0, 0.0, 0.0, 0.0, 0, 0.0, 0.0, 0, 0.0, 0, 0, 0.0, 0.0,
-                       0.0)
-
-        _error_code, _msg = self.DUT.set_attributes(_attributes)
+        _error_code, _msg = self.DUT.set_attributes(self._attributes)
 
         self.assertEqual(_error_code, 40)
-        self.assertEqual(_msg, "RTK ERROR: Insufficient number of input " \
-                               "values to RTKDesignMechanic.set_attributes().")
+        self.assertEqual(_msg, "RTK ERROR: Missing attribute 'length' in "
+                         "attribute dictionary passed to "
+                         "RTKDesignMechanic.set_attributes().")
+
+        self._attributes['length'] = 0.0

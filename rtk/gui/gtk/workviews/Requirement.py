@@ -87,16 +87,17 @@ class GeneralData(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_gendata_labels.insert(2, _(u"Requirement Type:"))
-        self._lst_gendata_labels.insert(3, "")
-        self._lst_gendata_labels.insert(4, _(u"Specification:"))
-        self._lst_gendata_labels.insert(5, _(u"Page Number:"))
-        self._lst_gendata_labels.insert(6, _(u"Figure Number:"))
-        self._lst_gendata_labels.insert(7, _(u"Priority:"))
-        self._lst_gendata_labels.insert(8, _(u"Owner:"))
-        self._lst_gendata_labels.insert(9, "")
-        self._lst_gendata_labels.insert(10, _(u"Validated Date:"))
-        self._lst_gendata_labels.pop(-1)
+        self._lst_gendata_labels = [
+            _(u"Requirement Code:"),
+            _(u"Requirement Description:"),
+            _(u"Requirement Type:"), "",
+            _(u"Specification:"),
+            _(u"Page Number:"),
+            _(u"Figure Number:"),
+            _(u"Priority:"),
+            _(u"Owner:"), "",
+            _(u"Validated Date:")
+        ]
 
         # Initialize private scalar attributes.
         self._requirement_id = None
@@ -107,6 +108,7 @@ class GeneralData(RTKWorkView):
 
         # Initialize public scalar attributes.
         self.btnValidateDate = rtk.RTKButton(height=25, width=25, label="...")
+
         self.chkDerived = rtk.RTKCheckButton(
             label=_(u"Requirement is derived."),
             tooltip=_(u"Indicates whether or not the selected requirement is "
@@ -115,15 +117,21 @@ class GeneralData(RTKWorkView):
             label=_(u"Requirement is validated."),
             tooltip=_(u"Indicates whether or not the selected requirement is "
                       u"validated."))
+
         self.cmbOwner = rtk.RTKComboBox()
         self.cmbRequirementType = rtk.RTKComboBox(index=1, simple=False)
         self.cmbPriority = rtk.RTKComboBox(width=50)
+
+        self.txtCode = rtk.RTKEntry(
+            width=125,
+            tooltip=_(u"A unique code for the selected requirement."))
         self.txtFigNum = rtk.RTKEntry()
+        self.txtName = rtk.RTKEntry(
+            width=800,
+            tooltip=_(u"The description of the selected requirement."))
         self.txtPageNum = rtk.RTKEntry()
         self.txtSpecification = rtk.RTKEntry()
         self.txtValidatedDate = rtk.RTKEntry()
-
-        self.txtName.props.width_request = 800
 
         # Connect to callback requirements for editable gtk.Widgets().
         self._lst_handler_id.append(
@@ -156,8 +164,6 @@ class GeneralData(RTKWorkView):
         self.pack_start(self._make_buttonbox(), expand=False, fill=False)
         self.pack_start(self._make_general_data_page(), expand=True, fill=True)
         self.show_all()
-
-        self.txtRemarks.scrollwindow.set_visible(False)
 
         pub.subscribe(self._on_select, 'selectedRequirement')
         pub.subscribe(self._on_edit, 'mvwEditedRequirement')
@@ -222,9 +228,9 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Load the requirement type gtk.ComboBox().
+        # Load the requirement type gtk.ComboBox(); each _type is
+        # (Code, Description, Type).
         _types = []
-        # Each _type is (Code, Description, Type).
         for _index, _key in enumerate(
                 self._mdcRTK.RTK_CONFIGURATION.RTK_REQUIREMENT_TYPE):
             _types.append(
@@ -232,9 +238,9 @@ class GeneralData(RTKWorkView):
         self.cmbRequirementType.do_load_combo(
             list(_types), index=1, simple=False)
 
-        # Load the owner gtk.ComboBox().
+        # Load the owner gtk.ComboBox(); each _owner is
+        # (Description, Group Type).
         _owners = []
-        # Each _owner is (Description, Group Type).
         for _index, _key in enumerate(
                 self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS):
             _owners.append(self._mdcRTK.RTK_CONFIGURATION.RTK_WORKGROUPS[_key])
@@ -244,9 +250,19 @@ class GeneralData(RTKWorkView):
         _priorities = [["1"], ["2"], ["3"], ["4"], ["5"]]
         self.cmbPriority.do_load_combo(_priorities)
 
-        (_frame, _fixed, _x_pos,
-         _y_pos) = RTKWorkView._make_general_data_page(self)
+        # Build the General Data page.
+        _fixed = gtk.Fixed()
 
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels,
+                                              _fixed, 5, 5)
+        _x_pos += 50
+
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
         _fixed.put(self.cmbRequirementType, _x_pos, _y_pos[2])
         _fixed.put(self.chkDerived, _x_pos, _y_pos[3] + 5)
         _fixed.put(self.txtSpecification, _x_pos, _y_pos[4])
@@ -259,6 +275,16 @@ class GeneralData(RTKWorkView):
         _fixed.put(self.btnValidateDate, _x_pos + 205, _y_pos[10])
 
         _fixed.show_all()
+
+        # Create the label for the gtk.Notebook() tab.
+        _label = rtk.RTKLabel(
+            _(u"General\nData"),
+            height=30,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER,
+            tooltip=_(u"Displays general information for the selected "
+                      u"requirement."))
+        self.hbx_tab_label.pack_start(_label)
 
         return _frame
 
@@ -275,9 +301,6 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
         _return = False
-
-        _requirement = self._dtc_data_controller.request_select(
-            self._requirement_id)
 
         combo.handler_block(self._lst_handler_id[index])
 

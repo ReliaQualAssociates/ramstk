@@ -22,8 +22,8 @@ import os
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
-sys.path.insert(0, os.path.abspath('../rtk/'), )
-sys.path.append(os.path.join(os.path.dirname(__name__), '../'))
+sys.path.insert(0, os.path.abspath('../../rtk/'), )
+sys.path.append(os.path.join(os.path.dirname(__name__), '../../'))
 
 
 # -- General configuration ------------------------------------------------
@@ -65,7 +65,7 @@ author = u'Doyle Rowland'
 # built documents.
 #
 # The short X.Y version.
-version = u'0.1'
+version = u'1.0.0'
 # The full version, including alpha/beta/rc tags.
 release = u'alpha'
 
@@ -180,3 +180,4 @@ texinfo_documents = [
 
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'http://treelib.readthedocs.io/en/latest/': None}

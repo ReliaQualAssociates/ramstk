@@ -61,10 +61,9 @@ class RTKDataModel(object):  # pragma: no cover
 
     def select(self, node_id):
         """
-        Base method to retrieve the instance of the RTK<MODULE> model for the
-        Node ID passed.
+        Retrieve the instance of the RTK<MODULE> model for the Node ID passed.
 
-        :param int node_id: the Node ID Of the data package to retrieve.
+        :param int node_id: the Node ID of the data package to retrieve.
         :return: the instance of the RTK<MODULE> class that was requested
                  or None if the requested Node ID does not exist.
         """
@@ -112,8 +111,7 @@ class RTKDataModel(object):  # pragma: no cover
 
     def delete(self, node_id):
         """
-        Base method to remove the instance of RTK<MODULE> from the RTK Program
-        database.
+        Delete the instance of RTK<MODULE> from the RTK Program database.
 
         :param int node_id entity: the ID of the RTK<MODULE> record to be
                                    removed from the RTK Program database.
@@ -142,8 +140,7 @@ class RTKDataModel(object):  # pragma: no cover
 
     def update(self, node_id):
         """
-        Base method to update the RTK<MODULE> instance in the RTK Program
-        database.
+        Update the RTK<MODULE> instance in the RTK Program database.
 
         :param entity: the RTK<MODULE> instance to update in the RTK Program
                        database.

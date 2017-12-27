@@ -59,6 +59,11 @@ class GeneralData(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_gendata_labels = [
+            _(u"Function Code:"),
+            _(u"Function Description:"),
+            _(u"Remarks:")
+        ]
 
         # Initialize private scalar attributes.
         self._function_id = None
@@ -75,7 +80,15 @@ class GeneralData(RTKWorkView):
             tooltip=_(u"Indicates whether or not the selected function is "
                       u"safety critical."))
 
-        self.txtName.props.width_request = 800
+        self.txtCode = rtk.RTKEntry(
+            width=125, tooltip=_(u"A unique code for the selected function."))
+        self.txtName = rtk.RTKEntry(
+            width=800, tooltip=_(u"The name of the selected function."))
+        self.txtRemarks = rtk.RTKTextView(
+            gtk.TextBuffer(),
+            width=400,
+            tooltip=_(u"Enter any remarks associated with the "
+                      u"selected function."))
 
         # Connect to callback functions for editable gtk.Widgets().
         self._lst_handler_id.append(
@@ -151,12 +164,31 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        (_frame, _fixed, _x_pos,
-         _y_pos) = RTKWorkView._make_general_data_page(self)
+        _fixed = gtk.Fixed()
 
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"General Information"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels, _fixed,
+                                              5, 5)
+        _x_pos += 50
+
+        _fixed.put(self.txtCode, _x_pos, _y_pos[0])
+        _fixed.put(self.txtName, _x_pos, _y_pos[1])
+        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[2])
         _fixed.put(self.chkSafetyCritical, 5, _y_pos[2] + 110)
 
         _fixed.show_all()
+
+        _label = rtk.RTKLabel(
+            _(u"General\nData"),
+            height=30,
+            width=-1,
+            justify=gtk.JUSTIFY_CENTER,
+            tooltip=_(u"Displays general information for he selected "
+                      u"function."))
+        self.hbx_tab_label.pack_start(_label)
 
         return _frame
 

@@ -8,6 +8,7 @@ nose-exclude
 numpy
 pandas
 pypubsub==3.3.0
+python-coveralls
 scipy
 sortedcontainers
 sqlalchemy
