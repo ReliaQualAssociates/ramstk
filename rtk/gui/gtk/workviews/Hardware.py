@@ -157,6 +157,8 @@ class GeneralData(RTKWorkView):
         RTKWorkView.__init__(self, controller, module='Hardware')
 
         # Initialize private dictionary attributes.
+        self._dic_icons[
+            'comp_ref_des'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/rollup.png'
 
         # Initialize private list attributes.
 
@@ -328,6 +330,34 @@ class GeneralData(RTKWorkView):
 
         return _return
 
+    def _do_request_make_comp_ref_des(self, __button):
+        """
+        Send request to create the composite reference designator.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        (
+            _error_code, _msg
+        ) = self._dtc_data_controller.request_make_composite_reference_designator(
+            node_id=self._hardware_id)
+        if _error_code == 0:
+            _attributes = self._dtc_data_controller.request_get_attributes(
+                self._hardware_id, 'general')
+
+            self.txtCompRefDes.handler_block(self._lst_handler_id[9])
+            self.txtCompRefDes.set_text(str(_attributes['comp_ref_des']))
+            self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
+
+        else:
+            _return = True
+
+        return _return
+
     def _do_request_update(self, __button):
         """
         Send request to save the currently selected Hardware.
@@ -348,15 +378,15 @@ class GeneralData(RTKWorkView):
         :rtype: :class:`gtk.ButtonBox`
         """
         _tooltips = [
+            _(u"Creates the composite reference designator for the selected "
+              u"hardware item."),
             _(u"Saves the currently selected Hardware to the open "
               u"RTK Project database."),
         ]
         _callbacks = [
-            self._do_request_update,
+            self._do_request_make_comp_ref_des, self._do_request_update
         ]
-        _icons = [
-            'save',
-        ]
+        _icons = ['comp_ref_des', 'save']
 
         _buttonbox = RTKWorkView._make_buttonbox(self, _icons, _tooltips,
                                                  _callbacks, 'vertical')
@@ -721,7 +751,6 @@ class GeneralData(RTKWorkView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
-        _hardware = self._dtc_data_controller.request_select(self._hardware_id)
 
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id, 'general')
@@ -731,101 +760,102 @@ class GeneralData(RTKWorkView):
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
 
             self.cmbCategory.handler_block(self._lst_handler_id[2])
-            self.cmbCategory.set_active(_hardware['category_id'] + 1)
+            self.cmbCategory.set_active(_attributes['category_id'] + 1)
             self.cmbCategory.handler_unblock(self._lst_handler_id[2])
 
             self.cmbSubcategory.handler_block(self._lst_handler_id[5])
-            self.cmbSubcategory.set_active(_hardware['subcategory_id'] + 1)
+            self.cmbSubcategory.set_active(_attributes['subcategory_id'] + 1)
             self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
         else:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
 
         self.chkRepairable.handler_block(self._lst_handler_id[0])
-        self.chkRepairable.set_active(_hardware['repairable'])
+        self.chkRepairable.set_active(_attributes['repairable'])
         self.chkRepairable.handler_unblock(self._lst_handler_id[0])
 
         self.chkTagged.handler_block(self._lst_handler_id[1])
-        self.chkTagged.set_active(_hardware['tagged_part'])
+        self.chkTagged.set_active(_attributes['tagged_part'])
         self.chkTagged.handler_unblock(self._lst_handler_id[1])
 
         self.cmbCostType.handler_block(self._lst_handler_id[3])
-        self.cmbCostType.set_active(_hardware['cost_type_id'] + 1)
+        self.cmbCostType.set_active(_attributes['cost_type_id'] + 1)
         self.cmbCostType.handler_unblock(self._lst_handler_id[3])
 
         self.cmbManufacturer.handler_block(self._lst_handler_id[4])
-        self.cmbManufacturer.set_active(_hardware['manufacturer_id'] + 1)
+        self.cmbManufacturer.set_active(_attributes['manufacturer_id'] + 1)
         self.cmbManufacturer.handler_unblock(self._lst_handler_id[4])
 
         self.txtAltPartNum.handler_block(self._lst_handler_id[6])
-        self.txtAltPartNum.set_text(str(_hardware['alt_part_num']))
+        self.txtAltPartNum.set_text(str(_attributes['alt_part_num']))
         self.txtAltPartNum.handler_unblock(self._lst_handler_id[6])
 
         _textbuffer = self.txtAttachments.do_get_buffer()
         _textbuffer.handler_block(self._lst_handler_id[7])
-        _textbuffer.set_text(_hardware['attachments'])
+        _textbuffer.set_text(_attributes['attachments'])
         _textbuffer.handler_unblock(self._lst_handler_id[7])
 
         self.txtCAGECode.handler_block(self._lst_handler_id[8])
-        self.txtCAGECode.set_text(str(_hardware['cage_code']))
+        self.txtCAGECode.set_text(str(_attributes['cage_code']))
         self.txtCAGECode.handler_unblock(self._lst_handler_id[8])
 
         self.txtCompRefDes.handler_block(self._lst_handler_id[9])
-        self.txtCompRefDes.set_text(str(_hardware['comp_ref_des']))
+        self.txtCompRefDes.set_text(str(_attributes['comp_ref_des']))
         self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
 
         self.txtCost.handler_block(self._lst_handler_id[10])
-        self.txtCost.set_text(str(locale.currency(_hardware['cost'])))
+        self.txtCost.set_text(str(locale.currency(_attributes['cost'])))
         self.txtCost.handler_unblock(self._lst_handler_id[10])
 
         _textbuffer = self.txtDescription.do_get_buffer()
         _textbuffer.handler_block(self._lst_handler_id[11])
-        _textbuffer.set_text(str(_hardware['description']))
+        _textbuffer.set_text(str(_attributes['description']))
         _textbuffer.handler_unblock(self._lst_handler_id[11])
 
         self.txtFigureNumber.handler_block(self._lst_handler_id[12])
-        self.txtFigureNumber.set_text(str(_hardware['figure_number']))
+        self.txtFigureNumber.set_text(str(_attributes['figure_number']))
         self.txtFigureNumber.handler_unblock(self._lst_handler_id[12])
 
         self.txtLCN.handler_block(self._lst_handler_id[13])
-        self.txtLCN.set_text(str(_hardware['lcn']))
+        self.txtLCN.set_text(str(_attributes['lcn']))
         self.txtLCN.handler_unblock(self._lst_handler_id[13])
 
         self.txtName.handler_block(self._lst_handler_id[14])
-        self.txtName.set_text(str(_hardware['name']))
+        self.txtName.set_text(str(_attributes['name']))
         self.txtName.handler_unblock(self._lst_handler_id[14])
 
         self.txtNSN.handler_block(self._lst_handler_id[15])
-        self.txtNSN.set_text(str(_hardware['nsn']))
+        self.txtNSN.set_text(str(_attributes['nsn']))
         self.txtNSN.handler_unblock(self._lst_handler_id[15])
 
         self.txtPageNumber.handler_block(self._lst_handler_id[16])
-        self.txtPageNumber.set_text(str(_hardware['page_number']))
+        self.txtPageNumber.set_text(str(_attributes['page_number']))
         self.txtPageNumber.handler_unblock(self._lst_handler_id[16])
 
         self.txtPartNumber.handler_block(self._lst_handler_id[17])
-        self.txtPartNumber.set_text(str(_hardware['part_number']))
+        self.txtPartNumber.set_text(str(_attributes['part_number']))
         self.txtPartNumber.handler_unblock(self._lst_handler_id[17])
 
         self.txtQuantity.handler_block(self._lst_handler_id[18])
-        self.txtQuantity.set_text(str(_hardware['quantity']))
+        self.txtQuantity.set_text(str(_attributes['quantity']))
         self.txtQuantity.handler_unblock(self._lst_handler_id[18])
 
         self.txtRefDes.handler_block(self._lst_handler_id[19])
-        self.txtRefDes.set_text(str(_hardware['ref_des']))
+        self.txtRefDes.set_text(str(_attributes['ref_des']))
         self.txtRefDes.handler_unblock(self._lst_handler_id[19])
 
         _textbuffer = self.txtRemarks.do_get_buffer()
         _textbuffer.handler_block(self._lst_handler_id[20])
-        _textbuffer.set_text(_hardware['remarks'])
+        _textbuffer.set_text(_attributes['remarks'])
         _textbuffer.handler_unblock(self._lst_handler_id[20])
 
         self.txtSpecification.handler_block(self._lst_handler_id[21])
-        self.txtSpecification.set_text(str(_hardware['specification_number']))
+        self.txtSpecification.set_text(
+            str(_attributes['specification_number']))
         self.txtSpecification.handler_unblock(self._lst_handler_id[21])
 
         self.txtYearMade.handler_block(self._lst_handler_id[22])
-        self.txtYearMade.set_text(str(_hardware['year_of_manufacture']))
+        self.txtYearMade.set_text(str(_attributes['year_of_manufacture']))
         self.txtYearMade.handler_unblock(self._lst_handler_id[22])
 
         return _return
