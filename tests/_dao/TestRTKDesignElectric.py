@@ -82,7 +82,9 @@ class TestRTKDesignElectric(unittest.TestCase):
         'voltage_esd': 0.0,
         'manufacturing_id': 0,
         'n_wave_soldered': 0,
-        'temperature_rise': 0.0
+        'temperature_rise': 0.0,
+        'temperature_active': 35.0,
+        'temperature_dormant': 25.0
     }
 
     def setUp(self):
@@ -142,7 +144,9 @@ class TestRTKDesignElectric(unittest.TestCase):
         self.assertEqual(self.DUT.resistance, 0.0)
         self.assertEqual(self.DUT.specification_id, 0)
         self.assertEqual(self.DUT.technology_id, 0)
+        self.assertEqual(self.DUT.temperature_active, 35.0)
         self.assertEqual(self.DUT.temperature_case, 0.0)
+        self.assertEqual(self.DUT.temperature_dormant, 25.0)
         self.assertEqual(self.DUT.temperature_hot_spot, 0.0)
         self.assertEqual(self.DUT.temperature_junction, 0.0)
         self.assertEqual(self.DUT.temperature_rated_max, 0.0)

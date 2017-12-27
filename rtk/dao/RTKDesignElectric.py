@@ -71,7 +71,10 @@ class RTKDesignElectric(RTK_BASE):
     resistance = Column('fld_resistance', Float, default=0.0)
     specification_id = Column('fld_specification_id', Integer, default=0)
     technology_id = Column('fld_technology_id', Integer, default=0)
+    temperature_active = Column('fld_temperature_active', Float, default=35.0)
     temperature_case = Column('fld_temperature_case', Float, default=0.0)
+    temperature_dormant = Column(
+        'fld_temperature_dormant', Float, default=25.0)
     temperature_hot_spot = Column(
         'fld_temperature_hot_spot', Float, default=0.0)
     temperature_junction = Column(
@@ -94,8 +97,8 @@ class RTKDesignElectric(RTK_BASE):
     years_in_production = Column('fld_years_in_production', Integer, default=1)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware',
-        back_populates='design_electric')  # pragma: no cover
+    hardware = relationship(
+        'RTKHardware', back_populates='design_electric')  # pragma: no cover
 
     def get_attributes(self):
         """
@@ -112,7 +115,8 @@ class RTKDesignElectric(RTK_BASE):
                   n_wave_soldered, operating_life, overstress, package_id,
                   power_operating, power_rated, power_ratio, reason,
                   resistance, specification_id, technology_id,
-                  temperature_case, temperature_hot_spot, temperature_junction,
+                  temperature_active, temperature_case, temperature_dormant,
+                  temperature_hot_spot, temperature_junction,
                   temperature_rated_max, temperature_rated_min,
                   temperature_rise, theta_jc, type_id, voltage_ac_operating,
                   voltage_dc_operating, voltage_esd, voltage_rated,
@@ -157,7 +161,9 @@ class RTKDesignElectric(RTK_BASE):
             'resistance': self.resistance,
             'specification_id': self.specification_id,
             'technology_id': self.technology_id,
+            'temperature_active': self.temperature_active,
             'temperature_case': self.temperature_case,
+            'temperature_dormant': self.temperature_dormant,
             'temperature_hot_spot': self.temperature_hot_spot,
             'temperature_junction': self.temperature_junction,
             'temperature_rated_max': self.temperature_rated_max,
@@ -256,8 +262,12 @@ class RTKDesignElectric(RTK_BASE):
                 none_to_default(attributes['specification_id'], 0))
             self.technology_id = int(
                 none_to_default(attributes['technology_id'], 0))
+            self.temperature_active = float(
+                none_to_default(attributes['temperature_active'], 35.0))
             self.temperature_case = float(
                 none_to_default(attributes['temperature_case'], 0.0))
+            self.temperature_dormant = float(
+                none_to_default(attributes['temperature_dormant'], 25.0))
             self.temperature_hot_spot = float(
                 none_to_default(attributes['temperature_hot_spot'], 0.0))
             self.temperature_junction = float(

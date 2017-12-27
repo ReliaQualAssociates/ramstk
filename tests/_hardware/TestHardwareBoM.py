@@ -515,7 +515,9 @@ class TestHardwareBoMDataController(unittest.TestCase):
             'voltage_esd': 0.0,
             'manufacturing_id': 0,
             'n_wave_soldered': 0,
-            'temperature_rise': 0.0
+            'temperature_rise': 0.0,
+            'temperature_active': 35.0,
+            'temperature_dormant': 25.0
         }
 
         _error_code, _msg = self.DUT.request_set_attributes(

@@ -426,6 +426,7 @@ class Model(object):
                 filter(RTKModel.model_type == 'allocation').all():
             configuration.RTK_ALLOCATION_MODELS[_record.model_id] = \
                 _record.get_attributes()[1:]
+
         for _record in self.site_session.query(RTKModel).\
                 filter(RTKModel.model_type == 'rprediction').all():
             configuration.RTK_HR_MODEL[_record.model_id] = \

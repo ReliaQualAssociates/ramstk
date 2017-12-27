@@ -24,13 +24,47 @@ class GeneralData(RTKWorkView):
     The Work View displays all the general data attributes for the selected
     Hardware. The attributes of a Hardware General Data Work View are:
 
+    :cvar list _lst_labels:
+
     :ivar int _hardware_id: the ID of the Hardware currently being displayed.
-    :ivar chkSafetyCritical: the :class:`rtk.gui.gtk.rtk.RTKCheckButton` to
-                             display/edit the Hardware's safety criticality.
-    :ivar txtTotalCost: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
-                        Hardware cost.
-    :ivar txtModeCount: the :class:`rtk.gui.gtk.rtk.RTKEntry` to display the
-                        number of failure modes the hardware is susceptible to.
+
+    :ivar chkRepairable: indicates whether or not the selected hardware item
+                         is repairable.
+    :ivar chkTagged: indicates whether or not the part is 'tagged'.  The tag
+                     can indicate whatever the user chooses.
+    :ivar cmbCategory: the component category of the hardware item.
+    :ivar cmbCostType: the type cost estimate.
+    :ivar cmbManufacturer: the manufacturer of the hardware item.
+    :ivar cmbSubcategory: the component subcategory of the hardware item.
+
+    :ivar txtAltPartNum: the alternate part number (if any) of the selected
+                         hardware item.
+    :ivar txtAttachments: hyperlinks to any documents associated with the
+                          selected hardware item.
+    :ivar txtCAGECode: the Commerical and Government Entity (CAGE) Code of the
+                       selected hardware item.
+    :ivar txtCompRefDes: the composite reference designator of the selected
+                         hardware item.
+    :ivar txtCost: the unit cost of the selected hardware item.
+    :ivar txtDescription: the description of the selected hardware item.
+    :ivar txtFigureNumber: the figure number in the governing specification for
+                           the selected hardware item.
+    :ivar txtLCN: the Logistics Control Number (LCN) of the selected hardware
+                  item.
+    :ivar txtName: the name of the selected hardware item.
+    :ivar txtNSN: the National Stock Number (NSN) of the selected hardware
+                  item.
+    :ivar txtPageNumber: the page number in the governing specification for the
+                         selected hardware item.
+    :ivar txtPartNumber: the part number of the selected hardware item.
+    :ivar txtQuantity: the number of the selected hardware items in the
+                       design.
+    :ivar txtRefDes: the reference designator of the selected hardware item.
+    :ivar txtRemarks: any remarks associated with the selected hardware item.
+    :ivar txtSpecification: the specification (if any) governing the selected
+                            hardware item.
+    :ivar txtYearMade: the year the the selected hardware item was
+                       manufactured.
 
     Callbacks signals in _lst_handler_id:
 
@@ -85,6 +119,32 @@ class GeneralData(RTKWorkView):
     +----------+-------------------------------------------+
     """
 
+    # Define private list attributes.
+    # We add an empty string in the positions where a gtk.CheckButton() will be
+    # placed.
+    _lst_labels = [[
+        _(u"Part Number:"),
+        _(u"Alternate Part Number:"),
+        _(u"Name:"),
+        _(u"Description:"),
+        _(u"Reference Designator:"),
+        _(u"Composite Ref. Des."),
+        _(u"Category:"),
+        _(u"Subcategory:"),
+        _(u"Specification:"),
+        _(u"Page Number:"),
+        _(u"Figure Number:"), "",
+        _(u"LCN:")
+    ], [
+        _(u"Manufacturer:"),
+        _(u"CAGE Code:"),
+        _(u"NSN:"),
+        _(u"Year Made:"),
+        _(u"Quantity:"),
+        _(u"Unit Cost:"),
+        _(u"Cost Calculation Method:")
+    ], ["", _(u"Attachments:"), _(u"Remarks:")]]
+
     def __init__(self, controller):
         """
         Initialize the Work View for the Hardware package.
@@ -97,30 +157,6 @@ class GeneralData(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        # We add an empty string in the positions where a gtk.CheckButton()
-        # will be placed.
-        self._lst_gendata_labels = [[
-            _(u"Part Number:"),
-            _(u"Alternate Part Number:"),
-            _(u"Name:"),
-            _(u"Description:"),
-            _(u"Reference Designator:"),
-            _(u"Composite Ref. Des."),
-            _(u"Category:"),
-            _(u"Subcategory:"),
-            _(u"Specification:"),
-            _(u"Page Number:"),
-            _(u"Figure Number:"), "",
-            _(u"LCN:")
-        ], [
-            _(u"Manufacturer:"),
-            _(u"CAGE Code:"),
-            _(u"NSN:"),
-            _(u"Year Made:"),
-            _(u"Quantity:"),
-            _(u"Unit Cost:"),
-            _(u"Cost Calculation Method:")
-        ], ["", _(u"Attachments:"), _(u"Remarks:")]]
 
         # Initialize private scalar attributes.
         self._hardware_id = None
@@ -367,15 +403,15 @@ class GeneralData(RTKWorkView):
         _frame = rtk.RTKFrame(label=_(u"Hardware Description"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[0],
-                                              _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[0], _fixed, 5,
+                                              5)
         _x_pos += 50
 
         _hbox.pack_start(_frame, expand=True, fill=True)
 
         # Move the labels after the description to account for the extra
         # vertical space needed by the description RTKTextView().
-        for _index in xrange(4, 13):
+        for _index in xrange(4, 13):  # pylint: disable=undefined-variable
             _fixed.move(_fixed.get_children()[_index], 5,
                         _y_pos[_index - 1] + 100)
 
@@ -403,8 +439,8 @@ class GeneralData(RTKWorkView):
         _frame = rtk.RTKFrame(label=_(u"Purchasing Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[1],
-                                              _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[1], _fixed, 5,
+                                              5)
         _x_pos += 50
 
         _fixed.put(self.cmbManufacturer, _x_pos, _y_pos[0])
@@ -424,8 +460,8 @@ class GeneralData(RTKWorkView):
         _frame = rtk.RTKFrame(label=_(u"Miscellaneous Information"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[2],
-                                              _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[2], _fixed, 5,
+                                              5)
         _x_pos += 50
 
         # Move the Remarks label down to accomodate for the Attachments entry.
@@ -455,10 +491,14 @@ class GeneralData(RTKWorkView):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve gtk.ComboBox() changes and assign to Hardware attribute.
+        Retrieve RTKCombo() changes and assign to Hardware attribute.
 
-        :param gtk.CellRendererCombo combo: the gtk.CellRendererCombo() that
-                                            called this method.
+        This method is called by:
+
+            * gtk.Combo() 'changed' signal
+
+        :param combo: the RTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
         :param int index: the position in the Requirement class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Entry().
@@ -528,12 +568,14 @@ class GeneralData(RTKWorkView):
 
         This method is called by:
 
-            * gtk.Entry() 'changed' signal
-            * gtk.TextView() 'changed' signal
+            * RTKEntry() 'changed' signal
+            * RTKTextView() 'changed' signal
 
         This method sends the 'wvwEditedHardware' message.
 
-        :param gtk.Entry entry: the gtk.Entry() that called the method.
+        :param entry: the RTKEntry() or RTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RTKTextView`
         :param int index: the position in the Hardware class gtk.TreeModel()
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
@@ -833,9 +875,101 @@ class AssessmentInputs(RTKWorkView):
     MIL-HDBK-217FN2 and NSWC-11.  The attributes of a Hardware assessment
     input view are:
 
+    :cvar list _lst_assess_labels: the text to use for the assessment input
+                                   widget labels.
+
     :ivar int _hardware_id: the ID of the Hardware item currently being
                             displayed.
+
+    :ivar cmbActiveEnviron: the operating environment for the hardware item.
+    :ivar cmbDormantEnviron: the storage environment for the hardware item.
+    :ivar cmbFailureDist: the statistical failure distribution of the hardware
+                          item.
+    :ivar cmbHRType: the type of reliability assessment for the selected
+                     hardware item.
+    :ivar cmbHRMethod: the assessment method to use for the selected hardware
+                       item.
+    :ivar fraDesignRatings: the container to embed the piece part design
+                            attributes gtk.Fised().
+    :ivar fraOperatingStress: the container to embed the piece part operating
+                              stresses gtk.Fixed().
+    :ivar txtActiveTemp: the ambient temperature in the operating environment.
+    :ivar txtAddAdjFactor: an adjustment factor to add to the assessed hazard
+                           rate or MTBF.
+    :ivar txtDormantTemp: the ambient temperature in the storage environment.
+    :ivar txtFailScale: the scale parameter of the statistical failure
+                        distribution.
+    :ivar txtFailShape: the shape parameter of the statistical failure
+                        distribution.
+    :ivar txtFailLocation: the location parameter of the statistical failure
+                           distribution.
+    :ivar txtMultAdjFactor: an adjustment factor to multiply the assessed
+                            hazard rate or MTBF by.
+    :ivar txtSpecifiedHt: the stated hazard rate.
+    :ivar txtSpecifiedHtVar: the variance of the stated hazard rate.
+    :ivar txtSpecifiedMTBF: the stated mean time between failure (MTBF).
+    :ivar txtSpecifiedMTBFVar: the variance of the stated mean time between
+                               failure (MTBF).
+
+    Callbacks signals in _lst_handler_id:
+
+    +----------+-------------------------------------------+
+    | Position | Widget - Signal                           |
+    +==========+===========================================+
+    |     0    | cmbActiveEnviron - `changed`              |
+    +----------+-------------------------------------------+
+    |     1    | cmbDormantEnviron - `changed`             |
+    +----------+-------------------------------------------+
+    |     2    | cmbFailureDist - `changed`                |
+    +----------+-------------------------------------------+
+    |     3    | cmbHRType - `changed`                     |
+    +----------+-------------------------------------------+
+    |     4    | cmbHRMethod - `changed`                   |
+    +----------+-------------------------------------------+
+    |     5    | txtActiveTemp - `changed`                 |
+    +----------+-------------------------------------------+
+    |     6    | txtAddAdjFactor - `changed`               |
+    +----------+-------------------------------------------+
+    |     7    | txtDormantTemp - `changed`                |
+    +----------+-------------------------------------------+
+    |     8    | txtFailScale - `changed`                  |
+    +----------+-------------------------------------------+
+    |     9    | txtFailShape - `changed`                  |
+    +----------+-------------------------------------------+
+    |    10    | txtFailLocation - `changed`               |
+    +----------+-------------------------------------------+
+    |    11    | txtMultAdjFactor - `changed`              |
+    +----------+-------------------------------------------+
+    |    12    | txtSpecifiedHt - `changed`                |
+    +----------+-------------------------------------------+
+    |    13    | txtSpecifiedHtVar - `changed`             |
+    +----------+-------------------------------------------+
+    |    14    | txtSpecifiedMTBF - `changed`              |
+    +----------+-------------------------------------------+
+    |    15    | txtSpecifiedMTBFVar - `changed`           |
+    +----------+-------------------------------------------+
     """
+
+    # Define private list attributes.
+    _lst_labels = [[
+        _(u"Assessment Type:"),
+        _(u"Assessment Method:"),
+        _(u"Failure Distribution:"),
+        _(u"Scale Parameter:"),
+        _(u"Shape Parameter:"),
+        _(u"Location Parameter:"),
+        _(u"Stated Hazard Rate [h(t)]:"),
+        _(u"Stated h(t) Variance:"),
+        _(u"Stated MTBF:"),
+        _(u"Stated MTBF Variance:"),
+        _(u"Additive Adjustment Factor:"),
+        _(u"Multiplicative Adjustment Factor:")
+    ], [
+        _(u"Active Environment:"),
+        _(u"Dormant Environment:"),
+        _(u"Active Temperature (\u00B0C):"),
+        _(u"Dormant Temperature (\u00B0C):")
+    ]]
 
     def __init__(self, controller):
         """
@@ -849,25 +983,6 @@ class AssessmentInputs(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_assess_labels = [[
-            _(u"Assessment Method:"),
-            _(u"Assessment Model:"),
-            _(u"Failure Distribution:"),
-            _(u"Scale Parameter:"),
-            _(u"Shape Parameter:"),
-            _(u"Location Parameter:"),
-            _(u"Specified Hazard Rate [h(t)]:"),
-            _(u"Variance h(t):"),
-            _(u"Specified MTBF:"),
-            _(u"MTBF Variance:"),
-            _(u"Additive Adjustment Factor:"),
-            _(u"Multiplicative Adjustment Factor:")
-        ], [
-            _(u"Active Environment:"),
-            _(u"Dormant Environment:"),
-            _(u"Active Temperature (\u00B0C):"),
-            _(u"Dormant Temperature (\u00B0C):")
-        ]]
 
         # Initialize private scalar attributes.
         self._hardware_id = None
@@ -878,47 +993,109 @@ class AssessmentInputs(RTKWorkView):
 
         # Initialize public scalar attributes.
         self.cmbActiveEnviron = rtk.RTKComboBox(
+            index=1,
+            simple=False,
             tooltip=_(u"The operating environment for the hardware item."))
         self.cmbDormantEnviron = rtk.RTKComboBox(
             tooltip=_(u"The storage environment for the hardware item."))
         self.cmbFailureDist = rtk.RTKComboBox(tooltip=_(
             u"The statistical failure distribution of the hardware item."))
+        self.cmbHRType = rtk.RTKComboBox(tooltip=_(
+            u"The type of reliability assessment for the selected hardware "
+            u"item."))
         self.cmbHRMethod = rtk.RTKComboBox(tooltip=_(
-            u"The method for assessing the reliability attributes of the "
-            u"hardware item."))
-        self.cmbHRModel = rtk.RTKComboBox(tooltip=_(
-            u"The model to use for assessing the relibility attributes of "
-            u"the hardware item."))
+            u"The assessment method to use for the selected hardware item."))
 
         self.fraDesignRatings = rtk.RTKFrame(label=_(u"Design Ratings"))
         self.fraOperatingStress = rtk.RTKFrame(label=_(u"Operating Stresses"))
 
-        self.txtActiveTemp = rtk.RTKEntry(tooltip=_(
-            u"The ambient temperature in the operating environment."))
-        self.txtAddAdj = rtk.RTKEntry(tooltip=_(
-            u"An adjustment factor to add to the assessed hazard rate or "
-            u"MTBF."))
+        self.txtActiveTemp = rtk.RTKEntry(
+            width=125,
+            tooltip=_(
+                u"The ambient temperature in the operating environment."))
+        self.txtAddAdjFactor = rtk.RTKEntry(
+            width=125,
+            tooltip=_(
+                u"An adjustment factor to add to the assessed hazard rate or "
+                u"MTBF."))
         self.txtDormantTemp = rtk.RTKEntry(
+            width=125,
             tooltip=_(u"The ambient temperature in the storage environment."))
-        self.txtFailScale = rtk.RTKEntry(tooltip=_(
-            u"The scale parameter of the statistical failure distribution."))
-        self.txtFailShape = rtk.RTKEntry(tooltip=_(
-            u"The shape parameter of the statistical failure distribution."))
-        self.txtFailLocation = rtk.RTKEntry(tooltip=_(
-            u"The location parameter of the statistical failure "
-            u"distribution."))
-        self.txtMultAdj = rtk.RTKEntry(tooltip=_(
-            u"An adjustment factor to multiply the assessed hazard rate or "
-            u"MTBF by."))
+        self.txtFailScale = rtk.RTKEntry(
+            width=125,
+            tooltip=_(
+                u"The scale parameter of the statistical failure distribution."
+            ))
+        self.txtFailShape = rtk.RTKEntry(
+            width=125,
+            tooltip=_(
+                u"The shape parameter of the statistical failure distribution."
+            ))
+        self.txtFailLocation = rtk.RTKEntry(
+            width=125,
+            tooltip=_(u"The location parameter of the statistical failure "
+                      u"distribution."))
+        self.txtMultAdjFactor = rtk.RTKEntry(
+            width=125,
+            tooltip=_(
+                u"An adjustment factor to multiply the assessed hazard rate "
+                u"or MTBF by."))
         self.txtSpecifiedHt = rtk.RTKEntry(
-            tooltip=_(u"The stated hazard rate."))
+            width=125, tooltip=_(u"The stated hazard rate."))
         self.txtSpecifiedHtVar = rtk.RTKEntry(
-            tooltip=_(u"The variance of the stated hazard rate."))
+            width=125, tooltip=_(u"The variance of the stated hazard rate."))
         self.txtSpecifiedMTBF = rtk.RTKEntry(
+            width=125,
             tooltip=_(u"The stated mean time between failure (MTBF)."))
-        self.txtSpecifiedMTBFVar = rtk.RTKEntry(tooltip=_(
-            u"The variance of the stated mean time between failure "
-            u"(MTBF)."))
+        self.txtSpecifiedMTBFVar = rtk.RTKEntry(
+            width=125,
+            tooltip=_(u"The variance of the stated mean time between failure "
+                      u"(MTBF)."))
+
+        self._lst_handler_id.append(
+            self.cmbActiveEnviron.connect('changed', self._on_combo_changed,
+                                          0))
+        self._lst_handler_id.append(
+            self.cmbDormantEnviron.connect('changed', self._on_combo_changed,
+                                           1))
+        self._lst_handler_id.append(
+            self.cmbFailureDist.connect('changed', self._on_combo_changed, 2))
+        self._lst_handler_id.append(
+            self.cmbHRType.connect('changed', self._on_combo_changed, 3))
+        self._lst_handler_id.append(
+            self.cmbHRMethod.connect('changed', self._on_combo_changed, 4))
+
+        self._lst_handler_id.append(
+            self.txtActiveTemp.connect('changed', self._on_focus_out, 5))
+        self._lst_handler_id.append(
+            self.txtAddAdjFactor.connect('changed', self._on_focus_out, 6))
+        self._lst_handler_id.append(
+            self.txtDormantTemp.connect('changed', self._on_focus_out, 7))
+        self._lst_handler_id.append(
+            self.txtFailScale.connect('changed', self._on_focus_out, 8))
+        self._lst_handler_id.append(
+            self.txtFailShape.connect('changed', self._on_focus_out, 9))
+        self._lst_handler_id.append(
+            self.txtFailLocation.connect('changed', self._on_focus_out, 10))
+        self._lst_handler_id.append(
+            self.txtMultAdjFactor.connect('changed', self._on_focus_out, 11))
+        self._lst_handler_id.append(
+            self.txtSpecifiedHt.connect('changed', self._on_focus_out, 12))
+        self._lst_handler_id.append(
+            self.txtSpecifiedHtVar.connect('changed', self._on_focus_out, 13))
+        self._lst_handler_id.append(
+            self.txtSpecifiedMTBF.connect('changed', self._on_focus_out, 14))
+        self._lst_handler_id.append(
+            self.txtSpecifiedMTBFVar.connect('changed', self._on_focus_out,
+                                             15))
+
+        self.pack_start(self._make_buttonbox(), expand=False, fill=False)
+        self.pack_start(
+            self._make_assessment_input_page(), expand=True, fill=True)
+        self.show_all()
+
+        pub.subscribe(self._on_select, 'selectedHardware')
+        #pub.subscribe(self._on_edit, 'mvwEditedHardware')
 
     def _do_request_calculate(self, __button):
         """
@@ -958,6 +1135,73 @@ class AssessmentInputs(RTKWorkView):
 
         return _return
 
+    def _do_request_update(self, __button):
+        """
+        Send request to save the currently selected Hardware.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        return self._dtc_data_controller.request_update(self._hardware_id)
+
+    def _do_set_sensitive(self, type_id):
+        """
+        Set certain widgets sensitive or insensitive.
+
+        This method will set the sensitivity of various widgets depending on
+        the reliability assessment type selected.
+
+        :param int type_id: the ID of the reliability assessment type selected.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        if type_id == 0:
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(True)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+        elif type_id == 1:
+            self.cmbFailureDist.set_sensitive(True)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(True)
+            self.txtFailScale.set_sensitive(True)
+            self.txtFailShape.set_sensitive(True)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+        elif type_id == 2:
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(True)
+            self.txtSpecifiedHtVar.set_sensitive(True)
+            self.txtSpecifiedMTBF.set_sensitive(False)
+            self.txtSpecifiedMTBFVar.set_sensitive(False)
+        elif type_id == 3:
+            self.cmbFailureDist.set_sensitive(False)
+            self.cmbHRMethod.set_sensitive(False)
+            self.txtFailLocation.set_sensitive(False)
+            self.txtFailScale.set_sensitive(False)
+            self.txtFailShape.set_sensitive(False)
+            self.txtSpecifiedHt.set_sensitive(False)
+            self.txtSpecifiedHtVar.set_sensitive(False)
+            self.txtSpecifiedMTBF.set_sensitive(True)
+            self.txtSpecifiedMTBFVar.set_sensitive(True)
+
+        return _return
+
     def _make_assessment_input_page(self):
         """
         Make the Hardware class gtk.Notebook() assessment input page.
@@ -966,122 +1210,131 @@ class AssessmentInputs(RTKWorkView):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        _model = self.cmbCategory.get_model()
+        _model = self.cmbActiveEnviron.get_model()
         _model.clear()
 
         _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES:
-            _data.append([self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES[_key]])
-        self.cmbCategory.do_load_combo(_data)
+        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS:
+            _data.append([
+                self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[_key][
+                    0], self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[
+                        _key][1],
+                self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[_key][3]
+            ])
+        self.cmbActiveEnviron.do_load_combo(_data, index=1, simple=False)
 
-        _model = self.cmbCostType.get_model()
+        _model = self.cmbDormantEnviron.get_model()
         _model.clear()
 
         _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_COST_TYPE:
+        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_DORMANT_ENVIRONMENTS:
+            _data.append([
+                self._mdcRTK.RTK_CONFIGURATION.RTK_DORMANT_ENVIRONMENTS[_key][
+                    1]
+            ])
+        self.cmbDormantEnviron.do_load_combo(_data)
+
+        _model = self.cmbFailureDist.get_model()
+        _model.clear()
+
+        _data = [[_(u"1P Exponential")], [_(u"2P Exponential")],
+                 [_(u"Gaussian")], [_(u"Lognormal")], [_(u"2P Weibull")],
+                 [_(u"3P Weibull")]]
+        self.cmbFailureDist.do_load_combo(_data)
+
+        _model = self.cmbHRType.get_model()
+        _model.clear()
+
+        _data = []
+        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_HR_TYPE:
+            _data.append([self._mdcRTK.RTK_CONFIGURATION.RTK_HR_TYPE[_key][1]])
+        self.cmbHRType.do_load_combo(_data)
+
+        _model = self.cmbHRMethod.get_model()
+        _model.clear()
+
+        _data = []
+        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MODEL:
             _data.append(
-                [self._mdcRTK.RTK_CONFIGURATION.RTK_COST_TYPE[_key][1]])
-        self.cmbCostType.do_load_combo(_data)
+                [self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MODEL[_key][0]])
+        self.cmbHRMethod.do_load_combo(_data)
 
-        _model = self.cmbManufacturer.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_MANUFACTURERS:
-            _data.append(
-                self._mdcRTK.RTK_CONFIGURATION.RTK_MANUFACTURERS[_key])
-        self.cmbManufacturer.do_load_combo(_data, simple=False)
-
-        # Build the General Data page starting with the left half.
+        # Build the assessment input page starting with the top left half.
         _hbox = gtk.HBox()
-        _fixed = gtk.Fixed()
-
-        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Hardware Description"))
-        _frame.add(_scrollwindow)
-
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[0],
-                                              _fixed, 5, 5)
-        _x_pos += 50
-
-        _hbox.pack_start(_frame, expand=True, fill=True)
-
-        # Move the labels after the description to account for the extra
-        # vertical space needed by the description RTKTextView().
-        for _index in xrange(4, 13):
-            _fixed.move(_fixed.get_children()[_index], 5,
-                        _y_pos[_index - 1] + 100)
-
-        _fixed.put(self.txtPartNumber, _x_pos, _y_pos[0])
-        _fixed.put(self.txtAltPartNum, _x_pos, _y_pos[1])
-        _fixed.put(self.txtName, _x_pos, _y_pos[2])
-        _fixed.put(self.txtDescription.scrollwindow, _x_pos, _y_pos[3])
-        _fixed.put(self.txtRefDes, _x_pos, _y_pos[3] + 100)
-        _fixed.put(self.txtCompRefDes, _x_pos, _y_pos[4] + 100)
-        _fixed.put(self.cmbCategory, _x_pos, _y_pos[5] + 100)
-        _fixed.put(self.cmbSubcategory, _x_pos, _y_pos[6] + 100)
-        _fixed.put(self.txtSpecification, _x_pos, _y_pos[7] + 100)
-        _fixed.put(self.txtPageNumber, _x_pos, _y_pos[8] + 100)
-        _fixed.put(self.txtFigureNumber, _x_pos, _y_pos[9] + 100)
-        _fixed.put(self.chkRepairable, _x_pos, _y_pos[10] + 100)
-        _fixed.put(self.txtLCN, _x_pos, _y_pos[11] + 100)
-
-        _fixed.show_all()
-
-        # Now add the right hand side starting with the top pane.
         _vpaned = gtk.VPaned()
         _fixed = gtk.Fixed()
 
         _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Purchasing Information"))
+        _frame = rtk.RTKFrame(label=_(u"Assessment Inputs"))
         _frame.add(_scrollwindow)
 
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[1],
-                                              _fixed, 5, 5)
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[0], _fixed, 5,
+                                              5)
         _x_pos += 50
 
-        _fixed.put(self.cmbManufacturer, _x_pos, _y_pos[0])
-        _fixed.put(self.txtCAGECode, _x_pos, _y_pos[1])
-        _fixed.put(self.txtNSN, _x_pos, _y_pos[2])
-        _fixed.put(self.txtYearMade, _x_pos, _y_pos[3])
-        _fixed.put(self.txtQuantity, _x_pos, _y_pos[4])
-        _fixed.put(self.txtCost, _x_pos, _y_pos[5])
-        _fixed.put(self.cmbCostType, _x_pos, _y_pos[6])
+        _vpaned.pack1(_frame, True, True)
+        _hbox.pack_start(_vpaned, expand=True, fill=True)
+
+        _fixed.put(self.cmbHRType, _x_pos, _y_pos[0])
+        _fixed.put(self.cmbHRMethod, _x_pos, _y_pos[1])
+        _fixed.put(self.cmbFailureDist, _x_pos, _y_pos[2])
+        _fixed.put(self.txtFailScale, _x_pos, _y_pos[3])
+        _fixed.put(self.txtFailShape, _x_pos, _y_pos[4])
+        _fixed.put(self.txtFailLocation, _x_pos, _y_pos[5])
+        _fixed.put(self.txtSpecifiedHt, _x_pos, _y_pos[6])
+        _fixed.put(self.txtSpecifiedHtVar, _x_pos, _y_pos[7])
+        _fixed.put(self.txtSpecifiedMTBF, _x_pos, _y_pos[8])
+        _fixed.put(self.txtSpecifiedMTBFVar, _x_pos, _y_pos[9])
+        _fixed.put(self.txtAddAdjFactor, _x_pos, _y_pos[10])
+        _fixed.put(self.txtMultAdjFactor, _x_pos, _y_pos[11])
+
+        _fixed.show_all()
+
+        # Now add the bottom left pane.  This is just an RTKFrame() and will be
+        # the container for component-specific design attributes.
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        self.fraDesignRatings.add(_scrollwindow)
+
+        _vpaned.pack2(self.fraDesignRatings, True, True)
+
+        # Now add the top right pane.
+        _vpaned = gtk.VPaned()
+        _fixed = gtk.Fixed()
+
+        _scrollwindow = rtk.RTKScrolledWindow(_fixed)
+        _frame = rtk.RTKFrame(label=_(u"Environmental Inputs"))
+        _frame.add(_scrollwindow)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels[1], _fixed, 5,
+                                              5)
+        _x_pos += 50
+
+        _fixed.put(self.cmbActiveEnviron, _x_pos, _y_pos[0])
+        _fixed.put(self.cmbDormantEnviron, _x_pos, _y_pos[1])
+        _fixed.put(self.txtActiveTemp, _x_pos, _y_pos[2])
+        _fixed.put(self.txtDormantTemp, _x_pos, _y_pos[3])
 
         _fixed.show_all()
 
         _vpaned.pack1(_frame, True, True)
-        _fixed = gtk.Fixed()
 
+        # Finally, add the bottom right pane.  This is just an RTKFrame() and
+        # will be the container for component-specific design attributes.
         _scrollwindow = rtk.RTKScrolledWindow(_fixed)
-        _frame = rtk.RTKFrame(label=_(u"Miscellaneous Information"))
-        _frame.add(_scrollwindow)
+        self.fraOperatingStress.add(_scrollwindow)
 
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_gendata_labels[2],
-                                              _fixed, 5, 5)
-        _x_pos += 50
-
-        # Move the Remarks label down to accomodate for the Attachments entry.
-        _fixed.move(_fixed.get_children()[2], 5, _y_pos[1] + 100)
-
-        _fixed.put(self.chkTagged, _x_pos, _y_pos[0])
-        _fixed.put(self.txtAttachments.scrollwindow, _x_pos, _y_pos[1])
-        _fixed.put(self.txtRemarks.scrollwindow, _x_pos, _y_pos[1] + 100)
-
-        _fixed.show_all()
-
-        _vpaned.pack2(_frame, True, True)
+        _vpaned.pack2(self.fraOperatingStress, True, True)
 
         _hbox.pack_end(_vpaned, expand=True, fill=True)
 
         # Create the label for the gtk.Notebook() tab.
         _label = rtk.RTKLabel(
-            _(u"General\nData"),
+            _(u"Assessment\nInputs"),
             height=30,
             width=-1,
             justify=gtk.JUSTIFY_CENTER,
-            tooltip=_(u"Displays general information for the selected "
-                      u"hardware item."))
+            tooltip=_(u"Displays reliability assessment inputs for the "
+                      u"selected hardware item."))
         self.hbx_tab_label.pack_start(_label)
 
         return _hbox
@@ -1107,6 +1360,301 @@ class AssessmentInputs(RTKWorkView):
 
         return _buttonbox
 
+    def _on_combo_changed(self, combo, index):
+        """
+        Retrieve RTKCombo() changes and assign to Hardware attribute.
+
+        This method is called by:
+
+            * gtk.Combo() 'changed' signal
+
+        :param combo: the RTKCombo() that called this method.
+        :type combo: :class:`rtk.gui.gtk.rtk.RTKCombo`
+        :param int index: the position in the Hardware class gtk.TreeModel()
+                          associated with the data from the calling
+                          gtk.Entry().  Indices are:
+
+            +---------+------------------+---------+------------------+
+            |  Index  | Widget           |  Index  | Widget           |
+            +=========+==================+=========+==================+
+            |    0    | cmbActiveEnviron |    3    | cmbHRType        |
+            +---------+------------------+---------+------------------+
+            |    1    | cmbDormantEnviron|    4    | cmbHRMethod      |
+            +---------+------------------+---------+------------------+
+            |    2    | cmbFailureDist   |         |                  |
+            +---------+------------------+---------+------------------+
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        combo.handler_block(self._lst_handler_id[index])
+
+        _model = combo.get_model()
+        _row = combo.get_active_iter()
+
+        if self._dtc_data_controller is not None:
+            _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id)
+
+            if index == 0:
+                _hardware['active_environ'] = combo.get_active() - 1
+            elif index == 1:
+                _hardware['dormant_environ'] = combo.get_active() - 1
+            elif index == 2:
+                _hardware['failure_distribution_id'] = combo.get_active() - 1
+            elif index == 3:
+                _hardware['hazard_rate_type_id'] = combo.get_active() - 1
+                # Set certain widgets as sensitive and insensitive depending on
+                # the type of assessment selected.
+                self._do_set_sensitive(_hardware['hazard_rate_type_id'])
+            elif index == 4:
+                _hardware['hazard_rate_method_id'] = combo.get_active() - 1
+
+        combo.handler_unblock(self._lst_handler_id[index])
+
+        return _return
+
+    def _on_focus_out(self, entry, index):
+        """
+        Retrieve changes made in RTKEntry() widgets..
+
+        This method is called by:
+
+            * RTKEntry() 'changed' signal
+            * RTKTextView() 'changed' signal
+
+        This method sends the 'wvwEditedHardware' message.
+
+        :param entry: the RTKEntry() or RTKTextView() that called the method.
+        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
+                     :class:`rtk.gui.gtk.rtk.RTKTextView`
+        :param int index: the position in the Hardware class gtk.TreeModel()
+                          associated with the data from the calling
+                          gtk.Widget().  Indices are:
+
+            +---------+---------------------+---------+---------------------+
+            |  Index  | Widget              |  Index  | Widget              |
+            +=========+=====================+=========+=====================+
+            |    5    | txtActiveTemp       |   11    | txtMultAdjFactor    |
+            +---------+---------------------+---------+---------------------+
+            |    6    | txtAddAdjFactor     |   12    | txtSpecifiedHt      |
+            +---------+---------------------+---------+---------------------+
+            |    7    | txtDormantTemp      |   13    | txtSpecifiedHtVar   |
+            +---------+---------------------+---------+---------------------+
+            |    8    | txtFailScale        |   14    | txtSpecifiedMTBF    |
+            +---------+---------------------+---------+---------------------+
+            |    9    | txtFailShape        |   15    | txtSpecifiedMTBFVar |
+            +---------+---------------------+---------+---------------------+
+            |   10    | txtFailLocation     |         |                     |
+            +---------+---------------------+---------+---------------------+
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _index = -1
+        _return = False
+        _text = ''
+
+        entry.handler_block(self._lst_handler_id[index])
+
+        if self._dtc_data_controller is not None:
+            _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id)
+
+            if index == 5:
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['temperature_active'] = _text
+            elif index == 6:
+                _position = 30
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['add_adj_factor'] = _text
+            elif index == 7:
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['temperature_dormant'] = _text
+            elif index == 8:
+                _position = 60
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['scale_parameter'] = _text
+            elif index == 9:
+                _position = 61
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['shape_parameter'] = _text
+            elif index == 10:
+                _position = 47
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['location_parameter'] = _text
+            elif index == 11:
+                _position = 54
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['mult_adj_factor'] = _text
+            elif index == 12:
+                _position = 41
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['hazard_rate_specified'] = _text
+            elif index == 13:
+                _position = 46
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['hr_specified_variance'] = _text
+            elif index == 14:
+                _position = 50
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['mtbf_specified'] = _text
+            elif index == 15:
+                _position = 53
+                try:
+                    _text = float(entry.get_text())
+                except ValueError:
+                    _text = 0.0
+                _hardware['mtbf_spec_variance'] = _text
+
+            self._dtc_data_controller.request_set_attributes(
+                self._hardware_id, _hardware, 'reliability')
+
+            pub.sendMessage(
+                'wvwEditedHardware', position=_position, new_text=_text)
+
+        entry.handler_unblock(self._lst_handler_id[index])
+
+        return _return
+
+    def _on_select(self, module_id, **kwargs):
+        """
+        Load the hardware assessment input work view widgets.
+
+        :param int hardware_id: the Hardware ID of the selected/edited
+                                Hardware item.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        self._hardware_id = module_id
+
+        # pylint: disable=attribute-defined-outside-init
+        # It is defined in RTKBaseView.__init__
+        self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
+        _hardware = self._dtc_data_controller.request_select(self._hardware_id)
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id, 'electrical_design')
+
+        self.cmbActiveEnviron.handler_block(self._lst_handler_id[0])
+        self.cmbActiveEnviron.set_active(_attributes['environment_active_id'] +
+                                         1)
+        self.cmbActiveEnviron.handler_unblock(self._lst_handler_id[0])
+
+        self.cmbDormantEnviron.handler_block(self._lst_handler_id[1])
+        self.cmbDormantEnviron.set_active(_attributes['environment_dormant_id']
+                                          + 1)
+        self.cmbDormantEnviron.handler_unblock(self._lst_handler_id[1])
+
+        self.txtActiveTemp.handler_block(self._lst_handler_id[5])
+        self.txtActiveTemp.set_text(
+            self.fmt.format(_attributes['temperature_active']))
+        self.txtActiveTemp.handler_unblock(self._lst_handler_id[5])
+
+        self.txtDormantTemp.handler_block(self._lst_handler_id[7])
+        self.txtDormantTemp.set_text(
+            self.fmt.format(_attributes['temperature_dormant']))
+        self.txtDormantTemp.handler_unblock(self._lst_handler_id[7])
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id, 'reliability')
+
+        self.cmbFailureDist.handler_block(self._lst_handler_id[2])
+        self.cmbFailureDist.set_active(_attributes['failure_distribution_id'] +
+                                       1)
+        self.cmbFailureDist.handler_unblock(self._lst_handler_id[2])
+
+        self.cmbHRType.handler_block(self._lst_handler_id[3])
+        self.cmbHRType.set_active(_attributes['hazard_rate_type_id'] + 1)
+        self.cmbHRType.handler_unblock(self._lst_handler_id[3])
+
+        self.cmbHRMethod.handler_block(self._lst_handler_id[4])
+        self.cmbHRMethod.set_active(_attributes['hazard_rate_method_id'] + 1)
+        self.cmbHRMethod.handler_unblock(self._lst_handler_id[4])
+
+        self.txtAddAdjFactor.handler_block(self._lst_handler_id[6])
+        self.txtAddAdjFactor.set_text(
+            self.fmt.format(_attributes['add_adj_factor']))
+        self.txtAddAdjFactor.handler_unblock(self._lst_handler_id[6])
+
+        self.txtFailScale.handler_block(self._lst_handler_id[8])
+        self.txtFailScale.set_text(
+            self.fmt.format(_attributes['scale_parameter']))
+        self.txtFailScale.handler_unblock(self._lst_handler_id[8])
+
+        self.txtFailShape.handler_block(self._lst_handler_id[9])
+        self.txtFailShape.set_text(
+            self.fmt.format(_attributes['shape_parameter']))
+        self.txtFailShape.handler_unblock(self._lst_handler_id[9])
+
+        self.txtFailLocation.handler_block(self._lst_handler_id[10])
+        self.txtFailLocation.set_text(
+            self.fmt.format(_attributes['location_parameter']))
+        self.txtFailLocation.handler_unblock(self._lst_handler_id[10])
+
+        self.txtMultAdjFactor.handler_block(self._lst_handler_id[11])
+        self.txtMultAdjFactor.set_text(
+            self.fmt.format(_attributes['mult_adj_factor']))
+        self.txtMultAdjFactor.handler_unblock(self._lst_handler_id[11])
+
+        self.txtSpecifiedHt.handler_block(self._lst_handler_id[12])
+        self.txtSpecifiedHt.set_text(
+            self.fmt.format(_attributes['hazard_rate_specified']))
+        self.txtSpecifiedHt.handler_unblock(self._lst_handler_id[12])
+
+        self.txtSpecifiedHtVar.handler_block(self._lst_handler_id[13])
+        self.txtSpecifiedHtVar.set_text(
+            self.fmt.format(_attributes['hr_specified_variance']))
+        self.txtSpecifiedHtVar.handler_unblock(self._lst_handler_id[13])
+
+        self.txtSpecifiedMTBF.handler_block(self._lst_handler_id[14])
+        self.txtSpecifiedMTBF.set_text(
+            self.fmt.format(_attributes['mtbf_specified']))
+        self.txtSpecifiedMTBF.handler_unblock(self._lst_handler_id[14])
+
+        self.txtSpecifiedMTBFVar.handler_block(self._lst_handler_id[15])
+        self.txtSpecifiedMTBFVar.set_text(
+            self.fmt.format(_attributes['mtbf_spec_variance']))
+        self.txtSpecifiedMTBFVar.handler_unblock(self._lst_handler_id[15])
+
+        self._do_set_sensitive(_attributes['hazard_rate_type_id'])
+
+        return _return
+
 
 class AssessmentResults(RTKWorkView):
     """
@@ -1116,8 +1664,36 @@ class AssessmentResults(RTKWorkView):
     for the selected Hardware.  The attributes of a Hardware Assessment Results
     View are:
 
+    :cvar list _lst_labels: the text to use for the reliability assessment
+                            results widget labels.
+
     :ivar int _hardware_id: the ID of the Hardware currently being displayed.
     """
+
+    # Define private list attributes.
+    _lst_labels = [[
+            _(u"Active Failure Intensity [\u039B(t)]:"),
+            _(u"Dormant \u039B(t):"),
+            _(u"Software \u039B(t):"),
+            _(u"Predicted h(t):"),
+            _(u"Mission h(t):"),
+            _(u"MTBF:"),
+            _(u"Mission MTBF:"),
+            _(u"Reliability [R(t)]:"),
+            _(u"Mission R(t):"),
+            _(u"Total Parts:")
+        ], [
+            _(u"Mean Preventive Maintenance Time [MPMT]:"),
+            _(u"Mean Corrective Maintenance Time [MCMT]:"),
+            _(u"Mean Time to Repair [MTTR]:"),
+            _(u"Mean Maintenance Time [MMT]:"),
+            _(u"Availability [A(t)]:"),
+            _(u"Mission A(t):"),
+            _(u"Total Cost:"),
+            _(u"Cost/Failure:"),
+            _(u"Cost/Hour:"),
+            _(u"Total Mode Count:")
+        ]]
 
     def __init__(self, controller):
         """
@@ -1131,17 +1707,153 @@ class AssessmentResults(RTKWorkView):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_assess_labels[1].append(_(u"Total Mode Count:"))
 
         # Initialize private scalar attributes.
+        self._hardware_id = None
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self._hardware_id = None
+        self.txtActiveHt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the active "
+                      u"failure intensity for the "
+                      u"selected hardware item."))
+        self.txtDormantHt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the dormant "
+                      u"failure intensity for "
+                      u"the selected hardware item."))
+        self.txtSoftwareHt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the software "
+                      u"failure intensity for "
+                      u"the selected hardware item."))
+        self.txtPredictedHt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the logistics "
+                      u"failure intensity for "
+                      u"the selected {0:s}.  "
+                      u"This is the sum of the "
+                      u"active, dormant, and "
+                      u"software hazard "
+                      u"rates.").format(self._module))
+        self.txtMissionHt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mission "
+                      u"failure intensity for "
+                      u"the selected hardware item."))
+        self.txtMTBF = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the logistics mean "
+                      u"time between failure (MTBF) "
+                      u"for the selected hardware item."))
+        self.txtMissionMTBF = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mission "
+                      u"mean time between "
+                      u"failure (MTBF) for the "
+                      u"selected hardware item."))
+        self.txtReliability = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the logistics "
+                      u"reliability for the "
+                      u"selected hardware item."))
+        self.txtMissionRt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mission "
+                      u"reliability for the "
+                      u"selected hardware item."))
 
+        self.txtMPMT = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mean preventive "
+                      u"maintenance time (MPMT) for "
+                      u"the selected hardware item."))
+        self.txtMCMT = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mean corrective "
+                      u"maintenance time (MCMT) for "
+                      u"the selected hardware item."))
+        self.txtMTTR = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mean time to "
+                      u"repair (MTTR) for the "
+                      u"selected hardware item."))
+        self.txtMMT = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mean maintenance "
+                      u"time (MMT) for the selected "
+                      u"{0:s}.  This includes "
+                      u"preventive and corrective "
+                      u"maintenance.").format(self._module))
+        self.txtAvailability = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the "
+                      u"logistics "
+                      u"availability for the "
+                      u"selected hardware item."))
+        self.txtMissionAt = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"Displays the mission "
+                      u"availability for the "
+                      u"selected hardware item."))
+        self.txtPartCount = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            tooltip=_(u"Displays the total part "
+                      u"count for the selected "
+                      u"hardware item."))
+        self.txtTotalCost = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            tooltip=_(u"Displays the total cost "
+                      u"of the selected "
+                      u"hardware item."))
+        self.txtCostFailure = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            tooltip=_(u"Displays the cost per "
+                      u"failure of the "
+                      u"selected hardware item."))
+        self.txtCostHour = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            tooltip=_(u"Displays the failure cost "
+                      u"per operating hour for "
+                      u"the selected hardware item."))
         self.txtModeCount = rtk.RTKEntry(
             width=125,
             editable=False,
@@ -1149,7 +1861,7 @@ class AssessmentResults(RTKWorkView):
             tooltip=_(u"Displays the total "
                       u"number of failure modes "
                       u"associated with the "
-                      u"selected Hardware."))
+                      u"selected Hardware item."))
 
         self.pack_start(
             self._make_assessment_results_page(), expand=True, fill=True)
