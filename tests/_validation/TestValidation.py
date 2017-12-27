@@ -18,7 +18,8 @@ from treelib import Tree
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(__file__))) + "/rtk", )
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 # pylint: disable=E0401,wrong-import-position
 import Utilities as Utilities

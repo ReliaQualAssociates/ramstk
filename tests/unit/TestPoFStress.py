@@ -38,7 +38,10 @@ This is the test class for testing the Physics of Failure Stress class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -86,8 +89,7 @@ class TestStressModel(unittest.TestCase):
 
         _values = (0, 1, 'Test Stress', 1, 3, 'Test Remarks')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -98,8 +100,7 @@ class TestStressModel(unittest.TestCase):
 
         _values = (0, 0, 'Test Stress')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -110,8 +111,7 @@ class TestStressModel(unittest.TestCase):
 
         _values = (0, None, 'Test Stress', 1, 3, 'Test Remarks')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -122,8 +122,7 @@ class TestStressModel(unittest.TestCase):
 
         _values = (0, '', 'Test Stress', 1, 3, 'Test Remarks')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)

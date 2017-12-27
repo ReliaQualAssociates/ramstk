@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKSurvivalData module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date
 
@@ -37,9 +39,9 @@ class TestRTKSurvivalData(unittest.TestCase):
     Class for testing the RTKSurvivalData class.
     """
 
-    _attributes =(1, 1, 'Test Survival Record Name', 0, date.today(), 0.0, 0.0,
-                  0, 0, 0.0, 0, 0, date.today(), 0, date.today(), 0, 0.0, 0.0,
-                  0.0, 0, 0, 0, '', '', '')
+    _attributes = (1, 1, 'Test Survival Record Name', 0,
+                   date.today(), 0.0, 0.0, 0, 0, 0.0, 0, 0, date.today(), 0,
+                   date.today(), 0, 0.0, 0.0, 0.0, 0, 0, 0, '', '', '')
 
     def setUp(self):
         """

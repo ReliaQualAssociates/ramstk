@@ -72,7 +72,8 @@ def create_logger(log_name, log_level, log_file, to_tty=False):
     import logging
 
     _logger = logging.getLogger(log_name)
-    _formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+    _formatter = logging.Formatter(
+        '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 
     if log_level == 'DEBUG':
         log_level = logging.ERROR
@@ -108,7 +109,7 @@ def date_to_ordinal(date):
 
     try:
         return parse(str(date)).toordinal()
-    except(ValueError, TypeError):
+    except (ValueError, TypeError):
         return parse('01/01/70').toordinal()
 
 
@@ -134,21 +135,22 @@ def error_handler(message):
     :rtype: int
     """
 
-    if 'argument must be a string or a number' in message[0]:       # Type error
-        _error_code = 10                                            # pragma: no cover
-    elif 'invalid literal for int() with base 10' in message[0]:    # Value error
+    if 'argument must be a string or a number' in message[0]:  # Type error
+        _error_code = 10  # pragma: no cover
+    elif 'invalid literal for int() with base 10' in message[0]:  # Value error
         _error_code = 10
-    elif 'could not convert string to float' in message[0]:         # Value error
+    elif 'could not convert string to float' in message[0]:  # Value error
         _error_code = 10
-    elif 'float division by zero' in message[0]:                    # Zero division error
+    elif 'float division by zero' in message[0]:  # Zero division error
         _error_code = 20
-    elif 'integer division or modulo by zero' in message[0]:        # Zero division error
+    elif 'integer division or modulo by zero' in message[
+            0]:  # Zero division error
         _error_code = 20
-    elif 'index out of range' in message[0]:                        # Index error
+    elif 'index out of range' in message[0]:  # Index error
         _error_code = 40
-    else:                                                           # Unhandled error
+    else:  # Unhandled error
         print message
-        _error_code = 1000                                          # pragma: no cover
+        _error_code = 1000  # pragma: no cover
 
     return _error_code
 
@@ -277,8 +279,8 @@ def string_to_boolean(string):
 
     _string = str(string)
 
-    if(_string.lower() == 'true' or _string.lower() == 'yes' or
-       _string.lower() == 't' or _string.lower() == 'y'):
+    if (_string.lower() == 'true' or _string.lower() == 'yes'
+            or _string.lower() == 't' or _string.lower() == 'y'):
         _result = True
 
     return _result

@@ -15,8 +15,9 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy_utils import create_database
 
-sys.path.insert(
-    0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../rtk/')))
+sys.path.insert(0,
+                os.path.abspath(
+                    os.path.join(os.path.dirname(__file__), '../rtk/')))
 
 # pylint: disable=import-error, wrong-import-position
 import Configuration

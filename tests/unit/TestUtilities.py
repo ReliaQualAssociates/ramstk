@@ -39,7 +39,10 @@ This is the test class for testing the Utilities module algorithms and models.
 import sys
 from os.path import dirname, isfile
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -269,7 +272,7 @@ class TestUtilities(unittest.TestCase):
         """
 
         _error_code = error_handler(
-                          ['The argument must be a string or a number dude!'])
+            ['The argument must be a string or a number dude!'])
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -279,11 +282,10 @@ class TestUtilities(unittest.TestCase):
         """
 
         _error_code = error_handler(
-                          ['That is invalid literal for int() with base 10'])
+            ['That is invalid literal for int() with base 10'])
         self.assertEqual(_error_code, 10)
 
-        _error_code = error_handler(
-                          ['I could not convert string to float'])
+        _error_code = error_handler(['I could not convert string to float'])
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -292,12 +294,11 @@ class TestUtilities(unittest.TestCase):
         (TestUtilities) error_handler should return a 20 error code when passed a ZeroDivisionError string
         """
 
-        _error_code = error_handler(
-                          ['float division by zero dunna work dude'])
+        _error_code = error_handler(['float division by zero dunna work dude'])
         self.assertEqual(_error_code, 20)
 
         _error_code = error_handler(
-                          ['That was integer division or modulo by zero'])
+            ['That was integer division or modulo by zero'])
         self.assertEqual(_error_code, 20)
 
     @attr(all=True, unit=True)
@@ -306,8 +307,7 @@ class TestUtilities(unittest.TestCase):
         (TestUtilities) error_handler should return a 40 error code when passed a IndexError string
         """
 
-        _error_code = error_handler(
-                          ['That index out of range'])
+        _error_code = error_handler(['That index out of range'])
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -316,6 +316,5 @@ class TestUtilities(unittest.TestCase):
         (TestUtilities) error_handler should return a 1000 error code when passed a error string it can't parse
         """
 
-        _error_code = error_handler(
-                          ['Some kinda error message'])
+        _error_code = error_handler(['Some kinda error message'])
         self.assertEqual(_error_code, 1000)

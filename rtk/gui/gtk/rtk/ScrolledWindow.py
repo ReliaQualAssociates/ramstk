@@ -15,7 +15,7 @@ application.
 """
 
 # Import the rtk.Widget base class.
-from .Widget import gtk                             # pylint: disable=E0401
+from .Widget import gtk  # pylint: disable=E0401
 
 
 class RTKScrolledWindow(gtk.ScrolledWindow):

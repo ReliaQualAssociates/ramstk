@@ -10,11 +10,11 @@ The RTKStatus Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKStatus(RTK_BASE):
@@ -25,11 +25,15 @@ class RTKStatus(RTK_BASE):
     __tablename__ = 'rtk_status'
     __table_args__ = {'extend_existing': True}
 
-    status_id = Column('fld_status_id', Integer, primary_key=True,
-                       autoincrement=True, nullable=False)
+    status_id = Column(
+        'fld_status_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     name = Column('fld_name', String(256), default='Status Name')
-    description = Column('fld_description', String(512),
-                         default='Status Decription')
+    description = Column(
+        'fld_description', String(512), default='Status Decription')
     status_type = Column('fld_type', String(256), default='')
 
     def get_attributes(self):
@@ -62,8 +66,8 @@ class RTKStatus(RTK_BASE):
 
         try:
             self.name = str(none_to_default(attributes[0], 'Status Name'))
-            self.description = str(none_to_default(attributes[1],
-                                                   'Status Description'))
+            self.description = str(
+                none_to_default(attributes[1], 'Status Description'))
             self.status_type = str(none_to_default(attributes[2], ''))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

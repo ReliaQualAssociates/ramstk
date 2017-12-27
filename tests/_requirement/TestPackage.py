@@ -19,7 +19,8 @@ from nose.plugins.manager import PluginManager
 
 sys.path.insert(
     0,
-    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../', )
+    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../',
+)
 
 from test_setup import _create_program_database  # pylint: disable=E0401
 from _dao import TestRTKRequirement, TestRTKStakeholder  # pylint: disable=E0401

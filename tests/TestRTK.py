@@ -31,7 +31,6 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This is the test class for testing the RTK module algorithms and models.
 """
@@ -40,8 +39,9 @@ import sys
 import os
 from os.path import isfile
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                '../rtk')))
+sys.path.insert(0,
+                os.path.abspath(
+                    os.path.join(os.path.dirname(__file__), '../rtk')))
 
 import logging
 
@@ -88,12 +88,12 @@ class TestRTKFunctions(unittest.TestCase):
          self.Configuration.RTK_IMPORT_LOG) = \
             _initialize_loggers(self.Configuration)
 
-        self.assertTrue(isinstance(self.Configuration.RTK_DEBUG_LOG,
-                                   logging.Logger))
-        self.assertTrue(isinstance(self.Configuration.RTK_USER_LOG,
-                                   logging.Logger))
-        self.assertTrue(isinstance(self.Configuration.RTK_IMPORT_LOG,
-                                   logging.Logger))
+        self.assertTrue(
+            isinstance(self.Configuration.RTK_DEBUG_LOG, logging.Logger))
+        self.assertTrue(
+            isinstance(self.Configuration.RTK_USER_LOG, logging.Logger))
+        self.assertTrue(
+            isinstance(self.Configuration.RTK_IMPORT_LOG, logging.Logger))
         self.assertTrue(isfile('/tmp/RTK_debug.log'))
         self.assertTrue(isfile('/tmp/RTK_user.log'))
         self.assertTrue(isfile('/tmp/RTK_import.log'))
@@ -119,17 +119,21 @@ class TestRTKModel(unittest.TestCase):
         self.Configuration.create_user_configuration()
 
         self.Configuration.RTK_COM_BACKEND = 'sqlite'
-        self.Configuration.RTK_COM_INFO = {'host'    : 'localhost',
-                                           'socket'  : 3306,
-                                           'database': '/tmp/TestCommonDB.rtk',
-                                           'user'    : '',
-                                           'password': ''}
+        self.Configuration.RTK_COM_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestCommonDB.rtk',
+            'user': '',
+            'password': ''
+        }
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.site_dao = DAO()
         _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
@@ -162,12 +166,14 @@ class TestRTKModel(unittest.TestCase):
 
         configuration = Configuration()
         configuration.RTK_BACKEND = 'sqlite'
-        configuration.RTK_PROG_INFO = {'host' : 'localhost',
-                                       'socket' : 3306,
-                                       'database' : '/tmp/BigAssTestDB.rtk',
-                                       'type' : 'sqlite',
-                                       'user' : '',
-                                       'password' : ''}
+        configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/BigAssTestDB.rtk',
+            'type': 'sqlite',
+            'user': '',
+            'password': ''
+        }
         _database = configuration.RTK_BACKEND + ':///' + \
                     configuration.RTK_PROG_INFO['database']
         _error_code, _msg = self.DUT.create_program(_database)
@@ -187,12 +193,14 @@ class TestRTKModel(unittest.TestCase):
 
         configuration = Configuration()
         configuration.RTK_BACKEND = 'sqlite'
-        configuration.RTK_PROG_INFO = {'host' : 'localhost',
-                                       'socket' : 3306,
-                                       'database' : 'tmp/BigAssTestDB.rtk',
-                                       'type' : 'sqlite',
-                                       'user' : '',
-                                       'password' : ''}
+        configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': 'tmp/BigAssTestDB.rtk',
+            'type': 'sqlite',
+            'user': '',
+            'password': ''
+        }
         _database = configuration.RTK_BACKEND + ':///' + \
                     configuration.RTK_PROG_INFO['database']
         _error_code, _msg = self.DUT.create_program(_database)
@@ -226,17 +234,21 @@ class TestRTKModel(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT.tree, Tree))
 
         self.assertEqual(self.Configuration.RTK_ACTION_CATEGORY, {})
-        self.assertEqual(self.Configuration.RTK_INCIDENT_CATEGORY,
-                         {34: (u'HW', u'Hardware', u'incident', 1),
-                          35: (u'SW', u'Software', u'incident', 1),
-                          36: (u'PROC', u'Process', u'incident', 1)})
-        self.assertEqual(self.Configuration.RTK_SEVERITY,
-                         {10: (u'INS', u'Insignificant', u'risk', 1),
-                          11: (u'SLT', u'Slight', u'risk', 2),
-                          12: (u'LOW', u'Low', u'risk', 3),
-                          13: (u'MED', u'Medium', u'risk', 4),
-                          14: (u'HI', u'High', u'risk', 5),
-                          15: (u'MAJ', u'Major', u'risk', 6)})
+        self.assertEqual(
+            self.Configuration.RTK_INCIDENT_CATEGORY, {
+                34: (u'HW', u'Hardware', u'incident', 1),
+                35: (u'SW', u'Software', u'incident', 1),
+                36: (u'PROC', u'Process', u'incident', 1)
+            })
+        self.assertEqual(
+            self.Configuration.RTK_SEVERITY, {
+                10: (u'INS', u'Insignificant', u'risk', 1),
+                11: (u'SLT', u'Slight', u'risk', 2),
+                12: (u'LOW', u'Low', u'risk', 3),
+                13: (u'MED', u'Medium', u'risk', 4),
+                14: (u'HI', u'High', u'risk', 5),
+                15: (u'MAJ', u'Major', u'risk', 6)
+            })
 
         self.assertEqual(self.Configuration.RTK_ACTIVE_ENVIRONMENTS, {})
         self.assertEqual(self.Configuration.RTK_DORMANT_ENVIRONMENTS, {})
@@ -272,33 +284,37 @@ class TestRTKModel(unittest.TestCase):
         self.assertEqual(self.Configuration.RTK_HR_TYPE, {})
         self.assertEqual(self.Configuration.RTK_INCIDENT_TYPE, {})
         self.assertEqual(self.Configuration.RTK_MTTR_TYPE, {})
-        self.assertEqual(self.Configuration.RTK_REQUIREMENT_TYPE,
-                         {1: (u'Type Code', u'Test Type of Requirement',
-                              u'requirement')})
+        self.assertEqual(self.Configuration.RTK_REQUIREMENT_TYPE, {
+            1: (u'Type Code', u'Test Type of Requirement', u'requirement')
+        })
         self.assertEqual(self.Configuration.RTK_VALIDATION_TYPE, {})
 
-        self.assertEqual(self.Configuration.RTK_SW_APPLICATION,
-                         {1: (u'Application Description', 1.0, 1.0)})
+        self.assertEqual(self.Configuration.RTK_SW_APPLICATION, {
+            1: (u'Application Description', 1.0, 1.0)
+        })
         self.assertEqual(self.Configuration.RTK_CATEGORIES, {})
-        self.assertEqual(self.Configuration.RTK_CRITICALITY,
-                         {1: (u'Criticality Name', u'Criticality Description',
-                              u'', 0)})
+        self.assertEqual(self.Configuration.RTK_CRITICALITY, {
+            1: (u'Criticality Name', u'Criticality Description', u'', 0)
+        })
         self.assertEqual(self.Configuration.RTK_FAILURE_MODES, {})
-        self.assertEqual(self.Configuration.RTK_HAZARDS,
-                         {1: (u'Hazard Category', u'Hazard Subcategory')})
-        self.assertEqual(self.Configuration.RTK_MANUFACTURERS,
-                         {1: (u'Distribution Description', u'unknown',
-                              u'CAGE Code')})
+        self.assertEqual(self.Configuration.RTK_HAZARDS, {
+            1: (u'Hazard Category', u'Hazard Subcategory')
+        })
+        self.assertEqual(self.Configuration.RTK_MANUFACTURERS, {
+            1: (u'Distribution Description', u'unknown', u'CAGE Code')
+        })
         self.assertEqual(self.Configuration.RTK_MEASUREMENT_UNITS, {})
         self.assertEqual(self.Configuration.RTK_OPERATING_PARAMETERS, {})
-        self.assertEqual(self.Configuration.RTK_S_DIST,
-                         {1: (u'Distribution Description', u'unknown')})
-        self.assertEqual(self.Configuration.RTK_STAKEHOLDERS,
-                         {1: (u'Stakeholder',)})
+        self.assertEqual(self.Configuration.RTK_S_DIST, {
+            1: (u'Distribution Description', u'unknown')
+        })
+        self.assertEqual(self.Configuration.RTK_STAKEHOLDERS, {
+            1: (u'Stakeholder', )
+        })
         self.assertEqual(self.Configuration.RTK_SUBCATEGORIES, {})
-        self.assertEqual(self.Configuration.RTK_USERS[1],
-                         (u'Last Name', u'First Name', u'EMail', u'867.5309',
-                          u'0'))
+        self.assertEqual(
+            self.Configuration.RTK_USERS[1],
+            (u'Last Name', u'First Name', u'EMail', u'867.5309', u'0'))
 
     @attr(all=True, unit=True)
     def test08a_validate_license(self):
@@ -340,17 +356,21 @@ class TestRTKController(unittest.TestCase):
         self.DUT = RTK(test=True)
 
         self.DUT.RTK_CONFIGURATION.RTK_COM_BACKEND = 'sqlite'
-        self.DUT.RTK_CONFIGURATION.RTK_COM_INFO = {'host': 'localhost',
-                                                   'socket': 3306,
-                                                   'database': '/tmp/TestCommonDB.rtk',
-                                                   'user': '',
-                                                   'password': ''}
+        self.DUT.RTK_CONFIGURATION.RTK_COM_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestCommonDB.rtk',
+            'user': '',
+            'password': ''
+        }
         self.DUT.RTK_CONFIGURATION.RTK_BACKEND = 'sqlite'
-        self.DUT.RTK_CONFIGURATION.RTK_PROG_INFO = {'host': 'localhost',
-                                                    'socket': 3306,
-                                                    'database': '/tmp/TestDB.rtk',
-                                                    'user': '',
-                                                    'password': ''}
+        self.DUT.RTK_CONFIGURATION.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
         self.DUT.RTK_CONFIGURATION.RTK_DATA_DIR = \
             '/home/arowland/.config/RTK/data'
         self.DUT.RTK_CONFIGURATION.RTK_ICON_DIR = \
@@ -365,8 +385,8 @@ class TestRTKController(unittest.TestCase):
         self.assertTrue(isinstance(self.DUT, RTK))
         self.assertTrue(isinstance(self.DUT.rtk_model, Model))
         self.assertTrue(isinstance(self.DUT.dic_books['listview'], ListView))
-        self.assertTrue(isinstance(self.DUT.dic_books['moduleview'],
-                                   ModuleView))
+        self.assertTrue(
+            isinstance(self.DUT.dic_books['moduleview'], ModuleView))
         self.assertTrue(isinstance(self.DUT.dic_books['workview'], WorkView))
         self.assertEqual(self.DUT.dic_controllers['revision'], None)
         self.assertEqual(self.DUT.dic_controllers['function'], None)
@@ -412,17 +432,33 @@ class TestRTKController(unittest.TestCase):
         """
 
         self.assertFalse(self.DUT.request_open_program())
-        self.assertEqual(self.DUT.RTK_CONFIGURATION.RTK_PREFIX,
-                         {'function': [u'FUNCTION', 0],
-                          'assembly': [u'ASSEMBLY', 0], 'fmeca': [u'FMECA', 0],
-                          'effect'  : [u'EFFECT', 0], 'part': [u'PART', 0],
-                          'mode'    : [u'MODE', 0], 'software': [u'MODULE', 0],
-                          'cause'   : [u'CAUSE', 0], 'revision': [u'REV', 0]})
-        self.assertEqual(self.DUT.RTK_CONFIGURATION.RTK_MODULES,
-                         {'function'  : 1, 'fta': 0, 'requirement': 1,
-                          'validation': 1, 'survival': 1, 'testing': 1,
-                          'rbd'       : 0, 'hardware': 1, 'rcm': 0,
-                          'incident'  : 1, 'revision': 1, 'software': 1})
+        self.assertEqual(
+            self.DUT.RTK_CONFIGURATION.RTK_PREFIX, {
+                'function': [u'FUNCTION', 0],
+                'assembly': [u'ASSEMBLY', 0],
+                'fmeca': [u'FMECA', 0],
+                'effect': [u'EFFECT', 0],
+                'part': [u'PART', 0],
+                'mode': [u'MODE', 0],
+                'software': [u'MODULE', 0],
+                'cause': [u'CAUSE', 0],
+                'revision': [u'REV', 0]
+            })
+        self.assertEqual(
+            self.DUT.RTK_CONFIGURATION.RTK_MODULES, {
+                'function': 1,
+                'fta': 0,
+                'requirement': 1,
+                'validation': 1,
+                'survival': 1,
+                'testing': 1,
+                'rbd': 0,
+                'hardware': 1,
+                'rcm': 0,
+                'incident': 1,
+                'revision': 1,
+                'software': 1
+            })
 
     @attr(all=True, integration=True, unit=False)
     def test03a_request_create_program(self):

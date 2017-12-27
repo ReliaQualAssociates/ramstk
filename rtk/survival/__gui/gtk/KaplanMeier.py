@@ -12,30 +12,30 @@ Survival Package Kaplan-Meier Distribution Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -145,22 +145,27 @@ class Results(gtk.HPaned):
         self.tvwResults = gtk.TreeView()
 
         # Set gtk.Widget() tooltip text.
-        self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of "
-                                                 u"failures in the dataset."))
-        self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number of "
-                                                    u"suspensions in the "
-                                                    u"dataset."))
-        self.txtMTBFLL.set_tooltip_markup(_(u"Displays the lower "
-                                            u"<span>\u03B1</span>% confidence "
-                                            u"bound on the MTBF estimated "
-                                            u"from the dataset."))
-        self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate of "
-                                          u"the MTBF estimated from the "
-                                          u"dataset."))
-        self.txtMTBFUL.set_tooltip_markup(_(u"Displays the upper "
-                                            u"<span>\u03B1</span>% confidence "
-                                            u"bound on the MTBF estimated "
-                                            u"from the dataset."))
+        self.txtNumFailures.set_tooltip_markup(
+            _(u"Displays the number of "
+              u"failures in the dataset."))
+        self.txtNumSuspensions.set_tooltip_markup(
+            _(u"Displays the number of "
+              u"suspensions in the "
+              u"dataset."))
+        self.txtMTBFLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% confidence "
+              u"bound on the MTBF estimated "
+              u"from the dataset."))
+        self.txtMTBF.set_tooltip_markup(
+            _(u"Displays the point estimate of "
+              u"the MTBF estimated from the "
+              u"dataset."))
+        self.txtMTBFUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% confidence "
+              u"bound on the MTBF estimated "
+              u"from the dataset."))
 
     def create_results_page(self):
         """
@@ -205,14 +210,17 @@ class Results(gtk.HPaned):
         _fxdSummary.put(self.txtNumFailures, _x_pos, _y_pos[0])
         _fxdSummary.put(self.txtNumSuspensions, _x_pos, _y_pos[1])
 
-        _label = Widgets.make_label(_(u"LCL"), height=-1, width=150,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"LCL"), height=-1, width=150, justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos, _y_pos[1] + 35)
-        _label = Widgets.make_label(_(u"Point\nEstimate"), height=-1,
-                                    width=150, justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"Point\nEstimate"),
+            height=-1,
+            width=150,
+            justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 105, _y_pos[1] + 35)
-        _label = Widgets.make_label(_(u"UCL"), height=-1, width=150,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"UCL"), height=-1, width=150, justify=gtk.JUSTIFY_CENTER)
         _fxdSummary.put(_label, _x_pos + 210, _y_pos[1] + 35)
 
         _label = Widgets.make_label(_(u"MTBF:"))
@@ -228,12 +236,18 @@ class Results(gtk.HPaned):
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
         self.tvwResults.set_model(_model)
-        _headings = [_(u"Time\n(t)"), _(u"S(t) Lower\nBound"), _(u"S(t)"),
-                     _(u"S(t) Upper\nBound"), _(u"h(t) Lower\nBound"),
-                     _(u"Hazard\nRate h(t)"), _(u"h(t) Upper\nBound"),
-                     _(u"H(t) Lower\nBound"),
-                     _(u"Cumulative\nHazard\nRate H(t)"),
-                     _(u"H(t) Upper\nBound")]
+        _headings = [
+            _(u"Time\n(t)"),
+            _(u"S(t) Lower\nBound"),
+            _(u"S(t)"),
+            _(u"S(t) Upper\nBound"),
+            _(u"h(t) Lower\nBound"),
+            _(u"Hazard\nRate h(t)"),
+            _(u"h(t) Upper\nBound"),
+            _(u"H(t) Lower\nBound"),
+            _(u"Cumulative\nHazard\nRate H(t)"),
+            _(u"H(t) Upper\nBound")
+        ]
         for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
@@ -248,13 +262,14 @@ class Results(gtk.HPaned):
             self.tvwResults.append_column(_column)
 
         # Insert the tab.
-        self.lblPage.set_markup("<span weight='bold'>" +
-                                _(u"Kaplan-Meier\nResults") + "</span>")
+        self.lblPage.set_markup(
+            "<span weight='bold'>" + _(u"Kaplan-Meier\nResults") + "</span>")
         self.lblPage.set_alignment(xalign=0.5, yalign=0.5)
         self.lblPage.set_justify(gtk.JUSTIFY_CENTER)
         self.lblPage.show_all()
-        self.lblPage.set_tooltip_text(_(u"Displays Kaplan-Meier analysis "
-                                        u"results for the selected dataset."))
+        self.lblPage.set_tooltip_text(
+            _(u"Displays Kaplan-Meier analysis "
+              u"results for the selected dataset."))
 
         return False
 
@@ -285,13 +300,12 @@ class Results(gtk.HPaned):
         _model = self.tvwResults.get_model()
         _model.clear()
         for _index, _row in enumerate(self._model.km):
-            _model.append([_row[0], _row[1], _row[2], _row[3],
-                           self._model.hazard[3][_index],
-                           self._model.hazard[2][_index],
-                           self._model.hazard[1][_index],
-                           self._model.hazard[6][_index],
-                           self._model.hazard[5][_index],
-                           self._model.hazard[4][_index]])
+            _model.append([
+                _row[0], _row[1], _row[2], _row[3],
+                self._model.hazard[3][_index], self._model.hazard[2][_index],
+                self._model.hazard[1][_index], self._model.hazard[6][_index],
+                self._model.hazard[5][_index], self._model.hazard[4][_index]
+            ])
 
         return False
 
@@ -439,16 +453,25 @@ class Plots(gtk.HBox):
         if self._model.km != []:
             _plot_title = _(u"Survival Function Plot for {0:s}").format(
                 self._model.description)
-            Widgets.load_plot(self.axAxis1, self.pltPlot1,
-                              self._model.km[:, 0], y1=self._model.km[:, 1],
-                              y2=self._model.km[:, 2], y3=self._model.km[:, 3],
-                              title=_plot_title, xlab=_(u"Time"),
-                              ylab=_(u"Survival Function [S(t)] "),
-                              marker=['r:', 'g-', 'b:'])
+            Widgets.load_plot(
+                self.axAxis1,
+                self.pltPlot1,
+                self._model.km[:, 0],
+                y1=self._model.km[:, 1],
+                y2=self._model.km[:, 2],
+                y3=self._model.km[:, 3],
+                title=_plot_title,
+                xlab=_(u"Time"),
+                ylab=_(u"Survival Function [S(t)] "),
+                marker=['r:', 'g-', 'b:'])
             _text = (u"S(t) LCL", u"Survival Function [S(t)]", u"S(t) UCL")
-            Widgets.create_legend(self.axAxis1, _text, fontsize='medium',
-                                  legframeon=True, location='upper right',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis1,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper right',
+                legshadow=True)
 
         return False
 
@@ -465,18 +488,25 @@ class Plots(gtk.HBox):
         if self._model.hazard != []:
             _plot_title = (u"Hazard Rate Plot for {0:s}").format(
                 self._model.description)
-            Widgets.load_plot(self.axAxis2, self.pltPlot2,
-                              self._model.hazard[0],
-                              y1=self._model.hazard[1],
-                              y2=self._model.hazard[2],
-                              y3=self._model.hazard[3],
-                              title=_plot_title, xlab=_(u"Time"),
-                              ylab=_(u"Hazard Rate [h(t)] "),
-                              marker=['b:', 'g-', 'r:'])
+            Widgets.load_plot(
+                self.axAxis2,
+                self.pltPlot2,
+                self._model.hazard[0],
+                y1=self._model.hazard[1],
+                y2=self._model.hazard[2],
+                y3=self._model.hazard[3],
+                title=_plot_title,
+                xlab=_(u"Time"),
+                ylab=_(u"Hazard Rate [h(t)] "),
+                marker=['b:', 'g-', 'r:'])
             _text = (u"h(t) UCL", u"Hazard Rate [h(t)]", u"h(t) LCL")
-            Widgets.create_legend(self.axAxis2, _text, fontsize='medium',
-                                  legframeon=True, location='upper right',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis2,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper right',
+                legshadow=True)
 
         return False
 
@@ -493,18 +523,26 @@ class Plots(gtk.HBox):
         if self._model.hazard != []:
             _plot_title = _(u"Cumulative Hazard Plot for {0:s}").format(
                 self._model.description)
-            Widgets.load_plot(self.axAxis3, self.pltPlot3,
-                              self._model.hazard[0], y1=self._model.hazard[4],
-                              y2=self._model.hazard[5],
-                              y3=self._model.hazard[6],
-                              title=_plot_title, xlab=_("Time"),
-                              ylab=_("Cumulative Hazard Function [H(t)] "),
-                              marker=['b:', 'g-', 'r:'])
+            Widgets.load_plot(
+                self.axAxis3,
+                self.pltPlot3,
+                self._model.hazard[0],
+                y1=self._model.hazard[4],
+                y2=self._model.hazard[5],
+                y3=self._model.hazard[6],
+                title=_plot_title,
+                xlab=_("Time"),
+                ylab=_("Cumulative Hazard Function [H(t)] "),
+                marker=['b:', 'g-', 'r:'])
             _text = (u"H(t) UCL", u"Cumulative Hazard Function [H(t)]",
                      u"H(t) LCL")
-            Widgets.create_legend(self.axAxis3, _text, fontsize='medium',
-                                  legframeon=True, location='upper left',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis3,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper left',
+                legshadow=True)
 
         return False
 
@@ -522,18 +560,26 @@ class Plots(gtk.HBox):
         if self._model.hazard != []:
             _plot_title = _("Log Cumulative Hazard Plot for {0:s}").format(
                 self._model.description)
-            Widgets.load_plot(self.axAxis4, self.pltPlot4,
-                              self._model.hazard[0], y1=self._model.hazard[7],
-                              y2=self._model.hazard[8],
-                              y3=self._model.hazard[9],
-                              title=_plot_title, xlab=_("log(Time)"),
-                              ylab=_("Log Cum. Hazard Function [log H(t)] "),
-                              marker=['b:', 'g-', 'r:'])
+            Widgets.load_plot(
+                self.axAxis4,
+                self.pltPlot4,
+                self._model.hazard[0],
+                y1=self._model.hazard[7],
+                y2=self._model.hazard[8],
+                y3=self._model.hazard[9],
+                title=_plot_title,
+                xlab=_("log(Time)"),
+                ylab=_("Log Cum. Hazard Function [log H(t)] "),
+                marker=['b:', 'g-', 'r:'])
             _text = (u"log H(t) UCL",
                      u"Log Cumulative Hazard Function [log H(t)]",
                      u"log H(t) LCL")
-            Widgets.create_legend(self.axAxis4, _text, fontsize='medium',
-                                  legframeon=True, location='upper left',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis4,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper left',
+                legshadow=True)
 
         return False

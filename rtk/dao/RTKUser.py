@@ -10,11 +10,11 @@ The RTKUser Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKUser(RTK_BASE):
@@ -27,8 +27,12 @@ class RTKUser(RTK_BASE):
     __tablename__ = 'rtk_user'
     __table_args__ = {'extend_existing': True}
 
-    user_id = Column('fld_user_id', Integer, primary_key=True,
-                     autoincrement=True, nullable=False)
+    user_id = Column(
+        'fld_user_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     user_lname = Column('fld_user_lname', String(256), default='Last Name')
     user_fname = Column('fld_user_fname', String(256), default='First Name')
     user_email = Column('fld_user_email', String(256), default='EMail')

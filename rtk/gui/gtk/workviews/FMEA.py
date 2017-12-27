@@ -540,8 +540,9 @@ class FMEA(RTKWorkView):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add(self.treeview)
 
-        _frame = rtk.RTKFrame(label=_(u"Failure Mode and Effects Analysis "
-                                      u"(FMEA)"))
+        _frame = rtk.RTKFrame(
+            label=_(u"Failure Mode and Effects Analysis "
+                    u"(FMEA)"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -603,7 +604,8 @@ class FMEA(RTKWorkView):
 
         self._dtc_fmea = self._mdcRTK.dic_controllers['ffmea']
 
-        _fmea = self._dtc_fmea.request_select_all(self._function_id, functional=True)
+        _fmea = self._dtc_fmea.request_select_all(
+            self._function_id, functional=True)
         self._do_load_tree(_fmea)
 
         _row = _model.get_iter_root()

@@ -12,30 +12,30 @@ Incident Package Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import other RTK modules.
@@ -50,7 +50,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 
-class Model(object):                       # pylint: disable=R0902, R0904
+class Model(object):  # pylint: disable=R0902, R0904
     """
     The Incident data model contains the attributes and methods for an
     Incident. The attributes of an Incident model are:
@@ -105,8 +105,10 @@ class Model(object):                       # pylint: disable=R0902, R0904
         # Define public dictionary attributes.
 
         # Define public list attributes.
-        self.lstRelevant = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
-                            -1, -1, -1, -1, -1, -1, -1]
+        self.lstRelevant = [
+            -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1,
+            -1, -1, -1
+        ]
         self.lstChargeable = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1]
 
         # Define public scalar attributes.
@@ -228,7 +230,7 @@ class Incident(object):
             _incident.set_attributes(_results[i])
             self.dicIncidents[_incident.incident_id] = _incident
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_incident(self, revision_id):
         """
@@ -241,7 +243,7 @@ class Incident(object):
 
         try:
             _short_description = "New Incident " + str(self._last_id + 1)
-        except TypeError:                   # No tasks exist.
+        except TypeError:  # No tasks exist.
             _short_description = "New Incident 1"
 
         _query = "INSERT INTO rtk_incident \
@@ -258,14 +260,13 @@ class Incident(object):
             self._last_id = self._dao.get_last_id('rtk_incident')[0]
 
             _incident = Model()
-            _incident.set_attributes((revision_id, self._last_id, 0, 0,
-                                      _short_description, '', 0, 0, '', 0, '',
-                                      '', 0.0, 0, 0.0, 0.0, 0, 0, 0, 719163,
-                                      False, 0, 719163, False, 0, 719164,
-                                      False, 0, 719163, '', '', False))
+            _incident.set_attributes(
+                (revision_id, self._last_id, 0, 0, _short_description, '', 0,
+                 0, '', 0, '', '', 0.0, 0, 0.0, 0.0, 0, 0, 0, 719163, False, 0,
+                 719163, False, 0, 719164, False, 0, 719163, '', '', False))
             self.dicIncidents[_incident.incident_id] = _incident
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_incident(self, incident_id):
         """
@@ -314,38 +315,35 @@ class Incident(object):
                       fld_chargeable={63:d} \
                   WHERE fld_revision_id={0:d} \
                   AND fld_incident_id={1:d}".format(
-                      _incident.revision_id, _incident.incident_id,
-                      _incident.incident_category, _incident.incident_type,
-                      _incident.short_description,
-                      _incident.detail_description, _incident.criticality,
-                      _incident.detection_method, _incident.remarks,
-                      _incident.status, _incident.test, _incident.test_case,
-                      _incident.execution_time, _incident.unit_id,
-                      _incident.cost, _incident.incident_age,
-                      _incident.hardware_id, _incident.software_id,
-                      _incident.request_by, _incident.request_date,
-                      _incident.reviewed, _incident.review_by,
-                      _incident.review_date, _incident.approved,
-                      _incident.approve_by, _incident.approve_date,
-                      _incident.closed, _incident.close_by,
-                      _incident.close_date, _incident.life_cycle,
-                      _incident.analysis, _incident.accepted,
-                      _incident.lstRelevant[0], _incident.lstRelevant[1],
-                      _incident.lstRelevant[2], _incident.lstRelevant[3],
-                      _incident.lstRelevant[4], _incident.lstRelevant[5],
-                      _incident.lstRelevant[6], _incident.lstRelevant[7],
-                      _incident.lstRelevant[8], _incident.lstRelevant[9],
-                      _incident.lstRelevant[10], _incident.lstRelevant[11],
-                      _incident.lstRelevant[12], _incident.lstRelevant[13],
-                      _incident.lstRelevant[14], _incident.lstRelevant[15],
-                      _incident.lstRelevant[16], _incident.lstRelevant[17],
-                      _incident.lstRelevant[18], _incident.lstRelevant[19],
-                      _incident.relevant, _incident.lstChargeable[0],
-                      _incident.lstChargeable[1], _incident.lstChargeable[2],
-                      _incident.lstChargeable[3], _incident.lstChargeable[4],
-                      _incident.lstChargeable[5], _incident.lstChargeable[6],
-                      _incident.lstChargeable[7], _incident.lstChargeable[8],
-                      _incident.lstChargeable[9], _incident.chargeable)
+            _incident.revision_id, _incident.incident_id,
+            _incident.incident_category, _incident.incident_type,
+            _incident.short_description, _incident.detail_description,
+            _incident.criticality, _incident.detection_method,
+            _incident.remarks, _incident.status, _incident.test,
+            _incident.test_case, _incident.execution_time, _incident.unit_id,
+            _incident.cost, _incident.incident_age, _incident.hardware_id,
+            _incident.software_id, _incident.request_by,
+            _incident.request_date, _incident.reviewed, _incident.review_by,
+            _incident.review_date, _incident.approved, _incident.approve_by,
+            _incident.approve_date, _incident.closed, _incident.close_by,
+            _incident.close_date, _incident.life_cycle, _incident.analysis,
+            _incident.accepted, _incident.lstRelevant[0],
+            _incident.lstRelevant[1], _incident.lstRelevant[2],
+            _incident.lstRelevant[3], _incident.lstRelevant[4],
+            _incident.lstRelevant[5], _incident.lstRelevant[6],
+            _incident.lstRelevant[7], _incident.lstRelevant[8],
+            _incident.lstRelevant[9], _incident.lstRelevant[10],
+            _incident.lstRelevant[11], _incident.lstRelevant[12],
+            _incident.lstRelevant[13], _incident.lstRelevant[14],
+            _incident.lstRelevant[15], _incident.lstRelevant[16],
+            _incident.lstRelevant[17], _incident.lstRelevant[18],
+            _incident.lstRelevant[19], _incident.relevant,
+            _incident.lstChargeable[0], _incident.lstChargeable[1],
+            _incident.lstChargeable[2], _incident.lstChargeable[3],
+            _incident.lstChargeable[4], _incident.lstChargeable[5],
+            _incident.lstChargeable[6], _incident.lstChargeable[7],
+            _incident.lstChargeable[8], _incident.lstChargeable[9],
+            _incident.chargeable)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)

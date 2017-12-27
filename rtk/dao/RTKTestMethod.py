@@ -11,11 +11,11 @@ The RTKTestMethod Table
 """
 # pylint: disable=E0401
 from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKTestMethod(RTK_BASE):
@@ -28,15 +28,21 @@ class RTKTestMethod(RTK_BASE):
     __tablename__ = 'rtk_test_method'
     __table_args__ = {'extend_existing': True}
 
-    stress_id = Column('fld_stress_id', Integer,
-                       ForeignKey('rtk_op_stress.fld_stress_id'),
-                       nullable=False)
-    test_id = Column('fld_test_id', Integer, primary_key=True,
-                     autoincrement=True, nullable=False)
+    stress_id = Column(
+        'fld_stress_id',
+        Integer,
+        ForeignKey('rtk_op_stress.fld_stress_id'),
+        nullable=False)
+    test_id = Column(
+        'fld_test_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     description = Column('fld_description', String(512), default='')
-    boundary_conditions = Column('fld_boundary_conditions', String(512),
-                                 default='')
+    boundary_conditions = Column(
+        'fld_boundary_conditions', String(512), default='')
     remarks = Column('fld_remarks', BLOB, default='')
 
     # Define the relationships to other tables in the RTK Program database.

@@ -13,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date, timedelta
 
@@ -36,8 +39,8 @@ class TestRTKSiteInfo(unittest.TestCase):
     Class for testing the RTKSiteInfo class.
     """
 
-    _attributes =(1, '9490059723f3a743fb961d092d3283422f4f2d13',
-                  date.today() + timedelta(30))
+    _attributes = (1, '9490059723f3a743fb961d092d3283422f4f2d13',
+                   date.today() + timedelta(30))
 
     def setUp(self):
         """
@@ -100,7 +103,6 @@ class TestRTKSiteInfo(unittest.TestCase):
 
         _attributes = ('9490059723f3a743fb961d092d3283422f4f2d13', -1)
 
-
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 
         self.assertEqual(_error_code, 10)
@@ -115,7 +117,6 @@ class TestRTKSiteInfo(unittest.TestCase):
         """
 
         _attributes = ('9490059723f3a743fb961d092d3283422f4f2d13', )
-
 
         _error_code, _msg = self.DUT.set_attributes(_attributes)
 

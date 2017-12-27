@@ -11,7 +11,10 @@ This is the test class for testing the Action class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 from datetime import date, timedelta
 
@@ -46,11 +49,13 @@ class TestActionDataModel(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
@@ -63,8 +68,8 @@ class TestActionDataModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(bind=self.dao.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.dao.RTK_SESSION.configure(
+            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
 
         self.DUT = dtmAction(self.dao)
@@ -107,8 +112,8 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertTrue(isinstance(_action, RTKAction))
         self.assertEqual(_action.action_id, 1)
-        self.assertEqual(_action.action_due_date,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            _action.action_due_date, date.today() + timedelta(days=30))
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
@@ -131,7 +136,7 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                               'the RTK Program database.')
+                         'the RTK Program database.')
 
     @attr(all=True, unit=True)
     def test03b_insert_hardware_mode(self):
@@ -144,7 +149,7 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                               'the RTK Program database.')
+                         'the RTK Program database.')
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
@@ -157,7 +162,7 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
-                               'Program database.')
+                         'Program database.')
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
@@ -170,7 +175,7 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                               'Action ID 300.')
+                         'Action ID 300.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
@@ -199,7 +204,7 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Action ID 100.')
+                         'Action ID 100.')
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):

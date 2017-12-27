@@ -11,7 +11,10 @@ This is the test class for testing the FMEA failure Mechanism class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -44,11 +47,13 @@ class TestMechanismDataModel(unittest.TestCase):
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.Configuration.DEBUG_LOG = \
             Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
@@ -121,7 +126,7 @@ class TestMechanismDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
-                               'the RTK Program database.')
+                         'the RTK Program database.')
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
@@ -135,7 +140,7 @@ class TestMechanismDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Deleting an item from the RTK '
-                               'Program database.')
+                         'Program database.')
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
@@ -150,7 +155,7 @@ class TestMechanismDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                               'Mechanism ID 300.')
+                         'Mechanism ID 300.')
 
     @attr(all=True, unit=True)
     def test05a_update(self):
@@ -167,7 +172,7 @@ class TestMechanismDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Updating the RTK Program '
-                               'database.')
+                         'database.')
 
     @attr(all=True, unit=True)
     def test05b_update_non_existent_id(self):
@@ -182,7 +187,7 @@ class TestMechanismDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                               'Mechanism ID 100.')
+                         'Mechanism ID 100.')
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
@@ -197,4 +202,4 @@ class TestMechanismDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Updating the RTK Program '
-                               'database.')
+                         'database.')

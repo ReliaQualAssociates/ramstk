@@ -12,30 +12,30 @@ Testing Package Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -82,7 +82,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
+class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected
     Testing item.  The attributes of a Work Book view are:
@@ -220,10 +220,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtName = Widgets.make_entry(width=400)
         self.txtAttachment = Widgets.make_text_view(width=400)
         self.txtDescription = Widgets.make_text_view(width=400)
-        self.txtCumTime = Widgets.make_entry(width=100, editable=False,
-                                             bold=True)
-        self.txtCumFails = Widgets.make_entry(width=100, editable=False,
-                                              bold=True)
+        self.txtCumTime = Widgets.make_entry(
+            width=100, editable=False, bold=True)
+        self.txtCumFails = Widgets.make_entry(
+            width=100, editable=False, bold=True)
 
         # Configure the gtk.SpinButtons.
         _adjustment = gtk.Adjustment(75.0, 50.0, 100.0, 0.5, 0, 0)
@@ -239,35 +239,44 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.spnProducerRisk.set_range(0.0, 100.0)
 
         # Set gtk.Widget() tooltip text.
-        self.cmbTestType.set_tooltip_text(_(u"Select the type of the "
-                                            u"of the selected test."))
-        self.spnConfidence.set_tooltip_text(_(u"Sets the statistical "
-                                              u"confidence for results "
-                                              u"obtained from the selected "
-                                              u"test."))
-        self.spnConsumerRisk.set_tooltip_text(_(u"The consumer (Type I) "
-                                                u"risk.  This is the risk of "
-                                                u"accepting a system when the "
-                                                u"true reliability is below "
-                                                u"the technical requirement."))
-        self.spnProducerRisk.set_tooltip_text(_(u"The producer (Type II) "
-                                                u"risk.  This is the risk of "
-                                                u"rejecting a system when the "
-                                                u"true reliability is at "
-                                                u"least the goal "
-                                                u"reliability."))
-        self.txtAttachment.set_tooltip_text(_(u"Enter the URL to any "
-                                              u"attachment associated with "
-                                              u"the selected test."))
-        self.txtCumFails.set_tooltip_text(_(u"Displays the cumulative number "
-                                            u"of failures for the selected "
-                                            u"test."))
-        self.txtCumTime.set_tooltip_text(_(u"Displays the cumulative test "
-                                           u"time for the selected test."))
-        self.txtDescription.set_tooltip_text(_(u"Enter a description of "
-                                               u"the selected test."))
-        self.txtName.set_tooltip_text(_(u"Enter the name of the selected "
-                                        u"test."))
+        self.cmbTestType.set_tooltip_text(
+            _(u"Select the type of the "
+              u"of the selected test."))
+        self.spnConfidence.set_tooltip_text(
+            _(u"Sets the statistical "
+              u"confidence for results "
+              u"obtained from the selected "
+              u"test."))
+        self.spnConsumerRisk.set_tooltip_text(
+            _(u"The consumer (Type I) "
+              u"risk.  This is the risk of "
+              u"accepting a system when the "
+              u"true reliability is below "
+              u"the technical requirement."))
+        self.spnProducerRisk.set_tooltip_text(
+            _(u"The producer (Type II) "
+              u"risk.  This is the risk of "
+              u"rejecting a system when the "
+              u"true reliability is at "
+              u"least the goal "
+              u"reliability."))
+        self.txtAttachment.set_tooltip_text(
+            _(u"Enter the URL to any "
+              u"attachment associated with "
+              u"the selected test."))
+        self.txtCumFails.set_tooltip_text(
+            _(u"Displays the cumulative number "
+              u"of failures for the selected "
+              u"test."))
+        self.txtCumTime.set_tooltip_text(
+            _(u"Displays the cumulative test "
+              u"time for the selected test."))
+        self.txtDescription.set_tooltip_text(
+            _(u"Enter a description of "
+              u"the selected test."))
+        self.txtName.set_tooltip_text(
+            _(u"Enter the name of the selected "
+              u"test."))
 
         # Connect gtk.Widget() signals to callback methods.
         _textview = self.txtDescription.get_child().get_child()
@@ -276,14 +285,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._lst_handler_id.append(
             self.txtName.connect('focus-out-event', self._on_focus_out, 1))
         self._lst_handler_id.append(
-            self.txtAttachment.connect('focus-out-event',
-                                       self._on_focus_out, 2))
+            self.txtAttachment.connect('focus-out-event', self._on_focus_out,
+                                       2))
 
         self._lst_handler_id.append(
             self.cmbTestType.connect('changed', self._on_combo_changed, 3))
         self._lst_handler_id.append(
-            self.spnConfidence.connect('value-changed',
-                                       self._on_value_changed, 4))
+            self.spnConfidence.connect('value-changed', self._on_value_changed,
+                                       4))
         self._lst_handler_id.append(
             self.spnConsumerRisk.connect('value-changed',
                                          self._on_value_changed, 5))
@@ -324,8 +333,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Delete test button
         _button = gtk.ToolButton()
-        _button.set_tooltip_text(_(u"Removes the currently selected test from "
-                                   u"from the RTK Program Database."))
+        _button.set_tooltip_text(
+            _(u"Removes the currently selected test from "
+              u"from the RTK Program Database."))
         _image = gtk.Image()
         _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
         _button.set_icon_widget(_image)
@@ -391,8 +401,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _fixed = gtk.Fixed()
 
         _scrollwindow = gtk.ScrolledWindow()
-        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC,
-                                 gtk.POLICY_AUTOMATIC)
+        _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fixed)
 
         _frame = Widgets.make_frame(label=_(u"General Information"))
@@ -403,9 +412,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Place the widgets used to display general information.        #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.ComboBox()
-        _test_types = [_(u"HALT/HASS"), _(u"ALT"), _(u"ESS"),
-                       _(u"Reliability Growth"),
-                       _(u"Reliability Demonstration"), _(u"PRAT")]
+        _test_types = [
+            _(u"HALT/HASS"),
+            _(u"ALT"),
+            _(u"ESS"),
+            _(u"Reliability Growth"),
+            _(u"Reliability Demonstration"),
+            _(u"PRAT")
+        ]
         _model = self.cmbTestType.get_model()
         _model.clear()
         self.cmbTestType.append_text("")
@@ -413,10 +427,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.cmbTestType.append_text(_types)
 
         # Create the labels.
-        _labels = [_(u"Test Name:"), _(u"Test Description:"),
-                   _(u"Test Type:"), _(u"Confidence:"), _(u"Consumer's Risk:"),
-                   _(u"Producer's Risk:"), _(u"Cumulative Time:"),
-                   _(u"Cumulative Failures:"), _(u"Attachments:")]
+        _labels = [
+            _(u"Test Name:"),
+            _(u"Test Description:"),
+            _(u"Test Type:"),
+            _(u"Confidence:"),
+            _(u"Consumer's Risk:"),
+            _(u"Producer's Risk:"),
+            _(u"Cumulative Time:"),
+            _(u"Cumulative Failures:"),
+            _(u"Attachments:")
+        ]
 
         (_x_pos, _y_pos) = Widgets.make_labels(_labels[:2], _fixed, 5, 5)
         (_x_pos1, _y_pos1) = Widgets.make_labels(_labels[2:], _fixed, 5,
@@ -438,19 +459,19 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"General\nData") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"General\nData") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays general information about "
-                                  u"the selected test."))
+        _label.set_tooltip_text(
+            _(u"Displays general information about "
+              u"the selected test."))
         notebook.insert_page(_frame, tab_label=_label, position=-1)
 
         return False
 
-    def _load_planning_inputs_page(self):   # pylint: disable=R0914, R0915
+    def _load_planning_inputs_page(self):  # pylint: disable=R0914, R0915
         """
         Method to create and load the Testing class gtk.Notebook() page for
         displaying the test planning inputs for the selected Test.
@@ -472,20 +493,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Test\nPlanning\nInputs") + "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Test\nPlanning\nInputs") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Allows entering test planning inputs for "
-                                  u"the selected test."))
+        _label.set_tooltip_text(
+            _(u"Allows entering test planning inputs for "
+              u"the selected test."))
 
-        _notebook.insert_page(self._obj_planning, tab_label=_label,
-                              position=-1)
+        _notebook.insert_page(
+            self._obj_planning, tab_label=_label, position=-1)
 
         return False
 
-    def _load_feasibility_page(self):       # pylint: disable=R0914, R0915
+    def _load_feasibility_page(self):  # pylint: disable=R0914, R0915
         """
         Method to create and load the Testing class gtk.Notebook() page for
         displaying the test feasibility assessment for the selected Test.
@@ -504,20 +526,21 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._obj_feasibility.show_all()
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Test\nFeasibility") + "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Test\nFeasibility") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the feasibility criteria for the "
-                                  u"selected test."))
+        _label.set_tooltip_text(
+            _(u"Displays the feasibility criteria for the "
+              u"selected test."))
 
-        _notebook.insert_page(self._obj_feasibility, tab_label=_label,
-                              position=-1)
+        _notebook.insert_page(
+            self._obj_feasibility, tab_label=_label, position=-1)
 
         return False
 
-    def _load_assessment_page(self):        # pylint: disable=R0914, R0915
+    def _load_assessment_page(self):  # pylint: disable=R0914, R0915
         """
         Method to create and load the Test Assessment gtk.Notebook() page for
         displaying the test results for the selected Test.
@@ -538,16 +561,17 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Build-up the containers for the tab.                          #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Test\nResults") + "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Test\nResults") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the test results for the "
-                                  u"selected test."))
+        _label.set_tooltip_text(
+            _(u"Displays the test results for the "
+              u"selected test."))
 
-        _notebook.insert_page(self._obj_assessment, tab_label=_label,
-                              position=-1)
+        _notebook.insert_page(
+            self._obj_assessment, tab_label=_label, position=-1)
 
         return False
 
@@ -572,9 +596,11 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.spnConsumerRisk.set_value(float(model.consumer_risk))
         self.spnProducerRisk.set_value(float(model.producer_risk))
         self.txtName.set_text(str(model.name))
-        _textview = self.txtAttachment.get_children()[0].get_children()[0].get_buffer()
+        _textview = self.txtAttachment.get_children()[0].get_children()[
+            0].get_buffer()
         _textview.set_text(model.attachment)
-        _textview = self.txtDescription.get_children()[0].get_children()[0].get_buffer()
+        _textview = self.txtDescription.get_children()[0].get_children()[
+            0].get_buffer()
         _textview.set_text(model.description)
         self.txtCumTime.set_text(str(fmt.format(model.cum_time)))
         self.txtCumFails.set_text(str(fmt.format(model.cum_failures)))
@@ -688,7 +714,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 11.
+        # WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 11.
         if index == 0:
             if self._testing_model.test_type == 4:
                 self._mdcRTK.dtcGrowth.add_test(self._testing_model.test_id)
@@ -716,7 +742,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         combo.handler_block(self._lst_handler_id[index])
 
-        if index == 3:                      # Test type
+        if index == 3:  # Test type
             self._testing_model.test_type = combo.get_active()
             self._modulebook.update(5, self._testing_model.test_type)
 
@@ -724,7 +750,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
+    def _on_focus_out(self, entry, __event, index):  # pylint: disable=R0912
         """
         Method to respond to gtk.Entry() 'focus_out' signals and call the
         correct function or method, passing any parameters as needed.
@@ -757,7 +783,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _on_value_changed(self, button, index):     # pylint: disable=R0912
+    def _on_value_changed(self, button, index):  # pylint: disable=R0912
         """
         Method to respond to gtk.SpinButton() 'value_changed' signals and call
         the correct function or method, passing any parameters as needed.

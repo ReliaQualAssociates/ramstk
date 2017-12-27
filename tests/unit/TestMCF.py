@@ -40,7 +40,10 @@ and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 from collections import OrderedDict
 
@@ -82,9 +85,11 @@ class TestMeanCumulativeFunction(unittest.TestCase):
             _record.n_failures = _n_failures[i]
             _data[i] = _record
 
-        self.assertEqual(format_data(_data),
-                         {0: [56.7, 116.4, 152.1, '198.4+'],
-                          1: [233.3, 286.1, 286.1, '322.9+']})
+        self.assertEqual(
+            format_data(_data), {
+                0: [56.7, 116.4, 152.1, '198.4+'],
+                1: [233.3, 286.1, 286.1, '322.9+']
+            })
 
     @attr(all=True, unit=True)
     def test_d_matrix(self):
@@ -92,14 +97,14 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         (TestMCF) d_matrix should return a numpy 1-D matrix of integers on success with censoring
         """
 
-        _data = {1: [5, 8], 2: [], 3:[1, 8, 16]}
+        _data = {1: [5, 8], 2: [], 3: [1, 8, 16]}
         _times = [1, 5, 8, 16]
 
         _d_matrix = d_matrix(_data, _times)
-        self.assertTrue(np.array_equal(_d_matrix, [[0., 0., 1.],
-                                                   [1., 0., 0.],
-                                                   [1., 0., 1.],
-                                                   [0., 0., 1.]]))
+        self.assertTrue(
+            np.array_equal(
+                _d_matrix,
+                [[0., 0., 1.], [1., 0., 0.], [1., 0., 1.], [0., 0., 1.]]))
 
     @attr(all=True, unit=True)
     def test_mcf_build_d_matrix_no_censoring(self):
@@ -108,15 +113,14 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         """
 
         _data = {1: [5, 8], 3: [1, 8, 16]}
-        _times = reduce(lambda x, y: x+y, _data.values())
+        _times = reduce(lambda x, y: x + y, _data.values())
         _times = set([float(f) for f in _times if isinstance(f, int)])
         _times = sorted(list(_times))
 
         _d_matrix = d_matrix(_data, _times)
-        self.assertTrue(np.array_equal(_d_matrix, [[0.,  1.],
-                                                   [1.,  0.],
-                                                   [1.,  1.],
-                                                   [0.,  1.]]))
+        self.assertTrue(
+            np.array_equal(_d_matrix,
+                           [[0., 1.], [1., 0.], [1., 1.], [0., 1.]]))
 
     @attr(all=True, unit=True)
     def test_delta_matrix(self):
@@ -124,14 +128,14 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         (TestMCF) delta_matrix should return a numpy 1-D matrix of integers on success with censoring
         """
 
-        _data = {1: [5, 8, '12+'], 2: ['16+'], 3:[1, 8, 16, '20+']}
+        _data = {1: [5, 8, '12+'], 2: ['16+'], 3: [1, 8, 16, '20+']}
         _times = [1, 5, 8, 16]
 
         _delta_matrix = delta_matrix(_data, _times)
-        self.assertTrue(np.array_equal(_delta_matrix, [[1., 1., 1.],
-                                                       [1., 1., 1.],
-                                                       [1., 1., 1.],
-                                                       [0., 1., 1.]]))
+        self.assertTrue(
+            np.array_equal(
+                _delta_matrix,
+                [[1., 1., 1.], [1., 1., 1.], [1., 1., 1.], [0., 1., 1.]]))
 
     @attr(all=True, unit=True)
     def test_delta_matrix_no_censoring(self):
@@ -140,15 +144,14 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         """
 
         _data = {1: [5, 8], 3: [1, 8, 16]}
-        _times = reduce(lambda x, y: x+y, _data.values())
+        _times = reduce(lambda x, y: x + y, _data.values())
         _times = set([float(f) for f in _times if isinstance(f, int)])
         _times = sorted(list(_times))
 
         _delta_matrix = delta_matrix(_data, _times)
-        self.assertTrue(np.array_equal(_delta_matrix, [[1.,  1.],
-                                                       [1.,  1.],
-                                                       [1.,  1.],
-                                                       [0.,  1.]]))
+        self.assertTrue(
+            np.array_equal(_delta_matrix,
+                           [[1., 1.], [1., 1.], [1., 1.], [0., 1.]]))
 
     @attr(all=True, unit=True)
     def test_mcf_variance(self):
@@ -157,7 +160,7 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         """
 
         _data = {1: [5, 8, '12+'], 2: ['16+'], 3: [1, 8, 16, '20+']}
-        _times = reduce(lambda x, y: x+y, _data.values())
+        _times = reduce(lambda x, y: x + y, _data.values())
         _times = set([float(f) for f in _times if isinstance(f, int)])
         _times = sorted(list(_times))
 
@@ -171,10 +174,9 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         _variance = (mcf_variance(_delta_matrix, _d_matrix, _delta_dot,
                                   _d_bar))
-        self.assertTrue(np.allclose(_variance, [[0.07407407],
-                                                [0.07407407],
-                                                [0.07407407],
-                                                [0.125]]))
+        self.assertTrue(
+            np.allclose(_variance,
+                        [[0.07407407], [0.07407407], [0.07407407], [0.125]]))
 
     @attr(all=True, unit=True)
     def test_mean_cumulative_function(self):
@@ -182,14 +184,14 @@ class TestMeanCumulativeFunction(unittest.TestCase):
         (TestMCF) mean_cumulative_function should return a numpy matrix on success
         """
 
-        _data = {1: [5, 8, '12+'], 2: ['16+'], 3:[1, 8, 16, '20+']}
+        _data = {1: [5, 8, '12+'], 2: ['16+'], 3: [1, 8, 16, '20+']}
 
         _mcf = mean_cumulative_function(_data)
-        self.assertTrue(np.allclose(_mcf,
-                            [[1., 1., 0.13030615, 0.33333333, 0.85269279],
-                             [5., 1., 0.41682314, 0.66666667, 1.06626625],
-                             [8., 2., 1.05429046, 1.33333333, 1.6862315],
-                             [16., 1., 1.46857718, 1.83333333, 2.28868537]]))
+        self.assertTrue(
+            np.allclose(_mcf, [[1., 1., 0.13030615, 0.33333333, 0.85269279], [
+                5., 1., 0.41682314, 0.66666667, 1.06626625
+            ], [8., 2., 1.05429046, 1.33333333, 1.6862315],
+                               [16., 1., 1.46857718, 1.83333333, 2.28868537]]))
 
     @attr(all=True, unit=True)
     def test_mil_handbook(self):
@@ -199,16 +201,17 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         # Data is U.S.S Halfbeak Number 4 Main Propulsion Diesel Engine
         # unscheduled maintenance action times from Meeker and Escobar.
-        _times = [1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450,
-                  9.794, 10.848, 11.993, 12.300, 15.413, 16.497, 17.352,
-                  17.632, 18.122, 19.067, 19.172, 19.299, 19.360, 19.686,
-                  19.940, 19.944, 20.121, 20.132, 20.431, 20.525, 21.057,
-                  21.061, 21.309, 21.310, 21.378, 21.391, 21.456, 21.461,
-                  21.603, 21.658, 21.688, 21.750, 21.815, 21.820, 21.822,
-                  21.888, 21.930, 21.943, 21.946, 22.181, 22.311, 22.634,
-                  22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
-                  23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286,
-                  25.000, 25.010, 25.048, 25.268, 25.400, 25.500, 25.518]
+        _times = [
+            1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450, 9.794,
+            10.848, 11.993, 12.300, 15.413, 16.497, 17.352, 17.632, 18.122,
+            19.067, 19.172, 19.299, 19.360, 19.686, 19.940, 19.944, 20.121,
+            20.132, 20.431, 20.525, 21.057, 21.061, 21.309, 21.310, 21.378,
+            21.391, 21.456, 21.461, 21.603, 21.658, 21.688, 21.750, 21.815,
+            21.820, 21.822, 21.888, 21.930, 21.943, 21.946, 22.181, 22.311,
+            22.634, 22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
+            23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286, 25.000,
+            25.010, 25.048, 25.268, 25.400, 25.500, 25.518
+        ]
 
         _mil_hdbk = mil_handbook(_times)
         self.assertAlmostEqual(_mil_hdbk, 51.4429465)
@@ -221,16 +224,17 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         # Data is U.S.S Halfbeak Number 4 Main Propulsion Diesel Engine
         # unscheduled maintenance action times from Meeker and Escobar.
-        _times = [1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450,
-                  9.794, 10.848, 11.993, 12.300, 15.413, 16.497, 17.352,
-                  17.632, 18.122, 19.067, 19.172, 19.299, 19.360, 19.686,
-                  19.940, 19.944, 20.121, 20.132, 20.431, 20.525, 21.057,
-                  21.061, 21.309, 21.310, 21.378, 21.391, 21.456, 21.461,
-                  21.603, 21.658, 21.688, 21.750, 21.815, 21.820, 21.822,
-                  21.888, 21.930, 21.943, 21.946, 22.181, 22.311, 22.634,
-                  22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
-                  23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286,
-                  25.000, 25.010, 25.048, 25.268, 25.400, 25.500, 25.518]
+        _times = [
+            1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450, 9.794,
+            10.848, 11.993, 12.300, 15.413, 16.497, 17.352, 17.632, 18.122,
+            19.067, 19.172, 19.299, 19.360, 19.686, 19.940, 19.944, 20.121,
+            20.132, 20.431, 20.525, 21.057, 21.061, 21.309, 21.310, 21.378,
+            21.391, 21.456, 21.461, 21.603, 21.658, 21.688, 21.750, 21.815,
+            21.820, 21.822, 21.888, 21.930, 21.943, 21.946, 22.181, 22.311,
+            22.634, 22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
+            23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286, 25.000,
+            25.010, 25.048, 25.268, 25.400, 25.500, 25.518
+        ]
         _N = 71
 
         _zlp = laplace(_times, _N)
@@ -244,16 +248,17 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         # Data is U.S.S Halfbeak Number 4 Main Propulsion Diesel Engine
         # unscheduled maintenance action times from Meeker and Escobar.
-        _times = [1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450,
-                  9.794, 10.848, 11.993, 12.300, 15.413, 16.497, 17.352,
-                  17.632, 18.122, 19.067, 19.172, 19.299, 19.360, 19.686,
-                  19.940, 19.944, 20.121, 20.132, 20.431, 20.525, 21.057,
-                  21.061, 21.309, 21.310, 21.378, 21.391, 21.456, 21.461,
-                  21.603, 21.658, 21.688, 21.750, 21.815, 21.820, 21.822,
-                  21.888, 21.930, 21.943, 21.946, 22.181, 22.311, 22.634,
-                  22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
-                  23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286,
-                  25.000, 25.010, 25.048, 25.268, 25.400, 25.500, 25.518]
+        _times = [
+            1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450, 9.794,
+            10.848, 11.993, 12.300, 15.413, 16.497, 17.352, 17.632, 18.122,
+            19.067, 19.172, 19.299, 19.360, 19.686, 19.940, 19.944, 20.121,
+            20.132, 20.431, 20.525, 21.057, 21.061, 21.309, 21.310, 21.378,
+            21.391, 21.456, 21.461, 21.603, 21.658, 21.688, 21.750, 21.815,
+            21.820, 21.822, 21.888, 21.930, 21.943, 21.946, 22.181, 22.311,
+            22.634, 22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
+            23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286, 25.000,
+            25.010, 25.048, 25.268, 25.400, 25.500, 25.518
+        ]
         _N = 71
 
         _zlr = lewis_robinson(_times, _N)
@@ -267,16 +272,17 @@ class TestMeanCumulativeFunction(unittest.TestCase):
 
         # Data is U.S.S Halfbeak Number 4 Main Propulsion Diesel Engine
         # unscheduled maintenance action times from Meeker and Escobar.
-        _times = [1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450,
-                  9.794, 10.848, 11.993, 12.300, 15.413, 16.497, 17.352,
-                  17.632, 18.122, 19.067, 19.172, 19.299, 19.360, 19.686,
-                  19.940, 19.944, 20.121, 20.132, 20.431, 20.525, 21.057,
-                  21.061, 21.309, 21.310, 21.378, 21.391, 21.456, 21.461,
-                  21.603, 21.658, 21.688, 21.750, 21.815, 21.820, 21.822,
-                  21.888, 21.930, 21.943, 21.946, 22.181, 22.311, 22.634,
-                  22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
-                  23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286,
-                  25.000, 25.010, 25.048, 25.268, 25.400, 25.500, 25.518]
+        _times = [
+            1.382, 2.990, 4.124, 6.827, 7.472, 7.567, 8.845, 9.450, 9.794,
+            10.848, 11.993, 12.300, 15.413, 16.497, 17.352, 17.632, 18.122,
+            19.067, 19.172, 19.299, 19.360, 19.686, 19.940, 19.944, 20.121,
+            20.132, 20.431, 20.525, 21.057, 21.061, 21.309, 21.310, 21.378,
+            21.391, 21.456, 21.461, 21.603, 21.658, 21.688, 21.750, 21.815,
+            21.820, 21.822, 21.888, 21.930, 21.943, 21.946, 22.181, 22.311,
+            22.634, 22.635, 22.669, 22.691, 22.846, 22.947, 23.149, 23.305,
+            23.491, 23.526, 23.774, 23.791, 23.822, 24.006, 24.286, 25.000,
+            25.010, 25.048, 25.268, 25.400, 25.500, 25.518
+        ]
         _N = 71
 
         _rho = serial_correlation(_times, _N)

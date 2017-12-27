@@ -7,32 +7,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ##########################################################
 Hardware.Component.IntegratedCircuit Package Memory Module
@@ -47,7 +46,7 @@ try:
     import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
@@ -61,7 +60,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -82,12 +81,14 @@ class Memory(IntegratedCircuit):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0,
-            34.0, 610.0]
+    _piE = [
+        1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0, 34.0,
+        610.0
+    ]
     _piQ = [0.25, 1.0, 2.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 3                         # Subcategory ID in the common DB.
+    subcategory = 3  # Subcategory ID in the common DB.
 
     def __init__(self):
         """
@@ -150,11 +151,11 @@ class Memory(IntegratedCircuit):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -169,11 +170,11 @@ class Memory(IntegratedCircuit):
 
         _values = IntegratedCircuit.get_attributes(self)
 
-        _values = _values + (self.part_type, self.technology, self.package,
-                             self.ecc, self.memory_size, self.n_cycles,
-                             self.n_pins, self.manufacturing, self.years_production,
-                             self.case_temperature, self.life_op_hours,
-                             self.C1, self.C2, self.piL, self.lambda_cyc)
+        _values = _values + (
+            self.part_type, self.technology, self.package, self.ecc,
+            self.memory_size, self.n_cycles, self.n_pins, self.manufacturing,
+            self.years_production, self.case_temperature, self.life_op_hours,
+            self.C1, self.C2, self.piL, self.lambda_cyc)
 
         return _values
 
@@ -195,7 +196,8 @@ class Memory(IntegratedCircuit):
             self.hazard_rate_model['equation'] = 'lambdab * piQ'
 
         elif self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = '(C1 * piT + C2 * piE + lambdacyc) * piQ * piL'
+            self.hazard_rate_model[
+                'equation'] = '(C1 * piT + C2 * piE + lambdacyc) * piQ * piL'
 
             # Temperature factor.
             self.junction_temperature = self.case_temperature + \
@@ -243,14 +245,19 @@ class DRAM(Memory):
     """
 
     _C1 = [0.0013, 0.0025, 0.005, 0.01]
-    _lst_lambdab_count = [[0.0040, 0.014, 0.027, 0.027, 0.040, 0.029, 0.035,
-                           0.040, 0.059, 0.055, 0.0040, 0.034, 0.080, 1.4],
-                          [0.0055, 0.019, 0.039, 0.034, 0.051, 0.039, 0.047,
-                           0.056, 0.079, 0.070, 0.0055, 0.043, 0.100, 1.7],
-                          [0.0074, 0.023, 0.043, 0.040, 0.060, 0.049, 0.058,
-                           0.076, 0.100, 0.084, 0.0074, 0.051, 0.120, 1.9],
-                          [0.0110, 0.032, 0.057, 0.053, 0.077, 0.070, 0.080,
-                           0.120, 0.150, 0.110, 0.0110, 0.067, 0.150, 2.3]]
+    _lst_lambdab_count = [[
+        0.0040, 0.014, 0.027, 0.027, 0.040, 0.029, 0.035, 0.040, 0.059, 0.055,
+        0.0040, 0.034, 0.080, 1.4
+    ], [
+        0.0055, 0.019, 0.039, 0.034, 0.051, 0.039, 0.047, 0.056, 0.079, 0.070,
+        0.0055, 0.043, 0.100, 1.7
+    ], [
+        0.0074, 0.023, 0.043, 0.040, 0.060, 0.049, 0.058, 0.076, 0.100, 0.084,
+        0.0074, 0.051, 0.120, 1.9
+    ], [
+        0.0110, 0.032, 0.057, 0.053, 0.077, 0.070, 0.080, 0.120, 0.150, 0.110,
+        0.0110, 0.067, 0.150, 2.3
+    ]]
 
     subcategory = 7
 
@@ -311,22 +318,31 @@ class EEPROM(Memory):
 
     _C1 = [[0.0094, 0.019, 0.038, 0.075], [0.00085, 0.0017, 0.0034, 0.0068]]
     _piECC = [1.0, 0.72, 0.68]
-    _lst_lambdab_count = [[[0.010, 0.028, 0.050, 0.046, 0.067, 0.082, 0.070,
-                            0.10, 0.13, 0.096, 0.010, 0.058, 0.13, 1.9],
-                           [0.017, 0.043, 0.071, 0.063, 0.091, 0.095, 0.110,
-                            0.18, 0.21, 0.140, 0.017, 0.081, 0.18, 2.3],
-                           [0.028, 0.065, 0.100, 0.085, 0.120, 0.150, 0.160,
-                            0.30, 0.33, 0.190, 0.028, 0.110, 0.23, 2.3],
-                           [0.053, 0.120, 0.180, 0.150, 0.210, 0.270, 0.290,
-                            0.56, 0.61, 0.330, 0.053, 0.190, 0.39, 3.4]],
-                          [[0.0049, 0.018, 0.036, 0.036, 0.053, 0.037, 0.046,
-                            0.049, 0.075, 0.072, 0.0048, 0.045, 0.11, 1.9],
-                           [0.0061, 0.022, 0.044, 0.043, 0.064, 0.046, 0.056,
-                            0.062, 0.093, 0.087, 0.0062, 0.054, 0.13, 2.3],
-                           [0.0072, 0.024, 0.048, 0.045, 0.067, 0.051, 0.061,
-                            0.073, 0.100, 0.092, 0.0072, 0.057, 0.13, 2.3],
-                           [0.0120, 0.038, 0.071, 0.068, 0.100, 0.080, 0.095,
-                            0.120, 0.180, 0.140, 0.0120, 0.086, 0.20, 3.3]]]
+    _lst_lambdab_count = [[[
+        0.010, 0.028, 0.050, 0.046, 0.067, 0.082, 0.070, 0.10, 0.13, 0.096,
+        0.010, 0.058, 0.13, 1.9
+    ], [
+        0.017, 0.043, 0.071, 0.063, 0.091, 0.095, 0.110, 0.18, 0.21, 0.140,
+        0.017, 0.081, 0.18, 2.3
+    ], [
+        0.028, 0.065, 0.100, 0.085, 0.120, 0.150, 0.160, 0.30, 0.33, 0.190,
+        0.028, 0.110, 0.23, 2.3
+    ], [
+        0.053, 0.120, 0.180, 0.150, 0.210, 0.270, 0.290, 0.56, 0.61, 0.330,
+        0.053, 0.190, 0.39, 3.4
+    ]], [[
+        0.0049, 0.018, 0.036, 0.036, 0.053, 0.037, 0.046, 0.049, 0.075, 0.072,
+        0.0048, 0.045, 0.11, 1.9
+    ], [
+        0.0061, 0.022, 0.044, 0.043, 0.064, 0.046, 0.056, 0.062, 0.093, 0.087,
+        0.0062, 0.054, 0.13, 2.3
+    ], [
+        0.0072, 0.024, 0.048, 0.045, 0.067, 0.051, 0.061, 0.073, 0.100, 0.092,
+        0.0072, 0.057, 0.13, 2.3
+    ], [
+        0.0120, 0.038, 0.071, 0.068, 0.100, 0.080, 0.095, 0.120, 0.180, 0.140,
+        0.0120, 0.086, 0.20, 3.3
+    ]]]
 
     subcategory = 6
 
@@ -355,13 +371,17 @@ class EEPROM(Memory):
 
         if self.hazard_rate_type == 1:
             if self.memory_size < 16001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][0]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][0]
             elif self.memory_size > 16000 and self.memory_size < 64001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][1]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][1]
             elif self.memory_size > 64000 and self.memory_size < 256001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][2]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][2]
             elif self.memory_size > 256000 and self.memory_size < 1000001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][3]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][3]
 
         elif self.hazard_rate_type == 2:
             # Die complexity failure rate.
@@ -379,7 +399,7 @@ class EEPROM(Memory):
             self.piECC = self._piECC[self.ecc - 1]
 
             # Programming cycles failure rate.
-            if self.manufacturing == 1:     # FLOTOX
+            if self.manufacturing == 1:  # FLOTOX
                 _A1 = 6.817E-6 * self.n_cycles
                 _A2 = 0.0
                 _B1 = ((self.memory_size / 16000.0)**0.5) * \
@@ -437,22 +457,31 @@ class ROM(Memory):
     """
 
     _C1 = [[0.0094, 0.019, 0.038, 0.075], [0.00085, 0.0017, 0.0034, 0.0068]]
-    _lst_lambdab_count = [[[0.010, 0.028, 0.050, 0.046, 0.067, 0.062, 0.070,
-                            0.10, 0.13, 0.096, 0.010, 0.058, 0.13, 1.9],
-                           [0.017, 0.043, 0.071, 0.063, 0.091, 0.095, 0.110,
-                            0.18, 0.21, 0.140, 0.017, 0.081, 0.18, 2.3],
-                           [0.028, 0.065, 0.100, 0.085, 0.120, 0.150, 0.180,
-                            0.30, 0.33, 0.190, 0.028, 0.110, 0.23, 2.3],
-                           [0.053, 0.120, 0.180, 0.150, 0.210, 0.270, 0.290,
-                            0.56, 0.61, 0.330, 0.053, 0.190, 0.39, 3.4]],
-                          [[0.0047, 0.018, 0.036, 0.035, 0.053, 0.037, 0.045,
-                            0.048, 0.074, 0.071, 0.0047, 0.044, 0.11, 1.9],
-                           [0.0059, 0.022, 0.043, 0.042, 0.063, 0.045, 0.055,
-                            0.060, 0.090, 0.086, 0.0059, 0.053, 0.13, 2.3],
-                           [0.0067, 0.023, 0.045, 0.044, 0.066, 0.048, 0.059,
-                            0.068, 0.099, 0.089, 0.0067, 0.055, 0.13, 2.3],
-                           [0.0110, 0.036, 0.068, 0.066, 0.098, 0.075, 0.090,
-                            0.110, 0.150, 0.140, 0.0110, 0.083, 0.20, 3.3]]]
+    _lst_lambdab_count = [[[
+        0.010, 0.028, 0.050, 0.046, 0.067, 0.062, 0.070, 0.10, 0.13, 0.096,
+        0.010, 0.058, 0.13, 1.9
+    ], [
+        0.017, 0.043, 0.071, 0.063, 0.091, 0.095, 0.110, 0.18, 0.21, 0.140,
+        0.017, 0.081, 0.18, 2.3
+    ], [
+        0.028, 0.065, 0.100, 0.085, 0.120, 0.150, 0.180, 0.30, 0.33, 0.190,
+        0.028, 0.110, 0.23, 2.3
+    ], [
+        0.053, 0.120, 0.180, 0.150, 0.210, 0.270, 0.290, 0.56, 0.61, 0.330,
+        0.053, 0.190, 0.39, 3.4
+    ]], [[
+        0.0047, 0.018, 0.036, 0.035, 0.053, 0.037, 0.045, 0.048, 0.074, 0.071,
+        0.0047, 0.044, 0.11, 1.9
+    ], [
+        0.0059, 0.022, 0.043, 0.042, 0.063, 0.045, 0.055, 0.060, 0.090, 0.086,
+        0.0059, 0.053, 0.13, 2.3
+    ], [
+        0.0067, 0.023, 0.045, 0.044, 0.066, 0.048, 0.059, 0.068, 0.099, 0.089,
+        0.0067, 0.055, 0.13, 2.3
+    ], [
+        0.0110, 0.036, 0.068, 0.066, 0.098, 0.075, 0.090, 0.110, 0.150, 0.140,
+        0.0110, 0.083, 0.20, 3.3
+    ]]]
 
     subcategory = 5
 
@@ -475,13 +504,17 @@ class ROM(Memory):
 
         if self.hazard_rate_type == 1:
             if self.memory_size < 16001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][0]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][0]
             elif self.memory_size > 16000 and self.memory_size < 64001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][1]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][1]
             elif self.memory_size > 64000 and self.memory_size < 256001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][2]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][2]
             elif self.memory_size > 256000 and self.memory_size < 1000001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][3]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][3]
 
         elif self.hazard_rate_type == 2:
             # Die complexity failure rate.
@@ -512,22 +545,31 @@ class SRAM(Memory):
     """
 
     _C1 = [[0.0062, 0.011, 0.021, 0.042], [0.0062, 0.011, 0.021, 0.042]]
-    _lst_lambdab_count = [[[0.0075, 0.023, 0.043, 0.041, 0.060, 0.050, 0.058,
-                            0.077, 0.10, 0.084, 0.0075, 0.052, 0.12, 1.9],
-                           [0.0120, 0.033, 0.058, 0.054, 0.079, 0.072, 0.083,
-                            0.120, 0.15, 0.110, 0.0120, 0.069, 0.15, 2.3],
-                           [0.0180, 0.045, 0.074, 0.065, 0.095, 0.100, 0.110,
-                            0.190, 0.22, 0.140, 0.0180, 0.084, 0.18, 2.3],
-                           [0.0330, 0.079, 0.130, 0.110, 0.160, 0.180, 0.200,
-                            0.350, 0.39, 0.240, 0.0330, 0.140, 0.30, 3.4]],
-                          [[0.0079, 0.022, 0.038, 0.034, 0.050, 0.048, 0.054,
-                            0.083, 0.10, 0.073, 0.0079, 0.044, 0.098, 1.4],
-                           [0.0140, 0.034, 0.057, 0.050, 0.073, 0.077, 0.085,
-                            0.140, 0.17, 0.110, 0.0140, 0.065, 0.140, 1.8],
-                           [0.0230, 0.053, 0.084, 0.071, 0.100, 0.120, 0.130,
-                            0.250, 0.27, 0.160, 0.0230, 0.092, 0.190, 1.9],
-                           [0.0430, 0.092, 0.140, 0.110, 0.160, 0.220, 0.230,
-                            0.460, 0.49, 0.260, 0.0430, 0.150, 0.300, 2.3]]]
+    _lst_lambdab_count = [[[
+        0.0075, 0.023, 0.043, 0.041, 0.060, 0.050, 0.058, 0.077, 0.10, 0.084,
+        0.0075, 0.052, 0.12, 1.9
+    ], [
+        0.0120, 0.033, 0.058, 0.054, 0.079, 0.072, 0.083, 0.120, 0.15, 0.110,
+        0.0120, 0.069, 0.15, 2.3
+    ], [
+        0.0180, 0.045, 0.074, 0.065, 0.095, 0.100, 0.110, 0.190, 0.22, 0.140,
+        0.0180, 0.084, 0.18, 2.3
+    ], [
+        0.0330, 0.079, 0.130, 0.110, 0.160, 0.180, 0.200, 0.350, 0.39, 0.240,
+        0.0330, 0.140, 0.30, 3.4
+    ]], [[
+        0.0079, 0.022, 0.038, 0.034, 0.050, 0.048, 0.054, 0.083, 0.10, 0.073,
+        0.0079, 0.044, 0.098, 1.4
+    ], [
+        0.0140, 0.034, 0.057, 0.050, 0.073, 0.077, 0.085, 0.140, 0.17, 0.110,
+        0.0140, 0.065, 0.140, 1.8
+    ], [
+        0.0230, 0.053, 0.084, 0.071, 0.100, 0.120, 0.130, 0.250, 0.27, 0.160,
+        0.0230, 0.092, 0.190, 1.9
+    ], [
+        0.0430, 0.092, 0.140, 0.110, 0.160, 0.220, 0.230, 0.460, 0.49, 0.260,
+        0.0430, 0.150, 0.300, 2.3
+    ]]]
 
     subcategory = 8
 
@@ -550,13 +592,17 @@ class SRAM(Memory):
 
         if self.hazard_rate_type == 1:
             if self.memory_size < 16001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][0]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][0]
             elif self.memory_size > 16000 and self.memory_size < 64001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][1]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][1]
             elif self.memory_size > 64000 and self.memory_size < 256001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][2]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][2]
             elif self.memory_size > 256000 and self.memory_size < 1000001:
-                self._lambdab_count = self._lst_lambdab_count[self.technology - 1][3]
+                self._lambdab_count = self._lst_lambdab_count[self.technology
+                                                              - 1][3]
 
         elif self.hazard_rate_type == 2:
             # Die complexity failure rate.

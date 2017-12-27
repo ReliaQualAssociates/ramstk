@@ -12,7 +12,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date, timedelta
 
@@ -35,7 +38,21 @@ class TestRTKAction(unittest.TestCase):
     Class for testing the RTKAction class.
     """
 
-    _attributes = {'mode_id': 1, 'action_due_date': date.today() + timedelta(days=30), 'action_approve_date': date.today() + timedelta(days=30), 'action_status': u'0', 'action_closed': 0, 'action_taken': '', 'action_close_date': date.today() + timedelta(days=30), 'action_recommended': 'Recommended action for Failure Cause #1', 'action_category': 0, 'action_owner': u'0', 'cause_id': 1, 'action_id': 1, 'action_approved': 0}
+    _attributes = {
+        'mode_id': 1,
+        'action_due_date': date.today() + timedelta(days=30),
+        'action_approve_date': date.today() + timedelta(days=30),
+        'action_status': u'0',
+        'action_closed': 0,
+        'action_taken': '',
+        'action_close_date': date.today() + timedelta(days=30),
+        'action_recommended': 'Recommended action for Failure Cause #1',
+        'action_category': 0,
+        'action_owner': u'0',
+        'cause_id': 1,
+        'action_id': 1,
+        'action_approved': 0
+    }
 
     def setUp(self):
         """
@@ -64,19 +81,20 @@ class TestRTKAction(unittest.TestCase):
         self.assertEqual(self.DUT.mode_id, 1)
         self.assertEqual(self.DUT.cause_id, 1)
         self.assertEqual(self.DUT.action_id, 1)
-        self.assertEqual(self.DUT.action_recommended, 'Recommended action for Failure Cause #1')
+        self.assertEqual(self.DUT.action_recommended,
+                         'Recommended action for Failure Cause #1')
         self.assertEqual(self.DUT.action_category, 0)
         self.assertEqual(self.DUT.action_owner, '0')
-        self.assertEqual(self.DUT.action_due_date,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.action_due_date, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.action_status, '0')
         self.assertEqual(self.DUT.action_taken, '')
         self.assertEqual(self.DUT.action_approved, 0)
-        self.assertEqual(self.DUT.action_approve_date,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.action_approve_date, date.today() + timedelta(days=30))
         self.assertEqual(self.DUT.action_closed, 0)
-        self.assertEqual(self.DUT.action_close_date,
-                         date.today() + timedelta(days=30))
+        self.assertEqual(
+            self.DUT.action_close_date, date.today() + timedelta(days=30))
 
     @attr(all=True, unit=True)
     def test01_get_attributes(self):
@@ -106,5 +124,5 @@ class TestRTKAction(unittest.TestCase):
 
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'action_taken' "
-                               "in attribute dictionary passed to "
-                               "RTKAction.set_attributes().")
+                         "in attribute dictionary passed to "
+                         "RTKAction.set_attributes().")

@@ -12,30 +12,30 @@ Survival Package Non-Homogoneous Poisson Process Distribution Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -159,22 +159,22 @@ class Results(gtk.HPaned):
         self.txtMTBFLL = Widgets.make_entry(width=100, editable=False)
         self.txtMTBF = Widgets.make_entry(width=100, editable=False)
         self.txtMTBFUL = Widgets.make_entry(width=100, editable=False)
-        self.txtFailureIntensityLL = Widgets.make_entry(width=100,
-                                                        editable=False)
-        self.txtFailureIntensity = Widgets.make_entry(width=100,
-                                                      editable=False)
-        self.txtFailureIntensityUL = Widgets.make_entry(width=100,
-                                                        editable=False)
+        self.txtFailureIntensityLL = Widgets.make_entry(
+            width=100, editable=False)
+        self.txtFailureIntensity = Widgets.make_entry(
+            width=100, editable=False)
+        self.txtFailureIntensityUL = Widgets.make_entry(
+            width=100, editable=False)
 
         self.txtMTBFiLL = Widgets.make_entry(width=100, editable=False)
         self.txtMTBFi = Widgets.make_entry(width=100, editable=False)
         self.txtMTBFiUL = Widgets.make_entry(width=100, editable=False)
-        self.txtFailureIntensityiLL = Widgets.make_entry(width=100,
-                                                         editable=False)
-        self.txtFailureIntensityi = Widgets.make_entry(width=100,
-                                                       editable=False)
-        self.txtFailureIntensityiUL = Widgets.make_entry(width=100,
-                                                         editable=False)
+        self.txtFailureIntensityiLL = Widgets.make_entry(
+            width=100, editable=False)
+        self.txtFailureIntensityi = Widgets.make_entry(
+            width=100, editable=False)
+        self.txtFailureIntensityiUL = Widgets.make_entry(
+            width=100, editable=False)
 
         self.txtScaleLL = Widgets.make_entry(width=100, editable=False)
         self.txtScale = Widgets.make_entry(width=100, editable=False)
@@ -193,124 +193,148 @@ class Results(gtk.HPaned):
         self.tvwResults = gtk.TreeView()
 
         # Set gtk.Widget() tooltip text.
-        self.txtNumFailures.set_tooltip_markup(_(u"Displays the number of "
-                                                 u"failures in the dataset."))
-        self.txtNumSuspensions.set_tooltip_markup(_(u"Displays the number of "
-                                                    u"suspensions in the "
-                                                    u"dataset."))
-        self.txtMTBFLL.set_tooltip_markup(_(u"Displays the lower "
-                                            u"<span>\u03B1</span>% confidence "
-                                            u"bound on the cumulative MTBF "
-                                            u"estimated from the dataset."))
-        self.txtMTBF.set_tooltip_markup(_(u"Displays the point estimate of "
-                                          u"the cumulative MTBF estimated "
-                                          u"from the dataset."))
-        self.txtMTBFUL.set_tooltip_markup(_(u"Displays the upper "
-                                            u"<span>\u03B1</span>% confidence "
-                                            u"bound on the cumulative MTBF "
-                                            u"estimated from the dataset."))
-        self.txtMTBFiLL.set_tooltip_markup(_(u"Displays the lower "
-                                             u"<span>\u03B1</span>% "
-                                             u"confidence bound on the "
-                                             u"instantaneous MTBF estimated "
-                                             u"from the dataset."))
-        self.txtMTBFi.set_tooltip_markup(_(u"Displays the point estimate of "
-                                           u"the instantaneous MTBF estimated "
-                                           u"from the dataset."))
-        self.txtMTBFiUL.set_tooltip_markup(_(u"Displays the upper "
-                                             u"<span>\u03B1</span>% "
-                                             u"confidence bound on the "
-                                             u"instantaneous MTBF estimated "
-                                             u"from the dataset."))
-        self.txtFailureIntensityLL.set_tooltip_markup(_(u"Displays the lower "
-                                                        u"<span>\u03B1</span>% "
-                                                        u"confidence bound on "
-                                                        u"the cumulative "
-                                                        u"failure intensity "
-                                                        u"estimated from the "
-                                                        u"dataset."))
-        self.txtFailureIntensity.set_tooltip_markup(_(u"Displays the point "
-                                                      u"estimate of the "
-                                                      u"cumulative failure "
-                                                      u"intensity estimated "
-                                                      u"from the "
-                                                      u"dataset."))
-        self.txtFailureIntensityUL.set_tooltip_markup(_(u"Displays the upper "
-                                                        u"<span>\u03B1</span>% "
-                                                        u"confidence bound on "
-                                                        u"the cumulative "
-                                                        u"failure intensity "
-                                                        u"estimated from the "
-                                                        u"dataset."))
-        self.txtFailureIntensityiLL.set_tooltip_markup(_(u"Displays the lower "
-                                                         u"<span>\u03B1</span>% "
-                                                         u"confidence bound "
-                                                         u"on the "
-                                                         u"instantaneous "
-                                                         u"failure intensity "
-                                                         u"estimated from the "
-                                                         u"dataset."))
-        self.txtFailureIntensityi.set_tooltip_markup(_(u"Displays the point "
-                                                       u"estimate of the "
-                                                       u"instantaneous "
-                                                       u"failure intensity "
-                                                       u"estimated from the "
-                                                       u"dataset."))
-        self.txtFailureIntensityiUL.set_tooltip_markup(_(u"Displays the upper "
-                                                         u"<span>\u03B1</span>% "
-                                                         u"confidence bound "
-                                                         u"on the "
-                                                         u"instantaneous "
-                                                         u"failure intensity "
-                                                         u"estimated from the "
-                                                         u"dataset."))
-        self.txtScaleLL.set_tooltip_markup(_(u"Displays the lower "
-                                             u"<span>\u03B1</span>% "
-                                             u"confidence bound on the "
-                                             u"scale parameter estimated from "
-                                             u"the dataset."))
-        self.txtScale.set_tooltip_markup(_(u"Displays the point estimate of "
-                                           u"the scale parameter estimated "
-                                           u"from the dataset."))
-        self.txtScaleUL.set_tooltip_markup(_(u"Displays the upper "
-                                             u"<span>\u03B1</span>% "
-                                             u"confidence bound on the "
-                                             u"scale parameter estimated from "
-                                             u"the dataset."))
-        self.txtShapeLL.set_tooltip_markup(_(u"Displays the lower "
-                                             u"<span>\u03B1</span>% "
-                                             u"confidence bound on the "
-                                             u"shape parameter estimated from "
-                                             u"the dataset."))
-        self.txtShape.set_tooltip_markup(_(u"Displays the point estimate of "
-                                           u"the shape parameter estimated "
-                                           u"from the dataset."))
-        self.txtShapeUL.set_tooltip_markup(_(u"Displays the upper "
-                                             u"<span>\u03B1</span>% "
-                                             u"confidence bound on the "
-                                             u"shape parameter estimated from "
-                                             u"the dataset."))
-        self.txtTrendCV.set_tooltip_text(_(u"Displays the critical value for "
-                                           u"testing the hypothesis of "
-                                           u"exponentially distributed "
-                                           u"failure times."))
-        self.txtTrendModel.set_tooltip_text(_(u"Displays the test statistic "
-                                              u"for assessing exponentially "
-                                              u"distributed failure times. "
-                                              u"If this value is greater than "
-                                              u"the critical value, the data "
-                                              u"suggests failure times are "
-                                              u"exponentially distributed."))
-        self.txtGoFCV.set_tooltip_text(_(u"Displays the critical value for "
-                                         u"testing the hypothesis of a good "
-                                         u"fit to the selected growth model."))
-        self.txtGoFModel.set_tooltip_text(_(u"Displays the goodness of fit "
-                                            u"test statistic for assessing "
-                                            u"fit to the selected growth "
-                                            u"model.  If this value is less "
-                                            u"than the critical value, the "
-                                            u"model is a good fit to the "
-                                            u"data."))
+        self.txtNumFailures.set_tooltip_markup(
+            _(u"Displays the number of "
+              u"failures in the dataset."))
+        self.txtNumSuspensions.set_tooltip_markup(
+            _(u"Displays the number of "
+              u"suspensions in the "
+              u"dataset."))
+        self.txtMTBFLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% confidence "
+              u"bound on the cumulative MTBF "
+              u"estimated from the dataset."))
+        self.txtMTBF.set_tooltip_markup(
+            _(u"Displays the point estimate of "
+              u"the cumulative MTBF estimated "
+              u"from the dataset."))
+        self.txtMTBFUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% confidence "
+              u"bound on the cumulative MTBF "
+              u"estimated from the dataset."))
+        self.txtMTBFiLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on the "
+              u"instantaneous MTBF estimated "
+              u"from the dataset."))
+        self.txtMTBFi.set_tooltip_markup(
+            _(u"Displays the point estimate of "
+              u"the instantaneous MTBF estimated "
+              u"from the dataset."))
+        self.txtMTBFiUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on the "
+              u"instantaneous MTBF estimated "
+              u"from the dataset."))
+        self.txtFailureIntensityLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on "
+              u"the cumulative "
+              u"failure intensity "
+              u"estimated from the "
+              u"dataset."))
+        self.txtFailureIntensity.set_tooltip_markup(
+            _(u"Displays the point "
+              u"estimate of the "
+              u"cumulative failure "
+              u"intensity estimated "
+              u"from the "
+              u"dataset."))
+        self.txtFailureIntensityUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on "
+              u"the cumulative "
+              u"failure intensity "
+              u"estimated from the "
+              u"dataset."))
+        self.txtFailureIntensityiLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% "
+              u"confidence bound "
+              u"on the "
+              u"instantaneous "
+              u"failure intensity "
+              u"estimated from the "
+              u"dataset."))
+        self.txtFailureIntensityi.set_tooltip_markup(
+            _(u"Displays the point "
+              u"estimate of the "
+              u"instantaneous "
+              u"failure intensity "
+              u"estimated from the "
+              u"dataset."))
+        self.txtFailureIntensityiUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% "
+              u"confidence bound "
+              u"on the "
+              u"instantaneous "
+              u"failure intensity "
+              u"estimated from the "
+              u"dataset."))
+        self.txtScaleLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on the "
+              u"scale parameter estimated from "
+              u"the dataset."))
+        self.txtScale.set_tooltip_markup(
+            _(u"Displays the point estimate of "
+              u"the scale parameter estimated "
+              u"from the dataset."))
+        self.txtScaleUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on the "
+              u"scale parameter estimated from "
+              u"the dataset."))
+        self.txtShapeLL.set_tooltip_markup(
+            _(u"Displays the lower "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on the "
+              u"shape parameter estimated from "
+              u"the dataset."))
+        self.txtShape.set_tooltip_markup(
+            _(u"Displays the point estimate of "
+              u"the shape parameter estimated "
+              u"from the dataset."))
+        self.txtShapeUL.set_tooltip_markup(
+            _(u"Displays the upper "
+              u"<span>\u03B1</span>% "
+              u"confidence bound on the "
+              u"shape parameter estimated from "
+              u"the dataset."))
+        self.txtTrendCV.set_tooltip_text(
+            _(u"Displays the critical value for "
+              u"testing the hypothesis of "
+              u"exponentially distributed "
+              u"failure times."))
+        self.txtTrendModel.set_tooltip_text(
+            _(u"Displays the test statistic "
+              u"for assessing exponentially "
+              u"distributed failure times. "
+              u"If this value is greater than "
+              u"the critical value, the data "
+              u"suggests failure times are "
+              u"exponentially distributed."))
+        self.txtGoFCV.set_tooltip_text(
+            _(u"Displays the critical value for "
+              u"testing the hypothesis of a good "
+              u"fit to the selected growth model."))
+        self.txtGoFModel.set_tooltip_text(
+            _(u"Displays the goodness of fit "
+              u"test statistic for assessing "
+              u"fit to the selected growth "
+              u"model.  If this value is less "
+              u"than the critical value, the "
+              u"model is a good fit to the "
+              u"data."))
 
     def create_results_page(self):
         """
@@ -335,8 +359,9 @@ class Results(gtk.HPaned):
 
         self.pack1(_frame, resize=True, shrink=False)
 
-        _frame = Widgets.make_frame(label=_(u"Non-Homogoneous Poisson Process "
-                                            u"Table"))
+        _frame = Widgets.make_frame(
+            label=_(u"Non-Homogoneous Poisson Process "
+                    u"Table"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
 
         _scrollwindow = gtk.ScrolledWindow()
@@ -356,21 +381,27 @@ class Results(gtk.HPaned):
         _fixed.put(self.txtNumFailures, _x_pos, _y_pos[0])
         _fixed.put(self.txtNumSuspensions, _x_pos, _y_pos[1])
 
-        _label = Widgets.make_label(_(u"LCL"), height=-1, width=100,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"LCL"), height=-1, width=100, justify=gtk.JUSTIFY_CENTER)
         _fixed.put(_label, _x_pos + 50, _y_pos[1] + 35)
-        _label = Widgets.make_label(_(u"Point\nEstimate"), height=-1,
-                                    width=100, justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"Point\nEstimate"),
+            height=-1,
+            width=100,
+            justify=gtk.JUSTIFY_CENTER)
         _fixed.put(_label, _x_pos + 150, _y_pos[1] + 35)
-        _label = Widgets.make_label(_(u"UCL"), height=-1, width=100,
-                                    justify=gtk.JUSTIFY_CENTER)
+        _label = Widgets.make_label(
+            _(u"UCL"), height=-1, width=100, justify=gtk.JUSTIFY_CENTER)
         _fixed.put(_label, _x_pos + 265, _y_pos[1] + 35)
 
-        _labels = [_(u"Cumulative MTBF:"), _(u"Instantaneous MTBF:"),
-                   _(u"Cumulative Failure Intensity:"),
-                   _(u"Instantaneous Failure Intensity:"),
-                   _(u"Scale Parameter (\u03BB):"),
-                   _(u"Shape Parameter (\u03B2):")]
+        _labels = [
+            _(u"Cumulative MTBF:"),
+            _(u"Instantaneous MTBF:"),
+            _(u"Cumulative Failure Intensity:"),
+            _(u"Instantaneous Failure Intensity:"),
+            _(u"Scale Parameter (\u03BB):"),
+            _(u"Shape Parameter (\u03B2):")
+        ]
         (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5,
                                                _y_pos[1] + 65)
         _x_pos += 45
@@ -398,8 +429,9 @@ class Results(gtk.HPaned):
 
         _label = Widgets.make_label(_(u"<u>Statistical Test for Trend</u>"))
         _fixed.put(_label, 5, _y_pos[5] + 40)
-        self.lblTrend.set_markup(_(u"H<sub>o</sub>: Exponential Failure "
-                                   u"Times"))
+        self.lblTrend.set_markup(
+            _(u"H<sub>o</sub>: Exponential Failure "
+              u"Times"))
         _fixed.put(self.lblTrend, 5, _y_pos[5] + 75)
         _label = Widgets.make_label(_(u"Critical Value:"))
         _fixed.put(_label, 5, _y_pos[5] + 110)
@@ -408,8 +440,9 @@ class Results(gtk.HPaned):
         _fixed.put(_label, 5, _y_pos[5] + 140)
         _fixed.put(self.txtTrendModel, _x_pos, _y_pos[5] + 140)
 
-        _label = Widgets.make_label(_(u"<u>Statistical Test for Goodness of "
-                                      u"Fit</u>"), width=-1)
+        _label = Widgets.make_label(
+            _(u"<u>Statistical Test for Goodness of "
+              u"Fit</u>"), width=-1)
         _fixed.put(_label, _x_pos + 205, _y_pos[5] + 40)
         self.lblGoF.set_markup(_(u"H<sub>o</sub>: Data Follows NHPP Model"))
         _fixed.put(self.lblGoF, _x_pos + 205, _y_pos[5] + 75)
@@ -417,25 +450,29 @@ class Results(gtk.HPaned):
         _fixed.put(self.txtGoFModel, _x_pos + 205, _y_pos[5] + 140)
 
         # Place the reliability table.
-        _model = gtk.ListStore(gobject.TYPE_FLOAT, gobject.TYPE_INT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
+        _model = gtk.ListStore(
+            gobject.TYPE_FLOAT, gobject.TYPE_INT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
         self.tvwResults.set_model(_model)
-        _headings = [_(u"Time"), _(u"Cumulative\nFailures"),
-                     _(u"Scale Parameter\nLower Bound"), _(u"Scale Parameter"),
-                     _(u"Scale Parameter\nUpper Bound"),
-                     _(u"Shape Parameter\nLower Bound"), _(u"Shape Parameter"),
-                     _(u"Shape Parameter\nUpper Bound"),
-                     _(u"Cumulative MTBF\nLower Bound"),
-                     _(u"Cumulative\nMTBF"),
-                     _(u"Cumulative\nMTBF\nUpper Bound"),
-                     _(u"Instantaneous MTBF\nLower Bound"),
-                     _(u"Instantaneous\nMTBF"),
-                     _(u"Instantaneous\nMTBF\nUpper Bound")]
+        _headings = [
+            _(u"Time"),
+            _(u"Cumulative\nFailures"),
+            _(u"Scale Parameter\nLower Bound"),
+            _(u"Scale Parameter"),
+            _(u"Scale Parameter\nUpper Bound"),
+            _(u"Shape Parameter\nLower Bound"),
+            _(u"Shape Parameter"),
+            _(u"Shape Parameter\nUpper Bound"),
+            _(u"Cumulative MTBF\nLower Bound"),
+            _(u"Cumulative\nMTBF"),
+            _(u"Cumulative\nMTBF\nUpper Bound"),
+            _(u"Instantaneous MTBF\nLower Bound"),
+            _(u"Instantaneous\nMTBF"),
+            _(u"Instantaneous\nMTBF\nUpper Bound")
+        ]
         for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
             _cell.set_property('editable', 0)
@@ -450,14 +487,15 @@ class Results(gtk.HPaned):
             self.tvwResults.append_column(_column)
 
         # Insert the tab.
-        self.lblPage.set_markup("<span weight='bold'>" +
-                                _(u"NHPP\nResults") + "</span>")
+        self.lblPage.set_markup(
+            "<span weight='bold'>" + _(u"NHPP\nResults") + "</span>")
         self.lblPage.set_alignment(xalign=0.5, yalign=0.5)
         self.lblPage.set_justify(gtk.JUSTIFY_CENTER)
         self.lblPage.show_all()
-        self.lblPage.set_tooltip_text(_(u"Displays Non-Homogoneous Poisson "
-                                        u"Process analysis results for the "
-                                        u"selected dataset."))
+        self.lblPage.set_tooltip_text(
+            _(u"Displays Non-Homogoneous Poisson "
+              u"Process analysis results for the "
+              u"selected dataset."))
 
         return False
 
@@ -528,44 +566,45 @@ class Results(gtk.HPaned):
         self.txtTrendCV.set_text(
             str(fmt.format(self._model.chi2_critical_value[1])))
         self.txtTrendModel.set_text(str(fmt.format(self._model.chi_square)))
-        if(self._model.chi_square >
-           self._model.chi2_critical_value[1]):
-            self.lblTrend.set_markup(_(u"H<sub>o</sub>: Exponential Failure "
-                                       u"Times     "
-                                       u"<span foreground='green'>"
-                                       u"Reject</span>"))
+        if (self._model.chi_square > self._model.chi2_critical_value[1]):
+            self.lblTrend.set_markup(
+                _(u"H<sub>o</sub>: Exponential Failure "
+                  u"Times     "
+                  u"<span foreground='green'>"
+                  u"Reject</span>"))
         else:
-            self.lblTrend.set_markup(_(u"H<sub>o</sub>: Exponential Failure "
-                                       u"Times     "
-                                       u"<span foreground='red'>"
-                                       u"Fail to Reject</span>"))
+            self.lblTrend.set_markup(
+                _(u"H<sub>o</sub>: Exponential Failure "
+                  u"Times     "
+                  u"<span foreground='red'>"
+                  u"Fail to Reject</span>"))
 
         self.txtGoFCV.set_text(str(fmt.format(self._model.cvm_critical_value)))
         self.txtGoFModel.set_text(str(fmt.format(self._model.cramer_vonmises)))
-        if(self._model.cramer_vonmises <
-           self._model.cvm_critical_value):
-            self.lblGoF.set_markup(_(u"H<sub>o</sub>: Data Follows NHPP Model "
-                                     u"    <span foreground='green'>Fail to "
-                                     u"Reject</span>"))
+        if (self._model.cramer_vonmises < self._model.cvm_critical_value):
+            self.lblGoF.set_markup(
+                _(u"H<sub>o</sub>: Data Follows NHPP Model "
+                  u"    <span foreground='green'>Fail to "
+                  u"Reject</span>"))
         else:
-            self.lblGoF.set_markup(_(u"H<sub>o</sub>: Data Follows NHPP Model "
-                                     u"    <span foreground='red'>"
-                                     u"Reject</span>"))
+            self.lblGoF.set_markup(
+                _(u"H<sub>o</sub>: Data Follows NHPP Model "
+                  u"    <span foreground='red'>"
+                  u"Reject</span>"))
 
-        self.lblModel.set_markup(_(u"<span>MTBF<sub>C</sub> = "
-                                   u"{0:0.4f} T<sup>{1:0.4f}</sup>"
-                                   u"</span>").format(
-                                       1.0 / self._model.scale[1],
-                                       1.0 - self._model.shape[1]))
+        self.lblModel.set_markup(
+            _(u"<span>MTBF<sub>C</sub> = "
+              u"{0:0.4f} T<sup>{1:0.4f}</sup>"
+              u"</span>").format(1.0 / self._model.scale[1],
+                                 1.0 - self._model.shape[1]))
 
         _beta = self._model.shape[1] - 1.0
-        self.lblModeli.set_markup(_(u"<span>MTBF<sub>i</sub> = "
-                                    u"1.0 / ({0:0.4f})({1:0.4f})"
-                                    u"T<sup>{2:0.4f}"
-                                    u"</sup></span>").format(
-                                        self._model.scale[1],
-                                        self._model.shape[1],
-                                        _beta))
+        self.lblModeli.set_markup(
+            _(u"<span>MTBF<sub>i</sub> = "
+              u"1.0 / ({0:0.4f})({1:0.4f})"
+              u"T<sup>{2:0.4f}"
+              u"</sup></span>").format(self._model.scale[1],
+                                       self._model.shape[1], _beta))
 
         # Load the non-parametric results table.
         self._load_nonparametric_table()
@@ -586,13 +625,15 @@ class Results(gtk.HPaned):
 
         # Load the non-parametric results gtk.TreeModel().
         for i in range(len(self._model.nhpp)):
-            _record = [self._model.nhpp[i][0], self._model.nhpp[i][1],
-                       self._model.nhpp[i][2][0], self._model.nhpp[i][2][1],
-                       self._model.nhpp[i][2][2], self._model.nhpp[i][3][0],
-                       self._model.nhpp[i][3][1], self._model.nhpp[i][3][2],
-                       self._model.nhpp[i][4][0], self._model.nhpp[i][4][1],
-                       self._model.nhpp[i][4][2], self._model.nhpp[i][5][0],
-                       self._model.nhpp[i][5][1], self._model.nhpp[i][5][2]]
+            _record = [
+                self._model.nhpp[i][0], self._model.nhpp[i][1],
+                self._model.nhpp[i][2][0], self._model.nhpp[i][2][1],
+                self._model.nhpp[i][2][2], self._model.nhpp[i][3][0],
+                self._model.nhpp[i][3][1], self._model.nhpp[i][3][2],
+                self._model.nhpp[i][4][0], self._model.nhpp[i][4][1],
+                self._model.nhpp[i][4][2], self._model.nhpp[i][5][0],
+                self._model.nhpp[i][5][1], self._model.nhpp[i][5][2]
+            ]
             _model.append(_record)
 
         return False
@@ -692,14 +733,16 @@ class Plots(gtk.HBox):
         _vbox = gtk.VBox()
         self.pack_end(_vbox, True, True)
 
-        _frame = Widgets.make_frame(_(u"Instantaneous MTBF Over Operating "
-                                      u"Time"))
+        _frame = Widgets.make_frame(
+            _(u"Instantaneous MTBF Over Operating "
+              u"Time"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot3)
         _vbox.pack_start(_frame, True, True)
 
-        _frame = Widgets.make_frame(_(u"Instantaneous MTBF Over Calendar "
-                                      u"Time"))
+        _frame = Widgets.make_frame(
+            _(u"Instantaneous MTBF Over Calendar "
+              u"Time"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(self.pltPlot4)
         _vbox.pack_end(_frame, True, True)
@@ -751,32 +794,41 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Cumulative MTBF Over "
                             u"Cumulative Operating Time")
-            Widgets.load_plot(self.axAxis1, self.pltPlot1,
-                              _times, y1=_mtbf, title=_plot_title,
-                              xlab=_(u"Cumulative Operating Time [t]"),
-                              ylab=_(u"Cumulative MTBF [MTBF(t)] "), ltype=[2],
-                              marker=['go'])
+            Widgets.load_plot(
+                self.axAxis1,
+                self.pltPlot1,
+                _times,
+                y1=_mtbf,
+                title=_plot_title,
+                xlab=_(u"Cumulative Operating Time [t]"),
+                ylab=_(u"Cumulative MTBF [MTBF(t)] "),
+                ltype=[2],
+                marker=['go'])
 
             _x_sm = np.array(_times)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_times))
 
             _smooth = interp1d(_times, _mtbfll)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='r', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='r', ls='-.')
             self.axAxis1.add_line(_line)
 
             _smooth = interp1d(_times, _mtbful)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='b', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='b', ls='-.')
             self.axAxis1.add_line(_line)
 
             _text = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                      _(u"Cum. MTBF UCL"))
-            Widgets.create_legend(self.axAxis1, _text, fontsize='medium',
-                                  legframeon=True, location='upper right',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis1,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper right',
+                legshadow=True)
 
             self.axAxis1.set_xscale('log')
             self.axAxis1.set_yscale('log')
@@ -801,11 +853,16 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Cumulative MTBF Over "
                             u"Calendar Time")
-            Widgets.load_plot(self.axAxis2, self.pltPlot2,
-                              _dates, y1=_mtbf, title=_plot_title,
-                              xlab=_(u"Calendar Time [t]"),
-                              ylab=_(u"Cumulative MTBF [MTBF(t)] "), ltype=[4],
-                              marker=['go'])
+            Widgets.load_plot(
+                self.axAxis2,
+                self.pltPlot2,
+                _dates,
+                y1=_mtbf,
+                title=_plot_title,
+                xlab=_(u"Calendar Time [t]"),
+                ylab=_(u"Cumulative MTBF [MTBF(t)] "),
+                ltype=[4],
+                marker=['go'])
 
             _x_sm = np.array(_dates)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_dates))
@@ -813,21 +870,25 @@ class Plots(gtk.HBox):
 
             _smooth = interp1d(_dates, _mtbfll)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='r', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='r', ls='-.')
             self.axAxis2.add_line(_line)
 
             _smooth = interp1d(_dates, _mtbful)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='b', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='b', ls='-.')
             self.axAxis2.add_line(_line)
 
             _text = (_(u"Cumulative MTBF"), _(u"Cum. MTBF LCL"),
                      _(u"Cum. MTBF UCL"))
-            Widgets.create_legend(self.axAxis2, _text, fontsize='medium',
-                                  legframeon=True, location='upper right',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis2,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper right',
+                legshadow=True)
 
         return False
 
@@ -849,32 +910,41 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Instantaneous MTBF Over "
                             u"Cumulative Operating Time")
-            Widgets.load_plot(self.axAxis3, self.pltPlot3,
-                              _times, y1=_mtbf, title=_plot_title,
-                              xlab=_(u"Cumulative Operating Time [t]"),
-                              ylab=_(u"Instantaneous MTBF [m(t)] "), ltype=[2],
-                              marker=['go'])
+            Widgets.load_plot(
+                self.axAxis3,
+                self.pltPlot3,
+                _times,
+                y1=_mtbf,
+                title=_plot_title,
+                xlab=_(u"Cumulative Operating Time [t]"),
+                ylab=_(u"Instantaneous MTBF [m(t)] "),
+                ltype=[2],
+                marker=['go'])
 
             _x_sm = np.array(_times)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_times))
 
             _smooth = interp1d(_times, _mtbfll)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='r', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='r', ls='-.')
             self.axAxis3.add_line(_line)
 
             _smooth = interp1d(_times, _mtbful)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='b', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='b', ls='-.')
             self.axAxis3.add_line(_line)
 
             _text = (_(u"Instantaneous MTBF"), _(u"Instantaneous MTBF LCL"),
                      _(u"Instantaneous MTBF UCL"))
-            Widgets.create_legend(self.axAxis3, _text, fontsize='medium',
-                                  legframeon=True, location='upper right',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis3,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper right',
+                legshadow=True)
 
             self.axAxis3.set_xscale('log')
             self.axAxis3.set_yscale('log')
@@ -899,11 +969,16 @@ class Plots(gtk.HBox):
 
             _plot_title = _(u"NHPP - Power Law Plot Instantaneous MTBF Over "
                             u"Calendar Time")
-            Widgets.load_plot(self.axAxis4, self.pltPlot4,
-                              _dates, y1=_mtbf, title=_plot_title,
-                              xlab=_(u"Calendar Time [t]"),
-                              ylab=_(u"Instantaneous MTBF [m(t)] "), ltype=[4],
-                              marker=['go'])
+            Widgets.load_plot(
+                self.axAxis4,
+                self.pltPlot4,
+                _dates,
+                y1=_mtbf,
+                title=_plot_title,
+                xlab=_(u"Calendar Time [t]"),
+                ylab=_(u"Instantaneous MTBF [m(t)] "),
+                ltype=[4],
+                marker=['go'])
 
             _x_sm = np.array(_dates)
             _x_smooth = np.linspace(_x_sm.min(), _x_sm.max(), 10 * len(_dates))
@@ -911,20 +986,24 @@ class Plots(gtk.HBox):
 
             _smooth = interp1d(_dates, _mtbfll)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='r', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='r', ls='-.')
             self.axAxis4.add_line(_line)
 
             _smooth = interp1d(_dates, _mtbful)
             _y_smooth = _smooth(_x_smooth)
-            _line = matplotlib.lines.Line2D(_x_smooth, _y_smooth, lw=1.5,
-                                            color='b', ls='-.')
+            _line = matplotlib.lines.Line2D(
+                _x_smooth, _y_smooth, lw=1.5, color='b', ls='-.')
             self.axAxis4.add_line(_line)
 
             _text = (_(u"Instantaneous MTBF"), _(u"Instantaneous MTBF LCL"),
                      _(u"Instantaneous MTBF UCL"))
-            Widgets.create_legend(self.axAxis4, _text, fontsize='medium',
-                                  legframeon=True, location='upper right',
-                                  legshadow=True)
+            Widgets.create_legend(
+                self.axAxis4,
+                _text,
+                fontsize='medium',
+                legframeon=True,
+                location='upper right',
+                legshadow=True)
 
         return False

@@ -209,8 +209,8 @@ class RTKBaseView(object):
             else:
                 _image = gtk.Image()
                 _icon = gtk.gdk.pixbuf_new_from_file_at_size(
-                    self._dic_icons[_icon],
-                    int(_scale * height), int(_scale * width))
+                    self._dic_icons[_icon], int(_scale * height),
+                    int(_scale * width))
                 _image.set_from_pixbuf(_icon)
 
                 _button = gtk.ToolButton()

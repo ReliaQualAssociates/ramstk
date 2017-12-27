@@ -10,11 +10,11 @@ The RTKMeasurement Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKMeasurement(RTK_BASE):
@@ -25,10 +25,14 @@ class RTKMeasurement(RTK_BASE):
     __tablename__ = 'rtk_measurement'
     __table_args__ = {'extend_existing': True}
 
-    measurement_id = Column('fld_measurement_id', Integer, primary_key=True,
-                            autoincrement=True, nullable=False)
-    description = Column('fld_description', String(512),
-                         default='Measurement Decription')
+    measurement_id = Column(
+        'fld_measurement_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
+    description = Column(
+        'fld_description', String(512), default='Measurement Decription')
 
     def get_attributes(self):
         """
@@ -58,8 +62,8 @@ class RTKMeasurement(RTK_BASE):
             format(self.measurement_id)
 
         try:
-            self.description = str(none_to_default(attributes[0],
-                                                   'Measurement Description'))
+            self.description = str(
+                none_to_default(attributes[0], 'Measurement Description'))
         except IndexError as _err:
             _error_code = error_handler(_err.args)
             _msg = "RTK ERROR: Insufficient number of input values to " \

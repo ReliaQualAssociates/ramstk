@@ -1,4 +1,4 @@
-1#!/usr/bin/env python -O
+1  #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
 #       tests.unit.TestDAO.py is part of The RTK Project
@@ -32,7 +32,6 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This is the test class for testing Data Access Object (DAO) module algorithms
 and models.
@@ -42,7 +41,10 @@ import sys
 import os
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -82,26 +84,29 @@ class TestDAO(unittest.TestCase):
         self.Configuration.create_user_configuration()
 
         self.Configuration.RTK_COM_BACKEND = 'sqlite'
-        self.Configuration.RTK_COM_INFO = {'host'    : 'localhost',
-                                           'socket'  : 3306,
-                                           'database': '/tmp/TestCommonDB.rtk',
-                                           'user'    : '',
-                                           'password': ''}
+        self.Configuration.RTK_COM_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestCommonDB.rtk',
+            'user': '',
+            'password': ''
+        }
         self.Configuration.RTK_BACKEND = 'sqlite'
-        self.Configuration.RTK_PROG_INFO = {'host'    : 'localhost',
-                                            'socket'  : 3306,
-                                            'database': '/tmp/TestDB.rtk',
-                                            'user'    : '',
-                                            'password': ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/TestDB.rtk',
+            'user': '',
+            'password': ''
+        }
 
         self.site_dao = DAO()
         _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
                     self.Configuration.RTK_COM_INFO['database']
         self.site_dao.db_connect(_database)
 
-        self.site_dao.RTK_SESSION.configure(bind=self.site_dao.engine,
-                                            autoflush=False,
-                                            expire_on_commit=False)
+        self.site_dao.RTK_SESSION.configure(
+            bind=self.site_dao.engine, autoflush=False, expire_on_commit=False)
         self.site_session = scoped_session(self.site_dao.RTK_SESSION)
 
         self.DUT = DAO()
@@ -109,8 +114,8 @@ class TestDAO(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.DUT.db_connect(_database)
 
-        self.DUT.RTK_SESSION.configure(bind=self.DUT.engine, autoflush=False,
-                                       expire_on_commit=False)
+        self.DUT.RTK_SESSION.configure(
+            bind=self.DUT.engine, autoflush=False, expire_on_commit=False)
         self.program_session = scoped_session(self.DUT.RTK_SESSION)
 
         self._revision = self.program_session.query(RTKRevision).first()
@@ -151,15 +156,17 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_common should return False on success.
         """
 
-        self.Configuration.RTK_COM_INFO = {'host': 'localhost',
-                                           'socket': 3306,
-                                           'database': '/tmp/_rtk_common_db.rtk',
-                                           'user': '',
-                                           'password': ''}
+        self.Configuration.RTK_COM_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/_rtk_common_db.rtk',
+            'user': '',
+            'password': ''
+        }
         _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
                     self.Configuration.RTK_COM_INFO['database']
-        self.assertFalse(self.DUT.db_create_common(_database,
-                                                   self.site_session))
+        self.assertFalse(
+            self.DUT.db_create_common(_database, self.site_session))
 
         os.remove('/tmp/_rtk_common_db.rtk')
 
@@ -169,15 +176,17 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_common should return True on failure.
         """
 
-        self.Configuration.RTK_COM_INFO = {'host': 'localhost',
-                                           'socket': 3306,
-                                           'database': 'tmp/_rtk_common_db.rtk',
-                                           'user': '',
-                                           'password': ''}
+        self.Configuration.RTK_COM_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': 'tmp/_rtk_common_db.rtk',
+            'user': '',
+            'password': ''
+        }
         _database = self.Configuration.RTK_COM_BACKEND + ':///' + \
                     self.Configuration.RTK_COM_INFO['database']
-        self.assertTrue(self.DUT.db_create_common(_database,
-                                                  self.program_session))
+        self.assertTrue(
+            self.DUT.db_create_common(_database, self.program_session))
 
     @attr(all=True, unit=True)
     def test02c_dao_db_create_program(self):
@@ -185,16 +194,18 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_program should return False on success.
         """
 
-        self.Configuration.RTK_PROG_INFO = {'host' : 'localhost',
-                                            'socket' : 3306,
-                                            'database' : '/tmp/_rtk_program_db.rtk',
-                                            'type' : 'sqlite',
-                                            'user' : '',
-                                            'password' : ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': '/tmp/_rtk_program_db.rtk',
+            'type': 'sqlite',
+            'user': '',
+            'password': ''
+        }
         _database = self.Configuration.RTK_BACKEND + ':///' + \
                     self.Configuration.RTK_PROG_INFO['database']
-        self.assertFalse(self.DUT.db_create_program(_database,
-                                                    self.program_session))
+        self.assertFalse(
+            self.DUT.db_create_program(_database, self.program_session))
 
         os.remove('/tmp/_rtk_program_db.rtk')
 
@@ -204,16 +215,18 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_create_program should return True on failure.
         """
 
-        self.Configuration.RTK_PROG_INFO = {'host' : 'localhost',
-                                            'socket' : 3306,
-                                            'database' : 'tmp/_rtk_program_db.rtk',
-                                            'type' : 'sqlite',
-                                            'user' : '',
-                                            'password' : ''}
+        self.Configuration.RTK_PROG_INFO = {
+            'host': 'localhost',
+            'socket': 3306,
+            'database': 'tmp/_rtk_program_db.rtk',
+            'type': 'sqlite',
+            'user': '',
+            'password': ''
+        }
         _database = self.Configuration.RTK_BACKEND + ':///' + \
                     self.Configuration.RTK_PROG_INFO['database']
-        self.assertTrue(self.DUT.db_create_program(_database,
-                                                   self.program_session))
+        self.assertTrue(
+            self.DUT.db_create_program(_database, self.program_session))
 
     @attr(all=True, unit=True)
     def test03a_dao_db_add(self):
@@ -221,8 +234,9 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_add should return a zero error code on success when adding a single record to the database.
         """
 
-        (_error_code, _msg) = self.DUT.db_add([RTKRevision(), ],
-                                              self.program_session)
+        (_error_code, _msg) = self.DUT.db_add([
+            RTKRevision(),
+        ], self.program_session)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Adding one or more items to " \
@@ -234,8 +248,9 @@ class TestDAO(unittest.TestCase):
         (TestDAO) db_add should return a 1003 error code on failure.
         """
 
-        (_error_code, _msg) = self.DUT.db_add([None, ],
-                                              self.program_session)
+        (_error_code, _msg) = self.DUT.db_add([
+            None,
+        ], self.program_session)
 
         self.assertEqual(_error_code, 1003)
         self.assertEqual(_msg, "RTK ERROR: Adding one or more items to " \

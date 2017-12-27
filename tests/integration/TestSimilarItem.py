@@ -39,7 +39,10 @@ This is the test class for testing Similar Item module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -85,8 +88,7 @@ class TestSimilarItemController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_similar_item()[1], 0)
-        (_results,
-         _error_code) = self.DUT.add_similar_item(8, 0)
+        (_results, _error_code) = self.DUT.add_similar_item(8, 0)
 
         self.assertTrue(isinstance(self.DUT.dicSimilarItem[8], Model))
         self.assertTrue(_results)
@@ -122,8 +124,10 @@ class TestSimilarItemController(unittest.TestCase):
 
         self.DUT.request_similar_item()
 
-        self.DUT.dicSimilarItem[2].function_1 = 'hr * pi1 * pi2 * pi3 * pi4 * pi5 * pi6'
-        self.DUT.dicSimilarItem[2].function_2 = 'hr * pi4 * pi5 * pi6 * (uf1 / uf2)'
+        self.DUT.dicSimilarItem[
+            2].function_1 = 'hr * pi1 * pi2 * pi3 * pi4 * pi5 * pi6'
+        self.DUT.dicSimilarItem[
+            2].function_2 = 'hr * pi4 * pi5 * pi6 * (uf1 / uf2)'
 
         self.DUT.dicSimilarItem[2].change_factor_1 = 0.95
         self.DUT.dicSimilarItem[2].change_factor_2 = 1.10

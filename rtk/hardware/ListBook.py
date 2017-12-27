@@ -6,32 +6,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ###############################
 Hardware Package List Book View
@@ -161,37 +160,41 @@ class ListView(gtk.VBox):
         self.mtxValidation.n_fixed_columns = 3
 
         # Set tooltips for the gtk.Widgets().
-        self.tvwPartsList.set_tooltip_markup(_(u"Displays the list of "
-                                               u"components/parts directly "
-                                               u"comprising the selected "
-                                               u"Hardware assembly."))
-        self.tvwIncidentList.set_tooltip_markup(_(u"Displays the list of "
-                                                  u"incidents associated with "
-                                                  u"the selected Hardware "
-                                                  u"assembly."))
-        self.mtxTesting.treeview.set_tooltip_markup(_(u"Displays the "
-                                                      u"relationship between "
-                                                      u"system Hardware and "
-                                                      u"system development "
-                                                      u"tests.  This matrix "
-                                                      u"shows which tests "
-                                                      u"partially (P) or "
-                                                      u"completely (C) "
-                                                      u"test a Hardware item, "
-                                                      u"if at all."))
-        self.mtxValidation.treeview.set_tooltip_markup(_(u"Displays the "
-                                                         u"relationship "
-                                                         u"between system "
-                                                         u"Hardware and "
-                                                         u"program Validation "
-                                                         u"tasks.  This "
-                                                         u"matrix shows which "
-                                                         u"Validation task "
-                                                         u"partially (P) or "
-                                                         u"completely (C) "
-                                                         u"validates a "
-                                                         u"Hardware item, if "
-                                                         u"at all."))
+        self.tvwPartsList.set_tooltip_markup(
+            _(u"Displays the list of "
+              u"components/parts directly "
+              u"comprising the selected "
+              u"Hardware assembly."))
+        self.tvwIncidentList.set_tooltip_markup(
+            _(u"Displays the list of "
+              u"incidents associated with "
+              u"the selected Hardware "
+              u"assembly."))
+        self.mtxTesting.treeview.set_tooltip_markup(
+            _(u"Displays the "
+              u"relationship between "
+              u"system Hardware and "
+              u"system development "
+              u"tests.  This matrix "
+              u"shows which tests "
+              u"partially (P) or "
+              u"completely (C) "
+              u"test a Hardware item, "
+              u"if at all."))
+        self.mtxValidation.treeview.set_tooltip_markup(
+            _(u"Displays the "
+              u"relationship "
+              u"between system "
+              u"Hardware and "
+              u"program Validation "
+              u"tasks.  This "
+              u"matrix shows which "
+              u"Validation task "
+              u"partially (P) or "
+              u"completely (C) "
+              u"validates a "
+              u"Hardware item, if "
+              u"at all."))
 
         # Connect widget signals to callback methods.  We do this here rather
         # than in each method so the _lst_handler_id index is the same as the
@@ -202,11 +205,10 @@ class ListView(gtk.VBox):
             self.mtxValidation.connect('changed', self._on_matrix_changed, 1))
 
         self._lst_handler_id.append(
-            self.btnSaveHardTest.connect('clicked',
-                                         self._on_button_clicked, 2))
+            self.btnSaveHardTest.connect('clicked', self._on_button_clicked,
+                                         2))
         self._lst_handler_id.append(
-            self.btnSaveHardVal.connect('clicked',
-                                        self._on_button_clicked, 3))
+            self.btnSaveHardVal.connect('clicked', self._on_button_clicked, 3))
 
         # Put it all together.
         _notebook = self._create_notebook()
@@ -263,8 +265,11 @@ class ListView(gtk.VBox):
                                gobject.TYPE_STRING)
         self.tvwPartsList.set_model(_model)
 
-        _headings = [_(u"Reference\nDesignator"), _(u"Name"),
-                     _(u"Part Number")]
+        _headings = [
+            _(u"Reference\nDesignator"),
+            _(u"Name"),
+            _(u"Part Number")
+        ]
 
         for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
@@ -294,9 +299,10 @@ class ListView(gtk.VBox):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the list of components/parts "
-                                  u"directly comprising the selected Hardware "
-                                  u"assembly."))
+        _label.set_tooltip_text(
+            _(u"Displays the list of components/parts "
+              u"directly comprising the selected Hardware "
+              u"assembly."))
 
         notebook.insert_page(_frame, tab_label=_label, position=-1)
 
@@ -324,8 +330,11 @@ class ListView(gtk.VBox):
                                gobject.TYPE_STRING)
         self.tvwIncidentList.set_model(_model)
 
-        _headings = [_(u"Incident\nID"), _(u"Short\nDescription"),
-                     _(u"Incident\nStatus")]
+        _headings = [
+            _(u"Incident\nID"),
+            _(u"Short\nDescription"),
+            _(u"Incident\nStatus")
+        ]
 
         for _index, _heading in enumerate(_headings):
             _cell = gtk.CellRendererText()
@@ -355,9 +364,10 @@ class ListView(gtk.VBox):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the list of incidents associated "
-                                  u"with the selected Hardware assembly or "
-                                  u"Hardware component."))
+        _label.set_tooltip_text(
+            _(u"Displays the list of incidents associated "
+              u"with the selected Hardware assembly or "
+              u"Hardware component."))
 
         notebook.insert_page(_frame, tab_label=_label, position=-1)
 
@@ -396,9 +406,10 @@ class ListView(gtk.VBox):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the matrix showing relationships "
-                                  u"between system hardware and system "
-                                  u"tests."))
+        _label.set_tooltip_text(
+            _(u"Displays the matrix showing relationships "
+              u"between system hardware and system "
+              u"tests."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -438,9 +449,10 @@ class ListView(gtk.VBox):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the matrix showing relationships "
-                                  u"between system functions and system "
-                                  u"hardware items."))
+        _label.set_tooltip_text(
+            _(u"Displays the matrix showing relationships "
+              u"between system functions and system "
+              u"hardware items."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -478,11 +490,11 @@ class ListView(gtk.VBox):
         :rtype: bool
         """
 
-        _parts = [[_hardware.ref_des, _hardware.name, _hardware.part_number]
-                  for _hardware
-                  in self._mdcRTK.dtcHardwareBoM.dicHardware.values()
-                  if _hardware.parent_id == hardware_id and
-                  _hardware.part == 1]
+        _parts = [
+            [_hardware.ref_des, _hardware.name, _hardware.part_number]
+            for _hardware in self._mdcRTK.dtcHardwareBoM.dicHardware.values()
+            if _hardware.parent_id == hardware_id and _hardware.part == 1
+        ]
         _model = self.tvwPartsList.get_model()
         _model.clear()
 
@@ -507,10 +519,10 @@ class ListView(gtk.VBox):
         :rtype: bool
         """
 
-        _incidents = [[_incident.incident_id, _incident.short_description,
-                       Configuration.RTK_INCIDENT_STATUS[_incident.status]]
-                      for _incident
-                      in self._mdcRTK.dtcIncident.dicIncidents.values()
+        _incidents = [[
+            _incident.incident_id, _incident.short_description,
+            Configuration.RTK_INCIDENT_STATUS[_incident.status]
+        ] for _incident in self._mdcRTK.dtcIncident.dicIncidents.values()
                       if _incident.hardware_id == hardware_id]
         _model = self.tvwIncidentList.get_model()
         _model.clear()
@@ -555,13 +567,16 @@ class ListView(gtk.VBox):
         for _column in self.mtxTesting.treeview.get_columns():
             self.mtxTesting.treeview.remove_column(_column)
 
-        _headings = [_(u"Hardware\nID"), _(u"Reference\nDesignator"),
-                     _(u"Hardware\nName")] + matrix.lstColumnHeaders
+        _headings = [
+            _(u"Hardware\nID"),
+            _(u"Reference\nDesignator"),
+            _(u"Hardware\nName")
+        ] + matrix.lstColumnHeaders
         _editable = [False, False, False] + [True, True] * (matrix.n_col)
 
         for _index, _heading in enumerate(_headings):
-            self.mtxTesting.add_column(_heading, _index,
-                                       editable=_editable[_index])
+            self.mtxTesting.add_column(
+                _heading, _index, editable=_editable[_index])
 
         # Load the Hardware/Testing matrix.
         self.mtxTesting.load_matrix(_top_items, _hardware, _model)
@@ -604,12 +619,15 @@ class ListView(gtk.VBox):
         for _column in self.mtxValidation.treeview.get_columns():
             self.mtxValidation.treeview.remove_column(_column)
 
-        _headings = [_(u"Hardware\nID"), _(u"Reference\nDesignator"),
-                     _(u"Hardware\nName")] + matrix.lstColumnHeaders
+        _headings = [
+            _(u"Hardware\nID"),
+            _(u"Reference\nDesignator"),
+            _(u"Hardware\nName")
+        ] + matrix.lstColumnHeaders
         _editable = [False, False, False] + [True, True] * (matrix.n_col)
         for _index, _heading in enumerate(_headings):
-            self.mtxValidation.add_column(_heading, _index,
-                                          editable=_editable[_index])
+            self.mtxValidation.add_column(
+                _heading, _index, editable=_editable[_index])
 
         # Load the Hardware/Validation matrix.
         self.mtxValidation.load_matrix(_top_items, _hardware, _model)

@@ -18,7 +18,8 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(__file__))) + "/rtk", )
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree

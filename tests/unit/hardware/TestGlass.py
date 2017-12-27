@@ -12,7 +12,10 @@ This is the test class for testing Glass capacitor module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -54,16 +57,16 @@ class TestGlassModel(unittest.TestCase):
 
         # Verify the Glass capacitor class was properly
         # initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0,
-                                         22.0, 28.0, 23.0, 0.5, 13.0, 34.0,
-                                         610.0])
-        self.assertEqual(self.DUT._piQ, [0.03, 0.10, 0.30, 1.0, 3.0, 3.0,
-                                         10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.00032, 0.00096, 0.0059,
-                                                   0.0029, 0.0094, 0.0044,
-                                                   0.0062, 0.035, 0.045, 0.020,
-                                                   0.00016, 0.0076, 0.030,
-                                                   0.29])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0,
+            34.0, 610.0
+        ])
+        self.assertEqual(self.DUT._piQ,
+                         [0.03, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.00032, 0.00096, 0.0059, 0.0029, 0.0094, 0.0044, 0.0062, 0.035,
+            0.045, 0.020, 0.00016, 0.0076, 0.030, 0.29
+        ])
         self.assertEqual(self.DUT.subcategory, 48)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)

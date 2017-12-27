@@ -11,11 +11,11 @@ The RTKIncidentDetail Table
 """
 # pylint: disable=E0401
 from sqlalchemy import Column, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKIncidentDetail(RTK_BASE):
@@ -29,16 +29,19 @@ class RTKIncidentDetail(RTK_BASE):
     __tablename__ = 'rtk_incident_detail'
     __table_args__ = {'extend_existing': True}
 
-    incident_id = Column('fld_incident_id', Integer,
-                         ForeignKey('rtk_incident.fld_incident_id'),
-                         primary_key=True, nullable=False)
+    incident_id = Column(
+        'fld_incident_id',
+        Integer,
+        ForeignKey('rtk_incident.fld_incident_id'),
+        primary_key=True,
+        nullable=False)
     hardware_id = Column('fld_hardware_id', Integer, default=0)
 
     age_at_incident = Column('fld_age_at_incident', Float, default=0.0)
     cnd_nff = Column('fld_cnd_nff', Integer, default=0)
     failure = Column('fld_failure', Integer, default=0)
-    initial_installation = Column('fld_initial_installation', Integer,
-                                  default=0)
+    initial_installation = Column(
+        'fld_initial_installation', Integer, default=0)
     interval_censored = Column('fld_interval_censored', Integer, default=0)
     mode_type_id = Column('fld_mode_type_id', Integer, default=0)
     occ_fault = Column('fld_occ_fault', Integer, default=0)

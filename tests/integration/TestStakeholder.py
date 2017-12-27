@@ -38,7 +38,10 @@ This is the test class for testing Stakeholder module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -77,7 +80,10 @@ class TestStakeholderController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_inputs(0)[1], 0)
+
+
 # TODO: Test that method fails when no Stakeholder inputs exist in database.
+
     @attr(all=True, integration=True)
     def test01_add_input(self):
         """
@@ -85,11 +91,10 @@ class TestStakeholderController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_inputs(0)[1], 0)
-        (_results,
-         _error_code) = self.DUT.add_input(0)
+        (_results, _error_code) = self.DUT.add_input(0)
 
-        self.assertTrue(isinstance(self.DUT.dicStakeholders[self.DUT._last_id],
-                                   Model))
+        self.assertTrue(
+            isinstance(self.DUT.dicStakeholders[self.DUT._last_id], Model))
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
 
@@ -100,8 +105,7 @@ class TestStakeholderController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_inputs(0)[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_input(self.DUT._last_id)
+        (_results, _error_code) = self.DUT.delete_input(self.DUT._last_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

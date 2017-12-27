@@ -38,7 +38,10 @@ This is the test class for testing the Physics of Failure Method class.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -86,8 +89,7 @@ class TestMethodModel(unittest.TestCase):
         _values = (0, 1, 'Test Method', 'Test Boundary Conditions',
                    'Test Remarks')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -98,8 +100,7 @@ class TestMethodModel(unittest.TestCase):
 
         _values = (0, 0, 'Test Method')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -111,8 +112,7 @@ class TestMethodModel(unittest.TestCase):
         _values = (0, None, 'Test Method', 'Test Boundary Conditions',
                    'Test Remarks')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -124,8 +124,7 @@ class TestMethodModel(unittest.TestCase):
         _values = (0, '', 'Test Method', 'Test Boundary Conditions',
                    'Test Remarks')
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)

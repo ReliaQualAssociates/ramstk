@@ -4,7 +4,6 @@
 #       tests.unit.TestIC.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing Integrated Circuit module algorithms and
 models.
@@ -13,7 +12,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -94,8 +96,7 @@ class TestICModel(unittest.TestCase):
         _all_values = self._base_values + self._stress_values + \
             self._rel_values + self._comp_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code, [0, 0, 0, 0, 0])
 
         self.assertEqual(self.DUT.category_id, 42)
@@ -116,15 +117,13 @@ class TestICModel(unittest.TestCase):
         (TestIC) set_attributes should return a 40 error code when too few items are passed
         """
 
-        _comp_values = (0.0, 30.0, 0.65, 1.5, 0.00115, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                        0, 8)
+        _comp_values = (0.0, 30.0, 0.65, 1.5, 0.00115, 0.0, 0.0, 0.0, 0.0, 0.0,
+                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 8)
 
         _all_values = self._base_values + self._stress_values + \
             self._rel_values + _comp_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[4], 40)
 
     @attr(all=True, unit=True)
@@ -133,15 +132,14 @@ class TestICModel(unittest.TestCase):
         (TestIC) set_attributes should return a 10 error code when the wrong type is passed
         """
 
-        _comp_values = (0.0, None, 0.65, 1.5, 0.00115, 0.0, 0.0, 0.0, 0.0,
-                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                        0, 8, 0)
+        _comp_values = (0.0, None, 0.65, 1.5, 0.00115, 0.0, 0.0, 0.0, 0.0, 0.0,
+                        0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 8,
+                        0)
 
         _all_values = self._base_values + self._stress_values + \
             self._rel_values + _comp_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_all_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_all_values)
         self.assertEqual(_error_code[4], 10)
 
     @attr(all=True, unit=True)

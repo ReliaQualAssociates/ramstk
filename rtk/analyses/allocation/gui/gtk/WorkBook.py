@@ -12,30 +12,30 @@ Allocation Module Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -87,7 +87,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
+class WorkView(gtk.HBox):  # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected Allocation.
     The attributes of an Allocation Work Book view are:
@@ -123,13 +123,14 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
         self.btnAllocate = Widgets.make_button(width=35, image='calculate')
         self.btnSaveAllocation = Widgets.make_button(width=35, image='save')
-        self.btnSaveAllAllocation = Widgets.make_button(width=35,
-                                                        image='save-all')
-        self.btnTrickledown = Widgets.make_button(width=35,
-                                                  image='trickledown')
+        self.btnSaveAllAllocation = Widgets.make_button(
+            width=35, image='save-all')
+        self.btnTrickledown = Widgets.make_button(
+            width=35, image='trickledown')
 
-        self.chkApplyResults = Widgets.make_check_button(_(u"Apply results to "
-                                                           u"hardware"))
+        self.chkApplyResults = Widgets.make_check_button(
+            _(u"Apply results to "
+              u"hardware"))
 
         self.cmbAllocationMethod = Widgets.make_combo(width=150)
         self.cmbAllocationGoal = Widgets.make_combo(width=150)
@@ -141,53 +142,63 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         self.txtHazardRateGoal = Widgets.make_entry(width=100)
 
         # Set gtk.Widget() tooltips.
-        self.tvwAllocation.set_tooltip_text(_(u"Displays the list of "
-                                              u"immediate child assemblies "
-                                              u"that may be included in the "
-                                              u"allocation."))
-        self.btnAllocate.set_tooltip_text(_(u"Performs the selected "
-                                            u"alloction."))
-        self.btnSaveAllocation.set_tooltip_text(_(u"Saves the selected "
-                                                  u"allocation."))
-        self.btnSaveAllAllocation.set_tooltip_text(_(u"Saves all of the "
-                                                     u"allocations."))
-        self.btnTrickledown.set_tooltip_text(_(u"Sets the reliability, hazard "
-                                               u"rate and MTBF goal of the "
-                                               u"immediately subordinate "
-                                               u"hardware items to the "
-                                               u"values calculated by the "
-                                               u"alloction."))
-        self.cmbAllocationMethod.set_tooltip_text(_(u"Selects the method for "
-                                                    u"allocating the "
-                                                    u"reliability goal for "
-                                                    u"the selected hardware "
-                                                    u"assembly."))
-        self.cmbAllocationGoal.set_tooltip_text(_(u"Selects the goal measure "
-                                                  u"for the selected hardware "
-                                                  u"assembly."))
-        self.txtReliabilityGoal.set_tooltip_text(_(u"Displays the reliability "
-                                                   u"goal for the selected "
-                                                   u"hardware item."))
-        self.txtHazardRateGoal.set_tooltip_text(_(u"Displays the hazard rate "
-                                                  u"goal for the selected "
-                                                  u"hardware item."))
-        self.txtMTBFGoal.set_tooltip_text(_(u"Displays the MTBF goal for the "
-                                            u"selected hardware item."))
+        self.tvwAllocation.set_tooltip_text(
+            _(u"Displays the list of "
+              u"immediate child assemblies "
+              u"that may be included in the "
+              u"allocation."))
+        self.btnAllocate.set_tooltip_text(
+            _(u"Performs the selected "
+              u"alloction."))
+        self.btnSaveAllocation.set_tooltip_text(
+            _(u"Saves the selected "
+              u"allocation."))
+        self.btnSaveAllAllocation.set_tooltip_text(
+            _(u"Saves all of the "
+              u"allocations."))
+        self.btnTrickledown.set_tooltip_text(
+            _(u"Sets the reliability, hazard "
+              u"rate and MTBF goal of the "
+              u"immediately subordinate "
+              u"hardware items to the "
+              u"values calculated by the "
+              u"alloction."))
+        self.cmbAllocationMethod.set_tooltip_text(
+            _(u"Selects the method for "
+              u"allocating the "
+              u"reliability goal for "
+              u"the selected hardware "
+              u"assembly."))
+        self.cmbAllocationGoal.set_tooltip_text(
+            _(u"Selects the goal measure "
+              u"for the selected hardware "
+              u"assembly."))
+        self.txtReliabilityGoal.set_tooltip_text(
+            _(u"Displays the reliability "
+              u"goal for the selected "
+              u"hardware item."))
+        self.txtHazardRateGoal.set_tooltip_text(
+            _(u"Displays the hazard rate "
+              u"goal for the selected "
+              u"hardware item."))
+        self.txtMTBFGoal.set_tooltip_text(
+            _(u"Displays the MTBF goal for the "
+              u"selected hardware item."))
 
         # Connect to callback functions.
         self._lst_handler_id.append(
             self.btnAllocate.connect('clicked', self._on_button_clicked, 0))
         self._lst_handler_id.append(
-            self.btnSaveAllocation.connect('clicked',
-                                           self._on_button_clicked, 1))
+            self.btnSaveAllocation.connect('clicked', self._on_button_clicked,
+                                           1))
         self._lst_handler_id.append(
             self.btnTrickledown.connect('clicked', self._on_button_clicked, 2))
         self._lst_handler_id.append(
-            self.cmbAllocationMethod.connect('changed',
-                                             self._on_combo_changed, 3))
+            self.cmbAllocationMethod.connect('changed', self._on_combo_changed,
+                                             3))
         self._lst_handler_id.append(
-            self.cmbAllocationGoal.connect('changed',
-                                           self._on_combo_changed, 4))
+            self.cmbAllocationGoal.connect('changed', self._on_combo_changed,
+                                           4))
         self._lst_handler_id.append(
             self.txtReliabilityGoal.connect('focus-out-event',
                                             self._on_focus_out, 5))
@@ -212,28 +223,38 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         """
 
         # Create the Alloction gtk.TreeView().
-        _labels = [_(u""), _(u"Assembly"), _(u"Included?"),
-                   _(u"Number of\nSub-Systems"), _(u"Number of\nSub-Elements"),
-                   _(u"Operating\nTime"), _(u"Duty Cycle"),
-                   _(u"Intricacy\n(1-10)"), _(u"State of\nthe Art\n(1-10)"),
-                   _(u"Operating\nTime (1-10)"), _(u"Environment\n(1-10)"),
-                   _(u"Weighting\nFactor"), _(u"Percent\nWeighting\nFactor"),
-                   _(u"Current\nHazard\nRate"), _(u"Allocated\nHazard\nRate"),
-                   _(u"Current\nMTBF"), _(u"Allocated\nMTBF"),
-                   _(u"Current\nReliability"), _(u"Allocated\nReliability"),
-                   _(u"Current\nAvailability"), _(u"Allocated\nAvailability")]
+        _labels = [
+            _(u""),
+            _(u"Assembly"),
+            _(u"Included?"),
+            _(u"Number of\nSub-Systems"),
+            _(u"Number of\nSub-Elements"),
+            _(u"Operating\nTime"),
+            _(u"Duty Cycle"),
+            _(u"Intricacy\n(1-10)"),
+            _(u"State of\nthe Art\n(1-10)"),
+            _(u"Operating\nTime (1-10)"),
+            _(u"Environment\n(1-10)"),
+            _(u"Weighting\nFactor"),
+            _(u"Percent\nWeighting\nFactor"),
+            _(u"Current\nHazard\nRate"),
+            _(u"Allocated\nHazard\nRate"),
+            _(u"Current\nMTBF"),
+            _(u"Allocated\nMTBF"),
+            _(u"Current\nReliability"),
+            _(u"Allocated\nReliability"),
+            _(u"Current\nAvailability"),
+            _(u"Allocated\nAvailability")
+        ]
 
-        _model = gtk.TreeStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_INT,
-                               gobject.TYPE_INT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT)
+        _model = gtk.TreeStore(
+            gobject.TYPE_INT, gobject.TYPE_STRING, gobject.TYPE_INT,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_INT, gobject.TYPE_INT,
+            gobject.TYPE_INT, gobject.TYPE_INT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT)
         self.tvwAllocation.set_model(_model)
 
         _columns = int(len(_labels))
@@ -242,8 +263,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             if i == 2:
                 _cell = gtk.CellRendererToggle()
                 _cell.set_property('activatable', 1)
-                _cell.connect('toggled', Widgets.edit_tree,
-                              None, i, _model)
+                _cell.connect('toggled', Widgets.edit_tree, None, i, _model)
             else:
                 _cell = gtk.CellRendererText()
                 _cell.set_property('editable', 1)
@@ -307,19 +327,23 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         # Place the widgets used to display the Allocation analysis.    #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.Combo()
-        _results = [[_(u"Equal Apportionment"), 0],
-                    [_(u"AGREE Apportionment"), 1],
-                    [_(u"ARINC Apportionment"), 2],
+        _results = [[_(u"Equal Apportionment"),
+                     0], [_(u"AGREE Apportionment"),
+                          1], [_(u"ARINC Apportionment"), 2],
                     [_(u"Feasibility of Objectives"), 3]]
         Widgets.load_combo(self.cmbAllocationMethod, _results)
 
-        _results = [[_(u"Reliability"), 0],
-                    [_(u"Hazard Rate"), 1],
+        _results = [[_(u"Reliability"), 0], [_(u"Hazard Rate"), 1],
                     [_(u"MTBF"), 2]]
         Widgets.load_combo(self.cmbAllocationGoal, _results)
 
-        _labels = [_(u"Allocation Method:"), _(u"Allocation Goal:"),
-                   _(u"R(t) Goal:"), _(u"h(t) Goal:"), _(u"MTBF Goal:")]
+        _labels = [
+            _(u"Allocation Method:"),
+            _(u"Allocation Goal:"),
+            _(u"R(t) Goal:"),
+            _(u"h(t) Goal:"),
+            _(u"MTBF Goal:")
+        ]
 
         _x_pos = 5
         _label = Widgets.make_label(_labels[0], width=-1)
@@ -379,8 +403,10 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         _model.clear()
 
         # Find the immediate child assemblies.
-        _children = [_a for _a in self.dtcAllocation.dicAllocation.values()
-                     if _a.parent_id == hardware_id]
+        _children = [
+            _a for _a in self.dtcAllocation.dicAllocation.values()
+            if _a.parent_id == hardware_id
+        ]
 
         for _child in _children:
             _hardware = controller.dicHardware[_child.hardware_id]
@@ -389,16 +415,16 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             _mtbf = _hardware.mtbf_logistics
             _name = _hardware.name
             _reliability = _hardware.reliability_logistics
-            _data = [_child.hardware_id, _name, _child.included,
-                     _child.n_sub_systems, _child.n_sub_elements,
-                     _child.mission_time, _child.duty_cycle,
-                     _child.int_factor, _child.soa_factor,
-                     _child.op_time_factor, _child.env_factor,
-                     _child.weight_factor, _child.percent_wt_factor,
-                     _hazard_rate, _child.hazard_rate_alloc,
-                     _mtbf, _child.mtbf_alloc, _reliability,
-                     _child.reliability_alloc, _availability,
-                     _child.availability_alloc]
+            _data = [
+                _child.hardware_id, _name, _child.included,
+                _child.n_sub_systems, _child.n_sub_elements,
+                _child.mission_time, _child.duty_cycle, _child.int_factor,
+                _child.soa_factor, _child.op_time_factor, _child.env_factor,
+                _child.weight_factor, _child.percent_wt_factor, _hazard_rate,
+                _child.hazard_rate_alloc, _mtbf, _child.mtbf_alloc,
+                _reliability, _child.reliability_alloc, _availability,
+                _child.availability_alloc
+            ]
             _piter = _model.append(parent_row, _data)
             # _parent_id = _child.hardware_id
 
@@ -439,10 +465,10 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _format; current McCabe Complexity metrix = 21.
+        # WARNING: Refactor _format; current McCabe Complexity metrix = 21.
         _allocation = self.dtcAllocation.dicAllocation[hardware_id]
 
-        if _allocation.method == 1:         # Equal apportionment selected.
+        if _allocation.method == 1:  # Equal apportionment selected.
             for _col in 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 19, 20:
                 self.tvwAllocation.get_column(_col).set_visible(0)
             for _col in 1, 13, 14, 15, 16, 17, 18:
@@ -453,7 +479,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                     _cell.set_property('background', 'light gray')
                     _cell.set_property('editable', 0)
 
-        elif _allocation.method == 2:       # AGREE apportionment selected.
+        elif _allocation.method == 2:  # AGREE apportionment selected.
             for _col in 0, 2, 3, 7, 8, 9, 10, 12, 19, 20:
                 self.tvwAllocation.get_column(_col).set_visible(0)
             for _col in 1, 5, 11, 13, 14, 15, 16, 17, 18:
@@ -471,7 +497,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                     _cell.set_property('background', 'white')
                     _cell.set_property('editable', 1)
 
-        elif _allocation.method == 3:   # ARINC apportionment selected.
+        elif _allocation.method == 3:  # ARINC apportionment selected.
             for _col in 0, 2, 3, 4, 5, 6, 7, 8, 9, 10, 12, 19, 20:
                 self.tvwAllocation.get_column(_col).set_visible(0)
             for _col in 1, 11, 13, 14, 15, 16, 17, 18:
@@ -482,7 +508,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                     _cell.set_property('background', 'light gray')
                     _cell.set_property('editable', 0)
 
-        elif _allocation.method == 4:   # Feasibility of Objectives selected.
+        elif _allocation.method == 4:  # Feasibility of Objectives selected.
             for _col in 0, 2, 3, 4, 5, 6, 19, 20:
                 self.tvwAllocation.get_column(_col).set_visible(0)
             for _col in 1, 11, 12, 13, 14, 15, 16, 17, 18:
@@ -514,10 +540,10 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 11.
+        # WARNING: Refactor _on_button_clicked; current McCabe Complexity metric = 11.
         _return = False
 
-        if index == 0:                      # Perform allocation
+        if index == 0:  # Perform allocation
             self.dtcAllocation.allocate(self._hardware_model.hardware_id)
             _model = self.tvwAllocation.get_model()
             _row = _model.get_iter_root()
@@ -533,7 +559,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                 _model.set_value(_row, 18, _allocation.reliability_alloc)
                 _row = _model.iter_next(_row)
 
-        elif index == 1:                    # Save selected allocation
+        elif index == 1:  # Save selected allocation
             (__, _error_code) = self.dtcAllocation.save_allocation(
                 self._hardware_model.hardware_id)
 
@@ -552,9 +578,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
             _return = True
 
-        elif index == 2:                    # Trickle down allocation
+        elif index == 2:  # Trickle down allocation
             self.dtcAllocation.trickle_down(self._hardware_model.hardware_id)
-        elif index == 8:                    # Save all allocations
+        elif index == 8:  # Save all allocations
             _error_codes = self.dtcAllocation.save_all_allocation()
             _error_codes = [_code for _code in _error_codes if _code[1] != 0]
 
@@ -589,7 +615,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Consider rewriting _on_cell_edit; current McCabe Complexity metric = 10.
+        # TODO: Consider rewriting _on_cell_edit; current McCabe Complexity metric = 10.
         _model = self.tvwAllocation.get_model()
         _hardware_id = _model[path][0]
         _allocation = self.dtcAllocation.dicAllocation[_hardware_id]
@@ -645,14 +671,14 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             _allocation = self.dtcAllocation.dicAllocation[_hardware_id]
             _allocation.goal_measure = combo.get_active()
             _allocation.calculate_goals()
-            if combo.get_active() == 0:     # Nothing selected.
+            if combo.get_active() == 0:  # Nothing selected.
                 self.txtReliabilityGoal.props.editable = 0
                 self.txtReliabilityGoal.set_sensitive(0)
                 self.txtMTBFGoal.props.editable = 0
                 self.txtMTBFGoal.set_sensitive(0)
                 self.txtHazardRateGoal.props.editable = 0
                 self.txtHazardRateGoal.set_sensitive(0)
-            elif combo.get_active() == 1:   # Expressed as reliability.
+            elif combo.get_active() == 1:  # Expressed as reliability.
                 self.txtReliabilityGoal.props.editable = 1
                 self.txtReliabilityGoal.set_sensitive(1)
                 self.txtReliabilityGoal.set_text(
@@ -665,7 +691,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                 self.txtHazardRateGoal.set_sensitive(0)
                 self.txtHazardRateGoal.set_text(
                     str(fmt.format(_allocation.hazard_rate_goal)))
-            elif combo.get_active() == 2:   # Expressed as a failure rate.
+            elif combo.get_active() == 2:  # Expressed as a failure rate.
                 self.txtReliabilityGoal.props.editable = 0
                 self.txtReliabilityGoal.set_sensitive(0)
                 self.txtReliabilityGoal.set_text(
@@ -678,7 +704,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
                 self.txtHazardRateGoal.set_sensitive(1)
                 self.txtHazardRateGoal.set_text(
                     str(fmt.format(_allocation.hazard_rate_goal)))
-            elif combo.get_active() == 3:   # Expressed as an MTBF.
+            elif combo.get_active() == 3:  # Expressed as an MTBF.
                 self.txtReliabilityGoal.props.editable = 0
                 self.txtReliabilityGoal.set_sensitive(0)
                 self.txtReliabilityGoal.set_text(
@@ -715,7 +741,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index == 5:                      # Reliability goal
+        if index == 5:  # Reliability goal
             _hardware_id = self._hardware_model.hardware_id
             _allocation = self.dtcAllocation.dicAllocation[_hardware_id]
             _allocation.reliability_goal = float(entry.get_text())
@@ -729,7 +755,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             self.txtMTBFGoal.set_text(str(fmt.format(_allocation.mtbf_goal)))
             self.txtHazardRateGoal.handler_unblock(self._lst_handler_id[28])
             self.txtMTBFGoal.handler_unblock(self._lst_handler_id[29])
-        elif index == 6:                    # Hazard rate goal
+        elif index == 6:  # Hazard rate goal
             _hardware_id = self._hardware_model.hardware_id
             _allocation = self.dtcAllocation.dicAllocation[_hardware_id]
             _allocation.hazard_rate_goal = float(entry.get_text())
@@ -743,7 +769,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902, R0904
             self.txtMTBFGoal.set_text(str(fmt.format(_allocation.mtbf_goal)))
             self.txtReliabilityGoal.handler_unblock(self._lst_handler_id[27])
             self.txtMTBFGoal.handler_unblock(self._lst_handler_id[29])
-        elif index == 7:                    # MTBF goal
+        elif index == 7:  # MTBF goal
             _hardware_id = self._hardware_model.hardware_id
             _allocation = self.dtcAllocation.dicAllocation[_hardware_id]
             _allocation.mtbf_goal = float(entry.get_text())

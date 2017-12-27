@@ -38,7 +38,10 @@ This is the test class for testing Hardware BoM module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -70,26 +73,18 @@ class TestBoMController(unittest.TestCase):
         self.DUT = BoM()
         self.DUT.dao = self._dao
 
-        Configuration.RTK_FAILURE_MODES = {1: {1: [(1, u'Improper Output',
-                                                    0.77),
-                                                   (2, u'No Output', 0.23)],
-                                               2: [(1, u'Output Stuck High',
-                                                    0.28),
-                                                   (2, u'Output Stuck Low',
-                                                    0.28),
-                                                   (3, u'Input Open', 0.22),
-                                                   (4, u'Output Open', 0.22)],
-                                               3: [(1, u'Improper Output',
-                                                    0.77),
-                                                   (2, u'No Output', 0.23)],
-                                               4: [(1, u'Improper Output',
-                                                    0.77),
-                                                   (2, u'No Output', 0.23)],
-                                               5: [(1, u'Data Bit Loss', 0.34),
-                                                   (2, u'Short', 0.26),
-                                                   (3, u'Open', 0.23),
-                                                   (4, u'Slow Transfer of Data',
-                                                    0.17)]}}
+        Configuration.RTK_FAILURE_MODES = {
+            1: {
+                1: [(1, u'Improper Output', 0.77), (2, u'No Output', 0.23)],
+                2: [(1, u'Output Stuck High', 0.28), (2, u'Output Stuck Low',
+                                                      0.28),
+                    (3, u'Input Open', 0.22), (4, u'Output Open', 0.22)],
+                3: [(1, u'Improper Output', 0.77), (2, u'No Output', 0.23)],
+                4: [(1, u'Improper Output', 0.77), (2, u'No Output', 0.23)],
+                5: [(1, u'Data Bit Loss', 0.34), (2, u'Short', 0.26),
+                    (3, u'Open', 0.23), (4, u'Slow Transfer of Data', 0.17)]
+            }
+        }
 
     @attr(all=True, integration=True)
     def test1_request_bom(self):
@@ -117,8 +112,7 @@ class TestBoMController(unittest.TestCase):
         self.assertEqual(self.DUT.request_bom(0)[1], 0)
         self.DUT.add_hardware(0, 0, 0)
 
-        (_results,
-         _error_code) = self.DUT.delete_hardware(self.DUT._last_id)
+        (_results, _error_code) = self.DUT.delete_hardware(self.DUT._last_id)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)

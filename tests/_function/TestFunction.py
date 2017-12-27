@@ -23,7 +23,8 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(__file__))) + "/rtk", )
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import Utilities as Utilities  # pylint: disable=import-error
 from Configuration import Configuration  # pylint: disable=import-error
@@ -317,10 +318,11 @@ class TestFunctionDataController(unittest.TestCase):
 
         self.assertTrue(isinstance(_matrix, pd.DataFrame))
         self.assertEqual(_column_hdrs, {1: u'S1', 2: u'S1:SS1', 3: u'S1:SS2'})
-        self.assertEqual(_row_hdrs,
-                         {1: u'PRESS-001',
-                          2: u'FLOW-001',
-                          3: u'TEMP-001'})
+        self.assertEqual(_row_hdrs, {
+            1: u'PRESS-001',
+            2: u'FLOW-001',
+            3: u'TEMP-001'
+        })
 
     @attr(all=True, unit=True)
     def test02a_request_select(self):

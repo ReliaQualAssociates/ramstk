@@ -39,7 +39,10 @@ This is the test class for testing Crow-AMSAA model algorithms.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -390,14 +393,17 @@ class TestCrowAMSAA(unittest.TestCase):
 
         # See http://reliawiki.org/index.php/Crow-AMSAA_%28NHPP%29 for example
         # data.
-        n_failures = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1]
-        fail_times = [2.7, 10.3, 12.5, 30.6, 57.0, 61.3, 80.0, 109.5, 125.0,
-                      128.6, 143.8, 167.9, 229.2, 296.7, 320.6, 328.2, 366.2,
-                      396.7, 421.1, 438.2, 501.2, 620.0]
+        n_failures = [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1
+        ]
+        fail_times = [
+            2.7, 10.3, 12.5, 30.6, 57.0, 61.3, 80.0, 109.5, 125.0, 128.6,
+            143.8, 167.9, 229.2, 296.7, 320.6, 328.2, 366.2, 396.7, 421.1,
+            438.2, 501.2, 620.0
+        ]
 
-        _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(n_failures,
-                                                                fail_times)
+        _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(
+            n_failures, fail_times)
         self.assertAlmostEqual(_alpha_hat, 0.4239422)
         self.assertAlmostEqual(_beta_hat, 0.6142104)
 
@@ -412,9 +418,8 @@ class TestCrowAMSAA(unittest.TestCase):
         n_failures = [12, 6, 15, 3, 18, 16]
         fail_times = [62.0, 100.0, 187.0, 210.0, 350.0, 500.0]
 
-        _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(n_failures,
-                                                                fail_times,
-                                                                grouped=True)
+        _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(
+            n_failures, fail_times, grouped=True)
         self.assertAlmostEqual(_alpha_hat, 0.4458543)
         self.assertAlmostEqual(_beta_hat, 0.8136085)
 
@@ -427,9 +432,8 @@ class TestCrowAMSAA(unittest.TestCase):
         n_failures = []
         fail_times = [62.0, 100.0, 187.0, 210.0, 350.0, 500.0]
 
-        _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(n_failures,
-                                                                fail_times,
-                                                                grouped=True)
+        _alpha_hat, _beta_hat = calculate_crow_amsaa_parameters(
+            n_failures, fail_times, grouped=True)
         self.assertAlmostEqual(_alpha_hat, 0.0)
         self.assertAlmostEqual(_beta_hat, 0.0)
 
@@ -445,9 +449,8 @@ class TestCrowAMSAA(unittest.TestCase):
         _alpha = 0.44585
         _beta = 0.81361
 
-        _cum_mean, _instantaneous_mean = calculate_crow_amsaa_mean(_time,
-                                                                   _alpha,
-                                                                   _beta)
+        _cum_mean, _instantaneous_mean = calculate_crow_amsaa_mean(
+            _time, _alpha, _beta)
         self.assertAlmostEqual(_cum_mean, 7.1428618)
         self.assertAlmostEqual(_instantaneous_mean, 8.7792208)
 
@@ -458,15 +461,19 @@ class TestCrowAMSAA(unittest.TestCase):
         """
 
         # See MIL-HDBK-189, 5.3.4, Example 1 for example data.
-        n_failures = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1, 1, 1, 1, 1, 1]
-        fail_times = [2.4, 24.9, 52.5, 53.4, 54.7, 57.2, 118.6, 140.2, 185.0,
-                      207.6, 293.9, 322.3, 365.9, 366.8, 544.8, 616.8, 627.5,
-                      646.8, 664.0, 738.1, 764.7, 765.1, 779.6, 799.9, 852.9,
-                      1116.3, 1161.1, 1257.1, 1276.3, 1308.9, 1340.3, 1437.3,
-                      1482.0, 1489.9, 1715.1, 1828.9, 1971.5, 2303.4, 2429.7,
-                      2457.4, 2535.2, 2609.9, 2674.2, 2704.8, 2849.6, 2923.5]
+        n_failures = [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1
+        ]
+        fail_times = [
+            2.4, 24.9, 52.5, 53.4, 54.7, 57.2, 118.6, 140.2, 185.0, 207.6,
+            293.9, 322.3, 365.9, 366.8, 544.8, 616.8, 627.5, 646.8, 664.0,
+            738.1, 764.7, 765.1, 779.6, 799.9, 852.9, 1116.3, 1161.1, 1257.1,
+            1276.3, 1308.9, 1340.3, 1437.3, 1482.0, 1489.9, 1715.1, 1828.9,
+            1971.5, 2303.4, 2429.7, 2457.4, 2535.2, 2609.9, 2674.2, 2704.8,
+            2849.6, 2923.5
+        ]
         beta = 0.616
 
         _Cvm = calculate_cramer_vonmises(n_failures, fail_times, beta, 3000.0,
@@ -507,15 +514,19 @@ class TestCrowAMSAA(unittest.TestCase):
         """
 
         # See MIL-HDBK-189, 5.3.5.1, Example 2 for example data.
-        n_failures = [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                      1, 1, 1, 1, 1, 1, 1, 1]
-        fail_times = [2.4, 24.9, 52.5, 53.4, 54.7, 57.2, 118.6, 140.2, 185.0,
-                      207.6, 293.9, 322.3, 365.9, 366.8, 544.8, 616.8, 627.5,
-                      646.8, 664.0, 738.1, 764.7, 765.1, 779.6, 799.9, 852.9,
-                      1116.3, 1161.1, 1257.1, 1276.3, 1308.9, 1340.3, 1437.3,
-                      1482.0, 1489.9, 1715.1, 1828.9, 1971.5, 2303.4, 2429.7,
-                      2457.4, 2535.2, 2609.9, 2674.2, 2704.8, 2849.6, 2923.5]
+        n_failures = [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+            1, 1
+        ]
+        fail_times = [
+            2.4, 24.9, 52.5, 53.4, 54.7, 57.2, 118.6, 140.2, 185.0, 207.6,
+            293.9, 322.3, 365.9, 366.8, 544.8, 616.8, 627.5, 646.8, 664.0,
+            738.1, 764.7, 765.1, 779.6, 799.9, 852.9, 1116.3, 1161.1, 1257.1,
+            1276.3, 1308.9, 1340.3, 1437.3, 1482.0, 1489.9, 1715.1, 1828.9,
+            1971.5, 2303.4, 2429.7, 2457.4, 2535.2, 2609.9, 2674.2, 2704.8,
+            2849.6, 2923.5
+        ]
         ttt = 3000.0
         beta = 0.616
 
@@ -531,8 +542,9 @@ class TestCrowAMSAA(unittest.TestCase):
 
         # See MIL-HDBK-189, 5.3.5.3, Example 3 for example data.
         n_failures = [12, 6, 7, 5, 4, 3, 1, 4, 4]
-        fail_times = [330.0, 660.0, 990.0, 1320.0, 1650.0, 1980.0, 2310.0,
-                      2640.0, 3000.0]
+        fail_times = [
+            330.0, 660.0, 990.0, 1320.0, 1650.0, 1980.0, 2310.0, 2640.0, 3000.0
+        ]
         ttt = 3000.0
         beta = 0.616
 

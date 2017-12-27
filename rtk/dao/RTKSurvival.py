@@ -13,11 +13,11 @@ The RTKSurvival Table
 from datetime import date, timedelta
 # pylint: disable=E0401
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship               # pylint: disable=E0401
+from sqlalchemy.orm import relationship  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKSurvival(RTK_BASE):
@@ -31,11 +31,17 @@ class RTKSurvival(RTK_BASE):
     __tablename__ = 'rtk_survival'
     __table_args__ = {'extend_existing': True}
 
-    revision_id = Column('fld_revision_id', Integer,
-                         ForeignKey('rtk_revision.fld_revision_id'),
-                         nullable=False)
-    survival_id = Column('fld_survival_id', Integer, primary_key=True,
-                         autoincrement=True, nullable=False)
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
+    survival_id = Column(
+        'fld_survival_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
 
     hardware_id = Column('fld_hardware_id', Integer, default=0)
     description = Column('fld_description', String(512), default='')
@@ -43,8 +49,8 @@ class RTKSurvival(RTK_BASE):
     distribution_id = Column('fld_distribution_id', Integer, default=0)
     confidence = Column('fld_confidence', Float, default=75.0)
     confidence_type_id = Column('fld_confidence_type_id', Integer, default=0)
-    confidence_method_id = Column('fld_confidence_method_id', Integer,
-                                  default=0)
+    confidence_method_id = Column(
+        'fld_confidence_method_id', Integer, default=0)
     fit_method_id = Column('fld_fit_method_id', Integer, default=0)
     rel_time = Column('fld_rel_time', Float, default=0.0)
     n_rel_points = Column('fld_n_rel_points', Integer, default=0)
@@ -74,8 +80,8 @@ class RTKSurvival(RTK_BASE):
     mle = Column('fld_mle', Float, default=0.0)
     start_time = Column('fld_start_time', Float, default=0.0)
     start_date = Column('fld_start_date', Date, default=date.today())
-    end_date = Column('fld_end_date', Date,
-                      default=date.today() + timedelta(days=30))
+    end_date = Column(
+        'fld_end_date', Date, default=date.today() + timedelta(days=30))
     nevada_chart = Column('fld_nevada_chart', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
@@ -163,8 +169,8 @@ class RTKSurvival(RTK_BASE):
             self.mle = float(none_to_default(attributes[32], 0.0))
             self.start_time = float(none_to_default(attributes[33], 0.0))
             self.start_date = none_to_default(attributes[34], date.today())
-            self.end_date = none_to_default(attributes[35],
-                                            date.today() + timedelta(days=30))
+            self.end_date = none_to_default(
+                attributes[35], date.today() + timedelta(days=30))
             self.nevada_chart = int(none_to_default(attributes[36], 0))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

@@ -12,30 +12,30 @@ Testing Package List Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -159,30 +159,35 @@ class ListView(gtk.VBox):
         self.tvwRGTestAssessment = gtk.TreeView()
 
         # Set tooltips for the gtk.Widgets().
-        self.btnAddRecord.set_tooltip_markup(_(u"Launches the Add Record "
-                                               u"wizard to allow the user to "
-                                               u"add a new incident record to "
-                                               u"the selected reliability "
-                                               u"growth test."))
-        self.btnDeleteRecord.set_tooltip_markup(_(u"Deletes the selected "
-                                                  u"records from the list of "
-                                                  u"incidents associated with "
-                                                  u"the selected reliability "
-                                                  u"growth test."))
+        self.btnAddRecord.set_tooltip_markup(
+            _(u"Launches the Add Record "
+              u"wizard to allow the user to "
+              u"add a new incident record to "
+              u"the selected reliability "
+              u"growth test."))
+        self.btnDeleteRecord.set_tooltip_markup(
+            _(u"Deletes the selected "
+              u"records from the list of "
+              u"incidents associated with "
+              u"the selected reliability "
+              u"growth test."))
         self.btnSave.set_tooltip_markup(_(u"Saves the selected record set."))
-        self.tvwRGTestPlan.set_tooltip_markup(_(u"Displays the details of the "
-                                                u"reliability growth plan.  "
-                                                u"Right click any date field "
-                                                u"to show the calendar."))
-        self.tvwRGTestFeasibility.set_tooltip_markup(_(u"Displays the "
-                                                       u"feasibility of the "
-                                                       u"reliability growth "
-                                                       u"plan.  Right click "
-                                                       u"any date field to "
-                                                       u"show the calendar."))
-        self.tvwRGTestAssessment.set_tooltip_text(_(u"Displays the incidents "
-                                                    u"associated with the "
-                                                    u"selected test plan."))
+        self.tvwRGTestPlan.set_tooltip_markup(
+            _(u"Displays the details of the "
+              u"reliability growth plan.  "
+              u"Right click any date field "
+              u"to show the calendar."))
+        self.tvwRGTestFeasibility.set_tooltip_markup(
+            _(u"Displays the "
+              u"feasibility of the "
+              u"reliability growth "
+              u"plan.  Right click "
+              u"any date field to "
+              u"show the calendar."))
+        self.tvwRGTestAssessment.set_tooltip_text(
+            _(u"Displays the incidents "
+              u"associated with the "
+              u"selected test plan."))
 
         # Connect gtk.Widget() signals to callback methods.
         self._lst_handler_id.append(
@@ -281,20 +286,27 @@ class ListView(gtk.VBox):
         #   11. Planned Average Phase MTBF (editable)
         #   12. Planned Final Phase MTBF (editable)
         # =============================================================== #
-        _labels = [_(u"Phase"), _(u"Start Date"), _(u"End Date"),
-                   _(u"Phase\nTest\nTime"), _(u"Cumulative\nTest Time"),
-                   _(u"Ideal\nInitial\nMTBF"), _(u"Ideal\nAverage\nMTBF"),
-                   _(u"Ideal\nFinal\nMTBF"),
-                   _(u"Expected\nNumber of\nFailures"), _(u"Test\nArticles"),
-                   _(u"Planned\nInitial\nMTBF"), _(u"Planned\nAverage\nMTBF"),
-                   _(u"Planned\nFinal\nMTBF")]
-        _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
-                               gobject.TYPE_STRING, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_INT,
-                               gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
-                               gobject.TYPE_FLOAT)
+        _labels = [
+            _(u"Phase"),
+            _(u"Start Date"),
+            _(u"End Date"),
+            _(u"Phase\nTest\nTime"),
+            _(u"Cumulative\nTest Time"),
+            _(u"Ideal\nInitial\nMTBF"),
+            _(u"Ideal\nAverage\nMTBF"),
+            _(u"Ideal\nFinal\nMTBF"),
+            _(u"Expected\nNumber of\nFailures"),
+            _(u"Test\nArticles"),
+            _(u"Planned\nInitial\nMTBF"),
+            _(u"Planned\nAverage\nMTBF"),
+            _(u"Planned\nFinal\nMTBF")
+        ]
+        _model = gtk.ListStore(
+            gobject.TYPE_INT, gobject.TYPE_STRING, gobject.TYPE_STRING,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_INT, gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
+            gobject.TYPE_FLOAT)
         self.tvwRGTestPlan.set_model(_model)
 
         for _index, _label in enumerate(_labels):
@@ -331,8 +343,9 @@ class ListView(gtk.VBox):
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the reliability growth test "
-                                  u"plan details."))
+        _label.set_tooltip_text(
+            _(u"Displays the reliability growth test "
+              u"plan details."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -382,14 +395,18 @@ class ListView(gtk.VBox):
         #    8. Test Time per Test Unit (calculated)
         #    9. Test Time per Test Unit per Week (calculated)
         # =============================================================== #
-        _labels = [_(u"Phase"), _(u"Start Date"), _(u"End Date"),
-                   _(u"Number of\nTest\nArticles"),
-                   _(u"Expected\nNumber\nof\nFailures"),
-                   _(u"Required\nManagement\nStrategy"),
-                   _(u"Required\nAverage\nFEF"),
-                   _(u"Probability\nof Observing\nFailure"),
-                   _(u"Test Time\nper Unit"),
-                   _(u"Test Time\nper Unit\nper Week")]
+        _labels = [
+            _(u"Phase"),
+            _(u"Start Date"),
+            _(u"End Date"),
+            _(u"Number of\nTest\nArticles"),
+            _(u"Expected\nNumber\nof\nFailures"),
+            _(u"Required\nManagement\nStrategy"),
+            _(u"Required\nAverage\nFEF"),
+            _(u"Probability\nof Observing\nFailure"),
+            _(u"Test Time\nper Unit"),
+            _(u"Test Time\nper Unit\nper Week")
+        ]
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                gobject.TYPE_STRING, gobject.TYPE_INT,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
@@ -423,13 +440,14 @@ class ListView(gtk.VBox):
 
         # Add the RG Test Feasibility page to the gtk.Notebook().
         _label = gtk.Label()
-        _label.set_markup(_(u"<span weight='bold'>" +
-                            "Test\nPlan\nFeasibility</span>"))
+        _label.set_markup(
+            _(u"<span weight='bold'>" + "Test\nPlan\nFeasibility</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the reliability growth test "
-                                  u"plan feasibility."))
+        _label.set_tooltip_text(
+            _(u"Displays the reliability growth test "
+              u"plan feasibility."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -476,8 +494,13 @@ class ListView(gtk.VBox):
         #    3. End of Interval (editable)
         #    4. Number of Failures During Interval (editable)
         # =============================================================== #
-        _labels = [_(u"Record\nNumber"), _(u"Date"), _(u"Interval\nStart"),
-                   _(u"Interval\nEnd"), _(u"Number\nof\nFailures")]
+        _labels = [
+            _(u"Record\nNumber"),
+            _(u"Date"),
+            _(u"Interval\nStart"),
+            _(u"Interval\nEnd"),
+            _(u"Number\nof\nFailures")
+        ]
         _model = gtk.ListStore(gobject.TYPE_INT, gobject.TYPE_STRING,
                                gobject.TYPE_FLOAT, gobject.TYPE_FLOAT,
                                gobject.TYPE_INT)
@@ -512,13 +535,14 @@ class ListView(gtk.VBox):
 
         # Add the RG Test Feasibility page to the gtk.Notebook().
         _label = gtk.Label()
-        _label.set_markup(_(u"<span weight='bold'>" +
-                            "Test\nIncidents</span>"))
+        _label.set_markup(
+            _(u"<span weight='bold'>" + "Test\nIncidents</span>"))
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays the reliability growth test "
-                                  u"incidents."))
+        _label.set_tooltip_text(
+            _(u"Displays the reliability growth test "
+              u"incidents."))
 
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
@@ -539,9 +563,11 @@ class ListView(gtk.VBox):
         _date = datetime.today().strftime('%Y-%m-%d')
 
         # Add the test phase to the RG plan details.
-        _data = [phase_id, _date, _date, 0.0,
-                 sum(self._testing_model.lst_p_test_time), 0.0, 0.0, 0.0, 0.0,
-                 0.0, 0.0, 0.0, 0.0]
+        _data = [
+            phase_id, _date, _date, 0.0,
+            sum(self._testing_model.lst_p_test_time), 0.0, 0.0, 0.0, 0.0, 0.0,
+            0.0, 0.0, 0.0
+        ]
         _model = self.tvwRGTestPlan.get_model()
         _model.append(_data)
 
@@ -618,31 +644,38 @@ class ListView(gtk.VBox):
         _model.clear()
         for i in range(self._testing_model.n_phases):
             try:
-                _dt_start = str(datetime.fromordinal(
-                    int(self._testing_model.lst_p_start_date[i])).strftime('%Y-%m-%d'))
-            except(TypeError, ValueError):
+                _dt_start = str(
+                    datetime.fromordinal(
+                        int(self._testing_model.lst_p_start_date[i])).strftime(
+                            '%Y-%m-%d'))
+            except (TypeError, ValueError):
                 _dt_start = datetime.today().strftime('%Y-%m-%d')
-                _dt_start = datetime.strptime(_dt_start, "%Y-%m-%d").toordinal()
+                _dt_start = datetime.strptime(_dt_start,
+                                              "%Y-%m-%d").toordinal()
                 self._testing_model.lst_p_start_date[i] = _dt_start
             try:
-                _dt_end = str(datetime.fromordinal(
-                    int(self._testing_model.lst_p_end_date[i])).strftime('%Y-%m-%d'))
-            except(TypeError, ValueError):
+                _dt_end = str(
+                    datetime.fromordinal(
+                        int(self._testing_model.lst_p_end_date[i])).strftime(
+                            '%Y-%m-%d'))
+            except (TypeError, ValueError):
                 _dt_end = datetime.today().strftime('%Y-%m-%d')
                 _dt_end = datetime.strptime(_dt_end, "%Y-%m-%d").toordinal()
                 self._testing_model.lst_p_end_date[i] = _dt_end
 
-            _data = [i + 1, _dt_start, _dt_end,
-                     self._testing_model.lst_p_test_time[i],
-                     sum(self._testing_model.lst_p_test_time[:i + 1]),
-                     self._testing_model.lst_i_mtbfi[i],
-                     self._testing_model.lst_i_mtbfa[i],
-                     self._testing_model.lst_i_mtbff[i],
-                     self._testing_model.lst_i_n_failures[i],
-                     self._testing_model.lst_p_n_test_units[i],
-                     self._testing_model.lst_p_mtbfi[i],
-                     self._testing_model.lst_p_mtbfa[i],
-                     self._testing_model.lst_p_mtbff[i]]
+            _data = [
+                i + 1, _dt_start, _dt_end,
+                self._testing_model.lst_p_test_time[i],
+                sum(self._testing_model.lst_p_test_time[:i + 1]),
+                self._testing_model.lst_i_mtbfi[i],
+                self._testing_model.lst_i_mtbfa[i],
+                self._testing_model.lst_i_mtbff[i],
+                self._testing_model.lst_i_n_failures[i],
+                self._testing_model.lst_p_n_test_units[i],
+                self._testing_model.lst_p_mtbfi[i],
+                self._testing_model.lst_p_mtbfa[i],
+                self._testing_model.lst_p_mtbff[i]
+            ]
             _model.append(_data)
 
         return False
@@ -661,24 +694,30 @@ class ListView(gtk.VBox):
 
         for i in range(self._testing_model.n_phases):
             try:
-                _dt_start = str(datetime.fromordinal(
-                    int(self._testing_model.lst_p_start_date[i])).strftime('%Y-%m-%d'))
+                _dt_start = str(
+                    datetime.fromordinal(
+                        int(self._testing_model.lst_p_start_date[i])).strftime(
+                            '%Y-%m-%d'))
             except TypeError:
                 _dt_start = datetime.today().strftime('%Y-%m-%d')
             try:
-                _dt_end = str(datetime.fromordinal(
-                    int(self._testing_model.lst_p_end_date[i])).strftime('%Y-%m-%d'))
+                _dt_end = str(
+                    datetime.fromordinal(
+                        int(self._testing_model.lst_p_end_date[i])).strftime(
+                            '%Y-%m-%d'))
             except TypeError:
                 _dt_end = datetime.today().strftime('%Y-%m-%d')
 
-            _data = [i + 1, _dt_start, _dt_end,
-                     self._testing_model.lst_p_n_test_units[i],
-                     self._testing_model.lst_i_n_failures[i],
-                     self._testing_model.lst_p_ms[i],
-                     self._testing_model.lst_p_fef[i],
-                     self._testing_model.lst_p_prob[i],
-                     self._testing_model.lst_p_tpu[i],
-                     self._testing_model.lst_p_tpupw[i]]
+            _data = [
+                i + 1, _dt_start, _dt_end,
+                self._testing_model.lst_p_n_test_units[i],
+                self._testing_model.lst_i_n_failures[i],
+                self._testing_model.lst_p_ms[i],
+                self._testing_model.lst_p_fef[i],
+                self._testing_model.lst_p_prob[i],
+                self._testing_model.lst_p_tpu[i],
+                self._testing_model.lst_p_tpupw[i]
+            ]
             _model.append(_data)
 
         self.tvwRGTestFeasibility.expand_all()
@@ -704,8 +743,8 @@ class ListView(gtk.VBox):
         for _key in self._testing_model.dic_test_data.keys():
             _record = self._testing_model.dic_test_data[_key]
             _date = str(datetime.fromordinal(_record[1]).strftime('%Y-%m-%d'))
-            _model.append([_key + 1, _date, _record[2], _record[3],
-                           _record[4]])
+            _model.append(
+                [_key + 1, _date, _record[2], _record[3], _record[4]])
 
         self.tvwRGTestAssessment.set_cursor('0', None, False)
         if _model.get_iter_root() is not None:
@@ -734,8 +773,8 @@ class ListView(gtk.VBox):
         Widgets.edit_tree(cell, path, new_text, index, _model)
 
         if _row is not None:
-            _dt_start = datetime.strptime(_model.get_value(_row, 1),
-                                          "%Y-%m-%d").toordinal()
+            _dt_start = datetime.strptime(
+                _model.get_value(_row, 1), "%Y-%m-%d").toordinal()
             _dt_end = datetime.strptime(_model.get_value(_row, 2),
                                         "%Y-%m-%d").toordinal()
             _test_time = _model.get_value(_row, 3)
@@ -757,7 +796,8 @@ class ListView(gtk.VBox):
             _row2 = _row
             while _row2 is not None:
                 _phase_id = _model.get_value(_row2, 0) - 1
-                _cum_time = sum(self._testing_model.lst_p_test_time[:_phase_id + 1])
+                _cum_time = sum(
+                    self._testing_model.lst_p_test_time[:_phase_id + 1])
                 _model.set_value(_row2, 4, _cum_time)
                 _row2 = _model.iter_next(_row2)
 
@@ -784,8 +824,8 @@ class ListView(gtk.VBox):
         Widgets.edit_tree(cell, path, new_text, index, _model)
 
         if _row is not None:
-            _dt_start = datetime.strptime(_model.get_value(_row, 1),
-                                          "%Y-%m-%d").toordinal()
+            _dt_start = datetime.strptime(
+                _model.get_value(_row, 1), "%Y-%m-%d").toordinal()
             _dt_end = datetime.strptime(_model.get_value(_row, 2),
                                         "%Y-%m-%d").toordinal()
             _articles = _model.get_value(_row, 3)
@@ -834,15 +874,18 @@ class ListView(gtk.VBox):
 
         _record_id = model[path][0]
 
-        if position == 1:                   # Date
+        if position == 1:  # Date
             _date = datetime.strptime(new_text, "%Y-%m-%d").toordinal()
             self._testing_model.dic_test_data[_record_id - 1][1] = _date
-        elif position == 2:                 # Failure start time
-            self._testing_model.dic_test_data[_record_id - 1][2] = float(new_text)
-        elif position == 3:                 # Failure end time
-            self._testing_model.dic_test_data[_record_id - 1][3] = float(new_text)
-        elif position == 4:                 # Number of failures
-            self._testing_model.dic_test_data[_record_id - 1][4] = int(new_text)
+        elif position == 2:  # Failure start time
+            self._testing_model.dic_test_data[_record_id
+                                              - 1][2] = float(new_text)
+        elif position == 3:  # Failure end time
+            self._testing_model.dic_test_data[_record_id
+                                              - 1][3] = float(new_text)
+        elif position == 4:  # Number of failures
+            self._testing_model.dic_test_data[_record_id
+                                              - 1][4] = int(new_text)
 
         return False
 

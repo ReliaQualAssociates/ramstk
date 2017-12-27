@@ -90,7 +90,7 @@ class DeleteProject(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# TODO: Update MySQL/MariaDB code.
+        # TODO: Update MySQL/MariaDB code.
         pass
         #query = "SHOW DATABASES"
         #cnx = app.DB.get_connection(Configuration.RTK_PROG_INFO)
@@ -117,7 +117,7 @@ class DeleteProject(object):
 
         #numprograms = len(results)
         #for i in range(numprograms):
-            # Don't display the MySQL administrative/test databases.
+        # Don't display the MySQL administrative/test databases.
         #    if(results[i][0] != 'information_schema' and
         #       results[i][0] != 'test'):
         #        model.append(None, [results[i][0]])
@@ -154,11 +154,10 @@ class DeleteProject(object):
         :rtype: bool
         """
 
-        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Delete Program"),
-                                        buttons=(gtk.STOCK_OK,
-                                                 gtk.RESPONSE_ACCEPT,
-                                                 gtk.STOCK_CANCEL,
-                                                 gtk.RESPONSE_REJECT))
+        _dialog = gtk.FileChooserDialog(
+            title=_(u"RTK - Delete Program"),
+            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_REJECT))
         _dialog.set_current_folder(Configuration.PROG_DIR)
 
         # Set some filters to select all files or only some text files.
@@ -213,7 +212,7 @@ class DeleteProject(object):
 
         _label = Widgets.make_label(prompt, height=-1, width=-1)
         _hbox.pack_end(_label)
-        _dialog.vbox.pack_start(_hbox)      # pylint: disable=E1101
+        _dialog.vbox.pack_start(_hbox)  # pylint: disable=E1101
         _hbox.show_all()
 
         if _dialog.run() == gtk.RESPONSE_ACCEPT:

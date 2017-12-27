@@ -12,30 +12,30 @@ Inductor Package Component Specific Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -93,14 +93,20 @@ class Inputs(gtk.Frame):
     device.  The attributes of an inductive device Work Book view are:
     """
 
-    dicQuality = {62: ["", "MIL-SPEC", _(u"Lower")],
-                  63: ["", "S", "R", "P", "M", "MIL-C-15305", _(u"Lower")]}
-    dicSpecification = {62: ["", "MIL-T-27", "MIL-T-21038", "MIL-T-55631"],
-                        63: ["", "MIL-C-15305", "MIL-C-39010"]}
-    dicInsulation = {62: [["", "Q", "R", "S", "T", "U", "V"],
-                          ["", "Q", "R", "S", "T", "U", "V"],
-                          ["", "O", "A", "B", "C"]],
-                     63: [["", "O", "A", "B", "C"], ["", "A", "B", "F"]]}
+    dicQuality = {
+        62: ["", "MIL-SPEC", _(u"Lower")],
+        63: ["", "S", "R", "P", "M", "MIL-C-15305",
+             _(u"Lower")]
+    }
+    dicSpecification = {
+        62: ["", "MIL-T-27", "MIL-T-21038", "MIL-T-55631"],
+        63: ["", "MIL-C-15305", "MIL-C-39010"]
+    }
+    dicInsulation = {
+        62: [["", "Q", "R", "S", "T", "U", "V"],
+             ["", "Q", "R", "S", "T", "U", "V"], ["", "O", "A", "B", "C"]],
+        63: [["", "O", "A", "B", "C"], ["", "A", "B", "F"]]
+    }
 
     def __init__(self, model):
         """
@@ -118,10 +124,12 @@ class Inputs(gtk.Frame):
 
         # Define private list attributes.
         self._lst_count_labels = [_(u"Quality:")]
-        self._lst_stress_labels = [_(u"Quality:"),
-                                   _(u"\u03C0<sub>Q</sub> Override:"),
-                                   _(u"Specification:"),
-                                   _(u"Insulation Class:")]
+        self._lst_stress_labels = [
+            _(u"Quality:"),
+            _(u"\u03C0<sub>Q</sub> Override:"),
+            _(u"Specification:"),
+            _(u"Insulation Class:")
+        ]
 
         self._lst_quality = self.dicQuality[model.subcategory]
         self._lst_specification = self.dicSpecification[model.subcategory]
@@ -150,10 +158,14 @@ class Inputs(gtk.Frame):
         self.txtWeight = Widgets.make_entry(width=100)
 
         # Subcategory specific attributes.
-        if self._subcategory == 62:         # Transformer
-            self._lst_family = ["", _(u"Pulse Transformer"),
-                                _(u"Audio Transformer"),
-                                _(u"Power Transformer"), _(u"RF Transformer")]
+        if self._subcategory == 62:  # Transformer
+            self._lst_family = [
+                "",
+                _(u"Pulse Transformer"),
+                _(u"Audio Transformer"),
+                _(u"Power Transformer"),
+                _(u"RF Transformer")
+            ]
 
             self._lst_stress_labels.append(_(u"Family Type:"))
             self._lst_stress_labels.append(_(u"Power Loss (W):"))
@@ -161,21 +173,23 @@ class Inputs(gtk.Frame):
             self._lst_stress_labels.append(_(u"Weight (lbf):"))
             self._lst_stress_labels.append(_(u"Input Power (W):"))
 
-        elif self._subcategory == 63:       # Coil
+        elif self._subcategory == 63:  # Coil
             self._lst_stress_labels.append(_(u"Construction:"))
 
             self._lst_construction = ["", _(u"Fixed"), _(u"Variable")]
 
         # Create the tooltips for all the input widgets.
-        self.cmbQuality.set_tooltip_text(_(u"Select and display the quality "
-                                           u"level for the selected inductive "
-                                           u"device."))
-        self.txtCommercialPiQ.set_tooltip_text(_(u"Displays the user-defined "
-                                                 u"quality factor for the "
-                                                 u"selected inductive "
-                                                 u"device.  This value over "
-                                                 u"rides the quality factor "
-                                                 u"selected above"))
+        self.cmbQuality.set_tooltip_text(
+            _(u"Select and display the quality "
+              u"level for the selected inductive "
+              u"device."))
+        self.txtCommercialPiQ.set_tooltip_text(
+            _(u"Displays the user-defined "
+              u"quality factor for the "
+              u"selected inductive "
+              u"device.  This value over "
+              u"rides the quality factor "
+              u"selected above"))
 
         # Connect signals to callback functions.
         self._lst_handler_id.append(
@@ -184,23 +198,23 @@ class Inputs(gtk.Frame):
             self.txtCommercialPiQ.connect('focus-out-event',
                                           self._on_focus_out, 1))
         self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed',
-                                          self._on_combo_changed, 2))
+            self.cmbSpecification.connect('changed', self._on_combo_changed,
+                                          2))
         self._lst_handler_id.append(
             self.cmbInsulation.connect('changed', self._on_combo_changed, 3))
         self._lst_handler_id.append(
             self.cmbFamily.connect('changed', self._on_combo_changed, 4))
         self._lst_handler_id.append(
-            self.txtPowerLoss.connect('focus-out-event',
-                                      self._on_focus_out, 5))
+            self.txtPowerLoss.connect('focus-out-event', self._on_focus_out,
+                                      5))
         self._lst_handler_id.append(
-            self.txtSurfaceArea.connect('focus-out-event',
-                                        self._on_focus_out, 6))
+            self.txtSurfaceArea.connect('focus-out-event', self._on_focus_out,
+                                        6))
         self._lst_handler_id.append(
             self.txtWeight.connect('focus-out-event', self._on_focus_out, 7))
         self._lst_handler_id.append(
-            self.txtInputPower.connect('focus-out-event',
-                                       self._on_focus_out, 8))
+            self.txtInputPower.connect('focus-out-event', self._on_focus_out,
+                                       8))
         self._lst_handler_id.append(
             self.cmbConstruction.connect('changed', self._on_combo_changed, 9))
 
@@ -215,8 +229,7 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Parts Count Inputs") +
-                          "</span>")
+                          _(u"MIL-HDBK-217FN2 Parts Count Inputs") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -235,8 +248,8 @@ class Inputs(gtk.Frame):
             self.cmbQuality.insert_text(_index, _quality)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed,
+                                               5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
@@ -259,8 +272,7 @@ class Inputs(gtk.Frame):
 
         _label = gtk.Label()
         _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Stress Inputs") +
-                          "</span>")
+                          _(u"MIL-HDBK-217FN2 Part Stress Inputs") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -281,8 +293,8 @@ class Inputs(gtk.Frame):
             self.cmbSpecification.insert_text(_index, _specification)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 5)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed,
+                                               5, 5)
         _x_pos = max(x_pos, _x_pos) + 50
 
         # Place all the input widgets.
@@ -294,13 +306,14 @@ class Inputs(gtk.Frame):
         _fixed.put(self.cmbSpecification, _x_pos, _y_pos[2])
         _fixed.put(self.cmbInsulation, _x_pos, _y_pos[3])
 
-        if self._subcategory == 62:         # Transformer
+        if self._subcategory == 62:  # Transformer
             # Populate the gtk.ComboBox().
             for _index, _family in enumerate(self._lst_family):
                 self.cmbFamily.insert_text(_index, _family)
 
             try:
-                _insulation = self._lst_insulation[self._hardware_model.specification - 1]
+                _insulation = self._lst_insulation[
+                    self._hardware_model.specification - 1]
             except IndexError:
                 _insulation = []
             for _index, _insulation in enumerate(_insulation):
@@ -313,13 +326,14 @@ class Inputs(gtk.Frame):
             _fixed.put(self.txtWeight, _x_pos, _y_pos[7])
             _fixed.put(self.txtInputPower, _x_pos, _y_pos[8])
 
-        elif self._subcategory == 63:       # Coil
+        elif self._subcategory == 63:  # Coil
             # Populate the gtk.ComboBox().
             for _index, _construction in enumerate(self._lst_construction):
                 self.cmbConstruction.insert_text(_index, _construction)
 
             try:
-                _insulation = self._lst_insulation[self._hardware_model.specification - 1]
+                _insulation = self._lst_insulation[
+                    self._hardware_model.specification - 1]
             except IndexError:
                 _insulation = []
             for _index, _insulation in enumerate(_insulation):
@@ -366,14 +380,14 @@ class Inputs(gtk.Frame):
         self.cmbInsulation.set_active(model.insulation_class)
 
         # Load subcategory specific widgets.
-        if self._subcategory == 62:         # Transformer
+        if self._subcategory == 62:  # Transformer
             self.cmbFamily.set_active(model.family)
             self.txtPowerLoss.set_text(str(fmt.format(model.power_loss)))
             self.txtSurfaceArea.set_text(str(fmt.format(model.case_area)))
             self.txtWeight.set_text(str(fmt.format(model.weight)))
             self.txtInputPower.set_text(str(fmt.format(model.input_power)))
 
-        elif self._subcategory == 63:       # Coil
+        elif self._subcategory == 63:  # Coil
             self._load_insulation(model.specification)
             self.cmbConstruction.set_active(model.construction)
             self.cmbInsulation.set_active(model.insulation_class)
@@ -493,12 +507,14 @@ class Results(gtk.Frame):
         # Define private dictionary attributes.
 
         # Define private list attributes.
-        self._lst_count_labels = [u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>",
-                                  u"\u03BB<sub>g</sub>:",
-                                  u"\u03C0<sub>Q</sub>:"]
-        self._lst_stress_labels = ['', u"\u03BB<sub>b</sub>:",
-                                   u"\u03C0<sub>Q</sub>:",
-                                   u"\u03C0<sub>E</sub>:"]
+        self._lst_count_labels = [
+            u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = \u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>",
+            u"\u03BB<sub>g</sub>:", u"\u03C0<sub>Q</sub>:"
+        ]
+        self._lst_stress_labels = [
+            '', u"\u03BB<sub>b</sub>:", u"\u03C0<sub>Q</sub>:",
+            u"\u03C0<sub>E</sub>:"
+        ]
 
         # Define private scalar attributes.
         self._hardware_model = model
@@ -509,8 +525,8 @@ class Results(gtk.Frame):
         # Define public list attributes.
 
         # Define public scalar attributes.
-        self.txtLambdaB = Widgets.make_entry(width=100, editable=False,
-                                             bold=True)
+        self.txtLambdaB = Widgets.make_entry(
+            width=100, editable=False, bold=True)
         self.txtPiQ = Widgets.make_entry(width=100, editable=False, bold=True)
         self.txtPiE = Widgets.make_entry(width=100, editable=False, bold=True)
         self.txtPiC = Widgets.make_entry(width=100, editable=False, bold=True)
@@ -521,20 +537,25 @@ class Results(gtk.Frame):
         self.pltDerate = FigureCanvas(self.figDerate)
 
         # Subcategory specific attributes.
-        if self._subcategory == 62:         # Transformer
-            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        if self._subcategory == 62:  # Transformer
+            self._lst_stress_labels[
+                0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
 
-        elif self._subcategory == 63:       # Coil
-            self._lst_stress_labels[0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>C</sub></span>"
+        elif self._subcategory == 63:  # Coil
+            self._lst_stress_labels[
+                0] = u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub>\u03C0<sub>C</sub></span>"
             self._lst_stress_labels.append(u"\u03C0<sub>C</sub>:")
 
         # Create the tooltips for all the results display widgets.
-        self.txtPiQ.set_tooltip_text(_(u"Displays the quality factor for the "
-                                       u"selected inductive device."))
-        self.txtPiE.set_tooltip_text(_(u"Displays the environment factor for "
-                                       u"the selected inductive device."))
-        self.txtPiC.set_tooltip_text(_(u"Displays the construction factor for "
-                                       u"the selected inductive device."))
+        self.txtPiQ.set_tooltip_text(
+            _(u"Displays the quality factor for the "
+              u"selected inductive device."))
+        self.txtPiE.set_tooltip_text(
+            _(u"Displays the environment factor for "
+              u"the selected inductive device."))
+        self.txtPiC.set_tooltip_text(
+            _(u"Displays the construction factor for "
+              u"the selected inductive device."))
 
     def create_217_count_results(self, x_pos=5):
         """
@@ -547,9 +568,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Parts Count Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Parts Count Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -564,14 +584,15 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed, 5, 25)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_count_labels, _fixed,
+                                               5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Create the tooltips for all the results display widgets.
-        self.txtLambdaB.set_tooltip_text(_(u"Displays the generic hazard rate "
-                                           u"for the selected inductive "
-                                           u"device."))
+        self.txtLambdaB.set_tooltip_text(
+            _(u"Displays the generic hazard rate "
+              u"for the selected inductive "
+              u"device."))
 
         # Place the reliability result display widgets.
         if self.txt.LambdaB.get_parent() is not None:
@@ -596,9 +617,8 @@ class Results(gtk.Frame):
         """
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"MIL-HDBK-217FN2 Part Stress Results") +
-                          "</span>")
+        _label.set_markup("<span weight='bold'>" + _(
+            u"MIL-HDBK-217FN2 Part Stress Results") + "</span>")
         _label.set_justify(gtk.JUSTIFY_LEFT)
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.show_all()
@@ -613,14 +633,15 @@ class Results(gtk.Frame):
         self.add(_scrollwindow)
 
         # Create and place all the labels for the inputs.
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed, 5, 25)
+        (_x_pos, _y_pos) = Widgets.make_labels(self._lst_stress_labels, _fixed,
+                                               5, 25)
         _x_pos = max(x_pos, _x_pos) + 30
 
         # Create the tooltips for all the results display widgets.
-        self.txtLambdaB.set_tooltip_text(_(u"Displays the base hazard rate "
-                                           u"for the selected inductive "
-                                           u"device."))
+        self.txtLambdaB.set_tooltip_text(
+            _(u"Displays the base hazard rate "
+              u"for the selected inductive "
+              u"device."))
 
         # Place the reliability result display widgets.
         if self.txt.LambdaB.get_parent() is not None:
@@ -633,7 +654,7 @@ class Results(gtk.Frame):
         _fixed.put(self.txtPiE, _x_pos, _y_pos[3])
 
         # Subcategory specific widgets.
-        if self._subcategory == 63:         # Coil
+        if self._subcategory == 63:  # Coil
             _fixed.put(self.txtPiC, _x_pos, _y_pos[4])
 
         _fixed.show_all()
@@ -675,7 +696,7 @@ class Results(gtk.Frame):
         self.txtPiQ.set_text(str(fmt.format(model.piQ)))
         self.txtPiE.set_text(str(fmt.format(model.piE)))
 
-        if self._subcategory == 63:         # Coil
+        if self._subcategory == 63:  # Coil
             self.txtPiC.set_text(str(fmt.format(model.piC)))
 
         return False
@@ -696,28 +717,32 @@ class Results(gtk.Frame):
         self.axsDerateI.cla()
 
         # Plot the derating curve and operating point.
-        _x = [float(model.min_rated_temperature),
-              float(model.knee_temperature),
-              float(model.max_rated_temperature)]
+        _x = [
+            float(model.min_rated_temperature),
+            float(model.knee_temperature),
+            float(model.max_rated_temperature)
+        ]
 
-        _line0 = self.axsDerateV.plot(_x, model.lst_derate_criteria[0], 'r.-',
-                                      linewidth=2)
-        _line1 = self.axsDerateV.plot(_x, model.lst_derate_criteria[1], 'b.-',
-                                      linewidth=2)
+        _line0 = self.axsDerateV.plot(
+            _x, model.lst_derate_criteria[0], 'r.-', linewidth=2)
+        _line1 = self.axsDerateV.plot(
+            _x, model.lst_derate_criteria[1], 'b.-', linewidth=2)
         _line2 = self.axsDerateV.plot(model.temperature_active,
                                       model.voltage_ratio, 'go')
         _line3 = self.axsDerateI.plot(model.temperature_active,
                                       model.current_ratio, 'ms')
         _lines = _line0 + _line1 + _line2 + _line3
 
-        if(_x[0] != _x[2] and
-           model.lst_derate_criteria[1][0] != model.lst_derate_criteria[1][2]):
-            self.axsDerateV.axis([0.95 * _x[0], 1.05 * _x[2],
-                                  model.lst_derate_criteria[1][2],
-                                  1.05 * model.lst_derate_criteria[1][0]])
-            self.axsDerateI.axis([0.95 * _x[0], 1.05 * _x[2],
-                                  model.lst_derate_criteria[1][2],
-                                  1.05 * model.lst_derate_criteria[1][0]])
+        if (_x[0] != _x[2] and model.lst_derate_criteria[1][0] !=
+                model.lst_derate_criteria[1][2]):
+            self.axsDerateV.axis([
+                0.95 * _x[0], 1.05 * _x[2], model.lst_derate_criteria[1][2],
+                1.05 * model.lst_derate_criteria[1][0]
+            ])
+            self.axsDerateI.axis([
+                0.95 * _x[0], 1.05 * _x[2], model.lst_derate_criteria[1][2],
+                1.05 * model.lst_derate_criteria[1][0]
+            ])
         else:
             self.axsDerateV.axis([0.95, 1.05, 0.0, 1.05])
             self.axsDerateI.axis([0.95, 1.05, 0.0, 1.05])
@@ -725,31 +750,46 @@ class Results(gtk.Frame):
         self.axsDerateV.set_title(
             _(u"Voltage and Current Derating Curve for %s at %s") %
             (model.part_number, model.ref_des),
-            fontdict={'fontsize': 12, 'fontweight': 'bold',
-                      'verticalalignment': 'baseline'})
-        _legend = tuple([_(u"Harsh Environment"), _(u"Mild Environment"),
-                         _(u"Voltage Operating Point"),
-                         _(u"Current Operating Point")])
+            fontdict={
+                'fontsize': 12,
+                'fontweight': 'bold',
+                'verticalalignment': 'baseline'
+            })
+        _legend = tuple([
+            _(u"Harsh Environment"),
+            _(u"Mild Environment"),
+            _(u"Voltage Operating Point"),
+            _(u"Current Operating Point")
+        ])
 
-        _leg = self.axsDerateV.legend(_lines, _legend, loc='upper right',
-                                      shadow=True)
+        _leg = self.axsDerateV.legend(
+            _lines, _legend, loc='upper right', shadow=True)
         for _text in _leg.get_texts():
             _text.set_fontsize('small')
 
         # Set the proper labels on the derating curve.
-        self.axsDerateV.set_xlabel(_(u"Temperature (\u2070C)"),
-                                   fontdict={'fontsize': 12,
-                                             'fontweight': 'bold'})
-        self.axsDerateV.set_ylabel(r'$\mathbf{V_{op} / V_{rated}}$',
-                                   fontdict={'fontsize': 12,
-                                             'fontweight': 'bold',
-                                             'rotation': 'vertical',
-                                             'verticalalignment': 'baseline'})
-        self.axsDerateI.set_ylabel(r'$\mathbf{I_{op} / I_{rated}}$',
-                                   fontdict={'fontsize': 12,
-                                             'fontweight': 'bold',
-                                             'rotation': 'vertical',
-                                             'verticalalignment': 'baseline'})
+        self.axsDerateV.set_xlabel(
+            _(u"Temperature (\u2070C)"),
+            fontdict={
+                'fontsize': 12,
+                'fontweight': 'bold'
+            })
+        self.axsDerateV.set_ylabel(
+            r'$\mathbf{V_{op} / V_{rated}}$',
+            fontdict={
+                'fontsize': 12,
+                'fontweight': 'bold',
+                'rotation': 'vertical',
+                'verticalalignment': 'baseline'
+            })
+        self.axsDerateI.set_ylabel(
+            r'$\mathbf{I_{op} / I_{rated}}$',
+            fontdict={
+                'fontsize': 12,
+                'fontweight': 'bold',
+                'rotation': 'vertical',
+                'verticalalignment': 'baseline'
+            })
 
         self.figDerate.tight_layout()
 

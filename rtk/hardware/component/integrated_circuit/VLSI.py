@@ -7,32 +7,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ########################################################
 Hardware.Component.IntegratedCircuit Package VLSI Module
@@ -47,7 +46,7 @@ try:
     import Utilities
     from hardware.component.integrated_circuit.IntegratedCircuit import \
          Model as IntegratedCircuit
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.integrated_circuit.IntegratedCircuit import \
@@ -61,7 +60,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -85,18 +84,23 @@ class VLSI(IntegratedCircuit):
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _Ea = [1.5, 1.5, 1.5, 1.4]
-    _piE = [1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0,
-            34.0, 610.0]
+    _piE = [
+        1.0, 6.0, 12.0, 5.0, 16.0, 6.0, 8.0, 7.0, 9.0, 24.0, 0.5, 13.0, 34.0,
+        610.0
+    ]
     _piQ = [0.25, 1.0, 2.0]
     _piA = [1.0, 3.0, 3.0, 1.0]
     _C1 = [[4.5, 7.2], [25.0, 51.0]]
-    _lst_lambdab_count = [[0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
-                           0.16, 0.16, 0.16, 0.16, 0.16, 0.16],
-                          [0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24,
-                           0.24, 0.24, 0.24, 0.24, 0.24, 0.24]]
+    _lst_lambdab_count = [[
+        0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16, 0.16,
+        0.16, 0.16
+    ], [
+        0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24, 0.24,
+        0.24, 0.24
+    ]]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 10                        # Subcategory ID in the common DB.
+    subcategory = 10  # Subcategory ID in the common DB.
 
     def __init__(self):
         """
@@ -159,11 +163,11 @@ class VLSI(IntegratedCircuit):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -178,12 +182,11 @@ class VLSI(IntegratedCircuit):
 
         _values = IntegratedCircuit.get_attributes(self)
 
-        _values = _values + (self.application, self.package, self.n_pins,
-                             self.manufacturing, self.years_production,
-                             self.case_temperature, self.feature_size,
-                             self.esd_susceptibility, self.lambda_bd,
-                             self.lambda_bp, self.lambda_eos, self.piMFG,
-                             self.piCD, self.piPT, self.die_area)
+        _values = _values + (
+            self.application, self.package, self.n_pins, self.manufacturing,
+            self.years_production, self.case_temperature, self.feature_size,
+            self.esd_susceptibility, self.lambda_bd, self.lambda_bp,
+            self.lambda_eos, self.piMFG, self.piCD, self.piPT, self.die_area)
 
         return _values
 
@@ -194,7 +197,7 @@ class VLSI(IntegratedCircuit):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 13.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 13.
         from math import exp, log
 
         self.hazard_rate_model = {}
@@ -209,7 +212,8 @@ class VLSI(IntegratedCircuit):
             self._lambdab_count = self._lst_lambdab_count[self.application - 1]
 
         elif self.hazard_rate_type == 2:
-            self.hazard_rate_model['equation'] = 'lambda_bd * piMFG * piT * piCD + lambda_bp * piE * piQ * piPT + lambda_eos'
+            self.hazard_rate_model[
+                'equation'] = 'lambda_bd * piMFG * piT * piCD + lambda_bp * piE * piQ * piPT + lambda_eos'
 
             # Die base failure rate.
             if self.application == 1:
@@ -223,7 +227,9 @@ class VLSI(IntegratedCircuit):
             self.hazard_rate_model['lambda_bp'] = self.lambda_bp
 
             # Electrical overstress failure rate.
-            self.lambda_eos = (-log(1.0 - 0.00057 * exp(-0.0002 * self.esd_susceptibility))) / 0.00876
+            self.lambda_eos = (
+                -log(1.0 - 0.00057 * exp(-0.0002 * self.esd_susceptibility))
+            ) / 0.00876
             self.hazard_rate_model['lambda_eos'] = self.lambda_eos
 
             # Manufacturing process factor.
@@ -249,17 +255,17 @@ class VLSI(IntegratedCircuit):
             self.hazard_rate_model['piCD'] = self.piCD
 
             # Package type factor.
-            if self.package == 1:           # Hermetic DIP
+            if self.package == 1:  # Hermetic DIP
                 self.piPT = 1.0
-            elif self.package == 2:         # Non-Hermetic DIP
+            elif self.package == 2:  # Non-Hermetic DIP
                 self.piPT = 1.3
-            elif self.package == 3:         # Hermetic PGA
+            elif self.package == 3:  # Hermetic PGA
                 self.piPT = 2.2
-            elif self.package == 4:         # Non-Hermetic PGA
+            elif self.package == 4:  # Non-Hermetic PGA
                 self.piPT = 2.9
-            elif self.package == 5:         # Hermetic SMT
+            elif self.package == 5:  # Hermetic SMT
                 self.piPT = 4.7
-            elif self.package == 6:         # Non-Hermetic SMT
+            elif self.package == 6:  # Non-Hermetic SMT
                 self.piPT = 6.1
             self.hazard_rate_model['piPT'] = self.piPT
 

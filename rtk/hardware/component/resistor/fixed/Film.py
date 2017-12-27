@@ -7,32 +7,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 #####################################################
 Hardware.Component.Resistor.Fixed Package Film Module
@@ -46,7 +45,7 @@ try:
     import Configuration
     import Utilities
     from hardware.component.resistor.Resistor import Model as Resistor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
@@ -59,7 +58,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -93,21 +92,28 @@ class Film(Resistor):
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piR = [1.0, 1.1, 1.6, 2.5]
-    _lst_piE = [1.0, 2.0, 8.0, 4.0, 14.0, 4.0, 8.0, 10.0, 18.0, 19.0, 0.2,
-                10.0, 28.0, 510.0]
+    _lst_piE = [
+        1.0, 2.0, 8.0, 4.0, 14.0, 4.0, 8.0, 10.0, 18.0, 19.0, 0.2, 10.0, 28.0,
+        510.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [0.03, 0.1, 0.3, 1.0, 5.0, 5.0, 15.0]
-    _lambdab_count = [[0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013,
-                       0.018, 0.033, 0.030, 0.00025, 0.014, 0.044, 0.69],
-                      [0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013,
-                       0.018, 0.033, 0.030, 0.00025, 0.014, 0.044, 0.69],
-                      [0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014,
-                       0.021, 0.038, 0.034, 0.00028, 0.016, 0.050, 0.78],
-                      [0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014,
-                       0.021, 0.038, 0.034, 0.00028, 0.016, 0.050, 0.78]]
+    _lambdab_count = [[
+        0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013, 0.018, 0.033,
+        0.030, 0.00025, 0.014, 0.044, 0.69
+    ], [
+        0.0012, 0.0027, 0.011, 0.0054, 0.020, 0.0063, 0.013, 0.018, 0.033,
+        0.030, 0.00025, 0.014, 0.044, 0.69
+    ], [
+        0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014, 0.021, 0.038,
+        0.034, 0.00028, 0.016, 0.050, 0.78
+    ], [
+        0.0014, 0.0031, 0.013, 0.0061, 0.023, 0.0072, 0.014, 0.021, 0.038,
+        0.034, 0.00028, 0.016, 0.050, 0.78
+    ]]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 26                        # Subcategory ID in rtkcom DB.
+    subcategory = 26  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -140,11 +146,11 @@ class Film(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -157,7 +163,7 @@ class Film(Resistor):
 
         _values = Resistor.get_attributes(self)
 
-        _values = _values + (self.specification,)
+        _values = _values + (self.specification, )
 
         return _values
 
@@ -241,15 +247,19 @@ class FilmPower(Resistor):
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
     _lst_piR = [1.0, 1.2, 1.3, 3.5]
-    _lst_piE = [1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5,
-                14.0, 36.0, 660.0]
+    _lst_piE = [
+        1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5, 14.0, 36.0,
+        660.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [1.0, 3.0]
-    _lst_lambdab_count = [0.012, 0.025, 0.13, 0.062, 0.21, 0.078, 0.10, 0.19,
-                          0.24, 0.32, 0.0060, 0.18, 0.47, 8.2]
+    _lst_lambdab_count = [
+        0.012, 0.025, 0.13, 0.062, 0.21, 0.078, 0.10, 0.19, 0.24, 0.32, 0.0060,
+        0.18, 0.47, 8.2
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 27                        # Subcategory ID in rtkcom DB.
+    subcategory = 27  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -327,15 +337,19 @@ class FilmNetwork(Resistor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_piE = [1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5,
-                14.0, 36.0, 660.0]
+    _lst_piE = [
+        1.0, 2.0, 10.0, 5.0, 17.0, 6.0, 8.0, 14.0, 18.0, 25.0, 0.5, 14.0, 36.0,
+        660.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [1.0, 3.0]
-    _lst_lambdab_count = [0.0023, 0.0066, 0.031, 0.013, 0.055, 0.022, 0.043,
-                          0.077, 0.15, 0.10, 0.0011, 0.055, 0.15, 1.7]
+    _lst_lambdab_count = [
+        0.0023, 0.0066, 0.031, 0.013, 0.055, 0.022, 0.043, 0.077, 0.15, 0.10,
+        0.0011, 0.055, 0.15, 1.7
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 28                        # Subcategory ID in rtkcom DB.
+    subcategory = 28  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -371,11 +385,11 @@ class FilmNetwork(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -414,8 +428,9 @@ class FilmNetwork(Resistor):
             self.hazard_rate_model['lambdab'] = self.base_hr
 
             # Temperature factor.
-            self.piT = exp(-4056.0 * ((1.0 / (self.junction_temperature +
-                                              273.0)) - (1.0 / 298.0)))
+            self.piT = exp(-4056.0 * ((1.0 /
+                                       (self.junction_temperature + 273.0)) -
+                                      (1.0 / 298.0)))
             self.hazard_rate_model['piT'] = self.piT
 
             # Number of resistors factor.

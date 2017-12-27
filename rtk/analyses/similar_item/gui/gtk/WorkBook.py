@@ -13,30 +13,30 @@ Similiar Item Analysis Module Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -89,7 +89,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class WorkView(gtk.HBox):                   # pylint: disable=R0902
+class WorkView(gtk.HBox):  # pylint: disable=R0902
     """
     The Work Book view displays all the attributes for the selected Similar
     Item Analysis.  The attributes of a Similar Item Analysis Work Book view
@@ -167,44 +167,55 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         self.tvwSimilarItem = gtk.TreeView()
 
         # Set tooltips for gtk.Widgets().
-        self.btnEditFunction.set_tooltip_text(_(u"Edit the user-defined "
-                                                u"similar item analyses."))
-        self.btnCalculate.set_tooltip_text(_(u"Calculates the similar item "
-                                             u"analysis for the selected "
-                                             u"hardware item."))
-        self.btnSave.set_tooltip_text(_(u"Saves the selected similiar item "
-                                        u"analysis."))
-        self.cmbSimilarItemMethod.set_tooltip_text(_(u"Selects the method for "
-                                                     u"determining the "
-                                                     u"reliability of the new "
-                                                     u"design based on the "
-                                                     u"reliability of a "
-                                                     u"similar item."))
-        self.cmbFromQuality.set_tooltip_text(_(u"Selects the quality level of "
-                                               u"the baseline, similar item."))
-        self.cmbToQuality.set_tooltip_text(_(u"Selects the quality level of "
-                                             u"the new design."))
-        self.cmbFromEnvironment.set_tooltip_text(_(u"Selects the environment "
-                                                   u"category of the "
-                                                   u"baseline, similar item."))
-        self.cmbToEnvironment.set_tooltip_text(_(u"Selects the environment "
-                                                 u"category of the new "
-                                                 u"design."))
-        self.tvwSimilarItem.set_tooltip_text(_(u"Displays the similar items "
-                                               u"analysis for the selected "
-                                               u"assembly."))
-        self.txtFromTemperature.set_tooltip_text(_(u"Selects the operating, "
-                                                   u"ambient temperature of "
-                                                   u"the baseline, similar "
-                                                   u"item."))
-        self.txtToTemperature.set_tooltip_text(_(u"Selects the operating, "
-                                                 u"ambient temperature of "
-                                                 u"the new design."))
+        self.btnEditFunction.set_tooltip_text(
+            _(u"Edit the user-defined "
+              u"similar item analyses."))
+        self.btnCalculate.set_tooltip_text(
+            _(u"Calculates the similar item "
+              u"analysis for the selected "
+              u"hardware item."))
+        self.btnSave.set_tooltip_text(
+            _(u"Saves the selected similiar item "
+              u"analysis."))
+        self.cmbSimilarItemMethod.set_tooltip_text(
+            _(u"Selects the method for "
+              u"determining the "
+              u"reliability of the new "
+              u"design based on the "
+              u"reliability of a "
+              u"similar item."))
+        self.cmbFromQuality.set_tooltip_text(
+            _(u"Selects the quality level of "
+              u"the baseline, similar item."))
+        self.cmbToQuality.set_tooltip_text(
+            _(u"Selects the quality level of "
+              u"the new design."))
+        self.cmbFromEnvironment.set_tooltip_text(
+            _(u"Selects the environment "
+              u"category of the "
+              u"baseline, similar item."))
+        self.cmbToEnvironment.set_tooltip_text(
+            _(u"Selects the environment "
+              u"category of the new "
+              u"design."))
+        self.tvwSimilarItem.set_tooltip_text(
+            _(u"Displays the similar items "
+              u"analysis for the selected "
+              u"assembly."))
+        self.txtFromTemperature.set_tooltip_text(
+            _(u"Selects the operating, "
+              u"ambient temperature of "
+              u"the baseline, similar "
+              u"item."))
+        self.txtToTemperature.set_tooltip_text(
+            _(u"Selects the operating, "
+              u"ambient temperature of "
+              u"the new design."))
 
         # Connect to callback functions.
         self._lst_handler_id.append(
-            self.btnEditFunction.connect('clicked',
-                                         self._on_button_clicked, 0))
+            self.btnEditFunction.connect('clicked', self._on_button_clicked,
+                                         0))
         self._lst_handler_id.append(
             self.btnCalculate.connect('clicked', self._on_button_clicked, 1))
         self._lst_handler_id.append(
@@ -217,11 +228,11 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         self._lst_handler_id.append(
             self.cmbToQuality.connect('changed', self._on_combo_changed, 5))
         self._lst_handler_id.append(
-            self.cmbFromEnvironment.connect('changed',
-                                            self._on_combo_changed, 6))
+            self.cmbFromEnvironment.connect('changed', self._on_combo_changed,
+                                            6))
         self._lst_handler_id.append(
-            self.cmbToEnvironment.connect('changed',
-                                          self._on_combo_changed, 7))
+            self.cmbToEnvironment.connect('changed', self._on_combo_changed,
+                                          7))
         self._lst_handler_id.append(
             self.txtFromTemperature.connect('focus-out-event',
                                             self._on_focus_out, 8))
@@ -231,7 +242,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         self.show_all()
 
-    def create_page(self):                  # pylint: disable=R0914
+    def create_page(self):  # pylint: disable=R0914
         """
         Method to create the Similar Item analysis gtk.Notebook() page for
         displaying the similar item analysis for the selected Hardware.
@@ -267,8 +278,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _types.append(_datatype[i].text)
 
         _gobject_types = []
-        _gobject_types = [gobject.type_from_name(_types[i])
-                          for i in range(len(_types))]
+        _gobject_types = [
+            gobject.type_from_name(_types[i]) for i in range(len(_types))
+        ]
 
         # Create the model and treeview.
         _model = gtk.TreeStore(*_gobject_types)
@@ -313,9 +325,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
             _column.pack_start(_cell, True)
             _column.set_attributes(_cell, text=int(_position[i].text))
             _column.set_widget(_label)
-            _column.set_cell_data_func(_cell, Widgets.format_cell,
-                                       (int(_position[i].text),
-                                        _datatype[i].text))
+            _column.set_cell_data_func(
+                _cell, Widgets.format_cell,
+                (int(_position[i].text), _datatype[i].text))
             _column.set_resizable(True)
             _column.connect('notify::width', Widgets.resize_wrap, _cell)
 
@@ -359,31 +371,33 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         # Place the widgets used to display the similar item analysis.  #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.Combo()
-        _results = [[_(u"Topic 6.3.3"), 0],
-                    [_(u"User-Defined"), 1]]
+        _results = [[_(u"Topic 6.3.3"), 0], [_(u"User-Defined"), 1]]
 
         Widgets.load_combo(self.cmbSimilarItemMethod, _results)
 
-        _results = [[_(u"Space"), 0],
-                    [_(u"Full Military"), 1],
-                    [_(u"Ruggedized"), 2],
-                    [_(u"Commercial"), 3]]
+        _results = [[_(u"Space"), 0], [_(u"Full Military"), 1],
+                    [_(u"Ruggedized"), 2], [_(u"Commercial"), 3]]
 
         Widgets.load_combo(self.cmbFromQuality, _results)
         Widgets.load_combo(self.cmbToQuality, _results)
 
         _results = [[_(u"Ground, Benign"), 0], [_(u"Ground, Mobile"), 1],
-                    [_(u"Naval, Sheltered"), 2],
-                    [_(u"Airborne, Inhabited, Cargo"), 3],
+                    [_(u"Naval, Sheltered"),
+                     2], [_(u"Airborne, Inhabited, Cargo"), 3],
                     [_(u"Airborne, Rotary Wing"), 4], [_(u"Space, Flight"), 5]]
 
         Widgets.load_combo(self.cmbFromEnvironment, _results)
         Widgets.load_combo(self.cmbToEnvironment, _results)
 
-        _labels = [_(u"Similar Item Method:"), _(u"From Quality:"),
-                   _(u"To Quality:"), _(u"From Environment:"),
-                   _(u"To Environment:"), _(u"From Temperature:"),
-                   _("To Temperature:")]
+        _labels = [
+            _(u"Similar Item Method:"),
+            _(u"From Quality:"),
+            _(u"To Quality:"),
+            _(u"From Environment:"),
+            _(u"To Environment:"),
+            _(u"From Temperature:"),
+            _("To Temperature:")
+        ]
 
         _x_pos = 5
         _label = Widgets.make_label(_labels[0], width=-1)
@@ -444,53 +458,47 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         _model.clear()
 
         # Find all the similar items for the selected Hardware Item.
-        _similar_items = [self.dtcSimilarItem.dicSimilarItem[_a]
-                          for _a in self.dtcSimilarItem.dicSimilarItem.keys()
-                          if self.dtcSimilarItem.dicSimilarItem[_a].parent_id == hardware_id]
+        _similar_items = [
+            self.dtcSimilarItem.dicSimilarItem[_a]
+            for _a in self.dtcSimilarItem.dicSimilarItem.keys()
+            if self.dtcSimilarItem.dicSimilarItem[_a].parent_id == hardware_id
+        ]
 
         parent_row = None
         for _similar_item in _similar_items:
             _hardware = controller.dicHardware[_similar_item.hardware_id]
             _hazard_rate = _hardware.hazard_rate_logistics
             _name = _hardware.name
-            _data = [_similar_item.hardware_id, _similar_item.sia_id, _name,
-                     _hazard_rate, _similar_item.from_quality,
-                     _similar_item.to_quality, _similar_item.from_environment,
-                     _similar_item.to_environment,
-                     _similar_item.from_temperature,
-                     _similar_item.to_temperature, _similar_item.change_desc_1,
-                     _similar_item.change_factor_1,
-                     _similar_item.change_desc_2,
-                     _similar_item.change_factor_2,
-                     _similar_item.change_desc_3,
-                     _similar_item.change_factor_3,
-                     _similar_item.change_desc_4,
-                     _similar_item.change_factor_4,
-                     _similar_item.change_desc_5,
-                     _similar_item.change_factor_5,
-                     _similar_item.change_desc_6,
-                     _similar_item.change_factor_6,
-                     _similar_item.change_desc_7,
-                     _similar_item.change_factor_7,
-                     _similar_item.change_desc_8,
-                     _similar_item.change_factor_8,
-                     _similar_item.change_desc_9,
-                     _similar_item.change_factor_9,
-                     _similar_item.change_desc_10,
-                     _similar_item.change_factor_10,
-                     _similar_item.function_1, _similar_item.function_2,
-                     _similar_item.function_3, _similar_item.function_4,
-                     _similar_item.function_5, _similar_item.result_1,
-                     _similar_item.result_2, _similar_item.result_3,
-                     _similar_item.result_4, _similar_item.result_5,
-                     _similar_item.user_blob_1, _similar_item.user_blob_2,
-                     _similar_item.user_blob_3, _similar_item.user_blob_4,
-                     _similar_item.user_blob_5, _similar_item.user_float_1,
-                     _similar_item.user_float_2, _similar_item.user_float_3,
-                     _similar_item.user_float_4, _similar_item.user_float_5,
-                     _similar_item.user_int_1, _similar_item.user_int_2,
-                     _similar_item.user_int_3, _similar_item.user_int_4,
-                     _similar_item.user_int_5, _similar_item.parent_id]
+            _data = [
+                _similar_item.hardware_id, _similar_item.sia_id, _name,
+                _hazard_rate, _similar_item.from_quality,
+                _similar_item.to_quality, _similar_item.from_environment,
+                _similar_item.to_environment, _similar_item.from_temperature,
+                _similar_item.to_temperature, _similar_item.change_desc_1,
+                _similar_item.change_factor_1, _similar_item.change_desc_2,
+                _similar_item.change_factor_2, _similar_item.change_desc_3,
+                _similar_item.change_factor_3, _similar_item.change_desc_4,
+                _similar_item.change_factor_4, _similar_item.change_desc_5,
+                _similar_item.change_factor_5, _similar_item.change_desc_6,
+                _similar_item.change_factor_6, _similar_item.change_desc_7,
+                _similar_item.change_factor_7, _similar_item.change_desc_8,
+                _similar_item.change_factor_8, _similar_item.change_desc_9,
+                _similar_item.change_factor_9, _similar_item.change_desc_10,
+                _similar_item.change_factor_10, _similar_item.function_1,
+                _similar_item.function_2, _similar_item.function_3,
+                _similar_item.function_4, _similar_item.function_5,
+                _similar_item.result_1, _similar_item.result_2,
+                _similar_item.result_3, _similar_item.result_4,
+                _similar_item.result_5, _similar_item.user_blob_1,
+                _similar_item.user_blob_2, _similar_item.user_blob_3,
+                _similar_item.user_blob_4, _similar_item.user_blob_5,
+                _similar_item.user_float_1, _similar_item.user_float_2,
+                _similar_item.user_float_3, _similar_item.user_float_4,
+                _similar_item.user_float_5, _similar_item.user_int_1,
+                _similar_item.user_int_2, _similar_item.user_int_3,
+                _similar_item.user_int_4, _similar_item.user_int_5,
+                _similar_item.parent_id
+            ]
             _model.append(parent_row, _data)
 
         if path is None:
@@ -527,23 +535,30 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
         (_model, _row) = self.tvwSimilarItem.get_selection().get_selected()
 
         _title = _(u"RTK - Edit Similar Item Analysis Functions")
-        _label = Widgets.make_label(_(u"You can define up to five functions.  "
-                                      u"You can use the system failure rate, "
-                                      u"selected assembly failure rate, the "
-                                      u"change factor, the user float, the "
-                                      u"user integer values, and results of "
-                                      u"other functions.\n\n \
+        _label = Widgets.make_label(
+            _(u"You can define up to five functions.  "
+              u"You can use the system failure rate, "
+              u"selected assembly failure rate, the "
+              u"change factor, the user float, the "
+              u"user integer values, and results of "
+              u"other functions.\n\n \
         System hazard rate is hr_sys\n \
         Assembly hazard rate is hr\n \
         Change factor is pi[1-8]\n \
         User float is uf[1-3]\n \
         User integer is ui[1-3]\n \
-        Function result is res[1-5]"), width=600, height=-1, wrap=True)
-        _label2 = Widgets.make_label(_(u"For example, pi1*pi2+pi3, multiplies "
-                                       u"the first two change factors and "
-                                       u"adds the value to the third change "
-                                       u"factor."),
-                                     width=600, height=-1, wrap=True)
+        Function result is res[1-5]"),
+            width=600,
+            height=-1,
+            wrap=True)
+        _label2 = Widgets.make_label(
+            _(u"For example, pi1*pi2+pi3, multiplies "
+              u"the first two change factors and "
+              u"adds the value to the third change "
+              u"factor."),
+            width=600,
+            height=-1,
+            wrap=True)
 
         # Build the dialog assistant.
         _dialog = Widgets.make_dialog(_title)
@@ -597,7 +612,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         _fixed.show_all()
 
-        _dialog.vbox.pack_start(_fixed)     # pylint: disable=E1101
+        _dialog.vbox.pack_start(_fixed)  # pylint: disable=E1101
 
         # Run the dialog and apply the changes if the 'OK' button is pressed.
         if _dialog.run() == gtk.RESPONSE_ACCEPT:
@@ -607,7 +622,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _row = _model.get_iter_root()
                 while _row is not None:
                     _hardware_id = _model.get_value(_row, 0)
-                    _similar_item = self.dtcSimilarItem.dicSimilarItem[_hardware_id]
+                    _similar_item = self.dtcSimilarItem.dicSimilarItem[
+                        _hardware_id]
                     _similar_item.function_1 = _txtFunction1.get_text()
                     _similar_item.function_2 = _txtFunction2.get_text()
                     _similar_item.function_3 = _txtFunction3.get_text()
@@ -621,7 +637,8 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                     _row = _model.iter_next(_row)
             else:
                 _hardware_id = _model.get_value(_row, 0)
-                _similar_item = self.dtcSimilarItem.dicSimilarItem[_hardware_id]
+                _similar_item = self.dtcSimilarItem.dicSimilarItem[
+                    _hardware_id]
                 _similar_item.function_1 = _txtFunction1.get_text()
                 _similar_item.function_2 = _txtFunction2.get_text()
                 _similar_item.function_3 = _txtFunction3.get_text()
@@ -654,9 +671,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         _return = False
 
-        if index == 0:                      # Edit functions.
+        if index == 0:  # Edit functions.
             self._edit_function()
-        elif index == 1:                    # Calculate the analysis.
+        elif index == 1:  # Calculate the analysis.
             _model = self.tvwSimilarItem.get_model()
             _row = _model.get_iter_root()
 
@@ -669,14 +686,15 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
                 _hazard_rate = _model.get_value(_row, 3)
                 self.dtcSimilarItem.calculate(_hardware_id, _hazard_rate,
                                               _method)
-                _similar_item = self.dtcSimilarItem.dicSimilarItem[_hardware_id]
+                _similar_item = self.dtcSimilarItem.dicSimilarItem[
+                    _hardware_id]
                 _model.set_value(_row, 35, _similar_item.result_1)
                 _model.set_value(_row, 36, _similar_item.result_2)
                 _model.set_value(_row, 37, _similar_item.result_3)
                 _model.set_value(_row, 38, _similar_item.result_4)
                 _model.set_value(_row, 39, _similar_item.result_5)
                 _row = _model.iter_next(_row)
-        elif index == 2:                    # Save the analysis.
+        elif index == 2:  # Save the analysis.
             _error_codes = self.dtcSimilarItem.save_all_similar_item()
             _error_codes = [_code for _code in _error_codes if _code[1] != 0]
 
@@ -696,7 +714,7 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         return _return
 
-    def _on_cell_edit(self, cell, path, new_text, index):   # pylint: disable=R0912
+    def _on_cell_edit(self, cell, path, new_text, index):  # pylint: disable=R0912
         """
         Method to respond to gtk.CellRenderer() 'edited' signals from the
         Similar Item gtk.TreeView().
@@ -820,15 +838,15 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         combo.handler_block(self._lst_handler_id[index])
 
-        if index == 3:                      # SIA method
+        if index == 3:  # SIA method
             _similar_item.method = combo.get_active()
-        elif index == 4:                    # From quality
+        elif index == 4:  # From quality
             _similar_item.from_quality = combo.get_active()
-        elif index == 5:                    # To quality.
+        elif index == 5:  # To quality.
             _similar_item.to_quality = combo.get_active()
-        elif index == 6:                    # From environment.
+        elif index == 6:  # From environment.
             _similar_item.from_environment = combo.get_active()
-        elif index == 7:                    # To environment.
+        elif index == 7:  # To environment.
             _similar_item.to_environment = combo.get_active()
 
         combo.handler_unblock(self._lst_handler_id[index])
@@ -857,9 +875,9 @@ class WorkView(gtk.HBox):                   # pylint: disable=R0902
 
         entry.handler_block(self._lst_handler_id[index])
 
-        if index == 8:                      # From temperature.
+        if index == 8:  # From temperature.
             _similar_item.from_temperature = float(entry.get_text())
-        elif index == 9:                    # To temperature.
+        elif index == 9:  # To temperature.
             _similar_item.to_temperature = float(entry.get_text())
 
         entry.handler_unblock(self._lst_handler_id[index])

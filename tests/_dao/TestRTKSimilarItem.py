@@ -5,7 +5,6 @@
 
 #
 # All rights reserved.
-
 """
 This is the test class for testing the RTKSimilarItem module algorithms and
 models.
@@ -14,7 +13,10 @@ models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -35,11 +37,11 @@ class TestRTKSimilarItem(unittest.TestCase):
     Class for testing the RTKSimilarItem class.
     """
 
-    _attributes =(1, 'Test Change Description 1', '', '', '', '', '', '', '',
-                  '', '', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0,
-                  0, '', '', '', '', '', 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                  30.0, 30.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 0,
-                  0, 0, 0, 0)
+    _attributes = (1, 'Test Change Description 1', '', '', '', '', '', '', '',
+                   '', '', 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 1.0, 0,
+                   0, '', '', '', '', '', 0, 0, 0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   30.0, 30.0, '', '', '', '', '', 0.0, 0.0, 0.0, 0.0, 0.0, 0,
+                   0, 0, 0, 0)
 
     def setUp(self):
         """

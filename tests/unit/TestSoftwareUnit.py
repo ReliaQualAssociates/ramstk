@@ -42,7 +42,10 @@ from nose.plugins.attrib import attr
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 from software.Unit import Model
 from software.Software import _calculate_anomaly_risk, _calculate_quality_risk
@@ -67,7 +70,6 @@ class TestUnitModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test00_create(self):
-
         """
         (TestSoftware) __init__ should return a Unit model
         """
@@ -153,10 +155,10 @@ class TestUnitModel(unittest.TestCase):
         (TestSoftware) _calculate_anomaly_risk should return False on success
         """
 
-        self.DUT.phase_id = 3               # CDR
-        self.DUT.lst_anomaly_mgmt = [[],
-                                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1,
-                                      1, 1, 0, 1, 0]]
+        self.DUT.phase_id = 3  # CDR
+        self.DUT.lst_anomaly_mgmt = [[], [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 0, 1, 1, 1, 0, 1, 0
+        ]]
 
         _error_code = _calculate_anomaly_risk(self.DUT)
         self.assertEqual(_error_code, 0)
@@ -169,10 +171,11 @@ class TestUnitModel(unittest.TestCase):
         (TestSoftware) _calculate_quality_risk should return a 0 error code on success
         """
 
-        self.DUT.phase_id = 3               # PDR
-        self.DUT.lst_sftw_quality = [[],
-                                     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
-                                      1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.DUT.phase_id = 3  # PDR
+        self.DUT.lst_sftw_quality = [[], [
+            1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ]]
 
         _error_code = _calculate_quality_risk(self.DUT)
         self.assertEqual(_error_code, 0)

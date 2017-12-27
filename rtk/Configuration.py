@@ -322,8 +322,11 @@ class Configuration(object):
     RTK_COLORS = {}
     RTK_COM_INFO = {}  # RTK Common database info.
     RTK_PROG_INFO = {}  # RTK Program database info.
-    RTK_TABPOS = {'listbook': 'top', 'modulebook': 'bottom',
-                  'workbook': 'bottom'}
+    RTK_TABPOS = {
+        'listbook': 'top',
+        'modulebook': 'bottom',
+        'workbook': 'bottom'
+    }
 
     RTK_ACTION_CATEGORY = {}
     RTK_INCIDENT_CATEGORY = {}
@@ -356,7 +359,7 @@ class Configuration(object):
     RTK_SW_APPLICATION = {}
     RTK_CATEGORIES = {}
     RTK_CRITICALITY = {}
-    RTK_FAILURE_MODES = {}                      # Default failure modes.
+    RTK_FAILURE_MODES = {}  # Default failure modes.
     RTK_HAZARDS = {}
     RTK_MANUFACTURERS = {}
     RTK_MEASUREMENT_UNITS = {}
@@ -419,6 +422,7 @@ class Configuration(object):
                                   'validation', 'testing', 'part', 'sia',
                                   'fmeca', 'rgincident', 'stakeholder',
                                   'dataset', 'risk', 'ffmeca', 'sfmeca']
+
         if name == 'posix':
             self.RTK_OS = 'Linux'
             self.RTK_SITE_DIR = '/etc/RTK'
@@ -799,8 +803,8 @@ class Configuration(object):
             self.RTK_MTIME = _config.get('General', 'calcreltime')
             self.RTK_MODE_SOURCE = _config.get('General', 'modesource')
             self.RTK_TABPOS['listbook'] = _config.get('General', 'listtabpos')
-            self.RTK_TABPOS['modulebook'] = _config.get('General',
-                                                        'treetabpos')
+            self.RTK_TABPOS['modulebook'] = _config.get(
+                'General', 'treetabpos')
             self.RTK_TABPOS['workbook'] = _config.get('General', 'booktabpos')
 
         else:

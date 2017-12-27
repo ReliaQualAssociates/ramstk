@@ -9,13 +9,13 @@ Hardware Package Hardware Module
 ===============================================================================
 """
 
-from pubsub import pub                          # pylint: disable=E0401
+from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataModel             # pylint: disable=E0401
-from datamodels import RTKDataMatrix            # pylint: disable=E0401
-from datamodels import RTKDataController        # pylint: disable=E0401
-from dao import RTKHardware, RTKHardware        # pylint: disable=E0401
+from datamodels import RTKDataModel  # pylint: disable=E0401
+from datamodels import RTKDataMatrix  # pylint: disable=E0401
+from datamodels import RTKDataController  # pylint: disable=E0401
+from dao import RTKHardware, RTKHardware  # pylint: disable=E0401
 
 
 def _get_component_index(category, subcategory):
@@ -143,8 +143,11 @@ class Model(RTKDataModel):
             # (NULL fields in the database) with their default value.
             _attributes = _hardware.get_attributes()
             _hardware.set_attributes(_attributes[2:])
-            self.tree.create_node(_hardware.name, _hardware.hardware_id,
-                                  parent=_hardware.parent_id, data=_hardware)
+            self.tree.create_node(
+                _hardware.name,
+                _hardware.hardware_id,
+                parent=_hardware.parent_id,
+                data=_hardware)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -165,11 +168,16 @@ class Model(RTKDataModel):
         _hardware = RTKHardware()
         _hardware.revision_id = kwargs['revision_id']
         _hardware.parent_id = kwargs['parent_id']
-        _error_code, _msg = RTKDataModel.insert(self, [_hardware, ])
+        _error_code, _msg = RTKDataModel.insert(self, [
+            _hardware,
+        ])
 
         if _error_code == 0:
-            self.tree.create_node(_hardware.name, _hardware.hardware_id,
-                                  parent=_hardware.parent_id, data=_hardware)
+            self.tree.create_node(
+                _hardware.name,
+                _hardware.hardware_id,
+                parent=_hardware.parent_id,
+                data=_hardware)
 
             # pylint: disable=attribute-defined-outside-init
             # It is defined in RTKDataModel.__init__
@@ -263,7 +271,7 @@ class Model(RTKDataModel):
         # Calculate the logistics MTBF.
         try:
             _hardware.mtbf_logistics = 1.0 / _hardware.hazard_rate_logistics
-        except(ZeroDivisionError, OverflowError):
+        except (ZeroDivisionError, OverflowError):
             _hardware.mtbf_logistics = 0.0
             _error_code = 3008
             _msg = "RTK ERROR: Zero Division or Overflow Error '" \
@@ -275,7 +283,7 @@ class Model(RTKDataModel):
         # Calculate the mission MTBF.
         try:
             _hardware.mtbf_mission = 1.0 / _hardware.hazard_rate_mission
-        except(ZeroDivisionError, OverflowError):
+        except (ZeroDivisionError, OverflowError):
             _hardware.mtbf_mission = 0.0
             _error_code = 3008
             _msg = "RTK ERROR: Zero Division or Overflow Error " \
@@ -306,7 +314,7 @@ class Model(RTKDataModel):
             _hardware.availability_logistics = _hardware.mtbf_logistics \
                                                / (_hardware.mtbf_logistics +
                                                   _hardware.mttr)
-        except(ZeroDivisionError, OverflowError):
+        except (ZeroDivisionError, OverflowError):
             _hardware.availability_logistics = 1.0
             _error_code = 3009
             _msg = "RTK ERROR: Zero Division or Overflow Error " \
@@ -321,7 +329,7 @@ class Model(RTKDataModel):
             _hardware.availability_mission = _hardware.mtbf_mission \
                                              / (_hardware.mtbf_mission +
                                                 _hardware.mttr)
-        except(ZeroDivisionError, OverflowError):
+        except (ZeroDivisionError, OverflowError):
             _hardware.availability_mission = 1.0
             _error_code = 3009
             _msg = "RTK ERROR: Zero Division or Overflow Error " \
@@ -380,15 +388,15 @@ class Model(RTKDataModel):
         # TODO: Move to each component type model.
         _status = False
 
-        factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30, 0.00],
-                  [0.04, 0.05, 0.01, 0.04, 0.03, 0.20, 0.80, 0.00],
-                  [0.05, 0.06, 0.02, 0.05, 0.03, 0.20, 1.00, 0.00],
-                  [0.10, 0.10, 0.03, 0.10, 0.04, 0.20, 0.40, 0.00],
-                  [0.20, 0.06, 0.03, 0.10, 0.06, 0.50, 1.00, 0.00],
-                  [0.40, 0.20, 0.10, 0.40, 0.20, 0.80, 1.00, 0.00],
-                  [0.20, 0.20, 0.04, 0.30, 0.08, 0.40, 0.90, 0.00],
-                  [0.005, 0.005, 0.003, 0.008, 0.003, 0.02, 0.03, 0.00],
-                  [0.04, 0.02, 0.01, 0.03, 0.01, 0.08, 0.20, 0.00],
+        factor = [[0.08, 0.06, 0.04, 0.06, 0.05, 0.10, 0.30,
+                   0.00], [0.04, 0.05, 0.01, 0.04, 0.03, 0.20, 0.80, 0.00], [
+                       0.05, 0.06, 0.02, 0.05, 0.03, 0.20, 1.00, 0.00
+                   ], [0.10, 0.10, 0.03, 0.10, 0.04, 0.20, 0.40,
+                       0.00], [0.20, 0.06, 0.03, 0.10, 0.06, 0.50, 1.00, 0.00],
+                  [0.40, 0.20, 0.10, 0.40, 0.20, 0.80, 1.00,
+                   0.00], [0.20, 0.20, 0.04, 0.30, 0.08, 0.40, 0.90, 0.00], [
+                       0.005, 0.005, 0.003, 0.008, 0.003, 0.02, 0.03, 0.00
+                   ], [0.04, 0.02, 0.01, 0.03, 0.01, 0.08, 0.20, 0.00],
                   [0.20, 0.20, 0.20, 0.30, 0.30, 0.50, 1.00, 0.00]]
 
         # First find the component category/subcategory index.

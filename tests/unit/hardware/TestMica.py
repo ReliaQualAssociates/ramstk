@@ -12,7 +12,10 @@ This is the test class for testing Mica capacitor module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -53,14 +56,15 @@ class TestMicaButtonModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Mica Button capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 10.0, 5.0, 16.0, 5.0, 7.0,
-                                         22.0, 28.0, 23.0, 0.5, 13.0, 34.0,
-                                         610.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 10.0, 5.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0,
+            34.0, 610.0
+        ])
         self.assertEqual(self.DUT._piQ, [5.0, 15.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.018, 0.037, 0.19, 0.094,
-                                                   0.31, 0.10, 0.14, 0.47,
-                                                   0.60, 0.48, 0.0091, 0.25,
-                                                   0.68, 11.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.018, 0.037, 0.19, 0.094, 0.31, 0.10, 0.14, 0.47, 0.60, 0.48,
+            0.0091, 0.25, 0.68, 11.0
+        ])
         self.assertEqual(self.DUT.subcategory, 47)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -197,16 +201,16 @@ class TestMicaMicaModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Mica capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0,
-                                         22.0, 28.0, 23.0, 0.5, 13.0, 34.0,
-                                         610.0])
-        self.assertEqual(self.DUT._piQ, [0.01, 0.03, 0.1, 0.3, 1.0, 1.5, 3.0,
-                                         6.0, 15.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0005, 0.0015, 0.0091,
-                                                   0.0044, 0.014, 0.0068,
-                                                   0.0095, 0.054, 0.069, 0.031,
-                                                   0.00025, 0.012, 0.046,
-                                                   0.45])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 10.0, 6.0, 16.0, 5.0, 7.0, 22.0, 28.0, 23.0, 0.5, 13.0,
+            34.0, 610.0
+        ])
+        self.assertEqual(self.DUT._piQ,
+                         [0.01, 0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 6.0, 15.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0005, 0.0015, 0.0091, 0.0044, 0.014, 0.0068, 0.0095, 0.054,
+            0.069, 0.031, 0.00025, 0.012, 0.046, 0.45
+        ])
         self.assertEqual(self.DUT.subcategory, 46)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)

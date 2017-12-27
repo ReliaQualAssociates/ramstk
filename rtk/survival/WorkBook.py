@@ -12,30 +12,30 @@ Survival Package Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -89,7 +89,7 @@ except locale.Error:
 _ = gettext.gettext
 
 
-class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
+class WorkView(gtk.VBox):  # pylint: disable=R0902, R0904
     """
     The Work Book view displays all the attributes for the selected
     Survival item.  The attributes of a Work Book view are:
@@ -240,14 +240,26 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Initialize private list attributes.  The NHPP is listed twice because
         # there are two NHPP models.
         self._lst_handler_id = []
-        self._lst_results = [gMCF.Results(), gKaplanMeier.Results(),
-                             gNHPP.Results(), gNHPP.Results(),
-                             gExponential.Results(), gLogNormal.Results(),
-                             gGaussian.Results(), gWeibull.Results()]
-        self._lst_plots = [gMCF.Plots(), gKaplanMeier.Plots(), gNHPP.Plots(),
-                           gNHPP.Plots(), gExponential.Plots(),
-                           gLogNormal.Plots(), gGaussian.Plots(),
-                           gWeibull.Plots()]
+        self._lst_results = [
+            gMCF.Results(),
+            gKaplanMeier.Results(),
+            gNHPP.Results(),
+            gNHPP.Results(),
+            gExponential.Results(),
+            gLogNormal.Results(),
+            gGaussian.Results(),
+            gWeibull.Results()
+        ]
+        self._lst_plots = [
+            gMCF.Plots(),
+            gKaplanMeier.Plots(),
+            gNHPP.Plots(),
+            gNHPP.Plots(),
+            gExponential.Plots(),
+            gLogNormal.Plots(),
+            gGaussian.Plots(),
+            gWeibull.Plots()
+        ]
 
         # Initialize private scalar attributes.
         self._modulebook = modulebook
@@ -258,16 +270,18 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._obj_plots = None
 
         # Initialize public scalar attributes.
-        self.btnStartDate = Widgets.make_button(height=25, width=25,
-                                                label="...", image=None)
-        self.btnEndDate = Widgets.make_button(height=25, width=25,
-                                              label="...", image=None)
+        self.btnStartDate = Widgets.make_button(
+            height=25, width=25, label="...", image=None)
+        self.btnEndDate = Widgets.make_button(
+            height=25, width=25, label="...", image=None)
 
-        self.chkGroup = Widgets.make_check_button(label=_(u"Decompose results "
-                                                          u"to children "
-                                                          u"assemblies"))
-        self.chkParts = Widgets.make_check_button(label=_(u"Decompose results "
-                                                          u"to parts"))
+        self.chkGroup = Widgets.make_check_button(
+            label=_(u"Decompose results "
+                    u"to children "
+                    u"assemblies"))
+        self.chkParts = Widgets.make_check_button(
+            label=_(u"Decompose results "
+                    u"to parts"))
 
         self.cmbAssembly = Widgets.make_combo(simple=False)
         self.cmbConfType = Widgets.make_combo()
@@ -285,65 +299,81 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self.txtEndDate = Widgets.make_entry(width=100)
 
         # Set gtk.Widget() tooltips.
-        self.btnStartDate.set_tooltip_text(_(u"Launches the calendar to "
-                                             u"select the start date."))
-        self.btnEndDate.set_tooltip_text(_(u"Launches the calendar to select "
-                                           u"the end date."))
-        self.chkGroup.set_tooltip_text(_(u"When checked, the MTBF and failure "
-                                         u"intensity results will be "
-                                         u"distributed to all next-level "
-                                         u"child assemblies according to the "
-                                         u"percentage of records each "
-                                         u"assembly contributes.  This "
-                                         u"assumes failure times are "
-                                         u"exponentially distributed."))
-        self.chkParts.set_tooltip_text(_(u"When checked, the MTBF and failure "
-                                         u"intensity results will be "
-                                         u"distributed to all components "
-                                         u"according to the percentage of "
-                                         u"records each component "
-                                         u"contributes.  This assumes failure "
-                                         u"times are exponentially "
-                                         u"distributed."))
+        self.btnStartDate.set_tooltip_text(
+            _(u"Launches the calendar to "
+              u"select the start date."))
+        self.btnEndDate.set_tooltip_text(
+            _(u"Launches the calendar to select "
+              u"the end date."))
+        self.chkGroup.set_tooltip_text(
+            _(u"When checked, the MTBF and failure "
+              u"intensity results will be "
+              u"distributed to all next-level "
+              u"child assemblies according to the "
+              u"percentage of records each "
+              u"assembly contributes.  This "
+              u"assumes failure times are "
+              u"exponentially distributed."))
+        self.chkParts.set_tooltip_text(
+            _(u"When checked, the MTBF and failure "
+              u"intensity results will be "
+              u"distributed to all components "
+              u"according to the percentage of "
+              u"records each component "
+              u"contributes.  This assumes failure "
+              u"times are exponentially "
+              u"distributed."))
 
-        self.cmbAssembly.set_tooltip_text(_(u"Selects and displays the "
-                                            u"assembly associated with the "
-                                            u"data set."))
-        self.cmbDistribution.set_tooltip_text(_(u"Selects and displays the "
-                                                u"statistical distribution "
-                                                u"used to fit the data."))
-        self.cmbFitMethod.set_tooltip_text(_(u"Selects and displays the "
-                                             u"method used to fit the data to "
-                                             u"the selected distribution."))
-        self.cmbConfType.set_tooltip_text(_(u"Selects and displays the type "
-                                            u"of confidence bounds."))
-        self.cmbConfMethod.set_tooltip_text(_(u"Selects and displays the "
-                                              u"method for developing "
-                                              u"confidence bounds."))
+        self.cmbAssembly.set_tooltip_text(
+            _(u"Selects and displays the "
+              u"assembly associated with the "
+              u"data set."))
+        self.cmbDistribution.set_tooltip_text(
+            _(u"Selects and displays the "
+              u"statistical distribution "
+              u"used to fit the data."))
+        self.cmbFitMethod.set_tooltip_text(
+            _(u"Selects and displays the "
+              u"method used to fit the data to "
+              u"the selected distribution."))
+        self.cmbConfType.set_tooltip_text(
+            _(u"Selects and displays the type "
+              u"of confidence bounds."))
+        self.cmbConfMethod.set_tooltip_text(
+            _(u"Selects and displays the "
+              u"method for developing "
+              u"confidence bounds."))
 
-        self.txtDescription.set_tooltip_text(_(u"Description of the selected "
-                                               u"data set."))
-        self.txtConfidence.set_tooltip_text(_(u"Desired statistical "
-                                              u"confidence"))
-        self.txtStartTime.set_tooltip_text(_(u"Earliest failure time to use "
-                                             u"for calculating reliability "
-                                             u"metrics."))
-        self.txtEndTime.set_tooltip_text(_(u"Latest failure time to use for "
-                                           u"calculating reliability "
-                                           u"metrics."))
-        self.txtRelPoints.set_tooltip_text(_(u"Number of points at which to "
-                                             u"calculate reliability "
-                                             u"metrics."))
-        self.txtStartDate.set_tooltip_text(_(u"Earliest failure date to use "
-                                             u"for calculating reliability "
-                                             u"metrics."))
-        self.txtEndDate.set_tooltip_text(_(u"Latest failure date to use for "
-                                           u"calculating reliability "
-                                           u"metrics."))
+        self.txtDescription.set_tooltip_text(
+            _(u"Description of the selected "
+              u"data set."))
+        self.txtConfidence.set_tooltip_text(
+            _(u"Desired statistical "
+              u"confidence"))
+        self.txtStartTime.set_tooltip_text(
+            _(u"Earliest failure time to use "
+              u"for calculating reliability "
+              u"metrics."))
+        self.txtEndTime.set_tooltip_text(
+            _(u"Latest failure time to use for "
+              u"calculating reliability "
+              u"metrics."))
+        self.txtRelPoints.set_tooltip_text(
+            _(u"Number of points at which to "
+              u"calculate reliability "
+              u"metrics."))
+        self.txtStartDate.set_tooltip_text(
+            _(u"Earliest failure date to use "
+              u"for calculating reliability "
+              u"metrics."))
+        self.txtEndDate.set_tooltip_text(
+            _(u"Latest failure date to use for "
+              u"calculating reliability "
+              u"metrics."))
 
         # Connect gtk.Widget() signals to callback methods.
-        self.btnStartDate.connect('button-release-event',
-                                  Widgets.date_select, self.txtStartDate)
+        self.btnStartDate.connect('button-release-event', Widgets.date_select,
+                                  self.txtStartDate)
         self.btnEndDate.connect('button-release-event', Widgets.date_select,
                                 self.txtEndDate)
 
@@ -359,23 +389,22 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self.cmbFitMethod.connect('changed', self._on_combo_changed, 4))
 
         self._lst_handler_id.append(
-            self.txtDescription.connect('focus-out-event',
-                                        self._on_focus_out, 5))
+            self.txtDescription.connect('focus-out-event', self._on_focus_out,
+                                        5))
         self._lst_handler_id.append(
-            self.txtConfidence.connect('focus-out-event',
-                                       self._on_focus_out, 6))
+            self.txtConfidence.connect('focus-out-event', self._on_focus_out,
+                                       6))
         self._lst_handler_id.append(
-            self.txtStartTime.connect('focus-out-event',
-                                      self._on_focus_out, 7))
+            self.txtStartTime.connect('focus-out-event', self._on_focus_out,
+                                      7))
         self._lst_handler_id.append(
-            self.txtEndTime.connect('focus-out-event',
-                                    self._on_focus_out, 8))
+            self.txtEndTime.connect('focus-out-event', self._on_focus_out, 8))
         self._lst_handler_id.append(
-            self.txtRelPoints.connect('focus-out-event',
-                                      self._on_focus_out, 9))
+            self.txtRelPoints.connect('focus-out-event', self._on_focus_out,
+                                      9))
         self._lst_handler_id.append(
-            self.txtStartDate.connect('focus-out-event',
-                                      self._on_focus_out, 10))
+            self.txtStartDate.connect('focus-out-event', self._on_focus_out,
+                                      10))
         self.txtStartDate.connect('changed', self._on_focus_out, None, 10)
         self._lst_handler_id.append(
             self.txtEndDate.connect('focus-out-event', self._on_focus_out, 11))
@@ -404,9 +433,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(Configuration.ICON_DIR + '32x32/add.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 0)
-        _button.set_tooltip_text(_(u"Add a new survival analysis to the open "
-                                   u"RTK Program database for the selected "
-                                   u"revision."))
+        _button.set_tooltip_text(
+            _(u"Add a new survival analysis to the open "
+              u"RTK Program database for the selected "
+              u"revision."))
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -415,8 +445,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(Configuration.ICON_DIR + '32x32/remove.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 1)
-        _button.set_tooltip_text(_(u"Remove the selected survival analysis "
-                                   u"from the open RTK Program database."))
+        _button.set_tooltip_text(
+            _(u"Remove the selected survival analysis "
+              u"from the open RTK Program database."))
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -426,8 +457,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(Configuration.ICON_DIR + '32x32/calculate.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 2)
-        _button.set_tooltip_text(_(u"Analyzes the selected survival "
-                                   u"analysis."))
+        _button.set_tooltip_text(
+            _(u"Analyzes the selected survival "
+              u"analysis."))
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -437,8 +469,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(Configuration.ICON_DIR + '32x32/save.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 3)
-        _button.set_tooltip_text(_(u"Saves the selected survival analysis and "
-                                   u"it's records."))
+        _button.set_tooltip_text(
+            _(u"Saves the selected survival analysis and "
+              u"it's records."))
         _toolbar.insert(_button, _position)
         _position += 1
 
@@ -448,8 +481,9 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         _image.set_from_file(Configuration.ICON_DIR + '32x32/save-all.png')
         _button.set_icon_widget(_image)
         _button.connect('clicked', self._on_button_clicked, 4)
-        _button.set_tooltip_text(_(u"Saves all of the survival analyses and "
-                                   u"their records."))
+        _button.set_tooltip_text(
+            _(u"Saves all of the survival analyses and "
+              u"their records."))
         _toolbar.insert(_button, _position)
 
         _toolbar.show()
@@ -482,7 +516,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return _notebook
 
-    def _create_analyses_input_page(self, notebook):    # pylint: disable=R0914
+    def _create_analyses_input_page(self, notebook):  # pylint: disable=R0914
         """
         Method to create the Dataset class gtk.Notebook() page for displaying
         assessment inputs for the selected data set.
@@ -509,10 +543,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         # Place the widgets used to display analysis input information. #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Load the gtk.ComboBox() widgets.
-        _results = [[u"MCF"], [u"Kaplan-Meier"], [_(u"NHPP - Power Law")],
-                    [u"NHPP - Loglinear"], [_(u"Exponential")],
-                    [_(u"Lognormal")], [_(u"Normal")], [u"Weibull"],
-                    ["WeiBayes"]]
+        _results = [[u"MCF"], [u"Kaplan-Meier"], [_(u"NHPP - Power Law")], [
+            u"NHPP - Loglinear"
+        ], [_(u"Exponential")], [_(u"Lognormal")], [_(u"Normal")],
+                    [u"Weibull"], ["WeiBayes"]]
         Widgets.load_combo(self.cmbDistribution, _results)
         _results = [[_(u"Lower One-Sided")], [_(u"Upper One-Sided")],
                     [_(u"Two-Sided")]]
@@ -525,17 +559,28 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         Widgets.load_combo(self.cmbFitMethod, _results)
 
         # Create the labels for the left half of the right side.
-        _labels = [_(u"Assembly:"), _(u"Description:"), _(u"Distribution:"),
-                   _("Fit Method:"), _(u"Confidence:"), _(u"Confidence Type:"),
-                   _("Confidence Method:")]
+        _labels = [
+            _(u"Assembly:"),
+            _(u"Description:"),
+            _(u"Distribution:"),
+            _("Fit Method:"),
+            _(u"Confidence:"),
+            _(u"Confidence Type:"),
+            _("Confidence Method:")
+        ]
         (_x_pos1, _y_pos1) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos1 += 55
 
         # Create the labels for the right half of the right side.
-        _labels = [_(u"Start Time:"), _(u"End Time:"), _(u"Step Interval:"),
-                   _(u"Start Date:"), _(u"End Date:")]
-        (_x_pos2,
-         _y_pos2) = Widgets.make_labels(_labels, _fixed, _x_pos1 + 215, 5)
+        _labels = [
+            _(u"Start Time:"),
+            _(u"End Time:"),
+            _(u"Step Interval:"),
+            _(u"Start Date:"),
+            _(u"End Date:")
+        ]
+        (_x_pos2, _y_pos2) = Widgets.make_labels(_labels, _fixed,
+                                                 _x_pos1 + 215, 5)
         _x_pos2 += _x_pos1
         _x_pos2 += 275
 
@@ -563,13 +608,14 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Insert the tab.
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Analysis\nInputs") + "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Analysis\nInputs") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Displays analysis inputs for the selected "
-                                  u"dataset."))
+        _label.set_tooltip_text(
+            _(u"Displays analysis inputs for the selected "
+              u"dataset."))
         notebook.insert_page(_hbox, tab_label=_label, position=-1)
 
         return False
@@ -599,12 +645,10 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
         self._obj_plots = self._lst_plots[self._model.distribution_id - 1]
 
         # Insert the s-model results and plots pages.
-        self._notebook.insert_page(self._obj_results,
-                                   tab_label=self._obj_results.lblPage,
-                                   position=1)
-        self._notebook.insert_page(self._obj_plots,
-                                   tab_label=self._obj_plots.lblPage,
-                                   position=2)
+        self._notebook.insert_page(
+            self._obj_results, tab_label=self._obj_results.lblPage, position=1)
+        self._notebook.insert_page(
+            self._obj_plots, tab_label=self._obj_plots.lblPage, position=2)
 
         # Load the s-model results and plots pages.
         self._obj_results.load_results_page(self._model)
@@ -625,8 +669,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         # Load the gtk.ComboBox() with system hardware names.
         self.cmbAssembly.handler_block(self._lst_handler_id[0])
-        Widgets.load_combo(self.cmbAssembly, Configuration.RTK_HARDWARE_LIST,
-                           simple=False)
+        Widgets.load_combo(
+            self.cmbAssembly, Configuration.RTK_HARDWARE_LIST, simple=False)
         self.cmbAssembly.handler_unblock(self._lst_handler_id[0])
 
         self.cmbAssembly.set_active(self._model.assembly_id)
@@ -764,23 +808,24 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         combo.handler_block(self._lst_handler_id[index])
 
-        if index == 0:                    # Assembly ID
+        if index == 0:  # Assembly ID
             self._model.assembly_id = combo.get_active()
             try:
-                _new_text = Configuration.RTK_HARDWARE_LIST[self._model.assembly_id][0]
+                _new_text = Configuration.RTK_HARDWARE_LIST[
+                    self._model.assembly_id][0]
             except IndexError:
                 _new_text = ''
             self._modulebook.update(1, str(_new_text))
-        elif index == 1:                    # Statistical distribution
+        elif index == 1:  # Statistical distribution
             self._model.distribution_id = combo.get_active()
             self._modulebook.update(4, self._model.distribution_id)
-        elif index == 2:                   # Confidence type
+        elif index == 2:  # Confidence type
             self._model.confidence_type = combo.get_active()
             self._modulebook.update(6, self._model.confidence_type)
-        elif index == 3:                   # Confidence method
+        elif index == 3:  # Confidence method
             self._model.confidence_method = combo.get_active()
             self._modulebook.update(7, self._model.confidence_method)
-        elif index == 4:                   # Fit method
+        elif index == 4:  # Fit method
             self._model.fit_method = combo.get_active()
             self._modulebook.update(8, self._model.fit_method)
 
@@ -788,7 +833,7 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
 
         return False
 
-    def _on_focus_out(self, entry, __event, index):     # pylint: disable=R0912
+    def _on_focus_out(self, entry, __event, index):  # pylint: disable=R0912
         """
         Method to respond to gtk.Entry() focus_out signals.
 
@@ -824,7 +869,8 @@ class WorkView(gtk.VBox):                   # pylint: disable=R0902, R0904
             self._model.n_rel_points = int(entry.get_text())
             self._modulebook.update(10, self._model.n_rel_points)
         elif index == 10:
-            self._model.start_date = Utilities.date_to_ordinal(entry.get_text())
+            self._model.start_date = Utilities.date_to_ordinal(
+                entry.get_text())
             self._modulebook.update(35, self._model.start_date)
         elif index == 11:
             self._model.end_date = Utilities.date_to_ordinal(entry.get_text())

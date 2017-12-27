@@ -12,30 +12,30 @@ Software Package Software Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import modules for localization support.
@@ -46,7 +46,7 @@ import locale
 try:
     import Configuration
     import Utilities
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
 
@@ -57,7 +57,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -156,9 +156,9 @@ def _calculate_development_risk(module):
     """
 
     module.dc = sum(module.lst_development) / 43.0
-    if module.dc < 0.5:                     # High risk
+    if module.dc < 0.5:  # High risk
         module.d_risk = 2.0
-    elif module.dc > 0.9:                   # Low risk
+    elif module.dc > 0.9:  # Low risk
         module.d_risk = 0.5
     else:
         module.d_risk = 1.0
@@ -184,20 +184,20 @@ def _calculate_anomaly_risk(module):
     :return: _error_code
     :rtype: int
     """
-# TODO: Consider re-writing _calculate_anomaly_risk; current McCabe Complexity metric = 10.
+    # TODO: Consider re-writing _calculate_anomaly_risk; current McCabe Complexity metric = 10.
     _error_code = 0
 
-    if module.phase_id == 2:                # Requirements review
+    if module.phase_id == 2:  # Requirements review
         _ratios = [0, 0, 0]
         try:
-            if(module.lst_anomaly_mgmt[0][1] /
-               module.lst_anomaly_mgmt[0][0]) == 1:
+            if (module.lst_anomaly_mgmt[0][1] /
+                    module.lst_anomaly_mgmt[0][0]) == 1:
                 _ratios[0] = 1
-            if(module.lst_anomaly_mgmt[0][3] /
-               module.lst_anomaly_mgmt[0][2]) == 1:
+            if (module.lst_anomaly_mgmt[0][3] /
+                    module.lst_anomaly_mgmt[0][2]) == 1:
                 _ratios[1] = 1
-            if(module.lst_anomaly_mgmt[0][6] /
-               module.lst_anomaly_mgmt[0][5]) == 1:
+            if (module.lst_anomaly_mgmt[0][6] /
+                    module.lst_anomaly_mgmt[0][5]) == 1:
                 _ratios[2] = 1
         except ZeroDivisionError:
             _error_code = 10
@@ -206,13 +206,13 @@ def _calculate_anomaly_risk(module):
                  sum(module.lst_anomaly_mgmt[0][7:]) + sum(_ratios)
         module.am = (19.0 - _n_yes) / 19.0
 
-    elif module.phase_id == 3:              # Preliminary design review
+    elif module.phase_id == 3:  # Preliminary design review
         _n_yes = sum(module.lst_anomaly_mgmt[1][i] for i in range(14))
         module.am = (14.0 - _n_yes) / 14.0
 
-    if module.am < 0.4:                     # Low risk
+    if module.am < 0.4:  # Low risk
         module.sa = 0.9
-    elif module.am > 0.6:                   # High risk
+    elif module.am > 0.6:  # High risk
         module.sa = 1.1
     else:
         module.sa = 1.0
@@ -236,22 +236,22 @@ def _calculate_traceability_risk(module):
     :return: False if successful or True if an error is encountered.
     :rtype: bool
     """
-# TODO: Consider re-writing _calculate_traceability_risk; current McCabe Complexity metric = 10.
-    if module.phase_id == 2:            # Requirements review
+    # TODO: Consider re-writing _calculate_traceability_risk; current McCabe Complexity metric = 10.
+    if module.phase_id == 2:  # Requirements review
         if module.lst_traceability[0][0] == 1:  # Low risk
             module.st = 1.0
         else:
             module.st = 1.1
 
-    elif module.phase_id == 3:          # Preliminary design review
+    elif module.phase_id == 3:  # Preliminary design review
         if module.lst_traceability[1][0] == 1:  # Low risk
             module.st = 1.0
         else:
             module.st = 1.1
 
-    elif module.phase_id == 4:          # Critical design review
-        if(module.lst_traceability[2][0] == 1 and
-           module.lst_traceability[2][1] == 1):     # Low risk
+    elif module.phase_id == 4:  # Critical design review
+        if (module.lst_traceability[2][0] == 1
+                and module.lst_traceability[2][1] == 1):  # Low risk
             module.st = 1.0
         else:
             module.st = 1.1
@@ -276,10 +276,10 @@ def _calculate_quality_risk(module):
     :return: _error_code
     :rtype: int
     """
-# WARNING: Refactor _calculate_quality_risk; current McCabe Complexity metric = 12.
+    # WARNING: Refactor _calculate_quality_risk; current McCabe Complexity metric = 12.
     _error_code = 0
 
-    if module.phase_id == 2:                # Requirements review
+    if module.phase_id == 2:  # Requirements review
         _ratios = [0, 0]
         try:
             if module.lst_sftw_quality[0][9] / \
@@ -296,24 +296,24 @@ def _calculate_quality_risk(module):
                  sum(_ratios)
         module.dr = (25.0 - _n_yes) / 25.0
 
-    elif module.phase_id == 3:              # Preliminary design review
+    elif module.phase_id == 3:  # Preliminary design review
         _ratios = [0, 0, 0, 0, 0]
         try:
-            if(module.lst_sftw_quality[1][3] /
-               (module.lst_sftw_quality[1][2] +
-                module.lst_sftw_quality[1][3])) <= 0.3:
+            if (module.lst_sftw_quality[1][3] /
+                (module.lst_sftw_quality[1][2] + module.lst_sftw_quality[1][3]
+                 )) <= 0.3:
                 _ratios[0] = 1
-            if(module.lst_sftw_quality[1][7] /
-               module.lst_sftw_quality[1][6]) > 0.5:
+            if (module.lst_sftw_quality[1][7] /
+                    module.lst_sftw_quality[1][6]) > 0.5:
                 _ratios[1] = 1
-            if(module.lst_sftw_quality[1][9] /
-               module.lst_sftw_quality[1][8]) > 0.5:
+            if (module.lst_sftw_quality[1][9] /
+                    module.lst_sftw_quality[1][8]) > 0.5:
                 _ratios[2] = 1
-            if(module.lst_sftw_quality[1][11] /
-               module.lst_sftw_quality[1][10]) > 0.5:
+            if (module.lst_sftw_quality[1][11] /
+                    module.lst_sftw_quality[1][10]) > 0.5:
                 _ratios[3] = 1
-            if(module.lst_sftw_quality[1][15] /
-               module.lst_sftw_quality[1][14]) > 0.75:
+            if (module.lst_sftw_quality[1][15] /
+                    module.lst_sftw_quality[1][14]) > 0.75:
                 _ratios[4] = 1
         except ZeroDivisionError:
             _error_code = 10
@@ -325,7 +325,7 @@ def _calculate_quality_risk(module):
                  sum(_ratios)
         module.dr = (19.0 - _n_yes) / 19.0
 
-    if module.dr < 0.5:                     # High risk
+    if module.dr < 0.5:  # High risk
         module.sq = 1.1
     else:
         module.sq = 1.0
@@ -386,18 +386,18 @@ def _calculate_risk_reduction(module):
     :return: _error_code
     :rtype: int
     """
-# WARNING: Refactor _calculate_risk_reduction; current McCabe Complexity metric = 13.
+    # WARNING: Refactor _calculate_risk_reduction; current McCabe Complexity metric = 13.
     _error_code = 0
 
     # Calculate the risk reduction due to the test effort.
     try:
-        if module.test_effort == 1:         # Labor hours
+        if module.test_effort == 1:  # Labor hours
             _test_ratio = float(module.labor_hours_test) / \
                           float(module.labor_hours_dev)
-        elif module.test_effort == 2:       # Budget
+        elif module.test_effort == 2:  # Budget
             _test_ratio = float(module.budget_test) / \
                           float(module.budget_dev)
-        elif module.test_effort == 3:       # Schedule
+        elif module.test_effort == 3:  # Schedule
             _test_ratio = float(module.schedule_test) / \
                           float(module.schedule_dev)
         else:
@@ -424,11 +424,11 @@ def _calculate_risk_reduction(module):
 
     # Calculate the risk reduction due to test coverage.
     try:
-        if module.level_id == 2:            # Module
+        if module.level_id == 2:  # Module
             _VS = ((float(module.nm_test) / float(module.nm)) +
-                   (float(module.interfaces_test) /
-                    float(module.interfaces))) / 2.0
-        elif module.level_id == 3:          # Unit
+                   (float(module.interfaces_test) / float(module.interfaces))
+                   ) / 2.0
+        elif module.level_id == 3:  # Unit
             _VS = ((float(module.branches_test) / float(module.branches)) +
                    (float(module.inputs_test) / float(module.inputs))) / 2.0
         else:
@@ -487,7 +487,7 @@ def _calculate_reliability_estimation_number(module):
     return _error_code
 
 
-class Model(object):                        # pylint: disable=R0902
+class Model(object):  # pylint: disable=R0902
     """
     The Software data model contains the attributes and methods of a Software
     item.  The Software class is a meta-class for the Assembly and Component
@@ -627,28 +627,31 @@ class Model(object):                        # pylint: disable=R0902
         # Lists to hold the answers to the risk factor questions.  The values
         # are lists of 0 and 1 indicating the answer to No or Yes questions or
         # the value of numerical questions.
-        self.lst_development = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        self.lst_anomaly_mgmt = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                  0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0]]
+        self.lst_development = [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        ]
+        self.lst_anomaly_mgmt = [[
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        ], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0]]
         self.lst_traceability = [[0], [0], [0, 0]]
-        self.lst_sftw_quality = [[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
-                                  0, 0, 0, 0, 0, 0, 0, 0, 0],
-                                 [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
+        self.lst_sftw_quality = [[
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0
+        ], [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+        ], [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0
+        ], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]]
         self.lst_modularity = [0, 0, 0, 0, 0, 0]
-        self.lst_test_selection = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
+        self.lst_test_selection = [[0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [
+            0, 0
+        ], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
                                    [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
-                                   [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
-                                   [0, 0], [0, 0], [0, 0], [0, 0], [0, 0],
-                                   [0, 0]]
+                                   [0, 0], [0, 0]]
 
         # Define public dictionary attributes.
         self.dicCSCI = {}

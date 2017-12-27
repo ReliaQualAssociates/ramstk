@@ -4,7 +4,6 @@
 #       tests.unit.TestTantalum.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing Tantalum capacitor module algorithms and models.
 """
@@ -12,7 +11,10 @@ This is the test class for testing Tantalum capacitor module algorithms and mode
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -38,22 +40,24 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.DUT = Solid()
 
         self._base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                             0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                             0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                             'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
-        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                               0.0, 1.0)
-        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                            0.0, 0)
-        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
-                             'Two', 'Three', '4')
+                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
+                             100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
+                             'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
+                             'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
+                             30.0, 30.0, 0.0, 2014)
+        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+                               1.0, 0.0, 1.0)
+        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                            1.0, 1.0, 0.0, 0.0, 0)
+        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0,
+                             10.0, 11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18,
+                             19.0, 0.0, 1.0, 2, 3, 440.0, 50, 60, 7.0, 80.0,
+                             90, 'Zero', 'One', 'Two', 'Three', '4')
         self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
-        self._capacitor_values = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, "")
+        self._capacitor_values = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0,
+                                  "")
 
     @attr(all=True, unit=True)
     def test_create(self):
@@ -71,15 +75,16 @@ class TestSolidTantalumModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Solid Tantalum capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0,
-                                         12.0, 20.0, 24.0, 0.4, 11.0, 29.0,
-                                         530.0])
-        self.assertEqual(self.DUT._piQ, [0.001, 0.01, 0.03, 0.03, 0.1, 0.3,
-                                         1.0, 1.5, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0018, 0.0039, 0.016,
-                                                   0.0097, 0.028, 0.0091,
-                                                   0.011, 0.034, 0.057, 0.055,
-                                                   0.00072, 0.022, 0.066, 1.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 12.0, 20.0, 24.0, 0.4, 11.0,
+            29.0, 530.0
+        ])
+        self.assertEqual(self.DUT._piQ,
+                         [0.001, 0.01, 0.03, 0.03, 0.1, 0.3, 1.0, 1.5, 10.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0018, 0.0039, 0.016, 0.0097, 0.028, 0.0091, 0.011, 0.034, 0.057,
+            0.055, 0.00072, 0.022, 0.066, 1.0
+        ])
         self.assertEqual(self.DUT.subcategory, 51)
         self.assertEqual(self.DUT.effective_resistance, 0.0)
         self.assertEqual(self.DUT.piSR, 0.0)
@@ -96,8 +101,7 @@ class TestSolidTantalumModel(unittest.TestCase):
                   self._user_values + self._comp_values + self._capacitor_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -109,8 +113,7 @@ class TestSolidTantalumModel(unittest.TestCase):
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._capacitor_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -124,8 +127,7 @@ class TestSolidTantalumModel(unittest.TestCase):
                   self._user_values + self._comp_values + self._capacitor_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -264,22 +266,24 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         self.DUT = NonSolid()
 
         self._base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                             0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                             0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                             'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
-        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                               0.0, 1.0)
-        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                            0.0, 0)
-        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
-                             'Two', 'Three', '4')
+                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
+                             100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
+                             'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
+                             'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
+                             30.0, 30.0, 0.0, 2014)
+        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+                               1.0, 0.0, 1.0)
+        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                            1.0, 1.0, 0.0, 0.0, 0)
+        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0,
+                             10.0, 11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18,
+                             19.0, 0.0, 1.0, 2, 3, 440.0, 50, 60, 7.0, 80.0,
+                             90, 'Zero', 'One', 'Two', 'Three', '4')
         self._comp_values = (0, 0, 0.0, 30.0, 0.0, 358.0)
-        self._capacitor_values = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, "")
+        self._capacitor_values = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0,
+                                  "")
 
     @attr(all=True, unit=True)
     def test_create(self):
@@ -298,14 +302,15 @@ class TestNonSolidTantalumModel(unittest.TestCase):
 
         # Verify the Non-Solid Tantalum capacitor class was properly initialized.
         self.assertEqual(self.DUT._piC, [0.3, 1.0, 2.0, 2.5, 3.0])
-        self.assertEqual(self.DUT._piE, [1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0,
-                                         14.0, 30.0, 23.0, 0.5, 13.0, 34.0,
-                                         610.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 2.0, 10.0, 6.0, 16.0, 4.0, 8.0, 14.0, 30.0, 23.0, 0.5, 13.0,
+            34.0, 610.0
+        ])
         self.assertEqual(self.DUT._piQ, [0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.0061, 0.013, 0.069, 0.039,
-                                                   0.11, 0.031, 0.061, 0.13,
-                                                   0.29, 0.18, 0.0030, 0.069,
-                                                   0.26, 4.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.0061, 0.013, 0.069, 0.039, 0.11, 0.031, 0.061, 0.13, 0.29, 0.18,
+            0.0030, 0.069, 0.26, 4.0
+        ])
         self.assertEqual(self.DUT.subcategory, 52)
         self.assertEqual(self.DUT.construction, 0)
         self.assertEqual(self.DUT.piC, 0.0)
@@ -322,8 +327,7 @@ class TestNonSolidTantalumModel(unittest.TestCase):
                   self._user_values + self._comp_values + self._capacitor_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -335,8 +339,7 @@ class TestNonSolidTantalumModel(unittest.TestCase):
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._capacitor_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -350,11 +353,11 @@ class TestNonSolidTantalumModel(unittest.TestCase):
                   self._user_values + self._comp_values + self._capacitor_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
-        self.assertEqual(_error_msg,
-                         "ERROR: Converting one or more inputs to correct data type.")
+        self.assertEqual(
+            _error_msg,
+            "ERROR: Converting one or more inputs to correct data type.")
 
     @attr(all=True, unit=True)
     def test_get_attributes(self):

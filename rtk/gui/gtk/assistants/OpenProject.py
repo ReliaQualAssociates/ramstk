@@ -94,18 +94,18 @@ class OpenProject(object):
         _return = False
 
         if self._mdcRTK.loaded:
-            Widgets.rtk_information(_(u"A database is already open.  Only "
-                                      u"one database can be open at a time "
-                                      u"in RTK.  You must quit the RTK "
-                                      u"application before a new database "
-                                      u"can be opened."))
+            Widgets.rtk_information(
+                _(u"A database is already open.  Only "
+                  u"one database can be open at a time "
+                  u"in RTK.  You must quit the RTK "
+                  u"application before a new database "
+                  u"can be opened."))
             _return = True
 
-        _dialog = gtk.FileChooserDialog(title=_(u"RTK - Open Program"),
-                                        buttons=(gtk.STOCK_OK,
-                                                 gtk.RESPONSE_ACCEPT,
-                                                 gtk.STOCK_CANCEL,
-                                                 gtk.RESPONSE_REJECT))
+        _dialog = gtk.FileChooserDialog(
+            title=_(u"RTK - Open Program"),
+            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_REJECT))
         _dialog.set_current_folder(self._mdcRTK.RTK_CONFIGURATION.RTK_PROG_DIR)
 
         # Set some filters to select all files or only some text files.

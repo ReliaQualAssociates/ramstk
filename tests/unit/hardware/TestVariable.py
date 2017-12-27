@@ -4,7 +4,6 @@
 #       tests.unit.TestVariable.py is part of The RTK Project
 #
 # All rights reserved.
-
 """
 This is the test class for testing Variable capacitor module algorithms and models.
 """
@@ -12,7 +11,10 @@ This is the test class for testing Variable capacitor module algorithms and mode
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -54,13 +56,15 @@ class TestAirTrimmerModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Variable Air Trimmer capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0,
-                                         37.0, 70.0, 36.0, 0.5, 20.0, 52.0,
-                                         950.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.5, 20.0,
+            52.0, 950.0
+        ])
         self.assertEqual(self.DUT._piQ, [5.0, 20.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.80, 0.33, 1.6, 0.87, 3.0,
-                                                   1.0, 1.7, 9.9, 19.0, 8.1,
-                                                   0.032, 2.5, 8.9, 100.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.80, 0.33, 1.6, 0.87, 3.0, 1.0, 1.7, 9.9, 19.0, 8.1, 0.032, 2.5,
+            8.9, 100.0
+        ])
         self.assertEqual(self.DUT.subcategory, 57)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -172,13 +176,15 @@ class TestVariableCeramicModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Plastic capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0,
-                                         37.0, 70.0, 36.0, 0.4, 20.0, 52.0,
-                                         950.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 3.0, 13.0, 8.0, 24.0, 6.0, 10.0, 37.0, 70.0, 36.0, 0.4, 20.0,
+            52.0, 950.0
+        ])
         self.assertEqual(self.DUT._piQ, [4.0, 20.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.08, 0.27, 1.2, 0.71, 2.3,
-                                                   0.69, 1.1, 6.2, 12.0, 4.1,
-                                                   0.032, 1.9, 5.9, 85.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.08, 0.27, 1.2, 0.71, 2.3, 0.69, 1.1, 6.2, 12.0, 4.1, 0.032, 1.9,
+            5.9, 85.0
+        ])
         self.assertEqual(self.DUT.subcategory, 55)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -314,13 +320,15 @@ class TestVariablePistonModel(unittest.TestCase):
 
         # Verify the Super-Metallized Plastic capacitor class was properly
         # initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 3.0, 12.0, 7.0, 18.0, 3.0, 4.0,
-                                         20.0, 30.0, 32.0, 0.5, 18.0, 46.0,
-                                         830.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 3.0, 12.0, 7.0, 18.0, 3.0, 4.0, 20.0, 30.0, 32.0, 0.5, 18.0,
+            46.0, 830.0
+        ])
         self.assertEqual(self.DUT._piQ, [3.0, 10.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.033, 0.13, 0.62, 0.31,
-                                                   0.93, 0.21, 0.28, 2.2, 3.3,
-                                                   2.2, 0.16, 0.93, 3.2, 37.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.033, 0.13, 0.62, 0.31, 0.93, 0.21, 0.28, 2.2, 3.3, 2.2, 0.16,
+            0.93, 3.2, 37.0
+        ])
         self.assertEqual(self.DUT.subcategory, 56)
         self.assertEqual(self.DUT.specification, 0)
         self.assertEqual(self.DUT.spec_sheet, 0)
@@ -440,22 +448,24 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.DUT = Vacuum()
 
         self._base_values = (0, 32, 'Alt Part #', 'Attachments', 'CAGE Code',
-                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description', 100.0, 0,
-                             0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0, 'Name', 'NSN',
-                             0, 'Page #', 0, 0, 'Part #', 1, 'Ref Des', 1.0, 0,
-                             'Remarks', 0.0, 'Spec #', 0, 30.0, 30.0, 0.0, 2014)
-        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0,
-                               0.0, 1.0)
-        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0,
-                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                            0.0, 0)
-        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0, 10.0,
-                             11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18, 19.0, 0.0, 1.0,
-                             2, 3, 440.0, 50, 60, 7.0, 80.0, 90, 'Zero', 'One',
-                             'Two', 'Three', '4')
+                             'Comp Ref Des', 0.0, 0.0, 0.0, 'Description',
+                             100.0, 0, 0, 'Figure #', 50.0, 'LCN', 1, 0, 10.0,
+                             'Name', 'NSN', 0, 'Page #', 0, 0, 'Part #', 1,
+                             'Ref Des', 1.0, 0, 'Remarks', 0.0, 'Spec #', 0,
+                             30.0, 30.0, 0.0, 2014)
+        self._stress_values = (1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0,
+                               1.0, 0.0, 1.0)
+        self._rel_values = (0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0,
+                            0.0, 0.0, 1, 0.0, '', 0.0, 0.0, 0.0, 1, 0.0, 0.0,
+                            0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0,
+                            1.0, 1.0, 0.0, 0.0, 0)
+        self._user_values = (0.0, 1.0, 2.0, 30.0, 440.0, 5, 6, 7.0, 8.0, 99.0,
+                             10.0, 11, 12, 13.0, 14, 15.0, 16.0, 17.0, 18,
+                             19.0, 0.0, 1.0, 2, 3, 440.0, 50, 60, 7.0, 80.0,
+                             90, 'Zero', 'One', 'Two', 'Three', '4')
         self._comp_values = (0, 0, 0.0, 0.0, 0.0, 0.0)
-        self._capacitor_values = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, "")
+        self._capacitor_values = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0,
+                                  "")
 
     @attr(all=True, unit=True)
     def test_create(self):
@@ -473,13 +483,15 @@ class TestVariableVacuumModel(unittest.TestCase):
         self.assertEqual(self.DUT.quality, 0)
 
         # Verify the Variable Vacuum capacitor class was properly initialized.
-        self.assertEqual(self.DUT._piE, [1.0, 3.0, 14.0, 8.0, 27.0, 10.0, 18.0,
-                                         70.0, 108.0, 40.0, 0.5, 0.0, 0.0,
-                                         0.0])
+        self.assertEqual(self.DUT._piE, [
+            1.0, 3.0, 14.0, 8.0, 27.0, 10.0, 18.0, 70.0, 108.0, 40.0, 0.5, 0.0,
+            0.0, 0.0
+        ])
         self.assertEqual(self.DUT._piQ, [3.0, 20.0])
-        self.assertEqual(self.DUT._lambdab_count, [0.4, 1.3, 6.8, 3.6, 13.0,
-                                                   5.7, 10.0, 58.0, 90.0, 23.0,
-                                                   20.0, 0.0, 0.0, 0.0])
+        self.assertEqual(self.DUT._lambdab_count, [
+            0.4, 1.3, 6.8, 3.6, 13.0, 5.7, 10.0, 58.0, 90.0, 23.0, 20.0, 0.0,
+            0.0, 0.0
+        ])
         self.assertEqual(self.DUT.configuration, 1)
         self.assertEqual(self.DUT.subcategory, 58)
         self.assertEqual(self.DUT.specification, 0)
@@ -498,8 +510,7 @@ class TestVariableVacuumModel(unittest.TestCase):
                   self._user_values + self._comp_values + self._capacitor_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 0)
 
     @attr(all=True, unit=True)
@@ -511,8 +522,7 @@ class TestVariableVacuumModel(unittest.TestCase):
         _values = self._base_values + self._stress_values + self._rel_values + \
                   self._user_values + self._comp_values + self._capacitor_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 40)
 
     @attr(all=True, unit=True)
@@ -526,8 +536,7 @@ class TestVariableVacuumModel(unittest.TestCase):
                   self._user_values + self._comp_values + self._capacitor_values + \
                   _my_values
 
-        (_error_code,
-         _error_msg) = self.DUT.set_attributes(_values)
+        (_error_code, _error_msg) = self.DUT.set_attributes(_values)
         self.assertEqual(_error_code, 10)
 
     @attr(all=True, unit=True)
@@ -536,16 +545,18 @@ class TestVariableVacuumModel(unittest.TestCase):
         (TestVariableVacuum) get_attributes should return a tuple of attribute values
         """
 
-        _my_values = (1,  0.0)
-        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0, '',
-                   50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '', 1.0, 0, '',
-                   0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0, 1.0, 0.0, 0.0, 0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {}, 0.0, 0.0, 0.0, 1, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0,
-                   0.0, 0, [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
-                   0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0, 0, 0, 0, 0, 0,
-                   0, 0, 0, 0], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 358.0,
+        _my_values = (1, 0.0)
+        _values = (None, None, '', '', '', '', 0.0, 0.0, 0.0, '', 100.0, 0, 0,
+                   '', 50.0, '', 1, 0, 10.0, '', '', 0, '', 0, 0, '', 1, '',
+                   1.0, 0, '', 0.0, '', 0, 30.0, 30.0, 0.0, 2014, 1.0, 0.0,
+                   0.0, 0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 1.0, 0.0, 1.0, 0.0, 1.0,
+                   1.0, 0.0, 0.0, 0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1, 0.0, {},
+                   0.0, 0.0, 0.0, 1, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                   0.0, 0.0, 0.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0, [
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0,
+                       0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+                   ], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+                       ], ['', '', '', '', ''], 0, 0, 0.0, 30.0, 0.0, 358.0,
                    0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0, 0, 0, "") + _my_values
 
         self.assertEqual(self.DUT.get_attributes(), _values)

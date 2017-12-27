@@ -11,7 +11,8 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -97,8 +98,8 @@ class TestRTKCause(unittest.TestCase):
 
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'description' "
-                               "in attribute dictionary passed to "
-                               "RTKCause.set_attributes().")
+                         "in attribute dictionary passed to "
+                         "RTKCause.set_attributes().")
 
         self._attributes['description'] = 'Test Failure Cause #1'
 

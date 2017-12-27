@@ -7,32 +7,31 @@
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 ##########################################################
 Hardware.Component.Resistor.Fixed Package Wirewound Module
@@ -46,7 +45,7 @@ try:
     import Configuration
     import Utilities
     from hardware.component.resistor.Resistor import Model as Resistor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.resistor.Resistor import Model as Resistor
@@ -59,7 +58,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -89,15 +88,19 @@ class Wirewound(Resistor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_piE = [1.0, 2.0, 11.0, 5.0, 18.0, 15.0, 18.0, 28.0, 35.0, 27.0, 0.8,
-                14.0, 38.0, 610.0]
+    _lst_piE = [
+        1.0, 2.0, 11.0, 5.0, 18.0, 15.0, 18.0, 28.0, 35.0, 27.0, 0.8, 14.0,
+        38.0, 610.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [0.03, 0.1, 0.3, 1.0, 5.0, 15.0]
-    _lst_lambdab_count = [0.0085, 0.018, 0.10, 0.045, 0.16, 0.15, 0.17, 0.30,
-                          0.38, 0.26, 0.0068, 0.13, 0.37, 5.4]
+    _lst_lambdab_count = [
+        0.0085, 0.018, 0.10, 0.045, 0.16, 0.15, 0.17, 0.30, 0.38, 0.26, 0.0068,
+        0.13, 0.37, 5.4
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 29                        # Subcategory ID in rtkcom DB.
+    subcategory = 29  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -177,60 +180,55 @@ class WirewoundPower(Resistor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_piR = [[[1.0, 1.0, 1.2, 1.2, 1.6, 1.6, 1.6, 0.0],
-                 [1.0, 1.0, 1.0, 1.2, 1.6, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.0, 1.2, 1.2, 1.2, 1.6],
-                 [1.0, 1.2, 1.6, 1.6, 0.0, 0.0, 0.0, 0.0],
-                 [1.0, 1.6, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
-                 [1.0, 1.6, 1.6, 0.0, 0.0, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.1, 1.2, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.4, 0.0, 0.0, 0.0, 0.0, 0.0]],
-                [[1.0, 1.0, 1.0, 1.0, 1.2, 1.6],
-                 [1.0, 1.0, 1.0, 1.2, 1.6, 0.0],
-                 [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 2.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 2.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 2.0, 0.0, 0.0],
-                 [1.0, 1.2, 1.4, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.6, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 2.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.2, 0.0, 0.0],
-                 [1.0, 1.0, 1.4, 0.0, 0.0, 0.0],
-                 [1.0, 1.2, 1.6, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.4, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.4, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 1.5, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.4, 1.6, 0.0],
-                 [1.0, 1.0, 1.0, 1.4, 1.6, 2.0],
-                 [1.0, 1.0, 1.0, 1.4, 1.6, 2.0],
-                 [1.0, 1.0, 1.4, 2.4, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 2.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 0.0, 0.0, 0.0, 0.0],
-                 [1.0, 1.2, 1.4, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.0, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.4, 0.0, 0.0, 0.0],
-                 [1.0, 1.2, 1.5, 0.0, 0.0, 0.0],
-                 [1.0, 1.2, 0.0, 0.0, 0.0, 0.0]]]
-    _lst_piE = [1.0, 2.0, 10.0, 5.0, 16.0, 4.0, 8.0, 9.0, 18.0, 23.0, 0.3,
-                13.0, 34.0, 610.0]
+    _lst_piR = [
+        [[1.0, 1.0, 1.2, 1.2, 1.6, 1.6, 1.6,
+          0.0], [1.0, 1.0, 1.0, 1.2, 1.6, 1.6, 0.0,
+                 0.0], [1.0, 1.0, 1.0, 1.0, 1.2, 1.2, 1.2, 1.6],
+         [1.0, 1.2, 1.6, 1.6, 0.0, 0.0, 0.0,
+          0.0], [1.0, 1.6, 0.0, 0.0, 0.0, 0.0, 0.0,
+                 0.0], [1.0, 1.6, 1.6, 0.0, 0.0, 0.0, 0.0,
+                        0.0], [1.0, 1.0, 1.1, 1.2, 1.2, 1.6, 0.0, 0.0],
+         [1.0, 1.0, 1.4, 0.0, 0.0, 0.0, 0.0, 0.0]],
+        [[1.0, 1.0, 1.0, 1.0, 1.2,
+          1.6], [1.0, 1.0, 1.0, 1.2, 1.6, 0.0], [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
+         [1.0, 1.0, 1.0, 2.0, 0.0,
+          0.0], [1.0, 1.0, 1.0, 2.0, 0.0, 0.0], [1.0, 1.0, 1.2, 2.0, 0.0, 0.0],
+         [1.0, 1.2, 1.4, 0.0, 0.0, 0.0], [1.0, 1.0, 1.6, 0.0, 0.0, 0.0], [
+             1.0, 1.0, 1.2, 2.0, 0.0, 0.0
+         ], [1.0, 1.0, 1.2, 1.6, 0.0, 0.0], [1.0, 1.0, 1.0, 1.4, 0.0, 0.0], [
+             1.0, 1.0, 1.0, 1.2, 0.0, 0.0
+         ], [1.0, 1.0, 1.4, 0.0, 0.0, 0.0], [1.0, 1.2, 1.6, 0.0, 0.0, 0.0], [
+             1.0, 1.0, 1.4, 0.0, 0.0, 0.0
+         ], [1.0, 1.0, 1.2, 0.0, 0.0, 0.0], [1.0, 1.0, 1.0, 1.4, 0.0, 0.0], [
+             1.0, 1.0, 1.0, 1.4, 0.0, 0.0
+         ], [1.0, 1.0, 1.0, 1.4, 0.0, 0.0], [1.0, 1.0, 1.2, 1.5, 0.0, 0.0], [
+             1.0, 1.0, 1.2, 1.6, 0.0, 0.0
+         ], [1.0, 1.0, 1.0, 1.4, 1.6, 0.0], [1.0, 1.0, 1.0, 1.4, 1.6, 2.0], [
+             1.0, 1.0, 1.0, 1.4, 1.6, 2.0
+         ], [1.0, 1.0, 1.4, 2.4, 0.0, 0.0], [1.0, 1.0, 1.2, 2.6, 0.0, 0.0], [
+             1.0, 1.0, 1.0, 0.0, 0.0, 0.0
+         ], [1.0, 1.0, 1.0, 0.0, 0.0, 0.0], [1.0, 1.0, 0.0, 0.0, 0.0, 0.0], [
+             1.0, 1.2, 1.4, 0.0, 0.0, 0.0
+         ], [1.0, 1.0, 1.2, 1.6, 0.0, 0.0], [1.0, 1.0, 1.0, 1.6, 0.0, 0.0], [
+             1.0, 1.0, 1.4, 0.0, 0.0, 0.0
+         ], [1.0, 1.2, 1.5, 0.0, 0.0, 0.0], [1.0, 1.2, 0.0, 0.0, 0.0, 0.0]]
+    ]
+    _lst_piE = [
+        1.0, 2.0, 10.0, 5.0, 16.0, 4.0, 8.0, 9.0, 18.0, 23.0, 0.3, 13.0, 34.0,
+        610.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [0.03, 0.1, 0.3, 1.0, 5.0, 15.0]
-    _lambdab_count = [[0.014, 0.031, 0.16, 0.077, 0.26, 0.073, 0.15, 0.19,
-                       0.39, 0.42, 0.0042, 0.21, 0.62, 9.4],
-                      [0.013, 0.028, 0.15, 0.070, 0.24, 0.065, 0.13, 0.18,
-                       0.35, 0.38, 0.0038, 0.19, 0.56, 8.6]]
+    _lambdab_count = [[
+        0.014, 0.031, 0.16, 0.077, 0.26, 0.073, 0.15, 0.19, 0.39, 0.42, 0.0042,
+        0.21, 0.62, 9.4
+    ], [
+        0.013, 0.028, 0.15, 0.070, 0.24, 0.065, 0.13, 0.18, 0.35, 0.38, 0.0038,
+        0.19, 0.56, 8.6
+    ]]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 30                        # Subcategory ID in rtkcom DB.
+    subcategory = 30  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -265,11 +263,11 @@ class WirewoundPower(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -294,13 +292,14 @@ class WirewoundPower(Resistor):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-# WARNING: Refactor calculate_part; current McCabe Complexity metric = 19.
+        # WARNING: Refactor calculate_part; current McCabe Complexity metric = 19.
         from math import exp
 
         self.hazard_rate_model = {}
 
         if self.hazard_rate_type == 1:
-            self._lst_lambdab_count = self._lambdab_count[self.specification - 1]
+            self._lst_lambdab_count = self._lambdab_count[self.specification
+                                                          - 1]
 
         elif self.hazard_rate_type == 2:
             self.hazard_rate_model['equation'] = 'lambdab * piR * piQ * piE'
@@ -319,38 +318,52 @@ class WirewoundPower(Resistor):
                 return True
 
             # Resistance factor.
-            if self.specification == 1:     # MIL-R-39007
+            if self.specification == 1:  # MIL-R-39007
                 if self.resistance <= 500.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][0]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][0]
                 elif self.resistance > 500.0 and self.resistance <= 1000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][1]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][1]
                 elif self.resistance > 1000.0 and self.resistance <= 5000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][2]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][2]
                 elif self.resistance > 5000.0 and self.resistance <= 7500.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][3]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][3]
                 elif self.resistance > 7500.0 and self.resistance <= 10000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][4]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][4]
                 elif self.resistance > 10000.0 and self.resistance <= 15000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][5]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][5]
                 elif self.resistance > 15000.0 and self.resistance <= 20000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][6]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][6]
                 elif self.resistance > 20000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][7]
-            elif self.specification == 2:   # MIL-R-26
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][7]
+            elif self.specification == 2:  # MIL-R-26
                 if self.resistance <= 100.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][0]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][0]
                 elif self.resistance > 100.0 and self.resistance <= 1000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][1]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][1]
                 elif self.resistance > 1000.0 and self.resistance <= 10000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][2]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][2]
                 elif self.resistance > 10000.0 and self.resistance <= 100000.0:
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][3]
-                elif(self.resistance > 100000.0 and
-                     self.resistance <= 150000.0):
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][4]
-                elif(self.resistance > 150000.0 and
-                     self.resistance <= 200000.0):
-                    self.piR = self._lst_piR[self.specification - 1][self.style - 1][5]
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][3]
+                elif (self.resistance > 100000.0
+                      and self.resistance <= 150000.0):
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][4]
+                elif (self.resistance > 150000.0
+                      and self.resistance <= 200000.0):
+                    self.piR = self._lst_piR[self.specification - 1][self.style
+                                                                     - 1][5]
 
             self.hazard_rate_model['piR'] = self.piR
 
@@ -382,27 +395,27 @@ class WirewoundChassisMount(Resistor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _lst_piR = [[[1.0, 1.2, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 1.2, 1.6, 0.0],
-                 [1.0, 1.0, 1.0, 1.1, 1.2, 1.6],
-                 [1.0, 1.0, 1.0, 1.0, 1.2, 1.6],
-                 [1.0, 1.0, 1.0, 1.0, 1.2, 1.6]],
-                [[1.0, 1.2, 1.6, 0.0, 0.0, 0.0],
-                 [1.0, 1.2, 1.6, 0.0, 0.0, 0.0],
-                 [1.0, 1.0, 1.2, 1.6, 0.0, 0.0],
-                 [1.0, 1.0, 1.1, 1.2, 1.4, 0.0],
-                 [1.0, 1.0, 1.0, 1.2, 1.6, 0.0],
-                 [1.0, 1.0, 1.0, 1.1, 1.4, 0.0]]]
-    _lst_piE = [1.0, 2.0, 10.0, 5.0, 16.0, 4.0, 8.0, 9.0, 18.0, 23.0, 0.5,
-                13.0, 34.0, 610.0]
+    _lst_piR = [[
+        [1.0, 1.2, 1.2, 1.6, 0.0, 0.0], [1.0, 1.0, 1.2, 1.6, 0.0,
+                                         0.0], [1.0, 1.0, 1.2, 1.2, 1.6, 0.0],
+        [1.0, 1.0, 1.0, 1.1, 1.2,
+         1.6], [1.0, 1.0, 1.0, 1.0, 1.2, 1.6], [1.0, 1.0, 1.0, 1.0, 1.2, 1.6]
+    ], [[1.0, 1.2, 1.6, 0.0, 0.0, 0.0], [1.0, 1.2, 1.6, 0.0, 0.0, 0.0],
+        [1.0, 1.0, 1.2, 1.6, 0.0, 0.0], [1.0, 1.0, 1.1, 1.2, 1.4, 0.0],
+        [1.0, 1.0, 1.0, 1.2, 1.6, 0.0], [1.0, 1.0, 1.0, 1.1, 1.4, 0.0]]]
+    _lst_piE = [
+        1.0, 2.0, 10.0, 5.0, 16.0, 4.0, 8.0, 9.0, 18.0, 23.0, 0.5, 13.0, 34.0,
+        610.0
+    ]
     _lst_piQ_count = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0]
     _lst_piQ_stress = [0.03, 0.1, 0.3, 1.0, 5.0, 15.0]
-    _lst_lambdab_count = [0.008, 0.18, 0.096, 0.045, 0.15, 0.044, 0.088, 0.12,
-                          0.24, 0.25, 0.004, 0.13, 0.37, 5.5]
+    _lst_lambdab_count = [
+        0.008, 0.18, 0.096, 0.045, 0.15, 0.044, 0.088, 0.12, 0.24, 0.25, 0.004,
+        0.13, 0.37, 5.5
+    ]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
-    subcategory = 31                        # Subcategory ID in rtkcom DB.
+    subcategory = 31  # Subcategory ID in rtkcom DB.
 
     def __init__(self):
         """
@@ -437,11 +450,11 @@ class WirewoundChassisMount(Resistor):
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -485,17 +498,23 @@ class WirewoundChassisMount(Resistor):
 
             # Resistance factor.
             if self.resistance <= 500.0:
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][0]
+                self.piR = self._lst_piR[self.characteristic - 1][self.style
+                                                                  - 1][0]
             elif self.resistance > 500.0 and self.resistance <= 1000.0:
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][1]
+                self.piR = self._lst_piR[self.characteristic - 1][self.style
+                                                                  - 1][1]
             elif self.resistance > 1000.0 and self.resistance <= 5000.0:
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][2]
+                self.piR = self._lst_piR[self.characteristic - 1][self.style
+                                                                  - 1][2]
             elif self.resistance > 5000.0 and self.resistance <= 10000.0:
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][3]
+                self.piR = self._lst_piR[self.characteristic - 1][self.style
+                                                                  - 1][3]
             elif self.resistance > 10000.0 and self.resistance <= 20000.0:
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][4]
+                self.piR = self._lst_piR[self.characteristic - 1][self.style
+                                                                  - 1][4]
             elif self.resistance > 20000.0:
-                self.piR = self._lst_piR[self.characteristic - 1][self.style - 1][5]
+                self.piR = self._lst_piR[self.characteristic - 1][self.style
+                                                                  - 1][5]
             self.hazard_rate_model['piR'] = self.piR
 
         return Resistor.calculate_part(self)

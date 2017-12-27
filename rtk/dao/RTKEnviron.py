@@ -13,8 +13,8 @@ The RTKEnviron Table
 from sqlalchemy import Column, Float, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default   # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                   # pylint: disable=E0401
+from Utilities import error_handler, none_to_default  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKEnviron(RTK_BASE):
@@ -25,11 +25,15 @@ class RTKEnviron(RTK_BASE):
     __tablename__ = 'rtk_environ'
     __table_args__ = {'extend_existing': True}
 
-    environ_id = Column('fld_environ_id', Integer, primary_key=True,
-                        autoincrement=True, nullable=False)
+    environ_id = Column(
+        'fld_environ_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     code = Column('fld_code', String(256), default='Environ Code')
-    description = Column('fld_description', String(512),
-                         default='Environ Description')
+    description = Column(
+        'fld_description', String(512), default='Environ Description')
     environ_type = Column('fld_type', Integer, default='unknown')
     pi_e = Column('fld_pi_e', Float, default=1.0)
     # pylint: disable=invalid-name
@@ -65,8 +69,8 @@ class RTKEnviron(RTK_BASE):
 
         try:
             self.code = str(none_to_default(attributes[0], 'Environ Code'))
-            self.description = str(none_to_default(attributes[1],
-                                                   'Environ Description'))
+            self.description = str(
+                none_to_default(attributes[1], 'Environ Description'))
             self.environ_type = str(none_to_default(attributes[2], 'unknown'))
             self.pi_e = float(none_to_default(attributes[3], 1.0))
             self.do = float(none_to_default(attributes[4], 1.0))

@@ -10,11 +10,11 @@ The RTKUnit Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String        # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE                  # pylint: disable=E0401
+from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 
 
 class RTKUnit(RTK_BASE):
@@ -25,11 +25,15 @@ class RTKUnit(RTK_BASE):
     __tablename__ = 'rtk_unit'
     __table_args__ = {'extend_existing': True}
 
-    unit_id = Column('fld_unit_id', Integer, primary_key=True,
-                     autoincrement=True, nullable=False)
+    unit_id = Column(
+        'fld_unit_id',
+        Integer,
+        primary_key=True,
+        autoincrement=True,
+        nullable=False)
     code = Column('fld_code', String(256), default='Unit Code')
-    description = Column('fld_description', String(512),
-                         default='Unit Description')
+    description = Column(
+        'fld_description', String(512), default='Unit Description')
     unit_type = Column('fld_type', String(256), default='unknown')
 
     def get_attributes(self):
@@ -61,8 +65,8 @@ class RTKUnit(RTK_BASE):
 
         try:
             self.code = str(none_to_default(attributes[0], 'Unit Code'))
-            self.description = str(none_to_default(attributes[2],
-                                                   'Unit Description'))
+            self.description = str(
+                none_to_default(attributes[2], 'Unit Description'))
             self.unit_type = str(none_to_default(attributes[2], ''))
         except IndexError as _err:
             _error_code = error_handler(_err.args)

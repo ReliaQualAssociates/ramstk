@@ -13,30 +13,30 @@ Hardware.Component.Capacitor.Fixed Package Plastic Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -45,7 +45,7 @@ import locale
 try:
     import Configuration
     from hardware.component.capacitor.Capacitor import Model as Capacitor
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     from rtk.hardware.component.capacitor.Capacitor import Model as Capacitor
 
@@ -57,7 +57,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -87,11 +87,15 @@ class Film(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 11.0, 20.0, 20.0, 0.5, 11.0,
-            29.0, 530.0]
+    _piE = [
+        1.0, 2.0, 8.0, 5.0, 14.0, 4.0, 5.0, 11.0, 20.0, 20.0, 0.5, 11.0, 29.0,
+        530.0
+    ]
     _piQ = [0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0]
-    _lambdab_count = [0.0021, 0.0042, 0.017, 0.010, 0.030, 0.0068, 0.013,
-                      0.026, 0.048, 0.044, 0.0010, 0.023, 0.063, 1.1]
+    _lambdab_count = [
+        0.0021, 0.0042, 0.017, 0.010, 0.030, 0.0068, 0.013, 0.026, 0.048,
+        0.044, 0.0010, 0.023, 0.063, 1.1
+    ]
     lst_ref_temp = [338.0, 358.0, 398.0, 443.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -107,7 +111,7 @@ class Film(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 338.0
 
     def calculate_part(self):
@@ -136,7 +140,7 @@ class Film(Capacitor):
                     0.0005 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 
@@ -173,11 +177,15 @@ class Plastic(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 2.0, 10.0, 5.0, 16.0, 6.0, 11.0, 18.0, 30.0, 23.0, 0.5, 13.0,
-            34.0, 610.0]
+    _piE = [
+        1.0, 2.0, 10.0, 5.0, 16.0, 6.0, 11.0, 18.0, 30.0, 23.0, 0.5, 13.0,
+        34.0, 610.0
+    ]
     _piQ = [0.03, 0.1, 0.3, 1.0, 10.0]
-    _lambdab_count = [0.0041, 0.0083, 0.042, 0.021, 0.067, 0.026, 0.048, 0.086,
-                      0.14, 0.10, 0.0020, 0.054, 0.15, 2.5]
+    _lambdab_count = [
+        0.0041, 0.0083, 0.042, 0.021, 0.067, 0.026, 0.048, 0.086, 0.14, 0.10,
+        0.0020, 0.054, 0.15, 2.5
+    ]
     lst_ref_temp = [358.0, 398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -193,7 +201,7 @@ class Plastic(Capacitor):
         # Initialize public scalar attributes.
         self.specification = 0
         self.spec_sheet = 0
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 358.0
 
     def calculate_part(self):
@@ -222,7 +230,7 @@ class Plastic(Capacitor):
                     0.00099 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 
@@ -257,11 +265,15 @@ class SuperMetallized(Capacitor):
 
     # MIL-HDK-217F hazard rate calculation variables.
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
-    _piE = [1.0, 4.0, 8.0, 5.0, 14.0, 4.0, 6.0, 13.0, 20.0, 20.0, 0.5, 11.0,
-            29.0, 530.0]
+    _piE = [
+        1.0, 4.0, 8.0, 5.0, 14.0, 4.0, 6.0, 13.0, 20.0, 20.0, 0.5, 11.0, 29.0,
+        530.0
+    ]
     _piQ = [0.02, 0.1, 0.3, 1.0, 10.0]
-    _lambdab_count = [0.0023, 0.0092, 0.019, 0.012, 0.033, 0.0096, 0.014,
-                      0.034, 0.053, 0.048, 0.0011, 0.026, 0.07, 1.2]
+    _lambdab_count = [
+        0.0023, 0.0092, 0.019, 0.012, 0.033, 0.0096, 0.014, 0.034, 0.053,
+        0.048, 0.0011, 0.026, 0.07, 1.2
+    ]
     lst_ref_temp = [398.0]
     # ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- ----- -----
 
@@ -279,7 +291,7 @@ class SuperMetallized(Capacitor):
         self.specification = 0
         self.spec_sheet = 0
 
-        if self.hazard_rate_type < 3:       # MIL-HDBK-217FN2
+        if self.hazard_rate_type < 3:  # MIL-HDBK-217FN2
             self.reference_temperature = 398.0
 
     def calculate_part(self):
@@ -308,7 +320,7 @@ class SuperMetallized(Capacitor):
                     0.00055 * ((_stress / 0.4)**5 + 1) * \
                     exp(2.5 * ((self.temperature_active + 273) /
                                self.reference_temperature)**18)
-            except(OverflowError, ZeroDivisionError):
+            except (OverflowError, ZeroDivisionError):
                 # TODO: Handle overflow error.
                 return True
 

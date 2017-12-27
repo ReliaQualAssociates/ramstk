@@ -39,7 +39,10 @@ This is the test class for testing Hazard module algorithms and models.
 import sys
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -94,8 +97,7 @@ class TestHazardController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_hazard()[1], 0)
-        (_results,
-         _error_code) = self.DUT.delete_hazard(0, 1)
+        (_results, _error_code) = self.DUT.delete_hazard(0, 1)
 
         self.assertTrue(_results)
         self.assertEqual(_error_code, 0)
@@ -125,5 +127,5 @@ class TestHazardController(unittest.TestCase):
         """
 
         self.assertEqual(self.DUT.request_hazard()[1], 0)
-        self.assertEqual(self.DUT.save_all_hazards(),
-                         [(0, 3, 0), (0, 0, 0), (0, 2, 0)])
+        self.assertEqual(self.DUT.save_all_hazards(), [(0, 3, 0), (0, 0, 0),
+                                                       (0, 2, 0)])

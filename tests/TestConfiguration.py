@@ -31,7 +31,6 @@
 #    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
 #    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 """
 This is the test class for testing the Configuration module algorithms and
 models.
@@ -42,7 +41,10 @@ import sys
 from os import environ, makedirs, name
 from os.path import dirname, isfile
 
-sys.path.insert(0, dirname(dirname(__file__)) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(__file__)) + "/rtk",
+)
 
 import unittest
 from nose.plugins.attrib import attr
@@ -156,9 +158,11 @@ class TestConfiguration(unittest.TestCase):
         self.assertEqual(self.DUT.RTK_HR_MULTIPLIER, 1000000.0)
         self.assertEqual(self.DUT.RTK_DEC_PLACES, 6)
         self.assertEqual(self.DUT.RTK_MTIME, 10.0)
-        self.assertEqual(self.DUT.RTK_TABPOS,
-                         {'listbook': 'top', 'modulebook': 'bottom',
-                          'workbook': 'bottom'})
+        self.assertEqual(self.DUT.RTK_TABPOS, {
+            'listbook': 'top',
+            'modulebook': 'bottom',
+            'workbook': 'bottom'
+        })
         self.assertEqual(self.DUT.RTK_GUI_LAYOUT, 'advanced')
         self.assertEqual(self.DUT.RTK_METHOD, 'STANDARD')
 
@@ -183,8 +187,7 @@ class TestConfiguration(unittest.TestCase):
         self.assertFalse(self.DUT.set_site_variables())
 
         if name == 'posix':
-            self.assertEqual(self.DUT.RTK_SITE_DIR,
-                             '/etc/RTK')
+            self.assertEqual(self.DUT.RTK_SITE_DIR, '/etc/RTK')
             self.assertEqual(self.DUT.RTK_HOME_DIR, environ['HOME'])
             self.assertEqual(self.DUT.RTK_CONF_DIR,
                              self.DUT.RTK_HOME_DIR + '/.config/RTK')
@@ -244,24 +247,24 @@ class TestConfiguration(unittest.TestCase):
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/function_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/hardware_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/incident_format.xml'))
-        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
-                               '/mechanisms_format.xml'))
+        self.assertTrue(
+            isfile(self.DUT.RTK_CONF_DIR + '/mechanisms_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/modes_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/part_format.xml'))
-        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
-                               '/requirement_format.xml'))
+        self.assertTrue(
+            isfile(self.DUT.RTK_CONF_DIR + '/requirement_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/revision_format.xml'))
-        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
-                               '/rgincident_format.xml'))
+        self.assertTrue(
+            isfile(self.DUT.RTK_CONF_DIR + '/rgincident_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/risk_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/sfmeca_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/sia_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/software_format.xml'))
-        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
-                               '/stakeholder_format.xml'))
+        self.assertTrue(
+            isfile(self.DUT.RTK_CONF_DIR + '/stakeholder_format.xml'))
         self.assertTrue(isfile(self.DUT.RTK_CONF_DIR + '/testing_format.xml'))
-        self.assertTrue(isfile(self.DUT.RTK_CONF_DIR +
-                               '/validation_format.xml'))
+        self.assertTrue(
+            isfile(self.DUT.RTK_CONF_DIR + '/validation_format.xml'))
 
     @attr(all=True, unit=True)
     def test05a_read_site_configuration(self):

@@ -12,30 +12,30 @@ Software Package Risk Analysis Test Readiness Review Specific Work Book View
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import sys
@@ -120,17 +120,17 @@ class CSCIRiskAnalysis(gtk.VPaned):
 
         # Connect the gtk.Widget() signals to callback methods.
         self._lst_handler_id.append(
-            self.txtTRRLTCMQ1.connect('focus-out-event',
-                                      self._on_focus_out, 0))
+            self.txtTRRLTCMQ1.connect('focus-out-event', self._on_focus_out,
+                                      0))
         self._lst_handler_id.append(
-            self.txtTRRLTCMQ2.connect('focus-out-event',
-                                      self._on_focus_out, 1))
+            self.txtTRRLTCMQ2.connect('focus-out-event', self._on_focus_out,
+                                      1))
         self._lst_handler_id.append(
-            self.txtTRRLTCMQ3.connect('focus-out-event',
-                                      self._on_focus_out, 2))
+            self.txtTRRLTCMQ3.connect('focus-out-event', self._on_focus_out,
+                                      2))
         self._lst_handler_id.append(
-            self.txtTRRLTCMQ4.connect('focus-out-event',
-                                      self._on_focus_out, 3))
+            self.txtTRRLTCMQ4.connect('focus-out-event', self._on_focus_out,
+                                      3))
 
     def create_risk_analysis_page(self, notebook):
         """
@@ -154,8 +154,9 @@ class CSCIRiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdcscilt)
 
-        _frame = Widgets.make_frame(_(u"Software Module Language Type, "
-                                      u"Complexity, &amp; Modularity"))
+        _frame = Widgets.make_frame(
+            _(u"Software Module Language Type, "
+              u"Complexity, &amp; Modularity"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -166,15 +167,17 @@ class CSCIRiskAnalysis(gtk.VPaned):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the language type, modularity, and complexity risk pane
         # for CSCI.
-        _labels = [_(u"1. Number of units in this module:"),
-                   _(u"2. Total executable lines of source code in this "
-                     u"module:"),
-                   _(u"3. Total assembly language lines of code in this "
-                     u"module:"),
-                   _(u"4. Total higher order language lines of code in this "
-                     u"module:")]
-        (_x_pos,
-         _y_pos) = Widgets.make_labels(_labels, _fxdcscilt, 5, 5, wrap=False)
+        _labels = [
+            _(u"1. Number of units in this module:"),
+            _(u"2. Total executable lines of source code in this "
+              u"module:"),
+            _(u"3. Total assembly language lines of code in this "
+              u"module:"),
+            _(u"4. Total higher order language lines of code in this "
+              u"module:")
+        ]
+        (_x_pos, _y_pos) = Widgets.make_labels(
+            _labels, _fxdcscilt, 5, 5, wrap=False)
         _x_pos += 125
 
         _fxdcscilt.put(self.txtTRRLTCMQ1, _x_pos, _y_pos[0])
@@ -183,15 +186,15 @@ class CSCIRiskAnalysis(gtk.VPaned):
         _fxdcscilt.put(self.txtTRRLTCMQ4, _x_pos, _y_pos[3])
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Test\nReadiness\nReview") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Test\nReadiness\nReview") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_angle(0)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Allows assessment of the reliability risk "
-                                  u"at the test readiness review."))
+        _label.set_tooltip_text(
+            _(u"Allows assessment of the reliability risk "
+              u"at the test readiness review."))
         notebook.insert_page(self, tab_label=_label, position=-1)
 
         return False
@@ -323,8 +326,9 @@ class UnitRiskAnalysis(gtk.VPaned):
         _scrollwindow.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
         _scrollwindow.add_with_viewport(_fxdunitlt)
 
-        _frame = Widgets.make_frame(_(u"Software Unit Language Type, "
-                                      u"Complexity, &amp; Modularity"))
+        _frame = Widgets.make_frame(
+            _(u"Software Unit Language Type, "
+              u"Complexity, &amp; Modularity"))
         _frame.set_shadow_type(gtk.SHADOW_ETCHED_OUT)
         _frame.add(_scrollwindow)
 
@@ -347,57 +351,61 @@ class UnitRiskAnalysis(gtk.VPaned):
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Create the language type, modularity, and complexity risk pane
         # for the unit.
-        _labels = [_(u"1. Total executable lines of source code in this "
-                     u"unit:"),
-                   _(u"2. Total assembly language lines of code in this "
-                     u"unit:"),
-                   _(u"3. Total higher order language lines of code in "
-                     u"this unit:"),
-                   _(u"4. Number of conditional branching statements in "
-                     u"this unit:"),
-                   _(u"5. Number of unconditional branching statements in "
-                     u"this unit:")]
-        (_x_pos,
-         _y_pos1) = Widgets.make_labels(_labels, _fxdunitlt, 5, 5, wrap=False)
+        _labels = [
+            _(u"1. Total executable lines of source code in this "
+              u"unit:"),
+            _(u"2. Total assembly language lines of code in this "
+              u"unit:"),
+            _(u"3. Total higher order language lines of code in "
+              u"this unit:"),
+            _(u"4. Number of conditional branching statements in "
+              u"this unit:"),
+            _(u"5. Number of unconditional branching statements in "
+              u"this unit:")
+        ]
+        (_x_pos, _y_pos1) = Widgets.make_labels(
+            _labels, _fxdunitlt, 5, 5, wrap=False)
 
         # Create the quality control and anomaly management risk pane for
         # the unit.
-        _labels = [_(u" 1. When an error condition is detected in this "
-                     u"unit, resolution of the error is determined by "
-                     u"this unit."),
-                   _(u" 2. A check is performed before processing begins "
-                     u"to determine that all data is available."),
-                   _(u" 3. All inputs, processing, and outputs are "
-                     u"clearly and precisely defined for this unit."),
-                   _(u" 4. All data references in this unit are defined."),
-                   _(u" 5. All data references in this unit are "
-                     u"identified."),
-                   _(u" 6. All conditions and alternative processing "
-                     u"options in this unit are defined for each decision "
-                     u"point."),
-                   _(u" 7. All parameters in the argument list for this "
-                     u"unit are used."),
-                   _(u" 8. All design representations in this unit are in "
-                     u"the formats of the established standard."),
-                   _(u" 9. The between unit calling sequence protocol in "
-                     u"this unit complies with the established standard."),
-                   _(u"10. The I/O protocol and format in this unit "
-                     u"complies with the established standard."),
-                   _(u"11. The handling of errors in this unit complies "
-                     u"with the established standard."),
-                   _(u"12. All references to this unit use the same, "
-                     u"unique name."),
-                   _(u"13. All data representation in this unit complies "
-                     u"with the established standard."),
-                   _(u"14. The naming of all data in this unit complies "
-                     u"with the established standard."),
-                   _(u"15. The definition and use of all global variables "
-                     u"in this unit is in accordance with the established "
-                     u"standard."),
-                   _(u"16. All references to the same data in this unit "
-                     u"use a single, unique name.")]
-        (_x_pos2,
-         _y_pos2) = Widgets.make_labels(_labels, _fxdunitqc, 5, 5, wrap=False)
+        _labels = [
+            _(u" 1. When an error condition is detected in this "
+              u"unit, resolution of the error is determined by "
+              u"this unit."),
+            _(u" 2. A check is performed before processing begins "
+              u"to determine that all data is available."),
+            _(u" 3. All inputs, processing, and outputs are "
+              u"clearly and precisely defined for this unit."),
+            _(u" 4. All data references in this unit are defined."),
+            _(u" 5. All data references in this unit are "
+              u"identified."),
+            _(u" 6. All conditions and alternative processing "
+              u"options in this unit are defined for each decision "
+              u"point."),
+            _(u" 7. All parameters in the argument list for this "
+              u"unit are used."),
+            _(u" 8. All design representations in this unit are in "
+              u"the formats of the established standard."),
+            _(u" 9. The between unit calling sequence protocol in "
+              u"this unit complies with the established standard."),
+            _(u"10. The I/O protocol and format in this unit "
+              u"complies with the established standard."),
+            _(u"11. The handling of errors in this unit complies "
+              u"with the established standard."),
+            _(u"12. All references to this unit use the same, "
+              u"unique name."),
+            _(u"13. All data representation in this unit complies "
+              u"with the established standard."),
+            _(u"14. The naming of all data in this unit complies "
+              u"with the established standard."),
+            _(u"15. The definition and use of all global variables "
+              u"in this unit is in accordance with the established "
+              u"standard."),
+            _(u"16. All references to the same data in this unit "
+              u"use a single, unique name.")
+        ]
+        (_x_pos2, _y_pos2) = Widgets.make_labels(
+            _labels, _fxdunitqc, 5, 5, wrap=False)
         _x_pos = max(_x_pos, _x_pos2) + 125
 
         _fxdunitlt.put(self.txtTRRLTCMQ1, _x_pos, _y_pos1[0])
@@ -424,14 +432,14 @@ class UnitRiskAnalysis(gtk.VPaned):
         _fxdunitqc.put(self.chkTRRQCQ14, _x_pos, _y_pos2[15])
 
         self._lst_handler_id.append(
-            self.txtTRRLTCMQ1.connect('focus-out-event',
-                                      self._on_focus_out, 0))
+            self.txtTRRLTCMQ1.connect('focus-out-event', self._on_focus_out,
+                                      0))
         self._lst_handler_id.append(
-            self.txtTRRLTCMQ2.connect('focus-out-event',
-                                      self._on_focus_out, 1))
+            self.txtTRRLTCMQ2.connect('focus-out-event', self._on_focus_out,
+                                      1))
         self._lst_handler_id.append(
-            self.txtTRRLTCMQ3.connect('focus-out-event',
-                                      self._on_focus_out, 2))
+            self.txtTRRLTCMQ3.connect('focus-out-event', self._on_focus_out,
+                                      2))
         self._lst_handler_id.append(
             self.txtLTCMQ4.connect('focus-out-event', self._on_focus_out, 3))
         self._lst_handler_id.append(
@@ -470,15 +478,15 @@ class UnitRiskAnalysis(gtk.VPaned):
             self.chkTRRQCQ14.connect('toggled', self._on_toggled, 20))
 
         _label = gtk.Label()
-        _label.set_markup("<span weight='bold'>" +
-                          _(u"Test\nReadiness\nReview") +
-                          "</span>")
+        _label.set_markup(
+            "<span weight='bold'>" + _(u"Test\nReadiness\nReview") + "</span>")
         _label.set_alignment(xalign=0.5, yalign=0.5)
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_angle(90)
         _label.show_all()
-        _label.set_tooltip_text(_(u"Allows assessment of the reliability risk "
-                                  u"at the test readiness review."))
+        _label.set_tooltip_text(
+            _(u"Allows assessment of the reliability risk "
+              u"at the test readiness review."))
         notebook.insert_page(self, tab_label=_label, position=-1)
 
         return False
@@ -573,9 +581,11 @@ class UnitRiskAnalysis(gtk.VPaned):
         check.handler_block(self._lst_handler_id[index])
 
         if index in []:
-            self._software_model.lst_anomaly_mgmt[index - 5] = int(check.get_active())
+            self._software_model.lst_anomaly_mgmt[index - 5] = int(
+                check.get_active())
         elif index in []:
-            self._software_model.lst_sftw_quality[index - 7] = int(check.get_active())
+            self._software_model.lst_sftw_quality[index - 7] = int(
+                check.get_active())
 
         check.handler_unblock(self._lst_handler_id[index])
 

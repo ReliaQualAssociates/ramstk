@@ -12,30 +12,30 @@ __copyright__ = 'Copyright 2007 - 2014 Andrew "weibullguy" Rowland'
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import os
@@ -82,6 +82,7 @@ except locale.Error:
 import gettext
 _ = gettext.gettext
 
+
 # TODO: Move this to the Hardware class Assistant.
 class ExportHardware:
     """
@@ -101,9 +102,11 @@ class ExportHardware:
         self.assistant.connect('cancel', self._cancel)
         self.assistant.connect('close', self._cancel)
 
-# Create the introduction page.
+        # Create the introduction page.
         fixed = gtk.Fixed()
-        _text_ = _("This is the RTK hardware export assistant.  It will help you export the hardware structure from the database to an external file.  Press 'Forward' to continue or 'Cancel' to quit the assistant.")
+        _text_ = _(
+            "This is the RTK hardware export assistant.  It will help you export the hardware structure from the database to an external file.  Press 'Forward' to continue or 'Cancel' to quit the assistant."
+        )
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
@@ -111,7 +114,7 @@ class ExportHardware:
         self.assistant.set_page_title(fixed, _("Introduction"))
         self.assistant.set_page_complete(fixed, True)
 
-# Create the page to select the fields for exporting.
+        # Create the page to select the fields for exporting.
         model = gtk.ListStore(gobject.TYPE_STRING, gobject.TYPE_INT,
                               gobject.TYPE_BOOLEAN)
         self.tvwDatabaseFields = gtk.TreeView(model)
@@ -129,7 +132,8 @@ class ExportHardware:
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
         label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup("<span weight='bold'>%s</span>" % _("Database\nField"))
+        label.set_markup(
+            "<span weight='bold'>%s</span>" % _("Database\nField"))
         label.show_all()
         column.set_widget(label)
         self.tvwDatabaseFields.append_column(column)
@@ -143,7 +147,8 @@ class ExportHardware:
         label = gtk.Label(column.get_title())
         label.set_line_wrap(True)
         label.set_alignment(xalign=0.5, yalign=0.5)
-        label.set_markup("<span weight='bold'>%s</span>" % _("Select to\nExport"))
+        label.set_markup(
+            "<span weight='bold'>%s</span>" % _("Select to\nExport"))
         label.show_all()
         column.set_widget(label)
         self.tvwDatabaseFields.append_column(column)
@@ -166,14 +171,15 @@ class ExportHardware:
                                       _("Select Fields to Export"))
         self.assistant.set_page_complete(scrollwindow, True)
 
-# Create the page to apply the export criteria.
+        # Create the page to apply the export criteria.
         fixed = gtk.Fixed()
-        _text_ = _("Press 'Apply' to export the requested data or 'Cancel' to quit the assistant.")
+        _text_ = _(
+            "Press 'Apply' to export the requested data or 'Cancel' to quit the assistant."
+        )
         label = _widg.make_label(_text_, width=500, height=150)
         fixed.put(label, 5, 5)
         self.assistant.append_page(fixed)
-        self.assistant.set_page_type(fixed,
-                                     gtk.ASSISTANT_PAGE_CONFIRM)
+        self.assistant.set_page_type(fixed, gtk.ASSISTANT_PAGE_CONFIRM)
         self.assistant.set_page_title(fixed, _("Export Data"))
         self.assistant.set_page_complete(fixed, True)
 
@@ -218,8 +224,8 @@ class ExportHardware:
         # Iterate through the gtk.TreeModel to find the rows the user would
         # like to export.
         while row is not None:
-            field = model.get_value(row, 1) # Index.
-            use = model.get_value(row, 2)   # Boolean use or not use.
+            field = model.get_value(row, 1)  # Index.
+            use = model.get_value(row, 2)  # Boolean use or not use.
             if use:
                 _export_fields.append(field)
                 _headings.append(model.get_value(row, 0))
@@ -234,11 +240,11 @@ class ExportHardware:
         results = self._get_values(model, row, _export_fields)
 
         # Get the user's selected file and write the results.
-        dialog = gtk.FileChooserDialog(_("RTK: Export to File ..."),
-                                       None,
-                                       gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
-                                       (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                        gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        dialog = gtk.FileChooserDialog(
+            _("RTK: Export to File ..."), None,
+            gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT,
+            (gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+             gtk.RESPONSE_REJECT))
         dialog.set_action(gtk.FILE_CHOOSER_ACTION_SAVE)
 
         # Set some filters to select all files or only some text files.
@@ -257,17 +263,20 @@ class ExportHardware:
 
         # Run the dialog and write the file.
         response = dialog.run()
-        if(response == gtk.RESPONSE_ACCEPT):
+        if (response == gtk.RESPONSE_ACCEPT):
             _filename = dialog.get_filename()
             dialog.destroy()
             _len = len(_filename)
             _ext = _filename[_len - 3:_len]
-            if(_ext != 'csv' and _ext != 'txt'):
+            if (_ext != 'csv' and _ext != 'txt'):
                 _filename = _filename + '.txt'
 
             with open(_filename, 'wb') as csvfile:
-                writer = csv.writer(csvfile, delimiter='\t',
-                                    quotechar='|', quoting=csv.QUOTE_MINIMAL)
+                writer = csv.writer(
+                    csvfile,
+                    delimiter='\t',
+                    quotechar='|',
+                    quoting=csv.QUOTE_MINIMAL)
                 writer.writerow(_headings)
                 for i in range(len(results)):
                     writer.writerow(results[i])
@@ -299,7 +308,7 @@ class ExportHardware:
 
             row = model.iter_next(row)
 
-        return(results)
+        return (results)
 
     def _cancel(self, button):
         """

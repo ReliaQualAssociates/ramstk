@@ -13,30 +13,30 @@ Hardware.Component.Semiconductor Package Semiconductor Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -46,7 +46,7 @@ try:
     import Configuration
     import Utilities
     from hardware.component.Component import Model as Component
-except ImportError:                         # pragma: no cover
+except ImportError:  # pragma: no cover
     import rtk.Configuration as Configuration
     import rtk.Utilities as Utilities
     from rtk.hardware.component.Component import Model as Component
@@ -59,7 +59,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 # Add localization support.
 try:
     locale.setlocale(locale.LC_ALL, Configuration.LOCALE)
-except locale.Error:                        # pragma: no cover
+except locale.Error:  # pragma: no cover
     locale.setlocale(locale.LC_ALL, '')
 
 _ = gettext.gettext
@@ -97,13 +97,13 @@ class Model(Component):
         self.lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
 
         # Initialize public scalar attributes.
-        self.quality = 0                    # Quality level.
-        self.q_override = 0.0               # User-defined piQ.
-        self.base_hr = 0.0                  # Base hazard rate.
-        self.piQ = 0.0                      # Quality pi factor.
-        self.piE = 0.0                      # Environment pi factor.
-        self.piT = 0.0                      # Temperature pi factor.
-        self.reason = ""                    # Overstress reason.
+        self.quality = 0  # Quality level.
+        self.q_override = 0.0  # User-defined piQ.
+        self.base_hr = 0.0  # Base hazard rate.
+        self.piQ = 0.0  # Quality pi factor.
+        self.piE = 0.0  # Environment pi factor.
+        self.piT = 0.0  # Temperature pi factor.
+        self.reason = ""  # Overstress reason.
 
     def set_attributes(self, values):
         """
@@ -127,15 +127,15 @@ class Model(Component):
             self.piQ = float(values[98])
             self.piE = float(values[99])
             self.piT = float(values[100])
-            self.reason = ''               # FIXME: See bug 181.     
+            self.reason = ''  # FIXME: See bug 181.
         except IndexError as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Insufficient input values."
-        except(TypeError, ValueError) as _err:
+        except (TypeError, ValueError) as _err:
             _code = Utilities.error_handler(_err.args)
             _msg = "ERROR: Converting one or more inputs to correct data type."
 
-        return(_code, _msg)
+        return (_code, _msg)
 
     def get_attributes(self):
         """
@@ -182,10 +182,11 @@ class Model(Component):
                 self.hazard_rate_model['piQ'] = self.piQ
             except TypeError:
                 _error = 100
-                _messages.append(_(u"ERROR: Component {0:s} failed to "
-                                   u"calculate.  No quality level specified "
-                                   u"and no default quality level "
-                                   u"exists.").format(self.name))
+                _messages.append(
+                    _(u"ERROR: Component {0:s} failed to "
+                      u"calculate.  No quality level specified "
+                      u"and no default quality level "
+                      u"exists.").format(self.name))
 
             # Set the environment pi factor for the model.
             self.piE = self._lst_piE[self.environment_active - 1]
@@ -193,11 +194,11 @@ class Model(Component):
                 self.hazard_rate_model['piE'] = self.piE
             except TypeError:
                 _error = 100
-                _messages.append(_(u"ERROR: Component {0:s} failed to "
-                                   u"calculate.  No operating environment "
-                                   u"specified and no default operating "
-                                   u"environment exists.").format(self.name))
-
+                _messages.append(
+                    _(u"ERROR: Component {0:s} failed to "
+                      u"calculate.  No operating environment "
+                      u"specified and no default operating "
+                      u"environment exists.").format(self.name))
 
         # Calculate component active hazard rate.
         _keys = self.hazard_rate_model.keys()

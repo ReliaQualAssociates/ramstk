@@ -39,7 +39,10 @@ import sys
 import os
 from os.path import dirname
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
+sys.path.insert(
+    0,
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import sqlite3
 
@@ -53,7 +56,7 @@ def setUp():
 
     _database = '/tmp/tempdb.rtk'
 
-    _connection =sqlite3.connect(_database)
+    _connection = sqlite3.connect(_database)
     _cursor = _connection.cursor()
 
     # Create the temporary database.
@@ -73,6 +76,7 @@ def setUp():
     _sqlfile.close()
     _cursor.close()
     _connection.close()
+
 
 def tearDown():
 

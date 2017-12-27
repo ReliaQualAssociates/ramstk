@@ -12,30 +12,30 @@ Requirement Package Assistants Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -213,18 +213,24 @@ class AddRequirement(gtk.Assistant):
         # Function and how many.
         _fixed = gtk.Fixed()
 
-        self.txtQuantity.set_tooltip_text(_(u"Enter the number of "
-                                            u"requirements to add."))
+        self.txtQuantity.set_tooltip_text(
+            _(u"Enter the number of "
+              u"requirements to add."))
 
-        _label = Widgets.make_label(_(u"Select the number of {0:s} "
-                                      u"requirements to "
-                                      u"add...".format(self._level)),
-                                    width=600, height=-1, wrap=True)
+        _label = Widgets.make_label(
+            _(u"Select the number of {0:s} "
+              u"requirements to "
+              u"add...".format(self._level)),
+            width=600,
+            height=-1,
+            wrap=True)
         _fixed.put(_label, 5, 10)
         _y_pos = _label.size_request()[1] + 50
 
-        _labels = [_(u"Number of {0:s} requirements to "
-                     u"add:").format(self._level)]
+        _labels = [
+            _(u"Number of {0:s} requirements to "
+              u"add:").format(self._level)
+        ]
         (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, _y_pos)
         _x_pos += 55
         _fixed.put(self.txtQuantity, _x_pos, _y_pos[0])
@@ -232,46 +238,58 @@ class AddRequirement(gtk.Assistant):
 
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.set_page_title(_fixed, _(u"Select Number of New Requirements to "
-                                      u"Add"))
+        self.set_page_title(_fixed,
+                            _(u"Select Number of New Requirements to "
+                              u"Add"))
         self.set_page_complete(_fixed, True)
 
         # Create the new Requirement information page.
         _fixed = gtk.Fixed()
 
-        self.cmbOwner.set_tooltip_text(_(u"Select the owner for new "
-                                         u"requirement."))
-        self.cmbRqmtType.set_tooltip_text(_(u"Select the type for the new "
-                                            u"requirement."))
-        self.cmbPriority.set_tooltip_text(_(u"Select the priority of the new "
-                                            u"requirement."))
+        self.cmbOwner.set_tooltip_text(
+            _(u"Select the owner for new "
+              u"requirement."))
+        self.cmbRqmtType.set_tooltip_text(
+            _(u"Select the type for the new "
+              u"requirement."))
+        self.cmbPriority.set_tooltip_text(
+            _(u"Select the priority of the new "
+              u"requirement."))
 
         # self.txtDescription.set_tooltip_text(_(u"Enter a description of the "
         #                                        u"new requirement."))
-        self.txtSpecification.set_tooltip_text(_(u"Enter the governing "
-                                                 u"specification for the new "
-                                                 u"requirement, if any."))
-        self.txtPageNumber.set_tooltip_text(_(u"Enter the page number in the "
-                                              u"governing specificaiton that "
-                                              u"applies to the new "
-                                              u"requirement, if any."))
-        self.txtFigureNumber.set_tooltip_text(_(u"Enter the figure number in "
-                                                u"the governing specificaiton "
-                                                u"that applies to the new "
-                                                u"requirement, if any."))
+        self.txtSpecification.set_tooltip_text(
+            _(u"Enter the governing "
+              u"specification for the new "
+              u"requirement, if any."))
+        self.txtPageNumber.set_tooltip_text(
+            _(u"Enter the page number in the "
+              u"governing specificaiton that "
+              u"applies to the new "
+              u"requirement, if any."))
+        self.txtFigureNumber.set_tooltip_text(
+            _(u"Enter the figure number in "
+              u"the governing specificaiton "
+              u"that applies to the new "
+              u"requirement, if any."))
 
         _labels = [_(u"Requirement:")]
         (_x_pos1, _y_pos1) = Widgets.make_labels(_labels, _fixed, 5, 5)
 
-        _labels = [_(u"Requirement Type:"), _(u"Specification:"),
-                   _(u"Page Number:"), _(u"Figure Number:"), _(u"Owner:"),
-                   _(u"Priority:")]
+        _labels = [
+            _(u"Requirement Type:"),
+            _(u"Specification:"),
+            _(u"Page Number:"),
+            _(u"Figure Number:"),
+            _(u"Owner:"),
+            _(u"Priority:")
+        ]
         (_x_pos2, _y_pos2) = Widgets.make_labels(_labels, _fixed, 5,
                                                  _y_pos1[0] + 100)
         _x_pos = max(_x_pos1, _x_pos2) + 50
 
-        _textview = Widgets.make_text_view(txvbuffer=self.txtDescription,
-                                           width=400)
+        _textview = Widgets.make_text_view(
+            txvbuffer=self.txtDescription, width=400)
         _fixed.put(_textview, _x_pos, _y_pos1[0])
         _fixed.put(self.cmbRqmtType, _x_pos, _y_pos2[0])
         _fixed.put(self.txtSpecification, _x_pos, _y_pos2[1])
@@ -282,8 +300,9 @@ class AddRequirement(gtk.Assistant):
 
         self.append_page(_fixed)
         self.set_page_type(_fixed, gtk.ASSISTANT_PAGE_CONTENT)
-        self.set_page_title(_fixed, _(u"Set Values for the New "
-                                      u"Requirement(s)."))
+        self.set_page_title(_fixed,
+                            _(u"Set Values for the New "
+                              u"Requirement(s)."))
         self.set_page_complete(_fixed, True)
 
         # Create the confirmation page.
@@ -331,15 +350,15 @@ class AddRequirement(gtk.Assistant):
             # requirement update the error_codes list with a tuple (Iteration,
             # Error Code) otherwise add the new Requirement to each of the
             # requiremental Matrix.
-            (_requirement,
-             _error_code,
-             _requirement_id) = self._controller.dtcRequirement.add_requirement(
+            (_requirement, _error_code, _requirement_id
+             ) = self._controller.dtcRequirement.add_requirement(
                  self._revision_id, self._parent_id, _args)
 
             if _error_code != 0:
                 _error_codes.append((i, _error_code))
             else:
-                _requirement = self._controller.dtcRequirement.dicRequirements[_requirement_id]
+                _requirement = self._controller.dtcRequirement.dicRequirements[
+                    _requirement_id]
 
                 # Update the attributes of the newly added Requirement.
                 _requirement.code = self._create_code(_requirement_id)
@@ -354,11 +373,12 @@ class AddRequirement(gtk.Assistant):
 
                 # Add the new Requirement to each of the Requirement matrices.
                 for _matrix_id in [3, 4, 5]:
-                    self._controller.dtcMatrices.add_row(_matrix_id,
-                                                         self._parent_id,
-                                                         _requirement_id,
-                                                         val1=_requirement.code,
-                                                         val2=_requirement.description)
+                    self._controller.dtcMatrices.add_row(
+                        _matrix_id,
+                        self._parent_id,
+                        _requirement_id,
+                        val1=_requirement.code,
+                        val2=_requirement.description)
 
         # Handle any errors returned.  Write each of them to the debug log and
         # then raise an error dialog.
@@ -419,8 +439,10 @@ class AddRequirement(gtk.Assistant):
         else:
             _derived = 0
 
-        return([_description, _rqmt_type, _specification, _page_number,
-                _figure_number, _owner, _priority, _derived])
+        return ([
+            _description, _rqmt_type, _specification, _page_number,
+            _figure_number, _owner, _priority, _derived
+        ])
 
     def _create_code(self, requirement_id):
         """
@@ -449,7 +471,6 @@ class AddRequirement(gtk.Assistant):
         return _code
 
     def _cancel(self, __assistant):
-
         """
         Method to destroy the assistant when the 'Cancel' button is
         pressed.

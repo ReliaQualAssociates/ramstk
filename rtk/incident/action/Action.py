@@ -12,30 +12,30 @@ Incident Action Sub-Package Data Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Import other RTK modules.
@@ -50,7 +50,7 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
 
-class Model(object):                       # pylint: disable=R0902, R0904
+class Model(object):  # pylint: disable=R0902, R0904
     """
     The Incident Action data model contains the attributes and methods for an
     Incident Action. The attributes of an Incident Action model are:
@@ -166,7 +166,7 @@ class Action(object):
             _action.set_attributes(_results[i])
             self.dicActions[_results[i][1]] = _action
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def add_action(self, incident_id):
         """
@@ -199,7 +199,7 @@ class Action(object):
                                     _due_date, 0, 0, 0, 0, 0, 0, 0))
             self.dicActions[_action.action_id] = _action
 
-        return(_results, _error_code)
+        return (_results, _error_code)
 
     def save_all_actions(self):
         """
@@ -235,12 +235,11 @@ class Action(object):
                       fld_closed_date={11:d}, fld_closed={12:d} \
                   WHERE fld_incident_id={0:d} \
                   AND fld_action_id={1:d}".format(
-                      _action.incident_id, _action.action_id,
-                      _action.prescribed_action, _action.action_taken,
-                      _action.action_owner, _action.due_date, _action.status,
-                      _action.approved_by, _action.approved_date,
-                      _action.approved, _action.closed_by, _action.closed_date,
-                      _action.closed)
+            _action.incident_id, _action.action_id, _action.prescribed_action,
+            _action.action_taken, _action.action_owner, _action.due_date,
+            _action.status, _action.approved_by, _action.approved_date,
+            _action.approved, _action.closed_by, _action.closed_date,
+            _action.closed)
         (_results, _error_code, __) = self._dao.execute(_query, commit=True)
 
-        return(_results, _error_code)
+        return (_results, _error_code)

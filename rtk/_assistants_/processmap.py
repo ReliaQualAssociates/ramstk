@@ -15,30 +15,30 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -196,7 +196,8 @@ class ProcessMap(gtk.Window):
         _background = etree.parse(mapfile).xpath("/root/map/step/background")
 
         # Retrieve the description for each step.
-        _descriptions = etree.parse(mapfile).xpath("/root/map/step/description")
+        _descriptions = etree.parse(mapfile).xpath(
+            "/root/map/step/description")
 
         # Retrieve the module page to select for each step.
         _module = etree.parse(mapfile).xpath("/root/map/step/module")
@@ -215,16 +216,16 @@ class ProcessMap(gtk.Window):
         _max_x = 0
         _max_y = 0
         for i in range(_n_steps):
-            self._steps[int(_step_id[i].text)] = [int(_x_start[i].text),
-                                                  int(_y_start[i].text),
-                                                  int(_x_stop[i].text),
-                                                  int(_y_stop[i].text),
-                                                  _foreground[i].text,
-                                                  _background[i].text,
-                                                  _descriptions[i].text,
-                                                  int(_module[i].text),
-                                                  int(_work[i].text),
-                                                  int(_action[i].text)]
+            self._steps[int(_step_id[i].text)] = [
+                int(_x_start[i].text),
+                int(_y_start[i].text),
+                int(_x_stop[i].text),
+                int(_y_stop[i].text), _foreground[i].text, _background[i].text,
+                _descriptions[i].text,
+                int(_module[i].text),
+                int(_work[i].text),
+                int(_action[i].text)
+            ]
 
             _max_x = max(_max_x, int(_x_stop[i].text) + 10)
             _max_y = max(_max_y, int(_y_stop[i].text) + 10)
@@ -255,38 +256,38 @@ class ProcessMap(gtk.Window):
             # Create a horizontal line with no arrow.
             elif self._steps[_step][9] == 10:
                 _arrow_x_pos = 0
-                self._horizontal_line(_x_start, _x_end, _y_start,
-                                      _arrow_x_pos, 'right')
+                self._horizontal_line(_x_start, _x_end, _y_start, _arrow_x_pos,
+                                      'right')
 
             # Create a vertical line with no arrow.
             elif self._steps[_step][9] == 11:
                 _arrow_y_pos = 0
-                self._vertical_line(_x_start, _y_start, _y_end,
-                                    _arrow_y_pos, 'down')
+                self._vertical_line(_x_start, _y_start, _y_end, _arrow_y_pos,
+                                    'down')
 
             # Create a right pointing arrow.
             elif self._steps[_step][9] == 12:
                 _arrow_x_pos = _x_end - 15
-                self._horizontal_line(_x_start, _x_end, _y_start,
-                                      _arrow_x_pos, 'right', True)
+                self._horizontal_line(_x_start, _x_end, _y_start, _arrow_x_pos,
+                                      'right', True)
 
             # Create a left pointing arrow.
             elif self._steps[_step][9] == 13:
                 _arrow_x_pos = _x_start - 5
-                self._horizontal_line(_x_start, _x_end, _y_start,
-                                      _arrow_x_pos, 'left', True)
+                self._horizontal_line(_x_start, _x_end, _y_start, _arrow_x_pos,
+                                      'left', True)
 
             # Create a down pointing arrow.
             elif self._steps[_step][9] == 14:
                 _arrow_y_pos = _y_end - 55
-                self._vertical_line(_x_start, _y_start, _y_end,
-                                    _arrow_y_pos, 'down', True)
+                self._vertical_line(_x_start, _y_start, _y_end, _arrow_y_pos,
+                                    'down', True)
 
             # Create an up pointing arrow.
             elif self._steps[_step][9] == 15:
                 _arrow_y_pos = _y_start - 50
-                self._vertical_line(_x_start, _y_start, _y_end,
-                                    _arrow_y_pos, 'up', True)
+                self._vertical_line(_x_start, _y_start, _y_end, _arrow_y_pos,
+                                    'up', True)
 
             # Create a label.
             elif self._steps[_step][9] == 20:
@@ -321,7 +322,8 @@ class ProcessMap(gtk.Window):
         _label.set_justify(gtk.JUSTIFY_CENTER)
         _label.set_line_wrap(True)
         _label.set_width_chars(20)
-        _label.set_markup(u"<span weight='bold'>%s</span>" % self._steps[step][6])
+        _label.set_markup(
+            u"<span weight='bold'>%s</span>" % self._steps[step][6])
         _step.add(_label)
 
         # Make the background color for the step.
@@ -341,14 +343,19 @@ class ProcessMap(gtk.Window):
         # Connect the step to the callback method unless it is a
         # non-interactive type step.
         if self._steps[step][9] == 1:
-            _step.connect('clicked', self._step_select,
-                          self._steps[step][7], self._steps[step][8])
+            _step.connect('clicked', self._step_select, self._steps[step][7],
+                          self._steps[step][8])
         else:
             _step.set_sensitive(False)
 
         return _step
 
-    def _horizontal_line(self, x_start, x_end, y_start, arrow_x_pos, direction,
+    def _horizontal_line(self,
+                         x_start,
+                         x_end,
+                         y_start,
+                         arrow_x_pos,
+                         direction,
                          arrow=False):
         """
         Method to create a horizontal line.
@@ -401,7 +408,12 @@ class ProcessMap(gtk.Window):
 
         return False
 
-    def _vertical_line(self, x_start, y_start, y_end, arrow_y_pos, direction,
+    def _vertical_line(self,
+                       x_start,
+                       y_start,
+                       y_end,
+                       arrow_y_pos,
+                       direction,
                        arrow=False):
         """
         Method to create a vertical line.

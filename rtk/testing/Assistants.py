@@ -12,30 +12,30 @@ Testing Package Assistants Module
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 #
-# Redistribution and use in source and binary forms, with or without 
+# Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
-# 
-# 1. Redistributions of source code must retain the above copyright notice, 
+#
+# 1. Redistributions of source code must retain the above copyright notice,
 #    this list of conditions and the following disclaimer.
 #
-# 2. Redistributions in binary form must reproduce the above copyright notice, 
-#    this list of conditions and the following disclaimer in the documentation 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
 #    and/or other materials provided with the distribution.
 #
-# 3. Neither the name of the copyright holder nor the names of its contributors 
-#    may be used to endorse or promote products derived from this software 
+# 3. Neither the name of the copyright holder nor the names of its contributors
+#    may be used to endorse or promote products derived from this software
 #    without specific prior written permission.
 #
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS 
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT 
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A 
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER 
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, 
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, 
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR 
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF 
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING 
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
+#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
+#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
+#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
+#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 #    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 import gettext
@@ -103,13 +103,14 @@ class MTBFICalculator(gtk.Dialog):
                       average first phase MTBF is being calculated.
         """
 
-        gtk.Dialog.__init__(self, title=_(u"RTK Mean Time to First Fix "
-                                          u"Assistant"),
-                            parent=None,
-                            flags=(gtk.DIALOG_MODAL |
-                                   gtk.DIALOG_DESTROY_WITH_PARENT),
-                            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        gtk.Dialog.__init__(
+            self,
+            title=_(u"RTK Mean Time to First Fix "
+                    u"Assistant"),
+            parent=None,
+            flags=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
+            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_REJECT))
 
         # Initialize private dictionary attributes.
 
@@ -132,22 +133,25 @@ class MTBFICalculator(gtk.Dialog):
         self.txtNFailures = Widgets.make_entry(width=100)
 
         # Connect the buttons to callback methods.
-        self.get_action_area().get_children()[0].connect('button-release-event',
-                                                         self._cancel)
-        self.get_action_area().get_children()[1].connect('button-release-event',
-                                                         self._calculate)
+        self.get_action_area().get_children()[0].connect(
+            'button-release-event', self._cancel)
+        self.get_action_area().get_children()[1].connect(
+            'button-release-event', self._calculate)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fixed = gtk.Fixed()
-        self.vbox.pack_start(_fixed)        # pylint: disable=E1101
+        self.vbox.pack_start(_fixed)  # pylint: disable=E1101
 
-        _labels = [_(u"Please enter either the initial and final MTBF or the "
-                     u"test time and expected number of failures."),
-                   _(u"Phase 1 Initial MTBF:"), _(u"Phase 1 Final MTBF:"),
-                   _(u"Phase 1 Test Time:"),
-                   _(u"Expected Number of Failures During Phase 1:")]
+        _labels = [
+            _(u"Please enter either the initial and final MTBF or the "
+              u"test time and expected number of failures."),
+            _(u"Phase 1 Initial MTBF:"),
+            _(u"Phase 1 Final MTBF:"),
+            _(u"Phase 1 Test Time:"),
+            _(u"Expected Number of Failures During Phase 1:")
+        ]
         (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos += 55
 
@@ -213,7 +217,6 @@ class MTBFICalculator(gtk.Dialog):
         self.destroy()
 
 
-
 class MTTFFCalculator(gtk.Dialog):
     """
     This is the assistant that calculate the mean time to first failure for
@@ -229,13 +232,14 @@ class MTTFFCalculator(gtk.Dialog):
                                                                  controller.
         """
 
-        gtk.Dialog.__init__(self, title=_(u"RTK Mean Time to First Fix "
-                                          u"Assistant"),
-                            parent=None,
-                            flags=(gtk.DIALOG_MODAL |
-                                   gtk.DIALOG_DESTROY_WITH_PARENT),
-                            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT,
-                                     gtk.STOCK_CANCEL, gtk.RESPONSE_REJECT))
+        gtk.Dialog.__init__(
+            self,
+            title=_(u"RTK Mean Time to First Fix "
+                    u"Assistant"),
+            parent=None,
+            flags=(gtk.DIALOG_MODAL | gtk.DIALOG_DESTROY_WITH_PARENT),
+            buttons=(gtk.STOCK_OK, gtk.RESPONSE_ACCEPT, gtk.STOCK_CANCEL,
+                     gtk.RESPONSE_REJECT))
 
         self.txtMTBFI = Widgets.make_entry(width=100)
         self.txtNItems = Widgets.make_entry(width=100)
@@ -250,24 +254,28 @@ class MTTFFCalculator(gtk.Dialog):
         self.txtTTFFUL = Widgets.make_entry(width=100, editable=False)
 
         # Connect the buttons to callback methods.
-        self.get_action_area().get_children()[0].connect('button-release-event',
-                                                         self._cancel)
-        self.get_action_area().get_children()[1].connect('button-release-event',
-                                                         self._calculate)
+        self.get_action_area().get_children()[0].connect(
+            'button-release-event', self._cancel)
+        self.get_action_area().get_children()[1].connect(
+            'button-release-event', self._calculate)
 
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         # Build-up the containers for the dialog.                       #
         # +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ #
         _fixed = gtk.Fixed()
-        self.vbox.pack_start(_fixed)        # pylint: disable=E1101
+        self.vbox.pack_start(_fixed)  # pylint: disable=E1101
 
-        _labels = [_(u"Starting MTBF:"), _(u"No. of Test Articles:"),
-                   _(u"Average Hours/Week/Article:"),
-                   _(u"Min. Time to Implement First Fix:"),
-                   _(u"Likely Time to Implement First Fix:"),
-                   _(u"Max. Time to Implement First Fix:"),
-                   _(u"Confidence:"), _(u"Expected Time to First Failure:"),
-                   _(u"Cumulative Test Time to First Fix:")]
+        _labels = [
+            _(u"Starting MTBF:"),
+            _(u"No. of Test Articles:"),
+            _(u"Average Hours/Week/Article:"),
+            _(u"Min. Time to Implement First Fix:"),
+            _(u"Likely Time to Implement First Fix:"),
+            _(u"Max. Time to Implement First Fix:"),
+            _(u"Confidence:"),
+            _(u"Expected Time to First Failure:"),
+            _(u"Cumulative Test Time to First Fix:")
+        ]
         (_x_pos, _y_pos) = Widgets.make_labels(_labels, _fixed, 5, 5)
         _x_pos += 55
 
@@ -321,11 +329,9 @@ class MTTFFCalculator(gtk.Dialog):
 
         _mttff = _mtbfi / _n_items
         _ttffll = ((_fix_timell + (7.0 * _mtbfi) /
-                    (_n_items * _hrs_wk_item)) *
-                   _hrs_wk_item * _n_items) / 7.0
+                    (_n_items * _hrs_wk_item)) * _hrs_wk_item * _n_items) / 7.0
         _ttfful = ((_fix_timeul + (7.0 * _mtbfi) /
-                    (_n_items * _hrs_wk_item)) *
-                   _hrs_wk_item * _n_items) / 7.0
+                    (_n_items * _hrs_wk_item)) * _hrs_wk_item * _n_items) / 7.0
 
         self.txtMTTFF.set_text(str(fmt.format(_mttff)))
         self.txtTTFFLL.set_text(str(fmt.format(_ttffll)))
@@ -377,13 +383,16 @@ class AddRGRecord(gtk.Assistant):
         # Create the introduction page.                                     #
         # ----------------------------------------------------------------- #
         _fixed = gtk.Fixed()
-        _label = Widgets.make_label(_(u"This is the RTK reliability growth "
-                                      u"record assistant.  It will help you "
-                                      u"add a record for tracking against the "
-                                      u"currently selected reliability growth "
-                                      u"plan.  Press 'Forward' to continue or "
-                                      u"'Cancel' to quit the assistant."),
-                                    width=600, height=-1, wrap=True)
+        _label = Widgets.make_label(
+            _(u"This is the RTK reliability growth "
+              u"record assistant.  It will help you "
+              u"add a record for tracking against the "
+              u"currently selected reliability growth "
+              u"plan.  Press 'Forward' to continue or "
+              u"'Cancel' to quit the assistant."),
+            width=600,
+            height=-1,
+            wrap=True)
 
         _fixed.put(_label, 5, 5)
         self.append_page(_fixed)
@@ -402,21 +411,23 @@ class AddRGRecord(gtk.Assistant):
 
         # Create the gtk.Combo that allow one of multiple selections.
         self.txtDate = Widgets.make_entry(width=100)
-        self.txtDate.set_tooltip_text(_(u"Date test record was generated.  "
-                                        u"This is not necessarily the date "
-                                        u"the record is being added."))
-        self.btnDate = Widgets.make_button(height=25, width=25, label="...",
-                                           image=None)
+        self.txtDate.set_tooltip_text(
+            _(u"Date test record was generated.  "
+              u"This is not necessarily the date "
+              u"the record is being added."))
+        self.btnDate = Widgets.make_button(
+            height=25, width=25, label="...", image=None)
         self.btnDate.connect('button-release-event', Widgets.date_select,
                              self.txtDate)
         self.txtTime = Widgets.make_entry()
         self.txtTime.set_tooltip_text(_(u"Test time."))
         self.chkAdditional = Widgets.make_check_button(_(u"Additional"))
-        self.chkAdditional.set_tooltip_text(_(u"If checked, the test time is "
-                                              u"additional test time.  If "
-                                              u"unchecked, the test time is "
-                                              u"cumulative since the start of "
-                                              u"testing."))
+        self.chkAdditional.set_tooltip_text(
+            _(u"If checked, the test time is "
+              u"additional test time.  If "
+              u"unchecked, the test time is "
+              u"cumulative since the start of "
+              u"testing."))
         self.chkAdditional.set_active(False)
 
         self.txtNumFails = Widgets.make_entry()
@@ -474,10 +485,8 @@ class AddRGRecord(gtk.Assistant):
         _n_failures = int(self.txtNumFails.get_text())
         _additional = self.chkAdditional.get_active()
 
-        (_results,
-         _error_code) = self._dtcGrowth.add_test_record(_test_id, _date, _time,
-                                                        _n_failures,
-                                                        _additional)
+        (_results, _error_code) = self._dtcGrowth.add_test_record(
+            _test_id, _date, _time, _n_failures, _additional)
 
         if _results:
             self._listview.load_rg_assessment_details()

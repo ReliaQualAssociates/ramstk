@@ -11,7 +11,8 @@ from os.path import dirname
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
+    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+)
 
 from datetime import date
 
@@ -165,7 +166,7 @@ class TestRTKRequirement(unittest.TestCase):
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, "RTK SUCCESS: Updating RTKRequirement {0:d} "
-                               "attributes.".format(self.DUT.requirement_id))
+                         "attributes.".format(self.DUT.requirement_id))
 
     @attr(all=True, unit=True)
     def test02b_set_attributes_missing_key(self):
@@ -176,8 +177,8 @@ class TestRTKRequirement(unittest.TestCase):
 
         self.assertEqual(_error_code, 40)
         self.assertEqual(_msg, "RTK ERROR: Missing attribute 'q_clarity_1' "
-                               "in attribute dictionary passed to "
-                               "RTKMechanism.set_attributes().")
+                         "in attribute dictionary passed to "
+                         "RTKMechanism.set_attributes().")
 
         self._attributes['q_clarity_1'] = 0
 
