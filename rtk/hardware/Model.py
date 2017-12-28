@@ -7,7 +7,9 @@
 """Hardware Package Data Model."""  # pragma: no cover
 
 # Import other RTK modules.
-# pylint: disable=E0401
+# pylint: disable=E04011
+from analyses.prediction import Capacitor  # pragma: no cover
+# pylint: disable=E04011
 from datamodels import RTKDataModel  # pragma: no cover
 # pylint: disable=E0401
 from dao import RTKHardware, RTKDesignElectric, RTKDesignMechanic, \
@@ -60,6 +62,39 @@ class HardwareBoMDataModel(RTKDataModel):
         self.dtm_mil_hdbk_f = MilHdbkFDataModel(dao)
         self.dtm_nswc = NSWCDataModel(dao)
         self.dtm_reliability = ReliabilityDataModel(dao)
+
+    def select(self, node_id, table):
+        """
+        Retrieve the instance of the RTK<MODULE> model for the Node ID passed.
+
+        :param int node_id: the Node ID of the data package to retrieve.
+        :param str table: the RTK Program database table to select the entity
+                          from.  Current options are:
+
+                          * general
+                          * electrical_design
+                          * mechanical_design
+                          * mil_hdbk_f
+                          * nswc
+                          * reliability
+
+        :return: the instance of the RTK<MODULE> class that was requested
+                 or None if the requested Node ID does not exist.
+        """
+        if table == 'general':
+            _entity = self.dtm_hardware.select(node_id)
+        elif table == 'electrical_design':
+            _entity = self.dtm_design_electric.select(node_id)
+        elif table == 'mechanical_design':
+            _entity = self.dtm_design_mechanic.select(node_id)
+        elif table == 'mil_hdbk_f':
+            _entity = self.dtm_mil_hdbk_f.select(node_id)
+        elif table == 'nswc':
+            _entity = self.dtm_nswc.select(node_id)
+        elif table == 'reliability':
+            _entity = self.dtm_reliability.select(node_id)
+
+        return _entity
 
     def select_all(self, revision_id):
         """
@@ -236,71 +271,31 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code = 0
-        _msg0 = ''
-
-        _session = self.dao.RTK_SESSION(
-            bind=self.dao.engine,
-            autoflush=True,
-            autocommit=False,
-            expire_on_commit=False)
-
-        try:
-            _entity = self.dtm_hardware.tree.get_node(node_id).data
-            if _entity is not None:
-                _session.add(_entity)
-        except AttributeError:
-            _error_code = 2006
-            _msg0 = 'RTKHardware record'
-
-        try:
-            _entity = self.dtm_design_electric.tree.get_node(node_id).data
-            if _entity is not None:
-                _session.add(_entity)
-        except AttributeError:
-            _error_code = 2006
-            _msg0 = _msg0 + ', RTKDesignElectric record'
-
-        try:
-            _entity = self.dtm_design_mechanic.tree.get_node(node_id).data
-            if _entity is not None:
-                _session.add(_entity)
-        except AttributeError:
-            _error_code = 2006
-            _msg0 = _msg0 + ', RTKDesignMechanic record'
-
-        try:
-            _entity = self.dtm_mil_hdbk_f.tree.get_node(node_id).data
-            if _entity is not None:
-                _session.add(_entity)
-        except AttributeError:
-            _error_code = 2006
-            _msg0 = _msg0 + ', RTKMilHdbkF record'
-
-        try:
-            _entity = self.dtm_nswc.tree.get_node(node_id).data
-            if _entity is not None:
-                _session.add(_entity)
-        except AttributeError:
-            _error_code = 2006
-            _msg0 = _msg0 + ', RTKNSWC record'
-
-        try:
-            _entity = self.dtm_reliability.tree.get_node(node_id).data
-            if _entity is not None:
-                _session.add(_entity)
-        except AttributeError:
-            _error_code = 2006
-            _msg0 = _msg0 + ', RTKReliability record'
+        _error_code, _msg = self.dtm_hardware.update(node_id)
 
         if _error_code == 0:
-            _error_code, _msg = self.dao.db_update(_session)
+            _error_code, _msg = self.dtm_reliability.update(node_id)
         else:
-            _error_code = 2006
-            _msg = 'RTK ERROR: Problem saving Hardware BoM ID {0:d}.  Error ' \
-                   'when saving: {1:s}.'.format(node_id, _msg0)
+            _msg = _msg + "  RTKHardware "
+        if _error_code == 0:
+            _error_code, _msg = self.dtm_design_electric.update(node_id)
+        else:
+            _msg = _msg + "RTKReliability "
+        if _error_code == 0:
+            _error_code, _msg = self.dtm_design_mechanic.update(node_id)
+        else:
+            _msg = _msg + "RTKDesignElectric "
+        if _error_code == 0:
+            _error_code, _msg = self.dtm_mil_hdbk_f.update(node_id)
+        else:
+            _msg = _msg + "RTKDesignMechanic "
+        if _error_code == 0:
+            _error_code, _msg = self.dtm_nswc.update(node_id)
+        else:
+            _msg = _msg + "RTKMilHdbkF "
 
-        _session.close()
+        if _error_code != 0:
+            _msg = _msg + "RTKNSWC"
 
         return _error_code, _msg
 
@@ -328,6 +323,43 @@ class HardwareBoMDataModel(RTKDataModel):
                       'rtk.hardware.Model.HardwareDataModel.update_all().'
 
         return _error_code, _msg
+
+    def calculate(self, hardware_id):
+        """
+        Calculate RAMS attributes for the hardware item.
+
+        :param int hardware_id: the ID of the hardware item to calculate.
+        :return:
+        :rtype:
+        """
+        _attributes = self.tree.get_node(hardware_id).data
+        _hardware = self.select(hardware_id, 'reliability')
+
+        if _attributes['category_id'] == 1:
+            print "Integrated Circuit"
+        elif _attributes['category_id'] == 2:
+            print "Semiconductor"
+        elif _attributes['category_id'] == 3:
+            print "Resistor"
+        elif _attributes['category_id'] == 4:
+            _attributes, __ = Capacitor.calculate(**_attributes)
+            _hardware.hazard_rate_active = _attributes['hazard_rate_active']
+        elif _attributes['category_id'] == 5:
+            print "Inductive Device"
+        elif _attributes['category_id'] == 6:
+            print "Relay"
+        elif _attributes['category_id'] == 7:
+            print "Switch"
+        elif _attributes['category_id'] == 8:
+            print "Connection"
+        elif _attributes['category_id'] == 9:
+            print "Meter"
+        elif _attributes['category_id'] == 10:
+            print "Miscellaneous"
+        else:
+            print "Assembly"
+
+        return
 
 
 class HardwareDataModel(RTKDataModel):

@@ -56,6 +56,19 @@ class HardwareBoMDataController(RTKDataController):
 
         # Initialize public scalar attributes.
 
+    def request_select(self, node_id, table):
+        """
+        Request the RTK Program database record associated with Node ID.
+
+        :param int node_id: the Node ID to retrieve from the Tree.
+        :param str table: the name of the RTK Program database table to
+                          select the entity from.
+        :return: the RTK Program database record requested from the desired
+                 table.
+        :rtype: object
+        """
+        return self._dtm_data_model.select(node_id, table)
+
     def request_select_all_matrix(self, revision_id, matrix_type):
         """
         Retrieve all the Matrices associated with the Hardware.
@@ -366,3 +379,15 @@ class HardwareBoMDataController(RTKDataController):
                    'children.'.format(node_id)
 
         return _error_code, _msg
+
+    def request_calculate(self, node_id):
+        """
+        Request to calculate the hardware item.
+
+        :param int node_id:
+        :return:
+        :rtype:
+        """
+        self._dtm_data_model.calculate(node_id)
+
+        return

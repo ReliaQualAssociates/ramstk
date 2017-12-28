@@ -185,23 +185,24 @@ class GeneralData(RTKWorkView):
         self.cmbManufacturer = rtk.RTKComboBox(simple=False)
         self.cmbSubcategory = rtk.RTKComboBox()
 
-        self.txtAltPartNum = rtk.RTKEntry(tooltip=_(
-            u"The alternate part "
-            u"number (if any) of the "
-            u"selected hardware item."))
+        self.txtAltPartNum = rtk.RTKEntry(
+            tooltip=_(u"The alternate part "
+                      u"number (if any) of the "
+                      u"selected hardware item."))
         self.txtAttachments = rtk.RTKTextView(
             gtk.TextBuffer(),
             width=600,
             tooltip=_(u"Hyperlinks to any documents associated with the "
                       u"selected hardware item."))
-        self.txtCAGECode = rtk.RTKEntry(tooltip=_(u"The Commerical and "
-                                                  u"Government Entity (CAGE) "
-                                                  u"Code of the selected "
-                                                  u"hardware item."))
-        self.txtCompRefDes = rtk.RTKEntry(tooltip=_(
-            u"The composite reference "
-            u"designator of the "
-            u"selected hardware item."))
+        self.txtCAGECode = rtk.RTKEntry(
+            tooltip=_(u"The Commerical and "
+                      u"Government Entity (CAGE) "
+                      u"Code of the selected "
+                      u"hardware item."))
+        self.txtCompRefDes = rtk.RTKEntry(
+            tooltip=_(u"The composite reference "
+                      u"designator of the "
+                      u"selected hardware item."))
         self.txtCost = rtk.RTKEntry(
             width=100,
             tooltip=_(u"The unit cost of the selected hardware item."))
@@ -209,38 +210,45 @@ class GeneralData(RTKWorkView):
             gtk.TextBuffer(),
             width=600,
             tooltip=_(u"The description of the selected hardware item."))
-        self.txtFigureNumber = rtk.RTKEntry(tooltip=_(u"The figure number in "
-                                                      u"the governing "
-                                                      u"specification for the "
-                                                      u"selected hardware "
-                                                      u"item."))
-        self.txtLCN = rtk.RTKEntry(tooltip=_(u"The Logistics Control Number "
-                                             u"(LCN) of the selected hardware "
-                                             u"item."))
+        self.txtFigureNumber = rtk.RTKEntry(
+            tooltip=_(u"The figure number in "
+                      u"the governing "
+                      u"specification for the "
+                      u"selected hardware "
+                      u"item."))
+        self.txtLCN = rtk.RTKEntry(
+            tooltip=_(u"The Logistics Control Number "
+                      u"(LCN) of the selected hardware "
+                      u"item."))
         self.txtName = rtk.RTKEntry(
             width=600, tooltip=_(u"The name of the selected hardware item."))
-        self.txtNSN = rtk.RTKEntry(tooltip=_(
-            u"The National Stock Number (NSN) of the selected hardware item."))
-        self.txtPageNumber = rtk.RTKEntry(tooltip=_(u"The page number in the "
-                                                    u"governing specification "
-                                                    u"for the selected "
-                                                    u"hardware item."))
+        self.txtNSN = rtk.RTKEntry(
+            tooltip=
+            _(u"The National Stock Number (NSN) of the selected hardware item."
+              ))
+        self.txtPageNumber = rtk.RTKEntry(
+            tooltip=_(u"The page number in the "
+                      u"governing specification "
+                      u"for the selected "
+                      u"hardware item."))
         self.txtPartNumber = rtk.RTKEntry(
             tooltip=_(u"The part number of the selected hardware item."))
         self.txtQuantity = rtk.RTKEntry(
             width=50,
             tooltip=_(
                 u"The number of the selected hardware items in the design."))
-        self.txtRefDes = rtk.RTKEntry(tooltip=_(
-            u"The reference designator of the selected hardware item."))
+        self.txtRefDes = rtk.RTKEntry(
+            tooltip=_(
+                u"The reference designator of the selected hardware item."))
         self.txtRemarks = rtk.RTKTextView(
             gtk.TextBuffer(),
             width=600,
             tooltip=_(u"Enter any remarks associated with the selected "
                       u"hardware item."))
-        self.txtSpecification = rtk.RTKEntry(tooltip=_(
-            u"The specification (if any) governing the selected hardware item."
-        ))
+        self.txtSpecification = rtk.RTKEntry(
+            tooltip=
+            _(u"The specification (if any) governing the selected hardware item."
+              ))
         self.txtYearMade = rtk.RTKEntry(
             width=100,
             tooltip=_(
@@ -271,8 +279,9 @@ class GeneralData(RTKWorkView):
             self.txtCompRefDes.connect('changed', self._on_focus_out, 9))
         self._lst_handler_id.append(
             self.txtCost.connect('changed', self._on_focus_out, 10))
-        self._lst_handler_id.append(self.txtDescription.do_get_buffer(
-        ).connect('changed', self._on_focus_out, 11))
+        self._lst_handler_id.append(
+            self.txtDescription.do_get_buffer().connect(
+                'changed', self._on_focus_out, 11))
         self._lst_handler_id.append(
             self.txtFigureNumber.connect('changed', self._on_focus_out, 12))
         self._lst_handler_id.append(
@@ -321,7 +330,7 @@ class GeneralData(RTKWorkView):
         _model.clear()
 
         _subcategory = self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[
-            category]
+            category - 1]
         _data = []
         for _key in _subcategory:
             _data.append([_subcategory[_key]])
@@ -346,11 +355,11 @@ class GeneralData(RTKWorkView):
         ) = self._dtc_data_controller.request_make_composite_reference_designator(
             node_id=self._hardware_id)
         if _error_code == 0:
-            _attributes = self._dtc_data_controller.request_get_attributes(
+            _hardware = self._dtc_data_controller.request_select(
                 self._hardware_id, 'general')
 
             self.txtCompRefDes.handler_block(self._lst_handler_id[9])
-            self.txtCompRefDes.set_text(str(_attributes['comp_ref_des']))
+            self.txtCompRefDes.set_text(str(_hardware.comp_ref_des))
             self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
 
         else:
@@ -546,18 +555,18 @@ class GeneralData(RTKWorkView):
 
         if self._dtc_data_controller is not None:
             _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id)
+                self._hardware_id, 'general')
 
             if index == 2:
-                _hardware['category_id'] = combo.get_active() - 1
-                self._do_load_subcategory(_hardware['category_id'])
+                _hardware.category_id = int(combo.get_active())
+                self._do_load_subcategory(_hardware.category_id)
             elif index == 3:
-                _hardware['cost_type_id'] = combo.get_active() - 1
+                _hardware.cost_type_id = int(combo.get_active())
             elif index == 4:
-                _hardware['manufacturer_id'] = combo.get_active() - 1
+                _hardware.manufacturer_id = int(combo.get_active())
                 self.txtCAGECode.set_text(_model.get(_row, 2)[0])
             elif index == 5:
-                _hardware['subcategory_id'] = combo.get_active() - 1
+                _hardware.subcategory_id = int(combo.get_active())
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -645,88 +654,85 @@ class GeneralData(RTKWorkView):
 
         if self._dtc_data_controller is not None:
             _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id)
+                self._hardware_id, 'general')
 
             if index == 6:
                 _position = 2
                 _text = str(entry.get_text())
-                _hardware['alt_part_num'] = _text
+                _hardware.alt_part_number = _text
             elif index == 7:
                 _position = None
                 _text = self.txtAttachments.do_get_text()
-                _hardware['attachments'] = _text
+                _hardware.attachments = _text
             elif index == 8:
                 _position = 3
                 _text = str(entry.get_text())
-                _hardware['cage_code'] = _text
+                _hardware.cage_code = _text
             elif index == 9:
                 _position = 4
                 _text = str(entry.get_text())
-                _hardware['comp_ref_des'] = _text
+                _hardware.comp_ref_des = _text
             elif index == 10:
                 _position = 5
                 try:
                     _text = float(entry.get_text())
                 except ValueError:
                     _text = 0.0
-                _hardware['cost'] = _text
+                _hardware.cost = _text
             elif index == 11:
                 _position = 8
                 _text = self.txtDescription.do_get_text()
-                _hardware['description'] = _text
+                _hardware.description = _text
             elif index == 12:
                 _position = 10
                 _text = str(entry.get_text())
-                _hardware['figure_number'] = _text
+                _hardware.figure_number = _text
             elif index == 13:
                 _position = 11
                 _text = str(entry.get_text())
-                _hardware['lcn'] = _text
+                _hardware.lcn = _text
             elif index == 14:
                 _position = 15
                 _text = str(entry.get_text())
-                _hardware['name'] = _text
+                _hardware.name = _text
             elif index == 15:
                 _position = 16
                 _text = str(entry.get_text())
-                _hardware['nsn'] = _text
+                _hardware.nsn = _text
             elif index == 16:
                 _position = 17
                 _text = str(entry.get_text())
-                _hardware['page_number'] = _text
+                _hardware.page_number = _text
             elif index == 17:
                 _position = 20
                 _text = str(entry.get_text())
-                _hardware['part_number'] = _text
+                _hardware.part_number = _text
             elif index == 18:
                 _position = 21
                 try:
                     _text = int(entry.get_text())
                 except ValueError:
                     _text = 1
-                _hardware['quantity'] = _text
+                _hardware.quantity = _text
             elif index == 19:
                 _position = 22
                 _text = str(entry.get_text())
-                _hardware['ref_des'] = _text
+                _hardware.ref_des = _text
             elif index == 20:
                 _position = 23
                 _text = self.txtRemarks.do_get_text()
-                _hardware['remarks'] = _text
+                _hardware.remarks = _text
             elif index == 21:
                 _position = 25
                 _text = str(entry.get_text())
-                _hardware['specification_number'] = _text
+                _hardware.specification_number = _text
             elif index == 22:
                 _position = 29
                 try:
                     _text = int(entry.get_text())
                 except ValueError:
                     _text = date.today()
-                _hardware['year_of_manufacture'] = _text
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _hardware, 'general')
+                _hardware.year_of_manufacture = _text
 
             pub.sendMessage(
                 'wvwEditedHardware', position=_position, new_text=_text)
@@ -752,110 +758,111 @@ class GeneralData(RTKWorkView):
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
+        _hardware = self._dtc_data_controller.request_select(
             self._hardware_id, 'general')
 
         # Disable the category RTKCombo() if the hardware item is not a part.
-        if _attributes['part'] == 1:
+        if _hardware.part == 1:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
 
             self.cmbCategory.handler_block(self._lst_handler_id[2])
-            self.cmbCategory.set_active(_attributes['category_id'] + 1)
+            self.cmbCategory.set_active(_hardware.category_id)
             self.cmbCategory.handler_unblock(self._lst_handler_id[2])
 
+            self._do_load_subcategory(_hardware.category_id)
+
             self.cmbSubcategory.handler_block(self._lst_handler_id[5])
-            self.cmbSubcategory.set_active(_attributes['subcategory_id'] + 1)
+            self.cmbSubcategory.set_active(_hardware.subcategory_id)
             self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
         else:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
 
         self.chkRepairable.handler_block(self._lst_handler_id[0])
-        self.chkRepairable.set_active(_attributes['repairable'])
+        self.chkRepairable.set_active(_hardware.repairable)
         self.chkRepairable.handler_unblock(self._lst_handler_id[0])
 
         self.chkTagged.handler_block(self._lst_handler_id[1])
-        self.chkTagged.set_active(_attributes['tagged_part'])
+        self.chkTagged.set_active(_hardware.tagged_part)
         self.chkTagged.handler_unblock(self._lst_handler_id[1])
 
         self.cmbCostType.handler_block(self._lst_handler_id[3])
-        self.cmbCostType.set_active(_attributes['cost_type_id'] + 1)
+        self.cmbCostType.set_active(_hardware.cost_type_id)
         self.cmbCostType.handler_unblock(self._lst_handler_id[3])
 
         self.cmbManufacturer.handler_block(self._lst_handler_id[4])
-        self.cmbManufacturer.set_active(_attributes['manufacturer_id'] + 1)
+        self.cmbManufacturer.set_active(_hardware.manufacturer_id)
         self.cmbManufacturer.handler_unblock(self._lst_handler_id[4])
 
         self.txtAltPartNum.handler_block(self._lst_handler_id[6])
-        self.txtAltPartNum.set_text(str(_attributes['alt_part_num']))
+        self.txtAltPartNum.set_text(str(_hardware.alt_part_number))
         self.txtAltPartNum.handler_unblock(self._lst_handler_id[6])
 
         _textbuffer = self.txtAttachments.do_get_buffer()
         _textbuffer.handler_block(self._lst_handler_id[7])
-        _textbuffer.set_text(_attributes['attachments'])
+        _textbuffer.set_text(_hardware.attachments)
         _textbuffer.handler_unblock(self._lst_handler_id[7])
 
         self.txtCAGECode.handler_block(self._lst_handler_id[8])
-        self.txtCAGECode.set_text(str(_attributes['cage_code']))
+        self.txtCAGECode.set_text(str(_hardware.cage_code))
         self.txtCAGECode.handler_unblock(self._lst_handler_id[8])
 
         self.txtCompRefDes.handler_block(self._lst_handler_id[9])
-        self.txtCompRefDes.set_text(str(_attributes['comp_ref_des']))
+        self.txtCompRefDes.set_text(str(_hardware.comp_ref_des))
         self.txtCompRefDes.handler_unblock(self._lst_handler_id[9])
 
         self.txtCost.handler_block(self._lst_handler_id[10])
-        self.txtCost.set_text(str(locale.currency(_attributes['cost'])))
+        self.txtCost.set_text(str(locale.currency(_hardware.cost)))
         self.txtCost.handler_unblock(self._lst_handler_id[10])
 
         _textbuffer = self.txtDescription.do_get_buffer()
         _textbuffer.handler_block(self._lst_handler_id[11])
-        _textbuffer.set_text(str(_attributes['description']))
+        _textbuffer.set_text(str(_hardware.description))
         _textbuffer.handler_unblock(self._lst_handler_id[11])
 
         self.txtFigureNumber.handler_block(self._lst_handler_id[12])
-        self.txtFigureNumber.set_text(str(_attributes['figure_number']))
+        self.txtFigureNumber.set_text(str(_hardware.figure_number))
         self.txtFigureNumber.handler_unblock(self._lst_handler_id[12])
 
         self.txtLCN.handler_block(self._lst_handler_id[13])
-        self.txtLCN.set_text(str(_attributes['lcn']))
+        self.txtLCN.set_text(str(_hardware.lcn))
         self.txtLCN.handler_unblock(self._lst_handler_id[13])
 
         self.txtName.handler_block(self._lst_handler_id[14])
-        self.txtName.set_text(str(_attributes['name']))
+        self.txtName.set_text(str(_hardware.name))
         self.txtName.handler_unblock(self._lst_handler_id[14])
 
         self.txtNSN.handler_block(self._lst_handler_id[15])
-        self.txtNSN.set_text(str(_attributes['nsn']))
+        self.txtNSN.set_text(str(_hardware.nsn))
         self.txtNSN.handler_unblock(self._lst_handler_id[15])
 
         self.txtPageNumber.handler_block(self._lst_handler_id[16])
-        self.txtPageNumber.set_text(str(_attributes['page_number']))
+        self.txtPageNumber.set_text(str(_hardware.page_number))
         self.txtPageNumber.handler_unblock(self._lst_handler_id[16])
 
         self.txtPartNumber.handler_block(self._lst_handler_id[17])
-        self.txtPartNumber.set_text(str(_attributes['part_number']))
+        self.txtPartNumber.set_text(str(_hardware.part_number))
         self.txtPartNumber.handler_unblock(self._lst_handler_id[17])
 
         self.txtQuantity.handler_block(self._lst_handler_id[18])
-        self.txtQuantity.set_text(str(_attributes['quantity']))
+        self.txtQuantity.set_text(str(_hardware.quantity))
         self.txtQuantity.handler_unblock(self._lst_handler_id[18])
 
         self.txtRefDes.handler_block(self._lst_handler_id[19])
-        self.txtRefDes.set_text(str(_attributes['ref_des']))
+        self.txtRefDes.set_text(str(_hardware.ref_des))
         self.txtRefDes.handler_unblock(self._lst_handler_id[19])
 
         _textbuffer = self.txtRemarks.do_get_buffer()
         _textbuffer.handler_block(self._lst_handler_id[20])
-        _textbuffer.set_text(_attributes['remarks'])
+        _textbuffer.set_text(_hardware.remarks)
         _textbuffer.handler_unblock(self._lst_handler_id[20])
 
         self.txtSpecification.handler_block(self._lst_handler_id[21])
-        self.txtSpecification.set_text(
-            str(_attributes['specification_number']))
+        self.txtSpecification.set_text(str(_hardware.specification_number))
         self.txtSpecification.handler_unblock(self._lst_handler_id[21])
 
         self.txtYearMade.handler_block(self._lst_handler_id[22])
-        self.txtYearMade.set_text(str(_attributes['year_of_manufacture']))
+        self.txtYearMade.set_text(str(_hardware.year_of_manufacture))
         self.txtYearMade.handler_unblock(self._lst_handler_id[22])
 
         return _return
@@ -1032,13 +1039,17 @@ class AssessmentInputs(RTKWorkView):
             tooltip=_(u"The operating environment for the hardware item."))
         self.cmbDormantEnviron = rtk.RTKComboBox(
             tooltip=_(u"The storage environment for the hardware item."))
-        self.cmbFailureDist = rtk.RTKComboBox(tooltip=_(
-            u"The statistical failure distribution of the hardware item."))
-        self.cmbHRType = rtk.RTKComboBox(tooltip=_(
-            u"The type of reliability assessment for the selected hardware "
-            u"item."))
-        self.cmbHRMethod = rtk.RTKComboBox(tooltip=_(
-            u"The assessment method to use for the selected hardware item."))
+        self.cmbFailureDist = rtk.RTKComboBox(
+            tooltip=_(
+                u"The statistical failure distribution of the hardware item."))
+        self.cmbHRType = rtk.RTKComboBox(
+            tooltip=_(
+                u"The type of reliability assessment for the selected hardware "
+                u"item."))
+        self.cmbHRMethod = rtk.RTKComboBox(
+            tooltip=_(
+                u"The assessment method to use for the selected hardware item."
+            ))
 
         self.scwDesignRatings = rtk.RTKScrolledWindow(None)
         self.scwOperatingStress = rtk.RTKScrolledWindow(None)
@@ -1155,19 +1166,14 @@ class AssessmentInputs(RTKWorkView):
         _error_code = 0
         _msg = ['', '']
 
-        if self._dtc_data_controller.request_calculate_mtbf(self._hardware_id):
+        if self._dtc_data_controller.request_calculate(self._hardware_id):
             _error_code = 1
             _msg[0] = 'Error calculating reliability attributes.'
 
-        if self._dtc_data_controller.request_calculate_availability(
-                self._hardware_id):
-            _error_code = 1
-            _msg[1] = 'Error calculating availability attributes.'
-
         if _error_code != 0:
             _prompt = _(u"An error occurred when attempting to calculate "
-                        u"Hardware {0:d}. \n\n\t" + _msg[0] + "\n\t" + _msg[1]
-                        + "\n\n").format(self._hardware_id)
+                        u"Hardware {0:d}. \n\n\t" + _msg[0] + "\n\t" +
+                        _msg[1] + "\n\n").format(self._hardware_id)
             _error_dialog = rtk.RTKMessageDialog(
                 _prompt, self._dic_icons['error'], 'error')
             if _error_dialog.do_run() == gtk.RESPONSE_OK:
@@ -1203,7 +1209,7 @@ class AssessmentInputs(RTKWorkView):
         """
         _return = False
 
-        if type_id == 0:
+        if type_id == 1:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(True)
             self.txtFailLocation.set_sensitive(False)
@@ -1213,7 +1219,7 @@ class AssessmentInputs(RTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(False)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 1:
+        elif type_id == 2:
             self.cmbFailureDist.set_sensitive(True)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(True)
@@ -1223,7 +1229,7 @@ class AssessmentInputs(RTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(False)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 2:
+        elif type_id == 3:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1233,7 +1239,7 @@ class AssessmentInputs(RTKWorkView):
             self.txtSpecifiedHtVar.set_sensitive(True)
             self.txtSpecifiedMTBF.set_sensitive(False)
             self.txtSpecifiedMTBFVar.set_sensitive(False)
-        elif type_id == 3:
+        elif type_id == 4:
             self.cmbFailureDist.set_sensitive(False)
             self.cmbHRMethod.set_sensitive(False)
             self.txtFailLocation.set_sensitive(False)
@@ -1439,22 +1445,29 @@ class AssessmentInputs(RTKWorkView):
         _row = combo.get_active_iter()
 
         if self._dtc_data_controller is not None:
-            _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id)
-
             if index == 0:
-                _hardware['active_environ'] = combo.get_active() - 1
+                _hardware = self._dtc_data_controller.request_select(
+                    self._hardware_id, 'electrical_design')
+                _hardware.environment_active_id = int(combo.get_active())
             elif index == 1:
-                _hardware['dormant_environ'] = combo.get_active() - 1
+                _hardware = self._dtc_data_controller.request_select(
+                    self._hardware_id, 'electrical_design')
+                _hardware.environment_dormant_id = int(combo.get_active())
             elif index == 2:
-                _hardware['failure_distribution_id'] = combo.get_active() - 1
+                _hardware = self._dtc_data_controller.request_select(
+                    self._hardware_id, 'reliability')
+                _hardware.failure_distribution_id = int(combo.get_active())
             elif index == 3:
-                _hardware['hazard_rate_type_id'] = combo.get_active() - 1
+                _hardware = self._dtc_data_controller.request_select(
+                    self._hardware_id, 'reliability')
+                _hardware.hazard_rate_type_id = int(combo.get_active())
                 # Set certain widgets as sensitive and insensitive depending on
                 # the type of assessment selected.
-                self._do_set_sensitive(_hardware['hazard_rate_type_id'])
+                self._do_set_sensitive(_hardware.hazard_rate_type_id)
             elif index == 4:
-                _hardware['hazard_rate_method_id'] = combo.get_active() - 1
+                _hardware = self._dtc_data_controller.request_select(
+                    self._hardware_id, 'reliability')
+                _hardware.hazard_rate_method_id = int(combo.get_active())
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -1506,54 +1519,74 @@ class AssessmentInputs(RTKWorkView):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id)
-
             try:
                 _text = float(entry.get_text())
             except ValueError:
                 _text = 0.0
 
             if index == 5:
-                _hardware['temperature_active'] = _text
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'electrical_design')
+                _hardware.temperature_active = _text
             elif index == 6:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 30
-                _hardware['add_adj_factor'] = _text
+                _hardware.add_adj_factor = _text
             elif index == 7:
-                _hardware['temperature_dormant'] = _text
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'electrical_design')
+                _hardware.temperature_dormant = _text
             elif index == 8:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 60
-                _hardware['scale_parameter'] = _text
+                _hardware.scale_parameter = _text
             elif index == 9:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 61
-                _hardware['shape_parameter'] = _text
+                _hardware.shape_parameter = _text
             elif index == 10:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 47
-                _hardware['location_parameter'] = _text
+                _hardware.location_parameter = _text
             elif index == 11:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 54
-                _hardware['mult_adj_factor'] = _text
+                _hardware.mult_adj_factor = _text
             elif index == 12:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 41
-                _hardware['hazard_rate_specified'] = _text
+                _hardware.hazard_rate_specified = _text
             elif index == 13:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 46
-                _hardware['hr_specified_variance'] = _text
+                _hardware.hr_specified_variance = _text
             elif index == 14:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 50
-                _hardware['mtbf_specified'] = _text
+                _hardware.mtbf_specified = _text
             elif index == 15:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'reliability')
                 _position = 53
-                _hardware['mtbf_spec_variance'] = _text
+                _hardware.mtbf_spec_variance = _text
             elif index == 16:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'general')
                 _position = 9
-                _hardware['duty_cycle'] = _text
+                _hardware.duty_cycle = _text
             elif index == 17:
+                _hardware = self._dtc_data_controller.request_select(
+                self._hardware_id, 'general')
                 _position = 14
-                _hardware['mission_time'] = _text
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _hardware, 'reliability')
+                _hardware.mission_time = _text
 
             pub.sendMessage(
                 'wvwEditedHardware', position=_position, new_text=_text)
@@ -1578,105 +1611,97 @@ class AssessmentInputs(RTKWorkView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
-        _hardware = self._dtc_data_controller.request_select(self._hardware_id)
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
+        _hardware = self._dtc_data_controller.request_select(
             self._hardware_id, 'general')
 
         self.txtDutyCycle.handler_block(self._lst_handler_id[16])
-        self.txtDutyCycle.set_text(self.fmt.format(_attributes['duty_cycle']))
+        self.txtDutyCycle.set_text(self.fmt.format(_hardware.duty_cycle))
         self.txtDutyCycle.handler_unblock(self._lst_handler_id[16])
 
         self.txtMissionTime.handler_block(self._lst_handler_id[17])
-        self.txtMissionTime.set_text(
-            self.fmt.format(_attributes['mission_time']))
+        self.txtMissionTime.set_text(self.fmt.format(_hardware.mission_time))
         self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
+        _hardware = self._dtc_data_controller.request_select(
             self._hardware_id, 'electrical_design')
 
         self.cmbActiveEnviron.handler_block(self._lst_handler_id[0])
-        self.cmbActiveEnviron.set_active(_attributes['environment_active_id'] +
-                                         1)
+        self.cmbActiveEnviron.set_active(_hardware.environment_active_id)
         self.cmbActiveEnviron.handler_unblock(self._lst_handler_id[0])
 
         self.cmbDormantEnviron.handler_block(self._lst_handler_id[1])
-        self.cmbDormantEnviron.set_active(_attributes['environment_dormant_id']
-                                          + 1)
+        self.cmbDormantEnviron.set_active(_hardware.environment_dormant_id)
         self.cmbDormantEnviron.handler_unblock(self._lst_handler_id[1])
 
         self.txtActiveTemp.handler_block(self._lst_handler_id[5])
         self.txtActiveTemp.set_text(
-            self.fmt.format(_attributes['temperature_active']))
+            self.fmt.format(_hardware.temperature_active))
         self.txtActiveTemp.handler_unblock(self._lst_handler_id[5])
 
         self.txtDormantTemp.handler_block(self._lst_handler_id[7])
         self.txtDormantTemp.set_text(
-            self.fmt.format(_attributes['temperature_dormant']))
+            self.fmt.format(_hardware.temperature_dormant))
         self.txtDormantTemp.handler_unblock(self._lst_handler_id[7])
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
+        _hardware = self._dtc_data_controller.request_select(
             self._hardware_id, 'reliability')
 
         self.cmbFailureDist.handler_block(self._lst_handler_id[2])
-        self.cmbFailureDist.set_active(_attributes['failure_distribution_id'] +
-                                       1)
+        self.cmbFailureDist.set_active(_hardware.failure_distribution_id)
         self.cmbFailureDist.handler_unblock(self._lst_handler_id[2])
 
         self.cmbHRType.handler_block(self._lst_handler_id[3])
-        self.cmbHRType.set_active(_attributes['hazard_rate_type_id'] + 1)
+        self.cmbHRType.set_active(_hardware.hazard_rate_type_id)
         self.cmbHRType.handler_unblock(self._lst_handler_id[3])
 
         self.cmbHRMethod.handler_block(self._lst_handler_id[4])
-        self.cmbHRMethod.set_active(_attributes['hazard_rate_method_id'] + 1)
+        self.cmbHRMethod.set_active(_hardware.hazard_rate_method_id)
         self.cmbHRMethod.handler_unblock(self._lst_handler_id[4])
 
         self.txtAddAdjFactor.handler_block(self._lst_handler_id[6])
         self.txtAddAdjFactor.set_text(
-            self.fmt.format(_attributes['add_adj_factor']))
+            self.fmt.format(_hardware.add_adj_factor))
         self.txtAddAdjFactor.handler_unblock(self._lst_handler_id[6])
 
         self.txtFailScale.handler_block(self._lst_handler_id[8])
-        self.txtFailScale.set_text(
-            self.fmt.format(_attributes['scale_parameter']))
+        self.txtFailScale.set_text(self.fmt.format(_hardware.scale_parameter))
         self.txtFailScale.handler_unblock(self._lst_handler_id[8])
 
         self.txtFailShape.handler_block(self._lst_handler_id[9])
-        self.txtFailShape.set_text(
-            self.fmt.format(_attributes['shape_parameter']))
+        self.txtFailShape.set_text(self.fmt.format(_hardware.shape_parameter))
         self.txtFailShape.handler_unblock(self._lst_handler_id[9])
 
         self.txtFailLocation.handler_block(self._lst_handler_id[10])
         self.txtFailLocation.set_text(
-            self.fmt.format(_attributes['location_parameter']))
+            self.fmt.format(_hardware.location_parameter))
         self.txtFailLocation.handler_unblock(self._lst_handler_id[10])
 
         self.txtMultAdjFactor.handler_block(self._lst_handler_id[11])
         self.txtMultAdjFactor.set_text(
-            self.fmt.format(_attributes['mult_adj_factor']))
+            self.fmt.format(_hardware.mult_adj_factor))
         self.txtMultAdjFactor.handler_unblock(self._lst_handler_id[11])
 
         self.txtSpecifiedHt.handler_block(self._lst_handler_id[12])
         self.txtSpecifiedHt.set_text(
-            self.fmt.format(_attributes['hazard_rate_specified']))
+            self.fmt.format(_hardware.hazard_rate_specified))
         self.txtSpecifiedHt.handler_unblock(self._lst_handler_id[12])
 
         self.txtSpecifiedHtVar.handler_block(self._lst_handler_id[13])
         self.txtSpecifiedHtVar.set_text(
-            self.fmt.format(_attributes['hr_specified_variance']))
+            self.fmt.format(_hardware.hr_specified_variance))
         self.txtSpecifiedHtVar.handler_unblock(self._lst_handler_id[13])
 
         self.txtSpecifiedMTBF.handler_block(self._lst_handler_id[14])
         self.txtSpecifiedMTBF.set_text(
-            self.fmt.format(_attributes['mtbf_specified']))
+            self.fmt.format(_hardware.mtbf_specified))
         self.txtSpecifiedMTBF.handler_unblock(self._lst_handler_id[14])
 
         self.txtSpecifiedMTBFVar.handler_block(self._lst_handler_id[15])
         self.txtSpecifiedMTBFVar.set_text(
-            self.fmt.format(_attributes['mtbf_spec_variance']))
+            self.fmt.format(_hardware.mtbf_spec_variance))
         self.txtSpecifiedMTBFVar.handler_unblock(self._lst_handler_id[15])
 
-        self._do_set_sensitive(_attributes['hazard_rate_type_id'])
+        self._do_set_sensitive(_hardware.hazard_rate_type_id)
 
         return _return
 
@@ -2098,70 +2123,67 @@ class AssessmentResults(RTKWorkView):
         # pylint: disable=attribute-defined-outside-init
         # It is defined in RTKBaseView.__init__
         self._dtc_data_controller = self._mdcRTK.dic_controllers['hardware']
-        _hardware = self._dtc_data_controller.request_select(self._hardware_id)
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
+        _hardware = self._dtc_data_controller.request_select(
             self._hardware_id, 'general')
 
-        self.txtTotalCost.set_text(str(locale.currency(_attributes['cost'])))
+        self.txtTotalCost.set_text(str(locale.currency(_hardware.cost)))
         self.txtCostFailure.set_text(
-            str(locale.currency(_attributes['cost_failure'])))
-        self.txtCostHour.set_text(
-            str(locale.currency(_attributes['cost_hour'])))
+            str(locale.currency(_hardware.cost_failure)))
+        self.txtCostHour.set_text(str(locale.currency(_hardware.cost_hour)))
         self.txtPartCount.set_text(
-            str('{0:d}'.format(_attributes['total_part_count'])))
+            str('{0:d}'.format(_hardware.total_part_count)))
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
+        _hardware = self._dtc_data_controller.request_select(
             self._hardware_id, 'reliability')
 
         self.txtActiveHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_active'])))
+            str(self.fmt.format(_hardware.hazard_rate_active)))
         self.txtActiveHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_active_variance'])))
+            str(self.fmt.format(_hardware.hr_active_variance)))
 
         self.txtDormantHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_dormant'])))
+            str(self.fmt.format(_hardware.hazard_rate_dormant)))
         self.txtDormantHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_dormant_variance'])))
+            str(self.fmt.format(_hardware.hr_dormant_variance)))
 
         self.txtSoftwareHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_software'])))
+            str(self.fmt.format(_hardware.hazard_rate_software)))
 
         self.txtPercentHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_percent'])))
+            str(self.fmt.format(_hardware.hazard_rate_percent)))
 
         self.txtLogisticsAt.set_text(
-            str(self.fmt.format(_attributes['availability_logistics'])))
+            str(self.fmt.format(_hardware.availability_logistics)))
         self.txtLogisticsAtVar.set_text(
-            str(self.fmt.format(_attributes['avail_log_variance'])))
+            str(self.fmt.format(_hardware.avail_log_variance)))
         self.txtLogisticsHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_logistics'])))
+            str(self.fmt.format(_hardware.hazard_rate_logistics)))
         self.txtLogisticsHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_logistics_variance'])))
+            str(self.fmt.format(_hardware.hr_logistics_variance)))
         self.txtLogisticsMTBF.set_text(
-            str(self.fmt.format(_attributes['mtbf_logistics'])))
+            str(self.fmt.format(_hardware.mtbf_logistics)))
         self.txtLogisticsMTBFVar.set_text(
-            str(self.fmt.format(_attributes['mtbf_log_variance'])))
+            str(self.fmt.format(_hardware.mtbf_log_variance)))
         self.txtLogisticsRt.set_text(
-            str(self.fmt.format(_attributes['reliability_logistics'])))
+            str(self.fmt.format(_hardware.reliability_logistics)))
         self.txtLogisticsRtVar.set_text(
-            str(self.fmt.format(_attributes['reliability_log_variance'])))
+            str(self.fmt.format(_hardware.reliability_log_variance)))
 
         self.txtMissionAt.set_text(
-            str(self.fmt.format(_attributes['availability_mission'])))
+            str(self.fmt.format(_hardware.availability_mission)))
         self.txtMissionAtVar.set_text(
-            str(self.fmt.format(_attributes['avail_mis_variance'])))
+            str(self.fmt.format(_hardware.avail_mis_variance)))
         self.txtMissionHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_mission'])))
+            str(self.fmt.format(_hardware.hazard_rate_mission)))
         self.txtMissionHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_mission_variance'])))
+            str(self.fmt.format(_hardware.hr_mission_variance)))
         self.txtMissionMTBF.set_text(
-            str(self.fmt.format(_attributes['mtbf_mission'])))
+            str(self.fmt.format(_hardware.mtbf_mission)))
         self.txtMissionMTBFVar.set_text(
-            str(self.fmt.format(_attributes['mtbf_miss_variance'])))
+            str(self.fmt.format(_hardware.mtbf_miss_variance)))
         self.txtMissionRt.set_text(
-            str(self.fmt.format(_attributes['reliability_mission'])))
+            str(self.fmt.format(_hardware.reliability_mission)))
         self.txtMissionRtVar.set_text(
-            str(self.fmt.format(_attributes['reliability_miss_variance'])))
+            str(self.fmt.format(_hardware.reliability_miss_variance)))
 
         return _return

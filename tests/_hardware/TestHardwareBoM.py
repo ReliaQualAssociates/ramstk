@@ -22,7 +22,8 @@ from treelib import Tree
 
 sys.path.insert(
     0,
-    dirname(dirname(dirname(__file__))) + "/rtk", )
+    dirname(dirname(dirname(__file__))) + "/rtk",
+)
 
 import Utilities as Utilities  # pylint: disable=E0401, wrong-import-position
 # pylint: disable=E0401, wrong-import-position
@@ -103,16 +104,16 @@ class TestHardwareBoMDataModel(unittest.TestCase):
     def test02a_select(self):
         """(TestHardwareBoMDataModel) select() should return an instance of the RTKHardware data model on success."""
         self.DUT.select_all(1)
-        _hardware = self.DUT.select(1)
+        _hardware = self.DUT.select(1, 'general')
 
-        self.assertTrue(isinstance(_hardware, dict))
-        self.assertEqual(_hardware['ref_des'], 'S1')
-        self.assertEqual(_hardware['cage_code'], '')
+        self.assertTrue(isinstance(_hardware, RTKHardware))
+        self.assertEqual(_hardware.ref_des, 'S1')
+        self.assertEqual(_hardware.cage_code, '')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
         """(TestHardwareBoMDataModel) select() should return None when a non-existent Hardware ID is requested."""
-        _hardware = self.DUT.select(100)
+        _hardware = self.DUT.select(100, 'general')
 
         self.assertEqual(_hardware, None)
 
@@ -202,10 +203,11 @@ class TestHardwareBoMDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(
-            _msg, 'RTK ERROR: Problem saving Hardware BoM ID 100.  Error when '
-            'saving: RTKHardware record, RTKDesignElectric record, '
-            'RTKDesignMechanic record, RTKMilHdbkF record, RTKNSWC record, '
-            'RTKReliability record.')
+            _msg,
+            'RTK ERROR: Attempted to save non-existent Hardware ID 100.  '
+            'RTKHardware RTKReliability RTKDesignElectric RTKDesignMechanic '
+            'RTKMilHdbkF RTKNSWC'
+        )
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
@@ -280,14 +282,14 @@ class TestHardwareBoMDataController(unittest.TestCase):
     def test02a_request_select(self):
         """(TestHardwareBoMDataController) request_select() should return an instance of the RTKHardware data model on success."""
         self.DUT.request_select_all(1)
-        _hardware = self.DUT.request_select(1)
+        _hardware = self.DUT.request_select(1, 'general')
 
-        self.assertTrue(isinstance(_hardware, dict))
+        self.assertTrue(isinstance(_hardware, RTKHardware))
 
     @attr(all=True, unit=True)
     def test02b_request_select_non_existent_id(self):
         """(TestHardwareBoMDataController) request_select() should return None when requesting a Hardware item that doesn't exist."""
-        _hardware = self.DUT.request_select(100)
+        _hardware = self.DUT.request_select(100, 'general')
 
         self.assertEqual(_hardware, None)
 
@@ -793,9 +795,8 @@ class TestHardwareBoMDataController(unittest.TestCase):
         """(TestHardwareBoMDataController) request_make_composite_reference_designator() should return a zero error code on success."""
         self.DUT.request_select_all(1)
 
-        (_error_code,
-         _msg) = self.DUT.request_make_composite_reference_designator(
-             node_id=1)
+        (_error_code, _msg
+         ) = self.DUT.request_make_composite_reference_designator(node_id=1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, '')
