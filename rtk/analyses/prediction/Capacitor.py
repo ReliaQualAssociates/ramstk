@@ -1,20 +1,19 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.hardware.component.capacitor.Capacitor.py is part of the RTK
+#       rtk.analyses.prediction.mil_hdbk_217f.Capacitor.py is part of the RTK
 #       Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Capacitor Package."""
+"""Capacitor MIL-HDBK-217F Package."""
 
 import Configuration
 import Utilities
 
 lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
-category = 4
 
-def calculate_part(self):
+def calculate(self, **kwargs):
     """
     Calculate the hazard rate for the Capacitor data model.
 
@@ -22,45 +21,19 @@ def calculate_part(self):
     :rtype: bool
     """
 
-    # Quality correction factor.
-    try:
-        self.piQ = self._piQ[self.quality - 1]
-    except AttributeError:
-        # TODO: Handle attribute error.
-        return True
-    self.hazard_rate_model['piQ'] = self.piQ
+    hr_model = kwargs['equation']
+    piQ = kwargs['piQ']
+    piE = kwargs['piE']
+    lambdab = kwargs['lambdab']
 
-    if self.hazard_rate_type == 1:
-        # Base hazard rate.
-        self.hazard_rate_model['lambdab'] = \
-            self._lambdab_count[self.environment_active - 1]
+    for _key in hr_model:
+        vars()[_key] = hr_model[_key]
 
-    elif self.hazard_rate_type == 2:
-        # Set the model's base hazard rate.
-        self.base_hr = self.hazard_rate_model['lambdab']
-
-        # Set the model's environmental correction factor.
-        try:
-            self.piE = self._piE[self.environment_active - 1]
-        except AttributeError:
-            # TODO: Handle attribute error.
-            return True
-        self.hazard_rate_model['piE'] = self.piE
-
-    # Calculate component active hazard rate.
-    _keys = self.hazard_rate_model.keys()
-    _values = self.hazard_rate_model.values()
-
-    for i in range(len(_keys)):
-        vars()[_keys[i]] = _values[i]
-
-    self.hazard_rate_active = eval(self.hazard_rate_model['equation'])
-    self.hazard_rate_active = (self.hazard_rate_active +
-                               self.add_adj_factor) * \
-                              (self.duty_cycle / 100.0) * \
-                              self.mult_adj_factor * self.quantity
-    self.hazard_rate_active = self.hazard_rate_active / \
-                              Configuration.FRMULT
+    hr_active = eval(hr_model['equation'])
+    hr_active = (hr_active + self.add_adj_factor) * \
+                (self.duty_cycle / 100.0) * \
+                self.mult_adj_factor * self.quantity
+    hr_active = hr_active / Configuration.FRMULT
 
     # Calculate overstresses.
     self._overstressed()
