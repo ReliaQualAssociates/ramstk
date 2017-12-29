@@ -159,7 +159,8 @@ class GeneralData(RTKWorkView):
 
         # Initialize private dictionary attributes.
         self._dic_icons[
-            'comp_ref_des'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/rollup.png'
+            'comp_ref_des'] = controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/rollup.png'
 
         # Initialize private list attributes.
 
@@ -224,9 +225,8 @@ class GeneralData(RTKWorkView):
         self.txtName = rtk.RTKEntry(
             width=600, tooltip=_(u"The name of the selected hardware item."))
         self.txtNSN = rtk.RTKEntry(
-            tooltip=
-            _(u"The National Stock Number (NSN) of the selected hardware item."
-              ))
+            tooltip=_(u"The National Stock Number (NSN) of the selected "
+                      u"hardware item."))
         self.txtPageNumber = rtk.RTKEntry(
             tooltip=_(u"The page number in the "
                       u"governing specification "
@@ -247,9 +247,8 @@ class GeneralData(RTKWorkView):
             tooltip=_(u"Enter any remarks associated with the selected "
                       u"hardware item."))
         self.txtSpecification = rtk.RTKEntry(
-            tooltip=
-            _(u"The specification (if any) governing the selected hardware item."
-              ))
+            tooltip=_(u"The specification (if any) governing the selected "
+                      u"hardware item."))
         self.txtYearMade = rtk.RTKEntry(
             width=100,
             tooltip=_(
@@ -568,7 +567,9 @@ class GeneralData(RTKWorkView):
                 self.txtCAGECode.set_text(_model.get(_row, 2)[0])
             elif index == 5:
                 _hardware.subcategory_id = int(combo.get_active())
-                pub.sendMessage('changedSubcategory', subcategory_id=_hardware.subcategory_id)
+                pub.sendMessage(
+                    'changedSubcategory',
+                    subcategory_id=_hardware.subcategory_id)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -1637,8 +1638,12 @@ class AssessmentInputs(RTKWorkView):
         # Add the appropriate component-specific work view to the
         # gtk.ScrolledWindow()s.
         if _hardware.category_id == 4:
-            _component_ai = wvwCapacitorAI(self._dtc_data_controller, self._hardware_id, _hardware.subcategory_id)
-            _component_si = wvwCapacitorSI(self._dtc_data_controller, self._hardware_id, _hardware.subcategory_id)
+            _component_ai = wvwCapacitorAI(self._dtc_data_controller,
+                                           self._hardware_id,
+                                           _hardware.subcategory_id)
+            _component_si = wvwCapacitorSI(self._dtc_data_controller,
+                                           self._hardware_id,
+                                           _hardware.subcategory_id)
             _component_ai.fmt = self.fmt
             _component_si.fmt = self.fmt
 

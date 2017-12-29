@@ -6,14 +6,9 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Hardware Work View."""
 
-import locale  # pragma: no cover
-
-from datetime import date  # pragma: no cover
-
 from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from Utilities import boolean_to_integer  # pylint: disable=E0401
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 
@@ -24,8 +19,7 @@ class AssessmentInputs(gtk.Fixed):
 
     The Hardware assessment input view displays all the assessment inputs for
     the selected Hardware item.  This includes, currently, inputs for
-    MIL-HDBK-217FN2 and NSWC-11.  The attributes of a Hardware assessment
-    input view are:
+    MIL-HDBK-217FN2.  The attributes of a Hardware assessment input view are:
 
     :cvar dict _dic_specifications: dictionary of capacitor MIL-SPECs.  Key is
                                     capacitor subcategory ID; values are lists
@@ -260,6 +254,14 @@ class AssessmentInputs(gtk.Fixed):
 
     def _do_load_specification(self, subcategory_id):
         """
+        Load the specification RKTComboBox().
+
+        This method is used to load the specification RTKComboBox() whenever
+        the capacitor subcategory is changed.
+
+        :param int subcategory_id: the newly selected capacitor subcategory ID.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
         _return = False
 
@@ -384,7 +386,7 @@ class AssessmentInputs(gtk.Fixed):
 
                 # Load the capacitor style RTKComboBox().
                 _index = _hardware.specification_id - 1
-                if self._subcategory_id in [1,3,4,7,9,10,11,13]:
+                if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
                     try:
                         _data = self._dic_styles[self._subcategory_id][_index]
                     except KeyError:
@@ -456,7 +458,7 @@ class AssessmentInputs(gtk.Fixed):
 
         return _return
 
-    def on_select(self, module_id, **kwargs):
+    def on_select(self, module_id):
         """
         Load the capacitor assessment input work view widgets.
 
@@ -489,7 +491,8 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbConstruction.handler_unblock(self._lst_handler_id[3])
 
         self.txtCapacitance.handler_block(self._lst_handler_id[4])
-        self.txtCapacitance.set_text(str(self.fmt.format(_hardware.capacitance)))
+        self.txtCapacitance.set_text(
+            str(self.fmt.format(_hardware.capacitance)))
         self.txtCapacitance.handler_unblock(self._lst_handler_id[4])
 
         self.txtESR.handler_block(self._lst_handler_id[5])
@@ -505,15 +508,7 @@ class StressInputs(gtk.Fixed):
 
     The Capacitor stress input view displays all the assessment inputs for
     the selected capacitor.  This includes, currently, stress inputs for
-    MIL-HDBK-217FN2 and NSWC-11.  The attributes of a capacitor stress input
-    view are:
-
-    :cvar dict _dic_specifications: dictionary of capacitor MIL-SPECs.  Key is
-                                    capacitor subcategory ID; values are lists
-                                    of specifications.
-    :cvar dict _dic_styles: dictionary of capacitor styles defined in the
-                            MIL-SPECs.  Key is capacitor subcategory ID; values
-                            are lists of styles.
+    MIL-HDBK-217FN2.  The attributes of a capacitor stress input view are:
 
     :cvar list _lst_labels: the text to use for the assessment input widget
                             labels.
@@ -521,38 +516,34 @@ class StressInputs(gtk.Fixed):
     :ivar list _lst_handler_id: the list of signal handler IDs for each of the
                                 input widgets.
 
+    :ivar _dtc_data_controller: the Hardware BoM data controller instance.
+
     :ivar int _hardware_id: the ID of the Hardware item currently being
                             displayed.
     :ivar int _subcategory_id: the ID of the subcategory for the capacitor
                                currently being displayed.
 
-    :ivar cmbSpecification: select and display the governing specification of
-                            the capacitor.
-    :ivar cmbStyle: select and display the style of the capacitor.
-    :ivar cmbConfiguration: select and display the configuration of the
-                            capacitor.
-    :ivar cmbConstruction: select and display the method of construction of the
+    :ivar txtTemperatureRated: enter and display the maximum rated temperature
+                               of the capacitor.
+    :ivar txtVoltageRated: enter and display the rated voltage of the
                            capacitor.
-    :ivar txtCapacitance: enter and display the capacitance rating of the
-                          capacitor.
-    :ivar txtESR: enter and display the equivalent series resistance.
+    :ivar txtVoltageAC: enter and display the operating ac voltage of the
+                        capacitor.
+    :ivar txtVoltageDC: enter and display the operating DC voltage of the
+                        capacitor.
 
     Callbacks signals in _lst_handler_id:
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
     +==========+===========================================+
-    |     0    | cmbSpecification - `changed`              |
+    |     0    | txtTemperatureRated - `changed`           |
     +----------+-------------------------------------------+
-    |     1    | cmbStyle - `changed`                      |
+    |     1    | txtVoltageRated - `changed`               |
     +----------+-------------------------------------------+
-    |     2    | cmbConfiguration - `changed`              |
+    |     2    | txtVoltageAC - `changed`                  |
     +----------+-------------------------------------------+
-    |     3    | cmbConstruction - `changed`               |
-    +----------+-------------------------------------------+
-    |     4    | txtCapacitance - `changed`                |
-    +----------+-------------------------------------------+
-    |     5    | txtESR - `changed`                        |
+    |     3    | txtVoltageDC - `changed`                  |
     +----------+-------------------------------------------+
     """
 
@@ -593,7 +584,9 @@ class StressInputs(gtk.Fixed):
 
         self.txtTemperatureRated = rtk.RTKEntry(
             width=125,
-            tooltip=_(u"The maximum rated temperature (in \u00B0C) of the capacitor."))
+            tooltip=_(
+                u"The maximum rated temperature (in \u00B0C) of the capacitor."
+            ))
         self.txtVoltageRated = rtk.RTKEntry(
             width=125,
             tooltip=_(u"The rated voltage (in V) of the capacitor."))
@@ -605,8 +598,7 @@ class StressInputs(gtk.Fixed):
             tooltip=_(u"The operating DC voltage (in V) of the capacitor."))
 
         self._lst_handler_id.append(
-            self.txtTemperatureRated.connect('changed', self._on_focus_out,
-                                             0))
+            self.txtTemperatureRated.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
             self.txtVoltageRated.connect('changed', self._on_focus_out, 1))
         self._lst_handler_id.append(
@@ -691,7 +683,7 @@ class StressInputs(gtk.Fixed):
 
         return _return
 
-    def on_select(self, module_id, **kwargs):
+    def on_select(self, module_id):
         """
         Load the capacitor stress input work view widgets.
 
@@ -710,19 +702,23 @@ class StressInputs(gtk.Fixed):
         # We don't block the callback signal otherwise the style RTKComboBox()
         # will not be loaded and set.
         self.txtTemperatureRated.handler_block(self._lst_handler_id[0])
-        self.txtTemperatureRated.set_text(str(self.fmt.format(_hardware.temperature_rated_max)))
+        self.txtTemperatureRated.set_text(
+            str(self.fmt.format(_hardware.temperature_rated_max)))
         self.txtTemperatureRated.handler_unblock(self._lst_handler_id[0])
 
         self.txtVoltageRated.handler_block(self._lst_handler_id[1])
-        self.txtVoltageRated.set_text(str(self.fmt.format(_hardware.voltage_rated)))
+        self.txtVoltageRated.set_text(
+            str(self.fmt.format(_hardware.voltage_rated)))
         self.txtVoltageRated.handler_unblock(self._lst_handler_id[1])
 
         self.txtVoltageAC.handler_block(self._lst_handler_id[2])
-        self.txtVoltageAC.set_text(str(self.fmt.format(_hardware.voltage_ac_operating)))
+        self.txtVoltageAC.set_text(
+            str(self.fmt.format(_hardware.voltage_ac_operating)))
         self.txtVoltageAC.handler_unblock(self._lst_handler_id[2])
 
         self.txtVoltageDC.handler_block(self._lst_handler_id[3])
-        self.txtVoltageDC.set_text(str(self.fmt.format(_hardware.voltage_dc_operating)))
+        self.txtVoltageDC.set_text(
+            str(self.fmt.format(_hardware.voltage_dc_operating)))
         self.txtVoltageDC.handler_unblock(self._lst_handler_id[3])
 
         return _return
