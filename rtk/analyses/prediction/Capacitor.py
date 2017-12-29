@@ -6,7 +6,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Capacitor MIL-HDBK-217F Package."""
+"""Capacitor Calculations Module."""
 
 import gettext
 
@@ -15,54 +15,54 @@ from math import exp
 _ = gettext.gettext
 
 
-def calculate(**kwargs):
+def calculate(**attributes):
     """
     Calculate the hazard rate for a capacitor.
 
-    :return: (kwargs, _msg); the keyword argument (hardware attribute)
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
     _msg = ''
 
-    if kwargs['hazard_rate_method_id'] == 1:
-        kwargs, _msg = calculate_217f_part_count(**kwargs)
-    elif kwargs['hazard_rate_method_id'] == 2:
-        kwargs, _msg = calculate_217f_part_stress(**kwargs)
+    if attributes['hazard_rate_method_id'] == 1:
+        attributes, _msg = calculate_217f_part_count(**attributes)
+    elif attributes['hazard_rate_method_id'] == 2:
+        attributes, _msg = calculate_217f_part_stress(**attributes)
 
-    if kwargs['mult_adj_factor'] <= 0.0:
+    if attributes['mult_adj_factor'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
             'when calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(kwargs['hardware_id'])
+            '{0:d}'.format(attributes['hardware_id'])
 
-    if kwargs['duty_cycle'] <= 0.0:
+    if attributes['duty_cycle'] <= 0.0:
         _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(kwargs['hardware_id'])
+            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
-    if kwargs['quantity'] < 1:
+    if attributes['quantity'] < 1:
         _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
             'calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(kwargs['hardware_id'])
+            '{0:d}'.format(attributes['hardware_id'])
 
-    kwargs['hazard_rate_active'] = (kwargs['hazard_rate_active'] +
-                                    kwargs['add_adj_factor']) * \
-        (kwargs['duty_cycle'] / 100.0) * \
-        kwargs['mult_adj_factor'] * kwargs['quantity']
+    attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
+                                        attributes['add_adj_factor']) * \
+        (attributes['duty_cycle'] / 100.0) * \
+        attributes['mult_adj_factor'] * attributes['quantity']
 
-    kwargs, _msg = calculate_dormant_hazard_rate(**kwargs)
-    kwargs = overstressed(**kwargs)
+    attributes, _msg = calculate_dormant_hazard_rate(**attributes)
+    attributes = overstressed(**attributes)
 
-    return kwargs, _msg
+    return attributes, _msg
 
 
-def calculate_217f_part_count(**kwargs):
+def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a capacitor.
 
     This function calculates the MIL-HDBK-217F hazard rate using the parts
     count method.
 
-    :return: (kwargs, _msg); the keyword argument (hardware attribute)
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
@@ -196,49 +196,49 @@ def calculate_217f_part_count(**kwargs):
 
     # Select the base hazard rate.
     try:
-        if kwargs['subcategory_id'] == 1:
-            _lst_base_hr = _dic_lambda_b[kwargs['subcategory_id']][kwargs[
-                'specification_id']]
+        if attributes['subcategory_id'] == 1:
+            _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
+                attributes['specification_id']]
         else:
-            _lst_base_hr = _dic_lambda_b[kwargs['subcategory_id']]
+            _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']]
     except KeyError:
         _lst_base_hr = [0.0]
     try:
-        _lambdab = _lst_base_hr[kwargs['environment_active_id'] - 1]
+        _lambdab = _lst_base_hr[attributes['environment_active_id'] - 1]
     except IndexError:
         _lambdab = 0.0
-    kwargs['lambda_b'] = _lambdab
+    attributes['lambda_b'] = _lambdab
 
     # Select the piQ.
-    _piQ = _lst_piQ[kwargs['quality_id'] - 1]
-    kwargs['piQ'] = _piQ
+    _piQ = _lst_piQ[attributes['quality_id'] - 1]
+    attributes['piQ'] = _piQ
 
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if _lambdab <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(kwargs['hardware_id'])
+            '{0:d}'.format(attributes['hardware_id'])
 
     if _piQ <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(kwargs['hardware_id'])
+            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Calculate the hazard rate.
     _hr_active = _lambdab * _piQ
-    kwargs['hazard_rate_active'] = _hr_active
+    attributes['hazard_rate_active'] = _hr_active
 
-    return kwargs, _msg
+    return attributes, _msg
 
 
-def calculate_217f_part_stress(**kwargs):
+def calculate_217f_part_stress(**attributes):
     """
     Calculate the part stress hazard rate for a capacitor.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
     stress method.
 
-    :return: (kwargs, _msg); the keyword argument (hardware attribute)
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
@@ -389,74 +389,75 @@ def calculate_217f_part_stress(**kwargs):
     # Calculate the voltage stress.
     try:
         _stress = (
-            kwargs['voltage_dc_operating'] + kwargs['voltage_ac_operating']
-        ) / kwargs['voltage_rated']
+            attributes['voltage_dc_operating'] +
+            attributes['voltage_ac_operating']) / attributes['voltage_rated']
     except ZeroDivisionError:
         _stress = 1.0
-    kwargs['voltage_ratio'] = _stress
+    attributes['voltage_ratio'] = _stress
 
     # Calculate the base hazard rate.
-    _ref_temp = _dic_ref_temp[kwargs['temperature_rated_max']]
-    _f0 = _dic_factors[kwargs['subcategory_id']][0]
-    _f1 = _dic_factors[kwargs['subcategory_id']][1]
-    _f2 = _dic_factors[kwargs['subcategory_id']][2]
-    _f3 = _dic_factors[kwargs['subcategory_id']][3]
-    _f4 = _dic_factors[kwargs['subcategory_id']][4]
-    kwargs['lambda_b'] = _f0 * ((_stress / _f1)**_f2 + 1.0) * exp(
-        _f3 * ((kwargs['temperature_active'] + 273.0) / _ref_temp)**_f4)
+    _ref_temp = _dic_ref_temp[attributes['temperature_rated_max']]
+    _f0 = _dic_factors[attributes['subcategory_id']][0]
+    _f1 = _dic_factors[attributes['subcategory_id']][1]
+    _f2 = _dic_factors[attributes['subcategory_id']][2]
+    _f3 = _dic_factors[attributes['subcategory_id']][3]
+    _f4 = _dic_factors[attributes['subcategory_id']][4]
+    attributes['lambda_b'] = _f0 * ((_stress / _f1)**_f2 + 1.0) * exp(
+        _f3 * ((attributes['temperature_active'] + 273.0) / _ref_temp)**_f4)
 
-    if kwargs['lambda_b'] <= 0.0:
+    if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(kwargs['hardware_id'])
+            '{0:d}'.format(attributes['hardware_id'])
 
     # Calculate the capacitance factor (piCV).
-    _f0 = _dic_factors[kwargs['subcategory_id']][5]
-    _f1 = _dic_factors[kwargs['subcategory_id']][6]
-    kwargs['piCV'] = _f0 * kwargs['capacitance']**_f1
+    _f0 = _dic_factors[attributes['subcategory_id']][5]
+    _f1 = _dic_factors[attributes['subcategory_id']][6]
+    attributes['piCV'] = _f0 * attributes['capacitance']**_f1
 
     # Determine the quality factor (piQ).
-    kwargs['piQ'] = _dic_piQ[kwargs['subcategory_id']][kwargs['quality_id']
-                                                       - 1]
+    attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+        attributes['quality_id'] - 1]
 
-    if kwargs['piQ'] <= 0.0:
+    if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(kwargs['hardware_id'])
+            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the environmental factor (piE).
-    kwargs['piE'] = _dic_piE[kwargs['subcategory_id']][
-        kwargs['environment_active_id'] - 1]
+    attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+        attributes['environment_active_id'] - 1]
 
-    if kwargs['piE'] <= 0.0:
+    if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(kwargs['hardware_id'])
+            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the series resistance factor (piSR).
-    if kwargs['subcategory_id'] == 12:
-        _cr = kwargs['resistance'] / (
-            kwargs['voltage_dc_operating'] + kwargs['voltage_ac_operating'])
-        kwargs['piSR'] = _dic_piSR[_cr]
-        kwargs['hazard_rate_active'] = kwargs['lambda_b'] * kwargs[
-            'piCV'] * kwargs['piQ'] * kwargs['piE'] * kwargs['piSR']
-    elif kwargs['subcategory_id'] == 13:
-        kwargs['piC'] = _dic_piC[kwargs['construction_id']]
-        kwargs['hazard_rate_active'] = kwargs['lambda_b'] * kwargs[
-            'piCV'] * kwargs['piQ'] * kwargs['piE'] * kwargs['piC']
-    elif kwargs['subcategory_id'] in [16, 17, 18]:
-        kwargs['hazard_rate_active'] = kwargs['lambda_b'] * kwargs[
-            'piQ'] * kwargs['piE']
-    elif kwargs['subcategory_id'] == 19:
-        kwargs['piCF'] = _dic_piCF[kwargs['configuration_id']]
-        kwargs['hazard_rate_active'] = kwargs['lambda_b'] * kwargs[
-            'piCF'] * kwargs['piQ'] * kwargs['piE']
+    if attributes['subcategory_id'] == 12:
+        _cr = attributes['resistance'] / (attributes['voltage_dc_operating'] +
+                                          attributes['voltage_ac_operating'])
+        attributes['piSR'] = _dic_piSR[_cr]
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piCV'] * attributes['piQ'] * attributes['piE'] * attributes[
+                'piSR']
+    elif attributes['subcategory_id'] == 13:
+        attributes['piC'] = _dic_piC[attributes['construction_id']]
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piCV'] * attributes['piQ'] * attributes['piE'] * attributes['piC']
+    elif attributes['subcategory_id'] in [16, 17, 18]:
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piQ'] * attributes['piE']
+    elif attributes['subcategory_id'] == 19:
+        attributes['piCF'] = _dic_piCF[attributes['configuration_id']]
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piCF'] * attributes['piQ'] * attributes['piE']
     else:
-        kwargs['hazard_rate_active'] = kwargs['lambda_b'] * kwargs[
-            'piCV'] * kwargs['piQ'] * kwargs['piE']
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piCV'] * attributes['piQ'] * attributes['piE']
 
-    return kwargs, _msg
+    return attributes, _msg
 
 
-def calculate_dormant_hazard_rate(**kwargs):
+def calculate_dormant_hazard_rate(**attributes):
     """
     Calculate the dormant hazard rate for a capacitor.
 
@@ -473,7 +474,7 @@ def calculate_dormant_hazard_rate(**kwargs):
     | 0.10  |  0.10  |  0.03  | 0.10  | 0.04  | 0.20  | 0.40  |
     +-------+--------+--------+-------+-------+-------+-------+
 
-    :return: (kwargs, _msg); the keyword argument (hardware attribute)
+    :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
@@ -523,28 +524,28 @@ def calculate_dormant_hazard_rate(**kwargs):
     _msg = ''
 
     try:
-        kwargs['hazard_rate_dormant'] = \
-            (_dic_hr_dormant[kwargs['environment_active_id']]
-             [kwargs['environment_dormant_id']] *
-             kwargs['hazard_rate_active'])
+        attributes['hazard_rate_dormant'] = \
+            (_dic_hr_dormant[attributes['environment_active_id']]
+             [attributes['environment_dormant_id']] *
+             attributes['hazard_rate_active'])
     except KeyError:
-        kwargs['hazard_rate_dormant'] = 0.0
+        attributes['hazard_rate_dormant'] = 0.0
         _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
                'Active ID: {0:d}, Dormant ID: ' \
-               '{1:d}'.format(kwargs['environment_active_id'],
-                              kwargs['environment_dormant_id'])
+               '{1:d}'.format(attributes['environment_active_id'],
+                              attributes['environment_dormant_id'])
 
-    return kwargs, _msg
+    return attributes, _msg
 
 
-def overstressed(**kwargs):
+def overstressed(**attributes):
     """
     Determine whether the capacitor is overstressed.
 
     This determination is based on it's rated values and operating environment.
 
-    :return: kwargs; the keyword argument (hardware attribute) dictionary with
-             updated values
+    :return: attributes; the keyword argument (hardware attribute) dictionary
+             with updated values
     :rtype: dict
     """
     _reason_num = 1
@@ -552,33 +553,35 @@ def overstressed(**kwargs):
 
     _harsh = True
 
-    kwargs['overstress'] = False
+    attributes['overstress'] = False
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.
-    if kwargs['environment_active_id'] in [1, 2, 4, 11]:
+    if attributes['environment_active_id'] in [1, 2, 4, 11]:
         _harsh = False
 
     if _harsh:
-        if kwargs['voltage_operating'] > 0.60 * kwargs['voltage_rated']:
-            kwargs['overstress'] = True
+        if (attributes['voltage_operating'] >
+                0.60 * attributes['voltage_rated']):
+            attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 60% rated voltage.\n")
             _reason_num += 1
-        if (kwargs['temperature_rated_max'] - kwargs['temperature_active'] <=
-                10.0):
-            kwargs['overstress'] = True
+        if (attributes['temperature_rated_max'] -
+                attributes['temperature_active'] <= 10.0):
+            attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating temperature within 10.0C of maximum rated "
                   u"temperature.\n")
             _reason_num += 1
     else:
-        if kwargs['voltage_operating'] > 0.90 * kwargs['voltage_rated']:
-            kwargs['overstress'] = True
+        if (attributes['voltage_operating'] >
+                0.90 * attributes['voltage_rated']):
+            attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 90% rated voltage.\n")
             _reason_num += 1
 
-    kwargs['reason'] = _reason
+    attributes['reason'] = _reason
 
-    return kwargs
+    return attributes
