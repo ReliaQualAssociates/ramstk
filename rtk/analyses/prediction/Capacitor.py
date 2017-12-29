@@ -554,6 +554,7 @@ def overstressed(**attributes):
     _harsh = True
 
     attributes['overstress'] = False
+    _voltage_operating = attributes['voltage_ac_operating'] + attributes['voltage_dc_operating']
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.
@@ -561,8 +562,7 @@ def overstressed(**attributes):
         _harsh = False
 
     if _harsh:
-        if (attributes['voltage_operating'] >
-                0.60 * attributes['voltage_rated']):
+        if (_voltage_operating > 0.60 * attributes['voltage_rated']):
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 60% rated voltage.\n")
@@ -575,8 +575,7 @@ def overstressed(**attributes):
                   u"temperature.\n")
             _reason_num += 1
     else:
-        if (attributes['voltage_operating'] >
-                0.90 * attributes['voltage_rated']):
+        if (_voltage_operating > 0.90 * attributes['voltage_rated']):
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 90% rated voltage.\n")

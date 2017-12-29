@@ -712,7 +712,8 @@ class TestCapacitorModule(unittest.TestCase):
     def test03a_overstressed_mild_env(self):
         """(TestCapacitorModule) overstressed() should return overstress=False and reason='' on success without an overstressed condition in non-harsh environment."""
         self._attributes['environment_active_id'] = 1
-        self._attributes['voltage_operating'] = 10.0
+        self._attributes['voltage_ac_operating'] = 0.005
+        self._attributes['voltage_dc_operating'] = 10.0
         self._attributes['voltage_rated'] = 20.0
 
         _attributes = Capacitor.overstressed(**self._attributes)
@@ -725,7 +726,8 @@ class TestCapacitorModule(unittest.TestCase):
     def test03b_overstressed_mild_env_voltage_margin(self):
         """(TestCapacitorModule) overstressed() should return overstress=True on success with operating voltage too close to rated in a non-harsh environment."""
         self._attributes['environment_active_id'] = 1
-        self._attributes['voltage_operating'] = 19.0
+        self._attributes['voltage_ac_operating'] = 0.005
+        self._attributes['voltage_dc_operating'] = 19.0
         self._attributes['voltage_rated'] = 20.0
 
         _attributes = Capacitor.overstressed(**self._attributes)
@@ -739,7 +741,8 @@ class TestCapacitorModule(unittest.TestCase):
     def test03c_overstressed_harsh_env(self):
         """(TestCapacitorModule) overstressed() should return overstress=False and reason='' on success without an overstressed condition in a harsh environment."""
         self._attributes['environment_active_id'] = 3
-        self._attributes['voltage_operating'] = 10.0
+        self._attributes['voltage_ac_operating'] = 0.005
+        self._attributes['voltage_dc_operating'] = 10.0
         self._attributes['voltage_rated'] = 20.0
         self._attributes['temperature_rated_max'] = 85.0
         self._attributes['temperature_active'] = 55.0
@@ -754,7 +757,8 @@ class TestCapacitorModule(unittest.TestCase):
     def test03d_overstressed_harsh_env_voltage_margin(self):
         """(TestCapacitorModule) overstressed() should return overstress=True on success with operating voltage too close to rated in a harsh environment."""
         self._attributes['environment_active_id'] = 3
-        self._attributes['voltage_operating'] = 15.0
+        self._attributes['voltage_ac_operating'] = 0.005
+        self._attributes['voltage_dc_operating'] = 15.0
         self._attributes['voltage_rated'] = 20.0
         self._attributes['temperature_rated_max'] = 85.0
         self._attributes['temperature_active'] = 55.0
@@ -770,7 +774,8 @@ class TestCapacitorModule(unittest.TestCase):
     def test03e_overstressed_harsh_env_temperature_margin(self):
         """(TestCapacitorModule) overstressed() should return overstress=True on success with operating temperature too close to maximum rated in a harsh environment."""
         self._attributes['environment_active_id'] = 3
-        self._attributes['voltage_operating'] = 10.0
+        self._attributes['voltage_ac_operating'] = 0.005
+        self._attributes['voltage_dc_operating'] = 10.0
         self._attributes['voltage_rated'] = 20.0
         self._attributes['temperature_rated_max'] = 85.0
         self._attributes['temperature_active'] = 80.0
@@ -810,7 +815,7 @@ class TestCapacitorModule(unittest.TestCase):
 
         self.assertTrue(isinstance(_attributes, dict))
         self.assertEqual(_msg, '')
-        self.assertAlmostEqual(_attributes['lambda_b'], 0.009968927)
+        self.assertAlmostEqual(_attributes['lambda_b'], 0.03995338)
         self.assertEqual(_attributes['piQ'], 3.0)
-        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.01081956)
+        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.04336255)
 

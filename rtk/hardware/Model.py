@@ -7,9 +7,9 @@
 """Hardware Package Data Model."""  # pragma: no cover
 
 # Import other RTK modules.
-# pylint: disable=E04011
+# pylint: disable=E0401
 from analyses.prediction import Capacitor  # pragma: no cover
-# pylint: disable=E04011
+# pylint: disable=E0401
 from datamodels import RTKDataModel  # pragma: no cover
 # pylint: disable=E0401
 from dao import RTKHardware, RTKDesignElectric, RTKDesignMechanic, \

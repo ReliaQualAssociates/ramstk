@@ -17,6 +17,7 @@ from Utilities import boolean_to_integer  # pylint: disable=E0401
 from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
+from .components import wvwCapacitorAI, wvwCapacitorSI
 
 
 class GeneralData(RTKWorkView):
@@ -567,6 +568,7 @@ class GeneralData(RTKWorkView):
                 self.txtCAGECode.set_text(_model.get(_row, 2)[0])
             elif index == 5:
                 _hardware.subcategory_id = int(combo.get_active())
+                pub.sendMessage('changedSubcategory', subcategory_id=_hardware.subcategory_id)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -1027,6 +1029,7 @@ class AssessmentInputs(RTKWorkView):
 
         # Initialize private scalar attributes.
         self._hardware_id = None
+        self._wvwCapacitorAI = None
 
         # Initialize public dictionary attributes.
 
@@ -1526,65 +1529,65 @@ class AssessmentInputs(RTKWorkView):
 
             if index == 5:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'electrical_design')
+                    self._hardware_id, 'electrical_design')
                 _hardware.temperature_active = _text
             elif index == 6:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 30
                 _hardware.add_adj_factor = _text
             elif index == 7:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'electrical_design')
+                    self._hardware_id, 'electrical_design')
                 _hardware.temperature_dormant = _text
             elif index == 8:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 60
                 _hardware.scale_parameter = _text
             elif index == 9:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 61
                 _hardware.shape_parameter = _text
             elif index == 10:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 47
                 _hardware.location_parameter = _text
             elif index == 11:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 54
                 _hardware.mult_adj_factor = _text
             elif index == 12:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 41
                 _hardware.hazard_rate_specified = _text
             elif index == 13:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 46
                 _hardware.hr_specified_variance = _text
             elif index == 14:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 50
                 _hardware.mtbf_specified = _text
             elif index == 15:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'reliability')
+                    self._hardware_id, 'reliability')
                 _position = 53
                 _hardware.mtbf_spec_variance = _text
             elif index == 16:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'general')
+                    self._hardware_id, 'general')
                 _position = 9
                 _hardware.duty_cycle = _text
             elif index == 17:
                 _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'general')
+                    self._hardware_id, 'general')
                 _position = 14
                 _hardware.mission_time = _text
 
@@ -1599,12 +1602,14 @@ class AssessmentInputs(RTKWorkView):
         """
         Load the hardware assessment input work view widgets.
 
-        :param int hardware_id: the Hardware ID of the selected/edited
-                                Hardware item.
+        :param int module_id: the Hardware ID of the selected/edited Hardware
+                              item.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
+        _component_ai = None
+        _component_si = None
 
         self._hardware_id = module_id
 
@@ -1621,6 +1626,33 @@ class AssessmentInputs(RTKWorkView):
         self.txtMissionTime.handler_block(self._lst_handler_id[17])
         self.txtMissionTime.set_text(self.fmt.format(_hardware.mission_time))
         self.txtMissionTime.handler_unblock(self._lst_handler_id[17])
+
+        # Clear the component-specific gtk.ScrolledWindow()s.
+        for _child in self.scwDesignRatings.get_children():
+            self.scwDesignRatings.remove(_child)
+
+        for _child in self.scwOperatingStress.get_children():
+            self.scwOperatingStress.remove(_child)
+
+        # Add the appropriate component-specific work view to the
+        # gtk.ScrolledWindow()s.
+        if _hardware.category_id == 4:
+            _component_ai = wvwCapacitorAI(self._dtc_data_controller, self._hardware_id, _hardware.subcategory_id)
+            _component_si = wvwCapacitorSI(self._dtc_data_controller, self._hardware_id, _hardware.subcategory_id)
+            _component_ai.fmt = self.fmt
+            _component_si.fmt = self.fmt
+
+        # Load the component-specific widgets.
+        if _component_ai is not None:
+            self.scwDesignRatings.add_with_viewport(_component_ai)
+            _component_ai.on_select(module_id)
+
+        if _component_si is not None:
+            self.scwOperatingStress.add_with_viewport(_component_si)
+            _component_si.on_select(module_id)
+
+        self.scwDesignRatings.show_all()
+        self.scwOperatingStress.show_all()
 
         _hardware = self._dtc_data_controller.request_select(
             self._hardware_id, 'electrical_design')
