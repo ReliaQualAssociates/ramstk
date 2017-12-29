@@ -24,7 +24,7 @@ import os
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 sys.path.insert(0, os.path.abspath('../../rtk/'), )
 sys.path.append(os.path.join(os.path.dirname(__name__), '../../'))
-
+sys.path.append('/home/arowland/.virtualenvs/RTK/lib/python2.7/site-packages')
 
 # -- General configuration ------------------------------------------------
 
@@ -181,3 +181,4 @@ texinfo_documents = [
 # Example configuration for intersphinx: refer to the Python standard library.
 intersphinx_mapping = {'https://docs.python.org/': None}
 intersphinx_mapping = {'http://treelib.readthedocs.io/en/latest/': None}
+

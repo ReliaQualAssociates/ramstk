@@ -19,7 +19,8 @@ from nose.plugins.manager import PluginManager
 
 sys.path.insert(
     0,
-    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../', )
+    os.path.abspath(os.path.join(os.path.dirname(__file__))) + '/../',
+)
 
 # pylint: disable=wrong-import-postion
 from test_setup import _create_program_database
@@ -29,6 +30,7 @@ from _hardware import TestHardwareDataModel, TestDesignElectricDataModel, \
     TestDesignMechanicDataModel, TestMilHdbkFDataModel, TestNSWCDataModel, \
     TestReliabilityDataModel, TestHardwareBoMDataModel, \
     TestHardwareBoMDataController
+from _analyses.prediction import TestCapacitorModule
 
 
 def test_hardware_package(suites):
@@ -71,7 +73,7 @@ def test_hardware_package(suites):
         '--cover-package=dao.RTKDesignMechanic',
         '--cover-package=dao.RTKReliability',
         '--cover-package=dao.RTKMilHdbkF', '--cover-package=dao.RTKNSWC',
-        '--cover-package=hardware'
+        '--cover-package=hardware', '--cover-package=analyses.prediction'
     ]
     nose.runmodule(argv=args, suite=suite, plugins=plugin_mgr)
 
@@ -91,7 +93,13 @@ if __name__ == '__main__':
         TestReliabilityDataModel, TestHardwareBoMDataModel
     ]
 
-    _controller_suites = [TestHardwareBoMDataController, ]
+    _controller_suites = [
+        TestHardwareBoMDataController,
+    ]
+
+    _calculation_suites = [
+        TestCapacitorModule,
+    ]
 
     # For the nosetest example.
     if str(sys.argv[1]) == 'db':
@@ -100,8 +108,11 @@ if __name__ == '__main__':
         _suites = _model_suites
     elif str(sys.argv[1]) == 'controller':
         _suites = _controller_suites
+    elif str(sys.argv[1]) == 'calcs':
+        _suites = _calculation_suites
     else:
-        _suites = _db_suites + _model_suites + _controller_suites
+        _suites = _db_suites + _model_suites + _controller_suites + \
+            _calculation_suites
 
     _create_program_database()
     test_hardware_package(_suites)
