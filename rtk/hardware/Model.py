@@ -271,31 +271,41 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
-        _error_code, _msg = self.dtm_hardware.update(node_id)
+        _error_code = 0
+        _msg = ''
+
+        _code, _message = self.dtm_hardware.update(node_id)
+        if _code != 0:
+            _error_code += _code
+            _msg = _msg + _message + '\n'
+
+        _code, _message = self.dtm_reliability.update(node_id)
+        if _code != 0:
+            _error_code += _code
+            _msg = _msg + _message + '\n'
+
+        _code, _message = self.dtm_design_electric.update(node_id)
+        if _code != 0:
+            _error_code += _code
+            _msg = _msg + _message + '\n'
+
+        _code, _message = self.dtm_design_mechanic.update(node_id)
+        if _code != 0:
+            _error_code += _code
+            _msg = _msg + _message + '\n'
+
+        _code, _message = self.dtm_mil_hdbk_f.update(node_id)
+        if _code != 0:
+            _error_code += _code
+            _msg = _msg + _message + '\n'
+
+        _code, _message = self.dtm_nswc.update(node_id)
+        if _code != 0:
+            _error_code += _code
+            _msg = _msg + _message + '\n'
 
         if _error_code == 0:
-            _error_code, _msg = self.dtm_reliability.update(node_id)
-        else:
-            _msg = _msg + "  RTKHardware "
-        if _error_code == 0:
-            _error_code, _msg = self.dtm_design_electric.update(node_id)
-        else:
-            _msg = _msg + "RTKReliability "
-        if _error_code == 0:
-            _error_code, _msg = self.dtm_design_mechanic.update(node_id)
-        else:
-            _msg = _msg + "RTKDesignElectric "
-        if _error_code == 0:
-            _error_code, _msg = self.dtm_mil_hdbk_f.update(node_id)
-        else:
-            _msg = _msg + "RTKDesignMechanic "
-        if _error_code == 0:
-            _error_code, _msg = self.dtm_nswc.update(node_id)
-        else:
-            _msg = _msg + "RTKMilHdbkF "
-
-        if _error_code != 0:
-            _msg = _msg + "RTKNSWC"
+            _msg = 'RTK SUCCESS: Updating the RTK Program database.'
 
         return _error_code, _msg
 
@@ -315,12 +325,12 @@ class HardwareBoMDataModel(RTKDataModel):
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.hardware.Model.HardwareDataModel.update_all().'
+                    print('FIXME: Handle non-zero error codes in '
+                          'rtk.hardware.Model.HardwareDataModel.update_all().')
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.hardware.Model.HardwareDataModel.update_all().'
+                print('FIXME: Handle AttributeError in '
+                      'rtk.hardware.Model.HardwareDataModel.update_all().')
 
         return _error_code, _msg
 
@@ -329,37 +339,36 @@ class HardwareBoMDataModel(RTKDataModel):
         Calculate RAMS attributes for the hardware item.
 
         :param int hardware_id: the ID of the hardware item to calculate.
-        :return:
-        :rtype:
+        :return: _attributes
+        :rtype: dict
         """
         _attributes = self.tree.get_node(hardware_id).data
         _hardware = self.select(hardware_id, 'reliability')
 
         if _attributes['category_id'] == 1:
-            print "Integrated Circuit"
+            print("Integrated Circuit")
         elif _attributes['category_id'] == 2:
-            print "Semiconductor"
+            print("Semiconductor")
         elif _attributes['category_id'] == 3:
-            print "Resistor"
+            print("Resistor")
         elif _attributes['category_id'] == 4:
             _attributes, __ = Capacitor.calculate(**_attributes)
-            _hardware.hazard_rate_active = _attributes['hazard_rate_active']
         elif _attributes['category_id'] == 5:
-            print "Inductive Device"
+            print("Inductive Device")
         elif _attributes['category_id'] == 6:
-            print "Relay"
+            print("Relay")
         elif _attributes['category_id'] == 7:
-            print "Switch"
+            print("Switch")
         elif _attributes['category_id'] == 8:
-            print "Connection"
+            print("Connection")
         elif _attributes['category_id'] == 9:
-            print "Meter"
+            print("Meter")
         elif _attributes['category_id'] == 10:
-            print "Miscellaneous"
+            print("Miscellaneous")
         else:
-            print "Assembly"
+            print("Assembly")
 
-        return
+        return _attributes
 
 
 class HardwareDataModel(RTKDataModel):
@@ -512,21 +521,21 @@ class HardwareDataModel(RTKDataModel):
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.hardware.Model.HardwareDataModel.update_all().'
+                    print('FIXME: Handle non-zero error codes in '
+                          'rtk.hardware.Model.HardwareDataModel.update_all().')
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.hardware.Model.HardwareDataModel.update_all().'
+                print('FIXME: Handle AttributeError in '
+                      'rtk.hardware.Model.HardwareDataModel.update_all().')
 
         return _error_code, _msg
 
     def make_composite_ref_des(self, node_id=1):
         """
-        Make the composite reference designator.
+        Make the composite reference designators.
 
-        :keyword int node_id: the ID of the node to make the composite
-                              reference designator.
+        :keyword int node_id: the ID of the node to start making the composite
+                              reference designators.
         :return: False if successful or True if an error is encountered
         :rtype: bool
         """
@@ -697,12 +706,15 @@ class DesignElectricDataModel(RTKDataModel):
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.hardware.Model.DesignElectricDataModel.update_all().'
+                    print(
+                        'FIXME: Handle non-zero error codes in '
+                        'rtk.hardware.Model.DesignElectricDataModel.update_all().'
+                    )
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.hardware.Model.DesignElectricDataModel.update_all().'
+                print(
+                    'FIXME: Handle AttributeError in '
+                    'rtk.hardware.Model.DesignElectricDataModel.update_all().')
 
         return _error_code, _msg
 
@@ -854,12 +866,15 @@ class DesignMechanicDataModel(RTKDataModel):
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.hardware.Model.DesignMechanicDataModel.update_all().'
+                    print(
+                        'FIXME: Handle non-zero error codes in '
+                        'rtk.hardware.Model.DesignMechanicDataModel.update_all().'
+                    )
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.hardware.Model.DesignMechanicDataModel.update_all().'
+                print(
+                    'FIXME: Handle AttributeError in '
+                    'rtk.hardware.Model.DesignMechanicDataModel.update_all().')
 
         return _error_code, _msg
 
@@ -1011,12 +1026,12 @@ class MilHdbkFDataModel(RTKDataModel):
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.hardware.Model.MilHdbkFDataModel.update_all().'
+                    print('FIXME: Handle non-zero error codes in '
+                          'rtk.hardware.Model.MilHdbkFDataModel.update_all().')
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.hardware.Model.MilHdbkFDataModel.update_all().'
+                print('FIXME: Handle AttributeError in '
+                      'rtk.hardware.Model.MilHdbkFDataModel.update_all().')
 
         return _error_code, _msg
 
@@ -1162,12 +1177,12 @@ class NSWCDataModel(RTKDataModel):
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.hardware.Model.NSWCDataModel.update_all().'
+                    print('FIXME: Handle non-zero error codes in '
+                          'rtk.hardware.Model.NSWCDataModel.update_all().')
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.hardware.Model.NSWCDataModel.update_all().'
+                print('FIXME: Handle AttributeError in '
+                      'rtk.hardware.Model.NSWCDataModel.update_all().')
 
         return _error_code, _msg
 
@@ -1319,11 +1334,13 @@ class ReliabilityDataModel(RTKDataModel):
 
                 # Break if something goes wrong and return.
                 if _error_code != 0:
-                    print 'FIXME: Handle non-zero error codes in ' \
-                          'rtk.hardware.Model.ReliabilityDataModel.update_all().'
+                    print(
+                        'FIXME: Handle non-zero error codes in '
+                        'rtk.hardware.Model.ReliabilityDataModel.update_all().'
+                    )
 
             except AttributeError:
-                print 'FIXME: Handle AttributeError in ' \
-                      'rtk.hardware.Model.ReliabilityDataModel.update_all().'
+                print('FIXME: Handle AttributeError in '
+                      'rtk.hardware.Model.ReliabilityDataModel.update_all().')
 
         return _error_code, _msg

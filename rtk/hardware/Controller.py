@@ -272,92 +272,63 @@ class HardwareBoMDataController(RTKDataController):
         return RTKDataController.do_handle_results(self, _error_code, _msg,
                                                    None)
 
-    def request_get_attributes(self, node_id, table):
+    def request_get_attributes(self, node_id):
         """
         Get the attributes of the record associated with Node ID and table.
 
         :param int node_id: the ID of the Hardware item to get attributes for.
-        :param str table: the RTK Program database table associated with the
-                          Hardware item whose attributes should be set.
-                          Options are:
-
-                          * general
-                          * electrical_design
-                          * mechanical_design
-                          * mil_hdbk_f
-                          * nswc
-                          * reliability
-
         :return: attributes; the {attribute:value} dict.
         :rtype: dict
         """
-        if table == 'general':
-            _attributes = self._dtm_data_model.dtm_hardware.select(
-                node_id).get_attributes()
-        elif table == 'electrical_design':
-            _attributes = self._dtm_data_model.dtm_design_electric.select(
-                node_id).get_attributes()
-        elif table == 'mechanical_design':
-            _attributes = self._dtm_data_model.dtm_design_mechanic.select(
-                node_id).get_attributes()
-        elif table == 'mil_hdbk_f':
-            _attributes = self._dtm_data_model.dtm_mil_hdbk_f.select(
-                node_id).get_attributes()
-        elif table == 'nswc':
-            _attributes = self._dtm_data_model.dtm_nswc.select(
-                node_id).get_attributes()
-        elif table == 'reliability':
-            _attributes = self._dtm_data_model.dtm_reliability.select(
-                node_id).get_attributes()
-        else:
-            _attributes = None
+        return self._dtm_data_model.tree.get_node(node_id).data
 
-        return _attributes
-
-    def request_set_attributes(self, node_id, attributes, table):
+    def request_set_attributes(self, node_id, attributes):
         """
         Set the attributes of the record associated with the Node ID.
 
         :param int node_id: the ID of the record in the RTK Program database
                             table whose attributes are to be set.
         :param dict attributes: the dictionary of attributes and values.
-        :param str table: the RTK Program database table associated with the
-                          Hardware item whose attributes should be set.
-                          Options are:
-
-                          * general
-                          * electrical_design
-                          * mechanical_design
-                          * mil_hdbk_f
-                          * nswc
-                          * reliability
-
-        :return: (_error_code, _msg); the error code and associated message.
-        :rtype: (int, str)
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-        _error_code = 0
-        _msg = ''
+        _return = False
 
-        if table == 'general':
-            _error_code, _msg = self._dtm_data_model.dtm_hardware.select(
-                node_id).set_attributes(attributes)
-        elif table == 'electrical_design':
-            _error_code, _msg = self._dtm_data_model.dtm_design_electric.select(
-                node_id).set_attributes(attributes)
-        elif table == 'mechanical_design':
-            _error_code, _msg = self._dtm_data_model.dtm_design_mechanic.select(
-                node_id).set_attributes(attributes)
-        elif table == 'mil_hdbk_f':
-            _error_code, _msg = self._dtm_data_model.dtm_mil_hdbk_f.select(
-                node_id).set_attributes(attributes)
-        elif table == 'nswc':
-            _error_code, _msg = self._dtm_data_model.dtm_nswc.select(
-                node_id).set_attributes(attributes)
-        elif table == 'reliability':
-            _error_code, _msg = self._dtm_data_model.dtm_reliability.select(
-                node_id).set_attributes(attributes)
+        # Set the overall BoM attributes.
+        self._dtm_data_model.tree.get_node(node_id).data = attributes
 
-        return _error_code, _msg
+        # Set the attributes for the individual tables.
+        _error_code, _msg = self._dtm_data_model.dtm_hardware.select(
+            node_id).set_attributes(attributes)
+        _return = (_return or RTKDataController.do_handle_results(
+            self, _error_code, _msg, None))
+
+        _error_code, _msg = self._dtm_data_model.dtm_design_electric.select(
+            node_id).set_attributes(attributes)
+        _return = (_return or RTKDataController.do_handle_results(
+            self, _error_code, _msg, None))
+
+        _error_code, _msg = self._dtm_data_model.dtm_design_mechanic.select(
+            node_id).set_attributes(attributes)
+        _return = (_return or RTKDataController.do_handle_results(
+            self, _error_code, _msg, None))
+
+        _error_code, _msg = self._dtm_data_model.dtm_mil_hdbk_f.select(
+            node_id).set_attributes(attributes)
+        _return = (_return or RTKDataController.do_handle_results(
+            self, _error_code, _msg, None))
+
+        _error_code, _msg = self._dtm_data_model.dtm_nswc.select(
+            node_id).set_attributes(attributes)
+        _return = (_return or RTKDataController.do_handle_results(
+            self, _error_code, _msg, None))
+
+        _error_code, _msg = self._dtm_data_model.dtm_reliability.select(
+            node_id).set_attributes(attributes)
+        _return = (_return or RTKDataController.do_handle_results(
+            self, _error_code, _msg, None))
+
+        return _return
 
     def request_make_composite_reference_designator(self, node_id=1):
         """
@@ -372,11 +343,21 @@ class HardwareBoMDataController(RTKDataController):
         _error_code = 0
         _msg = ''
 
+        # Create the composite reference designators in the Hardware model.
         if self._dtm_data_model.dtm_hardware.make_composite_ref_des(node_id):
             _error_code = 3005
             _msg = 'RTK ERROR: Failed to create all composite reference ' \
                    'designators for Node ID {0:d} and ' \
                    'children.'.format(node_id)
+
+        # If that was successful, update the BoM attributes.
+        if _error_code == 0:
+            for _node_id in self._dtm_data_model.tree.nodes:
+                if _node_id != 0:
+                    _attributes = self.request_get_attributes(_node_id)
+                    _comp_ref_des = self._dtm_data_model.dtm_hardware.select(
+                        _node_id).comp_ref_des
+                    _attributes['comp_ref_des'] = _comp_ref_des
 
         return _error_code, _msg
 
@@ -384,10 +365,18 @@ class HardwareBoMDataController(RTKDataController):
         """
         Request to calculate the hardware item.
 
-        :param int node_id:
-        :return:
-        :rtype:
+        :param int node_id: the Hardware ID to calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
         """
-        self._dtm_data_model.calculate(node_id)
+        _return = False
 
-        return
+        _attributes = self._dtm_data_model.calculate(node_id)
+        _error_code, _msg = self.request_set_attributes(node_id, _attributes)
+
+        if _error_code == 0 and not self._test:
+            pub.sendMessage('calculatedHardware', module_id=node_id)
+        else:
+            _return = True
+
+        return _return
