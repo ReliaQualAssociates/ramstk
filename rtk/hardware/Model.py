@@ -6,6 +6,8 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Hardware Package Data Model."""  # pragma: no cover
 
+from math import exp  # pragma: no cover
+
 # Import other RTK modules.
 # pylint: disable=E0401
 from analyses.prediction import Capacitor  # pragma: no cover
@@ -204,7 +206,7 @@ class HardwareBoMDataModel(RTKDataModel):
             _error_code, _msg = self.dtm_reliability.insert(
                 hardware_id=_hardware_id)
             _data['reliability'] = self.dtm_reliability.select(_hardware_id)
-            # FIXME: Add code to insert record to analyses tables in HardwareBoMDataModel.insert().
+            # FIXME: Add code to insert record to analyses tables (Allocation, Similar Item, etc.) in HardwareBoMDataModel.insert().
 
             self.tree.create_node(
                 _hardware.comp_ref_des,
@@ -343,7 +345,6 @@ class HardwareBoMDataModel(RTKDataModel):
         :rtype: dict
         """
         _attributes = self.tree.get_node(hardware_id).data
-        _hardware = self.select(hardware_id, 'reliability')
 
         if _attributes['category_id'] == 1:
             print("Integrated Circuit")
@@ -367,6 +368,55 @@ class HardwareBoMDataModel(RTKDataModel):
             print("Miscellaneous")
         else:
             print("Assembly")
+
+        _attributes['hazard_rate_logistics'] = (
+            _attributes['hazard_rate_active'] +
+            _attributes['hazard_rate_dormant'] +
+            _attributes['hazard_rate_software'])
+
+        _attributes['hr_active_variance'] = _attributes[
+            'hazard_rate_active']**2.0
+        _attributes['hr_dormant_variance'] = _attributes[
+            'hazard_rate_dormant']**2.0
+        _attributes['hr_logistics_variance'] = _attributes[
+            'hazard_rate_logistics']**2.0
+
+        try:
+            _attributes['mtbf_logistics'] = 1.0 / _attributes[
+                'hazard_rate_logistics']
+        except ZeroDivisionError:
+            _attributes['mtbf_logistics'] = 0.0
+        try:
+            _attributes['mtbf_mission'] = _attributes['hazard_rate_mission']
+        except ZeroDivisionError:
+            _attributes['mtbf_mission'] = 0.0
+
+        try:
+            _attributes['mtbf_log_variance'] = 1.0 / _attributes[
+                'hr_logistics_variance']
+        except ZeroDivisionError:
+            _attributes['mtbf_log_variance'] = 0.0
+        try:
+            _attributes['mtbf_miss_variance'] = 1.0 / _attributes[
+                'hr_mission_variance']
+        except ZeroDivisionError:
+            _attributes['mtbf_miss_variance'] = 0.0
+
+        _attributes['reliability_logistics'] = exp(
+            -1.0 * _attributes['hazard_rate_logistics'] *
+            _attributes['mission_time'])
+
+        try:
+            _attributes['cost_hour'] = _attributes['cost'] / _attributes[
+                'mission_time']
+        except ZeroDivisionError:
+            _attributes['cost_hour'] = _attributes['cost']
+
+        _attributes['cost_failure'] = _attributes['cost_hour'] * _attributes[
+            'mtbf_logistics']
+
+        if _attributes['part'] == 1:
+            _attributes['total_part_count'] = _attributes['quantity']
 
         return _attributes
 

@@ -15,7 +15,7 @@ from datetime import date
 
 from sqlalchemy.orm import scoped_session  # pylint: disable=E0401
 from pubsub import pub  # pylint: disable=E0401
-
+from sortedcontainers import SortedDict  # pylint: disable=E0401
 from treelib import Tree  # pylint: disable=E0401
 
 try:
@@ -374,6 +374,7 @@ class Model(object):
                 filter(RTKEnviron.environ_type == 'dormant').all():
             configuration.RTK_DORMANT_ENVIRONMENTS[_record.environ_id] = \
                 _record.get_attributes()[1:]
+        configuration.RTK_DORMANT_ENVIRONMENTS = SortedDict(configuration.RTK_DORMANT_ENVIRONMENTS)
 
         for _record in self.site_session.query(RTKEnviron).\
                 filter(RTKEnviron.environ_type == 'development').all():

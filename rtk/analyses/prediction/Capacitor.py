@@ -203,30 +203,30 @@ def calculate_217f_part_count(**attributes):
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']]
     except KeyError:
         _lst_base_hr = [0.0]
+
     try:
-        _lambdab = _lst_base_hr[attributes['environment_active_id'] - 1]
+        attributes['lambda_b'] = _lst_base_hr[
+            attributes['environment_active_id'] - 1]
     except IndexError:
-        _lambdab = 0.0
-    attributes['lambda_b'] = _lambdab
+        attributes['lambda_b'] = 0.0
 
     # Select the piQ.
-    _piQ = _lst_piQ[attributes['quality_id'] - 1]
-    attributes['piQ'] = _piQ
+    attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
 
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
-    if _lambdab <= 0.0:
+    if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating capacitor, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 
-    if _piQ <= 0.0:
+    if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
             'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Calculate the hazard rate.
-    _hr_active = _lambdab * _piQ
-    attributes['hazard_rate_active'] = _hr_active
+    attributes['hazard_rate_active'] = (
+        attributes['lambda_b'] * attributes['piQ'])
 
     return attributes, _msg
 
@@ -534,7 +534,7 @@ def calculate_dormant_hazard_rate(**attributes):
                'Active ID: {0:d}, Dormant ID: ' \
                '{1:d}'.format(attributes['environment_active_id'],
                               attributes['environment_dormant_id'])
-
+    print _msg
     return attributes, _msg
 
 

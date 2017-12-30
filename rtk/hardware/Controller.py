@@ -372,9 +372,9 @@ class HardwareBoMDataController(RTKDataController):
         _return = False
 
         _attributes = self._dtm_data_model.calculate(node_id)
-        _error_code, _msg = self.request_set_attributes(node_id, _attributes)
 
-        if _error_code == 0 and not self._test:
+        if (not self.request_set_attributes(node_id, _attributes)
+                and not self._test):
             pub.sendMessage('calculatedHardware', module_id=node_id)
         else:
             _return = True
