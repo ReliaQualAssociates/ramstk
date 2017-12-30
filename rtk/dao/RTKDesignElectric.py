@@ -79,6 +79,8 @@ class RTKDesignElectric(RTK_BASE):
         'fld_temperature_hot_spot', Float, default=0.0)
     temperature_junction = Column(
         'fld_temperature_junction', Float, default=0.0)
+    temperature_knee = Column(
+        'fld_temperature_knee', Float, default=25.0)
     temperature_rated_max = Column(
         'fld_temperature_rated_max', Float, default=0.0)
     temperature_rated_min = Column(
@@ -116,7 +118,7 @@ class RTKDesignElectric(RTK_BASE):
                   power_operating, power_rated, power_ratio, reason,
                   resistance, specification_id, technology_id,
                   temperature_active, temperature_case, temperature_dormant,
-                  temperature_hot_spot, temperature_junction,
+                  temperature_hot_spot, temperature_junction, temperature_knee,
                   temperature_rated_max, temperature_rated_min,
                   temperature_rise, theta_jc, type_id, voltage_ac_operating,
                   voltage_dc_operating, voltage_esd, voltage_rated,
@@ -166,6 +168,7 @@ class RTKDesignElectric(RTK_BASE):
             'temperature_dormant': self.temperature_dormant,
             'temperature_hot_spot': self.temperature_hot_spot,
             'temperature_junction': self.temperature_junction,
+            'temperature_knee': self.temperature_knee,
             'temperature_rated_max': self.temperature_rated_max,
             'temperature_rated_min': self.temperature_rated_min,
             'temperature_rise': self.temperature_rise,
@@ -272,6 +275,8 @@ class RTKDesignElectric(RTK_BASE):
                 none_to_default(attributes['temperature_hot_spot'], 0.0))
             self.temperature_junction = float(
                 none_to_default(attributes['temperature_junction'], 0.0))
+            self.temperature_knee = float(
+                none_to_default(attributes['temperature_knee'], 25.0))
             self.temperature_rated_max = float(
                 none_to_default(attributes['temperature_rated_max'], 0.0))
             self.temperature_rated_min = float(

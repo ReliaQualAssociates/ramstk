@@ -672,6 +672,8 @@ class StressInputs(gtk.Fixed):
 
     # Define private list attributes.
     _lst_labels = [
+        _(u"Minimum Rated Temperature (\u00B0C):"),
+        _(u"Knee Temperature (\u00B0C):"),
         _(u"Maximum Rated Temperature (\u00B0C):"),
         _(u"Rated Voltage (V):"),
         _(u"Operating ac Voltage (V):"),
@@ -707,7 +709,17 @@ class StressInputs(gtk.Fixed):
         # Initialize public scalar attributes.
         self.fmt = None
 
-        self.txtTemperatureRated = rtk.RTKEntry(
+        self.txtTemperatureKnee = rtk.RTKEntry(
+            width=125,
+            tooltip=_(
+                u"The break temperature (in \u00B0C) of the capacitor beyond "
+                u"which it must be derated."))
+        self.txtTemperatureRatedMin = rtk.RTKEntry(
+            width=125,
+            tooltip=_(
+                u"The minimum rated temperature (in \u00B0C) of the capacitor."
+            ))
+        self.txtTemperatureRatedMax = rtk.RTKEntry(
             width=125,
             tooltip=_(
                 u"The maximum rated temperature (in \u00B0C) of the capacitor."
@@ -723,13 +735,19 @@ class StressInputs(gtk.Fixed):
             tooltip=_(u"The operating DC voltage (in V) of the capacitor."))
 
         self._lst_handler_id.append(
-            self.txtTemperatureRated.connect('changed', self._on_focus_out, 0))
+            self.txtTemperatureRatedMin.connect('changed', self._on_focus_out,
+                                                0))
         self._lst_handler_id.append(
-            self.txtVoltageRated.connect('changed', self._on_focus_out, 1))
+            self.txtTemperatureKnee.connect('changed', self._on_focus_out, 1))
         self._lst_handler_id.append(
-            self.txtVoltageAC.connect('changed', self._on_focus_out, 2))
+            self.txtTemperatureRatedMax.connect('changed', self._on_focus_out,
+                                                2))
         self._lst_handler_id.append(
-            self.txtVoltageDC.connect('changed', self._on_focus_out, 3))
+            self.txtVoltageRated.connect('changed', self._on_focus_out, 3))
+        self._lst_handler_id.append(
+            self.txtVoltageAC.connect('changed', self._on_focus_out, 4))
+        self._lst_handler_id.append(
+            self.txtVoltageDC.connect('changed', self._on_focus_out, 5))
 
         self._make_stress_input_page()
         self.show_all()
@@ -745,10 +763,12 @@ class StressInputs(gtk.Fixed):
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
         _x_pos += 50
 
-        self.put(self.txtTemperatureRated, _x_pos, _y_pos[0])
-        self.put(self.txtVoltageRated, _x_pos, _y_pos[1])
-        self.put(self.txtVoltageAC, _x_pos, _y_pos[2])
-        self.put(self.txtVoltageDC, _x_pos, _y_pos[3])
+        self.put(self.txtTemperatureRatedMin, _x_pos, _y_pos[0])
+        self.put(self.txtTemperatureKnee, _x_pos, _y_pos[1])
+        self.put(self.txtTemperatureRatedMax, _x_pos, _y_pos[2])
+        self.put(self.txtVoltageRated, _x_pos, _y_pos[3])
+        self.put(self.txtVoltageAC, _x_pos, _y_pos[4])
+        self.put(self.txtVoltageDC, _x_pos, _y_pos[5])
 
         self.show_all()
 
@@ -770,13 +790,15 @@ class StressInputs(gtk.Fixed):
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
 
-            +---------+---------------------+---------+---------------------+
-            |  Index  | Widget              |  Index  | Widget              |
-            +=========+=====================+=========+=====================+
-            |    0    | txtTemperatureRated |    2    | txtVoltageAC        |
-            +---------+---------------------+---------+---------------------+
-            |    1    | txtVoltageRated     |    3    | txtVoltageDC        |
-            +---------+---------------------+---------+---------------------+
+            +---------+------------------------+---------+-------------------+
+            |  Index  | Widget                 |  Index  | Widget            |
+            +=========+========================+=========+===================+
+            |    0    | txtTemperatureRatedMin |    3    | VoltageRated      |
+            +---------+------------------------+---------+-------------------+
+            |    1    | txtTemperatureKnee     |    4    | txtVoltageAC      |
+            +---------+------------------------+---------+-------------------+
+            |    2    | txtTemperatureRatedMax |    5    | txtVoltageDC      |
+            +---------+------------------------+---------+-------------------+
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -796,12 +818,16 @@ class StressInputs(gtk.Fixed):
                 _text = 0.0
 
             if index == 0:
-                _attributes['temperature_rated_max'] = _text
+                _attributes['temperature_rated_min'] = _text
             elif index == 1:
-                _attributes['voltage_rated'] = _text
+                _attributes['temperature_knee'] = _text
             elif index == 2:
-                _attributes['voltage_ac_operating'] = _text
+                _attributes['temperature_rated_max'] = _text
             elif index == 3:
+                _attributes['voltage_rated'] = _text
+            elif index == 4:
+                _attributes['voltage_ac_operating'] = _text
+            elif index == 5:
                 _attributes['voltage_dc_operating'] = _text
 
             self._dtc_data_controller.request_set_attributes(
@@ -829,25 +855,35 @@ class StressInputs(gtk.Fixed):
 
         # We don't block the callback signal otherwise the style RTKComboBox()
         # will not be loaded and set.
-        self.txtTemperatureRated.handler_block(self._lst_handler_id[0])
-        self.txtTemperatureRated.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_max'])))
-        self.txtTemperatureRated.handler_unblock(self._lst_handler_id[0])
+        self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[0])
+        self.txtTemperatureRatedMin.set_text(
+            str(self.fmt.format(_attributes['temperature_rated_min'])))
+        self.txtTemperatureRatedMin.handler_unblock(self._lst_handler_id[0])
 
-        self.txtVoltageRated.handler_block(self._lst_handler_id[1])
+        self.txtTemperatureKnee.handler_block(self._lst_handler_id[1])
+        self.txtTemperatureKnee.set_text(
+            str(self.fmt.format(_attributes['temperature_knee'])))
+        self.txtTemperatureKnee.handler_unblock(self._lst_handler_id[1])
+
+        self.txtTemperatureRatedMax.handler_block(self._lst_handler_id[2])
+        self.txtTemperatureRatedMax.set_text(
+            str(self.fmt.format(_attributes['temperature_rated_max'])))
+        self.txtTemperatureRatedMax.handler_unblock(self._lst_handler_id[2])
+
+        self.txtVoltageRated.handler_block(self._lst_handler_id[3])
         self.txtVoltageRated.set_text(
             str(self.fmt.format(_attributes['voltage_rated'])))
-        self.txtVoltageRated.handler_unblock(self._lst_handler_id[1])
+        self.txtVoltageRated.handler_unblock(self._lst_handler_id[3])
 
-        self.txtVoltageAC.handler_block(self._lst_handler_id[2])
+        self.txtVoltageAC.handler_block(self._lst_handler_id[4])
         self.txtVoltageAC.set_text(
             str(self.fmt.format(_attributes['voltage_ac_operating'])))
-        self.txtVoltageAC.handler_unblock(self._lst_handler_id[2])
+        self.txtVoltageAC.handler_unblock(self._lst_handler_id[4])
 
-        self.txtVoltageDC.handler_block(self._lst_handler_id[3])
+        self.txtVoltageDC.handler_block(self._lst_handler_id[5])
         self.txtVoltageDC.set_text(
             str(self.fmt.format(_attributes['voltage_dc_operating'])))
-        self.txtVoltageDC.handler_unblock(self._lst_handler_id[3])
+        self.txtVoltageDC.handler_unblock(self._lst_handler_id[5])
 
         return _return
 
@@ -1035,8 +1071,7 @@ class AssessmentResults(gtk.Fixed):
         if _attributes['hazard_rate_method_id'] == 1:
             self._lblModel.set_markup(
                 u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>"
-            )
+                u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
             self._lst_labels[0] = u"\u03BB<sub>g</sub>:"
         else:
             self._lblModel.set_markup(
@@ -1090,7 +1125,7 @@ class AssessmentResults(gtk.Fixed):
         return _return
 
 
-class StressResults(gtk.Fixed):
+class StressResults(gtk.HPaned):
     """
     Display capacitor stress results attribute data in the RTK Work Book.
 
@@ -1132,11 +1167,12 @@ class StressResults(gtk.Fixed):
                                 capacitor.
         :param int subcategory_id: the ID of the capacitor subcategory.
         """
-        gtk.Fixed.__init__(self)
+        gtk.HPaned.__init__(self)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
 
         # Initialize private scalar attributes.
         self._dtc_data_controller = controller
@@ -1150,13 +1186,15 @@ class StressResults(gtk.Fixed):
         # Initialize public scalar attributes.
         self.fmt = None
 
+        self.pltDerate = rtk.RTKPlot()
+
         self.chkOverstress = rtk.RTKCheckButton(
             label=_(u"Overstressed"),
             tooltip=_(u"Indicates whether or not the selected capacitor "
                       u"is overstressed."))
         self.txtReason = rtk.RTKTextView(
             gtk.TextBuffer(),
-            width=300,
+            width=200,
             tooltip=_(u"The reason(s) the selected hardware item is "
                       u"overstressed."))
         self.txtVoltageRatio = rtk.RTKEntry(
@@ -1180,6 +1218,65 @@ class StressResults(gtk.Fixed):
 
         pub.subscribe(self.on_select, 'calculatedHardware')
 
+    def _do_load_derating_curve(self):
+        """
+        Load the benign and harsh environment derating curves.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        # Plot the derating curve.
+        _x = [
+            float(_attributes['temperature_rated_min']),
+            float(_attributes['temperature_knee']),
+            float(_attributes['temperature_rated_max'])
+        ]
+
+        self.pltDerate.axis.cla()
+        self.pltDerate.axis.grid(True, which='both')
+
+        self.pltDerate.do_load_plot(
+            x_values=_x,
+            y_values=self._lst_derate_criteria[0],
+            plot_type='scatter',
+            marker='r.-')
+
+        self.pltDerate.do_load_plot(
+            x_values=_x,
+            y_values=self._lst_derate_criteria[1],
+            plot_type='scatter',
+            marker='b.-')
+
+        self.pltDerate.do_load_plot(
+            x_values=[_attributes['temperature_active']],
+            y_values=[_attributes['voltage_ratio']],
+            plot_type='scatter',
+            marker='go')
+
+        self.pltDerate.do_make_title(
+            _(u"Voltage Derating Curve for {0:s} at {1:s}").format(
+                _attributes['part_number'], _attributes['ref_des']),
+            fontsize=12)
+        self.pltDerate.do_make_legend([
+            _(u"Harsh Environment"),
+            _(u"Mild Environment"),
+            _(u"Voltage Operating Point")
+        ])
+
+        self.pltDerate.do_make_labels(
+            _(u"Temperature (\u2070C)"), 0, -0.2, fontsize=10)
+        self.pltDerate.do_make_labels(
+            _(u"Voltage Ratio"), -1, 0, set_x=False, fontsize=10)
+
+        self.pltDerate.figure.canvas.draw()
+
+        return _return
+
     def _make_stress_results_page(self):
         """
         Make the capacitor gtk.Notebook() assessment results page.
@@ -1187,20 +1284,29 @@ class StressResults(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        _return = False
 
-        # Build the container for capacitors.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 35)
+        # Create the left side.
+        _fixed = gtk.Fixed()
+        self.pack1(_fixed, True, True)
+
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, _fixed, 5, 35)
         _x_pos += 50
 
-        self.put(self.txtVoltageRatio, _x_pos, _y_pos[0])
-        self.put(self.chkOverstress, _x_pos, _y_pos[1])
-        self.put(self.txtReason.scrollwindow, _x_pos, _y_pos[2])
+        _fixed.put(self.txtVoltageRatio, _x_pos, _y_pos[0])
+        _fixed.put(self.chkOverstress, _x_pos, _y_pos[1])
+        _fixed.put(self.txtReason.scrollwindow, _x_pos, _y_pos[2])
 
-        self.show_all()
+        _fixed.show_all()
 
-        return None
+        # Create the derating plot.
+        _frame = rtk.RTKFrame(label=_(u"Derating Curve and Operating Point"))
+        _frame.add(self.pltDerate.plot)
+        _frame.show_all()
+
+        self.pack2(_frame, True, True)
+
+        return _return
 
     def on_select(self, module_id):
         """
@@ -1223,5 +1329,7 @@ class StressResults(gtk.Fixed):
         self.chkOverstress.set_active(_attributes['overstress'])
         _textbuffer = self.txtReason.do_get_buffer()
         _textbuffer.set_text(_attributes['reason'])
+
+        self._do_load_derating_curve()
 
         return _return

@@ -488,7 +488,8 @@ class TestHardwareBoMDataController(unittest.TestCase):
         'availability_logistics': 1.0,
         'hazard_rate_dormant': 0.0,
         'mtbf_logistics': 0.0,
-        'mult_adj_factor': 1.0
+        'mult_adj_factor': 1.0,
+        'temperature_knee': 25.0
     }
 
     def setUp(self):

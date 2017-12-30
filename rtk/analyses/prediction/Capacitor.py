@@ -534,7 +534,7 @@ def calculate_dormant_hazard_rate(**attributes):
                'Active ID: {0:d}, Dormant ID: ' \
                '{1:d}'.format(attributes['environment_active_id'],
                               attributes['environment_dormant_id'])
-    print _msg
+
     return attributes, _msg
 
 
