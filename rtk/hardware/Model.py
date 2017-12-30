@@ -7,6 +7,7 @@
 """Hardware Package Data Model."""  # pragma: no cover
 
 from math import exp  # pragma: no cover
+from treelib.exceptions import DuplicatedNodeIdError  # pragma: no cover
 
 # Import other RTK modules.
 # pylint: disable=E0401
@@ -144,15 +145,18 @@ class HardwareBoMDataModel(RTKDataModel):
             except KeyError:
                 pass
 
-            self.tree.create_node(
-                _node.data.comp_ref_des,
-                _hardware_id,
-                parent=_node.data.parent_id,
-                data=_data)
+            try:
+                self.tree.create_node(
+                    _node.data.comp_ref_des,
+                    _hardware_id,
+                    parent=_node.data.parent_id,
+                    data=_data)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _hardware_id)
+                # pylint: disable=attribute-defined-outside-init
+                # It is defined in RTKDataModel.__init__
+                self.last_id = max(self.last_id, _hardware_id)
+            except DuplicatedNodeIdError:
+                pass
 
         return self.tree
 
@@ -186,26 +190,35 @@ class HardwareBoMDataModel(RTKDataModel):
                 revision_id=_revision_id, parent_id=_parent_id, part=_part)
 
         if _error_code == 0:
+            _data = {}
             _hardware_id = self.dtm_hardware.last_id
             _hardware = self.dtm_hardware.select(_hardware_id)
-            _data = {'general': self.dtm_hardware.select(_hardware_id)}
+            _data = _hardware.get_attributes()
             # FIXME: Handle error codes in HardwareBoMDataModel.insert().
             _error_code, _msg = self.dtm_design_electric.insert(
                 hardware_id=_hardware_id)
-            _data['electrical_design'] = self.dtm_design_electric.select(
-                _hardware_id)
+            _electrical = self.dtm_design_electric.select(_hardware_id)
+            _data.update(_electrical.get_attributes())
+
             _error_code, _msg = self.dtm_design_mechanic.insert(
                 hardware_id=_hardware_id)
-            _data['mechanical_design'] = self.dtm_design_mechanic.select(
-                _hardware_id)
+            _mechanical = self.dtm_design_mechanic.select(_hardware_id)
+            _data.update(_mechanical.get_attributes())
+
             _error_code, _msg = self.dtm_mil_hdbk_f.insert(
                 hardware_id=_hardware_id)
-            _data['mil_hdbk_f'] = self.dtm_mil_hdbk_f.select(_hardware_id)
+            _mil_hdbk_f = self.dtm_mil_hdbk_f.select(_hardware_id)
+            _data.update(_mil_hdbk_f.get_attributes())
+
             _error_code, _msg = self.dtm_nswc.insert(hardware_id=_hardware_id)
-            _data['nswc'] = self.dtm_nswc.select(_hardware_id)
+            _nswc = self.dtm_nswc.select(_hardware_id)
+            _data.update(_nswc.get_attributes())
+
             _error_code, _msg = self.dtm_reliability.insert(
                 hardware_id=_hardware_id)
-            _data['reliability'] = self.dtm_reliability.select(_hardware_id)
+            _reliability = self.dtm_reliability.select(_hardware_id)
+            _data.update(_reliability.get_attributes())
+
             # FIXME: Add code to insert record to analyses tables (Allocation, Similar Item, etc.) in HardwareBoMDataModel.insert().
 
             self.tree.create_node(
@@ -473,15 +486,18 @@ class HardwareDataModel(RTKDataModel):
             # (NULL fields in the database) with their default value.
             _attributes = _hardware.get_attributes()
             _hardware.set_attributes(_attributes)
-            self.tree.create_node(
-                _hardware.comp_ref_des,
-                _hardware.hardware_id,
-                parent=_hardware.parent_id,
-                data=_hardware)
+            try:
+                self.tree.create_node(
+                    _hardware.comp_ref_des,
+                    _hardware.hardware_id,
+                    parent=_hardware.parent_id,
+                    data=_hardware)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _hardware.hardware_id)
+                # pylint: disable=attribute-defined-outside-init
+                # It is defined in RTKDataModel.__init__
+                self.last_id = max(self.last_id, _hardware.hardware_id)
+            except DuplicatedNodeIdError:
+                pass
 
         _session.close()
 
@@ -658,15 +674,18 @@ class DesignElectricDataModel(RTKDataModel):
 
         for _design in _session.query(RTKDesignElectric).\
                 filter(RTKDesignElectric.hardware_id == hardware_id).all():
-            self.tree.create_node(
-                _design.hardware_id,
-                _design.hardware_id,
-                parent=0,
-                data=_design)
+            try:
+                self.tree.create_node(
+                    _design.hardware_id,
+                    _design.hardware_id,
+                    parent=0,
+                    data=_design)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _design.hardware_id)
+                # pylint: disable=attribute-defined-outside-init
+                # It is defined in RTKDataModel.__init__
+                self.last_id = max(self.last_id, _design.hardware_id)
+            except DuplicatedNodeIdError:
+                pass
 
         _session.close()
 
@@ -818,15 +837,18 @@ class DesignMechanicDataModel(RTKDataModel):
 
         for _design in _session.query(RTKDesignMechanic).\
                 filter(RTKDesignMechanic.hardware_id == hardware_id).all():
-            self.tree.create_node(
-                _design.hardware_id,
-                _design.hardware_id,
-                parent=0,
-                data=_design)
+            try:
+                self.tree.create_node(
+                    _design.hardware_id,
+                    _design.hardware_id,
+                    parent=0,
+                    data=_design)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _design.hardware_id)
+                # pylint: disable=attribute-defined-outside-init
+                # It is defined in RTKDataModel.__init__
+                self.last_id = max(self.last_id, _design.hardware_id)
+            except DuplicatedNodeIdError:
+                pass
 
         _session.close()
 
@@ -978,15 +1000,18 @@ class MilHdbkFDataModel(RTKDataModel):
 
         for _milhdbkf in _session.query(RTKMilHdbkF).\
                 filter(RTKMilHdbkF.hardware_id == hardware_id).all():
-            self.tree.create_node(
-                _milhdbkf.hardware_id,
-                _milhdbkf.hardware_id,
-                parent=0,
-                data=_milhdbkf)
+            try:
+                self.tree.create_node(
+                    _milhdbkf.hardware_id,
+                    _milhdbkf.hardware_id,
+                    parent=0,
+                    data=_milhdbkf)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _milhdbkf.hardware_id)
+                # pylint: disable=attribute-defined-outside-init
+                # It is defined in RTKDataModel.__init__
+                self.last_id = max(self.last_id, _milhdbkf.hardware_id)
+            except DuplicatedNodeIdError:
+                pass
 
         _session.close()
 
@@ -1135,12 +1160,15 @@ class NSWCDataModel(RTKDataModel):
 
         for _nswc in _session.query(RTKNSWC).\
                 filter(RTKNSWC.hardware_id == hardware_id).all():
-            self.tree.create_node(
-                _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
+            try:
+                self.tree.create_node(
+                    _nswc.hardware_id, _nswc.hardware_id, parent=0, data=_nswc)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _nswc.hardware_id)
+                # pylint: disable=attribute-defined-outside-init
+                # It is defined in RTKDataModel.__init__
+                self.last_id = max(self.last_id, _nswc.hardware_id)
+            except DuplicatedNodeIdError:
+                pass
 
         _session.close()
 
@@ -1286,15 +1314,18 @@ class ReliabilityDataModel(RTKDataModel):
 
         for _reliability in _session.query(RTKReliability).\
                 filter(RTKReliability.hardware_id == hardware_id).all():
-            self.tree.create_node(
-                _reliability.hardware_id,
-                _reliability.hardware_id,
-                parent=0,
-                data=_reliability)
+            try:
+                self.tree.create_node(
+                    _reliability.hardware_id,
+                    _reliability.hardware_id,
+                    parent=0,
+                    data=_reliability)
 
-            # pylint: disable=attribute-defined-outside-init
-            # It is defined in RTKDataModel.__init__
-            self.last_id = max(self.last_id, _reliability.hardware_id)
+                # pylint: disable=attribute-defined-outside-init
+                # It is defined in RTKDataModel.__init__
+                self.last_id = max(self.last_id, _reliability.hardware_id)
+            except DuplicatedNodeIdError:
+                pass
 
         _session.close()
 

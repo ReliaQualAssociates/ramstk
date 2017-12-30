@@ -215,6 +215,9 @@ class ModuleView(RTKModuleView):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
+        _model, _row = self.treeview.get_selection().get_selected()
+        _path = _model.get_path(_row)
+
         if sibling:
             _parent_id = _attributes['parent_id']
         else:
@@ -225,7 +228,13 @@ class ModuleView(RTKModuleView):
             # TODO: Add code to the FMEA Class to respond to the 'insertedHardware' pubsub message and insert a set of hardwareal failure modes.
             # TODO: Add code to the Matrix Class to respond to the 'insertedHardware' pubsub message and insert a record into each of the Hardware-X matrices.
             self._on_select_revision(self._revision_id)
-            self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['hardware'][1] += 1
+            if part == 0:
+                self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['assembly'][1] += 1
+            elif part == 1:
+                self._mdcRTK.RTK_CONFIGURATION.RTK_PREFIX['part'][1] += 1
+
+            self.treeview.set_cursor(_path)
+
         else:
             _prompt = _(u"An error occurred while attempting to add a "
                         u"hardware to Revision "

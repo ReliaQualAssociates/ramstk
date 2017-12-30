@@ -335,11 +335,11 @@ class GeneralData(RTKWorkView):
             _subcategory = self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[
                 category - 1]
 
-        _data = []
-        for _key in _subcategory:
-            _data.append([_subcategory[_key]])
+            _data = []
+            for _key in _subcategory:
+                _data.append([_subcategory[_key]])
 
-        self.cmbSubcategory.do_load_combo(_data)
+            self.cmbSubcategory.do_load_combo(_data)
 
         return _return
 
