@@ -113,7 +113,7 @@ class RTKBaseView(object):
                 self.treeview = gtk.TreeView()
 
         self.fmt = '{0:0.' + \
-                   str(controller.RTK_CONFIGURATION.RTK_DEC_PLACES) + 'g}'
+                   str(controller.RTK_CONFIGURATION.RTK_DEC_PLACES) + 'G}'
         self.hbx_tab_label = gtk.HBox()
 
         try:

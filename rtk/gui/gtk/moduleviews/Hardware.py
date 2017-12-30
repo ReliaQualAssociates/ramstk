@@ -212,12 +212,13 @@ class ModuleView(RTKModuleView):
         """
         _return = False
 
-        _hardware = self._dtc_data_controller.request_select(self._hardware_id)
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
 
         if sibling:
-            _parent_id = _hardware['parent_id']
+            _parent_id = _attributes['parent_id']
         else:
-            _parent_id = _hardware['hardware_id']
+            _parent_id = _attributes['hardware_id']
 
         if not self._dtc_data_controller.request_insert(
                 self._revision_id, _parent_id, part):

@@ -84,7 +84,8 @@ class TestRTKDesignElectric(unittest.TestCase):
         'n_wave_soldered': 0,
         'temperature_rise': 0.0,
         'temperature_active': 35.0,
-        'temperature_dormant': 25.0
+        'temperature_dormant': 25.0,
+        'temperature_knee': 25.0
     }
 
     def setUp(self):
