@@ -70,6 +70,53 @@ class AssessmentInputs(gtk.Fixed):
     """
 
     # Define private dict attributes.
+    _dic_quality = {
+        1: [["MIL-SPEC"], [_(u"Lower")]],
+        2: [["M"], [_(u"Non-Established Reliability")], [_(u"Lower")]],
+        3: [
+            "S", "R", "P", "M", "L",
+            [_(u"MIL-C-19978 Non-Established Reliability")], [_(u"Lower")]
+        ],
+        4: [
+            "S", "R", "P", "M", "L",
+            [_(u"MIL-C-18312 Non-Established Reliability")], [_(u"Lower")]
+        ],
+        5: ["S", "R", "P", "M", [_(u"Lower")]],
+        6: ["S", "R", "P", "M", [_(u"Lower")]],
+        7: [
+            "T", "S", "R", "P", "M", "L",
+            [_(u"MIL-C-5 Non-Established Reliability, Dipped")],
+            [_(u"MIL-C-5 Non-Established Reliability, Molded")], [_(u"Lower")]
+        ],
+        8: [["MIL-C-10950"], [_(u"Lower")]],
+        9: [
+            "S", "R", "P", "M", "L",
+            [_(u"MIL-C-11272 Non-Established Reliability")], [_(u"Lower")]
+        ],
+        10: [
+            "S", "R", "P", "M", "L",
+            [_(u"MIL-C-11015 Non-Established Reliability")], [_(u"Lower")]
+        ],
+        11: [
+            "S", "R", "P", "M", [_(u"Non-Established Reliability")],
+            [_(u"Lower")]
+        ],
+        12: ["D", "C", "S", "B", "R", "P", "M", "L", [_(u"Lower")]],
+        13: [
+            "S", "R", "P", "M", "L",
+            [_(u"MIL-C-3965 Non-Established Reliability")], [_(u"Lower")]
+        ],
+        14: [
+            "S", "R", "P", "M", [_(u"Non-Established Reliability")],
+            [_(u"Lower")]
+        ],
+        15: [["MIL-SPEC"], [_(u"Lower")]],
+        16: [["MIL-SPEC"], [_(u"Lower")]],
+        17: [["MIL-SPEC"], [_(u"Lower")]],
+        18: [["MIL-SPEC"], [_(u"Lower")]],
+        19: [["MIL-SPEC"], [_(u"Lower")]]
+    }
+
     _dic_specifications = {
         1: [["MIL-C-25"], ["MIL-C-12889"]],
         2: [["MIL-C-11693"]],
@@ -176,6 +223,7 @@ class AssessmentInputs(gtk.Fixed):
     # Define private list attributes.
     _lst_labels = [
         _(u"Capacitance (F):"),
+        _(u"Quality Level:"),
         _(u"Specification:"),
         _(u"Style:"),
         _(u"Configuration:"),
@@ -189,6 +237,8 @@ class AssessmentInputs(gtk.Fixed):
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
+        :param int hardware_id: the hardware ID of the currently selected
+                                capacitor.
         :param int subcategory_id: the ID of the capacitor subcategory.
         """
         gtk.Fixed.__init__(self)
@@ -210,6 +260,10 @@ class AssessmentInputs(gtk.Fixed):
         # Initialize public scalar attributes.
         self.fmt = None
 
+        self.cmbQuality = rtk.RTKComboBox(
+            index=0,
+            simple=True,
+            tooltip=_(u"The quality level of the capacitor."))
         self.cmbSpecification = rtk.RTKComboBox(
             index=0,
             simple=True,
@@ -236,23 +290,25 @@ class AssessmentInputs(gtk.Fixed):
         self.show_all()
 
         self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          0))
+            self.cmbQuality.connect('changed', self._on_combo_changed, 0))
         self._lst_handler_id.append(
-            self.cmbStyle.connect('changed', self._on_combo_changed, 1))
+            self.cmbSpecification.connect('changed', self._on_combo_changed,
+                                          1))
+        self._lst_handler_id.append(
+            self.cmbStyle.connect('changed', self._on_combo_changed, 2))
         self._lst_handler_id.append(
             self.cmbConfiguration.connect('changed', self._on_combo_changed,
-                                          2))
+                                          3))
         self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 3))
+            self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
         self._lst_handler_id.append(
-            self.txtCapacitance.connect('changed', self._on_focus_out, 4))
+            self.txtCapacitance.connect('changed', self._on_focus_out, 5))
         self._lst_handler_id.append(
-            self.txtESR.connect('changed', self._on_focus_out, 5))
+            self.txtESR.connect('changed', self._on_focus_out, 6))
 
-        pub.subscribe(self._do_load_specification, 'changedSubcategory')
+        pub.subscribe(self._do_load_comboboxes, 'changedSubcategory')
 
-    def _do_load_specification(self, subcategory_id):
+    def _do_load_comboboxes(self, subcategory_id):
         """
         Load the specification RKTComboBox().
 
@@ -267,7 +323,7 @@ class AssessmentInputs(gtk.Fixed):
 
         self._subcategory_id = subcategory_id
 
-        # Load the gtk.ComboBox() widgets.
+        # Load the specification RTKComboBox().
         _model = self.cmbSpecification.get_model()
         _model.clear()
 
@@ -276,6 +332,65 @@ class AssessmentInputs(gtk.Fixed):
         except KeyError:
             _data = []
         self.cmbSpecification.do_load_combo(_data)
+
+        # Load the quality level RTKComboBox().
+        _model = self.cmbQuality.get_model()
+        _model.clear()
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+        if _attributes['hazard_rate_method_id'] == 1:
+            _data = ["S", "R", "P", "M", "L", ["MIL-SPEC"], [_(u"Lower")]]
+        else:
+            try:
+                _data = self._dic_quality[self._subcategory_id]
+            except KeyError:
+                _data = []
+        self.cmbQuality.do_load_combo(_data)
+
+        return _return
+
+    def _do_set_sensitive(self):
+        """
+        Set widget sensitivity as needed for the selected capacitor.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        if _attributes['hazard_rate_method_id'] == 1:
+            if self._subcategory_id == 1:
+                self.cmbSpecification.set_sensitive(True)
+            else:
+                self.cmbSpecification.set_sensitive(False)
+            self.cmbStyle.set_sensitive(False)
+            self.cmbConfiguration.set_sensitive(False)
+            self.cmbConstruction.set_sensitive(False)
+            self.txtCapacitance.set_sensitive(False)
+            self.txtESR.set_sensitive(False)
+        else:
+            self.cmbSpecification.set_sensitive(True)
+            self.cmbStyle.set_sensitive(True)
+            self.txtCapacitance.set_sensitive(True)
+
+            if self._subcategory_id == 12:
+                self.txtESR.set_sensitive(True)
+            else:
+                self.txtESR.set_sensitive(False)
+
+            if self._subcategory_id == 13:
+                self.cmbConstruction.set_sensitive(True)
+            else:
+                self.cmbConstruction.set_sensitive(False)
+
+            if self._subcategory_id == 19:
+                self.cmbConfiguration.set_sensitive(True)
+            else:
+                self.cmbConfiguration.set_sensitive(False)
 
         return _return
 
@@ -313,31 +428,20 @@ class AssessmentInputs(gtk.Fixed):
         _data = [[_(u"Fixed")], [_(u"Variable")]]
         self.cmbConfiguration.do_load_combo(_data)
 
-        if self._subcategory_id == 12:
-            self.txtESR.set_sensitive(True)
-        else:
-            self.txtESR.set_sensitive(False)
-
-        if self._subcategory_id == 13:
-            self.cmbConstruction.set_sensitive(True)
-        else:
-            self.cmbConstruction.set_sensitive(False)
-
-        if self._subcategory_id == 19:
-            self.cmbConfiguration.set_sensitive(True)
-        else:
-            self.cmbConfiguration.set_sensitive(False)
+        self._do_load_comboboxes(self._subcategory_id)
+        self._do_set_sensitive()
 
         # Build the container for capacitors.
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
         _x_pos += 50
 
         self.put(self.txtCapacitance, _x_pos, _y_pos[0])
-        self.put(self.cmbSpecification, _x_pos, _y_pos[1])
-        self.put(self.cmbStyle, _x_pos, _y_pos[2])
-        self.put(self.cmbConfiguration, _x_pos, _y_pos[3])
-        self.put(self.cmbConstruction, _x_pos, _y_pos[4])
-        self.put(self.txtESR, _x_pos, _y_pos[5])
+        self.put(self.cmbQuality, _x_pos, _y_pos[1])
+        self.put(self.cmbSpecification, _x_pos, _y_pos[2])
+        self.put(self.cmbStyle, _x_pos, _y_pos[3])
+        self.put(self.cmbConfiguration, _x_pos, _y_pos[4])
+        self.put(self.cmbConstruction, _x_pos, _y_pos[5])
+        self.put(self.txtESR, _x_pos, _y_pos[6])
 
         self.show_all()
 
@@ -359,9 +463,11 @@ class AssessmentInputs(gtk.Fixed):
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
             +=========+==================+=========+==================+
-            |    0    | cmbSpecification |    2    | cmbConfiguration |
+            |    0    | cmbQuality       |    3    | cmbConfiguration |
             +---------+------------------+---------+------------------+
-            |    1    | cmbStyle         |    3    | cmbConstruction  |
+            |    1    | cmbSpecification |    4    | cmbConstruction  |
+            +---------+------------------+---------+------------------+
+            |    2    | cmbStyle         |         |                  |
             +---------+------------------+---------+------------------+
 
         :return: False if successful or True if an error is encountered.
@@ -375,17 +481,19 @@ class AssessmentInputs(gtk.Fixed):
         _row = combo.get_active_iter()
 
         if self._dtc_data_controller is not None:
-            _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'electrical_design')
+            _attributes = self._dtc_data_controller.request_get_attributes(
+                self._hardware_id)
 
             if index == 0:
-                _hardware.specification_id = int(combo.get_active())
+                _attributes['quality_id'] = int(combo.get_active())
+            elif index == 1:
+                _attributes['specification_id'] = int(combo.get_active())
 
                 _model = self.cmbStyle.get_model()
                 _model.clear()
 
                 # Load the capacitor style RTKComboBox().
-                _index = _hardware.specification_id - 1
+                _index = _attributes['specification_id'] - 1
                 if self._subcategory_id in [1, 3, 4, 7, 9, 10, 11, 13]:
                     try:
                         _data = self._dic_styles[self._subcategory_id][_index]
@@ -399,12 +507,15 @@ class AssessmentInputs(gtk.Fixed):
 
                 self.cmbStyle.do_load_combo(_data)
 
-            elif index == 1:
-                _hardware.type_id = int(combo.get_active())
             elif index == 2:
-                _hardware.configuration_id = int(combo.get_active())
+                _attributes['type_id'] = int(combo.get_active())
             elif index == 3:
-                _hardware.construction_id = int(combo.get_active())
+                _attributes['configuration_id'] = int(combo.get_active())
+            elif index == 4:
+                _attributes['consruction_id'] = int(combo.get_active())
+
+            self._dtc_data_controller.request_set_attributes(
+                self._hardware_id, _attributes)
 
         combo.handler_unblock(self._lst_handler_id[index])
 
@@ -429,7 +540,7 @@ class AssessmentInputs(gtk.Fixed):
             +---------+---------------------+---------+---------------------+
             |  Index  | Widget              |  Index  | Widget              |
             +=========+=====================+=========+=====================+
-            |    4    | txtCapacitance      |    5    | txtESR              |
+            |    5    | txtCapacitance      |    6    | txtESR              |
             +---------+---------------------+---------+---------------------+
 
         :return: False if successful or True if an error is encountered.
@@ -441,18 +552,21 @@ class AssessmentInputs(gtk.Fixed):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'electrical_design')
+            _attributes = self._dtc_data_controller.request_get_attributes(
+                self._hardware_id)
 
             try:
                 _text = float(entry.get_text())
             except ValueError:
                 _text = 0.0
 
-            if index == 4:
-                _hardware.capacitance = _text
-            elif index == 5:
-                _hardware.resistance = _text
+            if index == 5:
+                _attributes['capacitance'] = _text
+            elif index == 6:
+                _attributes['resistance'] = _text
+
+            self._dtc_data_controller.request_set_attributes(
+                self._hardware_id, _attributes)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -471,33 +585,42 @@ class AssessmentInputs(gtk.Fixed):
 
         self._hardware_id = module_id
 
-        _hardware = self._dtc_data_controller.request_select(
-            self._hardware_id, 'electrical_design')
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
 
-        # We don't block the callback signal otherwise the style RTKComboBox()
-        # will not be loaded and set.
-        self.cmbSpecification.set_active(_hardware.specification_id)
+        self.cmbQuality.handler_block(self._lst_handler_id[0])
+        self.cmbQuality.set_active(_attributes['quality_id'])
+        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
 
-        self.cmbStyle.handler_block(self._lst_handler_id[1])
-        self.cmbStyle.set_active(_hardware.type_id)
-        self.cmbStyle.handler_unblock(self._lst_handler_id[1])
+        # We don't block the callback signal otherwise the style
+        # RTKComboBox()will not be loaded and set.
+        self.cmbSpecification.set_active(_attributes['specification_id'])
 
-        self.cmbConfiguration.handler_block(self._lst_handler_id[2])
-        self.cmbConfiguration.set_active(_hardware.configuration_id)
-        self.cmbConfiguration.handler_unblock(self._lst_handler_id[2])
+        self._do_set_sensitive()
 
-        self.cmbConstruction.handler_block(self._lst_handler_id[3])
-        self.cmbConstruction.set_active(_hardware.construction_id)
-        self.cmbConstruction.handler_unblock(self._lst_handler_id[3])
+        if (_attributes['hazard_rate_method_id'] != 1
+                and self._subcategory_id == 1):
+            self.cmbStyle.handler_block(self._lst_handler_id[2])
+            self.cmbStyle.set_active(_attributes['type_id'])
+            self.cmbStyle.handler_unblock(self._lst_handler_id[2])
 
-        self.txtCapacitance.handler_block(self._lst_handler_id[4])
-        self.txtCapacitance.set_text(
-            str(self.fmt.format(_hardware.capacitance)))
-        self.txtCapacitance.handler_unblock(self._lst_handler_id[4])
+            self.cmbConfiguration.handler_block(self._lst_handler_id[3])
+            self.cmbConfiguration.set_active(_attributes['configuration_id'])
+            self.cmbConfiguration.handler_unblock(self._lst_handler_id[3])
 
-        self.txtESR.handler_block(self._lst_handler_id[5])
-        self.txtESR.set_text(str(self.fmt.format(_hardware.resistance)))
-        self.txtESR.handler_unblock(self._lst_handler_id[5])
+            self.cmbConstruction.handler_block(self._lst_handler_id[4])
+            self.cmbConstruction.set_active(_attributes['construction_id'])
+            self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
+
+            self.txtCapacitance.handler_block(self._lst_handler_id[5])
+            self.txtCapacitance.set_text(
+                str(self.fmt.format(_attributes['capacitance'])))
+            self.txtCapacitance.handler_unblock(self._lst_handler_id[5])
+
+            self.txtESR.handler_block(self._lst_handler_id[6])
+            self.txtESR.set_text(
+                str(self.fmt.format(_attributes['resistance'])))
+            self.txtESR.handler_unblock(self._lst_handler_id[6])
 
         return _return
 
@@ -561,6 +684,8 @@ class StressInputs(gtk.Fixed):
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
+        :param int hardware_id: the hardware ID of the currently selected
+                                capacitor.
         :param int subcategory_id: the ID of the capacitor subcategory.
         """
         gtk.Fixed.__init__(self)
@@ -662,8 +787,8 @@ class StressInputs(gtk.Fixed):
         entry.handler_block(self._lst_handler_id[index])
 
         if self._dtc_data_controller is not None:
-            _hardware = self._dtc_data_controller.request_select(
-                self._hardware_id, 'electrical_design')
+            _attributes = self._dtc_data_controller.request_get_attributes(
+                self._hardware_id)
 
             try:
                 _text = float(entry.get_text())
@@ -671,13 +796,16 @@ class StressInputs(gtk.Fixed):
                 _text = 0.0
 
             if index == 0:
-                _hardware.temperature_rated_max = _text
+                _attributes['temperature_rated_max'] = _text
             elif index == 1:
-                _hardware.voltage_rated = _text
+                _attributes['voltage_rated'] = _text
             elif index == 2:
-                _hardware.voltage_ac_operating = _text
+                _attributes['voltage_ac_operating'] = _text
             elif index == 3:
-                _hardware.voltage_dc_operating = _text
+                _attributes['voltage_dc_operating'] = _text
+
+            self._dtc_data_controller.request_set_attributes(
+                self._hardware_id, _attributes)
 
         entry.handler_unblock(self._lst_handler_id[index])
 
@@ -696,29 +824,404 @@ class StressInputs(gtk.Fixed):
 
         self._hardware_id = module_id
 
-        _hardware = self._dtc_data_controller.request_select(
-            self._hardware_id, 'electrical_design')
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
 
         # We don't block the callback signal otherwise the style RTKComboBox()
         # will not be loaded and set.
         self.txtTemperatureRated.handler_block(self._lst_handler_id[0])
         self.txtTemperatureRated.set_text(
-            str(self.fmt.format(_hardware.temperature_rated_max)))
+            str(self.fmt.format(_attributes['temperature_rated_max'])))
         self.txtTemperatureRated.handler_unblock(self._lst_handler_id[0])
 
         self.txtVoltageRated.handler_block(self._lst_handler_id[1])
         self.txtVoltageRated.set_text(
-            str(self.fmt.format(_hardware.voltage_rated)))
+            str(self.fmt.format(_attributes['voltage_rated'])))
         self.txtVoltageRated.handler_unblock(self._lst_handler_id[1])
 
         self.txtVoltageAC.handler_block(self._lst_handler_id[2])
         self.txtVoltageAC.set_text(
-            str(self.fmt.format(_hardware.voltage_ac_operating)))
+            str(self.fmt.format(_attributes['voltage_ac_operating'])))
         self.txtVoltageAC.handler_unblock(self._lst_handler_id[2])
 
         self.txtVoltageDC.handler_block(self._lst_handler_id[3])
         self.txtVoltageDC.set_text(
-            str(self.fmt.format(_hardware.voltage_dc_operating)))
+            str(self.fmt.format(_attributes['voltage_dc_operating'])))
         self.txtVoltageDC.handler_unblock(self._lst_handler_id[3])
+
+        return _return
+
+
+class AssessmentResults(gtk.Fixed):
+    """
+    Display capacitor assessment results attribute data in the RTK Work Book.
+
+    The capacitor assessment result view displays all the assessment results
+    for the selected capacitor.  This includes, currently, results for
+    MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The
+    attributes of a capacitor assessment result view are:
+
+    :cvar list _lst_labels: the text to use for the assessment results widget
+                            labels.
+
+    :ivar int _hardware_id: the ID of the Hardware item currently being
+                            displayed.
+    :ivar int _subcategory_id: the ID of the subcategory for the capacitor
+                               currently being displayed.
+    :ivar _lblModel: the :class:`rtk.gui.gtk.rtk.Label.RTKLabel` to display
+                     the failure rate mathematical model used.
+
+    :ivar txtLambdaB: displays the base hazard rate of the capacitor.
+    :ivar txtPiCV: displays the capacitance factor for the capacitor.
+    :ivar txtPiCF: displays the configuration factor for the capacitor.
+    :ivar txtPiC: displays the construction factor for the capacitor.
+    :ivar txtPiQ: displays the quality factor for the capacitor.
+    :ivar txtPiE: displays the environment factor for the capacitor.
+    """
+
+    # Define private dict attributes.
+    _dic_part_stress = {
+        1:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        2:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        3:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        4:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        5:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        6:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        7:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        8:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        9:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        10:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        11:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        12:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        13:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        14:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        15:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        16:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        17:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        18:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        19:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>CV</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+    }
+
+    # Define private list attributes.
+    _lst_labels = [
+        u"\u03BB<sub>b</sub>:", u"\u03C0<sub>CV</sub>:",
+        u"\u03C0<sub>CF</sub>:", u"\u03C0<sub>C</sub>:",
+        u"\u03C0<sub>Q</sub>:", u"\u03C0<sub>E</sub>:"
+    ]
+
+    def __init__(self, controller, hardware_id, subcategory_id):
+        """
+        Initialize an instance of the Capacitor assessment result view.
+
+        :param controller: the hardware data controller instance.
+        :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
+        :param int hardware_id: the hardware ID of the currently selected
+                                capacitor.
+        :param int subcategory_id: the ID of the capacitor subcategory.
+        """
+        gtk.Fixed.__init__(self)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._dtc_data_controller = controller
+        self._hardware_id = hardware_id
+        self._subcategory_id = subcategory_id
+
+        self._lblModel = rtk.RTKLabel(
+            '',
+            tooltip=_(u"The assessment model used to calculate the capacitor "
+                      u"failure rate."))
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.fmt = None
+
+        self.txtLambdaB = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The base hazard rate of the capacitor."))
+        self.txtPiCV = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The capacitance factor for the capacitor."))
+        self.txtPiCF = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The configuration factor for the capacitor."))
+        self.txtPiC = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The construction factor for the capacitor."))
+        self.txtPiQ = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The quality factor for the capacitor."))
+        self.txtPiE = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The environment factor for the capacitor."))
+
+        self._make_assessment_results_page()
+        self.show_all()
+
+        pub.subscribe(self.on_select, 'calculatedHardware')
+
+    def _do_set_sensitive(self):
+        """
+        Set widget sensitivity as needed for the selected capacitor.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        if _attributes['hazard_rate_method_id'] == 1:
+            self.txtPiCV.set_sensitive(False)
+            self.txtPiCF.set_sensitive(False)
+            self.txtPiC.set_sensitive(False)
+            self.txtPiE.set_sensitive(False)
+        else:
+            self.txtPiCV.set_sensitive(True)
+            self.txtPiCF.set_sensitive(True)
+            self.txtPiC.set_sensitive(True)
+            self.txtPiE.set_sensitive(True)
+
+        return _return
+
+    def _make_assessment_results_page(self):
+        """
+        Make the capacitor gtk.Notebook() assessment results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        if _attributes['hazard_rate_method_id'] == 1:
+            self._lblModel.set_markup(
+                u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
+                u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>"
+            )
+            self._lst_labels[0] = u"\u03BB<sub>g</sub>:"
+        else:
+            self._lblModel.set_markup(
+                self._dic_part_stress[self._subcategory_id])
+            self._lst_labels[0] = u"\u03BB<sub>b</sub>:"
+
+        self._do_set_sensitive()
+
+        # Build the container for capacitors.
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 35)
+        _x_pos += 50
+
+        self.put(self._lblModel, _x_pos, 5)
+        self.put(self.txtLambdaB, _x_pos, _y_pos[0])
+        self.put(self.txtPiCV, _x_pos, _y_pos[1])
+        self.put(self.txtPiCF, _x_pos, _y_pos[2])
+        self.put(self.txtPiC, _x_pos, _y_pos[3])
+        self.put(self.txtPiQ, _x_pos, _y_pos[4])
+        self.put(self.txtPiE, _x_pos, _y_pos[5])
+
+        self.show_all()
+
+        return None
+
+    def on_select(self, module_id):
+        """
+        Load the capacitor assessment input work view widgets.
+
+        :param int module_id: the Hardware ID of the selected/edited
+                              capacitor.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        self._hardware_id = module_id
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
+
+        self._do_set_sensitive()
+
+        self.txtPiCV.set_text(str(self.fmt.format(_attributes['piCV'])))
+        self.txtPiCF.set_text(str(self.fmt.format(_attributes['piCF'])))
+        self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
+        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
+        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
+
+        return _return
+
+
+class StressResults(gtk.Fixed):
+    """
+    Display capacitor stress results attribute data in the RTK Work Book.
+
+    The capacitor stress result view displays all the stress results for the
+    selected capacitor.  This includes, currently, results for MIL-HDBK-217FN2
+    parts count and MIL-HDBK-217FN2 part stress methods.  The attributes of a
+    capacitor stress result view are:
+
+    :cvar list _lst_labels: the text to use for the sress results widget
+                            labels.
+
+    :ivar int _hardware_id: the ID of the Hardware item currently being
+                            displayed.
+    :ivar int _subcategory_id: the ID of the subcategory for the capacitor
+                               currently being displayed.
+
+    :ivar cmbSpecification: select and display the governing specification of
+                            the capacitor.
+    :ivar cmbStyle: select and display the style of the capacitor.
+    :ivar cmbConfiguration: select and display the configuration of the
+                            capacitor.
+    :ivar cmbConstruction: select and display the method of construction of the
+                           capacitor.
+    :ivar txtCapacitance: enter and display the capacitance rating of the
+                          capacitor.
+    :ivar txtESR: enter and display the equivalent series resistance.
+    """
+
+    # Define private list attributes.
+    _lst_labels = [_(u"Voltage Ratio:"), "", _(u"Overstress Reason:")]
+
+    def __init__(self, controller, hardware_id, subcategory_id):
+        """
+        Initialize an instance of the Capacitor assessment result view.
+
+        :param controller: the hardware data controller instance.
+        :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
+        :param int hardware_id: the hardware ID of the currently selected
+                                capacitor.
+        :param int subcategory_id: the ID of the capacitor subcategory.
+        """
+        gtk.Fixed.__init__(self)
+
+        # Initialize private dictionary attributes.
+
+        # Initialize private list attributes.
+
+        # Initialize private scalar attributes.
+        self._dtc_data_controller = controller
+        self._hardware_id = hardware_id
+        self._subcategory_id = subcategory_id
+
+        # Initialize public dictionary attributes.
+
+        # Initialize public list attributes.
+
+        # Initialize public scalar attributes.
+        self.fmt = None
+
+        self.chkOverstress = rtk.RTKCheckButton(
+            label=_(u"Overstressed"),
+            tooltip=_(u"Indicates whether or not the selected capacitor "
+                      u"is overstressed."))
+        self.txtReason = rtk.RTKTextView(
+            gtk.TextBuffer(),
+            width=300,
+            tooltip=_(u"The reason(s) the selected hardware item is "
+                      u"overstressed."))
+        self.txtVoltageRatio = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The ratio of operating voltage to rated voltage for "
+                      u"the capacitor."))
+
+        self.chkOverstress.set_sensitive(False)
+        self.txtReason.set_editable(False)
+        _bg_color = gtk.gdk.Color('#ADD8E6')
+        self.txtReason.modify_base(gtk.STATE_NORMAL, _bg_color)
+        self.txtReason.modify_base(gtk.STATE_ACTIVE, _bg_color)
+        self.txtReason.modify_base(gtk.STATE_PRELIGHT, _bg_color)
+        self.txtReason.modify_base(gtk.STATE_SELECTED, _bg_color)
+        self.txtReason.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
+
+        self._make_stress_results_page()
+        self.show_all()
+
+        pub.subscribe(self.on_select, 'calculatedHardware')
+
+    def _make_stress_results_page(self):
+        """
+        Make the capacitor gtk.Notebook() assessment results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        # Build the container for capacitors.
+        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 35)
+        _x_pos += 50
+
+        self.put(self.txtVoltageRatio, _x_pos, _y_pos[0])
+        self.put(self.chkOverstress, _x_pos, _y_pos[1])
+        self.put(self.txtReason.scrollwindow, _x_pos, _y_pos[2])
+
+        self.show_all()
+
+        return None
+
+    def on_select(self, module_id):
+        """
+        Load the capacitor assessment input work view widgets.
+
+        :param int module_id: the Hardware ID of the selected/edited
+                              capacitor.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        self._hardware_id = module_id
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtVoltageRatio.set_text(
+            str(self.fmt.format(_attributes['voltage_ratio'])))
+        self.chkOverstress.set_active(_attributes['overstress'])
+        _textbuffer = self.txtReason.do_get_buffer()
+        _textbuffer.set_text(_attributes['reason'])
 
         return _return
