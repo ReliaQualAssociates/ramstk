@@ -2084,7 +2084,8 @@ class AssessmentResults(RTKWorkView):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.txtTotalCost.set_text(str(locale.currency(_attributes['total_cost'])))
+        self.txtTotalCost.set_text(
+            str(locale.currency(_attributes['total_cost'])))
         self.txtCostFailure.set_text(
             str(locale.currency(_attributes['cost_failure'])))
         self.txtCostHour.set_text(
@@ -2172,53 +2173,6 @@ class AssessmentResults(RTKWorkView):
                 _error_dialog.do_destroy()
 
             _return = True
-        else:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=35,
-                new_text=_attributes['hazard_rate_active'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=37,
-                new_text=_attributes['hazard_rate_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=42,
-                new_text=_attributes['hr_active_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=44,
-                new_text=_attributes['hr_logistics_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=48,
-                new_text=_attributes['mtbf_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=49,
-                new_text=_attributes['mtbf_mission'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=51,
-                new_text=_attributes['mtbf_log_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=52,
-                new_text=_attributes['mtbf_miss_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=56,
-                new_text=_attributes['reliability_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=57,
-                new_text=_attributes['reliability_mission'])
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
 
         return _return
 

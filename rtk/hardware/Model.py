@@ -385,14 +385,14 @@ class HardwareBoMDataModel(RTKDataModel):
                 # If the assembly is to be assessed, set the attributes that
                 # are the sum of the child attributes to zero.  Without doing
                 # this, they will increment each time the system is calculated.
-                if _attributes['hazard_rate_type_id'] == 1:
+                if _attributes['hazard_rate_type_id'] in [0, 1]:
                     _attributes['hazard_rate_active'] = 0.0
                     _attributes['hazard_rate_dormant'] = 0.0
                     _attributes['hazard_rate_software'] = 0.0
                     _attributes['total_part_count'] = 0
                     _attributes['total_power_dissipation'] = 0.0
 
-                if _attributes['cost_type_id'] == 1:
+                if _attributes['cost_type_id'] in [0, 2]:
                     _attributes['total_cost'] = 0.0
 
             _attributes['hazard_rate_active'] = (
@@ -418,8 +418,9 @@ class HardwareBoMDataModel(RTKDataModel):
         :return: attributes; the attributes dict with updated cost metrics.
         :rtype: dict
         """
-        attributes['total_cost'] = (
-            attributes['cost'] * attributes['quantity'])
+        if attributes['cost_type_id'] == 1:
+            attributes['total_cost'] = (
+                attributes['cost'] * attributes['quantity'])
 
         try:
             attributes['cost_hour'] = (
@@ -567,6 +568,7 @@ class HardwareBoMDataModel(RTKDataModel):
             _attributes = self._calculate_reliability_metrics(_attributes)
             _attributes = self._calculate_cost_metrics(_attributes)
             _attributes = self._calculate_metric_variances(_attributes)
+
 
         return _cum_results
 

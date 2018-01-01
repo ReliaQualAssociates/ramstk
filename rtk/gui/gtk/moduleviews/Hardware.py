@@ -82,6 +82,7 @@ class ModuleView(RTKModuleView):
 
         pub.subscribe(self._on_select_revision, 'selectedRevision')
         pub.subscribe(self._on_edit, 'wvwEditedHardware')
+        pub.subscribe(self._on_calculate, 'calculatedHardware')
 
     def _do_change_row(self, treeview):
         """
@@ -517,6 +518,37 @@ class ModuleView(RTKModuleView):
 
         return False
 
+    def _on_calculate(self, module_id=None):
+        """
+        Load the new attribute values for the entire tree after calculating.
+        """
+        def _load_row(model, path, row, self):
+            """
+            Load the row associated with node_id.
+
+            This is a helper function to allow iterative updating of the
+            RTKTreeView().
+            """
+            _node_id = model.get_value(row, self._lst_col_order[1])
+            _attributes = self._dtc_data_controller.request_get_attributes(
+                _node_id)
+
+            model.set(row, self._lst_col_order[35], _attributes['hazard_rate_active'])
+            model.set(row, self._lst_col_order[37], _attributes['hazard_rate_logistics'])
+            model.set(row, self._lst_col_order[42], _attributes['hr_active_variance'])
+            model.set(row, self._lst_col_order[44], _attributes['hr_logistics_variance'])
+            model.set(row, self._lst_col_order[48], _attributes['mtbf_logistics'])
+            model.set(row, self._lst_col_order[49], _attributes['mtbf_mission'])
+            model.set(row, self._lst_col_order[51], _attributes['mtbf_log_variance'])
+            model.set(row, self._lst_col_order[52], _attributes['mtbf_miss_variance'])
+            model.set(row, self._lst_col_order[56], _attributes['reliability_logistics'])
+            model.set(row, self._lst_col_order[57], _attributes['reliability_mission'])
+
+        _model = self.treeview.get_model()
+        _model.foreach(_load_row, self)
+
+        return
+
     def _on_edit(self, position, new_text):
         """
         Update the Module View RTKTreeView().
@@ -528,6 +560,7 @@ class ModuleView(RTKModuleView):
         :rtype: bool
         """
         _return = False
+
         if position is not None:
             _model, _row = self.treeview.get_selection().get_selected()
             try:
