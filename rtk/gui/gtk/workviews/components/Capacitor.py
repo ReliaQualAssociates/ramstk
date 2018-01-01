@@ -572,7 +572,7 @@ class AssessmentInputs(gtk.Fixed):
 
         return _return
 
-    def on_select(self, module_id):
+    def on_select(self, module_id=None):
         """
         Load the capacitor assessment input work view widgets.
 
@@ -837,7 +837,7 @@ class StressInputs(gtk.Fixed):
 
         return _return
 
-    def on_select(self, module_id):
+    def on_select(self, module_id=None):
         """
         Load the capacitor stress input work view widgets.
 
@@ -1074,8 +1074,11 @@ class AssessmentResults(gtk.Fixed):
                 u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
             self._lst_labels[0] = u"\u03BB<sub>g</sub>:"
         else:
-            self._lblModel.set_markup(
-                self._dic_part_stress[self._subcategory_id])
+            try:
+                self._lblModel.set_markup(
+                    self._dic_part_stress[self._subcategory_id])
+            except KeyError:
+                self._lblModel.set_markup(_(u"Missing Model"))
             self._lst_labels[0] = u"\u03BB<sub>b</sub>:"
 
         self._do_set_sensitive()
@@ -1096,7 +1099,7 @@ class AssessmentResults(gtk.Fixed):
 
         return None
 
-    def on_select(self, module_id):
+    def on_select(self, module_id=None):
         """
         Load the capacitor assessment input work view widgets.
 
@@ -1308,7 +1311,7 @@ class StressResults(gtk.HPaned):
 
         return _return
 
-    def on_select(self, module_id):
+    def on_select(self, module_id=None):
         """
         Load the capacitor assessment input work view widgets.
 

@@ -76,6 +76,7 @@ class RTKHardware(RTK_BASE):
         'fld_specification_number', String(256), default='')
     subcategory_id = Column('fld_subcategory_id', Integer, default=0)
     tagged_part = Column('fld_tagged_part', Integer, default=0)
+    total_cost = Column('fld_total_cost', Float, default=0.0)
     total_part_count = Column('fld_total_part_count', Integer, default=0)
     total_power_dissipation = Column(
         'fld_total_power_dissipation', Float, default=0.0)
@@ -131,7 +132,7 @@ class RTKHardware(RTK_BASE):
                   figure_number, lcn, level, manufacturer_id, mission_time,
                   name, nsn, page_number, parent_id, part, part_number,
                   quantity, ref_des, remarks, repairable, specification_number,
-                  subcategory_id, tagged_part, total_part_count,
+                  subcategory_id, tagged_part, total_cost, total_part_count,
                   total_power_dissipation, year_of_manufacture} pairs.
         :rtype: dict
         """
@@ -167,6 +168,7 @@ class RTKHardware(RTK_BASE):
             'specification_number': self.specification_number,
             'subcategory_id': self.subcategory_id,
             'tagged_part': self.tagged_part,
+            'total_cost': self.total_cost,
             'total_part_count': self.total_part_count,
             'total_power_dissipation': self.total_power_dissipation,
             'year_of_manufacture': self.year_of_manufacture
@@ -234,6 +236,8 @@ class RTKHardware(RTK_BASE):
                 none_to_default(attributes['subcategory_id'], 0))
             self.tagged_part = int(
                 none_to_default(attributes['tagged_part'], 0))
+            self.total_cost = float(
+                none_to_default(attributes['total_cost'], 0.0))
             self.total_part_count = int(
                 none_to_default(attributes['total_part_count'], 0))
             self.total_power_dissipation = float(

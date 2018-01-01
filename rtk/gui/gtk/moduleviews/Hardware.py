@@ -154,6 +154,21 @@ class ModuleView(RTKModuleView):
 
         return _return
 
+    def _do_request_calculate_all(self, __button):
+        """
+        Send request to calculate all hardware items.
+
+        :param __button: the gtk.ToolButton() that called this method.
+        :type __button: :class:`gtk.ToolButton`
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        self._dtc_data_controller.request_calculate_all()
+
+        return _return
+
     def _do_request_delete(self, __button):
         """
         Send request to delete the selected Hardware and it's children.
@@ -329,14 +344,15 @@ class ModuleView(RTKModuleView):
               u"the selected Hardware (i.e., a sibling Hardware)."),
             _(u"Adds a new Hardware assembly one level subordinate to the "
               u"selected Hardware (i.e., a child hardware)."),
-            _(u"Adds a new Hardware component/part at the same hierarchy "
-              u"level as the selected Hardware component/part (i.e., a "
-              u"sibling component/part)."),
-            _(u"Adds a new Hardware component/part one level subordinate to "
-              u"selected Hardware component/part (i.e., a child "
-              u"component/part)."),
+            _(u"Adds a new Hardware component/piece-part at the same "
+              u"hierarchy level as the selected Hardware component/piece-part "
+              u"(i.e., a sibling component/piece-part)."),
+            _(u"Adds a new Hardware component/piece-part one level "
+              u"subordinate to selected Hardware component/piece-part "
+              u"(i.e., a child component/piece-part)."),
             _(u"Remove the currently selected Hardware item and any "
               u"children."),
+            _(u"Calculate the entire system."),
             _(u"Save the currently selected Hardware item to the open "
               u"RTK Program database."),
             _(u"Saves all Hardware items to the open RTK Program "
@@ -347,10 +363,12 @@ class ModuleView(RTKModuleView):
             self._do_request_insert_child_assembly,
             self._do_request_insert_sibling_part,
             self._do_request_insert_child_part, self._do_request_delete,
-            self._do_request_update, self._do_request_update_all
+            self._do_request_calculate_all, self._do_request_update,
+            self._do_request_update_all
         ]
         _icons = [
-            'insert_sibling', 'insert_child', 'remove', 'save', 'save-all'
+            'insert_sibling', 'insert_child', 'insert_part', 'insert_part',
+            'remove', 'calculate_all', 'save', 'save-all'
         ]
 
         _buttonbox = RTKModuleView._make_buttonbox(self, _icons, _tooltips,
@@ -452,6 +470,16 @@ class ModuleView(RTKModuleView):
             _menu_item.set_image(_image)
             _menu_item.set_property('use_underline', True)
             _menu_item.connect('activate', self._do_request_insert_child_part)
+            _menu_item.show()
+            _menu.append(_menu_item)
+
+            _menu_item = gtk.ImageMenuItem()
+            _image = gtk.Image()
+            _image.set_from_file(self._dic_icons['calculate_all'])
+            _menu_item.set_label(_(u"Calculate the System"))
+            _menu_item.set_image(_image)
+            _menu_item.set_property('use_underline', True)
+            _menu_item.connect('activate', self._do_request_calculate_all)
             _menu_item.show()
             _menu.append(_menu_item)
 
