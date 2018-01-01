@@ -150,12 +150,9 @@ def calculate_217f_part_count(**attributes):
 
     # Select the base hazard rate.
     try:
-        # Select circular/rack and panel or coaxial.
-        if attributes['subcategory_id'] == 72:
-            _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
-                attributes['type_id']]
-        # Select which type of single connection.
-        elif attributes['subcategory_id'] == 76:
+        # Select circular/rack and panel or coaxial (72) or which type of
+        # single connection (76).
+        if attributes['subcategory_id'] in [72, 76]:
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
                 attributes['type_id']]
         else:
@@ -204,18 +201,26 @@ def calculate_217f_part_stress(**attributes):
     # Reference temperature is used to calculate base hazard rate for
     # circular/rack and panel connectors.  Key is insert material ID.
     _dic_ref_temp = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0}
+
     # Factors are used to calculate base hazard rate for circular/rack and
     # panel connectors.  Key is insert material ID (1 - 4) or contact
     # gauge (22 - 12).
     _dic_factors = {
-        1: [0.2, -1592.0, 5.36],
-        2: [0.431, -2073.6, 4.66],
-        3: [0.19, -1298.0, 4.25],
-        4: [0.77, -1528.8, 4.72],
-        12: 0.1,
-        16: 0.274,
-        20: 0.64,
-        22: 0.989
+        72: {
+            1: [0.2, -1592.0, 5.36],
+            2: [0.431, -2073.6, 4.66],
+            3: [0.19, -1298.0, 4.25],
+            4: [0.77, -1528.8, 4.72],
+            12: 0.1,
+            16: 0.274,
+            20: 0.64,
+            22: 0.989
+        },
+        73: {
+            20: 0.64,
+            22: 0.989,
+            26: 2.1
+        }
     }
     _dic_piQ = {
         1: [3.0, 7.0],
@@ -239,14 +244,26 @@ def calculate_217f_part_stress(**attributes):
         19: [3.0, 20.0]
     }
     _dic_piE = {
-        1: [
-            1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
-            27.0, 490.0
-        ],
-        2: [
-            2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8,
-            20.0, 54.0, 970.0
-        ]
+        72: {
+            1: [
+                1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
+                27.0, 490.0
+            ],
+            2: [
+                2.0, 5.0, 21.0, 10.0, 27.0, 12.0, 18.0, 17.0, 25.0, 37.0, 0.8,
+                20.0, 54.0, 970.0
+            ]
+        },
+        73: {
+            1: [
+                1.0, 3.0, 8.0, 5.0, 13.0, 6.0, 11.0, 6.0, 11.0, 19.0, 0.5,
+                10.0, 27.0, 490.0
+            ],
+            2: [
+                2.0, 7.0, 17.0, 10.0, 26.0, 14.0, 22.0, 14.0, 22.0, 37.0, 0.8,
+                20.0, 54.0, 970.0
+            ]
+        }
     }
     _lst_piK = [1.0, 1.5, 2.0, 3.0, 4.0]
 
@@ -254,7 +271,8 @@ def calculate_217f_part_stress(**attributes):
 
     # Calculate the insert temperature rise.
     try:
-        _fo = _dic_factors[attributes['contact_gauge']]
+        _fo = _dic_factors[attributes['subcategory_id']][attributes[
+            'contact_gauge']]
     except KeyError:
         _fo = 1.0
     attributes['temperature_rise'] = (
@@ -263,10 +281,26 @@ def calculate_217f_part_stress(**attributes):
     # Calculate the base hazard rate.
     _contact_temp = (attributes['temperature_active'] +
                      attributes['temperature_rise'] + 273.0)
-    _ref_temp = _dic_ref_temp[attributes['insert_id']]
-    _f0 = _dic_factors[attributes['insert_id']][0]
-    _f1 = _dic_factors[attributes['insert_id']][1]
-    _f2 = _dic_factors[attributes['insert_id']][2]
+    if attributes['subcategory_id'] == 72:
+        _ref_temp = _dic_ref_temp[attributes['insert_id']]
+        _f0 = _dic_factors[attributes['subcategory_id']][attributes[
+            'insert_id']][0]
+        _f1 = _dic_factors[attributes['subcategory_id']][attributes[
+            'insert_id']][1]
+        _f2 = _dic_factors[attributes['subcategory_id']][attributes[
+            'insert_id']][2]
+    elif attributes['subcategory_id'] == 73:
+        _ref_temp = 423.0
+        _f0 = 0.216
+        _f1 = -2073.6
+        _f2 = 4.66
+    elif attributes['subcategory_id'] == 74:
+        _contact_temp = 0.0
+        _ref_temp = 1.0
+        _f0 = 0.00042
+        _f1 = 0.0
+        _f2 = 1.0
+
     attributes['lambda_b'] = _f0 * exp((_f1 / _contact_temp) +
                                        (_contact_temp / _ref_temp)**_f2)
 
@@ -292,8 +326,8 @@ def calculate_217f_part_stress(**attributes):
                             **0.51064)
 
     # Determine the environmental factor (piE).
-    attributes['piE'] = _dic_piE[attributes['quality_id']][
-        attributes['environment_active_id'] - 1]
+    attributes['piE'] = _dic_piE[attributes['subcategory_id']][attributes[
+        'quality_id']][attributes['environment_active_id'] - 1]
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \

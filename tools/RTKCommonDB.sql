@@ -1113,7 +1113,7 @@ CREATE TABLE rtk_failure_mode (
     FOREIGN KEY (
         fld_subcategory_id
     )
-    REFERENCES rtk_subcategory (fld_subcategory_id) 
+    REFERENCES rtk_subcategory (fld_subcategory_id)
 );
 
 INSERT INTO rtk_failure_mode (
@@ -1505,7 +1505,7 @@ DROP TABLE IF EXISTS rtk_subcategory;
 CREATE TABLE rtk_subcategory (
     fld_category_id      INTEGER      NOT NULL,
     fld_subcategory_id   INTEGER      NOT NULL,
-    fld_subcategory_noun VARCHAR (64) DEFAULT NULL,
+    fld_description      VARCHAR (512) DEFAULT NULL,
     PRIMARY KEY (
         fld_category_id,
         fld_subcategory_id
@@ -1987,7 +1987,7 @@ INSERT INTO rtk_subcategory (
                             VALUES (
                                 4,
                                 44,
-                                'Fixed, Plastic and Metallized Plastic'
+                                'Fixed, Plastic and Metallized Plastic (CFR)'
                             );
 
 INSERT INTO rtk_subcategory (
