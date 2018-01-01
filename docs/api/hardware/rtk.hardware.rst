@@ -33,3 +33,12 @@ Capacitor Module
     :undoc-members:
     :show-inheritance:
 
+Connection Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Connection
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
