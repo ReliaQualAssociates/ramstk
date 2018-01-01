@@ -394,6 +394,11 @@ class HardwareBoMDataController(RTKDataController):
         _results = self._dtm_data_model.calculate_all()
 
         if not self._test:
+            for _node_id in self._dtm_data_model.tree.nodes:
+                if _node_id != 0:
+                    _attributes = self.request_get_attributes(_node_id)
+                    self.request_set_attributes(_node_id, _attributes)
+
             pub.sendMessage('calculatedHardware', module_id=1)
         else:
             _return = True

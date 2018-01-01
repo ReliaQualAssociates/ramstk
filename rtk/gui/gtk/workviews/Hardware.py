@@ -1194,53 +1194,6 @@ class AssessmentInputs(RTKWorkView):
                 _error_dialog.do_destroy()
 
             _return = True
-        else:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=35,
-                new_text=_attributes['hazard_rate_active'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=37,
-                new_text=_attributes['hazard_rate_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=42,
-                new_text=_attributes['hr_active_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=44,
-                new_text=_attributes['hr_logistics_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=48,
-                new_text=_attributes['mtbf_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=49,
-                new_text=_attributes['mtbf_mission'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=51,
-                new_text=_attributes['mtbf_log_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=52,
-                new_text=_attributes['mtbf_miss_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=56,
-                new_text=_attributes['reliability_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=57,
-                new_text=_attributes['reliability_mission'])
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
 
         return _return
 
@@ -1769,6 +1722,13 @@ class AssessmentInputs(RTKWorkView):
         self.txtSpecifiedMTBFVar.handler_unblock(self._lst_handler_id[15])
 
         self._do_set_sensitive(_attributes['hazard_rate_type_id'])
+
+        # Set the calculate button sensitive only if the selected hardware
+        # item is a part.
+        if _attributes['part'] == 1:
+            self.get_children()[0].get_children()[0].set_sensitive(True)
+        else:
+            self.get_children()[0].get_children()[0].set_sensitive(False)
 
         return _return
 
@@ -2355,5 +2315,12 @@ class AssessmentResults(RTKWorkView):
         if _component_sr is not None:
             self.scwStress.add_with_viewport(_component_sr)
             _component_sr.on_select(module_id)
+
+        # Set the calculate button sensitive only if the selected hardware
+        # item is a part.
+        if _attributes['part'] == 1:
+            self.get_children()[0].get_children()[0].set_sensitive(True)
+        else:
+            self.get_children()[0].get_children()[0].set_sensitive(False)
 
         return _return

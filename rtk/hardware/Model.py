@@ -335,7 +335,7 @@ class HardwareBoMDataModel(RTKDataModel):
         _error_code = 0
         _msg = ''
 
-        for _node in self.tree.all_nodes()[1:]:
+        for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.identifier)
 
@@ -568,7 +568,6 @@ class HardwareBoMDataModel(RTKDataModel):
             _attributes = self._calculate_reliability_metrics(_attributes)
             _attributes = self._calculate_cost_metrics(_attributes)
             _attributes = self._calculate_metric_variances(_attributes)
-
 
         return _cum_results
 
