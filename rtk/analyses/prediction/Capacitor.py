@@ -557,6 +557,13 @@ def overstressed(**attributes):
     _voltage_operating = (attributes['voltage_ac_operating'] +
                           attributes['voltage_dc_operating'])
 
+    # Calculate the voltage stress.
+    try:
+        attributes['voltage_ratio'] = (
+            _voltage_operating / attributes['voltage_rated'])
+    except ZeroDivisionError:
+        attributes['voltage_ratio'] = 1.0
+
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.
     if attributes['environment_active_id'] in [1, 2, 4, 11]:

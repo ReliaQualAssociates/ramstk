@@ -189,6 +189,7 @@ def _create_common_database():
     _subcategory.category_id = 9
     session.add(_subcategory)
     session.commit()
+
     _failuremode = RTKFailureMode()
     _failuremode.category_id = 9
     _failuremode.subcategory_id = _subcategory.subcategory_id
@@ -518,6 +519,7 @@ def _build_hardware_bom(session, revision_id):
     session.add(_entity)
 
     _hardware = RTKHardware()
+    _hardware.hazard_rate_active = 0.05
     _hardware.parent_id = _parent_id
     _hardware.revision_id = revision_id
     _hardware.ref_des = 'SS1'
@@ -545,6 +547,7 @@ def _build_hardware_bom(session, revision_id):
     session.add(_entity)
 
     _hardware = RTKHardware()
+    _hardware.hazard_rate_active = 0.08
     _hardware.parent_id = _parent_id
     _hardware.revision_id = revision_id
     _hardware.ref_des = 'SS2'

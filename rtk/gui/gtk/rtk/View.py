@@ -55,6 +55,9 @@ class RTKBaseView(object):
         self._dic_icons = {
             'calculate':
             controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/calculate.png',
+            'calculate_all':
+            controller.RTK_CONFIGURATION.RTK_ICON_DIR + \
+            '/32x32/calculate-all.png',
             'add':
             controller.RTK_CONFIGURATION.RTK_ICON_DIR + '/32x32/add.png',
             'remove':

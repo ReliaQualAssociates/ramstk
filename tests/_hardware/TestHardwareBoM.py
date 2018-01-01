@@ -453,7 +453,7 @@ class TestHardwareBoMDataController(unittest.TestCase):
         'reliability_mission': 1.0,
         'reliability_goal_measure_id': 0,
         'hazard_rate_specified': 0.0,
-        'hazard_rate_active': 0.0,
+        'hazard_rate_active': 0.05,
         'hr_mission_variance': 0.0,
         'reliability_goal': 0.0,
         'mtbf_log_variance': 0.0,
@@ -489,7 +489,8 @@ class TestHardwareBoMDataController(unittest.TestCase):
         'hazard_rate_dormant': 0.0,
         'mtbf_logistics': 0.0,
         'mult_adj_factor': 1.0,
-        'temperature_knee': 25.0
+        'temperature_knee': 25.0,
+        'total_cost': 0.0
     }
 
     def setUp(self):

@@ -314,15 +314,15 @@ class GeneralData(RTKWorkView):
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._on_edit, 'mvwEditedHardware')
 
-    def _do_load_subcategory(self, category):
+    def _do_load_subcategory(self, category_id):
         """
         Load the component subcategory RTKCombo().
 
         This method loads the component subcategory RTKCombo() when the
         component category RTKCombo() is changed.
 
-        :param int category: the component category ID to load the subcategory
-                             RTKCombo() for.
+        :param int category_id: the component category ID to load the
+                                subcategory RTKCombo() for.
         :return: False if successful or True if an error is encountered
         :rtype: bool
         """
@@ -331,9 +331,9 @@ class GeneralData(RTKWorkView):
         _model = self.cmbSubcategory.get_model()
         _model.clear()
 
-        if category > 0:
+        if category_id > 0:
             _subcategory = self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[
-                category - 1]
+                category_id]
 
             _data = []
             for _key in _subcategory:
@@ -566,7 +566,7 @@ class GeneralData(RTKWorkView):
             if index == 2:
                 _attributes['category_id'] = int(combo.get_active())
                 pub.sendMessage(
-                    'changedCategory', category=_attributes['category_id'])
+                    'changedCategory', category_id=_attributes['category_id'])
             elif index == 3:
                 _attributes['cost_type_id'] = int(combo.get_active())
             elif index == 4:
@@ -1194,53 +1194,6 @@ class AssessmentInputs(RTKWorkView):
                 _error_dialog.do_destroy()
 
             _return = True
-        else:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=35,
-                new_text=_attributes['hazard_rate_active'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=37,
-                new_text=_attributes['hazard_rate_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=42,
-                new_text=_attributes['hr_active_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=44,
-                new_text=_attributes['hr_logistics_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=48,
-                new_text=_attributes['mtbf_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=49,
-                new_text=_attributes['mtbf_mission'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=51,
-                new_text=_attributes['mtbf_log_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=52,
-                new_text=_attributes['mtbf_miss_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=56,
-                new_text=_attributes['reliability_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=57,
-                new_text=_attributes['reliability_mission'])
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
 
         return _return
 
@@ -1770,6 +1723,13 @@ class AssessmentInputs(RTKWorkView):
 
         self._do_set_sensitive(_attributes['hazard_rate_type_id'])
 
+        # Set the calculate button sensitive only if the selected hardware
+        # item is a part.
+        if _attributes['part'] == 1:
+            self.get_children()[0].get_children()[0].set_sensitive(True)
+        else:
+            self.get_children()[0].get_children()[0].set_sensitive(False)
+
         return _return
 
 
@@ -2069,7 +2029,81 @@ class AssessmentResults(RTKWorkView):
         self.show_all()
 
         pub.subscribe(self._on_select, 'selectedHardware')
-        pub.subscribe(self._on_select, 'calculatedHardware')
+        pub.subscribe(self._do_load_page, 'calculatedHardware')
+
+    def _do_load_page(self, module_id=None):
+        """
+        Load the assessment result page widgets with attribute values.
+
+        :param int module_id: the ID of the hardware item to load.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtTotalCost.set_text(
+            str(locale.currency(_attributes['total_cost'])))
+        self.txtCostFailure.set_text(
+            str(locale.currency(_attributes['cost_failure'])))
+        self.txtCostHour.set_text(
+            str(locale.currency(_attributes['cost_hour'])))
+        self.txtPartCount.set_text(
+            str('{0:d}'.format(_attributes['total_part_count'])))
+
+        self.txtActiveHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_active'])))
+        self.txtActiveHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_active_variance'])))
+
+        self.txtDormantHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_dormant'])))
+        self.txtDormantHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_dormant_variance'])))
+
+        self.txtSoftwareHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_software'])))
+
+        self.txtPercentHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_percent'])))
+
+        self.txtLogisticsAt.set_text(
+            str(self.fmt.format(_attributes['availability_logistics'])))
+        self.txtLogisticsAtVar.set_text(
+            str(self.fmt.format(_attributes['avail_log_variance'])))
+        self.txtLogisticsHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_logistics'])))
+        self.txtLogisticsHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_logistics_variance'])))
+        self.txtLogisticsMTBF.set_text(
+            str(self.fmt.format(_attributes['mtbf_logistics'])))
+        self.txtLogisticsMTBFVar.set_text(
+            str(self.fmt.format(_attributes['mtbf_log_variance'])))
+        self.txtLogisticsRt.set_text(
+            str(self.fmt.format(_attributes['reliability_logistics'])))
+        self.txtLogisticsRtVar.set_text(
+            str(self.fmt.format(_attributes['reliability_log_variance'])))
+
+        self.txtMissionAt.set_text(
+            str(self.fmt.format(_attributes['availability_mission'])))
+        self.txtMissionAtVar.set_text(
+            str(self.fmt.format(_attributes['avail_mis_variance'])))
+        self.txtMissionHt.set_text(
+            str(self.fmt.format(_attributes['hazard_rate_mission'])))
+        self.txtMissionHtVar.set_text(
+            str(self.fmt.format(_attributes['hr_mission_variance'])))
+        self.txtMissionMTBF.set_text(
+            str(self.fmt.format(_attributes['mtbf_mission'])))
+        self.txtMissionMTBFVar.set_text(
+            str(self.fmt.format(_attributes['mtbf_miss_variance'])))
+        self.txtMissionRt.set_text(
+            str(self.fmt.format(_attributes['reliability_mission'])))
+        self.txtMissionRtVar.set_text(
+            str(self.fmt.format(_attributes['reliability_miss_variance'])))
+
+        return _return
 
     def _do_request_calculate(self, __button):
         """
@@ -2099,53 +2133,6 @@ class AssessmentResults(RTKWorkView):
                 _error_dialog.do_destroy()
 
             _return = True
-        else:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=35,
-                new_text=_attributes['hazard_rate_active'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=37,
-                new_text=_attributes['hazard_rate_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=42,
-                new_text=_attributes['hr_active_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=44,
-                new_text=_attributes['hr_logistics_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=48,
-                new_text=_attributes['mtbf_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=49,
-                new_text=_attributes['mtbf_mission'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=51,
-                new_text=_attributes['mtbf_log_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=52,
-                new_text=_attributes['mtbf_miss_variance'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=56,
-                new_text=_attributes['reliability_logistics'])
-            pub.sendMessage(
-                'wvwEditedHardware',
-                position=57,
-                new_text=_attributes['reliability_mission'])
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
 
         return _return
 
@@ -2299,63 +2286,7 @@ class AssessmentResults(RTKWorkView):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.txtTotalCost.set_text(str(locale.currency(_attributes['cost'])))
-        self.txtCostFailure.set_text(
-            str(locale.currency(_attributes['cost_failure'])))
-        self.txtCostHour.set_text(
-            str(locale.currency(_attributes['cost_hour'])))
-        self.txtPartCount.set_text(
-            str('{0:d}'.format(_attributes['total_part_count'])))
-
-        self.txtActiveHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_active'])))
-        self.txtActiveHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_active_variance'])))
-
-        self.txtDormantHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_dormant'])))
-        self.txtDormantHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_dormant_variance'])))
-
-        self.txtSoftwareHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_software'])))
-
-        self.txtPercentHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_percent'])))
-
-        self.txtLogisticsAt.set_text(
-            str(self.fmt.format(_attributes['availability_logistics'])))
-        self.txtLogisticsAtVar.set_text(
-            str(self.fmt.format(_attributes['avail_log_variance'])))
-        self.txtLogisticsHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_logistics'])))
-        self.txtLogisticsHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_logistics_variance'])))
-        self.txtLogisticsMTBF.set_text(
-            str(self.fmt.format(_attributes['mtbf_logistics'])))
-        self.txtLogisticsMTBFVar.set_text(
-            str(self.fmt.format(_attributes['mtbf_log_variance'])))
-        self.txtLogisticsRt.set_text(
-            str(self.fmt.format(_attributes['reliability_logistics'])))
-        self.txtLogisticsRtVar.set_text(
-            str(self.fmt.format(_attributes['reliability_log_variance'])))
-
-        self.txtMissionAt.set_text(
-            str(self.fmt.format(_attributes['availability_mission'])))
-        self.txtMissionAtVar.set_text(
-            str(self.fmt.format(_attributes['avail_mis_variance'])))
-        self.txtMissionHt.set_text(
-            str(self.fmt.format(_attributes['hazard_rate_mission'])))
-        self.txtMissionHtVar.set_text(
-            str(self.fmt.format(_attributes['hr_mission_variance'])))
-        self.txtMissionMTBF.set_text(
-            str(self.fmt.format(_attributes['mtbf_mission'])))
-        self.txtMissionMTBFVar.set_text(
-            str(self.fmt.format(_attributes['mtbf_miss_variance'])))
-        self.txtMissionRt.set_text(
-            str(self.fmt.format(_attributes['reliability_mission'])))
-        self.txtMissionRtVar.set_text(
-            str(self.fmt.format(_attributes['reliability_miss_variance'])))
+        self._do_load_page()
 
         # Clear the component-specific gtk.ScrolledWindow()s.
         for _child in self.scwReliability.get_children():
@@ -2384,5 +2315,12 @@ class AssessmentResults(RTKWorkView):
         if _component_sr is not None:
             self.scwStress.add_with_viewport(_component_sr)
             _component_sr.on_select(module_id)
+
+        # Set the calculate button sensitive only if the selected hardware
+        # item is a part.
+        if _attributes['part'] == 1:
+            self.get_children()[0].get_children()[0].set_sensitive(True)
+        else:
+            self.get_children()[0].get_children()[0].set_sensitive(False)
 
         return _return

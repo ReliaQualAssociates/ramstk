@@ -380,3 +380,27 @@ class HardwareBoMDataController(RTKDataController):
             _return = True
 
         return _return
+
+    def request_calculate_all(self):
+        """
+        Request to calculate the hardware item.
+
+        :param int node_id: the Hardware ID to calculate.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _results = self._dtm_data_model.calculate_all()
+
+        if not self._test:
+            for _node_id in self._dtm_data_model.tree.nodes:
+                if _node_id != 0:
+                    _attributes = self.request_get_attributes(_node_id)
+                    self.request_set_attributes(_node_id, _attributes)
+
+            pub.sendMessage('calculatedHardware', module_id=1)
+        else:
+            _return = True
+
+        return _return

@@ -65,6 +65,7 @@ class TestRTKHardware(unittest.TestCase):
         'specification_number': '',
         'subcategory_id': 0,
         'tagged_part': 0,
+        'total_cost': 0.0,
         'total_part_count': 0,
         'total_power_dissipation': 0,
         'year_of_manufacture': date.today().year

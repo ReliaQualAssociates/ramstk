@@ -7,6 +7,7 @@
 """Hardware Package Data Model."""  # pragma: no cover
 
 from math import exp  # pragma: no cover
+# pylint: disable=E0401
 from treelib.exceptions import DuplicatedNodeIdError  # pragma: no cover
 
 # Import other RTK modules.
@@ -334,7 +335,7 @@ class HardwareBoMDataModel(RTKDataModel):
         _error_code = 0
         _msg = ''
 
-        for _node in self.tree.all_nodes()[1:]:
+        for _node in self.tree.all_nodes():
             try:
                 _error_code, _msg = self.update(_node.identifier)
 
@@ -349,7 +350,7 @@ class HardwareBoMDataModel(RTKDataModel):
 
         return _error_code, _msg
 
-    def calculate(self, hardware_id):
+    def calculate(self, hardware_id, hr_multiplier=1E6):
         """
         Calculate RAMS attributes for the hardware item.
 
@@ -359,79 +360,216 @@ class HardwareBoMDataModel(RTKDataModel):
         """
         _attributes = self.tree.get_node(hardware_id).data
 
-        if _attributes['category_id'] == 1:
-            print("Integrated Circuit")
-        elif _attributes['category_id'] == 2:
-            print("Semiconductor")
-        elif _attributes['category_id'] == 3:
-            print("Resistor")
-        elif _attributes['category_id'] == 4:
-            _attributes, __ = Capacitor.calculate(**_attributes)
-        elif _attributes['category_id'] == 5:
-            print("Inductive Device")
-        elif _attributes['category_id'] == 6:
-            print("Relay")
-        elif _attributes['category_id'] == 7:
-            print("Switch")
-        elif _attributes['category_id'] == 8:
-            print("Connection")
-        elif _attributes['category_id'] == 9:
-            print("Meter")
-        elif _attributes['category_id'] == 10:
-            print("Miscellaneous")
-        else:
-            print("Assembly")
+        if _attributes is not None:
+            if _attributes['category_id'] == 1:
+                print("Integrated Circuit")
+            elif _attributes['category_id'] == 2:
+                print("Semiconductor")
+            elif _attributes['category_id'] == 3:
+                print("Resistor")
+            elif _attributes['category_id'] == 4:
+                _attributes, __ = Capacitor.calculate(**_attributes)
+            elif _attributes['category_id'] == 5:
+                print("Inductive Device")
+            elif _attributes['category_id'] == 6:
+                print("Relay")
+            elif _attributes['category_id'] == 7:
+                print("Switch")
+            elif _attributes['category_id'] == 8:
+                print("Connection")
+            elif _attributes['category_id'] == 9:
+                print("Meter")
+            elif _attributes['category_id'] == 10:
+                print("Miscellaneous")
+            else:
+                # If the assembly is to be assessed, set the attributes that
+                # are the sum of the child attributes to zero.  Without doing
+                # this, they will increment each time the system is calculated.
+                if _attributes['hazard_rate_type_id'] in [0, 1]:
+                    _attributes['hazard_rate_active'] = 0.0
+                    _attributes['hazard_rate_dormant'] = 0.0
+                    _attributes['hazard_rate_software'] = 0.0
+                    _attributes['total_part_count'] = 0
+                    _attributes['total_power_dissipation'] = 0.0
 
-        _attributes['hazard_rate_logistics'] = (
-            _attributes['hazard_rate_active'] +
-            _attributes['hazard_rate_dormant'] +
-            _attributes['hazard_rate_software'])
+                if _attributes['cost_type_id'] in [0, 2]:
+                    _attributes['total_cost'] = 0.0
 
-        _attributes['hr_active_variance'] = _attributes[
+            _attributes['hazard_rate_active'] = (
+                _attributes['hazard_rate_active'] / hr_multiplier)
+            _attributes['hazard_rate_dormant'] = (
+                _attributes['hazard_rate_dormant'] / hr_multiplier)
+            _attributes['hazard_rate_software'] = (
+                _attributes['hazard_rate_software'] / hr_multiplier)
+
+            _attributes = self._calculate_reliability_metrics(_attributes)
+            _attributes = self._calculate_cost_metrics(_attributes)
+            _attributes = self._calculate_metric_variances(_attributes)
+
+        return _attributes
+
+    @staticmethod
+    def _calculate_cost_metrics(attributes):
+        """
+        Calculate the metrics related to hardware costs.
+
+        :param dict attributes: the attributes of the hardware item being
+                                calculated.
+        :return: attributes; the attributes dict with updated cost metrics.
+        :rtype: dict
+        """
+        if attributes['cost_type_id'] == 1:
+            attributes['total_cost'] = (
+                attributes['cost'] * attributes['quantity'])
+
+        try:
+            attributes['cost_hour'] = (
+                attributes['total_cost'] / attributes['mission_time'])
+        except ZeroDivisionError:
+            attributes['cost_hour'] = attributes['total_cost']
+
+        attributes['cost_failure'] = (
+            attributes['cost_hour'] * attributes['mtbf_logistics'])
+
+        if attributes['part'] == 1:
+            attributes['total_part_count'] = attributes['quantity']
+
+        return attributes
+
+    @staticmethod
+    def _calculate_reliability_metrics(attributes):
+        """
+        Calculate the metrics related to hardware reliability.
+
+        :param dict attributes: the attributes of the hardware item being
+                                calculated.
+        :return: attributes; the attributes dict with updated cost metrics.
+        :rtype: dict
+        """
+        attributes['hazard_rate_logistics'] = (
+            attributes['hazard_rate_active'] +
+            attributes['hazard_rate_dormant'] +
+            attributes['hazard_rate_software'])
+
+        try:
+            attributes['mtbf_logistics'] = (
+                1.0 / attributes['hazard_rate_logistics'])
+        except ZeroDivisionError:
+            attributes['mtbf_logistics'] = 0.0
+        try:
+            attributes['mtbf_mission'] = attributes['hazard_rate_mission']
+        except ZeroDivisionError:
+            attributes['mtbf_mission'] = 0.0
+
+        attributes['reliability_logistics'] = exp(
+            -1.0 *
+            (attributes['hazard_rate_logistics']) * attributes['mission_time'])
+
+        return attributes
+
+    @staticmethod
+    def _calculate_metric_variances(attributes):
+        """
+        Calculate the variances of several hardware metrics.
+
+        :param dict attributes: the attributes of the hardware item being
+                                calculated.
+        :return: attributes; the attributes dict with updated cost metrics.
+        :rtype: dict
+        """
+        attributes['hr_active_variance'] = attributes[
             'hazard_rate_active']**2.0
-        _attributes['hr_dormant_variance'] = _attributes[
+        attributes['hr_dormant_variance'] = attributes[
             'hazard_rate_dormant']**2.0
-        _attributes['hr_logistics_variance'] = _attributes[
+        attributes['hr_logistics_variance'] = attributes[
             'hazard_rate_logistics']**2.0
 
         try:
-            _attributes['mtbf_logistics'] = 1.0 / _attributes[
-                'hazard_rate_logistics']
+            attributes['mtbf_log_variance'] = (
+                1.0 / attributes['hr_logistics_variance'])
         except ZeroDivisionError:
-            _attributes['mtbf_logistics'] = 0.0
+            attributes['mtbf_log_variance'] = 0.0
         try:
-            _attributes['mtbf_mission'] = _attributes['hazard_rate_mission']
+            attributes['mtbf_miss_variance'] = (
+                1.0 / attributes['hr_mission_variance'])
         except ZeroDivisionError:
-            _attributes['mtbf_mission'] = 0.0
+            attributes['mtbf_miss_variance'] = 0.0
 
-        try:
-            _attributes['mtbf_log_variance'] = 1.0 / _attributes[
-                'hr_logistics_variance']
-        except ZeroDivisionError:
-            _attributes['mtbf_log_variance'] = 0.0
-        try:
-            _attributes['mtbf_miss_variance'] = 1.0 / _attributes[
-                'hr_mission_variance']
-        except ZeroDivisionError:
-            _attributes['mtbf_miss_variance'] = 0.0
+        return attributes
 
-        _attributes['reliability_logistics'] = exp(
-            -1.0 * _attributes['hazard_rate_logistics'] *
-            _attributes['mission_time'])
+    def calculate_all(self, hr_multiplier=1E6, node_id=0):
+        """
+        Calculate all items in the system.
 
-        try:
-            _attributes['cost_hour'] = _attributes['cost'] / _attributes[
-                'mission_time']
-        except ZeroDivisionError:
-            _attributes['cost_hour'] = _attributes['cost']
+        :param float hr_multiplier: the hazard rate multiplier.  This is used
+                                    to allow the hazard rates to be entered and
+                                    displayed in more human readable numbers,
+                                    but have the calculations work out.
+                                    Default value is 1E6 so hazard rates will
+                                    be entered and displayed as
+                                    failures/million hours.
+        :param int node_id: the ID of the treelib Tree() node to start the
+                            calculation at.
+        :return: _cum_results; the list of cumulative results.  The list order
+                 is:
 
-        _attributes['cost_failure'] = _attributes['cost_hour'] * _attributes[
-            'mtbf_logistics']
+                    * 0 - active hazard rate
+                    * 1 - dormant hazard rate
+                    * 2 - software hazard rate
+                    * 3 - total cost
+                    * 4 - part count
+                    * 5 - power dissipation
 
-        if _attributes['part'] == 1:
-            _attributes['total_part_count'] = _attributes['quantity']
+        :rtype: list
+        """
+        _cum_results = [0.0, 0.0, 0.0, 0.0, 0, 0.0]
 
-        return _attributes
+        # Check if there are children nodes of the node passed.
+        if self.tree.get_node(node_id).fpointer:
+            _attributes = self.tree.get_node(node_id).data
+
+            # If there are children, calculate each of them first.
+            for _node_id in self.tree.get_node(node_id).fpointer:
+                _results = self.calculate_all(hr_multiplier, _node_id)
+                _cum_results[0] += _results[0]
+                _cum_results[1] += _results[1]
+                _cum_results[2] += _results[2]
+                _cum_results[3] += _results[3]
+                _cum_results[4] += int(_results[4])
+                _cum_results[5] += _results[5]
+            # Then calculate the parent node.
+            _attributes = self.calculate(node_id, hr_multiplier)
+            if _attributes is not None:
+                _cum_results[0] += _attributes['hazard_rate_active']
+                _cum_results[1] += _attributes['hazard_rate_dormant']
+                _cum_results[2] += _attributes['hazard_rate_software']
+                _cum_results[3] += _attributes['total_cost']
+                _cum_results[4] += int(_attributes['total_part_count'])
+                _cum_results[5] += _attributes['total_power_dissipation']
+        else:
+            if self.tree.get_node(node_id).data is not None:
+                _attributes = self.calculate(node_id, hr_multiplier)
+                _cum_results[0] += _attributes['hazard_rate_active']
+                _cum_results[1] += _attributes['hazard_rate_dormant']
+                _cum_results[2] += _attributes['hazard_rate_software']
+                _cum_results[3] += _attributes['total_cost']
+                _cum_results[4] += int(_attributes['total_part_count'])
+                _cum_results[5] += _attributes['total_power_dissipation']
+
+        if self.tree.get_node(
+                node_id).data is not None and _attributes['part'] == 0:
+            _attributes['hazard_rate_active'] = _cum_results[0]
+            _attributes['hazard_rate_dormant'] = _cum_results[1]
+            _attributes['hazard_rate_software'] = _cum_results[2]
+            _attributes['total_cost'] = _cum_results[3]
+            _attributes['total_part_count'] = int(_cum_results[4])
+            _attributes['total_power_dissipation'] = _cum_results[5]
+
+            _attributes = self._calculate_reliability_metrics(_attributes)
+            _attributes = self._calculate_cost_metrics(_attributes)
+            _attributes = self._calculate_metric_variances(_attributes)
+
+        return _cum_results
 
 
 class HardwareDataModel(RTKDataModel):
