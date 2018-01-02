@@ -198,6 +198,10 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
+    # Base hazard rates that are tabulated, not calculated.  Used for PTH and
+    # Non-PTH connections.  The list index is the type_id - 1.
+    _dic_lambda_b = {75: [0.000041, 0.00026]}
+
     # Reference temperature is used to calculate base hazard rate for
     # circular/rack and panel connectors.  Key is insert material ID.
     _dic_ref_temp = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0}
@@ -222,27 +226,7 @@ def calculate_217f_part_stress(**attributes):
             26: 2.1
         }
     }
-    _dic_piQ = {
-        1: [3.0, 7.0],
-        2: [1.0, 3.0, 10.0],
-        3: [0.03, 0.1, 0.3, 1.0, 3.0, 10.0, 30.0],
-        4: [0.03, 0.1, 0.3, 1.0, 3.0, 7.0, 20.0],
-        5: [0.03, 0.1, 0.3, 1.0, 10.0],
-        6: [0.02, 0.1, 0.3, 1.0, 10.0],
-        7: [0.01, 0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 6.0, 15.0],
-        8: [5.0, 15.0],
-        9: [0.03, 0.1, 0.3, 1.0, 3.0, 3.0, 10.0],
-        10: [0.03, 0.1, 0.3, 1.0, 3.0, 3.0, 10.0],
-        11: [0.03, 0.1, 0.3, 1.0, 3.0, 10.0],
-        12: [0.001, 0.01, 0.03, 0.03, 0.1, 0.3, 1.0, 1.5, 10.0],
-        13: [0.03, 0.1, 0.3, 1.0, 1.5, 3.0, 10.0],
-        14: [0.03, 0.1, 0.3, 1.0, 3.0, 10.0],
-        15: [3.0, 10.0],
-        16: [4.0, 20.0],
-        17: [3.0, 10.0],
-        18: [5.0, 20.0],
-        19: [3.0, 20.0]
-    }
+    _dic_piQ = {75: [1.0, 2.0]}
     _dic_piE = {
         72: {
             1: [
@@ -263,7 +247,15 @@ def calculate_217f_part_stress(**attributes):
                 2.0, 7.0, 17.0, 10.0, 26.0, 14.0, 22.0, 14.0, 22.0, 37.0, 0.8,
                 20.0, 54.0, 970.0
             ]
-        }
+        },
+        74: [
+            1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0,
+            36.0, 650.0
+        ],
+        75: [
+            1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
+            27.0, 500.0
+        ]
     }
     _lst_piK = [1.0, 1.5, 2.0, 3.0, 4.0]
 
@@ -301,8 +293,12 @@ def calculate_217f_part_stress(**attributes):
         _f1 = 0.0
         _f2 = 1.0
 
-    attributes['lambda_b'] = _f0 * exp((_f1 / _contact_temp) +
-                                       (_contact_temp / _ref_temp)**_f2)
+    if attributes['subcategory_id'] == 75:
+        attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
+            attributes['type_id']]
+    else:
+        attributes['lambda_b'] = _f0 * exp((_f1 / _contact_temp) +
+                                           (_contact_temp / _ref_temp)**_f2)
 
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
@@ -325,17 +321,42 @@ def calculate_217f_part_stress(**attributes):
     attributes['piP'] = exp(((attributes['n_active_pins'] - 1) / 10.0)
                             **0.51064)
 
+    # Determine the quality factor (piQ).
+    if attributes['subcategory_id'] == 75:
+        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][attributes[
+            'quality_id']]
+
     # Determine the environmental factor (piE).
-    attributes['piE'] = _dic_piE[attributes['subcategory_id']][attributes[
-        'quality_id']][attributes['environment_active_id'] - 1]
+    if attributes['subcategory_id'] in [74, 75]:
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+            attributes['environment_active_id'] - 1]
+    else:
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][attributes[
+            'quality_id']][attributes['environment_active_id'] - 1]
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
             'connection, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
+    # Determine the complexity factor (piC) for PTH connections.
+    if attributes['subcategory_id'] == 75:
+        if attributes['n_circuit_planes'] > 2:
+            attributes['piC'] = 0.65 * attributes['n_circuit_planes']**0.63
+        else:
+            attributes['piC'] = 1.0
+
     # Calculate the active hazard rate.
-    attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
-        'piK'] * attributes['piP'] * attributes['piE']
+    if attributes['subcategory_id'] == 74:
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piP'] * attributes['piE']
+    elif attributes['subcategory_id'] == 75:
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * (
+            attributes['n_wave_soldered'] * attributes['piC'] +
+            attributes['n_hand_soldered'] *
+            (attributes['piC'] + 13.0)) * attributes['piQ'] * attributes['piE']
+    else:
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piK'] * attributes['piP'] * attributes['piE']
 
     return attributes, _msg
 
