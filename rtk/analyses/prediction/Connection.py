@@ -200,7 +200,10 @@ def calculate_217f_part_stress(**attributes):
     """
     # Base hazard rates that are tabulated, not calculated.  Used for PTH and
     # Non-PTH connections.  The list index is the type_id - 1.
-    _dic_lambda_b = {75: [0.000041, 0.00026]}
+    _dic_lambda_b = {
+        75: [0.000041, 0.00026],
+        76: [0.0026, 0.00014, 0.00026, 0.00005, 0.0000035, 0.00012, 0.000069]
+    }
 
     # Reference temperature is used to calculate base hazard rate for
     # circular/rack and panel connectors.  Key is insert material ID.
@@ -226,7 +229,7 @@ def calculate_217f_part_stress(**attributes):
             26: 2.1
         }
     }
-    _dic_piQ = {75: [1.0, 2.0]}
+    _dic_piQ = {75: [1.0, 2.0], 76: [1.0, 1.0, 2.0, 20.0]}
     _dic_piE = {
         72: {
             1: [
@@ -255,6 +258,10 @@ def calculate_217f_part_stress(**attributes):
         75: [
             1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
             27.0, 500.0
+        ],
+        76: [
+            1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0,
+            420.0
         ]
     }
     _lst_piK = [1.0, 1.5, 2.0, 3.0, 4.0]
@@ -293,9 +300,12 @@ def calculate_217f_part_stress(**attributes):
         _f1 = 0.0
         _f2 = 1.0
 
-    if attributes['subcategory_id'] == 75:
+    if attributes['subcategory_id'] in [75, 76]:
         attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
             attributes['type_id']]
+        # Determine the quality factor (piQ).
+        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][attributes[
+            'quality_id']]
     else:
         attributes['lambda_b'] = _f0 * exp((_f1 / _contact_temp) +
                                            (_contact_temp / _ref_temp)**_f2)
@@ -321,18 +331,13 @@ def calculate_217f_part_stress(**attributes):
     attributes['piP'] = exp(((attributes['n_active_pins'] - 1) / 10.0)
                             **0.51064)
 
-    # Determine the quality factor (piQ).
-    if attributes['subcategory_id'] == 75:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][attributes[
-            'quality_id']]
-
     # Determine the environmental factor (piE).
-    if attributes['subcategory_id'] in [74, 75]:
-        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-            attributes['environment_active_id'] - 1]
-    else:
+    if attributes['subcategory_id'] in [72, 73]:
         attributes['piE'] = _dic_piE[attributes['subcategory_id']][attributes[
             'quality_id']][attributes['environment_active_id'] - 1]
+    else:
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+            attributes['environment_active_id'] - 1]
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
@@ -354,6 +359,9 @@ def calculate_217f_part_stress(**attributes):
             attributes['n_wave_soldered'] * attributes['piC'] +
             attributes['n_hand_soldered'] *
             (attributes['piC'] + 13.0)) * attributes['piQ'] * attributes['piE']
+    elif attributes['subcategory_id'] == 76:
+        attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
+            'piQ'] * attributes['piE']
     else:
         attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
             'piK'] * attributes['piP'] * attributes['piE']
