@@ -305,7 +305,7 @@ class TestConnectionModule(unittest.TestCase):
     @attr(all=True, unit=True)
     def test00a_calculate_mil_hdbk_217f_part_count(self):
         """(TestConnectionModule) calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
-        self._attributes['subcategory_id'] = 72
+        self._attributes['subcategory_id'] = 1
         self._attributes['type_id'] = 1
         self._attributes['environment_active_id'] = 1
         self._attributes['quality_id'] = 1
@@ -334,7 +334,7 @@ class TestConnectionModule(unittest.TestCase):
         self._attributes['quantity'] = 1
 
         # Calculate MIL-HDBK-217FN2, section 15.1, Coaxial
-        self._attributes['subcategory_id'] = 72
+        self._attributes['subcategory_id'] = 1
         self._attributes['type_id'] = 2
         _attributes, _msg = Connection.calculate_217f_part_count(
             **self._attributes)
@@ -346,7 +346,7 @@ class TestConnectionModule(unittest.TestCase):
         self.assertEqual(_attributes['hazard_rate_active'], 0.012)
 
         # Calculate MIL-HDBK-217FN2, section 15.2.
-        self._attributes['subcategory_id'] = 73
+        self._attributes['subcategory_id'] = 2
         _attributes, _msg = Connection.calculate_217f_part_count(
             **self._attributes)
 
@@ -357,7 +357,7 @@ class TestConnectionModule(unittest.TestCase):
         self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.0054)
 
         # Calculate MIL-HDBK-217FN2, section 15.3
-        self._attributes['subcategory_id'] = 74
+        self._attributes['subcategory_id'] = 3
         _attributes, _msg = Connection.calculate_217f_part_count(
             **self._attributes)
 
@@ -368,7 +368,7 @@ class TestConnectionModule(unittest.TestCase):
         self.assertEqual(_attributes['hazard_rate_active'], 0.0019)
 
         # Calculate MIL-HDBK-217FN2, section 16.1
-        self._attributes['subcategory_id'] = 75
+        self._attributes['subcategory_id'] = 4
         _attributes, _msg = Connection.calculate_217f_part_count(
             **self._attributes)
 
@@ -379,7 +379,7 @@ class TestConnectionModule(unittest.TestCase):
         self.assertEqual(_attributes['hazard_rate_active'], 0.053)
 
         # Calculate MIL-HDBK-217FN2, section 17.1, hand solder w/o wrapping.
-        self._attributes['subcategory_id'] = 76
+        self._attributes['subcategory_id'] = 5
         self._attributes['type_id'] = 1
         _attributes, _msg = Connection.calculate_217f_part_count(
             **self._attributes)
@@ -530,7 +530,7 @@ class TestConnectionModule(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01a_calculate_mil_hdbk_217f_part_stress(self):
         """(TestConnectionModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
-        self._attributes['subcategory_id'] = 72
+        self._attributes['subcategory_id'] = 1
         self._attributes['type_id'] = 1
         self._attributes['insert_id'] = 2
         self._attributes['environment_active_id'] = 3  # Ground, Mobile
@@ -674,7 +674,7 @@ class TestConnectionModule(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04a_calculate(self):
         """(TestConnectionModule) calculate() should return should return a dictionary of updated values on success."""
-        self._attributes['subcategory_id'] = 72
+        self._attributes['subcategory_id'] = 1
         self._attributes['type_id'] = 1
         self._attributes['insert_id'] = 2
         self._attributes['environment_active_id'] = 3  # Ground, Mobile
