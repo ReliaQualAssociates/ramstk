@@ -42,3 +42,12 @@ Connection Module
     :undoc-members:
     :show-inheritance:
 
+Integrated Circuits Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.IntegratedCircuit
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+

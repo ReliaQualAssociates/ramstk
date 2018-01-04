@@ -73,16 +73,16 @@ def calculate_217f_part_count(**attributes):
     # the connection subcategory is NOT specification dependent, then the
     # second key will be zero.  Current subcategory IDs are:
     #
-    #   72. Circular/Rack and Panel/Coaxial
-    #   73. PCB Edge
-    #   74. IC Socket
-    #   75. Plated Through Hole (PTH)
-    #   76. Non-PTH
+    #    1. Circular/Rack and Panel/Coaxial
+    #    2. PCB Edge
+    #    3. IC Socket
+    #    4. Plated Through Hole (PTH)
+    #    5. Non-PTH
     #
     # These keys return a list of base hazard rates.  The hazard rate to use is
     # selected from the list depending on the active environment.
     _dic_lambda_b = {
-        72: {
+        1: {
             1: [
                 0.011, 0.14, 0.11, 0.069, 0.20, 0.058, 0.098, 0.23, 0.34, 0.37,
                 0.0054, 0.16, 0.42, 6.8
@@ -92,19 +92,19 @@ def calculate_217f_part_count(**attributes):
                 0.0061, 0.18, 0.54, 7.3
             ]
         },
-        73: [
+        2: [
             0.0054, 0.021, 0.055, 0.035, 0.10, 0.059, 0.11, 0.085, 0.16, 0.19,
             0.0027, 0.078, 0.21, 3.4
         ],
-        74: [
+        3: [
             0.0019, 0.0058, 0.027, 0.012, 0.035, 0.015, 0.023, 0.021, 0.025,
             0.048, 0.00097, 0.027, 0.070, 1.3
         ],
-        75: [
+        4: [
             0.053, 0.11, 0.37, 0.69, 0.27, 0.27, 0.43, 0.85, 1.5, 1.0, 0.027,
             0.53, 1.4, 27.0
         ],
-        76: {
+        5: {
             1: [
                 0.0026, 0.0052, 0.018, 0.010, 0.029, 0.010, 0.016, 0.016,
                 0.021, 0.042, 0.0013, 0.023, 0.062, 1.1
@@ -152,7 +152,7 @@ def calculate_217f_part_count(**attributes):
     try:
         # Select circular/rack and panel or coaxial (72) or which type of
         # single connection (76).
-        if attributes['subcategory_id'] in [72, 76]:
+        if attributes['subcategory_id'] in [1, 5]:
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
                 attributes['type_id']]
         else:
@@ -192,7 +192,13 @@ def calculate_217f_part_stress(**attributes):
     Calculate the part stress hazard rate for a connection.
 
     This function calculates the MIL-HDBK-217F hazard rate using the part
-    stress method.
+    stress method.  Current subcategory IDs are:
+
+        1. Circular/Rack and Panel/Coaxial
+        2. PCB Edge
+        3. IC Socket
+        4. Plated Through Hole (PTH)
+        5. Non-PTH
 
     :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.
@@ -201,8 +207,8 @@ def calculate_217f_part_stress(**attributes):
     # Base hazard rates that are tabulated, not calculated.  Used for PTH and
     # Non-PTH connections.  The list index is the type_id - 1.
     _dic_lambda_b = {
-        75: [0.000041, 0.00026],
-        76: [0.0026, 0.00014, 0.00026, 0.00005, 0.0000035, 0.00012, 0.000069]
+        4: [0.000041, 0.00026],
+        5: [0.0026, 0.00014, 0.00026, 0.00005, 0.0000035, 0.00012, 0.000069]
     }
 
     # Reference temperature is used to calculate base hazard rate for
@@ -213,7 +219,7 @@ def calculate_217f_part_stress(**attributes):
     # panel connectors.  Key is insert material ID (1 - 4) or contact
     # gauge (22 - 12).
     _dic_factors = {
-        72: {
+        1: {
             1: [0.2, -1592.0, 5.36],
             2: [0.431, -2073.6, 4.66],
             3: [0.19, -1298.0, 4.25],
@@ -223,15 +229,15 @@ def calculate_217f_part_stress(**attributes):
             20: 0.64,
             22: 0.989
         },
-        73: {
+        2: {
             20: 0.64,
             22: 0.989,
             26: 2.1
         }
     }
-    _dic_piQ = {75: [1.0, 2.0], 76: [1.0, 1.0, 2.0, 20.0]}
+    _dic_piQ = {4: [1.0, 2.0], 5: [1.0, 1.0, 2.0, 20.0]}
     _dic_piE = {
-        72: {
+        1: {
             1: [
                 1.0, 1.0, 8.0, 5.0, 13.0, 3.0, 5.0, 8.0, 12.0, 19.0, 0.5, 10.0,
                 27.0, 490.0
@@ -241,7 +247,7 @@ def calculate_217f_part_stress(**attributes):
                 20.0, 54.0, 970.0
             ]
         },
-        73: {
+        2: {
             1: [
                 1.0, 3.0, 8.0, 5.0, 13.0, 6.0, 11.0, 6.0, 11.0, 19.0, 0.5,
                 10.0, 27.0, 490.0
@@ -251,15 +257,15 @@ def calculate_217f_part_stress(**attributes):
                 20.0, 54.0, 970.0
             ]
         },
-        74: [
+        3: [
             1.0, 3.0, 14.0, 6.0, 18.0, 8.0, 12.0, 11.0, 13.0, 25.0, 0.5, 14.0,
             36.0, 650.0
         ],
-        75: [
+        4: [
             1.0, 2.0, 7.0, 5.0, 13.0, 5.0, 8.0, 16.0, 28.0, 19.0, 0.5, 10.0,
             27.0, 500.0
         ],
-        76: [
+        5: [
             1.0, 2.0, 7.0, 4.0, 11.0, 4.0, 6.0, 6.0, 8.0, 16.0, 0.5, 9.0, 24.0,
             420.0
         ]
@@ -280,7 +286,7 @@ def calculate_217f_part_stress(**attributes):
     # Calculate the base hazard rate.
     _contact_temp = (attributes['temperature_active'] +
                      attributes['temperature_rise'] + 273.0)
-    if attributes['subcategory_id'] == 72:
+    if attributes['subcategory_id'] == 1:
         _ref_temp = _dic_ref_temp[attributes['insert_id']]
         _f0 = _dic_factors[attributes['subcategory_id']][attributes[
             'insert_id']][0]
@@ -288,19 +294,19 @@ def calculate_217f_part_stress(**attributes):
             'insert_id']][1]
         _f2 = _dic_factors[attributes['subcategory_id']][attributes[
             'insert_id']][2]
-    elif attributes['subcategory_id'] == 73:
+    elif attributes['subcategory_id'] == 2:
         _ref_temp = 423.0
         _f0 = 0.216
         _f1 = -2073.6
         _f2 = 4.66
-    elif attributes['subcategory_id'] == 74:
+    elif attributes['subcategory_id'] == 3:
         _contact_temp = 0.0
         _ref_temp = 1.0
         _f0 = 0.00042
         _f1 = 0.0
         _f2 = 1.0
 
-    if attributes['subcategory_id'] in [75, 76]:
+    if attributes['subcategory_id'] in [4, 5]:
         attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
             attributes['type_id']]
         # Determine the quality factor (piQ).
@@ -332,7 +338,7 @@ def calculate_217f_part_stress(**attributes):
                             **0.51064)
 
     # Determine the environmental factor (piE).
-    if attributes['subcategory_id'] in [72, 73]:
+    if attributes['subcategory_id'] in [1, 2]:
         attributes['piE'] = _dic_piE[attributes['subcategory_id']][attributes[
             'quality_id']][attributes['environment_active_id'] - 1]
     else:
@@ -344,22 +350,22 @@ def calculate_217f_part_stress(**attributes):
             'connection, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the complexity factor (piC) for PTH connections.
-    if attributes['subcategory_id'] == 75:
+    if attributes['subcategory_id'] == 4:
         if attributes['n_circuit_planes'] > 2:
             attributes['piC'] = 0.65 * attributes['n_circuit_planes']**0.63
         else:
             attributes['piC'] = 1.0
 
     # Calculate the active hazard rate.
-    if attributes['subcategory_id'] == 74:
+    if attributes['subcategory_id'] == 3:
         attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
             'piP'] * attributes['piE']
-    elif attributes['subcategory_id'] == 75:
+    elif attributes['subcategory_id'] == 4:
         attributes['hazard_rate_active'] = attributes['lambda_b'] * (
             attributes['n_wave_soldered'] * attributes['piC'] +
             attributes['n_hand_soldered'] *
             (attributes['piC'] + 13.0)) * attributes['piQ'] * attributes['piE']
-    elif attributes['subcategory_id'] == 76:
+    elif attributes['subcategory_id'] == 5:
         attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
             'piQ'] * attributes['piE']
     else:

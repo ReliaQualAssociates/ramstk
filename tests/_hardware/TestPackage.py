@@ -1,11 +1,11 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests._fmea.TestFMEAPackage.sh is part of The RTK Project
+#       rtk.tests._hardware.TestPackage.sh is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Test class for testing the Revision package."""
+"""Test class for testing the Hardware package."""
 
 import sys
 import os
@@ -30,7 +30,8 @@ from _hardware import TestHardwareDataModel, TestDesignElectricDataModel, \
     TestDesignMechanicDataModel, TestMilHdbkFDataModel, TestNSWCDataModel, \
     TestReliabilityDataModel, TestHardwareBoMDataModel, \
     TestHardwareBoMDataController
-from _analyses.prediction import TestCapacitorModule, TestConnectionModule
+from _analyses.prediction import TestCapacitorModule, TestConnectionModule, \
+    TestICModule
 
 
 def test_hardware_package(suites):
@@ -98,7 +99,7 @@ if __name__ == '__main__':
     ]
 
     _calculation_suites = [
-        TestCapacitorModule, TestConnectionModule
+        TestCapacitorModule, TestConnectionModule, TestICModule
     ]
 
     # For the nosetest example.
@@ -114,7 +115,10 @@ if __name__ == '__main__':
         _suites = _db_suites + _model_suites + _controller_suites + \
             _calculation_suites
 
-    _create_program_database()
+    # Don't need the test database to test the calculations.
+    if str(sys.argv[1]) != 'calcs':
+        _create_program_database()
+
     test_hardware_package(_suites)
 
     print "\n" + '\033[34m' + '\033[1m' + \
