@@ -523,8 +523,10 @@ def calculate_217f_part_stress(**attributes):
                 ) * exp(-_f0 * (1.0 / (
                     attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
         else:
-            attributes['piT'] = exp(-_f0 * (1.0 / (
-                attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
+            attributes['piT'] = exp(
+                -_f0 *
+                (1.0 /
+                 (attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
     except KeyError:
         attributes['piT'] = 0.0
 

@@ -226,7 +226,6 @@ class ValidationDataModel(RTKDataModel):
         """
         Update the overall program Validation status.
 
-        :param int revision_id: the Revision ID to update.
         :return: (_error_code, _msg); the error code and associated message.
         :rtype: (int, str)
         """
