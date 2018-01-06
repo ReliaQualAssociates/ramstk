@@ -456,15 +456,16 @@ def calculate_217f_part_stress(**attributes):
         14: [1.0, 1.05, 1.2],
         15: [1.0, 1.05, 1.2]
     }
-    _dic_piC = {10: [2.0, 1.0, 3.0, 1.5],
-                12: [2.0, 1.0]}
+    _dic_piC = {10: [2.0, 1.0, 3.0, 1.5], 12: [2.0, 1.0]}
     _msg = ''
 
     # Calculate the voltage ratio.
     try:
         attributes['voltage_dc_operating'] = sqrt(
             attributes['resistance'] * attributes['power_operating'])
-        attributes['voltage_ratio'] = (attributes['voltage_ac_operating'] + attributes['voltage_dc_operating']) / attributes['voltage_rated']
+        attributes['voltage_ratio'] = (
+            attributes['voltage_ac_operating'] +
+            attributes['voltage_dc_operating']) / attributes['voltage_rated']
     except ZeroDivisionError:
         attributes['voltage_ratio'] = 1.0
 
@@ -506,9 +507,10 @@ def calculate_217f_part_stress(**attributes):
             attributes['type_id'] - 1]
     else:
         attributes['lambda_b'] = _f0 * exp(_f1 * ((
-            attributes['temperature_active'] + 273.0
-        ) / _ref_temp))**_f2 * exp(((attributes['power_ratio'] / _f3) * ((
-            attributes['temperature_active'] + 273.0) / 273.0)**_f4)**_f5)
+            attributes['temperature_active'] + 273.0) / _ref_temp))**_f2 * exp(
+                ((attributes['power_ratio'] / _f3) *
+                 ((attributes['temperature_active'] + 273.0) / 273.0)**_f4)**
+                _f5)
 
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
@@ -563,7 +565,6 @@ def calculate_217f_part_stress(**attributes):
         attributes['piTAPS'] = (attributes['n_elements']**1.5 / 25.0) + 0.792
 
     # Calculate the voltage factor (piV).
-    print attributes['voltage_ratio']
     if attributes['subcategory_id'] in [9, 10, 11, 12]:
         _breaks = [0.1, 0.2, 0.6, 0.7, 0.8, 0.9]
     elif attributes['subcategory_id'] in [13, 14, 15]:
@@ -576,13 +577,12 @@ def calculate_217f_part_stress(**attributes):
             break
         elif _diff >= 0:
             break
-    print _index
     attributes['piV'] = _dic_piV[attributes['subcategory_id']][_index]
 
     # Determine the consruction class factor (piC).
     if attributes['subcategory_id'] in [10, 12]:
-        attributes['piC'] = _dic_piC[attributes['subcategory_id']][attributes[
-            'construction_id'] - 1]
+        attributes['piC'] = _dic_piC[attributes['subcategory_id']][
+            attributes['construction_id'] - 1]
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (
