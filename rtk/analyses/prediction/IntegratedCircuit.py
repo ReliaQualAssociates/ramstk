@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.mil_hdbk_217f.IntegratedCircuit.py is part of
+#       rtk.analyses.prediction.IntegratedCircuit.py is part of
 #       the RTK Project
 #
 # All rights reserved.

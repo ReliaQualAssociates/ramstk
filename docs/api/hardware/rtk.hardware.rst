@@ -24,7 +24,7 @@ Hardware Data Controller
 Hardware Component Modules
 -------------------------------------------------------------------------------
 
-Capacitor Module
+Capacitor Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: rtk.analyses.prediction.Capacitor
@@ -33,7 +33,7 @@ Capacitor Module
     :undoc-members:
     :show-inheritance:
 
-Connection Module
+Connection Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: rtk.analyses.prediction.Connection
@@ -42,10 +42,19 @@ Connection Module
     :undoc-members:
     :show-inheritance:
 
-Integrated Circuits Module
+Integrated Circuits Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: rtk.analyses.prediction.IntegratedCircuit
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Semiconductor Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Semiconductor
     :members:
     :private-members:
     :undoc-members:

@@ -1,3 +1,4 @@
 from .TestCapacitor import TestCapacitorModule
 from .TestConnection import TestConnectionModule
 from .TestIntegratedCircuit import TestICModule
+from .TestSemiconductor import TestSemiconductorModule
