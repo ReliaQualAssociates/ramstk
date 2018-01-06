@@ -31,7 +31,8 @@ from _hardware import TestHardwareDataModel, TestDesignElectricDataModel, \
     TestReliabilityDataModel, TestHardwareBoMDataModel, \
     TestHardwareBoMDataController
 from _analyses.prediction import TestCapacitorModule, TestConnectionModule, \
-    TestICModule, TestSemiconductorModule, TestResistorModule
+    TestICModule, TestSemiconductorModule, TestResistorModule, \
+    TestInductorModule
 
 
 def test_hardware_package(suites):
@@ -100,7 +101,7 @@ if __name__ == '__main__':
 
     _calculation_suites = [
         TestICModule, TestSemiconductorModule, TestResistorModule,
-        TestCapacitorModule, TestConnectionModule
+        TestCapacitorModule, TestInductorModule, TestConnectionModule
 
     ]
 

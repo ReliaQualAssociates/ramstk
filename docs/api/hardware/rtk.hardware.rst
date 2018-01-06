@@ -42,6 +42,15 @@ Connection Prediction Calculations Module
     :undoc-members:
     :show-inheritance:
 
+Inductor Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Inductor
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
 Integrated Circuits Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
