@@ -51,6 +51,15 @@ Integrated Circuits Prediction Calculations Module
     :undoc-members:
     :show-inheritance:
 
+Resistor Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Resistor
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
 Semiconductor Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 

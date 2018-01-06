@@ -165,12 +165,11 @@ class TestValidationDataModel(unittest.TestCase):
         """(TestValidationDataModel) update_status() should return a zero error code on success."""
         self.DUT.select_all(1)
 
-        _error_code, _msg = self.DUT.update_status(1)
+        _error_code, _msg = self.DUT.update_status( )
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg,
-                         'RTK SUCCESS: Adding one or more items to the RTK '
-                         'Program database.')
+                         'RTK SUCCESS: Updating the RTK Program database.')
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
