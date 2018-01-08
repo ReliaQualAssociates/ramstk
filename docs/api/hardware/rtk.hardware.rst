@@ -42,6 +42,33 @@ Connection Prediction Calculations Module
     :undoc-members:
     :show-inheritance:
 
+Crystal Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Crystal
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Filter Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Filter
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Fuse Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Fuse
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
 Inductor Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -60,6 +87,33 @@ Integrated Circuits Prediction Calculations Module
     :undoc-members:
     :show-inheritance:
 
+Lamp Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Lamp
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Meter Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Meter
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Relay Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Relay
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
 Resistor Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
@@ -73,6 +127,15 @@ Semiconductor Prediction Calculations Module
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. automodule:: rtk.analyses.prediction.Semiconductor
+    :members:
+    :private-members:
+    :undoc-members:
+    :show-inheritance:
+
+Switch Prediction Calculations Module
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.analyses.prediction.Switch
     :members:
     :private-members:
     :undoc-members:
