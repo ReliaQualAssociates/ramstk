@@ -10,7 +10,7 @@
 
 import gettext
 
-from math import exp, sqrt
+from math import exp
 
 _ = gettext.gettext
 
@@ -178,8 +178,10 @@ def calculate_217f_part_stress(**attributes):
         1: [[0.00045, 0.034], [0.0027, 0.04]],
         5: [0.02, 0.038, 0.038]
     }
-    _dic_piC = {1: [1.0,1.5,1.7,2.0,2.5,3.0,4.2,5.5,8.0],
-                5: [1.0,2.0,3.0,4.0]}
+    _dic_piC = {
+        1: [1.0, 1.5, 1.7, 2.0, 2.5, 3.0, 4.2, 5.5, 8.0],
+        5: [1.0, 2.0, 3.0, 4.0]
+    }
     _msg = ''
 
     # Calculate the current ratio.
@@ -194,12 +196,12 @@ def calculate_217f_part_stress(**attributes):
         attributes['lambda_b'] = _dic_lambda_b[1][attributes['type_id']][
             attributes['quality_id'] - 1]
     elif attributes['subcategory_id'] in [2, 3]:
-        _lambda_bE = _dic_factors[attributes['subcategory_id']][attributes[
-            'quality_id'] - 1][0]
-        _lambda_bC = _dic_factors[attributes['subcategory_id']][attributes[
-            'quality_id'] - 1][1]
-        _lambda_b0 = _dic_factors[attributes['subcategory_id']][attributes[
-            'quality_id'] - 1][2]
+        _lambda_bE = _dic_factors[attributes['subcategory_id']][
+            attributes['quality_id'] - 1][0]
+        _lambda_bC = _dic_factors[attributes['subcategory_id']][
+            attributes['quality_id'] - 1][1]
+        _lambda_b0 = _dic_factors[attributes['subcategory_id']][
+            attributes['quality_id'] - 1][2]
         if attributes['construction_id'] == 1:
             attributes['lambda_b'] = (
                 _lambda_bE + attributes['n_elements'] * _lambda_bC)
@@ -226,7 +228,8 @@ def calculate_217f_part_stress(**attributes):
     # Determine the quality factor (piQ).
     if attributes['subcategory_id'] == 5:
         try:
-            attributes['piQ'] = [1.0, 8.4][attributes['quality_id'] - 1]
+            attributes['piQ'] = (8.4
+                                 if (attributes['quality_id']) - (1) else 1.0)
         except IndexError:
             attributes['piQ'] = 0.0
 
@@ -266,11 +269,13 @@ def calculate_217f_part_stress(**attributes):
 
     # Determine the contact form and quantity factor (piC).
     if attributes['subcategory_id'] in [1, 5]:
-        attributes['piC'] = _dic_piC[attributes['subcategory_id']][attributes['contact_form_id']]
+        attributes['piC'] = _dic_piC[attributes['subcategory_id']][attributes[
+            'contact_form_id']]
 
     # Determine the use factor (piU).
     if attributes['subcategory_id'] == 5:
-        attributes['piU'] = [1.0, 10.0][attributes['application_id'] - 1]
+        attributes['piU'] = (10.0
+                             if (attributes['application_id']) - (1) else 1.0)
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (
