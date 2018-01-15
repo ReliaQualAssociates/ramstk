@@ -6,3 +6,4 @@ import Resistor
 import Semiconductor
 import Switch
 import Relay
+import Meter

@@ -211,12 +211,12 @@ def calculate_217f_part_stress(**attributes):
 
     # Calculate the base hazard rate.
     if attributes['subcategory_id'] == 1:
-        _f0 = _dic_factors[attributes['subcategory_id']][attributes[
-            'type_id'] - 1][0]
-        _f1 = _dic_factors[attributes['subcategory_id']][attributes[
-            'type_id'] - 1][1]
-        _f2 = _dic_factors[attributes['subcategory_id']][attributes[
-            'type_id'] - 1][2]
+        _f0 = _dic_factors[attributes['subcategory_id']][attributes['type_id']
+                                                         - 1][0]
+        _f1 = _dic_factors[attributes['subcategory_id']][attributes['type_id']
+                                                         - 1][1]
+        _f2 = _dic_factors[attributes['subcategory_id']][attributes['type_id']
+                                                         - 1][2]
         attributes['lambda_b'] = _f0 * exp(
             ((attributes['temperature_active'] + 273.0) / _f1)**_f2)
     elif attributes['subcategory_id'] == 2:
@@ -243,8 +243,8 @@ def calculate_217f_part_stress(**attributes):
 
     # Determine the contact form factor (piC).
     if attributes['subcategory_id'] == 1:
-        attributes['piC'] = _dic_piC[attributes['subcategory_id']][attributes[
-            'contact_form_id'] - 1]
+        attributes['piC'] = _dic_piC[attributes['subcategory_id']][
+            attributes['contact_form_id'] - 1]
 
     # Determine cycling factor (piCYC).
     if attributes['subcategory_id'] == 1:
@@ -286,7 +286,8 @@ def calculate_217f_part_stress(**attributes):
         attributes['piE'] = _dic_piE[1][_quality][
             attributes['environment_active_id'] - 1]
     else:
-        attributes['piE'] = _dic_piQ[2][attributes['environment_active_id'] - 1]
+        attributes['piE'] = _dic_piQ[2][attributes['environment_active_id']
+                                        - 1]
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
