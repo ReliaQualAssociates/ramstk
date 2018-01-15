@@ -7,3 +7,4 @@ from .TestInductor import TestInductorModule
 from .TestSwitch import TestSwitchModule
 from .TestRelay import TestRelayModule
 from .TestMeter import TestMeterModule
+from .TestCrystal import TestCrystalModule

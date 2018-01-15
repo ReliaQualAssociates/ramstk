@@ -7,3 +7,4 @@ import Semiconductor
 import Switch
 import Relay
 import Meter
+import Crystal
