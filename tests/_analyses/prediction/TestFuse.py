@@ -1,11 +1,11 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests.unit.TestFilter.py is part of The RTK Project
+#       tests.unit.TestFuse.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Test class for the filter module."""
+"""Test class for the fuse module."""
 
 import sys
 from os.path import dirname
@@ -20,7 +20,7 @@ sys.path.insert(
     dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
 )
 
-from analyses.prediction import Filter
+from analyses.prediction import Fuse
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -28,8 +28,8 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestFilterModule(unittest.TestCase):
-    """Class for testing the Filter module functions."""
+class TestFuseModule(unittest.TestCase):
+    """Class for testing the Fuse module functions."""
 
     _attributes = {
         'hazard_rate_percent': 0.0,
@@ -41,7 +41,7 @@ class TestFilterModule(unittest.TestCase):
         'friction': 0.0,
         'length_compressed': 0.0,
         'balance_id': 0,
-        'scale_parafilter': 0.0,
+        'scale_parafuse': 0.0,
         'lubrication_id': 0,
         'temperature_dormant': 25.0,
         'Cmu': 0.0,
@@ -61,13 +61,13 @@ class TestFilterModule(unittest.TestCase):
         'lambdaBD': 0.0,
         'manufacturer_id': 0,
         'hazard_rate_software': 0.0,
-        'shape_parafilter': 0.0,
+        'shape_parafuse': 0.0,
         'total_power_dissipation': 0.0,
         'current_rated': 0.0,
         'cost_type_id': 0,
         'power_operating': 0.0,
         'pressure_downstream': 0.0,
-        'diafilter_coil': 0.0,
+        'diafuse_coil': 0.0,
         'configuration_id': 0,
         'meyer_hardness': 0.0,
         'temperature_junction': 0.0,
@@ -104,7 +104,7 @@ class TestFilterModule(unittest.TestCase):
         'Csf': 0.0,
         'Csc': 0.0,
         'deflection': 0.0,
-        'filter_size': 0.0,
+        'fuse_size': 0.0,
         'reliability_goal': 0.0,
         'cost': 0.0,
         'material_id': 0,
@@ -113,7 +113,7 @@ class TestFilterModule(unittest.TestCase):
         'Cst': 0.0,
         'Csw': 0.0,
         'Csv': 0.0,
-        'diafilter_inner': 0.0,
+        'diafuse_inner': 0.0,
         'environment_active_id': 0,
         'pressure_rated': 0.0,
         'quality_id': 0,
@@ -123,7 +123,7 @@ class TestFilterModule(unittest.TestCase):
         'piCR': 0.0,
         'thickness': 0.0,
         'specification_id': 0,
-        'diafilter_outer': 0.0,
+        'diafuse_outer': 0.0,
         'matching_id': 0,
         'figure_number': '',
         'hr_mission_variance': 0.0,
@@ -173,7 +173,7 @@ class TestFilterModule(unittest.TestCase):
         'n_circuit_planes': 1,
         'contact_gauge': 0,
         'current_operating': 0.0,
-        'location_parafilter': 0.0,
+        'location_parafuse': 0.0,
         'water_per_cent': 0.0,
         'cost_hour': 0.0,
         'contact_rating_id': 0,
@@ -294,51 +294,34 @@ class TestFilterModule(unittest.TestCase):
         'clearance': 0.0,
         'specification_number': '',
         'Cdy': 0.0,
-        'diafilter_wire': 0.0,
+        'diafuse_wire': 0.0,
         'service_id': 0
     }
 
     def setUp(self):
-        """Set up the test fixture for the Filter module."""
-        self._dic_lambda_b = {
-            1: [
-                0.022, 0.044, 0.13, 0.088, 0.20, 0.15, 0.20, 0.24, 0.29, 0.24,
-                0.018, 0.15, 0.33, 2.6
-            ],
-            2: [
-                0.12, 0.24, 0.72, 0.48, 1.1, 0.84, 1.1, 1.3, 1.6, 1.3, 0.096,
-                0.84, 1.8, 1.4
-            ],
-            3: [
-                0.27, 0.54, 1.6, 1.1, 2.4, 1.9, 2.4, 3.0, 3.5, 3.0, 0.22, 1.9,
-                4.1, 32.0
-            ]
-        }
-        self._lst_piQ = [1.0, 2.9]
+        """Set up the test fixture for the Fuse module."""
+        self._lst_lambda_b = [0.01, 0.02, 0.06, 0.05, 0.11, 0.09, 0.12, 0.15, 0.18, 0.18, 0.009, 0.1, 0.21, 2.3]
 
     @attr(all=True, unit=True)
     def test00a_calculate_mil_hdbk_217f_part_count(self):
-        """(TestFilterModule) calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
-        self._attributes['type_id'] = 2
-        self._attributes['environment_active_id'] = 1
-        self._attributes['quality_id'] = 2
+        """(TestFuseModule) calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
+        self._attributes['environment_active_id'] = 3
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
         self._attributes['duty_cycle'] = 100.0
         self._attributes['quantity'] = 1
 
-        _attributes, _msg = Filter.calculate_217f_part_count(
+        _attributes, _msg = Fuse.calculate_217f_part_count(
             **self._attributes)
 
         self.assertTrue(isinstance(_attributes, dict))
         self.assertEqual(_msg, '')
-        self.assertEqual(_attributes['lambda_b'], 0.12)
-        self.assertEqual(_attributes['piQ'], 2.9)
-        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.348)
+        self.assertEqual(_attributes['lambda_b'], 0.06)
+        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.06)
 
     @attr(all=True, unit=True)
     def test00b_calculate_mil_hdbk_217f_part_count_all(self):
-        """(TestFilterModule) calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success for each active environment and quality level combination for filters."""
+        """(TestFuseModule) calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success for each active environment and quality level combination for fuses."""
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
         self._attributes['duty_cycle'] = 100.0
@@ -346,107 +329,84 @@ class TestFilterModule(unittest.TestCase):
 
         for environment_active_id in xrange(1, 14):
             self._attributes['environment_active_id'] = environment_active_id
-            for quality_id in xrange(1, 3):
-                self._attributes['quality_id'] = quality_id
-                for type_id in xrange(1, 3):
-                    self._attributes['type_id'] = type_id
-                    _test_msg = 'test00b_calculate_mil_hdbk_217f_part_count_mechanical_1_{}_{}_{} ' \
-                                'failed'.format(environment_active_id, quality_id, type_id)
+            _test_msg = 'test00b_calculate_mil_hdbk_217f_part_count_mechanical_1_{} ' \
+                        'failed'.format(environment_active_id)
 
-                    _attributes, _msg = Filter.calculate_217f_part_count(
-                        **self._attributes)
+            _attributes, _msg = Fuse.calculate_217f_part_count(
+                **self._attributes)
 
-                    self.assertTrue(isinstance(_attributes, dict), _test_msg)
-                    self.assertEqual(_msg, '', _test_msg)
+            self.assertTrue(isinstance(_attributes, dict), _test_msg)
+            self.assertEqual(_msg, '', _test_msg)
 
-                    _lambda_b = self._dic_lambda_b[type_id][
-                        environment_active_id - 1]
-                    _piQ = self._lst_piQ[quality_id - 1]
-                    self.assertEqual(_attributes['lambda_b'], _lambda_b,
-                                     _test_msg)
-                    self.assertEqual(_attributes['piQ'], _piQ, _test_msg)
-                    self.assertEqual(_attributes['hazard_rate_active'],
-                                     _lambda_b * _piQ, _test_msg)
+            _lambda_b = self._lst_lambda_b[environment_active_id - 1]
+            self.assertEqual(_attributes['lambda_b'], _lambda_b, _test_msg)
+            self.assertEqual(_attributes['hazard_rate_active'], _lambda_b, _test_msg)
 
     @attr(all=True, unit=True)
     def test00c_calculate_mil_hdbk_217f_part_count_missing_environment(self):
-        """(TestFilterModule) calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
-        self._attributes['subcategory_id'] = 1
+        """(TestFuseModule) calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
         self._attributes['environment_active_id'] = 100
-        self._attributes['quality_id'] = 1
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
         self._attributes['duty_cycle'] = 100.0
         self._attributes['quantity'] = 1
 
-        _attributes, _msg = Filter.calculate_217f_part_count(
+        _attributes, _msg = Fuse.calculate_217f_part_count(
             **self._attributes)
 
         self.assertTrue(isinstance(_attributes, dict))
         self.assertEqual(
             _msg,
-            'RTK WARNING: Base hazard rate is 0.0 when calculating filter, '
-            'hardware ID: 6, subcategory ID: 1, active environment ID: 100')
+            'RTK WARNING: Base hazard rate is 0.0 when calculating fuse, '
+            'hardware ID: 6, active environment ID: 100')
         self.assertEqual(_attributes['lambda_b'], 0.0)
-        self.assertEqual(_attributes['piQ'], 1.0)
         self.assertEqual(_attributes['hazard_rate_active'], 0.0)
 
     @attr(all=True, unit=True)
     def test01a_calculate_mil_hdbk_217f_part_stress(self):
-        """(TestFilterModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
-        self._attributes['specification_id'] = 1
-        self._attributes['type_id'] = 2
-        self._attributes['quality_id'] = 1
+        """(TestFuseModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
         self._attributes['environment_active_id'] = 4
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
         self._attributes['duty_cycle'] = 100.0
         self._attributes['quantity'] = 1
 
-        _attributes, _msg = Filter.calculate_217f_part_stress(
+        _attributes, _msg = Fuse.calculate_217f_part_stress(
             **self._attributes)
 
         self.assertTrue(isinstance(_attributes, dict))
         self.assertEqual(_msg, '')
-        self.assertEqual(_attributes['lambda_b'], 0.12)
-        self.assertEqual(_attributes['piQ'], 1.0)
-        self.assertEqual(_attributes['piE'], 4.0)
-        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.48)
+        self.assertEqual(_attributes['lambda_b'], 0.0)
+        self.assertEqual(_attributes['piE'], 5.0)
+        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.05)
 
     @attr(all=True, unit=True)
     def test02a_calculate(self):
-        """(TestFilterModule) calculate() should return should return a dictionary of updated values on success."""
-        self._attributes['type_id'] = 2
-        self._attributes['environment_active_id'] = 1
-        self._attributes['quality_id'] = 2
+        """(TestFuseModule) calculate() should return should return a dictionary of updated values on success."""
+        self._attributes['environment_active_id'] = 3
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
         self._attributes['duty_cycle'] = 100.0
         self._attributes['quantity'] = 1
 
         self._attributes['hazard_rate_method_id'] = 1
-        _attributes, _msg = Filter.calculate(**self._attributes)
+        _attributes, _msg = Fuse.calculate(**self._attributes)
 
         self.assertTrue(isinstance(_attributes, dict))
         self.assertEqual(_msg, '')
-        self.assertEqual(_attributes['lambda_b'], 0.12)
-        self.assertEqual(_attributes['piQ'], 2.9)
-        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.348)
+        self.assertEqual(_attributes['lambda_b'], 0.06)
+        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.06)
 
         self._attributes['hazard_rate_method_id'] = 2
-        self._attributes['specification_id'] = 1
-        self._attributes['type_id'] = 2
-        self._attributes['quality_id'] = 1
         self._attributes['environment_active_id'] = 4
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
         self._attributes['duty_cycle'] = 100.0
         self._attributes['quantity'] = 1
-        _attributes, _msg = Filter.calculate(**self._attributes)
+        _attributes, _msg = Fuse.calculate(**self._attributes)
 
         self.assertTrue(isinstance(_attributes, dict))
         self.assertEqual(_msg, '')
-        self.assertEqual(_attributes['lambda_b'], 0.12)
-        self.assertEqual(_attributes['piQ'], 1.0)
-        self.assertEqual(_attributes['piE'], 4.0)
-        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.48)
+        self.assertEqual(_attributes['lambda_b'], 0.0)
+        self.assertEqual(_attributes['piE'], 5.0)
+        self.assertAlmostEqual(_attributes['hazard_rate_active'], 0.05)
