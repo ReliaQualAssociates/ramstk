@@ -125,7 +125,8 @@ def calculate_217f_part_stress(**attributes):
 
     # Determine the application factor (piA).
     try:
-        attributes['piA'] = [1.0, 3.3][attributes['application_id'] - 1]
+        attributes['piA'] = (3.3
+                             if (attributes['application_id']) - (1) else 1.0)
     except IndexError:
         attributes['piA'] = 0.0
 
