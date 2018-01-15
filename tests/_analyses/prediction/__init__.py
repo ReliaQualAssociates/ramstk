@@ -5,3 +5,4 @@ from .TestSemiconductor import TestSemiconductorModule
 from .TestResistor import TestResistorModule
 from .TestInductor import TestInductorModule
 from .TestSwitch import TestSwitchModule
+from .TestRelay import TestRelayModule
