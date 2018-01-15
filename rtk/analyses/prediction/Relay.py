@@ -157,7 +157,7 @@ def calculate_217f_part_count(**attributes):
     return attributes, _msg
 
 
-def calculate_217f_part_stress(**attributes):
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     """
     Calculate the part stress hazard rate for a relay.
 
@@ -251,7 +251,7 @@ def calculate_217f_part_stress(**attributes):
         if (attributes['quality_id'] in [1, 2, 3, 4, 5, 6]
                 and attributes['n_cycles'] < 1.0):
             attributes['piCYC'] = 0.1
-        elif (attributes['quality_id'] == 7 and attributes['n_cycles'] > 1000):
+        elif attributes['quality_id'] == 7 and attributes['n_cycles'] > 1000:
             attributes['piCYC'] = (attributes['n_cycles'] / 100.0)**2.0
         elif (attributes['quality_id'] == 7 and attributes['n_cycles'] > 10
               and attributes['n_cycles'] < 1000):

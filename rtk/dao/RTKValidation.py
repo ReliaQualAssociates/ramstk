@@ -9,7 +9,7 @@
 from datetime import date, timedelta
 
 # Import other RTK modules.
-from statistics import Bounds  # pylint: disable=E0401
+from statistics import calculate_beta_bounds  # pylint: disable=E0401
 from Utilities import none_to_default  # pylint: disable=E0401
 from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
 # pylint: disable=E0401
@@ -197,10 +197,9 @@ class RTKValidation(RTK_BASE):
         """
         _return = False
 
-        (self.time_ll, self.time_mean,
-         self.time_ul, _sd) = Bounds.calculate_beta_bounds(
-             self.time_minimum, self.time_average, self.time_maximum,
-             self.confidence)
+        (self.time_ll, self.time_mean, self.time_ul,
+         _sd) = calculate_beta_bounds(self.time_minimum, self.time_average,
+                                      self.time_maximum, self.confidence)
 
         self.time_variance = _sd**2.0
 
@@ -218,10 +217,9 @@ class RTKValidation(RTK_BASE):
         """
         _return = False
 
-        (self.cost_ll, self.cost_mean,
-         self.cost_ul, _sd) = Bounds.calculate_beta_bounds(
-             self.cost_minimum, self.cost_average, self.cost_maximum,
-             self.confidence)
+        (self.cost_ll, self.cost_mean, self.cost_ul,
+         _sd) = calculate_beta_bounds(self.cost_minimum, self.cost_average,
+                                      self.cost_maximum, self.confidence)
 
         self.cost_variance = _sd**2.0
 

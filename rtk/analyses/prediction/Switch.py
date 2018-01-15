@@ -158,7 +158,7 @@ def calculate_217f_part_count(**attributes):
     return attributes, _msg
 
 
-def calculate_217f_part_stress(**attributes):
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     """
     Calculate the part stress hazard rate for a switch.
 

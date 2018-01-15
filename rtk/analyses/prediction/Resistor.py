@@ -242,7 +242,7 @@ def calculate_217f_part_count(**attributes):
     return attributes, _msg
 
 
-def calculate_217f_part_stress(**attributes):
+def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
     """
     Calculate the part stress hazard rate for a resistor.
 
@@ -518,6 +518,7 @@ def calculate_217f_part_stress(**attributes):
             '{0:d}'.format(attributes['hardware_id'])
 
     # Calculate the resistance factor (piR).
+    _index = -1
     if attributes['subcategory_id'] in [6, 7]:
         _breaks = _dic_breakpoints[attributes['subcategory_id']][attributes[
             'specification_id']]
@@ -565,6 +566,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['piTAPS'] = (attributes['n_elements']**1.5 / 25.0) + 0.792
 
     # Calculate the voltage factor (piV).
+    _index = -1
     if attributes['subcategory_id'] in [9, 10, 11, 12]:
         _breaks = [0.1, 0.2, 0.6, 0.7, 0.8, 0.9]
     elif attributes['subcategory_id'] in [13, 14, 15]:

@@ -444,6 +444,7 @@ def calculate_217f_part_count(**attributes):
         else:
             _breaks = _dic_breakpoints[attributes['subcategory_id']]
 
+        _idx = -1
         for _idx, _value in enumerate(_breaks):
             _diff = _value - attributes['n_elements']
             if len(_breaks) == 1 and _diff < 0:
@@ -574,6 +575,7 @@ def calculate_217f_part_stress(**attributes):
         else:
             _breaks = _dic_breakpoints[attributes['subcategory_id']]
 
+        _index = -1
         for _index, _value in enumerate(_breaks):
             _diff = _value - attributes['n_elements']
             if len(_breaks) == 1 and _diff < 0:

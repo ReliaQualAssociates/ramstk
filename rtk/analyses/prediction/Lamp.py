@@ -118,7 +118,7 @@ def calculate_217f_part_stress(**attributes):
     _utilization = attributes['duty_cycle'] / 100.0
     if _utilization < 0.1:
         attributes['piU'] = 0.1
-    elif (_utilization >= 0.1 and _utilization < 0.9):
+    elif _utilization >= 0.1 and _utilization < 0.9:
         attributes['piU'] = 0.72
     else:
         attributes['piU'] = 1.0
