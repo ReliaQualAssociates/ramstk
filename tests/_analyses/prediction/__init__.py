@@ -8,3 +8,4 @@ from .TestSwitch import TestSwitchModule
 from .TestRelay import TestRelayModule
 from .TestMeter import TestMeterModule
 from .TestCrystal import TestCrystalModule
+from .TestFilter import TestFilterModule

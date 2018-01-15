@@ -8,3 +8,4 @@ import Switch
 import Relay
 import Meter
 import Crystal
+import Filter

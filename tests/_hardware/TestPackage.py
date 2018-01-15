@@ -33,7 +33,7 @@ from _hardware import TestHardwareDataModel, TestDesignElectricDataModel, \
 from _analyses.prediction import TestCapacitorModule, TestConnectionModule, \
     TestICModule, TestSemiconductorModule, TestResistorModule, \
     TestInductorModule, TestSwitchModule, TestRelayModule, TestMeterModule, \
-    TestCrystalModule
+    TestCrystalModule, TestFilterModule
 
 
 def test_hardware_package(suites):
@@ -104,8 +104,7 @@ if __name__ == '__main__':
         TestICModule, TestSemiconductorModule, TestResistorModule,
         TestCapacitorModule, TestInductorModule, TestRelayModule,
         TestSwitchModule, TestConnectionModule, TestMeterModule,
-        TestCrystalModule
-
+        TestCrystalModule, TestFilterModule
     ]
 
     # For the nosetest example.
