@@ -18,7 +18,8 @@ from gui.gtk import rtk  # pylint: disable=E0401
 from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
 from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
-    wvwCapacitorSR
+    wvwCapacitorSR, wvwConnectionAI, wvwConnectionSI, wvwConnectionAR, \
+    wvwConnectionSR
 
 
 class GeneralData(RTKWorkView):
@@ -1630,15 +1631,23 @@ class AssessmentInputs(RTKWorkView):
             _component_si = wvwCapacitorSI(self._dtc_data_controller,
                                            self._hardware_id,
                                            _attributes['subcategory_id'])
-            _component_ai.fmt = self.fmt
-            _component_si.fmt = self.fmt
+
+        elif _attributes['category_id'] == 8:
+            _component_ai = wvwConnectionAI(self._dtc_data_controller,
+                                            self._hardware_id,
+                                            _attributes['subcategory_id'])
+            _component_si = wvwConnectionSI(self._dtc_data_controller,
+                                            self._hardware_id,
+                                            _attributes['subcategory_id'])
 
         # Load the component-specific widgets.
         if _component_ai is not None:
+            _component_ai.fmt = self.fmt
             self.scwDesignRatings.add_with_viewport(_component_ai)
             _component_ai.on_select(module_id)
 
         if _component_si is not None:
+            _component_si.fmt = self.fmt
             self.scwOperatingStress.add_with_viewport(_component_si)
             _component_si.on_select(module_id)
 
@@ -2304,15 +2313,22 @@ class AssessmentResults(RTKWorkView):
             _component_sr = wvwCapacitorSR(self._dtc_data_controller,
                                            self._hardware_id,
                                            _attributes['subcategory_id'])
-            _component_ar.fmt = self.fmt
-            _component_sr.fmt = self.fmt
+        elif _attributes['category_id'] == 8:
+            _component_ar = wvwConnectionAR(self._dtc_data_controller,
+                                            self._hardware_id,
+                                            _attributes['subcategory_id'])
+            _component_sr = wvwConnectionSR(self._dtc_data_controller,
+                                            self._hardware_id,
+                                            _attributes['subcategory_id'])
 
         # Load the component-specific widgets.
         if _component_ar is not None:
+            _component_ar.fmt = self.fmt
             self.scwReliability.add_with_viewport(_component_ar)
             _component_ar.on_select(module_id)
 
         if _component_sr is not None:
+            _component_sr.fmt = self.fmt
             self.scwStress.add_with_viewport(_component_sr)
             _component_sr.on_select(module_id)
 

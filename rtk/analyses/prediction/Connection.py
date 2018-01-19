@@ -69,11 +69,11 @@ def calculate_217f_part_count(**attributes):
     _msg = ''
 
     # Dictionary containing MIL-HDBK-217FN2 parts count base hazard rates.
-    # First key is the subcategory_id, second key is the specification id.  If
-    # the connection subcategory is NOT specification dependent, then the
-    # second key will be zero.  Current subcategory IDs are:
+    # First key is the subcategory_id, second key is the type ID.  If the
+    # connection subcategory is NOT type dependent, then the second key will be
+    # zero.  Current subcategory IDs are:
     #
-    #    1. Circular/Rack and Panel/Coaxial
+    #    1. Circular/Rack and Panel/Coaxial/Triaxial
     #    2. PCB Edge
     #    3. IC Socket
     #    4. Plated Through Hole (PTH)
@@ -212,11 +212,48 @@ def calculate_217f_part_stress(**attributes):
     }
 
     # Reference temperature is used to calculate base hazard rate for
-    # circular/rack and panel connectors.  Key is insert material ID.
+    # circular/rack and panel connectors.  To get the reference temperature
+    # dictionary key, we quesry the key dictionary in which the first key is
+    # the connector type ID, second key is the specification ID.  The insert
+    # material ID is the index in the list returned.
+    _dic_keys = {
+        1: {
+            1: [2, 2, 2, 2, 2, 2],
+            2: [2, 2, 2, 2, 2, 2],
+            3: [1, 1, 1, 2, 2, 2, 2, 2, 2],
+            4: [1, 1, 1, 2, 2, 2, 2, 2, 2],
+            5: [1, 1, 1, 2, 2, 2, 2, 2, 2]
+        },
+        2: {
+            1: [2, 2, 2, 2, 2, 2, 4, 4, 4],
+            2: [1, 1, 1, 2, 2, 2, 2, 2, 2, 4, 4, 4],
+            3: [1, 1, 1, 2, 2, 2, 2, 2, 2],
+            4: [1, 1, 1, 2, 2, 2, 2, 2, 2],
+            5: [2, 2, 2, 2, 2, 2],
+            6: [2, 2, 2, 2, 2, 2]
+        },
+        3: {
+            1: [2, 2, 2, 2, 2, 2, 4, 4, 4],
+            2: [2, 2, 2, 2, 2, 2, 4, 4, 4]
+        },
+        4: {
+            1: [3, 3],
+            2: [3, 3],
+            3: [3, 3],
+            4: [3, 3],
+            5: [3, 3],
+            6: [3, 3],
+            7: [3, 3],
+            8: [3, 3, 2, 2, 2, 2, 2, 2]
+        },
+        5: {
+            1: [3, 3, 2, 2, 2, 2, 2, 2]
+        }
+    }
     _dic_ref_temp = {1: 473.0, 2: 423.0, 3: 373.0, 4: 358.0}
 
     # Factors are used to calculate base hazard rate for circular/rack and
-    # panel connectors.  Key is insert material ID (1 - 4) or contact
+    # panel connectors.  Key is from dictionary above (1 - 4) or contact
     # gauge (22 - 12).
     _dic_factors = {
         1: {
@@ -287,13 +324,12 @@ def calculate_217f_part_stress(**attributes):
     _contact_temp = (attributes['temperature_active'] +
                      attributes['temperature_rise'] + 273.0)
     if attributes['subcategory_id'] == 1:
-        _ref_temp = _dic_ref_temp[attributes['insert_id']]
-        _f0 = _dic_factors[attributes['subcategory_id']][attributes[
-            'insert_id']][0]
-        _f1 = _dic_factors[attributes['subcategory_id']][attributes[
-            'insert_id']][1]
-        _f2 = _dic_factors[attributes['subcategory_id']][attributes[
-            'insert_id']][2]
+        _key = _dic_keys[attributes['type_id']][attributes[
+            'specification_id']][attributes['insert_id'] - 1]
+        _ref_temp = _dic_ref_temp[_key]
+        _f0 = _dic_factors[attributes['subcategory_id']][_key][0]
+        _f1 = _dic_factors[attributes['subcategory_id']][_key][1]
+        _f2 = _dic_factors[attributes['subcategory_id']][_key][2]
     elif attributes['subcategory_id'] == 2:
         _ref_temp = 423.0
         _f0 = 0.216
@@ -309,9 +345,10 @@ def calculate_217f_part_stress(**attributes):
     if attributes['subcategory_id'] in [4, 5]:
         attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
             attributes['type_id']]
-        # Determine the quality factor (piQ).
         attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][attributes[
             'quality_id']]
+    elif attributes['subcategory_id'] == 3:
+        attributes['lambda_b'] = 0.00042
     else:
         attributes['lambda_b'] = _f0 * exp((_f1 / _contact_temp) +
                                            (_contact_temp / _ref_temp)**_f2)
@@ -334,8 +371,9 @@ def calculate_217f_part_stress(**attributes):
         attributes['piK'] = _lst_piK[4]
 
     # Determine active pins factor.
-    attributes['piP'] = exp(((attributes['n_active_pins'] - 1) / 10.0)
-                            **0.51064)
+    if attributes['subcategory_id'] in [1, 2, 3]:
+        attributes['piP'] = exp(((attributes['n_active_pins'] - 1) / 10.0)
+                                **0.51064)
 
     # Determine the environmental factor (piE).
     if attributes['subcategory_id'] in [1, 2]:
@@ -472,14 +510,13 @@ def overstressed(**attributes):
         _harsh = False
 
     if _harsh:
-        if _voltage_operating > 0.70 * attributes['voltage_rated']:
+        if attributes['voltage_ratio'] > 0.70:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 70% rated voltage in harsh "
                   u"environment.\n")
             _reason_num += 1
-        if (attributes['current_operating'] >
-                0.70 * attributes['current_rated']):
+        if attributes['current_ratio'] > 0.70:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating current > 70% rated current in harsh "
@@ -493,14 +530,13 @@ def overstressed(**attributes):
                   u"temperature.\n")
             _reason_num += 1
     else:
-        if _voltage_operating > 0.90 * attributes['voltage_rated']:
+        if attributes['voltage_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 90% rated voltage in mild "
                   u"environment.\n")
             _reason_num += 1
-        if (attributes['current_operating'] >
-                0.90 * attributes['current_rated']):
+        if attributes['current_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating current > 90% rated current in mild "

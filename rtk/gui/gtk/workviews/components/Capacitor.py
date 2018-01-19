@@ -1197,7 +1197,7 @@ class StressResults(gtk.HPaned):
                       u"is overstressed."))
         self.txtReason = rtk.RTKTextView(
             gtk.TextBuffer(),
-            width=200,
+            width=250,
             tooltip=_(u"The reason(s) the selected hardware item is "
                       u"overstressed."))
         self.txtVoltageRatio = rtk.RTKEntry(

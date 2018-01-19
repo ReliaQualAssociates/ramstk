@@ -39,6 +39,33 @@ Requirement Work View
     :private-members:
     :show-inheritance:
 
+Hardware Work View
+-------------------------------------------------------------------------------
+
+.. automodule:: rtk.gui.gtk.workviews.Hardware
+    :members:
+    :undoc-members:
+    :private-members:
+    :show-inheritance:
+
+Capacitor Work View
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.gui.gtk.workviews.components.Capacitor
+    :members:
+    :undoc-members:
+    :private-members:
+    :show-inheritance:
+
+Connection Work View
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+.. automodule:: rtk.gui.gtk.workviews.components.Connection
+    :members:
+    :undoc-members:
+    :private-members:
+    :show-inheritance:
+
 Validation Work View
 -------------------------------------------------------------------------------
 
