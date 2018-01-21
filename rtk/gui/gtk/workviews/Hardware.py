@@ -19,7 +19,8 @@ from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
 from .WorkView import RTKWorkView
 from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwCapacitorSR, wvwConnectionAI, wvwConnectionSI, wvwConnectionAR, \
-    wvwConnectionSR
+    wvwConnectionSR, wvwMiscellaneousAI, wvwMiscellaneousSI, \
+    wvwMiscellaneousAR, wvwMiscellaneousSR
 
 
 class GeneralData(RTKWorkView):
@@ -1640,6 +1641,14 @@ class AssessmentInputs(RTKWorkView):
                                             self._hardware_id,
                                             _attributes['subcategory_id'])
 
+        elif _attributes['category_id'] == 10:
+            _component_ai = wvwMiscellaneousAI(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
+            _component_si = wvwMiscellaneousSI(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
+
         # Load the component-specific widgets.
         if _component_ai is not None:
             _component_ai.fmt = self.fmt
@@ -2320,6 +2329,13 @@ class AssessmentResults(RTKWorkView):
             _component_sr = wvwConnectionSR(self._dtc_data_controller,
                                             self._hardware_id,
                                             _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 10:
+            _component_ar = wvwMiscellaneousAR(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
+            _component_sr = wvwMiscellaneousSR(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
 
         # Load the component-specific widgets.
         if _component_ar is not None:

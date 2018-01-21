@@ -75,7 +75,7 @@ def calculate_217f_part_count(**attributes):
 
     # Select the base hazard rate.
     try:
-        attributes['lambda_b'] = _dic_lambda_b[attributes['type_id']][
+        attributes['lambda_b'] = _dic_lambda_b[attributes['application_id']][
             attributes['environment_active_id'] - 1]
     except IndexError:
         attributes['lambda_b'] = 0.0

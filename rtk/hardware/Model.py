@@ -12,7 +12,8 @@ from treelib.exceptions import DuplicatedNodeIdError  # pragma: no cover
 
 # Import other RTK modules.
 # pylint: disable=E0401
-from analyses.prediction import Capacitor, Connection  # pragma: no cover
+from analyses.prediction import Capacitor, Connection, Crystal, Filter, Fuse, \
+    Lamp# pragma: no cover
 # pylint: disable=E0401
 from datamodels import RTKDataModel  # pragma: no cover
 # pylint: disable=E0401
@@ -380,7 +381,14 @@ class HardwareBoMDataModel(RTKDataModel):
             elif _attributes['category_id'] == 9:
                 print("Meter")
             elif _attributes['category_id'] == 10:
-                print("Miscellaneous")
+                if _attributes['subcategory_id'] == 1:
+                    _attributes, __ = Crystal.calculate(**_attributes)
+                elif _attributes['subcategory_id'] == 2:
+                    _attributes, __ = Lamp.calculate(**_attributes)
+                elif _attributes['subcategory_id'] == 3:
+                    _attributes, __ = Fuse.calculate(**_attributes)
+                elif _attributes['subcategory_id'] == 4:
+                    _attributes, __ = Filter.calculate(**_attributes)
             else:
                 # If the assembly is to be assessed, set the attributes that
                 # are the sum of the child attributes to zero.  Without doing

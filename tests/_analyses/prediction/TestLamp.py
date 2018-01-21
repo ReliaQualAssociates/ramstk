@@ -314,7 +314,7 @@ class TestLampModule(unittest.TestCase):
     @attr(all=True, unit=True)
     def test00a_calculate_mil_hdbk_217f_part_count(self):
         """(TestLampModule) calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
-        self._attributes['type_id'] = 1
+        self._attributes['application_id'] = 1
         self._attributes['environment_active_id'] = 3
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
@@ -339,7 +339,7 @@ class TestLampModule(unittest.TestCase):
         for environment_active_id in xrange(1, 14):
             self._attributes['environment_active_id'] = environment_active_id
             for type_id in xrange(1, 3):
-                self._attributes['type_id'] = type_id
+                self._attributes['application_id'] = type_id
                 _test_msg = 'test00b_calculate_mil_hdbk_217f_part_count_mechanical_1_{}_{} ' \
                             'failed'.format(environment_active_id, type_id)
 
@@ -398,7 +398,7 @@ class TestLampModule(unittest.TestCase):
     @attr(all=True, unit=True)
     def test02a_calculate(self):
         """(TestLampModule) calculate() should return should return a dictionary of updated values on success."""
-        self._attributes['type_id'] = 1
+        self._attributes['application_id'] = 1
         self._attributes['environment_active_id'] = 3
         self._attributes['add_adj_factor'] = 0.0
         self._attributes['mult_adj_factor'] = 1.0
@@ -415,7 +415,6 @@ class TestLampModule(unittest.TestCase):
 
         self._attributes['hazard_rate_method_id'] = 2
         self._attributes['voltage_rated'] = 12.0
-        self._attributes['application_id'] = 1
         self._attributes['environment_active_id'] = 4
         self._attributes['duty_cycle'] = 87.0
         _attributes, _msg = Lamp.calculate(**self._attributes)

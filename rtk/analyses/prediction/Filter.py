@@ -125,7 +125,10 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _dic_lambda_b = {1: [0.022, 0.12], 2: [0.12, 0.27]}
+    _dic_lambda_b = {1: 0.022,
+                     2: 0.12,
+                     3: 0.12,
+                     4: 0.27}
     _lst_piE = [
         1.0, 2.0, 6.0, 4.0, 9.0, 7.0, 9.0, 11.0, 13.0, 11.0, 0.8, 7.0, 15.0,
         120.0
@@ -135,8 +138,7 @@ def calculate_217f_part_stress(**attributes):
 
     # Determine the base hazard rate.
     try:
-        attributes['lambda_b'] = _dic_lambda_b[attributes['specification_id']][
-            attributes['type_id'] - 1]
+        attributes['lambda_b'] = _dic_lambda_b[attributes['type_id']]
     except (KeyError, IndexError):
         attributes['lambda_b'] = 0.0
 

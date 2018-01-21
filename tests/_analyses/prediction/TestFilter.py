@@ -394,7 +394,6 @@ class TestFilterModule(unittest.TestCase):
     @attr(all=True, unit=True)
     def test01a_calculate_mil_hdbk_217f_part_stress(self):
         """(TestFilterModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
-        self._attributes['specification_id'] = 1
         self._attributes['type_id'] = 2
         self._attributes['quality_id'] = 1
         self._attributes['environment_active_id'] = 4

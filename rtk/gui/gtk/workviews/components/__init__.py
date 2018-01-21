@@ -6,3 +6,7 @@ from .Connection import AssessmentInputs as wvwConnectionAI
 from .Connection import StressInputs as wvwConnectionSI
 from .Connection import AssessmentResults as wvwConnectionAR
 from .Connection import StressResults as wvwConnectionSR
+from .Miscellaneous import AssessmentInputs as wvwMiscellaneousAI
+from .Miscellaneous import StressInputs as wvwMiscellaneousSI
+from .Miscellaneous import AssessmentResults as wvwMiscellaneousAR
+from .Miscellaneous import StressResults as wvwMiscellaneousSR
