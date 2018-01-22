@@ -10,3 +10,7 @@ from .Miscellaneous import AssessmentInputs as wvwMiscellaneousAI
 from .Miscellaneous import StressInputs as wvwMiscellaneousSI
 from .Miscellaneous import AssessmentResults as wvwMiscellaneousAR
 from .Miscellaneous import StressResults as wvwMiscellaneousSR
+from .Inductor import AssessmentInputs as wvwInductorAI
+from .Inductor import StressInputs as wvwInductorSI
+from .Inductor import AssessmentResults as wvwInductorAR
+from .Inductor import StressResults as wvwInductorSR

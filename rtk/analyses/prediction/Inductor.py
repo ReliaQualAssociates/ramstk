@@ -73,7 +73,7 @@ def calculate_217f_part_count(**attributes):
     _msg = ''
 
     # Dictionary containing MIL-HDBK-217FN2 parts count base hazard rates.
-    # First key is the subcategory_id, second key is the type id.  Current
+    # First key is the subcategory_id, second key is the family id.  Current
     # subcategory IDs are:
     #
     #    1. Transformer
@@ -125,7 +125,7 @@ def calculate_217f_part_count(**attributes):
     # Select the base hazard rate.
     try:
         _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][attributes[
-            'type_id']]
+            'family_id']]
     except KeyError:
         _lst_base_hr = [0.0]
 
@@ -243,8 +243,12 @@ def calculate_217f_part_stress(**attributes):
             '{0:d}'.format(attributes['hardware_id'])
 
     # Determine the quality factor (piQ).
-    attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-        attributes['quality_id'] - 1]
+    if attributes['subcategory_id'] == 1:
+        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][attributes[
+            'family_id']][attributes['quality_id'] - 1]
+    else:
+        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+            attributes['quality_id'] - 1]
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
