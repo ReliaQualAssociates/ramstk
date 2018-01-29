@@ -21,7 +21,8 @@ from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwCapacitorSR, wvwConnectionAI, wvwConnectionSI, wvwConnectionAR, \
     wvwConnectionSR, wvwMiscellaneousAI, wvwMiscellaneousSI, \
     wvwMiscellaneousAR, wvwMiscellaneousSR, wvwInductorAI, wvwInductorSI, \
-    wvwInductorAR, wvwInductorSR
+    wvwInductorAR, wvwInductorSR, wvwIntegratedCircuitAI, \
+    wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR
 
 
 class GeneralData(RTKWorkView):
@@ -1626,7 +1627,14 @@ class AssessmentInputs(RTKWorkView):
 
         # Add the appropriate component-specific work view to the
         # gtk.ScrolledWindow()s.
-        if _attributes['category_id'] == 4:
+        if _attributes['category_id'] == 1:
+            _component_ai = wvwIntegratedCircuitAI(
+                self._dtc_data_controller, self._hardware_id,
+                _attributes['subcategory_id'])
+            _component_si = wvwIntegratedCircuitSI(
+                self._dtc_data_controller, self._hardware_id,
+                _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 4:
             _component_ai = wvwCapacitorAI(self._dtc_data_controller,
                                            self._hardware_id,
                                            _attributes['subcategory_id'])
@@ -2323,7 +2331,14 @@ class AssessmentResults(RTKWorkView):
 
         # Add the appropriate component-specific work view to the
         # gtk.ScrolledWindow()s.
-        if _attributes['category_id'] == 4:
+        if _attributes['category_id'] == 1:
+            _component_ar = wvwIntegratedCircuitAR(
+                self._dtc_data_controller, self._hardware_id,
+                _attributes['subcategory_id'])
+            _component_sr = wvwIntegratedCircuitSR(
+                self._dtc_data_controller, self._hardware_id,
+                _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 4:
             _component_ar = wvwCapacitorAR(self._dtc_data_controller,
                                            self._hardware_id,
                                            _attributes['subcategory_id'])

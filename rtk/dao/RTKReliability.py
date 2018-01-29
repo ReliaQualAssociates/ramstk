@@ -88,8 +88,8 @@ class RTKReliability(RTK_BASE):
         'fld_survival_analysis_id', Integer, default=0)
 
     # Define the relationships to other tables in the RTK Program database.
-    hardware = relationship('RTKHardware',
-        back_populates='reliability')  # pragma: no cover
+    hardware = relationship(
+        'RTKHardware', back_populates='reliability')  # pragma: no cover
 
     def get_attributes(self):
         """

@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import sys
-from setuptools import setup
+from setuptools import find_packages, setup
 from setuptools.command.install import install as _install
 
 if not sys.version_info[0] == 2:
@@ -34,33 +34,13 @@ if __name__ == '__main__':
         license='BSD-3',
         url='https://github.com/weibullguy/rtk',
         python_requires='>=2.7, <4',
+        install_requires=['defusedxml', 'lifelines', 'lxml', 'matplotlib==1.4.3',
+                          'numpy', 'pandas', 'PyPubSub==3.3.0', 'scipy',
+                          'sortedcontainers', 'SQLAlchemy', 'SQLAlchemy-Utils',
+                          'statsmodels', 'treelib', 'xlrd', 'xlwt'],
         keywords='reliability RAMS engineering quality safety',
         scripts=[],
-        packages=[
-            'rtk.analyses',
-            'rtk.analyses.fmea',
-            'rtk.analyses.prediction',
-            'rtk.dao',
-            'rtk.datamodels',
-            'rtk.failure_definition',
-            'rtk.function',
-            'rtk.gui',
-            'rtk.gui.gtk',
-            'rtk.gui.gtk.assistants',
-            'rtk.gui.gtk.listviews',
-            'rtk.gui.gtk.matrixviews',
-            'rtk.gui.gtk.moduleviews',
-            'rtk.gui.gtk.mwi',
-            'rtk.gui.gtk.rtk',
-            'rtk.gui.gtk.workviews',
-            'rtk.hardware',
-            'rtk.requirement',
-            'rtk.revision',
-            'rtk.stakeholder',
-            'rtk.statistics',
-            'rtk.usage',
-            'rtk.validation'
-        ],
+        packages=find_packages(exclude=['tests']),
         py_modules=[
             'rtk.__init__',
             'rtk.Configuration',
@@ -75,7 +55,6 @@ if __name__ == '__main__':
         entry_points={},
         data_files=[],
         package_data={},
-        install_requires=[],
         dependency_links=[],
         zip_safe=True,
         cmdclass={'install': install},

@@ -10,7 +10,7 @@
 
 import gettext
 
-from math import exp
+from math import exp, log
 
 _ = gettext.gettext
 
@@ -26,7 +26,11 @@ def calculate(**attributes):
     _msg = ''
 
     if attributes['hazard_rate_method_id'] == 1:
-        attributes, _msg = calculate_217f_part_count(**attributes)
+        # There is no parts count for VLSI.
+        if attributes['subcategory_id'] == 10:
+            attributes, _msg = calculate_217f_part_stress(**attributes)
+        else:  # But there is for everything else.
+            attributes, _msg = calculate_217f_part_count(**attributes)
     elif attributes['hazard_rate_method_id'] == 2:
         attributes, _msg = calculate_217f_part_stress(**attributes)
 
@@ -82,7 +86,7 @@ def calculate_217f_part_count(**attributes):
     #    7. Memory, DRAM
     #    8. Memory, SRAM
     #    9. GaAs
-    #   10. VHSIC, VLSI (see section 5.2 of MIL-HDBK-217F for determination)
+    #   10. VHSIC, VLSI (see section 5.3 of MIL-HDBK-217F for determination)
     #
     # Technology IDs are BiPolar/MOS (1 - 8), MMIC/Digital (9).
     #
@@ -284,24 +288,6 @@ def calculate_217f_part_count(**attributes):
             }
         },
         6: {
-            1: {
-                1: [
-                    0.010, 0.028, 0.050, 0.046, 0.067, 0.082, 0.070, 0.10,
-                    0.13, 0.096, 0.010, 0.058, 0.13, 1.9
-                ],
-                2: [
-                    0.017, 0.043, 0.071, 0.063, 0.091, 0.095, 0.110, 0.18,
-                    0.21, 0.140, 0.017, 0.081, 0.18, 2.3
-                ],
-                3: [
-                    0.028, 0.065, 0.100, 0.085, 0.120, 0.150, 0.160, 0.30,
-                    0.33, 0.190, 0.028, 0.110, 0.23, 2.3
-                ],
-                4: [
-                    0.053, 0.120, 0.180, 0.150, 0.210, 0.270, 0.290, 0.56,
-                    0.61, 0.330, 0.053, 0.190, 0.39, 3.4
-                ]
-            },
             2: {
                 1: [
                     0.0049, 0.018, 0.036, 0.036, 0.053, 0.037, 0.046, 0.049,
@@ -498,12 +484,19 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
+    # Key is subcategory ID.  Value is a list of lists where the first index
+    # is the technology ID to select the inner list and the second index is
+    # determined by the number of elements.
     _dic_c1 = {
         1: [[0.01, 0.02, 0.04, 0.06], [0.01, 0.02, 0.04, 0.06]],
         2: [[0.0025, 0.005, 0.01, 0.02, 0.04, 0.08],
             [0.01, 0.02, 0.04, 0.08, 0.16, 0.29]],
         3: [[0.01, 0.021, 0.042], [0.00085, 0.0017, 0.0034, 0.0068]],
         4: [[0.06, 0.12, 0.24, 0.48], [0.14, 0.28, 0.56, 1.12]],
+        5: [[0.00065, 0.0013, 0.0026, 0.0052],[0.0094, 0.019, 0.038, 0.075]],
+        6: [[0.00085, 0.0017, 0.0034, 0.0068],[0.0, 0.0, 0.0, 0.0]],
+        7: [[0.0013, 0.0025, 0.005, 0.01], [0.0, 0.0, 0.0, 0.0]],
+        8: [[0.0078, 0.016, 0.031, 0.062], [0.0052, 0.011, 0.021, 0.042]],
         9: [[4.5, 7.2], [25.0, 51.0]]
     }
     _dic_c2 = {
@@ -513,6 +506,7 @@ def calculate_217f_part_stress(**attributes):
         4: [3.0E-5, 2.01],
         5: [3.6E-4, 1.08]
     }
+    # Key is the subcategory ID, value is Ea or list containing Ea values.
     _dic_ea = {
         1:
         0.65,
@@ -534,7 +528,8 @@ def calculate_217f_part_stress(**attributes):
         0.6,
         9: [1.5, 1.4]
     }
-    _dic_pia = {1: [1.0, 3.0, 3.0], 2: 1.0}
+    _dic_piA = {1: [1.0, 3.0, 3.0], 2: [1.0]}
+    _dic_piPT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
     # Dictionary containing the number of element breakpoints for determining
     # the base hazard rate list to use.
     _dic_breakpoints = {
@@ -564,11 +559,51 @@ def calculate_217f_part_stress(**attributes):
     ]
     _msg = ''
 
+    # Calculate the A1 factor for lambda_CYC.
+    attributes['A1'] = 6.817E-6 * attributes['n_cycles']
+
+    # Find the A2 factore for lambda_CYC.
+    attributes['A2'] = 0.0
+    if attributes['construction_id'] == 2:
+        if (attributes['n_cycles'] > 300000
+                and attributes['n_cycles'] <= 400000):
+            attributes['A2'] = 1.1
+        else:
+            attributes['A2'] = 2.3
+
+    # Calculate the B1 and B2 factors for lambda_CYC.
+    if attributes['construction_id'] == 1:
+        attributes['B1'] = ((attributes['n_elements'] / 16000.0)**0.5) * (exp(
+            (-0.15 / 8.63E-5) *
+            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
+             (1.0 / 333.0))))
+        attributes['B2'] = 0.0
+    elif attributes['construction_id'] == 2:
+        attributes['B1'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
+            (0.1 / 8.63E-5) * ((1.0 /
+                                (attributes['temperature_junction'] + 273.0)) -
+                               (1.0 / 303.0))))
+        attributes['B2'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
+            (-0.12 / 8.63E-5) *
+            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
+             (1.0 / 303.0))))
+    else:
+        attributes['B1'] = 0.0
+        attributes['B2'] = 0.0
+
+    # Categorize the technology.
+    if attributes['subcategory_id'] == 2 and attributes['technology_id'] == 11:
+        _technology = 2
+    elif (attributes['subcategory_id'] == 2 and attributes['technology_id'] != 11):
+        _technology = 1
+    else:
+        _technology = attributes['technology_id']
+
     # Retrieve the value of C1.
     try:
         if attributes['subcategory_id'] == 3:
             _breaks = _dic_breakpoints[attributes['subcategory_id']][
-                attributes['technology_id']]
+                _technology]
         if attributes['subcategory_id'] == 9:
             _breaks = _dic_breakpoints[attributes['subcategory_id']][
                 attributes['application_id']]
@@ -584,27 +619,44 @@ def calculate_217f_part_stress(**attributes):
                 break
 
         attributes['C1'] = _dic_c1[attributes['subcategory_id']][
-            attributes['technology_id'] - 1][_index + 1]
+            _technology - 1][_index + 1]
 
     except KeyError:
         attributes['C1'] = 0.0
 
+    # Categorize the package type.
+    if attributes['package_id'] in [1,2,3]:
+        _package = 1
+    elif attributes['package_id'] == 4:
+        _package = 2
+    elif attributes['package_id'] == 5:
+        _package = 3
+    elif attributes['package_id'] == 6:
+        _package = 4
+    else:
+        _package = 5
+
     # Calculate the value of C2.
-    _f0 = _dic_c2[attributes['package_id']][0]
-    _f1 = _dic_c2[attributes['package_id']][1]
-    attributes['C2'] = _f0 * (attributes['n_active_pins']**_f1)
+    try:
+        _f0 = _dic_c2[_package][0]
+        _f1 = _dic_c2[_package][1]
+        attributes['C2'] = _f0 * (attributes['n_active_pins']**_f1)
+    except KeyError:
+        attributes['C2'] = 0.0
 
     # Calculate the temperature factor.
     if attributes['subcategory_id'] == 2:
         _ref_temp = 296.0
-        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id']]
+        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id'] - 1]
     elif attributes['subcategory_id'] == 9:
         _ref_temp = 423.0
-        _ea = _dic_ea[attributes['subcategory_id']][attributes[
-            'application_id']]
+        _ea = _dic_ea[attributes['subcategory_id']][attributes['type_id'] - 1]
     else:
         _ref_temp = 296.0
-        _ea = _dic_ea[attributes['subcategory_id']]
+        try:
+            _ea = _dic_ea[attributes['subcategory_id']]
+        except KeyError:
+            _ea = 0.0
     attributes['temperature_junction'] = (
         attributes['temperature_case'] +
         attributes['power_operating'] * attributes['theta_jc'])
@@ -633,6 +685,16 @@ def calculate_217f_part_stress(**attributes):
             'integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 
+    # Find the error code correction factor (piECC) for lambdaCYC.
+    if attributes['type_id'] == 1:
+        attributes['piECC'] = 1.0
+    elif attributes['type_id'] == 2:
+        attributes['piECC'] = 0.72
+    elif attributes['type_id'] == 3:
+        attributes['piECC'] = 0.68
+    else:
+        attributes['piECC'] = 0.0
+
     # Determine the active hazard rate.
     if attributes['subcategory_id'] in [1, 2, 3, 4]:
         attributes['hazard_rate_active'] = ((
@@ -640,21 +702,61 @@ def calculate_217f_part_stress(**attributes):
             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
                                             attributes['piL'])
     elif attributes['subcategory_id'] in [5, 6, 7, 8]:
-        attributes['lambda_cyc'] = ((
-            attributes['A1'] * attributes['B1'] +
-            (attributes['A2'] * attributes['B2'] / attributes['piQ'])) *
-                                    attributes['piECC'])
+        if attributes['subcategory_id'] == 6:
+            attributes['lambda_cyc'] = ((
+                attributes['A1'] * attributes['B1'] +
+                (attributes['A2'] * attributes['B2'] / attributes['piQ'])) *
+                                        attributes['piECC'])
+        else:
+            attributes['lambda_cyc'] = 0.0
+
         attributes['hazard_rate_active'] = (
             (attributes['C1'] * attributes['piT'] +
              attributes['C2'] * attributes['piE'] + attributes['lambda_cyc']) *
             attributes['piQ'] * attributes['piL'])
     elif attributes['subcategory_id'] == 9:
-        attributes['piA'] = _dic_pia[attributes['application_id']][attributes[
-            'type_id']]
+        attributes['piA'] = _dic_piA[attributes['type_id']][attributes[
+            'application_id']]
         attributes['hazard_rate_active'] = ((
             attributes['C1'] * attributes['piT'] * attributes['piA'] +
             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
                                             attributes['piL'])
+    elif attributes['subcategory_id'] == 10:
+        # Determine the die base hazard rate.
+        if attributes['type_id'] == 1:
+            attributes['lambdaBD'] = 0.16
+        else:
+            attributes['lambdaBD'] = 0.24
+
+        # Determine the manufacturing process correction factor (piMFG).
+        if attributes['manufacturing_id'] == 1:
+            attributes['piMFG'] = 0.55
+        else:
+            attributes['piMFG'] = 2.0
+
+        # Calculate the die complexity correction factor.
+        attributes['piCD'] = (
+            (attributes['area'] / 0.21) *
+            (2.0 / attributes['feature_size'])**2.0 * 0.64) + 0.36
+
+        # Determine the package type correction factor (piPT).
+        try:
+            attributes['piPT'] = _dic_piPT[attributes['package_id']]
+        except KeyError:
+            attributes['piPT'] = 1.0
+
+        # Calculate the package base hazard rate.
+        attributes['lambdaBP'] = 0.0022 + (1.72E-5 * attributes['n_active_pins'])
+
+        # Calculate the electrical overstress hazard rate.
+        attributes['lambdaEOS'] = (
+            -log(1.0 - 0.00057 * exp(-0.0002 * attributes['voltage_esd']))
+        ) / 0.00876
+
+        attributes['hazard_rate_active'] = (
+            attributes['lambdaBD'] * attributes['piMFG'] * attributes['piT'] *
+            attributes['piCD'] + attributes['lambdaBP'] * attributes['piE'] *
+            attributes['piQ'] * attributes['piPT'] + attributes['lambdaEOS'])
 
     return attributes, _msg
 
@@ -771,7 +873,8 @@ def overstressed(**attributes):
 
     # Calculate the current stress.
     try:
-        attributes['current_ratio'] = attributes['current_operating'] / attributes['current_rated']
+        attributes['current_ratio'] = (
+            attributes['current_operating'] / attributes['current_rated'])
     except ZeroDivisionError:
         attributes['current_ratio'] = 1.0
 
@@ -780,19 +883,19 @@ def overstressed(**attributes):
     if attributes['environment_active_id'] in [1, 2, 4, 11]:
         _harsh = False
 
-    if _voltage_operating > 1.05 * attributes['voltage_rated']:
+    if attributes['voltage_ratio'] > 1.05:
         attributes['overstress'] = True
         _reason = _reason + str(_reason_num) + \
             _(u". Operating voltage > 105% rated voltage.\n")
         _reason_num += 1
-    if _voltage_operating < 0.95 * attributes['voltage_rated']:
+    if attributes['voltage_ratio'] < 0.95:
         attributes['overstress'] = True
         _reason = _reason + str(_reason_num) + \
             _(u". Operating voltage < 95% rated voltage.\n")
         _reason_num += 1
 
     if _harsh:
-        if attributes['current_operating'] > 0.80 * attributes['current_rated']:
+        if attributes['current_ratio'] > 0.80:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating current > 80% rated current.\n")
@@ -803,7 +906,7 @@ def overstressed(**attributes):
                 _(u". Junction temperature > {0:f}C.\n").format(_max_junction_temperature)
             _reason_num += 1
     else:
-        if attributes['current_operating'] > 0.90 * attributes['current_rated']:
+        if attributes['current_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating current > 90% rated current.\n")

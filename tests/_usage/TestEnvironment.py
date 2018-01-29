@@ -13,22 +13,22 @@ This is the test class for testing the Environment class.
 import sys
 from os.path import dirname
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
-
+#sys.path.insert(
+#    0,
+#    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
+#)
+print(sys.path)
 import unittest
 from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-import Utilities as Utilities
-from Configuration import Configuration
-from usage import dtmEnvironment
-from dao import DAO
-from dao import RTKEnvironment
+from rtk import Utilities
+from rtk.Configuration import Configuration
+from rtk.usage import dtmEnvironment
+from rtk.dao import DAO
+from rtk.dao import RTKEnvironment
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
