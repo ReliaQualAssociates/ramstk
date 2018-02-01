@@ -1659,11 +1659,11 @@ class AssessmentInputs(RTKWorkView):
                                             _attributes['subcategory_id'])
         elif _attributes['category_id'] == 9:
             _component_ai = wvwMeterAI(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
             _component_si = wvwMeterSI(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
         elif _attributes['category_id'] == 10:
             _component_ai = wvwMiscellaneousAI(self._dtc_data_controller,
                                                self._hardware_id,
@@ -2072,11 +2072,10 @@ class AssessmentResults(RTKWorkView):
         pub.subscribe(self._on_select, 'selectedHardware')
         pub.subscribe(self._do_load_page, 'calculatedHardware')
 
-    def _do_load_page(self, module_id=None):
+    def _do_load_page(self):
         """
         Load the assessment result page widgets with attribute values.
 
-        :param int module_id: the ID of the hardware item to load.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

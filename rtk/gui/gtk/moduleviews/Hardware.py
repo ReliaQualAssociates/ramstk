@@ -518,14 +518,13 @@ class ModuleView(RTKModuleView):
 
         return False
 
-    def _on_calculate(self, module_id=None):
+    def _on_calculate(self):
         """
         Load the new attribute values for the entire tree after calculating.
 
         :return: None
         :rtype: None
         """
-
         def _load_row(model, __path, row, self):
             """
             Load the row associated with node_id.

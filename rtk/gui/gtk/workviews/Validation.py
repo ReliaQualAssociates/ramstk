@@ -134,7 +134,7 @@ class GeneralData(RTKWorkView):
               u"completed."))
         self.btnStartDate.set_tooltip_text(
             _(u"Launches the calendar to select the date the task was started."
-              ))
+             ))
 
         self.cmbTaskType = rtk.RTKComboBox(
             tooltip=
