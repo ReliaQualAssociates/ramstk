@@ -741,12 +741,12 @@ def calculate_dormant_hazard_rate(**attributes):
             attributes['hazard_rate_dormant'] = \
                 (_dic_hr_dormant[attributes['environment_active_id']]
                  [attributes['environment_dormant_id']][0] *
-                  attributes['hazard_rate_active'])
+                 attributes['hazard_rate_active'])
         elif attributes['subcategory_id'] in [3, 4, 5, 6, 7, 8, 9]:
             attributes['hazard_rate_dormant'] = \
                 (_dic_hr_dormant[attributes['environment_active_id']]
                  [attributes['environment_dormant_id']][1] *
-                  attributes['hazard_rate_active'])
+                 attributes['hazard_rate_active'])
         else:
             attributes['hazard_rate_dormant'] = 0.0
     except KeyError:

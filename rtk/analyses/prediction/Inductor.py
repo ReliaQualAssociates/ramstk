@@ -120,7 +120,7 @@ def calculate_217f_part_count(**attributes):
     #   2. Non-established reliability non-MIL
     #
     # The quality_id attribute is used to select the proper value of piQ.
-    _lst_piQ = [0.25, 1.0, 1.0]
+    _lst_piQ = [0.25, 1.0, 10.0]
 
     # Select the base hazard rate.
     try:

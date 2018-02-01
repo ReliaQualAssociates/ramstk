@@ -41,7 +41,8 @@ def calculate(**attributes):
 
     if attributes['duty_cycle'] <= 0.0:
         _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'integrated circuit, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'integrated circuit, hardware ID: ' \
+            '{0:d}'.format(attributes['hardware_id'])
 
     if attributes['quantity'] < 1:
         _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
@@ -493,8 +494,8 @@ def calculate_217f_part_stress(**attributes):
             [0.01, 0.02, 0.04, 0.08, 0.16, 0.29]],
         3: [[0.01, 0.021, 0.042], [0.00085, 0.0017, 0.0034, 0.0068]],
         4: [[0.06, 0.12, 0.24, 0.48], [0.14, 0.28, 0.56, 1.12]],
-        5: [[0.00065, 0.0013, 0.0026, 0.0052],[0.0094, 0.019, 0.038, 0.075]],
-        6: [[0.00085, 0.0017, 0.0034, 0.0068],[0.0, 0.0, 0.0, 0.0]],
+        5: [[0.00065, 0.0013, 0.0026, 0.0052], [0.0094, 0.019, 0.038, 0.075]],
+        6: [[0.00085, 0.0017, 0.0034, 0.0068], [0.0, 0.0, 0.0, 0.0]],
         7: [[0.0013, 0.0025, 0.005, 0.01], [0.0, 0.0, 0.0, 0.0]],
         8: [[0.0078, 0.016, 0.031, 0.062], [0.0052, 0.011, 0.021, 0.042]],
         9: [[4.5, 7.2], [25.0, 51.0]]
@@ -594,7 +595,8 @@ def calculate_217f_part_stress(**attributes):
     # Categorize the technology.
     if attributes['subcategory_id'] == 2 and attributes['technology_id'] == 11:
         _technology = 2
-    elif (attributes['subcategory_id'] == 2 and attributes['technology_id'] != 11):
+    elif (attributes['subcategory_id'] == 2
+          and attributes['technology_id'] != 11):
         _technology = 1
     else:
         _technology = attributes['technology_id']
@@ -625,7 +627,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['C1'] = 0.0
 
     # Categorize the package type.
-    if attributes['package_id'] in [1,2,3]:
+    if attributes['package_id'] in [1, 2, 3]:
         _package = 1
     elif attributes['package_id'] == 4:
         _package = 2
@@ -647,7 +649,8 @@ def calculate_217f_part_stress(**attributes):
     # Calculate the temperature factor.
     if attributes['subcategory_id'] == 2:
         _ref_temp = 296.0
-        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id'] - 1]
+        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id']
+                                                    - 1]
     elif attributes['subcategory_id'] == 9:
         _ref_temp = 423.0
         _ea = _dic_ea[attributes['subcategory_id']][attributes['type_id'] - 1]
@@ -746,7 +749,8 @@ def calculate_217f_part_stress(**attributes):
             attributes['piPT'] = 1.0
 
         # Calculate the package base hazard rate.
-        attributes['lambdaBP'] = 0.0022 + (1.72E-5 * attributes['n_active_pins'])
+        attributes[
+            'lambdaBP'] = 0.0022 + (1.72E-5 * attributes['n_active_pins'])
 
         # Calculate the electrical overstress hazard rate.
         attributes['lambdaEOS'] = (
@@ -903,7 +907,8 @@ def overstressed(**attributes):
         if attributes['temperature_junction'] > _max_junction_temperature:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Junction temperature > {0:f}C.\n").format(_max_junction_temperature)
+                _(u". Junction temperature > "
+                  u"{0:f}C.\n").format(_max_junction_temperature)
             _reason_num += 1
     else:
         if attributes['current_ratio'] > 0.90:

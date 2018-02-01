@@ -319,7 +319,7 @@ class AssessmentInputs(gtk.Fixed):
         if _attributes['construction_id'] == 1:
             self.cmbApplication.do_load_combo(
                 [[_(u"Low Noise and Low Power (\u2264 100mW)")],
-                [_(u"Driver and High Power (> 100mW)")], [_(u"Unknown")]])
+                 [_(u"Driver and High Power (> 100mW)")], [_(u"Unknown")]])
         else:
             self.cmbApplication.do_load_combo(
                 [[_(u"All digital devices")]])
