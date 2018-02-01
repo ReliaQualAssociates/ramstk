@@ -22,7 +22,8 @@ from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwConnectionSR, wvwMiscellaneousAI, wvwMiscellaneousSI, \
     wvwMiscellaneousAR, wvwMiscellaneousSR, wvwInductorAI, wvwInductorSI, \
     wvwInductorAR, wvwInductorSR, wvwIntegratedCircuitAI, \
-    wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR
+    wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR, \
+    wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR
 
 
 class GeneralData(RTKWorkView):
@@ -1656,7 +1657,13 @@ class AssessmentInputs(RTKWorkView):
             _component_si = wvwConnectionSI(self._dtc_data_controller,
                                             self._hardware_id,
                                             _attributes['subcategory_id'])
-
+        elif _attributes['category_id'] == 9:
+            _component_ai = wvwMeterAI(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
+            _component_si = wvwMeterSI(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
         elif _attributes['category_id'] == 10:
             _component_ai = wvwMiscellaneousAI(self._dtc_data_controller,
                                                self._hardware_id,
@@ -2359,6 +2366,13 @@ class AssessmentResults(RTKWorkView):
             _component_sr = wvwConnectionSR(self._dtc_data_controller,
                                             self._hardware_id,
                                             _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 9:
+            _component_ar = wvwMeterAR(self._dtc_data_controller,
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
+            _component_sr = wvwMeterSR(self._dtc_data_controller,
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
         elif _attributes['category_id'] == 10:
             _component_ar = wvwMiscellaneousAR(self._dtc_data_controller,
                                                self._hardware_id,

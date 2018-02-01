@@ -74,7 +74,7 @@ def calculate_217f_part_count(**attributes):
             0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4,
             0.0, 0.0
         ], [
-            0.15, 0.81, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2,
+            0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2,
             0.0, 0.0
         ]],
         2: [[
@@ -192,8 +192,8 @@ def calculate_217f_part_stress(**attributes):
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 1:
         attributes['piA'] = (1.7
-                             if (attributes['application_id']) - (1) else 1.0)
-        attributes['piF'] = _lst_piF[attributes['construction_id'] - 1]
+                             if (attributes['type_id']) - (1) else 1.0)
+        attributes['piF'] = _lst_piF[attributes['application_id'] - 1]
 
     # Determine the temperature stress factor (piT).
     if attributes['subcategory_id'] == 2:
