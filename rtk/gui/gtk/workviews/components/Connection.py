@@ -1049,7 +1049,29 @@ class AssessmentResults(gtk.Fixed):
         self._make_assessment_results_page()
         self.show_all()
 
-        pub.subscribe(self.on_select, 'calculatedHardware')
+        pub.subscribe(self._do_load_page, 'calculatedHardware')
+
+    def _do_load_page(self):
+        """
+        Load the connection assessment results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
+
+        self.txtPiK.set_text(str(self.fmt.format(_attributes['piK'])))
+        self.txtPiP.set_text(str(self.fmt.format(_attributes['piP'])))
+        self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
+        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
+        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
+
+        return _return
 
     def _do_set_sensitive(self):
         """
@@ -1138,18 +1160,8 @@ class AssessmentResults(gtk.Fixed):
 
         self._hardware_id = module_id
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
-
-        self.txtPiK.set_text(str(self.fmt.format(_attributes['piK'])))
-        self.txtPiP.set_text(str(self.fmt.format(_attributes['piP'])))
-        self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
-        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
-
         self._do_set_sensitive()
+        self._do_load_page()
 
         return _return
 
@@ -1265,7 +1277,7 @@ class StressResults(gtk.HPaned):
         self._make_stress_results_page()
         self.show_all()
 
-        pub.subscribe(self.on_select, 'calculatedHardware')
+        pub.subscribe(self._do_load_page, 'calculatedHardware')
 
     def _do_load_derating_curve(self):
         """
@@ -1333,6 +1345,32 @@ class StressResults(gtk.HPaned):
 
         return _return
 
+    def _do_load_page(self):
+        """
+        Load the connection assessment results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtVoltageRatio.set_text(
+            str(self.fmt.format(_attributes['voltage_ratio'])))
+        self.txtCurrentRatio.set_text(
+            str(self.fmt.format(_attributes['current_ratio'])))
+        self.txtTemperatureRise.set_text(
+            str(self.fmt.format(_attributes['temperature_rise'])))
+        self.chkOverstress.set_active(_attributes['overstress'])
+        _textbuffer = self.txtReason.do_get_buffer()
+        _textbuffer.set_text(_attributes['reason'])
+
+        self._do_load_derating_curve()
+
+        return _return
+
     def _make_stress_results_page(self):
         """
         Make the connection gtk.Notebook() assessment results page.
@@ -1379,19 +1417,6 @@ class StressResults(gtk.HPaned):
 
         self._hardware_id = module_id
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtVoltageRatio.set_text(
-            str(self.fmt.format(_attributes['voltage_ratio'])))
-        self.txtCurrentRatio.set_text(
-            str(self.fmt.format(_attributes['current_ratio'])))
-        self.txtTemperatureRise.set_text(
-            str(self.fmt.format(_attributes['temperature_rise'])))
-        self.chkOverstress.set_active(_attributes['overstress'])
-        _textbuffer = self.txtReason.do_get_buffer()
-        _textbuffer.set_text(_attributes['reason'])
-
-        self._do_load_derating_curve()
+        self._do_load_page()
 
         return _return

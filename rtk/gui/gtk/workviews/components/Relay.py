@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.gui.gtk.workviews.components.Inductor.py is part of the RTK Project
+#       rtk.gui.gtk.workviews.components.Relay.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -21,11 +21,11 @@ class AssessmentInputs(gtk.Fixed):
     the selected Hardware item.  This includes, currently, inputs for
     MIL-HDBK-217FN2.  The attributes of a Hardware assessment input view are:
 
-    :cvar dict _dic_specifications: dictionary of inductor MIL-SPECs.  Key is
-                                    inductor subcategory ID; values are lists
+    :cvar dict _dic_specifications: dictionary of relay MIL-SPECs.  Key is
+                                    relay subcategory ID; values are lists
                                     of specifications.
-    :cvar dict _dic_styles: dictionary of inductor styles defined in the
-                            MIL-SPECs.  Key is inductor subcategory ID; values
+    :cvar dict _dic_styles: dictionary of relay styles defined in the
+                            MIL-SPECs.  Key is relay subcategory ID; values
                             are lists of styles.
 
     :cvar list _lst_labels: the text to use for the assessment input widget
@@ -36,82 +36,137 @@ class AssessmentInputs(gtk.Fixed):
 
     :ivar int _hardware_id: the ID of the Hardware item currently being
                             displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the inductor
+    :ivar int _subcategory_id: the ID of the subcategory for the relay
                                currently being displayed.
 
-    :ivar cmbInsulation: select and display the insulation class of the
-                         inductor.
-    :ivar cmbSpecification: select and display the governing specification for
-                            the inductor.
-    :ivar cmbConstruction: select and display the method of construction of the
-                           inductor.
-    :ivar cmbFamily: select and display the family of the transformer.
+    :ivar cmbType: select and display the type of relay.
+    :ivar cmbLoadType: select and display the type of load the relay is
+                       switching.
+    :ivar cmbContactForm: select and display the form of the relay contacts.
+    :ivar cmbContactRating: select and display the rating of the relay
+                            contacts.
+    :ivar cmbApplication: select and display the relay application.
+    :ivar cmbConstruction: select and display the relay's method of
+                           construction.
 
-    :ivar txtArea: enter and display the heat dissipating area of the inductor.
-    :ivar txtWeight: enter and display the weight of the inductor.
+    :ivar txtCycles: enter and display the number of relay cycles per hour.
 
     Callbacks signals in _lst_handler_id:
 
     +----------+------------------------------+
     | Position | Widget - Signal              |
     +==========+==============================+
-    |     0    | cmbInsulation - `changed`    |
+    |     0    | cmbQuality - `changed`       |
     +----------+------------------------------+
-    |     1    | cmbSpecification - `changed` |
+    |     1    | cmbType - `changed`          |
     +----------+------------------------------+
-    |     2    | cmbFamily - `changed`        |
+    |     2    | cmbLoadType - `changed`      |
     +----------+------------------------------+
-    |     3    | cmbConstruction - `changed`  |
+    |     3    | cmbContactForm - `changed`   |
     +----------+------------------------------+
-    |     4    | txtArea - `changed`          |
+    |     4    | cmbContactRating - `changed` |
     +----------+------------------------------+
-    |     5    | txtWeight - `changed`        |
+    |     5    | cmbApplication - `changed`   |
+    +----------+------------------------------+
+    |     6    | cmbConstruction - `changed`  |
+    +----------+------------------------------+
+    |     7    | txtCycles - `changed`        |
     +----------+------------------------------+
     """
 
     # Define private dict attributes.
     _dic_quality = {
-        1: [["MIL-SPEC"], [_(u"Lower")]],
-        2: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_(u"Lower")]]
+        1: [["S"], ["R"], ["P"], ["M"], ["MIL-C-15305"], [_(u"Lower")]],
+        2: [["MIL-SPEC"], [_(u"Lower")]]
     }
-
-    _dic_specifications = {
-        1: [["MIL-T-27"], ["MIL-T-21038"], ["MIL-T-55631"]],
-        2: [["MIL-T-15305"], ["MIL-T-39010"]]
+    # Key is subcategory ID.  Index is type ID.
+    _dic_pc_types = {
+        1: [[_(u"General Purpose")], [_(u"Contactor, High Current")],
+            [_(u"Latching")], [_(u"Reed")], [_(u"Thermal, Bi-Metal")],
+            [_(u"Meter Movement")]],
+        2: [[_(u"Solid State")], [_(u"Hybrid and Solid State Time Delay")]]
     }
-
-    _dic_insulation = {
-        1: [[_(u"Insulation Class A")], [_(u"Insulation Class B")], [
-            _(u"Insulation Class C")
-        ], [_(u"Insulation Class O")], [_(u"Insulation Class Q")], [
-            _(u"Insulation Class R")
-        ], [_(u"Insulation Class S")], [_(u"Insulation Class T")],
-            [_(u"Insulation Class U")], [_(u"Insulation Class V")]],
-        2: [[_(u"Insulation Class A")], [_(u"Insulation Class B")],
-            [_(u"Insulation Class C")], [_(u"Insulation Class F")],
-            [_(u"Insulation Class O")]]
+    # Key is subcategory ID, index is type ID.
+    _dic_types = {
+        1: [[_("85C Rated")], [_("125C Rated")]],
+        2: [[_(u"Solid State")], [_(u"Solid State Time Delay")],
+            [_(u"Hybrid")]]
+    }
+    # Key is contact rating ID.  Index is application ID.
+    _dic_application = {
+        1: [[_(u"Dry Circuit")]],
+        2: [[_(u"General Purpose")], [_(u"Sensitve (0 - 100mW)")],
+            [_(u"Polarized")], [_(u"Vibrating Reed")], [_(u"High Speed")], [
+                _(u"Thermal Time Delay")
+            ], [_(u"Electronic Time Delay, Non-Thermal")],
+            [_(u"Latching, Magnetic")]],
+        3: [[_(u"High Voltage")], [_(u"Medium Power")]],
+        4: [[_(u"Contactors, High Current")]]
+    }
+    # First key is contact rating ID, second key is application ID.  Index is
+    # construction ID.
+    _dic_construction = {
+        1: {
+            1: [[_(u"Armature (Long)")], [_(u"Dry Reed")],
+                [_(u"Mercury Wetted")], [_(u"Magnetic Latching")],
+                [_(u"Balanced Armature")], [_(u"Solenoid")]]
+        },
+        2: {
+            1: [[_(u"Armature (Long)")], [_(u"Balanced Armature")],
+                [_(u"Solenoid")]],
+            2: [[_(u"Armature (LOng and Short)")], [_(u"Mercury Wetted")],
+                [_(u"Magnetic Latching")], [_(u"Meter Movement")],
+                [_(u"Balanced Armature")]],
+            3: [[_(u"Armature (Short)")], [_(u"Meter Movement")]],
+            4: [[_(u"Dry Reed")], [_(u"Mercury Wetted")]],
+            5: [[_(u"Armature (Balanced and Short)")], [_(u"Dry Reed")]],
+            6: [[_(u"Bimetal")]],
+            8: [[_(u"Dry Reed")], [_(u"Mercury Wetted")],
+                [_(u"Balanced Armature")]]
+        },
+        3: {
+            1: [[_(u"Vacuum (Glass)")], [_(u"Vacuum (Ceramic)")]],
+            2: [[_(u"Armature (Long and Short)")], [_(u"Mercury Wetted")],
+                [_(u"Magnetic Latching")], [_(u"Mechanical Latching")],
+                [_(u"Balanced Armature")], [_(u"Solenoid")]]
+        },
+        4: {
+            1: [[_(u"Armature (Short)")], [_(u"Mechanical Latching")],
+                [_(u"Balanced Armature")], [_(u"Solenoid")]]
+        }
     }
 
     # Define private list attributes.
+    # Index is the technology ID (load type).
+    _lst_technology = [[_(u"Resistive")], [_(u"Inductive")], [_(u"Lamp")]]
+    # Index is the contact form ID.
+    _lst_contact_form = [["SPST"], ["DPST"], ["SPDT"], ["3PST"], ["4PST"],
+                         ["DPDT"], ["3PDT"], ["4PDT"], ["6PDT"]]
+    # Index is contact rating ID.
+    _lst_contact_rating = [[_(u"Signal Current (low mV and mA)")],
+                           [_(u"0 - 5 Amp")], [_(u"5 - 20 Amp")],
+                           [_(u"20 - 600 Amp")]]
+
     _lst_labels = [
         _(u"Quality:"),
-        _(u"Specification:"),
-        _(u"Insulation Class:"),
-        _(u"Area:"),
-        _(u"Weight:"),
-        _(u"Family:"),
-        _(u"Construction:")
+        _(u"Type:"),
+        _(u"Load Type"),
+        _(u"Contact Form:"),
+        _(u"Contact Rating:"),
+        _(u"Application:"),
+        _(u"Construction:"),
+        _(u"Number of Cycles/Hour:")
     ]
 
     def __init__(self, controller, hardware_id, subcategory_id):
         """
-        Initialize an instance of the Inductor assessment input view.
+        Initialize an instance of the Relay assessment input view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
-                                inductor.
-        :param int subcategory_id: the ID of the inductor subcategory.
+                                relay.
+        :param int subcategory_id: the ID of the relay subcategory.
         """
         gtk.Fixed.__init__(self)
 
@@ -135,31 +190,29 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbQuality = rtk.RTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The quality level of the inductive device."))
-        self.cmbInsulation = rtk.RTKComboBox(
+            tooltip=_(u"The quality level of the relay."))
+        self.cmbType = rtk.RTKComboBox(
+            index=0, simple=True, tooltip=_(u"The relay type."))
+        self.cmbLoadType = rtk.RTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The insulation class of the inductive device."))
-        self.cmbSpecification = rtk.RTKComboBox(
+            tooltip=_(u"The type of load the relay is switching."))
+        self.cmbContactForm = rtk.RTKComboBox(
+            index=0, simple=True, tooltip=_(u"The contact form of the relay."))
+        self.cmbContactRating = rtk.RTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The governing specification for the inductive "
-                      u"device."))
-        self.cmbFamily = rtk.RTKComboBox(
-            index=0,
-            simple=True,
-            tooltip=_(u"The application family of the transformer."))
+            tooltip=_(u"The rating of the relay contacts."))
+        self.cmbApplication = rtk.RTKComboBox(
+            index=0, simple=True, tooltip=_(u"The type of relay appliction."))
         self.cmbConstruction = rtk.RTKComboBox(
             index=0,
             simple=True,
-            tooltip=_(u"The method of construction of the coil."))
+            tooltip=_(u"The method of construction of the relay."))
 
-        self.txtArea = rtk.RTKEntry(
+        self.txtCycles = rtk.RTKEntry(
             width=125,
-            tooltip=_(u"The case radiating surface (in square inches) of the "
-                      u"inductive device."))
-        self.txtWeight = rtk.RTKEntry(
-            width=125, tooltip=_(u"The transformer weight (in lbf)."))
+            tooltip=_(u"The number of relay on/off cycles per hour."))
 
         self._make_assessment_input_page()
         self.show_all()
@@ -167,27 +220,30 @@ class AssessmentInputs(gtk.Fixed):
         self._lst_handler_id.append(
             self.cmbQuality.connect('changed', self._on_combo_changed, 0))
         self._lst_handler_id.append(
-            self.cmbSpecification.connect('changed', self._on_combo_changed,
-                                          1))
+            self.cmbType.connect('changed', self._on_combo_changed, 1))
         self._lst_handler_id.append(
-            self.cmbInsulation.connect('changed', self._on_combo_changed, 2))
+            self.cmbLoadType.connect('changed', self._on_combo_changed, 2))
         self._lst_handler_id.append(
-            self.cmbFamily.connect('changed', self._on_combo_changed, 3))
+            self.cmbContactForm.connect('changed', self._on_combo_changed, 3))
         self._lst_handler_id.append(
-            self.cmbConstruction.connect('changed', self._on_combo_changed, 4))
+            self.cmbContactRating.connect('changed', self._on_combo_changed,
+                                          4))
         self._lst_handler_id.append(
-            self.txtArea.connect('changed', self._on_focus_out, 5))
+            self.cmbApplication.connect('changed', self._on_combo_changed, 5))
         self._lst_handler_id.append(
-            self.txtWeight.connect('changed', self._on_focus_out, 6))
+            self.cmbConstruction.connect('changed', self._on_combo_changed, 6))
+
+        self._lst_handler_id.append(
+            self.txtCycles.connect('changed', self._on_focus_out, 7))
 
     def _do_load_comboboxes(self, subcategory_id):
         """
-        Load the specification RKTComboBox().
+        Load the relay RKTComboBox()s.
 
         This method is used to load the specification RTKComboBox() whenever
-        the inductor subcategory is changed.
+        the relay subcategory is changed.
 
-        :param int subcategory_id: the newly selected inductor subcategory ID.
+        :param int subcategory_id: the newly selected relay subcategory ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -209,59 +265,91 @@ class AssessmentInputs(gtk.Fixed):
                 _data = self._dic_quality[self._subcategory_id]
             except KeyError:
                 _data = []
-
         self.cmbQuality.do_load_combo(_data)
 
-        # Load the specification RTKComboBox().
-        _model = self.cmbSpecification.get_model()
-        _model.clear()
-
-        try:
-            _data = self._dic_specifications[self._subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbSpecification.do_load_combo(_data)
-
-        # Load the insulation class RTKComboBox().
-        _model = self.cmbInsulation.get_model()
-        _model.clear()
-
-        try:
-            _data = self._dic_insulation[self._subcategory_id]
-        except KeyError:
-            _data = []
-        self.cmbInsulation.do_load_combo(_data)
-
-        # Load the transformer family RTKComboBox().
-        _model = self.cmbFamily.get_model()
+        # Load the relay type RTKComboBox().
+        _model = self.cmbType.get_model()
         _model.clear()
 
         if _attributes['hazard_rate_method_id'] == 1:
-            if self._subcategory_id == 1:
-                _data = [[_(u"Low Power Pulse Transformer")], [
-                    _(u"Audio Transformer")
-                ], [_(u"High Power Pulse and Power Transformer, Filter")],
-                         [_(u"RF Transformer")]]
-            else:
-                _data = [[_(u"RF Coils, Fixed or Molded")],
-                         [_(u"RF Coils, Variable")]]
+            _data = self._dic_pc_types[self._subcategory_id]
         else:
-            _data = [[_(u"Pulse Transformer")], [_("Audio Transformer")],
-                     [_(u"Power Transformer or Filter")],
-                     [_(u"RF Transformer")]]
-        self.cmbFamily.do_load_combo(_data)
+            try:
+                _data = self._dic_types[self._subcategory_id]
+            except KeyError:
+                _data = []
+        self.cmbType.do_load_combo(_data)
 
-        # load the coil construction RTKComboBox().
-        _model = self.cmbConstruction.get_model()
+        # Load the load type RTKComboBox().
+        _model = self.cmbLoadType.get_model()
         _model.clear()
+        self.cmbLoadType.do_load_combo(self._lst_technology)
 
-        self.cmbConstruction.do_load_combo([[_(u"Fixed")], [_(u"Variable")]])
+        # Load the contact form RTKComboBox().
+        _model = self.cmbContactForm.get_model()
+        _model.clear()
+        self.cmbContactForm.do_load_combo(self._lst_contact_form)
+
+        # Load the contact rating RTKComboBox().
+        _model = self.cmbContactRating.get_model()
+        _model.clear()
+        self.cmbContactRating.do_load_combo(self._lst_contact_rating)
+
+        # Load the application RTKComboBox().
+        self._do_load_application_combo(_attributes['contact_rating_id'])
+
+        # Load the construction RTKComboBox().
+        self._do_load_construction_combo(_attributes['contact_rating_id'],
+                                         _attributes['application_id'])
 
         return _return
 
+    def _do_load_application_combo(self, contact_rating_id):
+        """
+        Load the relay application RTKComboBox().
+
+        :param int contact_rating_id: the contact rating ID used to select the
+                                      correct list of relay applications.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _model = self.cmbApplication.get_model()
+        _model.clear()
+
+        try:
+            _data = self._dic_application[contact_rating_id]
+        except KeyError:
+            _data = []
+        self.cmbApplication.do_load_combo(_data)
+
+        return False
+
+    def _do_load_construction_combo(self, contact_rating_id, application_id):
+        """
+        Load the relay application RTKComboBox().
+
+        :param int contact_rating_id: the contact rating ID used to select the
+                                      correct list of relay construction
+                                      methods.
+        :param int application_id: the relay application ID used to select the
+                                   correct list of relay construction methods.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _model = self.cmbConstruction.get_model()
+        _model.clear()
+
+        try:
+            _data = self._dic_construction[contact_rating_id][application_id]
+        except KeyError:
+            _data = []
+        self.cmbConstruction.do_load_combo(_data)
+
+        return False
+
     def _do_set_sensitive(self):
         """
-        Set widget sensitivity as needed for the selected inductor.
+        Set widget sensitivity as needed for the selected relay.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -271,26 +359,22 @@ class AssessmentInputs(gtk.Fixed):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.cmbSpecification.set_sensitive(False)
-        self.cmbInsulation.set_sensitive(False)
-        self.cmbFamily.set_sensitive(False)
+        self.cmbType.set_sensitive(True)
+        self.cmbLoadType.set_sensitive(False)
+        self.cmbContactForm.set_sensitive(False)
+        self.cmbContactRating.set_sensitive(False)
+        self.cmbApplication.set_sensitive(False)
         self.cmbConstruction.set_sensitive(False)
-        self.txtArea.set_sensitive(False)
-        self.txtWeight.set_sensitive(False)
+        self.txtCycles.set_sensitive(False)
 
-        if _attributes['hazard_rate_method_id'] == 1:
-            self.cmbFamily.set_sensitive(True)
-        else:
-            self.cmbSpecification.set_sensitive(True)
-            self.cmbInsulation.set_sensitive(True)
-            self.txtArea.set_sensitive(True)
-            self.txtWeight.set_sensitive(True)
-
+        if _attributes['hazard_rate_method_id'] == 2:
             if self._subcategory_id == 1:
-                self.cmbFamily.set_sensitive(True)
-
-            if self._subcategory_id == 2:
+                self.cmbLoadType.set_sensitive(True)
+                self.cmbContactForm.set_sensitive(True)
+                self.cmbContactRating.set_sensitive(True)
+                self.cmbApplication.set_sensitive(True)
                 self.cmbConstruction.set_sensitive(True)
+                self.txtCycles.set_sensitive(True)
 
         return _return
 
@@ -304,17 +388,18 @@ class AssessmentInputs(gtk.Fixed):
         # Load the gtk.ComboBox() widgets.
         self._do_load_comboboxes(self._subcategory_id)
 
-        # Build the container for inductors.
+        # Build the container for relays.
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
         _x_pos += 50
 
         self.put(self.cmbQuality, _x_pos, _y_pos[0])
-        self.put(self.cmbSpecification, _x_pos, _y_pos[1])
-        self.put(self.cmbInsulation, _x_pos, _y_pos[2])
-        self.put(self.txtArea, _x_pos, _y_pos[3])
-        self.put(self.txtWeight, _x_pos, _y_pos[4])
-        self.put(self.cmbFamily, _x_pos, _y_pos[5])
+        self.put(self.cmbType, _x_pos, _y_pos[1])
+        self.put(self.cmbLoadType, _x_pos, _y_pos[2])
+        self.put(self.cmbContactForm, _x_pos, _y_pos[3])
+        self.put(self.cmbContactRating, _x_pos, _y_pos[4])
+        self.put(self.cmbApplication, _x_pos, _y_pos[5])
         self.put(self.cmbConstruction, _x_pos, _y_pos[6])
+        self.put(self.txtCycles, _x_pos, _y_pos[7])
 
         self._do_set_sensitive()
 
@@ -324,7 +409,7 @@ class AssessmentInputs(gtk.Fixed):
 
     def _on_combo_changed(self, combo, index):
         """
-        Retrieve RTKCombo() changes and assign to Inductor attribute.
+        Retrieve RTKCombo() changes and assign to Relay attribute.
 
         This method is called by:
 
@@ -338,11 +423,13 @@ class AssessmentInputs(gtk.Fixed):
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
             +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    3    | cmbFamily        |
+            |    0    | cmbQuality       |    4    | cmbContactRating |
             +---------+------------------+---------+------------------+
-            |    1    | cmbSpecification |    4    | cmbConstruction  |
+            |    1    | cmbType          |    5    | cmbApplication   |
             +---------+------------------+---------+------------------+
-            |    2    | cmbInsulation    |         |                  |
+            |    2    | cmbLoadType      |    6    | cmbConstruction  |
+            +---------+------------------+---------+------------------+
+            |    3    | cmbContactForm   |         |                  |
             +---------+------------------+---------+------------------+
 
         :return: False if successful or True if an error is encountered.
@@ -362,12 +449,21 @@ class AssessmentInputs(gtk.Fixed):
             if index == 0:
                 _attributes['quality_id'] = int(combo.get_active())
             elif index == 1:
-                _attributes['specification_id'] = int(combo.get_active())
+                _attributes['type_id'] = int(combo.get_active())
             elif index == 2:
-                _attributes['insulation_id'] = int(combo.get_active())
+                _attributes['technology_id'] = int(combo.get_active())
             elif index == 3:
-                _attributes['family_id'] = int(combo.get_active())
+                _attributes['contact_form_id'] = int(combo.get_active())
             elif index == 4:
+                _attributes['contact_rating_id'] = int(combo.get_active())
+                self._do_load_application_combo(
+                    _attributes['contact_rating_id'])
+            elif index == 5:
+                _attributes['application_id'] = int(combo.get_active())
+                self._do_load_construction_combo(
+                    _attributes['contact_rating_id'],
+                    _attributes['application_id'])
+            elif index == 6:
                 _attributes['construction_id'] = int(combo.get_active())
 
             self._dtc_data_controller.request_set_attributes(
@@ -393,11 +489,11 @@ class AssessmentInputs(gtk.Fixed):
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
 
-            +---------+---------+---------+-----------+
-            |  Index  | Widget  |  Index  | Widget    |
-            +=========+=========+=========+===========+
-            |    5    | txtArea |    6    | txtWeight |
-            +---------+---------+---------+-----------+
+            +---------+-----------+---------+-----------+
+            |  Index  | Widget    |  Index  | Widget    |
+            +=========+===========+=========+===========+
+            |    7    | txtcycles |         |           |
+            +---------+-----------+---------+-----------+
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -416,10 +512,8 @@ class AssessmentInputs(gtk.Fixed):
             except ValueError:
                 _text = 0.0
 
-            if index == 5:
-                _attributes['area'] = _text
-            elif index == 6:
-                _attributes['weight'] = _text
+            if index == 7:
+                _attributes['n_cycles'] = _text
 
             self._dtc_data_controller.request_set_attributes(
                 self._hardware_id, _attributes)
@@ -430,10 +524,10 @@ class AssessmentInputs(gtk.Fixed):
 
     def on_select(self, module_id=None):
         """
-        Load the inductor assessment input work view widgets.
+        Load the relay assessment input work view widgets.
 
         :param int module_id: the Hardware ID of the selected/edited
-                              inductor.
+                              relay.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -448,44 +542,51 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbQuality.set_active(_attributes['quality_id'])
         self.cmbQuality.handler_unblock(self._lst_handler_id[0])
 
-        self.cmbFamily.handler_block(self._lst_handler_id[3])
-        self.cmbFamily.set_active(_attributes['family_id'])
-        self.cmbFamily.handler_unblock(self._lst_handler_id[3])
+        self.cmbType.handler_block(self._lst_handler_id[1])
+        self.cmbType.set_active(_attributes['type_id'])
+        self.cmbType.handler_unblock(self._lst_handler_id[1])
 
         self._do_set_sensitive()
 
         if _attributes['hazard_rate_method_id'] == 2:
-            self.cmbSpecification.handler_block(self._lst_handler_id[1])
-            self.cmbSpecification.set_active(_attributes['specification_id'])
-            self.cmbSpecification.handler_unblock(self._lst_handler_id[1])
+            self.cmbLoadType.handler_block(self._lst_handler_id[2])
+            self.cmbLoadType.set_active(_attributes['technology_id'])
+            self.cmbLoadType.handler_unblock(self._lst_handler_id[2])
 
-            self.cmbInsulation.handler_block(self._lst_handler_id[2])
-            self.cmbInsulation.set_active(_attributes['insulation_id'])
-            self.cmbInsulation.handler_unblock(self._lst_handler_id[2])
+            self.cmbContactForm.handler_block(self._lst_handler_id[3])
+            self.cmbContactForm.set_active(_attributes['contact_form_id'])
+            self.cmbContactForm.handler_unblock(self._lst_handler_id[3])
 
-            self.cmbConstruction.handler_block(self._lst_handler_id[4])
+            self.cmbContactRating.handler_block(self._lst_handler_id[4])
+            self.cmbContactRating.set_active(_attributes['contact_rating_id'])
+            self._do_load_application_combo(_attributes['contact_rating_id'])
+            self.cmbContactRating.handler_unblock(self._lst_handler_id[4])
+
+            self.cmbApplication.handler_block(self._lst_handler_id[5])
+            self.cmbApplication.set_active(_attributes['application_id'])
+            self._do_load_construction_combo(_attributes['contact_rating_id'],
+                                             _attributes['application_id'])
+            self.cmbApplication.handler_unblock(self._lst_handler_id[5])
+
+            self.cmbConstruction.handler_block(self._lst_handler_id[6])
             self.cmbConstruction.set_active(_attributes['construction_id'])
-            self.cmbConstruction.handler_unblock(self._lst_handler_id[4])
+            self.cmbConstruction.handler_unblock(self._lst_handler_id[6])
 
-            self.txtArea.handler_block(self._lst_handler_id[5])
-            self.txtArea.set_text(str(self.fmt.format(_attributes['area'])))
-            self.txtArea.handler_unblock(self._lst_handler_id[5])
-
-            self.txtWeight.handler_block(self._lst_handler_id[6])
-            self.txtWeight.set_text(
-                str(self.fmt.format(_attributes['weight'])))
-            self.txtWeight.handler_unblock(self._lst_handler_id[6])
+            self.txtCycles.handler_block(self._lst_handler_id[7])
+            self.txtCycles.set_text(
+                str(self.fmt.format(_attributes['n_cycles'])))
+            self.txtCycles.handler_unblock(self._lst_handler_id[7])
 
         return _return
 
 
 class StressInputs(gtk.Fixed):
     """
-    Display Inductor stress input attribute data in the RTK Work Book.
+    Display Relay stress input attribute data in the RTK Work Book.
 
-    The Inductor stress input view displays all the assessment inputs for
-    the selected inductor.  This includes, currently, stress inputs for
-    MIL-HDBK-217FN2.  The attributes of a inductor stress input view are:
+    The Relay stress input view displays all the assessment inputs for
+    the selected relay.  This includes, currently, stress inputs for
+    MIL-HDBK-217FN2.  The attributes of a relay stress input view are:
 
     :cvar list _lst_labels: the text to use for the assessment input widget
                             labels.
@@ -497,57 +598,36 @@ class StressInputs(gtk.Fixed):
 
     :ivar int _hardware_id: the ID of the Hardware item currently being
                             displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the inductor
+    :ivar int _subcategory_id: the ID of the subcategory for the relay
                                currently being displayed.
 
-    :ivar txtTemperatureRated: enter and display the maximum rated temperature
-                               of the inductive device.
-    :ivar txtVoltageRated: enter and display the rated voltage of the
-                           inductive device.
-    :ivar txtVoltageAC: enter and display the operating ac voltage of the
-                        inductive device.
-    :ivar txtVoltageDC: enter and display the operating DC voltage of the
-                        inductive device.
-    :ivar txtPowerOperating: enter and display the operating power of the
-                             inductive device.
+    :ivar txtCurrentRated: enter and display the rated current of the relay.
+    :ivar txtCurrentOperating: enter and display the operating current of the
+                               relay.
 
     Callbacks signals in _lst_handler_id:
 
     +----------+-------------------------------------------+
     | Position | Widget - Signal                           |
     +==========+===========================================+
-    |     0    | txtTemperatureRated - `changed`           |
+    |     0    | txtCurrentRated - `changed`               |
     +----------+-------------------------------------------+
-    |     1    | txtVoltageRated - `changed`               |
-    +----------+-------------------------------------------+
-    |     2    | txtVoltageAC - `changed`                  |
-    +----------+-------------------------------------------+
-    |     3    | txtVoltageDC - `changed`                  |
-    +----------+-------------------------------------------+
-    |     4    | txtPowerOperating - `changed`             |
+    |     1    | txtCurrentOperating - `changed`           |
     +----------+-------------------------------------------+
     """
 
     # Define private list attributes.
-    _lst_labels = [
-        _(u"Minimum Rated Temperature (\u00B0C):"),
-        _(u"Knee Temperature (\u00B0C):"),
-        _(u"Maximum Rated Temperature (\u00B0C):"),
-        _(u"Rated Voltage (V):"),
-        _(u"Operating ac Voltage (V):"),
-        _(u"Operating DC Voltage (V):"),
-        _(u"Operating Power (W):")
-    ]
+    _lst_labels = [_(u"Rated Current (A):"), _(u"Operating Current (A):")]
 
     def __init__(self, controller, hardware_id, subcategory_id):
         """
-        Initialize an instance of the Inductor stress input view.
+        Initialize an instance of the Relay stress input view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
-                                inductor.
-        :param int subcategory_id: the ID of the inductor subcategory.
+                                relay.
+        :param int subcategory_id: the ID of the relay subcategory.
         """
         gtk.Fixed.__init__(self)
 
@@ -568,74 +648,33 @@ class StressInputs(gtk.Fixed):
         # Initialize public scalar attributes.
         self.fmt = None
 
-        self.txtTemperatureKnee = rtk.RTKEntry(
+        self.txtCurrentRated = rtk.RTKEntry(
+            width=125, tooltip=_(u"The rated current (in A) of the relay."))
+        self.txtCurrentOperating = rtk.RTKEntry(
             width=125,
-            tooltip=_(
-                u"The break temperature (in \u00B0C) of the inductor beyond "
-                u"which it must be derated."))
-        self.txtTemperatureRatedMin = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The minimum rated temperature (in \u00B0C) of the inductive "
-                u"device."))
-        self.txtTemperatureRatedMax = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The maximum rated temperature (in \u00B0C) of the inductive "
-                u"device."))
-        self.txtVoltageRated = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The rated voltage (in V) of the inductive device."))
-        self.txtVoltageAC = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operating ac voltage (in V) of the inductive "
-                      u"device."))
-        self.txtVoltageDC = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operating DC voltage (in V) of the inductive "
-                      u"device."))
-        self.txtPowerOperating = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operating power (in W) of the inductive device."))
+            tooltip=_(u"The operating current (in A) of the relay."))
 
         self._lst_handler_id.append(
-            self.txtTemperatureRatedMin.connect('changed', self._on_focus_out,
-                                                0))
+            self.txtCurrentRated.connect('changed', self._on_focus_out, 0))
         self._lst_handler_id.append(
-            self.txtTemperatureKnee.connect('changed', self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMax.connect('changed', self._on_focus_out,
-                                                2))
-        self._lst_handler_id.append(
-            self.txtVoltageRated.connect('changed', self._on_focus_out, 3))
-        self._lst_handler_id.append(
-            self.txtVoltageAC.connect('changed', self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtVoltageDC.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtPowerOperating.connect('changed', self._on_focus_out, 6))
+            self.txtCurrentOperating.connect('changed', self._on_focus_out, 1))
 
         self._make_stress_input_page()
         self.show_all()
 
     def _make_stress_input_page(self):
         """
-        Make the inductor module stress input container.
+        Make the relay module stress input container.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Build the container for inductors.
+        # Build the container for relays.
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
         _x_pos += 50
 
-        self.put(self.txtTemperatureRatedMin, _x_pos, _y_pos[0])
-        self.put(self.txtTemperatureKnee, _x_pos, _y_pos[1])
-        self.put(self.txtTemperatureRatedMax, _x_pos, _y_pos[2])
-        self.put(self.txtVoltageRated, _x_pos, _y_pos[3])
-        self.put(self.txtVoltageAC, _x_pos, _y_pos[4])
-        self.put(self.txtVoltageDC, _x_pos, _y_pos[5])
-        self.put(self.txtPowerOperating, _x_pos, _y_pos[6])
+        self.put(self.txtCurrentRated, _x_pos, _y_pos[0])
+        self.put(self.txtCurrentOperating, _x_pos, _y_pos[1])
 
         self.show_all()
 
@@ -657,17 +696,11 @@ class StressInputs(gtk.Fixed):
                           associated with the data from the calling
                           gtk.Widget().  Indices are:
 
-            +---------+------------------------+---------+-------------------+
-            |  Index  | Widget                 |  Index  | Widget            |
-            +=========+========================+=========+===================+
-            |    0    | txtTemperatureRatedMin |    4    | txtVoltageAC      |
-            +---------+------------------------+---------+-------------------+
-            |    1    | txtTemperatureKnee     |    5    | txtVoltageDC      |
-            +---------+------------------------+---------+-------------------+
-            |    2    | txtTemperatureRatedMax |    6    | txtPowerOperating |
-            +---------+------------------------+---------+-------------------+
-            |    3    | txtVoltageRated        |         |                   |
-            +---------+------------------------+---------+-------------------+
+            +---------+--------------------+---------+-----------------------+
+            |  Index  | Widget             |  Index  | Widget                |
+            +=========+====================+=========+=======================+
+            |    0    | txtCurrentRated    |    1    | txtCurrentOperating   |
+            +---------+--------------------+---------+-----------------------+
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -687,19 +720,9 @@ class StressInputs(gtk.Fixed):
                 _text = 0.0
 
             if index == 0:
-                _attributes['temperature_rated_min'] = _text
+                _attributes['current_rated'] = _text
             elif index == 1:
-                _attributes['temperature_knee'] = _text
-            elif index == 2:
-                _attributes['temperature_rated_max'] = _text
-            elif index == 3:
-                _attributes['voltage_rated'] = _text
-            elif index == 4:
-                _attributes['voltage_ac_operating'] = _text
-            elif index == 5:
-                _attributes['voltage_dc_operating'] = _text
-            elif index == 6:
-                _attributes['power_operating'] = _text
+                _attributes['current_operating'] = _text
 
             self._dtc_data_controller.request_set_attributes(
                 self._hardware_id, _attributes)
@@ -710,10 +733,10 @@ class StressInputs(gtk.Fixed):
 
     def on_select(self, module_id=None):
         """
-        Load the inductor stress input work view widgets.
+        Load the relay stress input work view widgets.
 
         :param int module_id: the Hardware ID of the selected/edited
-                              inductor.
+                              relay.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -726,92 +749,72 @@ class StressInputs(gtk.Fixed):
 
         # We don't block the callback signal otherwise the style RTKComboBox()
         # will not be loaded and set.
-        self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[0])
-        self.txtTemperatureRatedMin.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_min'])))
-        self.txtTemperatureRatedMin.handler_unblock(self._lst_handler_id[0])
+        self.txtCurrentRated.handler_block(self._lst_handler_id[0])
+        self.txtCurrentRated.set_text(
+            str(self.fmt.format(_attributes['current_rated'])))
+        self.txtCurrentRated.handler_unblock(self._lst_handler_id[0])
 
-        self.txtTemperatureKnee.handler_block(self._lst_handler_id[1])
-        self.txtTemperatureKnee.set_text(
-            str(self.fmt.format(_attributes['temperature_knee'])))
-        self.txtTemperatureKnee.handler_unblock(self._lst_handler_id[1])
-
-        self.txtTemperatureRatedMax.handler_block(self._lst_handler_id[2])
-        self.txtTemperatureRatedMax.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_max'])))
-        self.txtTemperatureRatedMax.handler_unblock(self._lst_handler_id[2])
-
-        self.txtVoltageRated.handler_block(self._lst_handler_id[3])
-        self.txtVoltageRated.set_text(
-            str(self.fmt.format(_attributes['voltage_rated'])))
-        self.txtVoltageRated.handler_unblock(self._lst_handler_id[3])
-
-        self.txtVoltageAC.handler_block(self._lst_handler_id[4])
-        self.txtVoltageAC.set_text(
-            str(self.fmt.format(_attributes['voltage_ac_operating'])))
-        self.txtVoltageAC.handler_unblock(self._lst_handler_id[4])
-
-        self.txtVoltageDC.handler_block(self._lst_handler_id[5])
-        self.txtVoltageDC.set_text(
-            str(self.fmt.format(_attributes['voltage_dc_operating'])))
-        self.txtVoltageDC.handler_unblock(self._lst_handler_id[5])
-
-        self.txtPowerOperating.handler_block(self._lst_handler_id[6])
-        self.txtPowerOperating.set_text(
-            str(self.fmt.format(_attributes['power_operating'])))
-        self.txtPowerOperating.handler_unblock(self._lst_handler_id[6])
+        self.txtCurrentOperating.handler_block(self._lst_handler_id[1])
+        self.txtCurrentOperating.set_text(
+            str(self.fmt.format(_attributes['current_operating'])))
+        self.txtCurrentOperating.handler_unblock(self._lst_handler_id[1])
 
         return _return
 
 
 class AssessmentResults(gtk.Fixed):
     """
-    Display inductor assessment results attribute data in the RTK Work Book.
+    Display relay assessment results attribute data in the RTK Work Book.
 
-    The inductor assessment result view displays all the assessment results
-    for the selected inductor.  This includes, currently, results for
+    The relay assessment result view displays all the assessment results
+    for the selected relay.  This includes, currently, results for
     MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The
-    attributes of a inductor assessment result view are:
+    attributes of a relay assessment result view are:
 
     :cvar list _lst_labels: the text to use for the assessment results widget
                             labels.
 
     :ivar int _hardware_id: the ID of the Hardware item currently being
                             displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the inductor
+    :ivar int _subcategory_id: the ID of the subcategory for the relay
                                currently being displayed.
     :ivar _lblModel: the :class:`rtk.gui.gtk.rtk.Label.RTKLabel` to display
                      the failure rate mathematical model used.
 
-    :ivar txtLambdaB: displays the base hazard rate of the inductor.
-    :ivar txtPiC: displays the construction factor for the inductor.
-    :ivar txtPiQ: displays the quality factor for the inductor.
-    :ivar txtPiE: displays the environment factor for the inductor.
+    :ivar txtLambdaB: displays the base hazard rate of the relay.
+    :ivar txtPiE: displays the environment factor for the relay.
+    :ivar txtPiQ: displays the quality factor for the relay.
+    :ivar txtPiC: displays the contact form factor for the relay.
+    :ivar txtPiCYC: displays the cycling factor for the relay.
+    :ivar txtPiL: displays the load stress factor for the relay.
+    :ivar txtPiF: displays the application and construction factor for the
+                  relay.
     """
 
     # Define private dict attributes.
     _dic_part_stress = {
         1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>L</sub>\u03C0<sub>C</sub>\u03C0<sub>CYC</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>C</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
     # Define private list attributes.
     _lst_labels = [
-        u"\u03BB<sub>b</sub>:", u"\u03C0<sub>C</sub>:", u"\u03C0<sub>Q</sub>:",
-        u"\u03C0<sub>E</sub>:"
+        u"\u03BB<sub>b</sub>:", u"\u03C0<sub>E</sub>:", u"\u03C0<sub>Q</sub>:",
+        u"\u03C0<sub>C</sub>:", u"\u03C0<sub>CYC</sub>:",
+        u"\u03C0<sub>F</sub>:", u"\u03C0<sub>L</sub>:"
     ]
 
     def __init__(self, controller, hardware_id, subcategory_id):
         """
-        Initialize an instance of the Inductor assessment result view.
+        Initialize an instance of the Relay assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
-                                inductor.
-        :param int subcategory_id: the ID of the inductor subcategory.
+                                relay.
+        :param int subcategory_id: the ID of the relay subcategory.
         """
         gtk.Fixed.__init__(self)
 
@@ -826,8 +829,8 @@ class AssessmentResults(gtk.Fixed):
 
         self._lblModel = rtk.RTKLabel(
             '',
-            tooltip=_(u"The assessment model used to calculate the inductive "
-                      u"device's failure rate."))
+            tooltip=_(u"The assessment model used to calculate the relay's "
+                      u"failure rate."))
 
         # Initialize public dictionary attributes.
 
@@ -840,22 +843,38 @@ class AssessmentResults(gtk.Fixed):
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The base hazard rate of the inductive device."))
-        self.txtPiC = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The construction factor for the coil."))
+            tooltip=_(u"The base hazard rate of the relay."))
         self.txtPiQ = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The quality factor for the inductive device."))
+            tooltip=_(u"The quality factor for the relay."))
         self.txtPiE = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The environment factor for the inductive device."))
+            tooltip=_(u"The environment factor for the relay."))
+        self.txtPiC = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The contact form factor for the relay."))
+        self.txtPiCYC = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The cycling factor for the relay."))
+        self.txtPiF = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The application and construction factor for the "
+                      u"relay."))
+        self.txtPiL = rtk.RTKEntry(
+            width=125,
+            editable=False,
+            bold=True,
+            tooltip=_(u"The load stress factor for the relay."))
 
         self._make_assessment_results_page()
         self.show_all()
@@ -864,7 +883,7 @@ class AssessmentResults(gtk.Fixed):
 
     def _do_load_page(self):
         """
-        Load the inductive device assessment results wodgets.
+        Load the relay assessment results wodgets.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -876,15 +895,18 @@ class AssessmentResults(gtk.Fixed):
 
         self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
 
-        self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
         self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
+        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
+        self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
+        self.txtPiCYC.set_text(str(self.fmt.format(_attributes['piCYC'])))
+        self.txtPiF.set_text(str(self.fmt.format(_attributes['piF'])))
+        self.txtPiL.set_text(str(self.fmt.format(_attributes['piL'])))
 
         return _return
 
     def _do_set_sensitive(self):
         """
-        Set widget sensitivity as needed for the selected inductor.
+        Set widget sensitivity as needed for the selected relay.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -894,19 +916,26 @@ class AssessmentResults(gtk.Fixed):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        if _attributes['hazard_rate_method_id'] == 1:
-            self.txtPiC.set_sensitive(False)
-            self.txtPiE.set_sensitive(False)
-        else:
+        self.txtPiE.set_sensitive(False)
+        self.txtPiQ.set_sensitive(True)
+        self.txtPiC.set_sensitive(False)
+        self.txtPiCYC.set_sensitive(False)
+        self.txtPiF.set_sensitive(False)
+        self.txtPiL.set_sensitive(False)
+
+        if _attributes['hazard_rate_method_id'] == 2:
             self.txtPiE.set_sensitive(True)
-            if self._subcategory_id == 2:
+            if self._subcategory_id == 1:
                 self.txtPiC.set_sensitive(True)
+                self.txtPiCYC.set_sensitive(True)
+                self.txtPiF.set_sensitive(True)
+                self.txtPiL.set_sensitive(True)
 
         return _return
 
     def _make_assessment_results_page(self):
         """
-        Make the inductor gtk.Notebook() assessment results page.
+        Make the relay gtk.Notebook() assessment results page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -929,15 +958,18 @@ class AssessmentResults(gtk.Fixed):
 
         self._do_set_sensitive()
 
-        # Build the container for inductors.
+        # Build the container for relays.
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 35)
         _x_pos += 50
 
         self.put(self._lblModel, _x_pos, 5)
         self.put(self.txtLambdaB, _x_pos, _y_pos[0])
-        self.put(self.txtPiC, _x_pos, _y_pos[1])
+        self.put(self.txtPiE, _x_pos, _y_pos[1])
         self.put(self.txtPiQ, _x_pos, _y_pos[2])
-        self.put(self.txtPiE, _x_pos, _y_pos[3])
+        self.put(self.txtPiC, _x_pos, _y_pos[3])
+        self.put(self.txtPiCYC, _x_pos, _y_pos[4])
+        self.put(self.txtPiF, _x_pos, _y_pos[5])
+        self.put(self.txtPiL, _x_pos, _y_pos[6])
 
         self.show_all()
 
@@ -945,10 +977,10 @@ class AssessmentResults(gtk.Fixed):
 
     def on_select(self, module_id=None):
         """
-        Load the inductor assessment input work view widgets.
+        Load the relay assessment input work view widgets.
 
         :param int module_id: the Hardware ID of the selected/edited
-                              inductor.
+                              relay.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
@@ -964,51 +996,43 @@ class AssessmentResults(gtk.Fixed):
 
 class StressResults(gtk.HPaned):
     """
-    Display inductor stress results attribute data in the RTK Work Book.
+    Display relay stress results attribute data in the RTK Work Book.
 
-    The inductor stress result view displays all the stress results for the
-    selected inductor.  This includes, currently, results for MIL-HDBK-217FN2
+    The relay stress result view displays all the stress results for the
+    selected relay.  This includes, currently, results for MIL-HDBK-217FN2
     parts count and MIL-HDBK-217FN2 part stress methods.  The attributes of a
-    inductor stress result view are:
+    relay stress result view are:
 
     :cvar list _lst_labels: the text to use for the sress results widget
                             labels.
 
     :ivar int _hardware_id: the ID of the Hardware item currently being
                             displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the inductor
+    :ivar int _subcategory_id: the ID of the subcategory for the relay
                                currently being displayed.
 
-    :ivar txtTemperareRise: enter and display the temperature rise of the
-                            inductive device.
-    :ivar txtTemperatureHotSpot: enter and display the inductive device's hot
-                                 spot temperature.
+    :ivar txtCurrentRatio: enter and display the current ratio of the relay.
     """
 
     # Define private list attributes.
-    _lst_labels = [
-        _(u"Voltage Ratio:"),
-        _(u"Temperature Rise (C):"),
-        _("Hot Spot Temperature (C):"), "",
-        _(u"Overstress Reason:")
-    ]
+    _lst_labels = [_(u"Current Ratio:"), "", _(u"Overstress Reason:")]
 
     def __init__(self, controller, hardware_id, subcategory_id):
         """
-        Initialize an instance of the Inductor assessment result view.
+        Initialize an instance of the Relay assessment result view.
 
         :param controller: the hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
-                                inductor.
-        :param int subcategory_id: the ID of the inductor subcategory.
+                                relay.
+        :param int subcategory_id: the ID of the relay subcategory.
         """
         gtk.HPaned.__init__(self)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_derate_criteria = [[0.5, 0.6, 0.0], [0.9, 0.9, 0.0]]
+        self._lst_derate_criteria = [[0.75, 0.75, 0.0], [0.9, 0.9, 0.0]]
 
         # Initialize private scalar attributes.
         self._dtc_data_controller = controller
@@ -1026,31 +1050,19 @@ class StressResults(gtk.HPaned):
 
         self.chkOverstress = rtk.RTKCheckButton(
             label=_(u"Overstressed"),
-            tooltip=_(u"Indicates whether or not the selected inductor "
+            tooltip=_(u"Indicates whether or not the selected relay "
                       u"is overstressed."))
         self.txtReason = rtk.RTKTextView(
             gtk.TextBuffer(),
             width=250,
             tooltip=_(u"The reason(s) the selected hardware item is "
                       u"overstressed."))
-        self.txtVoltageRatio = rtk.RTKEntry(
+        self.txtCurrentRatio = rtk.RTKEntry(
             width=125,
             editable=False,
             bold=True,
-            tooltip=_(u"The ratio of operating voltage to rated voltage for "
-                      u"the inductor."))
-        self.txtTemperatureRise = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The average temperature rise (in C) over ambient of "
-                      u"the inductive device."))
-        self.txtTemperatureHotSpot = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The hot spot temperature (in C) of the inductive "
-                      u"device."))
+            tooltip=_(u"The ratio of operating current to rated current for "
+                      u"the relay."))
 
         self.chkOverstress.set_sensitive(False)
         self.txtReason.set_editable(False)
@@ -1080,9 +1092,9 @@ class StressResults(gtk.HPaned):
 
         # Plot the derating curve.
         _x = [
-            float(_attributes['temperature_rated_min']),
-            float(_attributes['temperature_knee']),
-            float(_attributes['temperature_rated_max'])
+            float(_attributes['current_rated']),
+            float(0.9 * _attributes['current_rated']),
+            float(0.75 * _attributes['current_rated'])
         ]
 
         self.pltDerate.axis.cla()
@@ -1102,30 +1114,24 @@ class StressResults(gtk.HPaned):
 
         self.pltDerate.do_load_plot(
             x_values=[_attributes['temperature_active']],
-            y_values=[_attributes['voltage_ratio']],
+            y_values=[_attributes['current_ratio']],
             plot_type='scatter',
             marker='go')
 
-        self.pltDerate.do_load_plot(
-            x_values=[_attributes['temperature_active']],
-            y_values=[_attributes['current_ratio']],
-            plot_type='scatter',
-            marker='mo')
-
         self.pltDerate.do_make_title(
-            _(u"Voltage and Current Derating Curve for {0:s} at {1:s}").format(
+            _(u"Current Derating Curve for {0:s} at {1:s}").format(
                 _attributes['part_number'], _attributes['ref_des']),
             fontsize=12)
         self.pltDerate.do_make_legend([
             _(u"Harsh Environment"),
             _(u"Mild Environment"),
-            _(u"Voltage Operating Point")
+            _(u"Current Operating Point")
         ])
 
         self.pltDerate.do_make_labels(
             _(u"Temperature (\u2070C)"), 0, -0.2, fontsize=10)
         self.pltDerate.do_make_labels(
-            _(u"Voltage/Current Ratio"), -1, 0, set_x=False, fontsize=10)
+            _(u"Current Ratio"), -1, 0, set_x=False, fontsize=10)
 
         self.pltDerate.figure.canvas.draw()
 
@@ -1133,7 +1139,7 @@ class StressResults(gtk.HPaned):
 
     def _do_load_page(self):
         """
-        Load the inductive device assessment results wodgets.
+        Load the relay stress results widgets.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1143,12 +1149,8 @@ class StressResults(gtk.HPaned):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.txtVoltageRatio.set_text(
-            str(self.fmt.format(_attributes['voltage_ratio'])))
-        self.txtTemperatureRise.set_text(
-            str(self.fmt.format(_attributes['temperature_rise'])))
-        self.txtTemperatureHotSpot.set_text(
-            str(self.fmt.format(_attributes['temperature_hot_spot'])))
+        self.txtCurrentRatio.set_text(
+            str(self.fmt.format(_attributes['current_ratio'])))
         self.chkOverstress.set_active(_attributes['overstress'])
         _textbuffer = self.txtReason.do_get_buffer()
         _textbuffer.set_text(_attributes['reason'])
@@ -1159,7 +1161,7 @@ class StressResults(gtk.HPaned):
 
     def _make_stress_results_page(self):
         """
-        Make the inductor gtk.Notebook() assessment results page.
+        Make the relay gtk.Notebook() assessment results page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -1173,11 +1175,9 @@ class StressResults(gtk.HPaned):
         _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, _fixed, 5, 35)
         _x_pos += 50
 
-        _fixed.put(self.txtVoltageRatio, _x_pos, _y_pos[0])
-        _fixed.put(self.txtTemperatureRise, _x_pos, _y_pos[1])
-        _fixed.put(self.txtTemperatureHotSpot, _x_pos, _y_pos[2])
-        _fixed.put(self.chkOverstress, _x_pos, _y_pos[3])
-        _fixed.put(self.txtReason.scrollwindow, _x_pos, _y_pos[4])
+        _fixed.put(self.txtCurrentRatio, _x_pos, _y_pos[0])
+        _fixed.put(self.chkOverstress, _x_pos, _y_pos[1])
+        _fixed.put(self.txtReason.scrollwindow, _x_pos, _y_pos[2])
 
         _fixed.show_all()
 
@@ -1192,10 +1192,10 @@ class StressResults(gtk.HPaned):
 
     def on_select(self, module_id=None):
         """
-        Load the inductor stress results work view widgets.
+        Load the relay assessment input work view widgets.
 
         :param int module_id: the Hardware ID of the selected/edited
-                              inductor.
+                              relay.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """

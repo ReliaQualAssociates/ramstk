@@ -22,3 +22,7 @@ from .Miscellaneous import AssessmentInputs as wvwMiscellaneousAI
 from .Miscellaneous import StressInputs as wvwMiscellaneousSI
 from .Miscellaneous import AssessmentResults as wvwMiscellaneousAR
 from .Miscellaneous import StressResults as wvwMiscellaneousSR
+from .Relay import AssessmentInputs as wvwRelayAI
+from .Relay import StressInputs as wvwRelaySI
+from .Relay import AssessmentResults as wvwRelayAR
+from .Relay import StressResults as wvwRelaySR

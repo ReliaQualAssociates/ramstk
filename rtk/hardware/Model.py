@@ -13,7 +13,7 @@ from treelib.exceptions import DuplicatedNodeIdError  # pragma: no cover
 # Import other RTK modules.
 # pylint: disable=E0401
 from analyses.prediction import Capacitor, Connection, Crystal, Filter, Fuse, \
-    Lamp, Inductor, IntegratedCircuit, Meter # pragma: no cover
+    Lamp, Inductor, IntegratedCircuit, Meter, Relay # pragma: no cover
 # pylint: disable=E0401
 from datamodels import RTKDataModel  # pragma: no cover
 # pylint: disable=E0401
@@ -373,7 +373,7 @@ class HardwareBoMDataModel(RTKDataModel):
             elif _attributes['category_id'] == 5:
                 _attributes, __ = Inductor.calculate(**_attributes)
             elif _attributes['category_id'] == 6:
-                print("Relay")
+                _attributes, __ = Relay.calculate(**_attributes)
             elif _attributes['category_id'] == 7:
                 print("Switch")
             elif _attributes['category_id'] == 8:

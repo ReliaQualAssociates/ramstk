@@ -270,23 +270,22 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
                                               - 1][_quality]
 
     # Determine the quality factor (piQ).
-    if attributes['subcategory_id'] == 1:
-        try:
-            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-                attributes['quality_id'] - 1]
-        except (KeyError, IndexError):
-            attributes['piQ'] = 0.0
+    try:
+        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+            attributes['quality_id'] - 1]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
 
-        if attributes['piQ'] <= 0.0:
-            _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-                'relay, hardware ID: {0:d}'.format(attributes['hardware_id'])
+    if attributes['piQ'] <= 0.0:
+        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
+            'relay, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the environmental factor (piE).
     if attributes['subcategory_id'] == 1:
         attributes['piE'] = _dic_piE[1][_quality][
             attributes['environment_active_id'] - 1]
     else:
-        attributes['piE'] = _dic_piQ[2][attributes['environment_active_id']
+        attributes['piE'] = _dic_piE[2][attributes['environment_active_id']
                                         - 1]
 
     if attributes['piE'] <= 0.0:
@@ -300,8 +299,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] * attributes['piL'] *
             attributes['piC'] * attributes['piCYC'] * attributes['piF'])
-    else:
-        attributes['hazard_rate_active'] = 0.0
 
     return attributes, _msg
 

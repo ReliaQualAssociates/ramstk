@@ -1360,7 +1360,42 @@ class AssessmentResults(gtk.Fixed):
         self._make_assessment_results_page()
         self.show_all()
 
-        pub.subscribe(self.on_select, 'calculatedHardware')
+        pub.subscribe(self._do_load_page, 'calculatedHardware')
+
+    def _do_load_page(self):
+        """
+        Load the integrated circuit assessment results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
+        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
+        self.txtC1.set_text(str(self.fmt.format(_attributes['C1'])))
+        self.txtPiT.set_text(str(self.fmt.format(_attributes['piT'])))
+        self.txtC2.set_text(str(self.fmt.format(_attributes['C2'])))
+        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
+        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
+        self.txtPiL.set_text(str(self.fmt.format(_attributes['piL'])))
+        self.txtLambdaCYC.set_text(
+            str(self.fmt.format(_attributes['lambdaCYC'])))
+        self.txtLambdaBD.set_text(
+            str(self.fmt.format(_attributes['lambdaBD'])))
+        self.txtPiMFG.set_text(str(self.fmt.format(_attributes['piMFG'])))
+        self.txtPiCD.set_text(str(self.fmt.format(_attributes['piCD'])))
+        self.txtLambdaBP.set_text(
+            str(self.fmt.format(_attributes['lambdaBP'])))
+        self.txtPiPT.set_text(str(self.fmt.format(_attributes['piPT'])))
+        self.txtLambdaEOS.set_text(
+            str(self.fmt.format(_attributes['lambdaEOS'])))
+        self.txtPiA.set_text(str(self.fmt.format(_attributes['piA'])))
+
+        return _return
 
     def _do_set_sensitive(self):
         """
@@ -1487,31 +1522,8 @@ class AssessmentResults(gtk.Fixed):
 
         self._hardware_id = module_id
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
         self._do_set_sensitive()
-
-        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
-        self.txtC1.set_text(str(self.fmt.format(_attributes['C1'])))
-        self.txtPiT.set_text(str(self.fmt.format(_attributes['piT'])))
-        self.txtC2.set_text(str(self.fmt.format(_attributes['C2'])))
-        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
-        self.txtPiL.set_text(str(self.fmt.format(_attributes['piL'])))
-        self.txtLambdaCYC.set_text(
-            str(self.fmt.format(_attributes['lambdaCYC'])))
-        self.txtLambdaBD.set_text(
-            str(self.fmt.format(_attributes['lambdaBD'])))
-        self.txtPiMFG.set_text(str(self.fmt.format(_attributes['piMFG'])))
-        self.txtPiCD.set_text(str(self.fmt.format(_attributes['piCD'])))
-        self.txtLambdaBP.set_text(
-            str(self.fmt.format(_attributes['lambdaBP'])))
-        self.txtPiPT.set_text(str(self.fmt.format(_attributes['piPT'])))
-        self.txtLambdaEOS.set_text(
-            str(self.fmt.format(_attributes['lambdaEOS'])))
-        self.txtPiA.set_text(str(self.fmt.format(_attributes['piA'])))
+        self._do_load_page()
 
         return _return
 
@@ -1619,7 +1631,7 @@ class StressResults(gtk.HPaned):
         self._make_stress_results_page()
         self.show_all()
 
-        pub.subscribe(self.on_select, 'calculatedHardware')
+        pub.subscribe(self._do_load_page, 'calculatedHardware')
 
     def _do_load_derating_curve(self):
         """
@@ -1680,6 +1692,30 @@ class StressResults(gtk.HPaned):
 
         return _return
 
+    def _do_load_page(self):
+        """
+        Load the integrated circuit stress results page.
+
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _attributes = self._dtc_data_controller.request_get_attributes(
+            self._hardware_id)
+
+        self.txtCurrentRatio.set_text(
+            str(self.fmt.format(_attributes['current_ratio'])))
+        self.txtVoltageRatio.set_text(
+            str(self.fmt.format(_attributes['voltage_ratio'])))
+        self.chkOverstress.set_active(_attributes['overstress'])
+        _textbuffer = self.txtReason.do_get_buffer()
+        _textbuffer.set_text(_attributes['reason'])
+
+        self._do_load_derating_curve()
+
+        return _return
+
     def _make_stress_results_page(self):
         """
         Make the integrated circuit gtk.Notebook() assessment results page.
@@ -1725,17 +1761,6 @@ class StressResults(gtk.HPaned):
 
         self._hardware_id = module_id
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtCurrentRatio.set_text(
-            str(self.fmt.format(_attributes['current_ratio'])))
-        self.txtVoltageRatio.set_text(
-            str(self.fmt.format(_attributes['voltage_ratio'])))
-        self.chkOverstress.set_active(_attributes['overstress'])
-        _textbuffer = self.txtReason.do_get_buffer()
-        _textbuffer.set_text(_attributes['reason'])
-
-        self._do_load_derating_curve()
+        self._do_load_page()
 
         return _return

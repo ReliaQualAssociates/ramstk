@@ -23,7 +23,8 @@ from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwMiscellaneousAR, wvwMiscellaneousSR, wvwInductorAI, wvwInductorSI, \
     wvwInductorAR, wvwInductorSR, wvwIntegratedCircuitAI, \
     wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR, \
-    wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR
+    wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR, wvwRelayAI, wvwRelaySI, \
+    wvwRelayAR, wvwRelaySR
 
 
 class GeneralData(RTKWorkView):
@@ -1649,6 +1650,13 @@ class AssessmentInputs(RTKWorkView):
             _component_si = wvwInductorSI(self._dtc_data_controller,
                                           self._hardware_id,
                                           _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 6:
+            _component_ai = wvwRelayAI(self._dtc_data_controller,
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
+            _component_si = wvwRelaySI(self._dtc_data_controller,
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
 
         elif _attributes['category_id'] == 8:
             _component_ai = wvwConnectionAI(self._dtc_data_controller,
@@ -2358,6 +2366,13 @@ class AssessmentResults(RTKWorkView):
             _component_sr = wvwInductorSR(self._dtc_data_controller,
                                           self._hardware_id,
                                           _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 6:
+            _component_ar = wvwRelayAR(self._dtc_data_controller,
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
+            _component_sr = wvwRelaySR(self._dtc_data_controller,
+                                       self._hardware_id,
+                                       _attributes['subcategory_id'])
         elif _attributes['category_id'] == 8:
             _component_ar = wvwConnectionAR(self._dtc_data_controller,
                                             self._hardware_id,
