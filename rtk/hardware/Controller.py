@@ -375,7 +375,7 @@ class HardwareBoMDataController(RTKDataController):
 
         if (not self.request_set_attributes(node_id, _attributes)
                 and not self._test):
-            pub.sendMessage('calculatedHardware', module_id=node_id)
+            pub.sendMessage('calculatedHardware')
         else:
             _return = True
 
@@ -399,7 +399,7 @@ class HardwareBoMDataController(RTKDataController):
                     _attributes = self.request_get_attributes(_node_id)
                     self.request_set_attributes(_node_id, _attributes)
 
-            pub.sendMessage('calculatedHardware', module_id=1)
+            pub.sendMessage('calculatedHardware')
         else:
             _return = True
 
