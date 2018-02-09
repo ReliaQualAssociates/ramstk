@@ -26,3 +26,7 @@ from .Relay import AssessmentInputs as wvwRelayAI
 from .Relay import StressInputs as wvwRelaySI
 from .Relay import AssessmentResults as wvwRelayAR
 from .Relay import StressResults as wvwRelaySR
+from .Resistor import AssessmentInputs as wvwResistorAI
+from .Resistor import StressInputs as wvwResistorSI
+from .Resistor import AssessmentResults as wvwResistorAR
+from .Resistor import StressResults as wvwResistorSR
