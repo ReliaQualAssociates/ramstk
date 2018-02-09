@@ -189,7 +189,7 @@ def calculate_217f_part_count(**attributes):
     try:
         if attributes['subcategory_id'] in [2, 6]:
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
-                attributes['specification_id']]
+                attributes['type_id']]
         else:
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']]
     except KeyError:
@@ -492,7 +492,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
             'specification_id']][4]
         _f5 = _dic_factors[attributes['subcategory_id']][attributes[
             'specification_id']][5]
-    else:
+    elif attributes['subcategory_id'] not in [4, 8]:
         _ref_temp = _dic_ref_temp[attributes['subcategory_id']]
         _f0 = _dic_factors[attributes['subcategory_id']][0]
         _f1 = _dic_factors[attributes['subcategory_id']][1]
@@ -500,10 +500,11 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
         _f3 = _dic_factors[attributes['subcategory_id']][3]
         _f4 = _dic_factors[attributes['subcategory_id']][4]
         _f5 = _dic_factors[attributes['subcategory_id']][5]
+
     if attributes['subcategory_id'] == 4:
         attributes['lambda_b'] = 0.00006
     elif attributes['subcategory_id'] == 8:
-        attributes['lambda_b'] = _dic_factors[attributes - ['subcategory_id']][
+        attributes['lambda_b'] = _dic_factors[attributes['subcategory_id']][
             attributes['type_id'] - 1]
     else:
         attributes['lambda_b'] = _f0 * exp(_f1 * ((
@@ -518,24 +519,28 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
             '{0:d}'.format(attributes['hardware_id'])
 
     # Calculate the resistance factor (piR).
-    _index = -1
-    if attributes['subcategory_id'] in [6, 7]:
-        _breaks = _dic_breakpoints[attributes['subcategory_id']][attributes[
-            'specification_id']]
-    else:
-        _breaks = _dic_breakpoints[attributes['subcategory_id']]
-    for _index, _value in enumerate(_breaks):
-        _diff = _value - attributes['n_elements']
-        if len(_breaks) == 1 and _diff < 0:
-            break
-        elif _diff >= 0:
-            break
+    if attributes['subcategory_id'] not in [4, 8]:
+        _index = -1
+        if attributes['subcategory_id'] == 6:
+            _breaks = _dic_breakpoints[attributes['subcategory_id']][
+                attributes['specification_id'] - 1]
+        else:
+            _breaks = _dic_breakpoints[attributes['subcategory_id']]
 
-    if attributes['subcategory_id'] in [6, 7]:
-        attributes['piR'] = _dic_piR[attributes['subcategory_id']][attributes[
-            'specification_id']][attributes['style_id']][_index + 1]
-    else:
-        attributes['piR'] = _dic_piR[attributes['subcategory_id']][_index + 1]
+        for _index, _value in enumerate(_breaks):
+            _diff = _value - attributes['n_elements']
+            if len(_breaks) == 1 and _diff < 0:
+                break
+            elif _diff >= 0:
+                break
+
+        if attributes['subcategory_id'] in [6, 7]:
+            attributes['piR'] = _dic_piR[attributes['subcategory_id']][
+                attributes['specification_id'] - 1][attributes['family_id']
+                                                    - 1][_index + 1]
+        elif attributes['subcategory_id'] not in [4, 8]:
+            attributes['piR'] = _dic_piR[attributes['subcategory_id']][_index
+                                                                       + 1]
 
     # Determine the quality factor (piQ).
     attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
@@ -566,20 +571,21 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
         attributes['piTAPS'] = (attributes['n_elements']**1.5 / 25.0) + 0.792
 
     # Calculate the voltage factor (piV).
-    _index = -1
-    if attributes['subcategory_id'] in [9, 10, 11, 12]:
-        _breaks = [0.1, 0.2, 0.6, 0.7, 0.8, 0.9]
-    elif attributes['subcategory_id'] in [13, 14, 15]:
-        _breaks = [0.8, 0.9]
-    for _index, _value in enumerate(_breaks):
-        _diff = _value - attributes['voltage_ratio']
-        if len(_breaks) == 1 and _diff < 0.0:
-            break
-        elif _index == 0 and _diff >= 0.0:
-            break
-        elif _diff >= 0:
-            break
-    attributes['piV'] = _dic_piV[attributes['subcategory_id']][_index]
+    if attributes['subcategory_id'] > 8:
+        _index = -1
+        if attributes['subcategory_id'] in [9, 10, 11, 12]:
+            _breaks = [0.1, 0.2, 0.6, 0.7, 0.8, 0.9]
+        elif attributes['subcategory_id'] in [13, 14, 15]:
+            _breaks = [0.8, 0.9]
+        for _index, _value in enumerate(_breaks):
+            _diff = _value - attributes['voltage_ratio']
+            if len(_breaks) == 1 and _diff < 0.0:
+                break
+            elif _index == 0 and _diff >= 0.0:
+                break
+            elif _diff >= 0:
+                break
+        attributes['piV'] = _dic_piV[attributes['subcategory_id']][_index]
 
     # Determine the consruction class factor (piC).
     if attributes['subcategory_id'] in [10, 12]:
@@ -601,7 +607,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] * attributes['piTAPS'] *
             attributes['piC'] * attributes['piR'] * attributes['piV'])
-    else:
+    elif attributes['subcategory_id'] != 8:
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] * attributes['piR'])
 

@@ -512,7 +512,7 @@ class AssessmentInputs(gtk.Fixed):
             elif index == 3:
                 _attributes['configuration_id'] = int(combo.get_active())
             elif index == 4:
-                _attributes['construction_id'] = int(combo.get_active())
+                _attributes['consruction_id'] = int(combo.get_active())
 
             self._dtc_data_controller.request_set_attributes(
                 self._hardware_id, _attributes)

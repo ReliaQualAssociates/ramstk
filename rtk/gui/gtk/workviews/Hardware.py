@@ -11,6 +11,7 @@ import locale  # pragma: no cover
 from datetime import date  # pragma: no cover
 
 from pubsub import pub  # pylint: disable=E0401
+from sortedcontainers import SortedDict  # pylint: disable=E0401
 
 # Import other RTK modules.
 from Utilities import boolean_to_integer  # pylint: disable=E0401
@@ -24,7 +25,8 @@ from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwInductorAR, wvwInductorSR, wvwIntegratedCircuitAI, \
     wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR, \
     wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR, wvwRelayAI, wvwRelaySI, \
-    wvwRelayAR, wvwRelaySR
+    wvwRelayAR, wvwRelaySR, wvwResistorAI, wvwResistorSI, wvwResistorAR, \
+    wvwResistorSR
 
 
 class GeneralData(RTKWorkView):
@@ -338,9 +340,8 @@ class GeneralData(RTKWorkView):
         _model.clear()
 
         if category_id > 0:
-            _subcategory = self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[
-                category_id]
-
+            _subcategory = SortedDict(self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[
+                category_id])
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
@@ -1636,6 +1637,13 @@ class AssessmentInputs(RTKWorkView):
             _component_si = wvwIntegratedCircuitSI(
                 self._dtc_data_controller, self._hardware_id,
                 _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 3:
+            _component_ai = wvwResistorAI(self._dtc_data_controller,
+                                          self._hardware_id,
+                                          _attributes['subcategory_id'])
+            _component_si = wvwResistorSI(self._dtc_data_controller,
+                                          self._hardware_id,
+                                          _attributes['subcategory_id'])
         elif _attributes['category_id'] == 4:
             _component_ai = wvwCapacitorAI(self._dtc_data_controller,
                                            self._hardware_id,
@@ -2352,6 +2360,13 @@ class AssessmentResults(RTKWorkView):
             _component_sr = wvwIntegratedCircuitSR(
                 self._dtc_data_controller, self._hardware_id,
                 _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 3:
+            _component_ar = wvwResistorAR(self._dtc_data_controller,
+                                           self._hardware_id,
+                                           _attributes['subcategory_id'])
+            _component_sr = wvwResistorSR(self._dtc_data_controller,
+                                           self._hardware_id,
+                                           _attributes['subcategory_id'])
         elif _attributes['category_id'] == 4:
             _component_ar = wvwCapacitorAR(self._dtc_data_controller,
                                            self._hardware_id,

@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys
+
 from setuptools import find_packages, setup
 from setuptools.command.install import install as _install
 
@@ -22,6 +23,7 @@ class install(_install):
 
         self.post_install_script()
 
+
 if __name__ == '__main__':
     setup(
         name='RTK',
@@ -34,10 +36,11 @@ if __name__ == '__main__':
         license='BSD-3',
         url='https://github.com/weibullguy/rtk',
         python_requires='>=2.7, <4',
-        install_requires=['defusedxml', 'lifelines', 'lxml', 'matplotlib==1.4.3',
-                          'numpy', 'pandas', 'PyPubSub==3.3.0', 'scipy',
-                          'sortedcontainers', 'SQLAlchemy', 'SQLAlchemy-Utils',
-                          'statsmodels', 'treelib', 'xlrd', 'xlwt'],
+        install_requires=['defusedxml', 'lifelines', 'lxml',
+                          'matplotlib==1.4.3', 'numpy', 'pandas',
+                          'PyPubSub==3.3.0', 'scipy', 'sortedcontainers',
+                          'SQLAlchemy', 'SQLAlchemy-Utils', 'statsmodels',
+                          'treelib', 'xlrd', 'xlwt'],
         keywords='reliability RAMS engineering quality safety',
         scripts=[],
         packages=find_packages(exclude=['tests']),
