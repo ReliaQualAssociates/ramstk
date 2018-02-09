@@ -75,22 +75,28 @@ def do_parse_args():
     parser.set_defaults(verbose=True)
 
     # Which file(s) to check.
-    parser.add_option("-f", "--file",
-                      action='append',
-                      dest="filename",
-                      help="comma-separated list of files to check",
-                      metavar="FILE[S]")
+    parser.add_option(
+        "-f",
+        "--file",
+        action='append',
+        dest="filename",
+        help="comma-separated list of files to check",
+        metavar="FILE[S]")
 
     # How much to poop out to the screen.
-    parser.add_option("-v", "--verbose",
-                      action='store_true',
-                      dest='verbose',
-                      help="provide verbose output",
-                      default=True)
-    parser.add_option("-q", "--quiet",
-                      action='store_false',
-                      dest='verbose',
-                      help="provide less verbose output")
+    parser.add_option(
+        "-v",
+        "--verbose",
+        action='store_true',
+        dest='verbose',
+        help="provide verbose output",
+        default=True)
+    parser.add_option(
+        "-q",
+        "--quiet",
+        action='store_false',
+        dest='verbose',
+        help="provide less verbose output")
 
     # Which checkers to run.
     parser.add_option("--format",
@@ -134,10 +140,12 @@ def do_parse_args():
                            "exclude (bandit, flake8, pycodestyle, pylint, yapf)")
 
     # How to present the output.
-    parser.add_option("-c", "--color",
-                      action='store_true',
-                      dest='color',
-                      help="colorize outputs if color is supported (pylint)")
+    parser.add_option(
+        "-c",
+        "--color",
+        action='store_true',
+        dest='color',
+        help="colorize outputs if color is supported (pylint)")
     parser.add_option("-d", "--diff",
                       action='store_true',
                       dest='diff',
@@ -160,12 +168,13 @@ def do_parse_args():
                       help="redirect report to OUTPUT_FILE (bandit, flake8) " \
                            "or into files rather than stdout (pylint)",
                       default="n")
-    parser.add_option("--reports=<y_or_n>",
-                      action='store',
-                      type='string',
-                      dest='reports',
-                      help="display full report or only a summary (pylint)",
-                      default="y")
+    parser.add_option(
+        "--reports=<y_or_n>",
+        action='store',
+        type='string',
+        dest='reports',
+        help="display full report or only a summary (pylint)",
+        default="y")
 
     # How to run the checkers.
     parser.add_option("-a", "--auto",
@@ -173,24 +182,30 @@ def do_parse_args():
                       dest='auto',
                       help="automatically (in-line) apply recommended " \
                            "changes (isort, yapf)")
-    parser.add_option("-b", "--benchmark",
-                      action='store_false',
-                      dest='benchmark',
-                      help="benchmark code (flake8, pycodestyle)")
-    parser.add_option("--python3",
-                      action='store_false',
-                      dest='python3',
-                      help="analyze code for python3 required fixes")
-    parser.add_option("--parallel=<num>",
-                      action='store',
-                      type="int",
-                      dest='parallel',
-                      help="use <num> sub-processes (flake8, pylint, yapf)",
-                      default=1)
-    parser.add_option("-r", "--recursive",
-                      action='store_true',
-                      dest='recurse',
-                      help="run recursively over directories (bandit, isort, pylint, yapf)")
+    parser.add_option(
+        "-b",
+        "--benchmark",
+        action='store_false',
+        dest='benchmark',
+        help="benchmark code (flake8, pycodestyle)")
+    parser.add_option(
+        "--python3",
+        action='store_false',
+        dest='python3',
+        help="analyze code for python3 required fixes")
+    parser.add_option(
+        "--parallel=<num>",
+        action='store',
+        type="int",
+        dest='parallel',
+        help="use <num> sub-processes (flake8, pylint, yapf)",
+        default=1)
+    parser.add_option(
+        "-r",
+        "--recursive",
+        action='store_true',
+        dest='recurse',
+        help="run recursively over directories (bandit, isort, pylint, yapf)")
 
     parser.set_usage("test <checks> <options ...> [test(s) ...]")
     parser.epilog = """\
@@ -208,7 +223,7 @@ def do_find_files():
     modules = []
     scripts = []
 
-    print ("Finding python (*.py) files...")
+    print("Finding python (*.py) files...")
     skipdirs = ["./.git", "./.tox"]
     for root, dirs, files in os.walk("."):
         if root in modules:
@@ -237,7 +252,7 @@ def do_find_files():
                 ["/usr/bin/file", filename]):
                 scripts.append(filename)
 
-    files = [(f.startswith("./") and f[2:] or f) for f in (scripts + modules)]
+    files = [(f.startswith("./") and f[2:] or f) for f in scripts + modules]
 
     return files
 
@@ -254,10 +269,10 @@ def get_default_apps(files):
     is_py2 = False
     is_py3 = False  # In preparation for Python 3 support.
 
-    for f in files:
-        if os.path.isdir(f):
-            f = os.path.join(f, "__init__.py")
-        line = file(f).readline()
+    for _file in files:
+        if os.path.isdir(_file):
+            _file = os.path.join(_file, "__init__.py")
+        line = file(_file).readline()
         if not is_py2 and re.search("python[ 2]?", line):
             is_py2 = True
         elif not is_py3 and re.search("python3", line):
@@ -331,11 +346,11 @@ def _do_yapf(yapf, files, options):
     :return:
     :rtype:
     """
-    _yapf = "{0:s} ".format(yapf)
+    _yapf = "{0:s} --style=pep8 ".format(yapf)
 
     # Build up the options for yapf.
     if options.verbose:
-        _yapf += "-vv "
+        _yapf += "-v "
     if options.auto:
         _yapf += " --in-place"
     if options.diff:
@@ -348,7 +363,7 @@ def _do_yapf(yapf, files, options):
         _yapf += "--recursive "
 
     _yapf += " ".join(files)
-    print ("Executing {0:s}".format(_yapf))
+    print("Executing {0:s}".format(_yapf))
 
     os.system(_yapf)
 
@@ -394,7 +409,7 @@ def _do_isort(isort, files, options):
         _isort += "-rc "
 
     _isort += " ".join(files)
-    print ("Executing {0:s}".format(_isort))
+    print("Executing {0:s}".format(_isort))
 
     os.system(_isort)
 
@@ -434,7 +449,7 @@ def _do_bandit(bandit, files, options):
 
     _bandit += " ".join(files)
     _bandit += " ".join("config/")  # Check sql and xml files
-    print ("Executing {0:s}".format(_bandit))
+    print("Executing {0:s}".format(_bandit))
 
     os.system(_bandit)
 
@@ -484,7 +499,7 @@ def _do_flake8(flake8, files, options):
         _flake8 += "--jobs={0:d} ".format(options.parallel)
 
     _flake8 += " ".join(files)
-    print ("Executing {0:s}".format(_flake8))
+    print("Executing {0:s}".format(_flake8))
 
     os.system(_flake8)
 
@@ -516,7 +531,7 @@ def _do_pycodestyle(pycodestyle, files, options):
 
     # Build up the options for pycodestyle.
     if options.verbose:
-        _pycodestyle += "-vv "
+        _pycodestyle += "-v "
     else:
         _pycodestyle += "-q "
     if options.benchmark:
@@ -527,7 +542,7 @@ def _do_pycodestyle(pycodestyle, files, options):
         _pycodestyle += "--exclude={0:s} ".format(options.ignore)
 
     _pycodestyle += " ".join(files)
-    print ("Executing {0:s}".format(_pycodestyle))
+    print("Executing {0:s}".format(_pycodestyle))
 
     os.system(_pycodestyle)
 
@@ -557,7 +572,7 @@ def _do_pydocstyle(pydocstyle, files, options):
         _pydocstyle += "-v "
 
     _pydocstyle += " ".join(files)
-    print ("Executing {0:s}".format(_pydocstyle))
+    print("Executing {0:s}".format(_pydocstyle))
 
     os.system(_pydocstyle)
 
@@ -587,7 +602,7 @@ def _do_pylint(pylint, files, options):
     :return:
     :rtype:
     """
-    _pylint = "{0:s} --rcfile=.pylintrc ".format(pylint)
+    _pylint = "{0:s} ".format(pylint)
 
     # Build up the options for pylint.
     if options.color:
@@ -596,7 +611,7 @@ def _do_pylint(pylint, files, options):
         _pylint += "--output-format={0:s} ".format(options.output_format)
     if options.files_output != "n":
         _pylint += "--files-output=y "
-    if options.ignore != "":
+    if options.ignore is not None:
         _pylint += "--ignore={0:s} ".format(options.ignore)
     if options.parallel > 1:
         _pylint += "-j {0:d} ".format(options.parallel)
@@ -604,7 +619,7 @@ def _do_pylint(pylint, files, options):
         _pylint += "--reports=n "
 
     _pylint += " ".join(files)
-    print ("Executing {0:s}".format(_pylint))
+    print("Executing {0:s}".format(_pylint))
 
     os.system(_pylint)
 
@@ -635,7 +650,7 @@ def main():
        and/or pylint)
     4. Verify the MANIFEST.in file (check-manifest)
     """
-    options, args = do_parse_args()
+    options, __ = do_parse_args()
 
     # Get the list of files to check.
     files = options.filename
@@ -643,7 +658,8 @@ def main():
         files = do_find_files()
 
     # Find the absolute path to the executables.
-    yapf, isort, bandit, flake8, pycodestyle, pydocstyle, pylint, manifest = get_default_apps(files)
+    (yapf, isort, bandit, flake8, pycodestyle, pydocstyle, pylint,
+     manifest) = get_default_apps(files)
 
     # Execute the checks.
     if options.formats:
@@ -653,7 +669,7 @@ def main():
         _do_isort(isort, files, options)
 
     if options.security:
-        print ("Executing bandit")
+        print("Executing bandit")
 
     if options.quality:
         for checker in options.checkers:
@@ -667,7 +683,8 @@ def main():
                 _do_pydocstyle(pydocstyle, files, options)
 
     if options.manifest:
-        print ("Executing check_manifest")
+        print("Executing check_manifest")
+
 
 if __name__ == '__main__':
     sys.exit(main())

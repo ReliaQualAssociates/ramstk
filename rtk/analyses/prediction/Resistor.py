@@ -10,7 +10,7 @@
 
 import gettext
 
-from math import exp, sqrt
+from math import exp
 
 _ = gettext.gettext
 
@@ -459,22 +459,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
     _dic_piC = {10: [2.0, 1.0, 3.0, 1.5], 12: [2.0, 1.0]}
     _msg = ''
 
-    # Calculate the voltage ratio.
-    try:
-        attributes['voltage_dc_operating'] = sqrt(
-            attributes['resistance'] * attributes['power_operating'])
-        attributes['voltage_ratio'] = (
-            attributes['voltage_ac_operating'] +
-            attributes['voltage_dc_operating']) / attributes['voltage_rated']
-    except ZeroDivisionError:
-        attributes['voltage_ratio'] = 1.0
-
-    # Calculate the power ratio.
-    try:
-        attributes['power_ratio'] = (
-            attributes['power_operating'] / attributes['power_rated'])
-    except ZeroDivisionError:
-        attributes['power_ratio'] = 1.0
+    attributes = calculate_stress_ratios(**attributes)
 
     # Calculate the base hazard rate.
     if attributes['subcategory_id'] == 2:
@@ -612,6 +597,33 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912, R0914
             attributes['hazard_rate_active'] * attributes['piR'])
 
     return attributes, _msg
+
+
+def calculate_stress_ratios(**attributes):
+    """
+    Calculate the stress ratios.
+
+    Calculates the current, power, and voltage stress ratios.
+    """
+    try:
+        attributes['current_ratio'] = attributes['current_operating'] / attributes['current_rated']
+    except ZeroDivisionError:
+        attributes['voltage_ratio'] = 1.0
+
+    try:
+        attributes['power_ratio'] = (
+            attributes['power_operating'] / attributes['power_rated'])
+    except ZeroDivisionError:
+        attributes['power_ratio'] = 1.0
+
+    try:
+        attributes['voltage_ratio'] = (
+            attributes['voltage_ac_operating'] +
+            attributes['voltage_dc_operating']) / attributes['voltage_rated']
+    except ZeroDivisionError:
+        attributes['voltage_ratio'] = 1.0
+
+    return attributes
 
 
 def calculate_dormant_hazard_rate(**attributes):
