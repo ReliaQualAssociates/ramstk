@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Fuse Calculations Module."""
+"""Fuse Reliability Calculations Module."""
 
 import gettext
 

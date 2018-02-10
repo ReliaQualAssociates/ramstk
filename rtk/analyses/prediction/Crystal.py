@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Crystal Calculations Module."""
+"""Crystal Reliability Calculations Module."""
 
 import gettext
 

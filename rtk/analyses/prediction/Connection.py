@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.mil_hdbk_217f.Connection.py is part of the RTK
-#       Project
+#       rtk.analyses.prediction.Connection.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Connection Calculations Module."""
+"""Connection Reliability Calculations Module."""
 
 import gettext
 
@@ -382,7 +381,8 @@ def overstressed(**attributes):
 
         * Operating voltage > 70% rated voltage (harsh environment)
         * Operating current > 70% rated current (harsh environment)
-        * Operating temperature < 25C from rated temperature (harsh environment)
+        * Operating temperature < 25C from rated temperature (harsh
+          environment)
         * Operating voltage > 90% rated voltage (mild environment)
         * Operating current > 90% rated current (mild environment)
 

@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Filter Calculations Module."""
+"""Filter Reliability Calculations Module."""
 
 import gettext
 
@@ -88,10 +88,7 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _dic_lambda_b = {1: 0.022,
-                     2: 0.12,
-                     3: 0.12,
-                     4: 0.27}
+    _dic_lambda_b = {1: 0.022, 2: 0.12, 3: 0.12, 4: 0.27}
     _lst_piE = [
         1.0, 2.0, 6.0, 4.0, 9.0, 7.0, 9.0, 11.0, 13.0, 11.0, 0.8, 7.0, 15.0,
         120.0

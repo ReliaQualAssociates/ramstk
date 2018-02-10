@@ -5,7 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Meter Calculations Module."""
+"""Meter Reliability Calculations Module."""
 
 import gettext
 
@@ -154,8 +154,7 @@ def calculate_217f_part_stress(**attributes):
 
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 1:
-        attributes['piA'] = (1.7
-                             if (attributes['type_id']) - (1) else 1.0)
+        attributes['piA'] = (1.7 if (attributes['type_id']) - (1) else 1.0)
         attributes['piF'] = _lst_piF[attributes['application_id'] - 1]
 
     # Determine the temperature stress factor (piT).

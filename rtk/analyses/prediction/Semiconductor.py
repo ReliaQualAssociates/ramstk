@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.Semiconductor.py is part of the RTK
-#       Project
+#       rtk.analyses.prediction.Semiconductor.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Semiconductor Calculations Module."""
+"""Semiconductor Reliability Calculations Module."""
 
 import gettext
 

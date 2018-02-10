@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.Inductor.py is part of the RTK
-#       Project
+#       rtk.analyses.prediction.Inductor.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Inductor Calculations Module."""
+"""Inductor Reliability Calculations Module."""
 
 import gettext
 

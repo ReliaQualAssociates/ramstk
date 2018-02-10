@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.IntegratedCircuit.py is part of
-#       the RTK Project
+#       rtk.analyses.prediction.IntegratedCircuit.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Integrated Circuit Calculations Module."""
+"""Integrated Circuit Reliability Calculations Module."""
 
 import gettext
 
@@ -462,28 +461,6 @@ def calculate_217f_part_stress(**attributes):
         4: [3.0E-5, 2.01],
         5: [3.6E-4, 1.08]
     }
-    # Key is the subcategory ID, value is Ea or list containing Ea values.
-    _dic_ea = {
-        1:
-        0.65,
-        2: [
-            0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.45, 0.45, 0.5, 0.5, 0.6,
-            0.6, 0.6
-        ],
-        3:
-        0.65,
-        4:
-        0.65,
-        5:
-        0.6,
-        6:
-        0.6,
-        7:
-        0.6,
-        8:
-        0.6,
-        9: [1.5, 1.4]
-    }
     _dic_piA = {1: [1.0, 3.0, 3.0], 2: [1.0]}
     _dic_piPT = {1: 1.0, 7: 1.3, 2: 2.2, 8: 2.9, 3: 4.7, 9: 6.1}
     # Dictionary containing the number of element breakpoints for determining
@@ -514,38 +491,6 @@ def calculate_217f_part_stress(**attributes):
         0.5, 2.0, 4.0, 4.0, 6.0, 4.0, 5.0, 5.0, 8.0, 8.0, 0.5, 5.0, 12.0, 220.0
     ]
     _msg = ''
-
-    # Calculate the A1 factor for lambda_CYC.
-    attributes['A1'] = 6.817E-6 * attributes['n_cycles']
-
-    # Find the A2 factore for lambda_CYC.
-    attributes['A2'] = 0.0
-    if attributes['construction_id'] == 2:
-        if (attributes['n_cycles'] > 300000
-                and attributes['n_cycles'] <= 400000):
-            attributes['A2'] = 1.1
-        else:
-            attributes['A2'] = 2.3
-
-    # Calculate the B1 and B2 factors for lambda_CYC.
-    if attributes['construction_id'] == 1:
-        attributes['B1'] = ((attributes['n_elements'] / 16000.0)**0.5) * (exp(
-            (-0.15 / 8.63E-5) *
-            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
-             (1.0 / 333.0))))
-        attributes['B2'] = 0.0
-    elif attributes['construction_id'] == 2:
-        attributes['B1'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
-            (0.1 / 8.63E-5) * ((1.0 /
-                                (attributes['temperature_junction'] + 273.0)) -
-                               (1.0 / 303.0))))
-        attributes['B2'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
-            (-0.12 / 8.63E-5) *
-            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
-             (1.0 / 303.0))))
-    else:
-        attributes['B1'] = 0.0
-        attributes['B2'] = 0.0
 
     # Categorize the technology.
     if attributes['subcategory_id'] == 2 and attributes['technology_id'] == 11:
@@ -602,26 +547,7 @@ def calculate_217f_part_stress(**attributes):
         attributes['C2'] = 0.0
 
     # Calculate the temperature factor.
-    if attributes['subcategory_id'] == 2:
-        _ref_temp = 296.0
-        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id']
-                                                    - 1]
-    elif attributes['subcategory_id'] == 9:
-        _ref_temp = 423.0
-        _ea = _dic_ea[attributes['subcategory_id']][attributes['type_id'] - 1]
-    else:
-        _ref_temp = 296.0
-        try:
-            _ea = _dic_ea[attributes['subcategory_id']]
-        except KeyError:
-            _ea = 0.0
-    attributes['temperature_junction'] = (
-        attributes['temperature_case'] +
-        attributes['power_operating'] * attributes['theta_jc'])
-    attributes['piT'] = 0.1 * exp(
-        (-_ea / 8.617E-5) * ((1.0 /
-                              (attributes['temperature_junction'] + 273)) -
-                             (1.0 / _ref_temp)))
+    attributes = _calculate_temperature_factor(**attributes)
 
     # Calculate the learning factor.
     attributes['piL'] = 0.01 * exp(
@@ -643,16 +569,6 @@ def calculate_217f_part_stress(**attributes):
             'integrated circuit, hardware ID: ' \
             '{0:d}'.format(attributes['hardware_id'])
 
-    # Find the error code correction factor (piECC) for lambdaCYC.
-    if attributes['type_id'] == 1:
-        attributes['piECC'] = 1.0
-    elif attributes['type_id'] == 2:
-        attributes['piECC'] = 0.72
-    elif attributes['type_id'] == 3:
-        attributes['piECC'] = 0.68
-    else:
-        attributes['piECC'] = 0.0
-
     # Determine the active hazard rate.
     if attributes['subcategory_id'] in [1, 2, 3, 4]:
         attributes['hazard_rate_active'] = ((
@@ -660,13 +576,7 @@ def calculate_217f_part_stress(**attributes):
             attributes['C2'] * attributes['piE']) * attributes['piQ'] *
                                             attributes['piL'])
     elif attributes['subcategory_id'] in [5, 6, 7, 8]:
-        if attributes['subcategory_id'] == 6:
-            attributes['lambda_cyc'] = ((
-                attributes['A1'] * attributes['B1'] +
-                (attributes['A2'] * attributes['B2'] / attributes['piQ'])) *
-                                        attributes['piECC'])
-        else:
-            attributes['lambda_cyc'] = 0.0
+        attributes = _calculate_lambda_cyclic(**attributes)
 
         attributes['hazard_rate_active'] = (
             (attributes['C1'] * attributes['piT'] +
@@ -775,5 +685,108 @@ def overstressed(**attributes):
             _reason_num += 1
 
     attributes['reason'] = _reason
+
+    return attributes
+
+
+def _calculate_lambda_cyclic(**attributes):
+    """Calculate the write cycle hazard rate for EEPROMs."""
+    # Calculate the A1 factor for lambda_CYC.
+    attributes['A1'] = 6.817E-6 * attributes['n_cycles']
+
+    # Find the A2 factore for lambda_CYC.
+    attributes['A2'] = 0.0
+    if attributes['construction_id'] == 2:
+        if (attributes['n_cycles'] > 300000
+                and attributes['n_cycles'] <= 400000):
+            attributes['A2'] = 1.1
+        else:
+            attributes['A2'] = 2.3
+
+    # Calculate the B1 and B2 factors for lambda_CYC.
+    if attributes['construction_id'] == 1:
+        attributes['B1'] = ((attributes['n_elements'] / 16000.0)**0.5) * (exp(
+            (-0.15 / 8.63E-5) *
+            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
+             (1.0 / 333.0))))
+        attributes['B2'] = 0.0
+    elif attributes['construction_id'] == 2:
+        attributes['B1'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
+            (0.1 / 8.63E-5) * ((1.0 /
+                                (attributes['temperature_junction'] + 273.0)) -
+                               (1.0 / 303.0))))
+        attributes['B2'] = ((attributes['n_elements'] / 64000.0)**0.25) * (exp(
+            (-0.12 / 8.63E-5) *
+            ((1.0 / (attributes['temperature_junction'] + 273.0)) -
+             (1.0 / 303.0))))
+    else:
+        attributes['B1'] = 0.0
+        attributes['B2'] = 0.0
+
+    # Find the error code correction factor (piECC) for lambdaCYC.
+    if attributes['type_id'] == 1:
+        attributes['piECC'] = 1.0
+    elif attributes['type_id'] == 2:
+        attributes['piECC'] = 0.72
+    elif attributes['type_id'] == 3:
+        attributes['piECC'] = 0.68
+    else:
+        attributes['piECC'] = 0.0
+
+    if attributes['subcategory_id'] == 6:
+        attributes['lambda_cyc'] = ((
+            attributes['A1'] * attributes['B1'] +
+            (attributes['A2'] * attributes['B2'] / attributes['piQ'])) *
+                                    attributes['piECC'])
+    else:
+        attributes['lambda_cyc'] = 0.0
+
+    return attributes
+
+
+def _calculate_temperature_factor(**attributes):
+    """Calculate the temperature factor."""
+    # Key is the subcategory ID, value is Ea or list containing Ea values.
+    _dic_ea = {
+        1:
+        0.65,
+        2: [
+            0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.4, 0.45, 0.45, 0.5, 0.5, 0.6,
+            0.6, 0.6
+        ],
+        3:
+        0.65,
+        4:
+        0.65,
+        5:
+        0.6,
+        6:
+        0.6,
+        7:
+        0.6,
+        8:
+        0.6,
+        9: [1.5, 1.4]
+    }
+    if attributes['subcategory_id'] == 2:
+        _ref_temp = 296.0
+        _ea = _dic_ea[attributes['subcategory_id']][attributes['family_id']
+                                                    - 1]
+    elif attributes['subcategory_id'] == 9:
+        _ref_temp = 423.0
+        _ea = _dic_ea[attributes['subcategory_id']][attributes['type_id'] - 1]
+    else:
+        _ref_temp = 296.0
+        try:
+            _ea = _dic_ea[attributes['subcategory_id']]
+        except KeyError:
+            _ea = 0.0
+    attributes['temperature_junction'] = (
+        attributes['temperature_case'] +
+        attributes['power_operating'] * attributes['theta_jc'])
+    attributes['piT'] = 0.1 * exp(
+        (-_ea / 8.617E-5) * ((1.0 /
+                              (attributes['temperature_junction'] + 273)) -
+                             (1.0 / _ref_temp)))
 
     return attributes

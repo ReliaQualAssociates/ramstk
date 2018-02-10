@@ -1,12 +1,11 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.mil_hdbk_217f.Capacitor.py is part of the RTK
-#       Project
+#       rtk.analyses.prediction.Capacitor.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Capacitor Calculations Module."""
+"""Capacitor Reliability Calculations Module."""
 
 import gettext
 
@@ -353,8 +352,10 @@ def calculate_217f_part_stress(**attributes):
     _f2 = _dic_factors[attributes['subcategory_id']][2]
     _f3 = _dic_factors[attributes['subcategory_id']][3]
     _f4 = _dic_factors[attributes['subcategory_id']][4]
-    attributes['lambda_b'] = _f0 * ((attributes['voltage_ratio'] / _f1)**_f2 + 1.0) * exp(
-        _f3 * ((attributes['temperature_active'] + 273.0) / _ref_temp)**_f4)
+    attributes['lambda_b'] = _f0 * (
+        (attributes['voltage_ratio'] / _f1)**_f2 + 1.0) * exp(
+            _f3 *
+            ((attributes['temperature_active'] + 273.0) / _ref_temp)**_f4)
 
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
