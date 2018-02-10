@@ -10,13 +10,13 @@ import locale  # pragma: no cover
 
 from datetime import date  # pragma: no cover
 
-from pubsub import pub  # pylint: disable=E0401
-from sortedcontainers import SortedDict  # pylint: disable=E0401
+from pubsub import pub
+from sortedcontainers import SortedDict
 
 # Import other RTK modules.
-from Utilities import boolean_to_integer  # pylint: disable=E0401
-from gui.gtk import rtk  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
+from rtk.Utilities import boolean_to_integer
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .WorkView import RTKWorkView
 from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwCapacitorSR, wvwConnectionAI, wvwConnectionSI, wvwConnectionAR, \
@@ -340,8 +340,8 @@ class GeneralData(RTKWorkView):
         _model.clear()
 
         if category_id > 0:
-            _subcategory = SortedDict(self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[
-                category_id])
+            _subcategory = SortedDict(
+                self._mdcRTK.RTK_CONFIGURATION.RTK_SUBCATEGORIES[category_id])
             _data = []
             for _key in _subcategory:
                 _data.append([_subcategory[_key]])
@@ -2362,11 +2362,11 @@ class AssessmentResults(RTKWorkView):
                 _attributes['subcategory_id'])
         elif _attributes['category_id'] == 3:
             _component_ar = wvwResistorAR(self._dtc_data_controller,
-                                           self._hardware_id,
-                                           _attributes['subcategory_id'])
+                                          self._hardware_id,
+                                          _attributes['subcategory_id'])
             _component_sr = wvwResistorSR(self._dtc_data_controller,
-                                           self._hardware_id,
-                                           _attributes['subcategory_id'])
+                                          self._hardware_id,
+                                          _attributes['subcategory_id'])
         elif _attributes['category_id'] == 4:
             _component_ar = wvwCapacitorAR(self._dtc_data_controller,
                                            self._hardware_id,

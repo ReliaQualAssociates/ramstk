@@ -71,6 +71,7 @@ def do_calculate_217f_part_count(**attributes):
     """
     _msg = ''
 
+    #attributes, __ = {1: IntegratedCircuit.calculate_217f_part_count(**attributes)}
     if attributes['category_id'] == 1:
         attributes, __ = IntegratedCircuit.calculate_217f_part_count(
             **attributes)
@@ -539,8 +540,8 @@ def do_calculate_dormant_hazard_rate(**attributes):
                 attributes['hazard_rate_dormant'] = 0.0
         except KeyError:
             attributes['hazard_rate_dormant'] = 0.0
-            _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-                'Active ID: {0:d}, Dormant ID: ' \
+            _msg = 'RTK ERROR: Unknown active and/or dormant environment ' \
+                'ID.  Active ID: {0:d}, Dormant ID: ' \
                 '{1:d}'.format(attributes['environment_active_id'],
                                attributes['environment_dormant_id'])
 
@@ -553,8 +554,8 @@ def do_calculate_dormant_hazard_rate(**attributes):
                  attributes['hazard_rate_active'])
         except KeyError:
             attributes['hazard_rate_dormant'] = 0.0
-            _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-                'Active ID: {0:d}, Dormant ID: ' \
+            _msg = 'RTK ERROR: Unknown active and/or dormant environment ' \
+                'ID.  Active ID: {0:d}, Dormant ID: ' \
                 '{1:d}'.format(attributes['environment_active_id'],
                                attributes['environment_dormant_id'])
 
@@ -599,8 +600,6 @@ def do_check_overstress(**attributes):
              with updated values
     :rtype: dict
     """
-    _msg = ''
-
     if attributes['category_id'] == 1:
         attributes = IntegratedCircuit.overstressed(**attributes)
     elif attributes['category_id'] == 2:
