@@ -15,51 +15,6 @@ from math import exp, log
 _ = gettext.gettext
 
 
-def calculate(**attributes):
-    """
-    Calculate the hazard rate for a integrated circuit.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _msg = ''
-
-    if attributes['hazard_rate_method_id'] == 1:
-        # There is no parts count for VLSI.
-        if attributes['subcategory_id'] == 10:
-            attributes, _msg = calculate_217f_part_stress(**attributes)
-        else:  # But there is for everything else.
-            attributes, _msg = calculate_217f_part_count(**attributes)
-    elif attributes['hazard_rate_method_id'] == 2:
-        attributes, _msg = calculate_217f_part_stress(**attributes)
-
-    if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating integrated circuit, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'integrated circuit, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['quantity'] < 1:
-        _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
-            'calculating integrated circuit, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
-                                        attributes['add_adj_factor']) * \
-        (attributes['duty_cycle'] / 100.0) * \
-        attributes['mult_adj_factor'] * attributes['quantity']
-
-    attributes, _msg = calculate_dormant_hazard_rate(**attributes)
-    attributes = overstressed(**attributes)
-
-    return attributes, _msg
-
-
 def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a integrated circuit.
@@ -765,88 +720,6 @@ def calculate_217f_part_stress(**attributes):
     return attributes, _msg
 
 
-def calculate_dormant_hazard_rate(**attributes):
-    """
-    Calculate the dormant hazard rate for a integrated circuit.
-
-    All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for integrated
-    circuits).
-
-    +-------+--------+--------+-------+-------+-------+-------+
-    |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-    |Active |Active  |Active  |Active |Active |Active |Active |
-    |to     |to      |to      |to     |to     |to     |to     |
-    |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-    |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    +=======+========+========+=======+=======+=======+=======+
-    | 0.08  |  0.06  |  0.04  | 0.06  | 0.05  | 0.10  | 0.30  |
-    +-------+--------+--------+-------+-------+-------+-------+
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _dic_hr_dormant = {
-        1: {
-            2: 0.08
-        },
-        2: {
-            2: 0.08
-        },
-        3: {
-            2: 0.08
-        },
-        4: {
-            2: 0.05,
-            3: 0.06
-        },
-        5: {
-            2: 0.05,
-            3: 0.06
-        },
-        6: {
-            1: 0.06,
-            2: 0.04
-        },
-        7: {
-            1: 0.06,
-            2: 0.04
-        },
-        8: {
-            1: 0.06,
-            2: 0.04
-        },
-        9: {
-            1: 0.06,
-            2: 0.04
-        },
-        10: {
-            1: 0.06,
-            2: 0.04
-        },
-        11: {
-            2: 0.1,
-            4: 0.3
-        }
-    }
-    _msg = ''
-
-    try:
-        attributes['hazard_rate_dormant'] = \
-            (_dic_hr_dormant[attributes['environment_active_id']]
-             [attributes['environment_dormant_id']] *
-             attributes['hazard_rate_active'])
-    except KeyError:
-        attributes['hazard_rate_dormant'] = 0.0
-        _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-               'Active ID: {0:d}, Dormant ID: ' \
-               '{1:d}'.format(attributes['environment_active_id'],
-                              attributes['environment_dormant_id'])
-
-    return attributes, _msg
-
-
 def overstressed(**attributes):
     """
     Determine whether the integrated circuit is overstressed.
@@ -865,22 +738,6 @@ def overstressed(**attributes):
     _max_junction_temperature = 125.0
 
     attributes['overstress'] = False
-    _voltage_operating = (attributes['voltage_ac_operating'] +
-                          attributes['voltage_dc_operating'])
-
-    # Calculate the voltage stress.
-    try:
-        attributes['voltage_ratio'] = (
-            _voltage_operating / attributes['voltage_rated'])
-    except ZeroDivisionError:
-        attributes['voltage_ratio'] = 1.0
-
-    # Calculate the current stress.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.

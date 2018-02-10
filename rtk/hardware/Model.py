@@ -12,8 +12,7 @@ from treelib.exceptions import DuplicatedNodeIdError  # pragma: no cover
 
 # Import other RTK modules.
 # pylint: disable=E0401
-from analyses.prediction import Capacitor, Connection, Crystal, Filter, Fuse, \
-    Lamp, Inductor, IntegratedCircuit, Meter, Relay, Resistor # pragma: no cover
+from analyses.prediction import Component  # pragma: no cover
 # pylint: disable=E0401
 from datamodels import RTKDataModel  # pragma: no cover
 # pylint: disable=E0401
@@ -362,33 +361,8 @@ class HardwareBoMDataModel(RTKDataModel):
         _attributes = self.tree.get_node(hardware_id).data
 
         if _attributes is not None:
-            if _attributes['category_id'] == 1:
-                _attributes, __ = IntegratedCircuit.calculate(**_attributes)
-            elif _attributes['category_id'] == 2:
-                print("Semiconductor")
-            elif _attributes['category_id'] == 3:
-                _attributes, __ = Resistor.calculate(**_attributes)
-            elif _attributes['category_id'] == 4:
-                _attributes, __ = Capacitor.calculate(**_attributes)
-            elif _attributes['category_id'] == 5:
-                _attributes, __ = Inductor.calculate(**_attributes)
-            elif _attributes['category_id'] == 6:
-                _attributes, __ = Relay.calculate(**_attributes)
-            elif _attributes['category_id'] == 7:
-                print("Switch")
-            elif _attributes['category_id'] == 8:
-                _attributes, __ = Connection.calculate(**_attributes)
-            elif _attributes['category_id'] == 9:
-                _attributes, __ = Meter.calculate(**_attributes)
-            elif _attributes['category_id'] == 10:
-                if _attributes['subcategory_id'] == 1:
-                    _attributes, __ = Crystal.calculate(**_attributes)
-                elif _attributes['subcategory_id'] == 2:
-                    _attributes, __ = Lamp.calculate(**_attributes)
-                elif _attributes['subcategory_id'] == 3:
-                    _attributes, __ = Fuse.calculate(**_attributes)
-                elif _attributes['subcategory_id'] == 4:
-                    _attributes, __ = Filter.calculate(**_attributes)
+            if _attributes['category_id'] > 0:
+                _attributes, __ = Component.calculate(**_attributes)
             else:
                 # If the assembly is to be assessed, set the attributes that
                 # are the sum of the child attributes to zero.  Without doing

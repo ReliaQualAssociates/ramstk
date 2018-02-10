@@ -15,46 +15,6 @@ from math import exp
 _ = gettext.gettext
 
 
-def calculate(**attributes):
-    """
-    Calculate the hazard rate for a capacitor.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _msg = ''
-
-    if attributes['hazard_rate_method_id'] == 1:
-        attributes, _msg = calculate_217f_part_count(**attributes)
-    elif attributes['hazard_rate_method_id'] == 2:
-        attributes, _msg = calculate_217f_part_stress(**attributes)
-
-    if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'capacitor, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    if attributes['quantity'] < 1:
-        _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
-            'calculating capacitor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
-                                        attributes['add_adj_factor']) * \
-        (attributes['duty_cycle'] / 100.0) * \
-        attributes['mult_adj_factor'] * attributes['quantity']
-
-    attributes, _msg = calculate_dormant_hazard_rate(**attributes)
-    attributes = overstressed(**attributes)
-
-    return attributes, _msg
-
-
 def calculate_217f_part_count(**attributes):
     """
     Calculate the part count hazard rate for a capacitor.
@@ -386,15 +346,6 @@ def calculate_217f_part_stress(**attributes):
 
     _msg = ''
 
-    # Calculate the voltage stress.
-    try:
-        _stress = (
-            attributes['voltage_dc_operating'] +
-            attributes['voltage_ac_operating']) / attributes['voltage_rated']
-    except ZeroDivisionError:
-        _stress = 1.0
-    attributes['voltage_ratio'] = _stress
-
     # Calculate the base hazard rate.
     _ref_temp = _dic_ref_temp[attributes['temperature_rated_max']]
     _f0 = _dic_factors[attributes['subcategory_id']][0]
@@ -402,7 +353,7 @@ def calculate_217f_part_stress(**attributes):
     _f2 = _dic_factors[attributes['subcategory_id']][2]
     _f3 = _dic_factors[attributes['subcategory_id']][3]
     _f4 = _dic_factors[attributes['subcategory_id']][4]
-    attributes['lambda_b'] = _f0 * ((_stress / _f1)**_f2 + 1.0) * exp(
+    attributes['lambda_b'] = _f0 * ((attributes['voltage_ratio'] / _f1)**_f2 + 1.0) * exp(
         _f3 * ((attributes['temperature_active'] + 273.0) / _ref_temp)**_f4)
 
     if attributes['lambda_b'] <= 0.0:
@@ -457,87 +408,6 @@ def calculate_217f_part_stress(**attributes):
     return attributes, _msg
 
 
-def calculate_dormant_hazard_rate(**attributes):
-    """
-    Calculate the dormant hazard rate for a capacitor.
-
-    All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for capacitors).
-
-    +-------+--------+--------+-------+-------+-------+-------+
-    |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-    |Active |Active  |Active  |Active |Active |Active |Active |
-    |to     |to      |to      |to     |to     |to     |to     |
-    |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-    |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    +=======+========+========+=======+=======+=======+=======+
-    | 0.10  |  0.10  |  0.03  | 0.10  | 0.04  | 0.20  | 0.40  |
-    +-------+--------+--------+-------+-------+-------+-------+
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _dic_hr_dormant = {
-        1: {
-            2: 0.1
-        },
-        2: {
-            2: 0.1
-        },
-        3: {
-            2: 0.1
-        },
-        4: {
-            2: 0.04,
-            3: 0.1
-        },
-        5: {
-            2: 0.04,
-            3: 0.1
-        },
-        6: {
-            1: 0.1,
-            2: 0.03
-        },
-        7: {
-            1: 0.1,
-            2: 0.03
-        },
-        8: {
-            1: 0.1,
-            2: 0.03
-        },
-        9: {
-            1: 0.1,
-            2: 0.03
-        },
-        10: {
-            1: 0.1,
-            2: 0.03
-        },
-        11: {
-            2: 0.4,
-            4: 0.2
-        }
-    }
-    _msg = ''
-
-    try:
-        attributes['hazard_rate_dormant'] = \
-            (_dic_hr_dormant[attributes['environment_active_id']]
-             [attributes['environment_dormant_id']] *
-             attributes['hazard_rate_active'])
-    except KeyError:
-        attributes['hazard_rate_dormant'] = 0.0
-        _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-               'Active ID: {0:d}, Dormant ID: ' \
-               '{1:d}'.format(attributes['environment_active_id'],
-                              attributes['environment_dormant_id'])
-
-    return attributes, _msg
-
-
 def overstressed(**attributes):
     """
     Determine whether the capacitor is overstressed.
@@ -554,15 +424,6 @@ def overstressed(**attributes):
     _harsh = True
 
     attributes['overstress'] = False
-    _voltage_operating = (attributes['voltage_ac_operating'] +
-                          attributes['voltage_dc_operating'])
-
-    # Calculate the voltage stress.
-    try:
-        attributes['voltage_ratio'] = (
-            _voltage_operating / attributes['voltage_rated'])
-    except ZeroDivisionError:
-        attributes['voltage_ratio'] = 1.0
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.
@@ -570,7 +431,7 @@ def overstressed(**attributes):
         _harsh = False
 
     if _harsh:
-        if _voltage_operating > 0.60 * attributes['voltage_rated']:
+        if attributes['voltage_ratio'] > 0.60:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 60% rated voltage.\n")
@@ -583,7 +444,7 @@ def overstressed(**attributes):
                   u"temperature.\n")
             _reason_num += 1
     else:
-        if _voltage_operating > 0.90 * attributes['voltage_rated']:
+        if attributes['voltage_rated'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
                 _(u". Operating voltage > 90% rated voltage.\n")
