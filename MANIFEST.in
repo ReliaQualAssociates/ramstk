@@ -12,14 +12,12 @@ recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include po *.pot
 recursive-include rtk *.py
-recursive-include tests *.cfg
-recursive-include tests *.dirs
-recursive-include tests *.py
 recursive-include config *.conf *.png *.sql *.xml
 recursive-include docs *.html *.tar.xz
 
 exclude .pylintrc
 exclude tools
+exclude tests
 recursive-exclude config *.map
 recursive-exclude tests *.suites
 
@@ -28,4 +26,5 @@ recursive-exclude docs/api/_build *
 recursive-exclude docs/api/_temp *
 recursive-exclude docs/api/source *
 recursive-exclude po *.mo
+recursive-exclude tests *
 recursive-exclude tools *

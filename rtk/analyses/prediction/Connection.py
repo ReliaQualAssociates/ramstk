@@ -1,58 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.mil_hdbk_217f.Connection.py is part of the RTK
-#       Project
+#       rtk.analyses.prediction.Connection.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Connection Calculations Module."""
+"""Connection Reliability Calculations Module."""
 
 import gettext
 
 from math import exp
 
 _ = gettext.gettext
-
-
-def calculate(**attributes):
-    """
-    Calculate the hazard rate for a connection.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _msg = ''
-
-    if attributes['hazard_rate_method_id'] == 1:
-        attributes, _msg = calculate_217f_part_count(**attributes)
-    elif attributes['hazard_rate_method_id'] == 2:
-        attributes, _msg = calculate_217f_part_stress(**attributes)
-
-    if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating connection, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'connection, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    if attributes['quantity'] < 1:
-        _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
-            'calculating connection, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
-                                        attributes['add_adj_factor']) * \
-        (attributes['duty_cycle'] / 100.0) * \
-        attributes['mult_adj_factor'] * attributes['quantity']
-
-    attributes, _msg = calculate_dormant_hazard_rate(**attributes)
-    attributes = overstressed(**attributes)
-
-    return attributes, _msg
 
 
 def calculate_217f_part_count(**attributes):
@@ -413,57 +372,6 @@ def calculate_217f_part_stress(**attributes):
     return attributes, _msg
 
 
-def calculate_dormant_hazard_rate(**attributes):
-    """
-    Calculate the dormant hazard rate for a connection.
-
-    All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for connections).
-
-    +-------+--------+--------+-------+-------+-------+-------+
-    |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-    |Active |Active  |Active  |Active |Active |Active |Active |
-    |to     |to      |to      |to     |to     |to     |to     |
-    |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-    |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    +=======+========+========+=======+=======+=======+=======+
-    | 0.005 |  0.005 |  0.003 | 0.008 | 0.003 | 0.02  | 0.03  |
-    +-------+--------+--------+-------+-------+-------+-------+
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _dic_hr_dormant = {
-        1: [0.0, 0.005, 0.0, 0.0],
-        2: [0.0, 0.005, 0.0, 0.0],
-        3: [0.0, 0.005, 0.0, 0.0],
-        4: [0.0, 0.003, 0.008, 0.0],
-        5: [0.0, 0.003, 0.008, 0.0],
-        6: [0.0005, 0.003, 0.0, 0.0],
-        7: [0.0005, 0.003, 0.0, 0.0],
-        8: [0.0005, 0.003, 0.0, 0.0],
-        9: [0.0005, 0.003, 0.0, 0.0],
-        10: [0.0005, 0.003, 0.0, 0.0],
-        11: [0.0, 0.03, 0.0, 0.02]
-    }
-    _msg = ''
-
-    try:
-        attributes['hazard_rate_dormant'] = \
-            (_dic_hr_dormant[attributes['environment_active_id']]
-             [attributes['environment_dormant_id'] - 1] *
-             attributes['hazard_rate_active'])
-    except KeyError:
-        attributes['hazard_rate_dormant'] = 0.0
-        _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-               'Active ID: {0:d}, Dormant ID: ' \
-               '{1:d}'.format(attributes['environment_active_id'],
-                              attributes['environment_dormant_id'])
-
-    return attributes, _msg
-
-
 def overstressed(**attributes):
     """
     Determine whether the connection is overstressed.
@@ -473,7 +381,8 @@ def overstressed(**attributes):
 
         * Operating voltage > 70% rated voltage (harsh environment)
         * Operating current > 70% rated current (harsh environment)
-        * Operating temperature < 25C from rated temperature (harsh environment)
+        * Operating temperature < 25C from rated temperature (harsh
+          environment)
         * Operating voltage > 90% rated voltage (mild environment)
         * Operating current > 90% rated current (mild environment)
 
@@ -487,22 +396,6 @@ def overstressed(**attributes):
     _harsh = True
 
     attributes['overstress'] = False
-    _voltage_operating = (attributes['voltage_ac_operating'] +
-                          attributes['voltage_dc_operating'])
-
-    # Calculate the voltage stress.
-    try:
-        attributes['voltage_ratio'] = (
-            _voltage_operating / attributes['voltage_rated'])
-    except ZeroDivisionError:
-        attributes['voltage_ratio'] = 1.0
-
-    # Calculate the current stress.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.

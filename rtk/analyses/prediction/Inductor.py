@@ -1,62 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.Inductor.py is part of the RTK
-#       Project
+#       rtk.analyses.prediction.Inductor.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Inductor Calculations Module."""
+"""Inductor Reliability Calculations Module."""
 
 import gettext
 
 from math import exp
 
 _ = gettext.gettext
-
-
-def calculate(**attributes):
-    """
-    Calculate the hazard rate for a inductor.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _msg = ''
-
-    if attributes['hazard_rate_method_id'] == 1:
-        attributes, _msg = calculate_217f_part_count(**attributes)
-    elif attributes['hazard_rate_method_id'] == 2:
-        attributes = calculate_hot_spot_temperature(**attributes)
-        attributes, _msg = calculate_217f_part_stress(**attributes)
-
-    if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating inductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    if attributes['quantity'] < 1:
-        _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
-            'calculating inductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
-                                        attributes['add_adj_factor']) * \
-        (attributes['duty_cycle'] / 100.0) * \
-        attributes['mult_adj_factor'] * attributes['quantity']
-
-    # Only transformers have dormant hazard rates.
-    if attributes['subcategory_id'] == 1:
-        attributes, _msg = calculate_dormant_hazard_rate(**attributes)
-
-    attributes = overstressed(**attributes)
-
-    return attributes, _msg
 
 
 def calculate_217f_part_count(**attributes):
@@ -280,89 +235,6 @@ def calculate_217f_part_stress(**attributes):
     return attributes, _msg
 
 
-def calculate_dormant_hazard_rate(**attributes):
-    """
-    Calculate the dormant hazard rate for an inductor.
-
-    All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for inductors).
-
-    Only transformers have dormant hazard rate adjustment factors.
-
-    +-------+--------+--------+-------+-------+-------+-------+
-    |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-    |Active |Active  |Active  |Active |Active |Active |Active |
-    |to     |to      |to      |to     |to     |to     |to     |
-    |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-    |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    +=======+========+========+=======+=======+=======+=======+
-    | 0.20  |  0.20  |  0.20  | 0.30  | 0.30  | 0.50  | 1.00  |
-    +-------+--------+--------+-------+-------+-------+-------+
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _dic_hr_dormant = {
-        1: {
-            2: 0.2
-        },
-        2: {
-            2: 0.2
-        },
-        3: {
-            2: 0.2
-        },
-        4: {
-            2: 0.3,
-            3: 0.3
-        },
-        5: {
-            2: 0.3,
-            3: 0.3
-        },
-        6: {
-            1: 0.2,
-            2: 0.2
-        },
-        7: {
-            1: 0.2,
-            2: 0.2
-        },
-        8: {
-            1: 0.2,
-            2: 0.2
-        },
-        9: {
-            1: 0.2,
-            2: 0.2
-        },
-        10: {
-            1: 0.2,
-            2: 0.2
-        },
-        11: {
-            2: 1.0,
-            4: 0.5
-        }
-    }
-    _msg = ''
-
-    try:
-        attributes['hazard_rate_dormant'] = \
-            (_dic_hr_dormant[attributes['environment_active_id']]
-             [attributes['environment_dormant_id']] *
-             attributes['hazard_rate_active'])
-    except KeyError:
-        attributes['hazard_rate_dormant'] = 0.0
-        _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-               'Active ID: {0:d}, Dormant ID: ' \
-               '{1:d}'.format(attributes['environment_active_id'],
-                              attributes['environment_dormant_id'])
-
-    return attributes, _msg
-
-
 def overstressed(**attributes):
     """
     Determine whether the inductor is overstressed.
@@ -379,21 +251,6 @@ def overstressed(**attributes):
     _harsh = True
 
     attributes['overstress'] = False
-
-    # Calculate the current ratio.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
-
-    # Calculate the voltage ratio.
-    try:
-        attributes['voltage_ratio'] = (
-            (attributes['voltage_ac_operating'] +
-             attributes['voltage_dc_operating']) / attributes['voltage_rated'])
-    except ZeroDivisionError:
-        attributes['voltage_ratio'] = 1.0
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.

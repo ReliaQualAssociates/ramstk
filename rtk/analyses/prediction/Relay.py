@@ -5,53 +5,13 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Relay Calculations Module."""
+"""Relay Reliability Calculations Module."""
 
 import gettext
 
 from math import exp
 
 _ = gettext.gettext
-
-
-def calculate(**attributes):
-    """
-    Calculate the hazard rate for a relay.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _msg = ''
-
-    if attributes['hazard_rate_method_id'] == 1:
-        attributes, _msg = calculate_217f_part_count(**attributes)
-    elif attributes['hazard_rate_method_id'] == 2:
-        attributes, _msg = calculate_217f_part_stress(**attributes)
-
-    if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating relay, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'relay, hardware ID: {0:d}'.format(attributes['hardware_id'])
-
-    if attributes['quantity'] < 1:
-        _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
-            'calculating relay, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
-                                        attributes['add_adj_factor']) * \
-        (attributes['duty_cycle'] / 100.0) * \
-        attributes['mult_adj_factor'] * attributes['quantity']
-
-    attributes, _msg = calculate_dormant_hazard_rate(**attributes)
-    attributes = overstressed(**attributes)
-
-    return attributes, _msg
 
 
 def calculate_217f_part_count(**attributes):
@@ -202,13 +162,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     }
     _msg = ''
 
-    # Calculate the current ratio.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
-
     # Calculate the base hazard rate.
     if attributes['subcategory_id'] == 1:
         _f0 = _dic_factors[attributes['subcategory_id']][attributes['type_id']
@@ -303,87 +256,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     return attributes, _msg
 
 
-def calculate_dormant_hazard_rate(**attributes):
-    """
-    Calculate the dormant hazard rate for a relay.
-
-    All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for relays).
-
-    +-------+--------+--------+-------+-------+-------+-------+
-    |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-    |Active |Active  |Active  |Active |Active |Active |Active |
-    |to     |to      |to      |to     |to     |to     |to     |
-    |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-    |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    +=======+========+========+=======+=======+=======+=======+
-    | 0.20  |  0.20  |  0.04  | 0.30  | 0.08  | 0.40  | 0.90  |
-    +-------+--------+--------+-------+-------+-------+-------+
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _dic_hr_dormant = {
-        1: {
-            2: 0.2
-        },
-        2: {
-            2: 0.2
-        },
-        3: {
-            2: 0.2
-        },
-        4: {
-            2: 0.08,
-            3: 0.3
-        },
-        5: {
-            2: 0.08,
-            3: 0.3
-        },
-        6: {
-            1: 0.2,
-            2: 0.04
-        },
-        7: {
-            1: 0.2,
-            2: 0.04
-        },
-        8: {
-            1: 0.2,
-            2: 0.04
-        },
-        9: {
-            1: 0.2,
-            2: 0.04
-        },
-        10: {
-            1: 0.2,
-            2: 0.04
-        },
-        11: {
-            2: 0.9,
-            4: 0.4
-        }
-    }
-    _msg = ''
-
-    try:
-        attributes['hazard_rate_dormant'] = \
-            (_dic_hr_dormant[attributes['environment_active_id']]
-             [attributes['environment_dormant_id']] *
-             attributes['hazard_rate_active'])
-    except KeyError:
-        attributes['hazard_rate_dormant'] = 0.0
-        _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-               'Active ID: {0:d}, Dormant ID: ' \
-               '{1:d}'.format(attributes['environment_active_id'],
-                              attributes['environment_dormant_id'])
-
-    return attributes, _msg
-
-
 def overstressed(**attributes):
     """
     Determine whether the relay is overstressed.
@@ -400,13 +272,6 @@ def overstressed(**attributes):
     _harsh = True
 
     attributes['overstress'] = False
-
-    # Calculate the current ratio.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.

@@ -49,15 +49,18 @@ from __future__ import print_function
 
 import os
 import sys
-import distutils.spawn
-import re
-from subprocess import Popen, PIPE
+import subprocess
 from optparse import OptionParser
+
+# We prefer to use the tools in the virtual environment.
+VIRTBIN = os.environ['VIRTUALENVWRAPPER_HOOK_DIR'] + '/RTK/bin'
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+CFGFILE = ROOT + '/setup.cfg'
+PYLINTRC = ROOT + '/.pylintrc'
 
 
 def do_parse_args():
     """Parse command line arguments."""
-
     parser = OptionParser()
 
     # Set default checks.
@@ -69,9 +72,10 @@ def do_parse_args():
     parser.set_defaults(security=False)
 
     # Set default output options.
+    parser.set_defaults(auto=False)
     parser.set_defaults(benchmark=False)
     parser.set_defaults(color=False)
-    parser.set_defaults(diff=False)
+    parser.set_defaults(report=False)
     parser.set_defaults(verbose=True)
 
     # Which file(s) to check.
@@ -99,45 +103,56 @@ def do_parse_args():
         help="provide less verbose output")
 
     # Which checkers to run.
-    parser.add_option("--format",
-                      action='store_true',
-                      dest='formats',
-                      help="check (and optionally fix) the formatting of the " \
-                           "code using yapf")
-    parser.add_option("--import",
-                      action='store_true',
-                      dest='imports',
-                      help="check (and optionally fix) the order/grouping of " \
-                           "imports using isort")
-    parser.add_option("--manifest",
-                      action='store_false',
-                      dest='manifest',
-                      help="check the MANIFEST.in file for proper content " \
-                           "using check-manifest")
-    parser.add_option("--quality",
-                      action='store_true',
-                      dest='quality',
-                      help="check the quality/style of the code using one " \
-                           "or more checkers from flake8, pycodestyle, " \
-                           "pydocstyle, pylint")
-    parser.add_option("--checkers=<flake8,pycodestyle,pydocstyle,pylint>",
-                      action='append',
-                      dest='checkers',
-                      help="comma-separated list of checkers to use for " \
-                           "quality checks")
-    parser.add_option("--security",
-                      action='store_false',
-                      dest='security',
-                      help="check for potential security vulnerabilities " \
-                           "using bandit")
+    parser.add_option(
+        "--format",
+        action='store_true',
+        dest='formats',
+        help="check (and optionally fix) the formatting of the "
+        "code using yapf")
+    parser.add_option(
+        "--import",
+        action='store_true',
+        dest='imports',
+        help="check (and optionally fix) the order/grouping of "
+        "imports using isort")
+    parser.add_option(
+        "--manifest",
+        action='store_true',
+        dest='manifest',
+        help="check the MANIFEST.in file for proper content "
+        "using check-manifest")
+    parser.add_option(
+        "--quality",
+        action='store_true',
+        dest='quality',
+        help="check the quality/style of the code using one "
+        "or more checkers from flake8, pycodestyle, "
+        "pydocstyle, pylint")
+    parser.add_option(
+        "--checkers",
+        action='append',
+        dest='checkers',
+        help="comma-separated list of checkers to use for "
+        "quality checks",
+        metavar="<flake8,pycodestyle,pydocstyle,pylint>")
+    parser.add_option(
+        "--security",
+        action='store_true',
+        dest='security',
+        help="check for potential security vulnerabilities "
+        "using bandit")
 
     # Which files to (not) check.
-    parser.add_option("-i", "--ignore=<file[,file...]><patterns>",
-                      action='append',
-                      type='string',
-                      dest='ignore',
-                      help="comma-separated list of files or directories to " \
-                           "exclude (bandit, flake8, pycodestyle, pylint, yapf)")
+    parser.add_option(
+        "-i",
+        "--ignore",
+        action='append',
+        type='string',
+        dest='ignore',
+        help="comma-separated list of files or directories to "
+        "exclude (bandit, flake8, pycodestyle, pylint, "
+        "yapf)",
+        metavar="<file[,file...]> or <patterns>")
 
     # How to present the output.
     parser.add_option(
@@ -146,42 +161,48 @@ def do_parse_args():
         action='store_true',
         dest='color',
         help="colorize outputs if color is supported (pylint)")
-    parser.add_option("-d", "--diff",
-                      action='store_true',
-                      dest='diff',
-                      help="just print a diff for the fixed source code " \
-                           "(flake8, isort, pycodestyle, yapf)")
-    parser.add_option("--output-format=<format>",
-                      action='store',
-                      type='string',
-                      dest='output_format',
-                      help="select output format " \
-                           "(csv,html,json,screen,txt,xml) (bandit), " \
-                           "(default, pylint) (flake8), " \
-                           "(colorized, json, text) (pylint)")
-
-    # Where to put the output.
-    parser.add_option("--files-output=<OUTPUT_FILE><y_or_n>",
-                      action='store',
-                      type='string',
-                      dest='files_output',
-                      help="redirect report to OUTPUT_FILE (bandit, flake8) " \
-                           "or into files rather than stdout (pylint)",
-                      default="n")
     parser.add_option(
-        "--reports=<y_or_n>",
+        "-d",
+        "--diff",
+        action='store_false',
+        dest='auto',
+        help="just print a diff for the fixed source code "
+        "(flake8, isort, pycodestyle, yapf)")
+    parser.add_option(
+        "--output-format",
         action='store',
         type='string',
+        dest='output_format',
+        help="select output format "
+        "(csv,html,json,screen,txt,xml) (bandit), "
+        "(default, pylint) (flake8), "
+        "(colorized, json, text) (pylint)",
+        metavar="<format>")
+
+    # Where to put the output.
+    parser.add_option(
+        "--files-output",
+        action='store',
+        type='string',
+        dest='files_output',
+        help="redirect report to OUTPUT_FILE (bandit, flake8) "
+        "or into files rather than stdout (pylint)",
+        default="n",
+        metavar="=<OUTPUT_FILE> or <y_or_n>")
+    parser.add_option(
+        "--reports",
+        action='store_true',
         dest='reports',
-        help="display full report or only a summary (pylint)",
-        default="y")
+        help="display full report or only a summary (pylint)")
 
     # How to run the checkers.
-    parser.add_option("-a", "--auto",
-                      action='store_false',
-                      dest='auto',
-                      help="automatically (in-line) apply recommended " \
-                           "changes (isort, yapf)")
+    parser.add_option(
+        "-a",
+        "--auto",
+        action='store_true',
+        dest='auto',
+        help="automatically (in-line) apply recommended "
+        "changes (isort, yapf)")
     parser.add_option(
         "-b",
         "--benchmark",
@@ -207,9 +228,10 @@ def do_parse_args():
         dest='recurse',
         help="run recursively over directories (bandit, isort, pylint, yapf)")
 
-    parser.set_usage("test <checks> <options ...> [test(s) ...]")
+    parser.set_usage("StaticCheck <checks> <options ...> [file(s) ...]")
     parser.epilog = """\
-    <checks> are one or more of |--format|--import|--manifest|--quality|--security|.  Default is all checks. \
+    <checks> are one or more of the following
+        |--format|--import|--manifest|--quality|--security|
     <options ...> are one or more options above.\
     """
 
@@ -257,75 +279,37 @@ def do_find_files():
     return files
 
 
-def get_default_apps(files):
+def get_default_apps():
     """
-    Try to determine the default app paths depending on the python
-    version of the code we are inspecting
+    Try to determine the default executable paths.
 
     :returns: (yapf bin name, isort bin name, bandit bin name, flake8 bin name,
                pycodestyle bin name, pydocstyle bin name, pylint bin name,
                check-manifest bin name)
     """
-    is_py2 = False
-    is_py3 = False  # In preparation for Python 3 support.
 
-    for _file in files:
-        if os.path.isdir(_file):
-            _file = os.path.join(_file, "__init__.py")
-        line = file(_file).readline()
-        if not is_py2 and re.search("python[ 2]?", line):
-            is_py2 = True
-        elif not is_py3 and re.search("python3", line):
-            is_py3 = True
+    def which(exe):
+        """
+        Find the absolute path to the executable.
 
-    py2_yapf = py3_yapf = "yapf"
-    py2_isort = py3_isort = "isort"
-    py2_bandit = py3_bandit = "bandit"
-    py2_flake8 = py3_flake8 = "flake8"
-    py2_pycodestyle = py3_pycodestyle = "pycodestyle"
-    py2_pydocstyle = py3_pydocstyle = "pydocstyle"
-    py2_pylint = py3_pylint = "pylint"
-    py2_check_manifest = py3_check_manifest = "check-manifest"
+        :param str exe: the name of the executable file to find.
+        """
+        for path in VIRTBIN.split(os.pathsep):
+            if os.path.exists(os.path.join(path, exe)):
+                return os.path.join(path, exe)
+        return None
 
-    if distutils.spawn.find_executable("yapf-2"):
-        py2_yapf = "yapf-2"
-    if distutils.spawn.find_executable("yapf-3"):
-        py3_yapf = "yapf-3"
-    if distutils.spawn.find_executable("isort-2"):
-        py2_isort = "isort-2"
-    if distutils.spawn.find_executable("isort-3"):
-        py3_isort = "isort-3"
-    if distutils.spawn.find_executable("bandit-2"):
-        py2_bandit = "bandit-2"
-    if distutils.spawn.find_executable("bandit-3"):
-        py3_bandit = "bandit-3"
-    if distutils.spawn.find_executable("flake8-2"):
-        py2_flake8 = "flake8-2"
-    if distutils.spawn.find_executable("flake8-3"):
-        py3_flake8 = "flake8-3"
-    if distutils.spawn.find_executable("pycodestyle-2"):
-        py2_pycodestyle = "pycodestyle-2"
-    if distutils.spawn.find_executable("pycodestyle-3"):
-        py3_pycodestyle = "pycodestyle-3"
-    if distutils.spawn.find_executable("pydocstyle-2"):
-        py2_pydocstyle = "pydocstyle-2"
-    if distutils.spawn.find_executable("pydocstyle-3"):
-        py3_pydocstyle = "pydocstyle-3"
-    if distutils.spawn.find_executable("pylint-2"):
-        py2_pylint = "pylint-2"
-    if distutils.spawn.find_executable("pylint-3"):
-        py3_pylint = "pylint-3"
-    if distutils.spawn.find_executable("check-manifest-2"):
-        py2_check_manifest = "check-manifest-2"
-    if distutils.spawn.find_executable("check-manifest-3"):
-        py3_check_manifest = "check-manifest-3"
+    yapf = which("yapf")
+    isort = which("isort")
+    bandit = which("bandit")
+    flake8 = which("flake8")
+    pycodestyle = which("pycodestyle")
+    pydocstyle = which("pydocstyle")
+    pylint = which("pylint")
+    check_manifest = which("check-manifest")
 
-    # Prefer py2 if both detected
-    if is_py3 and not is_py2:
-        return (py3_yapf, py3_isort, py3_bandit, py3_flake8, py3_pycodestyle,
-                py3_pydocstyle, py3_pylint, py3_check_manifest)
-    return (py2_yapf, py2_isort, py2_bandit, py2_flake8, py2_pycodestyle,
-            py2_pydocstyle, py2_pylint, py2_check_manifest)
+    return (yapf, isort, bandit, flake8, pycodestyle, pydocstyle, pylint,
+            check_manifest)
 
 
 def _do_yapf(yapf, files, options):
@@ -350,10 +334,10 @@ def _do_yapf(yapf, files, options):
 
     # Build up the options for yapf.
     if options.verbose:
-        _yapf += "-v "
+        _yapf += "-vv "
     if options.auto:
-        _yapf += " --in-place"
-    if options.diff:
+        _yapf += "--in-place "
+    else:
         _yapf += "--diff "
     if options.ignore:
         _yapf += "--exclude {0:s} ".format(options.ignore)
@@ -363,7 +347,6 @@ def _do_yapf(yapf, files, options):
         _yapf += "--recursive "
 
     _yapf += " ".join(files)
-    print("Executing {0:s}".format(_yapf))
 
     os.system(_yapf)
 
@@ -381,11 +364,12 @@ def _do_isort(isort, files, options):
         Third Party
         Current Python Project
         Explicitly Local (. before import, as in: from . import x)
-        Custom Separate Sections (Defined by forced_separate list in configuration file)
+        Custom Separate Sections (Defined by forced_separate list in
+                                  configuration file)
         Custom Sections (Defined by sections list in configuration file)
 
     Default commandline options from setup.cfg for isort are:
-        -e (balnaced wrapping)
+        -e (balanced wrapping)
 
     Exit codes for isort...
         0    no error
@@ -403,13 +387,12 @@ def _do_isort(isort, files, options):
         _isort += "-v "
     if options.auto:
         _isort += "--atomic "
-    if options.diff:
+    else:
         _isort += "--diff "
     if options.recurse:
         _isort += "-rc "
 
     _isort += " ".join(files)
-    print("Executing {0:s}".format(_isort))
 
     os.system(_isort)
 
@@ -433,23 +416,23 @@ def _do_bandit(bandit, files, options):
     :return:
     :rtype:
     """
-    _bandit = "{0:s} --configfile setup.cfg ".format(bandit)
+    _bandit = "{0:s} ".format(bandit)
 
     # Build up the options for bandit.
     if options.verbose:
         _bandit += "--verbose "
-    if options.files_output:
+    if options.files_output != "n":
         _bandit += "--output {0:s} ".format(options.files_output)
     if options.ignore:
         _bandit += "--exclude {0:s} ".format(options.ignore)
-    if options.output_format != "":
+    if options.output_format is not None:
         _bandit += "--format {0:s} ".format(options.output_format)
+    else:
+        _bandit += "--format txt "
     if options.recurse:
         _bandit += "--recursive "
 
     _bandit += " ".join(files)
-    _bandit += " ".join("config/")  # Check sql and xml files
-    print("Executing {0:s}".format(_bandit))
 
     os.system(_bandit)
 
@@ -466,7 +449,6 @@ def _do_flake8(flake8, files, options):
         --exclude=.git,.tox,*.pyc,*.pyo,build,dist,docs
         --format=pylint
         --ignore=D203
-        --jobs=auto
         --max-complexity=10
         --statistics
 
@@ -487,19 +469,16 @@ def _do_flake8(flake8, files, options):
         _flake8 += "-q "
     if options.benchmark:
         _flake8 += "--benchmark "
-    if options.diff:
+    if not options.auto:
         _flake8 += "--diff "
     if options.files_output != "n":
         _flake8 += "--output-files={0:s} ".format(options.files_output)
-    if options.ignore != "":
+    if options.ignore is not None:
         _flake8 += "--exclude={0:s} ".format(options.ignore)
-    if options.output_format:
-        _flake8 += "--format={0:s} ".format(options.output_format)
     if options.parallel > 1:
         _flake8 += "--jobs={0:d} ".format(options.parallel)
 
     _flake8 += " ".join(files)
-    print("Executing {0:s}".format(_flake8))
 
     os.system(_flake8)
 
@@ -536,13 +515,12 @@ def _do_pycodestyle(pycodestyle, files, options):
         _pycodestyle += "-q "
     if options.benchmark:
         _pycodestyle += "--benchmark "
-    if options.diff:
+    if not options.auto:
         _pycodestyle += "--diff "
-    if options.ignore != "":
+    if options.ignore is not None:
         _pycodestyle += "--exclude={0:s} ".format(options.ignore)
 
     _pycodestyle += " ".join(files)
-    print("Executing {0:s}".format(_pycodestyle))
 
     os.system(_pycodestyle)
 
@@ -572,7 +550,6 @@ def _do_pydocstyle(pydocstyle, files, options):
         _pydocstyle += "-v "
 
     _pydocstyle += " ".join(files)
-    print("Executing {0:s}".format(_pydocstyle))
 
     os.system(_pydocstyle)
 
@@ -583,9 +560,6 @@ def _do_pylint(pylint, files, options):
 
     Uses .pylintrc in RTK's root directory.  Command line options override the
     configuration settings in .pyltintrc.
-
-    Default commandline options from .pylintrc for pylint are:
-
 
     Exit codes for pylint...
          0    no error
@@ -602,26 +576,39 @@ def _do_pylint(pylint, files, options):
     :return:
     :rtype:
     """
-    _pylint = "{0:s} ".format(pylint)
+    _pylint = "{0:s} --rcfile={1:s} ".format(pylint, PYLINTRC)
 
     # Build up the options for pylint.
     if options.color:
         _pylint += "--output-format=colorized "
-    else:
+    elif options.output_format is not None:
         _pylint += "--output-format={0:s} ".format(options.output_format)
     if options.files_output != "n":
         _pylint += "--files-output=y "
     if options.ignore is not None:
         _pylint += "--ignore={0:s} ".format(options.ignore)
     if options.parallel > 1:
-        _pylint += "-j {0:d} ".format(options.parallel)
+        _pylint += "--jobs={0:d} ".format(options.parallel)
     if not options.reports:
-        _pylint += "--reports=n "
+        _pylint += "--reports=no "
 
     _pylint += " ".join(files)
-    print("Executing {0:s}".format(_pylint))
 
     os.system(_pylint)
+
+
+def _do_check_manifest(check_manifest, options):
+    """Execute check-manifest."""
+    _check_manifest = "{0:s} ".format(check_manifest)
+
+    if options.auto:
+        _check_manifest += "-u "
+    if options.verbose:
+        _check_manifest += "-v "
+
+    _check_manifest += " ".join(ROOT)
+
+    os.system(_check_manifest)
 
 
 def main():
@@ -654,12 +641,13 @@ def main():
 
     # Get the list of files to check.
     files = options.filename
-    if not files:
+    if not files and (options.formats or options.imports or options.quality
+                      or options.security):
         files = do_find_files()
 
     # Find the absolute path to the executables.
     (yapf, isort, bandit, flake8, pycodestyle, pydocstyle, pylint,
-     manifest) = get_default_apps(files)
+     manifest) = get_default_apps()
 
     # Execute the checks.
     if options.formats:
@@ -669,7 +657,7 @@ def main():
         _do_isort(isort, files, options)
 
     if options.security:
-        print("Executing bandit")
+        _do_bandit(bandit, files, options)
 
     if options.quality:
         for checker in options.checkers:
@@ -683,7 +671,7 @@ def main():
                 _do_pydocstyle(pydocstyle, files, options)
 
     if options.manifest:
-        print("Executing check_manifest")
+        _do_check_manifest(manifest, options)
 
 
 if __name__ == '__main__':

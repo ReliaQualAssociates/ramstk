@@ -1,59 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 #
-#       rtk.analyses.prediction.Semiconductor.py is part of the RTK
-#       Project
+#       rtk.analyses.prediction.Semiconductor.py is part of the RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Semiconductor Calculations Module."""
+"""Semiconductor Reliability Calculations Module."""
 
 import gettext
 
 from math import exp, log
 
 _ = gettext.gettext
-
-
-def calculate(**attributes):
-    """
-    Calculate the hazard rate for a semiconductor.
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _msg = ''
-
-    if attributes['hazard_rate_method_id'] == 1:
-        attributes, _msg = calculate_217f_part_count(**attributes)
-    elif attributes['hazard_rate_method_id'] == 2:
-        attributes, _msg = calculate_217f_part_stress(**attributes)
-
-    if attributes['mult_adj_factor'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    if attributes['quantity'] < 1:
-        _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
-            'calculating semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
-
-    attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
-                                        attributes['add_adj_factor']) * \
-        (attributes['duty_cycle'] / 100.0) * \
-        attributes['mult_adj_factor'] * attributes['quantity']
-
-    attributes, _msg = calculate_dormant_hazard_rate(**attributes)
-    attributes = overstressed(**attributes)
-
-    return attributes, _msg
 
 
 def calculate_217f_part_count(**attributes):
@@ -664,97 +622,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         attributes['hazard_rate_active'] = attributes['lambda_b'] * attributes[
             'piT'] * attributes['piI'] * attributes['piA'] * attributes[
                 'piP'] * attributes['piQ'] * attributes['piE']
-
-    return attributes, _msg
-
-
-def calculate_dormant_hazard_rate(**attributes):
-    """
-    Calculate the dormant hazard rate for a semiconductor.
-
-    All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for semiconductors).
-
-    +-----------+-------+--------+--------+-------+-------+-------+-------+
-    |   Type    |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-    |           |Active |Active  |Active  |Active |Active |Active |Active |
-    |           |to     |to      |to      |to     |to     |to     |to     |
-    |           |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-    |           |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    +===========+=======+========+========+=======+=======+=======+=======+
-    | Diodes    | 0.04  |  0.05  |  0.01  | 0.04  | 0.03  | 0.20  | 0.80  |
-    +-----------+-------+--------+--------+-------+-------+-------+-------+
-    | Transistor| 0.05  |  0.06  |  0.02  | 0.05  | 0.03  | 0.20  | 1.00  |
-    +-----------+-------+--------+--------+-------+-------+-------+-------+
-
-    :return: (attributes, _msg); the keyword argument (hardware attribute)
-             dictionary with updated values and the error message, if any.
-    :rtype: (dict, str)
-    """
-    _dic_hr_dormant = {
-        1: {
-            2: [0.04, 0.05]
-        },
-        2: {
-            2: [0.04, 0.05]
-        },
-        3: {
-            2: [0.04, 0.05]
-        },
-        4: {
-            2: [0.03, 0.03],
-            3: [0.04, 0.05]
-        },
-        5: {
-            2: [0.03, 0.03],
-            3: [0.04, 0.05]
-        },
-        6: {
-            1: [0.05, 0.06],
-            2: [0.01, 0.02]
-        },
-        7: {
-            1: [0.05, 0.06],
-            2: [0.01, 0.02]
-        },
-        8: {
-            1: [0.05, 0.06],
-            2: [0.01, 0.02]
-        },
-        9: {
-            1: [0.05, 0.06],
-            2: [0.01, 0.02]
-        },
-        10: {
-            1: [0.05, 0.06],
-            2: [0.01, 0.02]
-        },
-        11: {
-            2: [0.8, 1.0],
-            4: [0.2, 0.2]
-        }
-    }
-    _msg = ''
-
-    try:
-        if attributes['subcategory_id'] in [1, 2]:
-            attributes['hazard_rate_dormant'] = \
-                (_dic_hr_dormant[attributes['environment_active_id']]
-                 [attributes['environment_dormant_id']][0] *
-                 attributes['hazard_rate_active'])
-        elif attributes['subcategory_id'] in [3, 4, 5, 6, 7, 8, 9]:
-            attributes['hazard_rate_dormant'] = \
-                (_dic_hr_dormant[attributes['environment_active_id']]
-                 [attributes['environment_dormant_id']][1] *
-                 attributes['hazard_rate_active'])
-        else:
-            attributes['hazard_rate_dormant'] = 0.0
-    except KeyError:
-        attributes['hazard_rate_dormant'] = 0.0
-        _msg = 'RTK ERROR: Unknown active and/or dormant environment ID. ' \
-               'Active ID: {0:d}, Dormant ID: ' \
-               '{1:d}'.format(attributes['environment_active_id'],
-                              attributes['environment_dormant_id'])
 
     return attributes, _msg
 
