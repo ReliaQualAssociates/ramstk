@@ -6,7 +6,8 @@ python:
 install:
     - "pip install -U pip"
     - "pip install pipenv"
-    - "pipenv install --dev"
+    - "pipenv lock -r > requirements.txt"
+    - "pip install --only-binary numpy,scipy -r requirements.txt"
     - "pip install ."
 
 # Command to run tests.
