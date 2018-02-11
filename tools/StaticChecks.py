@@ -50,10 +50,13 @@ from __future__ import print_function
 import os
 import sys
 import subprocess
+import glob
 from optparse import OptionParser
 
 # We prefer to use the tools in the virtual environment.
-VIRTBIN = os.environ['VIRTUALENVWRAPPER_HOOK_DIR'] + '/RTK/bin'
+VIRTBIN = glob.glob(os.environ['VIRTUALENVWRAPPER_HOOK_DIR'] + '/RTK*/bin')[0]
+LOCALBIN = os.environ['HOME'] + '/.local/bin'
+SYSBIN = '/usr/bin'
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFGFILE = ROOT + '/setup.cfg'
 PYLINTRC = ROOT + '/.pylintrc'
@@ -294,9 +297,21 @@ def get_default_apps():
 
         :param str exe: the name of the executable file to find.
         """
+        # First check the virtualenv for the executable.
         for path in VIRTBIN.split(os.pathsep):
             if os.path.exists(os.path.join(path, exe)):
                 return os.path.join(path, exe)
+
+        # Next, check the user's local install (if any).
+        for path in LOCALBIN.split(os.pathsep):
+            if os.path.exists(os.path.join(path, exe)):
+                return os.path.join(path, exe)
+
+        # Finally, check for a system-level executable.
+        for path in SYSBIN.split(os.pathsep):
+            if os.path.exists(os.path.join(path, exe)):
+                return os.path.join(path, exe)
+
         return None
 
     yapf = which("yapf")
