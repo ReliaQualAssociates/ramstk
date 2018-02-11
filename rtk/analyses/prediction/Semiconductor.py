@@ -453,7 +453,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             _f1 = _factors[1]
             _f2 = _factors[2]
             if attributes['voltage_ratio'] <= 0.4:
-                attributes['piT'] = 0.1 * exp(-_f0 * (1.0 / (
+                attributes['piT'] = _f1 * exp(-_f0 * (1.0 / (
                     attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
             else:
                 attributes['piT'] = _f2 * (
