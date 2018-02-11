@@ -34,3 +34,7 @@ from .Semiconductor import AssessmentInputs as wvwSemiconductorAI
 from .Semiconductor import AssessmentResults as wvwSemiconductorAR
 from .Semiconductor import StressInputs as wvwSemiconductorSI
 from .Semiconductor import StressResults as wvwSemiconductorSR
+from .Switch import AssessmentInputs as wvwSwitchAI
+from .Switch import AssessmentResults as wvwSwitchAR
+from .Switch import StressInputs as wvwSwitchSI
+from .Switch import StressResults as wvwSwitchSR

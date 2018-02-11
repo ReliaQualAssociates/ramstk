@@ -27,7 +27,8 @@ from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR, wvwRelayAI, wvwRelaySI, \
     wvwRelayAR, wvwRelaySR, wvwResistorAI, wvwResistorSI, wvwResistorAR, \
     wvwResistorSR, wvwSemiconductorAI, wvwSemiconductorSI, \
-    wvwSemiconductorAR, wvwSemiconductorSR
+    wvwSemiconductorAR, wvwSemiconductorSR, wvwSwitchAI, wvwSwitchSI, \
+    wvwSwitchAR, wvwSwitchSR
 
 
 class GeneralData(RTKWorkView):
@@ -667,7 +668,6 @@ class GeneralData(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _index = -1
         _return = False
         _text = ''
 
@@ -1461,9 +1461,6 @@ class AssessmentInputs(RTKWorkView):
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _model = combo.get_model()
-        _row = combo.get_active_iter()
-
         if self._dtc_data_controller is not None:
             _attributes = self._dtc_data_controller.request_get_attributes(
                 self._hardware_id)
@@ -1529,7 +1526,6 @@ class AssessmentInputs(RTKWorkView):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _index = -1
         _return = False
         _text = ''
 
@@ -1673,7 +1669,13 @@ class AssessmentInputs(RTKWorkView):
             _component_si = wvwRelaySI(self._dtc_data_controller,
                                        self._hardware_id,
                                        _attributes['subcategory_id'])
-
+        elif _attributes['category_id'] == 7:
+            _component_ai = wvwSwitchAI(self._dtc_data_controller,
+                                        self._hardware_id,
+                                        _attributes['subcategory_id'])
+            _component_si = wvwSwitchSI(self._dtc_data_controller,
+                                        self._hardware_id,
+                                        _attributes['subcategory_id'])
         elif _attributes['category_id'] == 8:
             _component_ai = wvwConnectionAI(self._dtc_data_controller,
                                             self._hardware_id,
@@ -2403,6 +2405,13 @@ class AssessmentResults(RTKWorkView):
             _component_sr = wvwRelaySR(self._dtc_data_controller,
                                        self._hardware_id,
                                        _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 7:
+            _component_ar = wvwSwitchAR(self._dtc_data_controller,
+                                        self._hardware_id,
+                                        _attributes['subcategory_id'])
+            _component_sr = wvwSwitchSR(self._dtc_data_controller,
+                                        self._hardware_id,
+                                        _attributes['subcategory_id'])
         elif _attributes['category_id'] == 8:
             _component_ar = wvwConnectionAR(self._dtc_data_controller,
                                             self._hardware_id,

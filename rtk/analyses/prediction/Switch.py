@@ -55,10 +55,16 @@ def calculate_217f_part_count(**attributes):
             0.56, 1.7, 10.0, 4.5, 16.0, 5.6, 10.0, 7.3, 12.0, 26.0, 0.26, 14.0,
             38.0, 670.0
         ],
-        5: [
-            0.060, 0.12, 0.90, 0.48, 1.6, 0.42, 0.54, 0.66, 0.72, 2.8, 0.030,
-            1.5, 4.0, 0.0
-        ]
+        5: {
+            1: [
+                0.11, 0.23, 1.7, 0.91, 3.1, 0.8, 1.0, 1.3, 1.4, 5.2, 0.057,
+                2.8, 7.5, 0.0
+            ],
+            2: [
+                0.060, 0.12, 0.90, 0.48, 1.6, 0.42, 0.54, 0.66, 0.72, 2.8,
+                0.030, 1.5, 4.0, 0.0
+            ]
+        }
     }
 
     # List containing piQ values for parts count method.  The list positions
@@ -78,7 +84,11 @@ def calculate_217f_part_count(**attributes):
 
     # Select the base hazard rate.
     try:
-        _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']]
+        if attributes['subcategory_id'] == 5:
+            _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
+                attributes['construction_id']]
+        else:
+            _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']]
     except KeyError:
         _lst_base_hr = [0.0]
 
@@ -143,17 +153,10 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     }
     _msg = ''
 
-    # Calculate the current ratio.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
-
     # Calculate the base hazard rate.
     if attributes['subcategory_id'] == 1:
-        attributes['lambda_b'] = _dic_lambda_b[1][attributes['type_id']][
-            attributes['quality_id'] - 1]
+        attributes['lambda_b'] = _dic_lambda_b[1][attributes[
+            'construction_id']][attributes['quality_id'] - 1]
     elif attributes['subcategory_id'] in [2, 3]:
         _lambda_bE = _dic_factors[attributes['subcategory_id']][
             attributes['quality_id'] - 1][0]
@@ -219,12 +222,13 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         attributes['piCYC'] = attributes['n_cycles']
 
     # Calculate the load stress factor (piL).
-    if attributes['application_id'] == 1:  # Resistive
-        attributes['piL'] = exp((attributes['current_ratio'] / 0.8)**2.0)
-    elif attributes['application_id'] == 2:  # Inductive
-        attributes['piL'] = exp((attributes['current_ratio'] / 0.4)**2.0)
-    elif attributes['application_id'] == 3:  # Capacitive
-        attributes['piL'] = exp((attributes['current_ratio'] / 0.2)**2.0)
+    if attributes['subcategory_id'] != 5:
+        if attributes['application_id'] == 1:  # Resistive
+            attributes['piL'] = exp((attributes['current_ratio'] / 0.8)**2.0)
+        elif attributes['application_id'] == 2:  # Inductive
+            attributes['piL'] = exp((attributes['current_ratio'] / 0.4)**2.0)
+        elif attributes['application_id'] == 3:  # Capacitive
+            attributes['piL'] = exp((attributes['current_ratio'] / 0.2)**2.0)
 
     # Determine the contact form and quantity factor (piC).
     if attributes['subcategory_id'] in [1, 5]:
@@ -272,13 +276,6 @@ def overstressed(**attributes):
     _harsh = True
 
     attributes['overstress'] = False
-
-    # Calculate the current ratio.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.
