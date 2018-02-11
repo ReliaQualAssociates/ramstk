@@ -55,7 +55,8 @@ if __name__ == '__main__':
              'Development Status :: 3 - Alpha',
              'Programming Language :: Python'
         ],
-        entry_points={},
+        entry_points={
+            'console_scripts': ['rtk = rtk.RTK:main'],},
         data_files=[],
         package_data={},
         dependency_links=[],
