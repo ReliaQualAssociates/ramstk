@@ -50,10 +50,11 @@ from __future__ import print_function
 import os
 import sys
 import subprocess
+import glob
 from optparse import OptionParser
 
 # We prefer to use the tools in the virtual environment.
-VIRTBIN = os.environ['VIRTUALENVWRAPPER_HOOK_DIR'] + '/RTK/bin'
+VIRTBIN = glob.glob(os.environ['VIRTUALENVWRAPPER_HOOK_DIR'] + '/RTK*/bin')[0]
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 CFGFILE = ROOT + '/setup.cfg'
 PYLINTRC = ROOT + '/.pylintrc'

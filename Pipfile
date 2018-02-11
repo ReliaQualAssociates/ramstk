@@ -1,0 +1,47 @@
+[[source]]
+
+url = "https://pypi.python.org/simple"
+verify_ssl = true
+name = "pypi"
+
+
+[dev-packages]
+
+bandit = "*"
+check_manifest = "*"
+codacy-coverage = "*"
+coverage = "*"
+flake8 = "*"
+gitchangelog = "*"
+isort = "*"
+nose = "*"
+nose-exclude = "*"
+pipenv = "*"
+pycodestyle = "*"
+pydocstyle = "*"
+pylint = "*"
+python-coveralls = "*"
+shutilwhich = "*"
+Sphinx = "*"
+sphinxcontrib-issuetracker = "*"
+sphinxcontrib-spelling = "*"
+yapf = "*"
+
+
+[packages]
+
+defusedxml = "*"
+lifelines = "*"
+lxml = "*"
+matplotlib = "==1.4.3"
+numpy = "*"
+pandas = "*"
+PyPubSub = "==3.3.0"
+scipy = "*"
+sortedcontainers = "*"
+SQLAlchemy = "*"
+SQLAlchemy-Utils = "*"
+statsmodels = "*"
+treelib = "*"
+xlrd = "*"
+xlwt = "*"
