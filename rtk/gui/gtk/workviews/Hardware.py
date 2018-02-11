@@ -26,7 +26,8 @@ from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
     wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR, \
     wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR, wvwRelayAI, wvwRelaySI, \
     wvwRelayAR, wvwRelaySR, wvwResistorAI, wvwResistorSI, wvwResistorAR, \
-    wvwResistorSR
+    wvwResistorSR, wvwSemiconductorAI, wvwSemiconductorSI, \
+    wvwSemiconductorAR, wvwSemiconductorSR
 
 
 class GeneralData(RTKWorkView):
@@ -1381,8 +1382,8 @@ class AssessmentInputs(RTKWorkView):
         _fixed.put(self.cmbDormantEnviron, _x_pos, _y_pos[1])
         _fixed.put(self.txtActiveTemp, _x_pos, _y_pos[2])
         _fixed.put(self.txtDormantTemp, _x_pos, _y_pos[3])
-        _fixed.put(self.txtDutyCycle, _x_pos, _y_pos[4])
-        _fixed.put(self.txtMissionTime, _x_pos, _y_pos[5])
+        _fixed.put(self.txtMissionTime, _x_pos, _y_pos[4])
+        _fixed.put(self.txtDutyCycle, _x_pos, _y_pos[5])
 
         _fixed.show_all()
 
@@ -1637,6 +1638,13 @@ class AssessmentInputs(RTKWorkView):
             _component_si = wvwIntegratedCircuitSI(
                 self._dtc_data_controller, self._hardware_id,
                 _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 2:
+            _component_ai = wvwSemiconductorAI(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
+            _component_si = wvwSemiconductorSI(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
         elif _attributes['category_id'] == 3:
             _component_ai = wvwResistorAI(self._dtc_data_controller,
                                           self._hardware_id,
@@ -2360,6 +2368,13 @@ class AssessmentResults(RTKWorkView):
             _component_sr = wvwIntegratedCircuitSR(
                 self._dtc_data_controller, self._hardware_id,
                 _attributes['subcategory_id'])
+        elif _attributes['category_id'] == 2:
+            _component_ar = wvwSemiconductorAR(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
+            _component_sr = wvwSemiconductorSR(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
         elif _attributes['category_id'] == 3:
             _component_ar = wvwResistorAR(self._dtc_data_controller,
                                           self._hardware_id,

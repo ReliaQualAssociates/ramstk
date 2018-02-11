@@ -30,3 +30,7 @@ from .Resistor import AssessmentInputs as wvwResistorAI
 from .Resistor import StressInputs as wvwResistorSI
 from .Resistor import AssessmentResults as wvwResistorAR
 from .Resistor import StressResults as wvwResistorSR
+from .Semiconductor import AssessmentInputs as wvwSemiconductorAI
+from .Semiconductor import AssessmentResults as wvwSemiconductorAR
+from .Semiconductor import StressInputs as wvwSemiconductorSI
+from .Semiconductor import StressResults as wvwSemiconductorSR

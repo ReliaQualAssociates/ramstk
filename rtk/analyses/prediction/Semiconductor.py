@@ -9,7 +9,7 @@
 
 import gettext
 
-from math import exp, log
+from math import exp, log, sqrt
 
 _ = gettext.gettext
 
@@ -277,7 +277,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         13: [3.23, 5.65]
     }
     _dic_factors = {
-        1: [3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 1925.0, 1925.0],
+        1: [3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 3091.0, 1925.0, 1925.0],
         2: [5260.0, 2100.0, 2100.0, 2100.0, 2100.0, 2100.0],
         3: 2114.0,
         4: 1925.0,
@@ -393,29 +393,6 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
 
     _msg = ''
 
-    # Calculate the voltage stress.
-    try:
-        _stress = (
-            attributes['voltage_dc_operating'] +
-            attributes['voltage_ac_operating']) / attributes['voltage_rated']
-    except ZeroDivisionError:
-        _stress = 1.0
-    attributes['voltage_ratio'] = _stress
-
-    # Calculate the current stress.
-    try:
-        attributes['current_ratio'] = (
-            attributes['current_operating'] / attributes['current_rated'])
-    except ZeroDivisionError:
-        attributes['current_ratio'] = 1.0
-
-    # Calculate the power stress.
-    try:
-        attributes['power_ratio'] = (
-            attributes['power_operating'] / attributes['power_rated'])
-    except ZeroDivisionError:
-        attributes['power_ratio'] = 1.0
-
     # Retrieve the base hazard rate.
     try:
         if attributes['subcategory_id'] in [3, 5, 6, 10]:
@@ -441,7 +418,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
                 attributes['lambda_b'] = 0.00043 * attributes['n_elements']
         else:
             attributes['lambda_b'] = _dic_lambdab[attributes[
-                'subcategory_id']][attributes['type_id']]
+                'subcategory_id']][attributes['type_id'] - 1]
     except KeyError:
         attributes['lambda_b'] = 0.0
 
@@ -455,23 +432,26 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         attributes['temperature_case'] = _lst_temp_case[
             attributes['environment_active_id'] - 1]
     if attributes['theta_jc'] <= 0.0:
-        attributes['theta_jc'] = _lst_theta_jc[attributes['package_id']]
+        attributes['theta_jc'] = _lst_theta_jc[attributes['package_id'] - 1]
     attributes['temperature_junction'] = (
         attributes['temperature_case'] +
         attributes['theta_jc'] * attributes['power_operating'])
 
     # Calculate the temperature factor (piT).
     try:
-        if attributes['subcategory_id'] in [3, 4, 5, 6, 8]:
-            _f0 = _dic_factors[attributes['subcategory_id']]
-        else:
-            _f0 = _dic_factors[attributes['subcategory_id']][attributes[
+        if attributes['subcategory_id'] in [1, 2]:
+            _factors = _dic_factors[attributes['subcategory_id']][
+                attributes['type_id'] - 1]
+        elif attributes['subcategory_id'] == 7:
+            _factors = _dic_factors[attributes['subcategory_id']][attributes[
                 'type_id']]
+        else:
+            _factors = _dic_factors[attributes['subcategory_id']]
 
         if attributes['subcategory_id'] == 7:
-            _f1 = _f0[1]
-            _f2 = _f0[2]
-            _f0 = _f0[0]
+            _f0 = _factors[0]
+            _f1 = _factors[1]
+            _f2 = _factors[2]
             if attributes['voltage_ratio'] <= 0.4:
                 attributes['piT'] = 0.1 * exp(-_f0 * (1.0 / (
                     attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
@@ -482,7 +462,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
                     attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
         else:
             attributes['piT'] = exp(
-                -_f0 *
+                -_factors *
                 (1.0 /
                  (attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
     except KeyError:
@@ -492,19 +472,19 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
     if attributes['subcategory_id'] in [2, 3, 4, 8]:
         try:
             attributes['piA'] = _dic_piA[attributes['subcategory_id']][
-                attributes['application_id']]
+                attributes['application_id'] - 1]
         except KeyError:
             attributes['piA'] = 0.0
     elif attributes['subcategory_id'] == 7:
         if attributes['application_id'] == 1:
             attributes['piA'] = 7.6
         else:
-            attributes['piA'] = 0.06 * attributes['duty_cycle'] + 0.4
+            attributes['piA'] = 0.06 * (attributes['duty_cycle'] / 100.0) + 0.4
     elif attributes['subcategory_id'] == 13:
         if attributes['application_id'] == 1:
             attributes['piA'] = 4.4
         else:
-            attributes['piA'] = attributes['duty_cycle'] + 0.5
+            attributes['piA'] = sqrt(attributes['duty_cycle'] / 100.0)
 
     # Retrieve the matching network factor (piM).
     if attributes['subcategory_id'] in [7, 8]:
@@ -529,7 +509,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             except ValueError:
                 attributes['piR'] = 0.0
     elif attributes['subcategory_id'] == 10:
-        attributes['piR'] = attributes['current_ratd']**0.4
+        attributes['piR'] = attributes['current_rated']**0.4
         if attributes['voltage_ratio'] <= 0.3:
             attributes['piS'] = 0.1
         else:
@@ -642,22 +622,6 @@ def overstressed(**attributes):
     _harsh = True
 
     attributes['overstress'] = False
-    _voltage_operating = (attributes['voltage_ac_operating'] +
-                          attributes['voltage_dc_operating'])
-
-    # Calculate the voltage stress.
-    try:
-        attributes['voltage_ratio'] = (
-            _voltage_operating / attributes['voltage_rated'])
-    except ZeroDivisionError:
-        attributes['voltage_ratio'] = 1.0
-
-    # Calculate the power stress.
-    try:
-        attributes['power_ratio'] = (
-            attributes['power_operating'] / attributes['power_rated'])
-    except (KeyError, ZeroDivisionError):
-        attributes['power_ratio'] = 1.0
 
     # If the active environment is Benign Ground, Fixed Ground,
     # Sheltered Naval, or Space Flight it is NOT harsh.
