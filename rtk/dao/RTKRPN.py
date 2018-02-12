@@ -10,11 +10,11 @@ The RTKRPN Table
 ===============================================================================
 """
 
-from sqlalchemy import Column, Integer, String  # pylint: disable=E0401
+from sqlalchemy import Column, Integer, String  
 
 # Import other RTK modules.
-from Utilities import error_handler, none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
+from rtk.Utilities import error_handler, none_to_default  
+from rtk.dao.RTKCommonDB import RTK_BASE  
 
 
 class RTKRPN(RTK_BASE):

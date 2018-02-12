@@ -7,11 +7,11 @@
 # Copyright 2007 - 2018 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Integrated Circuit Work View."""
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from gui.gtk import rtk  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 
 
 class AssessmentInputs(gtk.Fixed):

@@ -7,8 +7,8 @@
 """Failure Definition Package Data Model Module."""
 
 # Import other RTK modules.
-from datamodels import RTKDataModel  # pylint: disable=E0401
-from dao import RTKFailureDefinition  # pylint: disable=E0401
+from rtk.datamodels import RTKDataModel
+from rtk.dao import RTKFailureDefinition
 
 
 class FailureDefinitionDataModel(RTKDataModel):

@@ -6,9 +6,9 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Hardware Work View."""
 
-import locale  # pragma: no cover
+import locale
 
-from datetime import date  # pragma: no cover
+from datetime import date
 
 from pubsub import pub
 from sortedcontainers import SortedDict

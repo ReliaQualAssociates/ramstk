@@ -12,12 +12,12 @@ property values and methods.  This ensures a consistent look and feel to
 widgets in the RTK application.
 """
 
-import defusedxml.lxml as lxml  # pylint: disable=E0401
-from sortedcontainers import SortedDict  # pylint: disable=E0401
+import defusedxml.lxml as lxml
+from sortedcontainers import SortedDict
 
 # Import other RTK Widget classes.
-from .Widget import gobject, gtk, pango  # pylint: disable=E0401
-from .Label import RTKLabel  # pylint: disable=E0401
+from .Widget import gobject, gtk, pango
+from .Label import RTKLabel
 
 
 class RTKTreeView(gtk.TreeView):
@@ -477,7 +477,7 @@ class RTKTreeView(gtk.TreeView):
         _width = column.get_width()
 
         if _width <= 0:
-            return
+            return True
         else:
             _width += 10
 

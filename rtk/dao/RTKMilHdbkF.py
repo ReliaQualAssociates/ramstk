@@ -6,14 +6,14 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKMilHdbkF Table Module."""  # pragma: no cover
 
-# pylint: disable=E0401
+
 from sqlalchemy import Column, Float, ForeignKey, Integer  # pragma: no cover
-from sqlalchemy.orm import relationship  # pylint: disable=E0401
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from Utilities import none_to_default  # pylint: disable=E0401
-# pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE  # pragma: no cover
+from rtk.Utilities import none_to_default
+
+from rtk.dao.RTKCommonDB import RTK_BASE  # pragma: no cover
 
 
 class RTKMilHdbkF(RTK_BASE):
@@ -71,7 +71,7 @@ class RTKMilHdbkF(RTK_BASE):
 
     # Define the relationships to other tables in the RTK Program database.
     hardware = relationship('RTKHardware',
-        back_populates='milhdbkf')  # pragma: no cover
+                            back_populates='milhdbkf')
 
     def get_attributes(self):
         """

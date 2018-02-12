@@ -5,11 +5,11 @@
 # All rights reserved.
 """Stakeholder List View."""
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from gui.gtk import rtk  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
 from .ListView import RTKListView
 
 

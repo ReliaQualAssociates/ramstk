@@ -9,11 +9,11 @@
 from datetime import date
 
 # Import other RTK modules.
-from Utilities import none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
-# pylint: disable=E0401
+from rtk.Utilities import none_to_default  
+from rtk.dao.RTKCommonDB import RTK_BASE  
+
 from sqlalchemy import Column, Date, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship  # pylint: disable=E0401
+from sqlalchemy.orm import relationship  
 
 
 class RTKProgramStatus(RTK_BASE):

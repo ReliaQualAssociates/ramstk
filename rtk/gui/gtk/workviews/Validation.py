@@ -6,16 +6,16 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Validation Work View."""
 
-from datetime import datetime  # pylint: disable=E0401
+from datetime import datetime
 
-import numpy as np  # pylint: disable=E0401
-from pubsub import pub  # pylint: disable=E0401
-from matplotlib.patches import Ellipse  # pylint: disable=E0401
+import numpy as np
+from pubsub import pub
+from matplotlib.patches import Ellipse
 
 # Import other RTK modules.
-from Utilities import ordinal_to_date  # pylint: disable=E0401
-from gui.gtk import rtk  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
+from rtk.Utilities import ordinal_to_date
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .WorkView import RTKWorkView
 
 

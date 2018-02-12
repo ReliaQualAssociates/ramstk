@@ -8,12 +8,12 @@
 
 import locale
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from Utilities import boolean_to_integer  # pylint: disable=E0401
-from gui.gtk import rtk  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
+from rtk.Utilities import boolean_to_integer
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gtk
 from .WorkView import RTKWorkView
 
 

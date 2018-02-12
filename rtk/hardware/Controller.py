@@ -4,14 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Hardware Package Data Controller."""  # pragma: no cover
+"""Hardware Package Data Controller."""
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from datamodels import RTKDataController  # pylint: disable=E0401
-from datamodels import RTKDataMatrix  # pylint: disable=E0401
-from dao import RTKHardware, RTKTest, RTKValidation  # pylint: disable=E0401
+from rtk.datamodels import RTKDataController
+from rtk.datamodels import RTKDataMatrix
+from rtk.dao import RTKHardware, RTKTest, RTKValidation
 from . import dtmHardwareBoM
 
 

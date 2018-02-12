@@ -6,11 +6,11 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Stakeholder Package Data Controller."""
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from datamodels import RTKDataController  # pylint: disable=E0401
-from . import dtmStakeholder  # pylint: disable=E0401
+from rtk.datamodels import RTKDataController
+from . import dtmStakeholder
 
 
 class StakeholderDataController(RTKDataController):

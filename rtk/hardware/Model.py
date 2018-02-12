@@ -4,20 +4,16 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Hardware Package Data Model."""  # pragma: no cover
+"""Hardware Package Data Model."""
 
-from math import exp  # pragma: no cover
-# pylint: disable=E0401
-from treelib.exceptions import DuplicatedNodeIdError  # pragma: no cover
+from math import exp
+from treelib.exceptions import DuplicatedNodeIdError
 
 # Import other RTK modules.
-# pylint: disable=E0401
-from analyses.prediction import Component  # pragma: no cover
-# pylint: disable=E0401
-from datamodels import RTKDataModel  # pragma: no cover
-# pylint: disable=E0401
-from dao import RTKHardware, RTKDesignElectric, RTKDesignMechanic, \
-    RTKMilHdbkF, RTKNSWC, RTKReliability  # pragma: no cover
+from rtk.analyses.prediction import Component
+from rtk.datamodels import RTKDataModel
+from rtk.dao import RTKHardware, RTKDesignElectric, RTKDesignMechanic, \
+    RTKMilHdbkF, RTKNSWC, RTKReliability
 
 
 class HardwareBoMDataModel(RTKDataModel):

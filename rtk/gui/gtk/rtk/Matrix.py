@@ -16,8 +16,8 @@ import gettext
 import locale
 
 # Import other RTK modules.
-from gui.gtk.rtk import RTKLabel  # pylint: disable=E0401
-from .Widget import gobject, gtk, pango  # pylint: disable=E0401
+from rtk.gui.gtk.rtk import RTKLabel
+from .Widget import gobject, gtk, pango
 
 _ = gettext.gettext
 

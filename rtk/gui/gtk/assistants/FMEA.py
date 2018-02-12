@@ -29,7 +29,7 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-from gui.gtk import rtk  # pylint: disable=E0401
+from rtk.gui.gtk import rtk
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

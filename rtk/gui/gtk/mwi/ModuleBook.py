@@ -11,7 +11,7 @@ import sys
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import modules required for the GUI.
 try:
@@ -29,14 +29,13 @@ except ImportError:
     sys.exit(1)
 
 # Import other RTK modules.
-# pylint: disable=E0401
-from gui.gtk.rtk import RTKBook, destroy
-from gui.gtk.moduleviews import mvwRevision
-from gui.gtk.moduleviews import mvwFunction
-from gui.gtk.moduleviews import mvwRequirement
-from gui.gtk.moduleviews import mvwHardware
-from gui.gtk.moduleviews import mvwValidation
-from gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
+from rtk.gui.gtk.rtk import RTKBook, destroy
+from rtk.gui.gtk.moduleviews import mvwRevision
+from rtk.gui.gtk.moduleviews import mvwFunction
+from rtk.gui.gtk.moduleviews import mvwRequirement
+from rtk.gui.gtk.moduleviews import mvwHardware
+from rtk.gui.gtk.moduleviews import mvwValidation
+from rtk.gui.gtk.assistants import CreateProject, OpenProject, DeleteProject, \
     Options
 
 _ = gettext.gettext

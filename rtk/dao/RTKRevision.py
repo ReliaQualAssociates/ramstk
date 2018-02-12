@@ -6,13 +6,13 @@
 # Copyright 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """RTKRevision Table Module."""
 
-# pylint: disable=E0401
+
 from sqlalchemy import BLOB, Column, Float, Integer, String
-from sqlalchemy.orm import relationship  # pylint: disable=E0401
+from sqlalchemy.orm import relationship  
 
 # Import other RTK modules.
-from Utilities import none_to_default  # pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
+from rtk.Utilities import none_to_default  
+from rtk.dao.RTKCommonDB import RTK_BASE  
 
 
 class RTKRevision(RTK_BASE):
