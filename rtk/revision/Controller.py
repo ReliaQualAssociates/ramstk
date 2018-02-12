@@ -9,7 +9,7 @@
 from pubsub import pub  # pylint: disable=E0401
 
 # Import other RTK modules.
-from datamodels import RTKDataController  # pylint: disable=E0401
+from rtk.datamodels import RTKDataController  # pylint: disable=E0401
 from . import dtmRevision
 
 

@@ -20,19 +20,19 @@ sys.path.insert(0,
                     os.path.join(os.path.dirname(__file__), '../rtk/')))
 
 # pylint: disable=import-error, wrong-import-position
-import Configuration
-import Utilities
+import rtk.Configuration
+import rtk.Utilities
 
 # Import the RTK Common database table objects.
-import dao.RTKCommonDB
-from dao import RTKSiteInfo, RTKUser, RTKGroup, RTKEnviron, RTKModel, \
+import rtk.dao.RTKCommonDB
+from rtk.dao import RTKSiteInfo, RTKUser, RTKGroup, RTKEnviron, RTKModel, \
     RTKType, RTKCategory, RTKSubCategory, RTKPhase, RTKDistribution, \
     RTKManufacturer, RTKUnit, RTKMethod, RTKCriticality, RTKRPN, RTKLevel, \
     RTKApplication, RTKHazards, RTKStakeholders, RTKStatus, RTKCondition, \
     RTKFailureMode, RTKMeasurement, RTKLoadHistory
 
 # Import the RTK Program database table objects.
-from dao import RTKAction, RTKAllocation, RTKCause, RTKControl, \
+from rtk.dao import RTKAction, RTKAllocation, RTKCause, RTKControl, \
     RTKDesignElectric, RTKDesignMechanic, RTKEnvironment, \
     RTKFailureDefinition, RTKFunction, RTKGrowthTest, RTKHardware, \
     RTKHazardAnalysis, RTKIncident, RTKIncidentAction, RTKIncidentDetail, \
@@ -178,7 +178,7 @@ def _create_common_database():
     session.add(RTKLoadHistory())
     session.commit()
 
-    for _key in dao.RTKCommonDB.RTK_CATEGORIES.keys():
+    for _key in rtk.dao.RTKCommonDB.RTK_CATEGORIES.keys():
         _category = RTKCategory()
         _category.category_id = _key
         session.add(_category)

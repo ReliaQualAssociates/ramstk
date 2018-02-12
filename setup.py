@@ -8,6 +8,16 @@ from setuptools.command.install import install as _install
 if not sys.version_info[0] == 2:
     sys.exit("Sorry, Python 3 is not supported (yet)")
 
+install_requires = [
+    'defusedxml', 'lifelines', 'lxml', 'matplotlib==1.4.3', 'numpy', 'pandas',
+    'PyPubSub==3.3.0', 'scipy', 'sortedcontainers', 'SQLAlchemy',
+    'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
+]
+tests_require = [
+    'bandit', 'flake8', 'pycodestyle', 'pydocstyle', 'pylint', 'nose',
+    'coverage', 'codacy-coverage', 'python-coveralls'
+]
+
 
 class install(_install):
     def pre_install_script(self):
@@ -36,27 +46,20 @@ if __name__ == '__main__':
         license='BSD-3',
         url='https://github.com/weibullguy/rtk',
         python_requires='>=2.7, <4',
-        install_requires=['defusedxml', 'lifelines', 'lxml',
-                          'matplotlib==1.4.3', 'numpy', 'pandas',
-                          'PyPubSub==3.3.0', 'scipy', 'sortedcontainers',
-                          'SQLAlchemy', 'SQLAlchemy-Utils', 'statsmodels',
-                          'treelib', 'xlrd', 'xlwt'],
+        install_requires=install_requires,
+        tests_require=tests_require,
         keywords='reliability RAMS engineering quality safety',
         scripts=[],
         packages=find_packages(exclude=['tests']),
         py_modules=[
-            'rtk.__init__',
-            'rtk.Configuration',
-            'rtk.RTK',
-            'rtk.Utilities',
-            'rtk.imports'
+            'rtk.Configuration', 'rtk.RTK', 'rtk.Utilities'
         ],
         classifiers=[
-             'Development Status :: 3 - Alpha',
-             'Programming Language :: Python'
+            'Development Status :: 3 - Alpha', 'Programming Language :: Python'
         ],
         entry_points={
-            'console_scripts': ['rtk = rtk.RTK:main'],},
+            'console_scripts': ['rtk = rtk.RTK:main'],
+        },
         data_files=[],
         package_data={},
         dependency_links=[],

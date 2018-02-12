@@ -7,9 +7,8 @@
 """Usage Profile Package Data Models."""
 
 # Import other RTK modules.
-from datamodels import RTKDataModel  # pylint: disable=E0401
-# pylint: disable=E0401
-from dao import RTKEnvironment, RTKMission, RTKMissionPhase
+from rtk.datamodels import RTKDataModel
+from rtk.dao import RTKEnvironment, RTKMission, RTKMissionPhase
 
 
 class UsageProfileDataModel(RTKDataModel):

@@ -4,16 +4,15 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKNSWC Table Module."""  # pragma: no cover
+"""RTKNSWC Table Module."""
 
-# pylint: disable=E0401
-from sqlalchemy import Column, Float, ForeignKey, Integer  # pragma: no cover
-from sqlalchemy.orm import relationship  # pylint: disable=E0401
+
+from sqlalchemy import Column, Float, ForeignKey, Integer
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from Utilities import none_to_default  # pylint: disable=E0401
-# pylint: disable=E0401
-from dao.RTKCommonDB import RTK_BASE  # pragma: no cover
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 # pylint: disable=R0902
@@ -25,7 +24,7 @@ class RTKNSWC(RTK_BASE):
     """
 
     __tablename__ = 'rtk_nswc'
-    __table_args__ = {'extend_existing': True}  # pragma: no cover
+    __table_args__ = {'extend_existing': True}
 
     hardware_id = Column(
         'fld_hardware_id',
@@ -94,7 +93,7 @@ class RTKNSWC(RTK_BASE):
 
     # Define the relationships to other tables in the RTK Program database.
     hardware = relationship('RTKHardware',
-        back_populates='nswc')  # pragma: no cover
+                            back_populates='nswc')
 
     def get_attributes(self):
         """

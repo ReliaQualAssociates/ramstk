@@ -6,15 +6,15 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Usage Profile List View Module."""
 
-from pubsub import pub  # pylint: disable=E0401
-from sortedcontainers import SortedDict  # pylint: disable=E0401
+from pubsub import pub
+from sortedcontainers import SortedDict
 
 # Modules required for the GUI.
-import pango  # pylint: disable=E0401
+import pango
 
 # Import other RTK modules.
-from gui.gtk import rtk  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
 from .ListView import RTKListView
 
 

@@ -9,13 +9,13 @@
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from Utilities import date_to_ordinal  # pylint: disable=E0401
-from gui.gtk import rtk  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
-from .ModuleView import RTKModuleView  # pylint: disable=E0401
+from rtk.Utilities import date_to_ordinal
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from .ModuleView import RTKModuleView
 
 _ = gettext.gettext
 

@@ -6,12 +6,11 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """FMEA Package Data Models."""
 
-from treelib import tree  # pylint: disable=E0401
+from treelib import tree
 
 # Import other RTK modules.
-from datamodels import RTKDataModel  # pylint: disable=E0401
-# pylint: disable=E0401
-from dao import RTKAction, RTKCause, RTKControl, RTKMechanism, RTKMode
+from rtk.datamodels import RTKDataModel
+from rtk.dao import RTKAction, RTKCause, RTKControl, RTKMechanism, RTKMode
 
 
 class ModeDataModel(RTKDataModel):

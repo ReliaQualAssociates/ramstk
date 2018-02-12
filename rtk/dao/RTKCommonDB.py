@@ -9,7 +9,7 @@
 The RTKCommonDB File
 ===============================================================================
 """
-# pylint: disable=E0401
+
 from sqlalchemy.ext.declarative import declarative_base
 
 RTK_BASE = declarative_base()

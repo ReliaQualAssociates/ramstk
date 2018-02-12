@@ -6,12 +6,12 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Function Package Data Controller."""
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from datamodels import RTKDataController  # pylint: disable=E0401
-from datamodels import RTKDataMatrix  # pylint: disable=E0401
-from dao import RTKFunction, RTKHardware, RTKSoftware  # pylint: disable=E0401
+from rtk.datamodels import RTKDataController
+from rtk.datamodels import RTKDataMatrix
+from rtk.dao import RTKFunction, RTKHardware, RTKSoftware
 from . import dtmFunction
 
 

@@ -10,11 +10,11 @@ Requirement:Hardware Matrix View Module
 -------------------------------------------------------------------------------
 """
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gobject, gtk  # pylint: disable=E0401,W0611
-from gui.gtk import rtk  # pylint: disable=E0401,W0611
+from rtk.gui.gtk.rtk.Widget import _, gobject, gtk
+from rtk.gui.gtk import rtk
 
 
 class MatrixView(gtk.HBox, rtk.RTKBaseMatrix):

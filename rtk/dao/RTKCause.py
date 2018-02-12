@@ -8,14 +8,14 @@
 
 import gettext
 
-# pylint: disable=E0401
+
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  # pylint: disable=E0401
+from sqlalchemy.orm import relationship  
 
 # Import other RTK modules.
-# pylint: disable=E0401
-from Utilities import none_to_default, OutOfRangeError
-from dao.RTKCommonDB import RTK_BASE  # pylint: disable=E0401
+
+from rtk.Utilities import none_to_default, OutOfRangeError
+from rtk.dao.RTKCommonDB import RTK_BASE  
 
 _ = gettext.gettext
 

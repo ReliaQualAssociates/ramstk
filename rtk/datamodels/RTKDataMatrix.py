@@ -6,11 +6,11 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Datamodels Package RTKDataMatrix."""
 
-import pandas as pd  # pylint: disable=E0401
-from sqlalchemy import and_  # pylint: disable=E0401
+import pandas as pd
+from sqlalchemy import and_
 
 # Import other RTK modules.
-from dao import RTKMatrix  # pylint: disable=E0401
+from rtk.dao import RTKMatrix
 
 
 class RTKDataMatrix(object):

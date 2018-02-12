@@ -7,8 +7,8 @@
 """Requirement Package Data Model."""
 
 # Import other RTK modules.
-from datamodels import RTKDataModel  # pylint: disable=E0401
-from dao import RTKRequirement  # pylint: disable=E0401
+from rtk.datamodels import RTKDataModel
+from rtk.dao import RTKRequirement
 
 
 class RequirementDataModel(RTKDataModel):

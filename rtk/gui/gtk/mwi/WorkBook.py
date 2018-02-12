@@ -9,17 +9,16 @@
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-# pylint: disable=E0401
-from gui.gtk.rtk import RTKBook
-from gui.gtk.workviews import wvwFMEA
-from gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
-from gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
-from gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
-from gui.gtk.workviews import wvwHardwareGD, wvwHardwareAI, wvwHardwareAR
-from gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
+from rtk.gui.gtk.rtk import RTKBook
+from rtk.gui.gtk.workviews import wvwFMEA
+from rtk.gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
+from rtk.gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
+from rtk.gui.gtk.workviews import wvwRequirementGD, wvwRequirementAnalysis
+from rtk.gui.gtk.workviews import wvwHardwareGD, wvwHardwareAI, wvwHardwareAR
+from rtk.gui.gtk.workviews import wvwValidationGD, wvwBurndownCurve
 
 _ = gettext.gettext
 

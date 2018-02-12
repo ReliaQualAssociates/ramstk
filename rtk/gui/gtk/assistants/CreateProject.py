@@ -4,18 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-#####################
-RTK Assistants Module
-#####################
-"""
+"""Create Project Assistant Module"""
 
 from os import remove
 
 # Import other RTK modules.
-import Utilities  # pylint: disable=E0401
-from gui.gtk.rtk.Widget import _, gtk, set_cursor  # pylint: disable=E0401
-from gui.gtk import rtk  # pylint: disable=E0401
+import rtk.Utilities
+from rtk.gui.gtk.rtk.Widget import _, gtk, set_cursor
+from rtk.gui.gtk import rtk
 
 
 class CreateProject(object):

@@ -7,8 +7,8 @@
 """Stakeholder Package Data Model Module."""
 
 # Import other RTK modules.
-from datamodels import RTKDataModel  # pylint: disable=E0401
-from dao import RTKStakeholder  # pylint: disable=E0401
+from rtk.datamodels import RTKDataModel
+from rtk.dao import RTKStakeholder
 
 
 class StakeholderDataModel(RTKDataModel):

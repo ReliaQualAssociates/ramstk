@@ -6,13 +6,12 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Requirement Work View."""
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-from Utilities import boolean_to_integer  # pylint: disable=E0401
-from gui.gtk import rtk  # pylint: disable=E0401
-# pylint: disable=E0401,W0611
-from gui.gtk.rtk.Widget import _, gobject, gtk, pango
+from rtk.Utilities import boolean_to_integer
+from rtk.gui.gtk import rtk
+from rtk.gui.gtk.rtk.Widget import _, gobject, gtk, pango
 from .WorkView import RTKWorkView
 
 

@@ -7,8 +7,8 @@
 """RTKWorkView Meta-Class Module."""
 
 # Import other RTK modules.
-from gui.gtk.rtk.Widget import _, gtk  # pylint: disable=E0401,W0611
-from gui.gtk import rtk  # pylint: disable=E0401,W0611
+from rtk.gui.gtk.rtk.Widget import _, gtk
+from rtk.gui.gtk import rtk
 
 
 class RTKWorkView(gtk.HBox, rtk.RTKBaseView):

@@ -15,8 +15,8 @@ provides the basis for the RTKListView, RTKModuleView, and RTKWorkView.
 import locale
 
 # Import other RTK Widget classes.
-from gui.gtk.rtk import RTKTreeView  # pylint: disable=E0401
-from .Widget import gtk  # pylint: disable=E0401
+from rtk.gui.gtk.rtk import RTKTreeView
+from .Widget import gtk
 
 
 class RTKBaseView(object):

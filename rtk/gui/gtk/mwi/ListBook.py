@@ -9,14 +9,13 @@
 # Import modules for localization support.
 import gettext
 
-from pubsub import pub  # pylint: disable=E0401
+from pubsub import pub
 
 # Import other RTK modules.
-# pylint: disable=E0401
-from gui.gtk.rtk import RTKBook
-from gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, \
+from rtk.gui.gtk.rtk import RTKBook
+from rtk.gui.gtk.listviews import lvwUsageProfile, lvwFailureDefinition, \
     lvwStakeholder
-from gui.gtk.matrixviews import FunctionHardware, RequirementHardware, \
+from rtk.gui.gtk.matrixviews import FunctionHardware, RequirementHardware, \
     RequirementSoftware, RequirementValidation
 
 _ = gettext.gettext

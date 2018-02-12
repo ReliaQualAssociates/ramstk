@@ -46,7 +46,7 @@ except ImportError:
 
 # Import other RTK modules.
 import Configuration as _conf
-import Utilities as _util
+import rtk.Utilities as _util
 
 
 class MySQLInterface:
