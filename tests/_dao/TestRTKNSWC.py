@@ -6,9 +6,6 @@
 # All rights reserved.
 """Test class for testing the RTKNSWC module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 import unittest
 
 from sqlalchemy import create_engine
@@ -16,11 +13,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from nose.plugins.attrib import attr
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
-
-from dao.RTKNSWC import RTKNSWC
+from rtk.dao.RTKNSWC import RTKNSWC
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

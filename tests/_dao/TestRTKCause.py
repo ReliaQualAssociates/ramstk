@@ -6,22 +6,14 @@
 # All rights reserved.
 """Test class for testing the RTKCause module algorithms and models."""
 
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 import unittest
 from nose.plugins.attrib import attr
 
-from dao.RTKCause import RTKCause
-from Utilities import OutOfRangeError
+from rtk.dao.RTKCause import RTKCause
+from rtk.Utilities import OutOfRangeError
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

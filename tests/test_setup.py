@@ -15,17 +15,17 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from sqlalchemy_utils import create_database
 
-sys.path.insert(0,
-                os.path.abspath(
-                    os.path.join(os.path.dirname(__file__), '../rtk/')))
+#sys.path.insert(0,
+ #               os.path.abspath(
+  #                  os.path.join(os.path.dirname(__file__), '../rtk/')))
 
 # pylint: disable=import-error, wrong-import-position
-import rtk.Configuration
-import rtk.Utilities
+import rtk.Configuration as Configuration
+import rtk.Utilities as Utilities
 
 # Import the RTK Common database table objects.
-import rtk.dao.RTKCommonDB
-from rtk.dao import RTKSiteInfo, RTKUser, RTKGroup, RTKEnviron, RTKModel, \
+#import rtk.dao.RTKCommonDB
+from rtk.dao import RTKCommonDB, RTKSiteInfo, RTKUser, RTKGroup, RTKEnviron, RTKModel, \
     RTKType, RTKCategory, RTKSubCategory, RTKPhase, RTKDistribution, \
     RTKManufacturer, RTKUnit, RTKMethod, RTKCriticality, RTKRPN, RTKLevel, \
     RTKApplication, RTKHazards, RTKStakeholders, RTKStatus, RTKCondition, \
@@ -47,154 +47,6 @@ __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
-
-
-def _create_common_database():
-
-    # Create and populate the RTK Common test database.
-    engine = create_engine('sqlite:////tmp/TestCommonDB.rtk', echo=False)
-    session = scoped_session(sessionmaker())
-
-    session.remove()
-    session.configure(bind=engine, autoflush=False, expire_on_commit=False)
-
-    RTKSiteInfo.__table__.create(bind=engine)
-    RTKUser.__table__.create(bind=engine)
-    RTKGroup.__table__.create(bind=engine)
-    RTKEnviron.__table__.create(bind=engine)
-    RTKModel.__table__.create(bind=engine)
-    RTKType.__table__.create(bind=engine)
-    RTKCategory.__table__.create(bind=engine)
-    RTKSubCategory.__table__.create(bind=engine)
-    RTKPhase.__table__.create(bind=engine)
-    RTKDistribution.__table__.create(bind=engine)
-    RTKManufacturer.__table__.create(bind=engine)
-    RTKUnit.__table__.create(bind=engine)
-    RTKMethod.__table__.create(bind=engine)
-    RTKCriticality.__table__.create(bind=engine)
-    RTKRPN.__table__.create(bind=engine)
-    RTKLevel.__table__.create(bind=engine)
-    RTKApplication.__table__.create(bind=engine)
-    RTKHazards.__table__.create(bind=engine)
-    RTKStakeholders.__table__.create(bind=engine)
-    RTKStatus.__table__.create(bind=engine)
-    RTKCondition.__table__.create(bind=engine)
-    RTKFailureMode.__table__.create(bind=engine)
-    RTKMeasurement.__table__.create(bind=engine)
-    RTKLoadHistory.__table__.create(bind=engine)
-
-    # Add an entry to each table.  These are used as the DUT in each test
-    # file.
-    _site_info = RTKSiteInfo()
-    _site_info.product_key = '9490059723f3a743fb961d092d3283422f4f2d13'
-    session.add(_site_info)
-    session.add(RTKUser())
-
-    _group = RTKGroup()
-    _group.description = 'Engineering, Systems'
-    _group.group_type = 'workgroup'
-    session.add(_group)
-
-    _group = RTKGroup()
-    _group.description = 'Engineering, Reliability'
-    _group.group_type = 'workgroup'
-    session.add(_group)
-
-    _group = RTKGroup()
-    _group.description = 'Engineering, Design Services'
-    _group.group_type = 'workgroup'
-    session.add(_group)
-
-    session.add(RTKEnviron())
-    session.add(RTKModel())
-    _type = RTKType()
-    _type.code = 'STMD'
-    _type.description = 'State/Mode Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'FUNC'
-    _type.description = 'Functional Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'PERF'
-    _type.description = 'Performance Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'EXIN'
-    _type.description = 'External Interface Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'ENVT'
-    _type.description = 'Environmental Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'RESC'
-    _type.description = 'Resource Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'PHYS'
-    _type.description = 'Physical Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'QUAL'
-    _type.description = 'Quality Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    _type = RTKType()
-    _type.code = 'DSGN'
-    _type.description = 'Design Requirement'
-    _type.type_type = 'requirement'
-    session.add(_type)
-
-    session.add(RTKPhase())
-    session.add(RTKDistribution())
-    session.add(RTKManufacturer())
-    session.add(RTKUnit())
-    session.add(RTKMethod())
-    session.add(RTKCriticality())
-    session.add(RTKRPN())
-    session.add(RTKLevel())
-    session.add(RTKApplication())
-    session.add(RTKHazards())
-    session.add(RTKStakeholders())
-    session.add(RTKStatus())
-    session.add(RTKCondition())
-    session.add(RTKMeasurement())
-    session.add(RTKLoadHistory())
-    session.commit()
-
-    for _key in rtk.dao.RTKCommonDB.RTK_CATEGORIES.keys():
-        _category = RTKCategory()
-        _category.category_id = _key
-        session.add(_category)
-        _category.set_attributes(dao.RTKCommonDB.RTK_CATEGORIES[_key])
-    session.commit()
-
-    _subcategory = RTKSubCategory()
-    _subcategory.category_id = 9
-    session.add(_subcategory)
-    session.commit()
-
-    _failuremode = RTKFailureMode()
-    _failuremode.category_id = 9
-    _failuremode.subcategory_id = _subcategory.subcategory_id
-    session.add(_failuremode)
-    session.commit()
 
 
 def _create_program_database():
@@ -577,6 +429,7 @@ def _build_hardware_bom(session, revision_id):
 
     return _hardware.hardware_id
 
+
 def setUp():
 
     # Clean up from previous runs.
@@ -594,7 +447,7 @@ def setUp():
     if os.path.isfile('/tmp/TestCommonDB.rtk'):
         os.remove('/tmp/TestCommonDB.rtk')
 
-    _create_common_database()
+    RTKCommonDB.create_common_db(database='sqlite:////tmp/TestCommonDB.rtk')
     _create_program_database()
 
     Configuration.RTK_HR_MULTIPLIER = 1.0

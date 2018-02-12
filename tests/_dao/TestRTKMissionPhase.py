@@ -5,18 +5,7 @@
 
 #
 # All rights reserved.
-"""
-This is the test class for testing the RTKPhase module algorithms and
-models.
-"""
-
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
+"""Test class for testing the RTKPhase module algorithms and models."""
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -24,7 +13,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import unittest
 from nose.plugins.attrib import attr
 
-from dao.RTKMissionPhase import RTKMissionPhase
+from rtk.dao.RTKMissionPhase import RTKMissionPhase
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

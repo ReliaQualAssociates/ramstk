@@ -6,9 +6,6 @@
 # All rights reserved.
 """Test class for testing the RTKValidation module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 from datetime import date, timedelta
 
 import unittest
@@ -17,13 +14,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from nose.plugins.attrib import attr
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
-
-# pylint: disable=E0401,wrong-import-position
-from dao.RTKValidation import RTKValidation
+from rtk.dao.RTKValidation import RTKValidation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

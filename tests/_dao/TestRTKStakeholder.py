@@ -6,21 +6,13 @@
 # All rights reserved.
 """Test class for testing the RTKStakeholder module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 
 import unittest
 from nose.plugins.attrib import attr
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
-
-from dao.RTKStakeholder import RTKStakeholder
+from rtk.dao.RTKStakeholder import RTKStakeholder
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

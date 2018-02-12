@@ -6,9 +6,6 @@
 # All rights reserved.
 """Test class for testing the RTKHardware module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 from datetime import date
 
 import unittest
@@ -18,11 +15,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 from nose.plugins.attrib import attr
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk", )
-
-from dao.RTKHardware import RTKHardware
+from rtk.dao.RTKHardware import RTKHardware
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

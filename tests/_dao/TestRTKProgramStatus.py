@@ -6,9 +6,6 @@
 # All rights reserved.
 """Test class for testing the RTKProgramStatus module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 from datetime import date, timedelta
 
 import unittest
@@ -17,13 +14,7 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
 from nose.plugins.attrib import attr
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
-
-# pylint: disable=E0401,wrong-import-position
-from dao.RTKProgramStatus import RTKProgramStatus
+from rtk.dao.RTKProgramStatus import RTKProgramStatus
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

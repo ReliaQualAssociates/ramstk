@@ -4,13 +4,11 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKCommonDB File
-===============================================================================
-"""
+"""RTKCommonDB File."""
 
+from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import scoped_session, sessionmaker
 
 RTK_BASE = declarative_base()
 
@@ -290,6 +288,79 @@ RTK_STATUSES = {
     13: ('Ready for Closure', 'Action is ready to be closed.', 'action'),
     14: ('Closed', 'Action has been closed.', 'action')
 }
+
+RTK_SUBCATEGORIES = [
+    (1, 1, 'Linear'), (1, 2, 'Logic'), (1, 3, 'PAL, PLA'),
+    (1, 4, 'Microprocessor, Microcontroller'), (1, 5, 'Memory, ROM'),
+    (1, 6, 'Memory, EEPROM'), (1, 7, 'Memory, DRAM'), (1, 8, 'Memory, SRAM'),
+    (1, 9, 'GaAs'), (1, 10, 'VHSIC, VLSI'), (2, 12, 'Diode, Low Frequency'),
+    (2, 13, 'Diode, High Frequency'), (2, 14,
+                                       'Transistor, Low Frequency, Bipolar'),
+    (2, 15, 'Transistor, Low Frequency, Si FET'), (2, 16,
+                                                   'Transistor, Unijunction'),
+    (2, 17, 'Transistor, High Frequency, Low Noise, Bipolar'),
+    (2, 18, 'Transistor, High Frequency, High Power, Bipolar'),
+    (2, 19, 'Transistor, High Frequency, GaAs FET'),
+    (2, 20, 'Transistor, High Frequency, Si FET'), (2, 21, 'Thyristor, SCR'),
+    (2, 22, 'Optoelectronic, Detector, Isolator, Emitter'),
+    (2, 23, 'Optoelectronic, Alphanumeric Display'),
+    (2, 24, 'Optoelectronic, Laser Diode'), (3, 25,
+                                             'Fixed, Composition (RC, RCR)'),
+    (3, 26, 'Fixed, Film (RL, RLR, RN, RNC, RNN, RNR)'),
+    (3, 27, 'Fixed, Film, Power (RD)'), (3, 28, 'Fixed, Film, Network (RZ)'),
+    (3, 29,
+     'Fixed, Wirewound (RB, RBR)'), (3, 30,
+                                     'Fixed, Wirewound, Power (RW, RWR)'),
+    (3, 31, 'Fixed, Wirewound, Power, Chassis-Mounted (RE, RER)'),
+    (3, 32, 'Thermistor (RTH)'), (3, 33, 'Variable, Wirewound (RT, RTR)'),
+    (3, 34, 'Variable, Wirewound, Precision (RR)'),
+    (3, 35, 'Variable, Wirewound, Semiprecision (RA, RK)'),
+    (3, 36, 'Variable, Wirewound, Power (RP)'),
+    (3, 37,
+     'Variable, Non-Wirewound (RJ, RJR)'), (3, 38,
+                                            'Variable, Composition (RV)'),
+    (3, 39, 'Variable, Non-Wirewound, Film and Precision (RQ, RVC)'),
+    (4, 40,
+     'Fixed, Paper, Bypass (CA, CP)'), (4, 41,
+                                        'Fixed, Feed-Through (CZ, CZR)'),
+    (4, 42, 'Fixed, Paper and Plastic Film (CPV, CQ, CQR)'),
+    (4, 43, 'Fixed, Metallized Paper, Paper-Plastic and Plastic (CH, CHR)'),
+    (4, 44, 'Fixed, Plastic and Metallized Plastic'),
+    (4, 45, 'Fixed, Super-Metallized Plastic (CRH)'),
+    (4, 46, 'Fixed, Mica (CM, CMR)'), (4, 47, 'Fixed, Mica, Button (CB)'),
+    (4, 48,
+     'Fixed, Glass (CY, CYR)'), (4, 49,
+                                 'Fixed, Ceramic, General Purpose (CK, CKR)'),
+    (4, 50,
+     'Fixed, Ceramic, Temperature Compensating and Chip (CC, CCR, CDR)'),
+    (4, 51, 'Fixed, Electrolytic, Tantalum, Solid (CSR)'),
+    (4, 52, 'Fixed, Electrolytic, Tantalum, Non-Solid (CL, CLR)'),
+    (4, 53, 'Fixed, Electrolytic, Aluminum (CU, CUR)'),
+    (4, 54,
+     'Fixed, Electrolytic (Dry), Aluminum (CE)'), (4, 55,
+                                                   'Variable, Ceramic (CV)'),
+    (4, 56, 'Variable, Piston Type (PC)'), (4, 57,
+                                            'Variable, Air Trimmer (CT)'),
+    (4, 58, 'Variable and Fixed, Gas or Vacuum (CG)'), (5, 62, 'Transformer'),
+    (5, 63, 'Coil'), (6, 64,
+                      'Mechanical'), (6, 65,
+                                      'Solid State'), (7, 67,
+                                                       'Toggle or Pushbutton'),
+    (7, 68, 'Sensitive'), (7, 69,
+                           'Rotary'), (7, 70,
+                                       'Thumbwheel'), (7, 71,
+                                                       'Circuit Breaker'),
+    (8, 72,
+     'Multi-Pin'), (8, 73,
+                    'PCB Edge'), (8, 74,
+                                  'IC Socket'), (8, 75,
+                                                 'Plated Through Hole (PTH)'),
+    (8, 76, 'Connection, Non-PTH'), (9, 77, 'Elapsed Time'), (9, 78, 'Panel'),
+    (10, 80, 'Crystal'), (10, 81,
+                          'Filter, Non-Tunable Electronic'), (10, 82,
+                                                              'Fuse'), (10, 83,
+                                                                        'Lamp')
+]
 
 RTK_TYPES = {
     0: ('CALC', 'Calculated', 'cost'),
@@ -688,3 +759,199 @@ RTK_HISTORIES = {
     7: ('Time at Maximum', ),
     8: ('Time at Minimum', )
 }
+
+
+def create_common_db(**kwargs):
+    """Create and populate the RTK Common database."""
+    from rtk.dao import (RTKSiteInfo, RTKUser, RTKGroup, RTKEnviron, RTKModel,
+                         RTKType, RTKCategory, RTKSubCategory, RTKPhase,
+                         RTKDistribution, RTKManufacturer, RTKUnit, RTKMethod,
+                         RTKCriticality, RTKRPN, RTKLevel, RTKApplication,
+                         RTKHazards, RTKStakeholders, RTKStatus, RTKCondition,
+                         RTKFailureMode, RTKMeasurement, RTKLoadHistory)
+
+    uri = kwargs['database']
+
+    # Create and populate the RTK Common test database.
+    engine = create_engine(uri, echo=False)
+    session = scoped_session(sessionmaker())
+
+    session.remove()
+    session.configure(bind=engine, autoflush=False, expire_on_commit=False)
+
+    # Create all the tables in the RTK Common database.
+    RTKSiteInfo.__table__.create(bind=engine)
+    RTKUser.__table__.create(bind=engine)
+    RTKGroup.__table__.create(bind=engine)
+    RTKEnviron.__table__.create(bind=engine)
+    RTKModel.__table__.create(bind=engine)
+    RTKType.__table__.create(bind=engine)
+    RTKCategory.__table__.create(bind=engine)
+    RTKSubCategory.__table__.create(bind=engine)
+    RTKPhase.__table__.create(bind=engine)
+    RTKDistribution.__table__.create(bind=engine)
+    RTKManufacturer.__table__.create(bind=engine)
+    RTKUnit.__table__.create(bind=engine)
+    RTKMethod.__table__.create(bind=engine)
+    RTKCriticality.__table__.create(bind=engine)
+    RTKRPN.__table__.create(bind=engine)
+    RTKLevel.__table__.create(bind=engine)
+    RTKApplication.__table__.create(bind=engine)
+    RTKHazards.__table__.create(bind=engine)
+    RTKStakeholders.__table__.create(bind=engine)
+    RTKStatus.__table__.create(bind=engine)
+    RTKCondition.__table__.create(bind=engine)
+    RTKFailureMode.__table__.create(bind=engine)
+    RTKMeasurement.__table__.create(bind=engine)
+    RTKLoadHistory.__table__.create(bind=engine)
+
+    # Create the site information table and add the product key.
+    _site_info = RTKSiteInfo()
+    _site_info.product_key = '9490059723f3a743fb961d092d3283422f4f2d13'
+    session.add(_site_info)
+
+    session.add(RTKUser())
+    session.add(RTKManufacturer())
+
+    for __, _value in RTK_CATEGORIES.items():
+        _record = RTKCategory()
+        _record.name = _value[0]
+        _record.description = _value[1]
+        _record.cat_type = _value[2]
+        _record.value = _value[3]
+        session.add(_record)
+
+    for __, _value in enumerate(RTK_SUBCATEGORIES):
+        _record = RTKSubCategory()
+        _record.category_id = _value[0]
+        _record.description = _value[2]
+        session.add(_record)
+
+    for __, _value in RTK_GROUPS.items():
+        _record = RTKGroup()
+        _record.description = _value[0]
+        _record.group_type = _value[1]
+        session.add(_record)
+
+    for __, _value in RTK_ENVIRONS.items():
+        _record = RTKEnviron()
+        _record.code = _value[0]
+        _record.description = _value[1]
+        _record.environ_type = _value[2]
+        _record.pi_e = _value[3]
+        _record.do = _value[4]
+        session.add(_record)
+
+    for __, _value in RTK_MODELS.items():
+        _record = RTKModel()
+        _record.description = _value[0]
+        _record.model_type = _value[1]
+        session.add(_record)
+
+    for __, _value in RTK_MODELS.items():
+        _record = RTKType()
+        _record.description = _value[0]
+        _record.model_type = _value[1]
+        session.add(_record)
+
+    for __, _value in RTK_PHASES.items():
+        _record = RTKPhase()
+        _record.description = _value[0]
+        _record.phase_type = _value[1]
+        session.add(_record)
+
+    for __, _value in RTK_DISTRIBUTIONS.items():
+        _record = RTKDistribution()
+        _record.description = _value[0]
+        _record.dist_type = _value[1]
+        session.add(_record)
+
+    for __, _value in RTK_UNITS.items():
+        _record = RTKUnit()
+        _record.code = _value[0]
+        _record.description = _value[1]
+        _record.unit_type = _value[2]
+        session.add(_record)
+
+    for __, _value in RTK_METHODS.items():
+        _record = RTKMethod()
+        _record.name = _value[0]
+        _record.description = _value[1]
+        _record.method_type = _value[2]
+        session.add(_record)
+
+    for __, _value in RTK_CRITICALITIES.items():
+        _record = RTKCriticality()
+        _record.name = _value[0]
+        _record.description = _value[1]
+        _record.category = _value[2]
+        _record.value = _value[3]
+        session.add(_record)
+
+    for __, _value in RTK_RPNS.items():
+        _record = RTKRPN()
+        _record.name = _value[0]
+        _record.description = _value[1]
+        _record.rpn_type = _value[2]
+        _record.value = _value[3]
+        session.add(_record)
+
+    for __, _value in RTK_LEVELS.items():
+        _record = RTKLevel()
+        _record.description = _value[0]
+        _record.level_type = _value[1]
+        _record.value = _value[2]
+        session.add(_record)
+
+    for __, _value in RTK_APPLICATIONS.items():
+        _record = RTKApplication()
+        _record.description = _value[0]
+        _record.fault_density = _value[1]
+        _record.transformation_ratio = _value[2]
+        session.add(_record)
+
+    for __, _value in RTK_RPNS.items():
+        _record = RTKRPN()
+        _record.name = _value[0]
+        _record.description = _value[1]
+        _record.rpn_type = _value[2]
+        _record.value = _value[3]
+        session.add(_record)
+
+    for __, _value in RTK_HAZARDS.items():
+        _record = RTKHazards()
+        _record.category = _value[0]
+        _record.subcategory = _value[1]
+        session.add(_record)
+
+    for __, _value in RTK_STAKEHOLDERS.items():
+        _record = RTKStakeholders()
+        _record.stakeholder = _value[0]
+        session.add(_record)
+
+    for __, _value in RTK_STATUSES.items():
+        _record = RTKStatus()
+        _record.name = _value[0]
+        _record.description = _value[1]
+        _record.status_type = _value[2]
+        session.add(_record)
+
+    for __, _value in RTK_CONDITIONS.items():
+        _record = RTKCondition()
+        _record.description = _value[0]
+        _record.cond_type = _value[1]
+        session.add(_record)
+
+    for __, _value in RTK_MEASUREMENTS.items():
+        _record = RTKMeasurement()
+        _record.description = _value[0]
+        session.add(_record)
+
+    for __, _value in RTK_HISTORIES.items():
+        _record = RTKLoadHistory()
+        _record.description = _value[0]
+        session.add(_record)
+
+    session.commit()
+
+    return None

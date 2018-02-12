@@ -4,18 +4,7 @@
 #       tests._dao.TestRTKControl.py is part of The RTK Project
 #
 # All rights reserved.
-"""
-This is the test class for testing the RTKControl module algorithms and
-models.
-"""
-
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-)
+"""Test class for testing the RTKControl module algorithms and models."""
 
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -23,7 +12,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 import unittest
 from nose.plugins.attrib import attr
 
-from dao.RTKControl import RTKControl
+from rtk.dao.RTKControl import RTKControl
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

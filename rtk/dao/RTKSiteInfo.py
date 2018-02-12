@@ -4,19 +4,15 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKSiteInfo Table
-===============================================================================
-"""
+"""RTKSiteInfo Table"""
 
 from datetime import date, timedelta
 
-from sqlalchemy import Column, Date, Integer, String  
+from sqlalchemy import Column, Date, Integer, String
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import error_handler, none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKSiteInfo(RTK_BASE):
