@@ -1,22 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.fmea.TestAction.py is part of The RTK Project
+#       rtk.tests.fmea.TestControl.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-This is the test class for testing the Action class.
-"""
-
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
-
-from datetime import date, timedelta
+"""Test class for testing the Control class."""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -24,28 +12,27 @@ from nose.plugins.attrib import attr
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-import Utilities as Utilities
-from Configuration import Configuration
-from analyses.fmea import dtmAction
-from dao import DAO
-from dao import RTKAction
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.analyses.fmea import dtmControl
+from rtk.dao import DAO
+from rtk.dao import RTKControl
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
-__copyright__ = 'Copyright 2014 - 2015 Andrew "weibullguy" Rowland'
+__copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
-class TestActionDataModel(unittest.TestCase):
+class TestControlDataModel(unittest.TestCase):
     """
-    Class for testing the Action model class.
+    Class for testing the Control model class.
     """
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Action model class.
+        Method to setup the test fixture for the Control model class.
         """
-
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -72,63 +59,61 @@ class TestActionDataModel(unittest.TestCase):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
 
-        self.DUT = dtmAction(self.dao)
+        self.DUT = dtmControl(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
         """
-        (TestActionModel) __init__ should return instance of Action data model
+        (TestControlModel) __init__ should return instance of Control data model
         """
-        self.assertTrue(isinstance(self.DUT, dtmAction))
+        self.assertTrue(isinstance(self.DUT, dtmControl))
         self.assertEqual(self.DUT.last_id, None)
 
     @attr(all=True, unit=True)
     def test01a_select_all_functional(self):
         """
-        (TestActionModel): select_all() should return a Tree() object populated with RTKAction instances on success.
+        (TestControlModel): select_all() should return a Tree() object populated with RTKControl instances on success.
         """
         _tree = self.DUT.select_all(1, functional=True)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKAction))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKControl))
 
     @attr(all=True, unit=True)
     def test01b_select_all_hardware(self):
         """
-        (TestActionModel): select_all() should return a Tree() object populated with RTKAction instances on success.
+        (TestControlModel): select_all() should return a Tree() object populated with RTKControl instances on success.
         """
         _tree = self.DUT.select_all(1, functional=False)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKAction))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKControl))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
         """
-        (TestActionModel): select() should return an instance of the RTKAction data model on success.
+        (TestControlModel): select() should return an instance of the RTKControl data model on success.
         """
         self.DUT.select_all(1, functional=False)
-        _action = self.DUT.select(1)
+        _control = self.DUT.select(1)
 
-        self.assertTrue(isinstance(_action, RTKAction))
-        self.assertEqual(_action.action_id, 1)
-        self.assertEqual(
-            _action.action_due_date, date.today() + timedelta(days=30))
+        self.assertTrue(isinstance(_control, RTKControl))
+        self.assertEqual(_control.control_id, 1)
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
         """
-        (TestActionModel): select() should return None when a non-existent Action ID is requested.
+        (TestControlModel): select() should return None when a non-existent Control ID is requested.
         """
         self.DUT.select_all(1, functional=False)
-        _action = self.DUT.select(100)
+        _control = self.DUT.select(100)
 
-        self.assertEqual(_action, None)
+        self.assertEqual(_control, None)
 
     @attr(all=True, unit=True)
-    def test03a_insert_functional_mode(self):
+    def test03a_insert_functional_control(self):
         """
-        (TestActionModel): insert() should return False on success when inserting a functional FMEA action.
+        (TestControlModel): insert() should return False on success when inserting a Control into a functional FMEA.
         """
         self.DUT.select_all(1, functional=True)
 
@@ -139,9 +124,9 @@ class TestActionDataModel(unittest.TestCase):
                          'the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test03b_insert_hardware_mode(self):
+    def test03b_insert_hardware_control(self):
         """
-        (TestActionModel): insert() should return False on success when inserting a hardware FMEA action.
+        (TestControlModel): insert() should return False on success when inserting a Control into a hardware FMEA.
         """
         self.DUT.select_all(1, functional=False)
 
@@ -154,7 +139,7 @@ class TestActionDataModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04a_delete(self):
         """
-        (TestActionModel): delete() should return a zero error code on success.
+        (TestControlModel): delete() should return a zero error code on success.
         """
         self.DUT.select_all(1, functional=False)
 
@@ -167,7 +152,7 @@ class TestActionDataModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
         """
-        (TestActionModel): delete() should return a non-zero error code when passed a Mode ID that doesn't exist.
+        (TestControlModel): delete() should return a non-zero error code when passed a Control ID that doesn't exist.
         """
         self.DUT.select_all(1, functional=False)
 
@@ -175,17 +160,17 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                         'Action ID 300.')
+                         'Control ID 300.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
         """
-        (TestActionModel): update() should return a zero error code on success.
+        (TestControlModel): update() should return a zero error code on success.
         """
         self.DUT.select_all(1, functional=False)
 
-        _action = self.DUT.tree.get_node(1).data
-        _action.action_recommended = 'Do this stuff and do it now!!'
+        _control = self.DUT.select(1)
+        _control.description = 'Functional FMEA control.'
 
         _error_code, _msg = self.DUT.update(1)
 
@@ -196,7 +181,7 @@ class TestActionDataModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_05b_update_non_existent_id(self):
         """
-        (TestActionModel): update() should return a non-zero error code when passed an Action ID that doesn't exist.
+        (TestControlModel): update() should return a non-zero error code when passed a Control ID that doesn't exist.
         """
         self.DUT.select_all(1, functional=False)
 
@@ -204,14 +189,13 @@ class TestActionDataModel(unittest.TestCase):
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                         'Action ID 100.')
+                         'Control ID 100.')
 
     @attr(all=True, unit=True)
     def test_06a_update_all(self):
         """
-        (TestActionModel): update_all() should return a zero error code on success.
+        (TestControlModel): update_all() should return a zero error code on success.
         """
-
         self.DUT.select_all(1, functional=False)
 
         _error_code, _msg = self.DUT.update_all()

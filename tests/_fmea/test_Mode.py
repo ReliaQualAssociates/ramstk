@@ -1,20 +1,9 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests.fmea.TestControl.py is part of The RTK Project
+#       tests._fmea.TestMode.py is part of The RTK Project
 #
 # All rights reserved.
-# Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-This is the test class for testing the Control class.
-"""
-
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
+"""Test class for testing the Mode class."""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -22,11 +11,11 @@ from nose.plugins.attrib import attr
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-import Utilities as Utilities
-from Configuration import Configuration
-from analyses.fmea import dtmControl
-from dao import DAO
-from dao import RTKControl
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.analyses.fmea import dtmMode
+from rtk.dao import DAO
+from rtk.dao import RTKMode
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -34,14 +23,14 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 - 2017 Andrew "weibullguy" Rowland'
 
 
-class TestControlDataModel(unittest.TestCase):
+class TestModeDataModel(unittest.TestCase):
     """
-    Class for testing the Control model class.
+    Class for testing the Mode model class.
     """
 
     def setUp(self):
         """
-        Method to setup the test fixture for the Control model class.
+        Sets up the test fixture for the Mode model class.
         """
         self.Configuration = Configuration()
 
@@ -65,82 +54,79 @@ class TestControlDataModel(unittest.TestCase):
                     self.Configuration.RTK_PROG_INFO['database']
         self.dao.db_connect(_database)
 
-        self.dao.RTK_SESSION.configure(
-            bind=self.dao.engine, autoflush=False, expire_on_commit=False)
-        self.session = scoped_session(self.dao.RTK_SESSION)
-
-        self.DUT = dtmControl(self.dao)
+        self.DUT = dtmMode(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
         """
-        (TestControlModel) __init__ should return instance of Control data model
+        (TestModeModel) __init__ should return instance of Mode data model
         """
-        self.assertTrue(isinstance(self.DUT, dtmControl))
+        self.assertTrue(isinstance(self.DUT, dtmMode))
         self.assertEqual(self.DUT.last_id, None)
 
     @attr(all=True, unit=True)
     def test01a_select_all_functional(self):
         """
-        (TestControlModel): select_all() should return a Tree() object populated with RTKControl instances on success.
+        (TestModeModel): select_all() should return a Tree() object populated with RTKMode instances on success.
         """
-        _tree = self.DUT.select_all(1, functional=True)
+        _tree = self.DUT.select_all(3, functional=True)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKControl))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMode))
 
     @attr(all=True, unit=True)
     def test01b_select_all_hardware(self):
         """
-        (TestControlModel): select_all() should return a Tree() object populated with RTKControl instances on success.
+        (TestModeModel): select_all() should return a Tree() object populated with RTKMode instances on success.
         """
-        _tree = self.DUT.select_all(1, functional=False)
+        _tree = self.DUT.select_all(3, functional=False)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(1).data, RTKControl))
+        self.assertTrue(isinstance(_tree.get_node(1).data, RTKMode))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
         """
-        (TestControlModel): select() should return an instance of the RTKControl data model on success.
+        (TestModeModel): select() should return an instance of the RTKMode data model on success.
         """
-        self.DUT.select_all(1, functional=False)
-        _control = self.DUT.select(1)
+        self.DUT.select_all(3, functional=False)
+        _mode = self.DUT.select(1)
 
-        self.assertTrue(isinstance(_control, RTKControl))
-        self.assertEqual(_control.control_id, 1)
+        self.assertTrue(isinstance(_mode, RTKMode))
+        self.assertEqual(_mode.mode_id, 1)
+        self.assertEqual(_mode.description, 'Test Failure Mode #1')
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
         """
-        (TestControlModel): select() should return None when a non-existent Control ID is requested.
+        (TestModeModel): select() should return None when a non-existent Mode ID is requested.
         """
-        self.DUT.select_all(1, functional=False)
-        _control = self.DUT.select(100)
+        self.DUT.select_all(3, functional=False)
+        _mode = self.DUT.select(100)
 
-        self.assertEqual(_control, None)
+        self.assertEqual(_mode, None)
 
     @attr(all=True, unit=True)
-    def test03a_insert_functional_control(self):
+    def test03a_insert_functional_mode(self):
         """
-        (TestControlModel): insert() should return False on success when inserting a Control into a functional FMEA.
+        (TestModeModel): insert() should return a zero error code on success when inserting a functional failure Mode.
         """
-        self.DUT.select_all(1, functional=True)
+        self.DUT.select_all(3, functional=True)
 
-        _error_code, _msg = self.DUT.insert(mode_id=1, cause_id=-1)
+        _error_code, _msg = self.DUT.insert(function_id=1, hardware_id=-1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
                          'the RTK Program database.')
 
     @attr(all=True, unit=True)
-    def test03b_insert_hardware_control(self):
+    def test03b_insert_hardware_mode(self):
         """
-        (TestControlModel): insert() should return False on success when inserting a Control into a hardware FMEA.
+        (TestModeModel): insert() should return a zero error code on success when inserting a hardware failure Mode.
         """
-        self.DUT.select_all(1, functional=False)
+        self.DUT.select_all(3, functional=False)
 
-        _error_code, _msg = self.DUT.insert(mode_id=-1, cause_id=1)
+        _error_code, _msg = self.DUT.insert(function_id=-1, hardware_id=1)
 
         self.assertEqual(_error_code, 0)
         self.assertEqual(_msg, 'RTK SUCCESS: Adding one or more items to '
@@ -149,9 +135,10 @@ class TestControlDataModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04a_delete(self):
         """
-        (TestControlModel): delete() should return a zero error code on success.
+        (TestModeModel): delete() should return a zero error code on success.
         """
-        self.DUT.select_all(1, functional=False)
+        self.DUT.select_all(3, functional=False)
+        self.DUT.insert(function_id=-1, hardware_id=1)
 
         _error_code, _msg = self.DUT.delete(self.DUT.last_id)
 
@@ -162,25 +149,25 @@ class TestControlDataModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
         """
-        (TestControlModel): delete() should return a non-zero error code when passed a Control ID that doesn't exist.
+        (TestModeModel): delete() should return a non-zero error code when passed a Mode ID that doesn't exist.
         """
-        self.DUT.select_all(1, functional=False)
+        self.DUT.select_all(3, functional=False)
 
         _error_code, _msg = self.DUT.delete(300)
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                         'Control ID 300.')
+                         'Mode ID 300.')
 
     @attr(all=True, unit=True)
     def test_05a_update(self):
         """
-        (TestControlModel): update() should return a zero error code on success.
+        (TestModeModel): update() should return a zero error code on success.
         """
-        self.DUT.select_all(1, functional=False)
+        self.DUT.select_all(3, functional=False)
 
-        _control = self.DUT.select(1)
-        _control.description = 'Functional FMEA control.'
+        _mode = self.DUT.select(1)
+        _mode.isolation_method = 'Method to isolate the failure.'
 
         _error_code, _msg = self.DUT.update(1)
 
@@ -191,22 +178,22 @@ class TestControlDataModel(unittest.TestCase):
     @attr(all=True, unit=True)
     def test_05b_update_non_existent_id(self):
         """
-        (TestControlModel): update() should return a non-zero error code when passed a Control ID that doesn't exist.
+        (TestModeModel): update() should return a non-zero error code when passed a Mode ID that doesn't exist.
         """
-        self.DUT.select_all(1, functional=False)
+        self.DUT.select_all(3, functional=False)
 
         _error_code, _msg = self.DUT.update(100)
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                         'Control ID 100.')
+                         'Mode ID 100.')
 
     @attr(all=True, unit=True)
-    def test_06a_update_all(self):
+    def test06a_update_all(self):
         """
-        (TestControlModel): update_all() should return a zero error code on success.
+        (TestModeModel): update_all() should return a zero error code on success.
         """
-        self.DUT.select_all(1, functional=False)
+        self.DUT.select_all(3, functional=False)
 
         _error_code, _msg = self.DUT.update_all()
 

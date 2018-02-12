@@ -1,14 +1,11 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests._hardware.TestDesignMechanic.py is part of The RTK Project
+#       tests._hardware.TestNSWC.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Test class for testing DesignMechanic module algorithms and models."""
-
-import sys
-from os.path import dirname
+"""Test class for testing NSWC module algorithms and models."""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -16,13 +13,11 @@ from nose.plugins.attrib import attr
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
-
-import Utilities as Utilities  # pylint: disable=import-error
-from Configuration import Configuration  # pylint: disable=import-error
-from hardware import dtmDesignMechanic  # pylint: disable=import-error
-from dao import DAO  # pylint: disable=import-error
-from dao import RTKDesignMechanic  # pylint: disable=import-error
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.hardware import dtmNSWC
+from rtk.dao import DAO
+from rtk.dao import RTKNSWC
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -30,11 +25,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestDesignMechanicDataModel(unittest.TestCase):
-    """Class for testing the DesignMechanic data model class."""
+class TestNSWCDataModel(unittest.TestCase):
+    """Class for testing the NSWC data model class."""
 
     def setUp(self):
-        """(TestDesignMechanic) Set up the test fixture for the DesignMechanic class."""
+        """(TestNSWC) Set up the test fixture for the NSWC class."""
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -61,44 +56,44 @@ class TestDesignMechanicDataModel(unittest.TestCase):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
 
-        self.DUT = dtmDesignMechanic(self.dao)
+        self.DUT = dtmNSWC(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
-        """(TestDesignMechanicModel) __init__ should return a DesignMechanic model."""
-        self.assertTrue(isinstance(self.DUT, dtmDesignMechanic))
+        """(TestNSWCDataModel) __init__ should return a NSWC model."""
+        self.assertTrue(isinstance(self.DUT, dtmNSWC))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
-        self.assertEqual(self.DUT._tag, 'DesignMechanic')
+        self.assertEqual(self.DUT._tag, 'NSWC')
 
     @attr(all=True, unit=True)
     def test01a_select_all(self):
-        """(TestDesignMechanicModel) select_all() should return a Tree() object populated with RTKDesignMechanic instances on success."""
+        """(TestNSWCDataModel) select_all() should return a Tree() object populated with RTKNSWC instances on success."""
         _tree = self.DUT.select_all(2)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(2).data, RTKDesignMechanic))
+        self.assertTrue(isinstance(_tree.get_node(2).data, RTKNSWC))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
-        """(TestDesignMechanicModel) select() should return an instance of the RTKDesignMechanic data model on success."""
+        """(TestNSWCDataModel) select() should return an instance of the RTKNSWC data model on success."""
         self.DUT.select_all(2)
-        _design_mechanic = self.DUT.select(2)
+        _nswc = self.DUT.select(2)
 
-        self.assertTrue(isinstance(_design_mechanic, RTKDesignMechanic))
-        self.assertEqual(_design_mechanic.hardware_id, 2)
-        self.assertEqual(_design_mechanic.lubrication_id, 0)
+        self.assertTrue(isinstance(_nswc, RTKNSWC))
+        self.assertEqual(_nswc.hardware_id, 2)
+        self.assertEqual(_nswc.Calt, 0.0)
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
-        """(TestDesignMechanicModel) select() should return None when a non-existent DesignMechanic ID is requested."""
+        """(TestNSWCDataModel) select() should return None when a non-existent NSWC ID is requested."""
         _design_electric = self.DUT.select(100)
 
         self.assertEqual(_design_electric, None)
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
-        """(TestDesignMechanicModel) insert() should return False on success when inserting a DesignMechanic record."""
+        """(TestNSWCDataModel) insert() should return False on success when inserting a NSWC record."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.insert(hardware_id=4)
@@ -109,7 +104,7 @@ class TestDesignMechanicDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
-        """(TestDesignMechanicModel) delete() should return a zero error code on success."""
+        """(TestNSWCDataModel) delete() should return a zero error code on success."""
         self.DUT.select_all(4)
 
         _error_code, _msg = self.DUT.delete(4)
@@ -120,18 +115,18 @@ class TestDesignMechanicDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
-        """(TestDesignMechanicModel) delete() should return a non-zero error code when passed a DesignMechanic ID that doesn't exist."""
+        """(TestNSWCDataModel) delete() should return a non-zero error code when passed a NSWC ID that doesn't exist."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.delete(300)
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                         'DesignMechanic record ID 300.')
+                         'NSWC record ID 300.')
 
     @attr(all=True, unit=True)
     def test05a_update(self):
-        """(TestDesignMechanicModel) update() should return a zero error code on success."""
+        """(TestNSWCDataModel) update() should return a zero error code on success."""
         self.DUT.select_all(3)
 
         _design_electric = self.DUT.select(3)
@@ -145,18 +140,18 @@ class TestDesignMechanicDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test05b_update_non_existent_id(self):
-        """(TestDesignMechanicModel) update() should return a non-zero error code when passed a DesignMechanic ID that doesn't exist."""
+        """(TestNSWCDataModel) update() should return a non-zero error code when passed a NSWC ID that doesn't exist."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.update(100)
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                         'DesignMechanic record ID 100.')
+                         'NSWC record ID 100.')
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
-        """(TestDesignMechanicModel) update_all() should return a zero error code on success."""
+        """(TestNSWCDataModel) update_all() should return a zero error code on success."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.update_all()

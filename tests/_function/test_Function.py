@@ -4,12 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-Test Classs for Function data model and data controller.
-
-This is the test class for testing Function Data Model and Function Data
-Controller algorithms and models.
-"""
+"""Test Class for Function data model and data controller."""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -18,20 +13,12 @@ from sqlalchemy.orm import scoped_session
 from treelib import Tree
 import pandas as pd
 
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
-
-import Utilities as Utilities  # pylint: disable=import-error
-from Configuration import Configuration  # pylint: disable=import-error
-from datamodels import RTKDataMatrix  # pylint: disable=import-error
-from function import dtcFunction, dtmFunction  # pylint: disable=import-error
-from dao import DAO  # pylint: disable=import-error
-from dao import RTKFunction  # pylint: disable=import-error
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.datamodels import RTKDataMatrix
+from rtk.function import dtcFunction, dtmFunction
+from rtk.dao import DAO
+from rtk.dao import RTKFunction
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

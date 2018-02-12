@@ -4,17 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-This is the test class for testing the FMEA failure Mechanism class.
-"""
-
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
+"""Test class for testing the FMEA failure Mechanism class."""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -22,11 +12,11 @@ from nose.plugins.attrib import attr
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-import Utilities as Utilities
-from Configuration import Configuration
-from analyses.fmea import dtmMechanism
-from dao import DAO
-from dao import RTKMechanism
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.analyses.fmea import dtmMechanism
+from rtk.dao import DAO
+from rtk.dao import RTKMechanism
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

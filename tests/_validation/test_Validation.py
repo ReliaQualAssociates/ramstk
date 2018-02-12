@@ -7,26 +7,17 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing Validation module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 import unittest
 from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
-
-# pylint: disable=E0401,wrong-import-position
-import Utilities as Utilities
-from Configuration import Configuration
-from dao import DAO
-from dao import RTKValidation
-from validation import dtmValidation, dtcValidation
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.dao import DAO
+from rtk.dao import RTKValidation
+from rtk.validation import dtmValidation, dtcValidation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

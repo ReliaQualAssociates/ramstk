@@ -7,25 +7,17 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing Stakeholder module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 import unittest
 from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-sys.path.insert(
-    0,
-    dirname(dirname(__file__)) + "/rtk",
-)
-
-import Utilities as Utilities  # pylint: disable=E0401
-from Configuration import Configuration  # pylint: disable=E0401
-from stakeholder import dtmStakeholder, dtcStakeholder  # pylint: disable=E0401
-from dao import DAO  # pylint: disable=E0401
-from dao import RTKStakeholder  # pylint: disable=E0401
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.stakeholder import dtmStakeholder, dtcStakeholder
+from rtk.dao import DAO
+from rtk.dao import RTKStakeholder
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

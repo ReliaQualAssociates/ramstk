@@ -1,14 +1,11 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       tests._hardware.TestNSWC.py is part of The RTK Project
+#       tests._hardware.TestMilHdbkF.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Test class for testing NSWC module algorithms and models."""
-
-import sys
-from os.path import dirname
+"""Test class for testing MilHdbkF module algorithms and models."""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -16,13 +13,11 @@ from nose.plugins.attrib import attr
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
-
-import Utilities as Utilities  # pylint: disable=import-error
-from Configuration import Configuration  # pylint: disable=import-error
-from hardware import dtmNSWC  # pylint: disable=import-error
-from dao import DAO  # pylint: disable=import-error
-from dao import RTKNSWC  # pylint: disable=import-error
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.hardware import dtmMilHdbkF
+from rtk.dao import DAO
+from rtk.dao import RTKMilHdbkF
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -30,11 +25,11 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 
-class TestNSWCDataModel(unittest.TestCase):
-    """Class for testing the NSWC data model class."""
+class TestMilHdbkFDataModel(unittest.TestCase):
+    """Class for testing the MilHdbkF data model class."""
 
     def setUp(self):
-        """(TestNSWC) Set up the test fixture for the NSWC class."""
+        """(TestMilHdbkFDataModel) Set up the test fixture for the MilHdbkF class."""
         self.Configuration = Configuration()
 
         self.Configuration.RTK_BACKEND = 'sqlite'
@@ -61,44 +56,44 @@ class TestNSWCDataModel(unittest.TestCase):
             bind=self.dao.engine, autoflush=False, expire_on_commit=False)
         self.session = scoped_session(self.dao.RTK_SESSION)
 
-        self.DUT = dtmNSWC(self.dao)
+        self.DUT = dtmMilHdbkF(self.dao)
 
     @attr(all=True, unit=True)
     def test00_create(self):
-        """(TestNSWCDataModel) __init__ should return a NSWC model."""
-        self.assertTrue(isinstance(self.DUT, dtmNSWC))
+        """(TestMilHdbkFDataModel) __init__ should return a MilHdbkF model."""
+        self.assertTrue(isinstance(self.DUT, dtmMilHdbkF))
         self.assertTrue(isinstance(self.DUT.tree, Tree))
         self.assertTrue(isinstance(self.DUT.dao, DAO))
-        self.assertEqual(self.DUT._tag, 'NSWC')
+        self.assertEqual(self.DUT._tag, 'MilHdbkF')
 
     @attr(all=True, unit=True)
     def test01a_select_all(self):
-        """(TestNSWCDataModel) select_all() should return a Tree() object populated with RTKNSWC instances on success."""
+        """(TestMilHdbkFDataModel) select_all() should return a Tree() object populated with RTKMilHdbkF instances on success."""
         _tree = self.DUT.select_all(2)
 
         self.assertTrue(isinstance(_tree, Tree))
-        self.assertTrue(isinstance(_tree.get_node(2).data, RTKNSWC))
+        self.assertTrue(isinstance(_tree.get_node(2).data, RTKMilHdbkF))
 
     @attr(all=True, unit=True)
     def test02a_select(self):
-        """(TestNSWCDataModel) select() should return an instance of the RTKNSWC data model on success."""
+        """(TestMilHdbkFDataModel) select() should return an instance of the RTKMilHdbkF data model on success."""
         self.DUT.select_all(2)
-        _nswc = self.DUT.select(2)
+        _mil_hdbk_f = self.DUT.select(2)
 
-        self.assertTrue(isinstance(_nswc, RTKNSWC))
-        self.assertEqual(_nswc.hardware_id, 2)
-        self.assertEqual(_nswc.Calt, 0.0)
+        self.assertTrue(isinstance(_mil_hdbk_f, RTKMilHdbkF))
+        self.assertEqual(_mil_hdbk_f.hardware_id, 2)
+        self.assertEqual(_mil_hdbk_f.piA, 0.0)
 
     @attr(all=True, unit=True)
     def test02b_select_non_existent_id(self):
-        """(TestNSWCDataModel) select() should return None when a non-existent NSWC ID is requested."""
+        """(TestMilHdbkFDataModel) select() should return None when a non-existent MilHdbkF ID is requested."""
         _design_electric = self.DUT.select(100)
 
         self.assertEqual(_design_electric, None)
 
     @attr(all=True, unit=True)
     def test03a_insert(self):
-        """(TestNSWCDataModel) insert() should return False on success when inserting a NSWC record."""
+        """(TestMilHdbkFDataModel) insert() should return False on success when inserting a MilHdbkF record."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.insert(hardware_id=4)
@@ -109,7 +104,7 @@ class TestNSWCDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04a_delete(self):
-        """(TestNSWCDataModel) delete() should return a zero error code on success."""
+        """(TestMilHdbkFDataModel) delete() should return a zero error code on success."""
         self.DUT.select_all(4)
 
         _error_code, _msg = self.DUT.delete(4)
@@ -120,22 +115,22 @@ class TestNSWCDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test04b_delete_non_existent_id(self):
-        """(TestNSWCDataModel) delete() should return a non-zero error code when passed a NSWC ID that doesn't exist."""
+        """(TestMilHdbkFDataModel) delete() should return a non-zero error code when passed a MilHdbkF ID that doesn't exist."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.delete(300)
 
         self.assertEqual(_error_code, 2005)
         self.assertEqual(_msg, '  RTK ERROR: Attempted to delete non-existent '
-                         'NSWC record ID 300.')
+                         'MilHdbkF record ID 300.')
 
     @attr(all=True, unit=True)
     def test05a_update(self):
-        """(TestNSWCDataModel) update() should return a zero error code on success."""
+        """(TestMilHdbkFDataModel) update() should return a zero error code on success."""
         self.DUT.select_all(3)
 
         _design_electric = self.DUT.select(3)
-        _design_electric.resistance = 0.9832
+        _design_electric.piV = 0.9832
 
         _error_code, _msg = self.DUT.update(3)
 
@@ -145,18 +140,18 @@ class TestNSWCDataModel(unittest.TestCase):
 
     @attr(all=True, unit=True)
     def test05b_update_non_existent_id(self):
-        """(TestNSWCDataModel) update() should return a non-zero error code when passed a NSWC ID that doesn't exist."""
+        """(TestMilHdbkFDataModel) update() should return a non-zero error code when passed a MilHdbkF ID that doesn't exist."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.update(100)
 
         self.assertEqual(_error_code, 2006)
         self.assertEqual(_msg, 'RTK ERROR: Attempted to save non-existent '
-                         'NSWC record ID 100.')
+                         'MilHdbkF record ID 100.')
 
     @attr(all=True, unit=True)
     def test06a_update_all(self):
-        """(TestNSWCDataModel) update_all() should return a zero error code on success."""
+        """(TestMilHdbkFDataModel) update_all() should return a zero error code on success."""
         self.DUT.select_all(3)
 
         _error_code, _msg = self.DUT.update_all()

@@ -6,25 +6,17 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing the Cause class."""
 
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
-
 import unittest
 from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-import Utilities as Utilities
-from Configuration import Configuration
-from analyses.fmea import dtmCause
-from dao import DAO
-from dao import RTKCause
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.analyses.fmea import dtmCause
+from rtk.dao import DAO
+from rtk.dao import RTKCause
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

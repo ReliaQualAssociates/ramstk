@@ -7,9 +7,6 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware BoM module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 import unittest
 from nose.plugins.attrib import attr
 
@@ -19,20 +16,13 @@ import pandas as pd
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
-
-import Utilities as Utilities  # pylint: disable=E0401, wrong-import-position
-# pylint: disable=E0401, wrong-import-position
-from Configuration import Configuration
-# pylint: disable=E0401, wrong-import-position
-from hardware import dtmHardware, dtmDesignElectric, dtmDesignMechanic, \
-    dtmMilHdbkF, dtmNSWC, dtmReliability, dtmHardwareBoM, dtcHardwareBoM
-from dao import DAO  # pylint: disable=E0401, wrong-import-position
-# pylint: disable=E0401, wrong-import-position
-from dao import RTKHardware
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.hardware import (dtmHardware, dtmDesignElectric, dtmDesignMechanic,
+                          dtmMilHdbkF, dtmNSWC, dtmReliability, dtmHardwareBoM,
+                          dtcHardwareBoM)
+from rtk.dao import DAO
+from rtk.dao import RTKHardware
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

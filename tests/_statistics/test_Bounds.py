@@ -7,20 +7,12 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing statistical bound algorithms and models."""
 
-import sys
-from os.path import dirname
-
 import unittest
 from nose.plugins.attrib import attr
 import numpy as np
 
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
-
-import dao.DAO as _dao
-from statistics.Bounds import *
+import rtk.dao.DAO as _dao
+from rtk.statistics.Bounds import *
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

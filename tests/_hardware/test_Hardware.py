@@ -7,22 +7,17 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing Hardware module algorithms and models."""
 
-import sys
-from os.path import dirname
-
 import unittest
 from nose.plugins.attrib import attr
 
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-sys.path.insert(0, dirname(dirname(dirname(__file__))) + "/rtk", )
-
-import Utilities as Utilities  # pylint: disable=import-error
-from Configuration import Configuration  # pylint: disable=import-error
-from hardware import dtmHardware, dtmDesignElectric  # pylint: disable=import-error
-from dao import DAO  # pylint: disable=import-error
-from dao import RTKHardware  # pylint: disable=import-error
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.hardware import dtmHardware, dtmDesignElectric
+from rtk.dao import DAO
+from rtk.dao import RTKHardware
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

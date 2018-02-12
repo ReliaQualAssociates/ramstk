@@ -5,19 +5,12 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-This is the test class for testing the Environment class.
-"""
+"""Test class for testing the Environment class."""
 
 # We add this to ensure the imports within the rtk packages will work.
 import sys
 from os.path import dirname
 
-#sys.path.insert(
-#    0,
-#    dirname(dirname(dirname(dirname(__file__)))) + "/rtk",
-#)
-print(sys.path)
 import unittest
 from nose.plugins.attrib import attr
 

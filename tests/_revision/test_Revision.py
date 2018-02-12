@@ -5,18 +5,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-This is the test class for testing Revision Data Model and Revision Data
-Controller algorithms and models.
-"""
-
-import sys
-from os.path import dirname
-
-sys.path.insert(
-    0,
-    dirname(dirname(dirname(__file__))) + "/rtk",
-)
+"""Test class for testing Revision algorithms and models."""
 
 import unittest
 from nose.plugins.attrib import attr
@@ -24,11 +13,11 @@ from nose.plugins.attrib import attr
 from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
-import Utilities as Utilities
-from Configuration import Configuration
-from revision import dtmRevision, dtcRevision
-from dao import DAO
-from dao import RTKRevision
+import rtk.Utilities as Utilities
+from rtk.Configuration import Configuration
+from rtk.revision import dtmRevision, dtcRevision
+from rtk.dao import DAO
+from rtk.dao import RTKRevision
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
