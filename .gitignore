@@ -17,7 +17,7 @@
 dist/
 .pytest_cache/
 target/
-*.egg-info
+*.egg*
 *.pyc
 *.pyo
 
