@@ -271,13 +271,7 @@ def calculate_217f_part_stress(**attributes):
     _msg = ''
 
     # Calculate the insert temperature rise.
-    try:
-        _fo = _dic_factors[attributes['subcategory_id']][attributes[
-            'contact_gauge']]
-    except KeyError:
-        _fo = 1.0
-    attributes['temperature_rise'] = (
-        _fo * attributes['current_operating']**1.85)
+    attributes = do_calculate_insert_temperature(**attributes)
 
     # Calculate the base hazard rate.
     _contact_temp = (attributes['temperature_active'] +
@@ -437,5 +431,32 @@ def overstressed(**attributes):
             _reason_num += 1
 
     attributes['reason'] = _reason
+
+    return attributes
+
+def do_calculate_insert_temperature(**attributes):
+    """Calculate the insert temperature."""
+    # First key is subcategory ID, second key is conact gauge..
+    _dic_factors = {
+        1: {
+            12: 0.1,
+            16: 0.274,
+            20: 0.64,
+            22: 0.989
+        },
+        2: {
+            20: 0.64,
+            22: 0.989,
+            26: 2.1
+        }
+    }
+
+    try:
+        _fo = _dic_factors[attributes['subcategory_id']][attributes[
+            'contact_gauge']]
+    except KeyError:
+        _fo = 1.0
+    attributes['temperature_rise'] = (
+        _fo * attributes['current_operating']**1.85)
 
     return attributes
