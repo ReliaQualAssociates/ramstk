@@ -4,7 +4,10 @@
 #
 #    from tests.data import <DATA OR VARIABLE TO USE>
 
-# This is a dictionary of baseline hardware attributes.
+# This is a dictionary of baseline hardware attributes.  Use the following
+# statement in each test file using this dictionary:
+#
+#    ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 HARDWARE_ATTRIBUTES = {
     'hazard_rate_percent': 0.0,
     'voltage_ac_operating': 0.0,

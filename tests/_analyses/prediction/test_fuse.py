@@ -17,7 +17,7 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
-ATTRIBUTES = HARDWARE_ATTRIBUTES
+ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
 PART_COUNT_LAMBDA_B = [
     0.01, 0.02, 0.06, 0.05, 0.11, 0.09, 0.12, 0.15, 0.18, 0.18, 0.009, 0.1,

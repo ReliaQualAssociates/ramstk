@@ -17,7 +17,7 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
-ATTRIBUTES = HARDWARE_ATTRIBUTES
+ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -113,6 +113,8 @@ ATTRIBUTES['duty_cycle'] = 100.0
 ATTRIBUTES['quantity'] = 1
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize(
     "subcategory_id",
@@ -152,6 +154,8 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
     assert _attributes['hazard_rate_active'] == lambda_b * piQ
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
@@ -169,6 +173,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     assert _attributes['hazard_rate_active'] == 0.0
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the specification ID is missing and needed."""
@@ -186,6 +192,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
     assert _attributes['hazard_rate_active'] == 0.0
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -204,6 +212,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert _attributes['hazard_rate_active'] == 0.0
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -231,6 +241,8 @@ def test_calculate_mil_hdbk_217f_part_stress():
     assert pytest.approx(_attributes['hazard_rate_active'], 1.005887691)
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("environment_active_id",
                          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
@@ -264,6 +276,8 @@ def test_calculate_dormant_hazard_rate(environment_active_id,
                          ATTRIBUTES['hazard_rate_active'] * dormant_mult)
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [20.0, 12.0])
 @pytest.mark.parametrize("environment_active_id",
@@ -287,10 +301,12 @@ def test_voltage_overstress_harsh_environment(voltage_rated,
         assert _attributes['reason'] == ''
     elif voltage_rated == 12.0:
         assert _attributes['overstress']
-        assert _attributes['reason'] == ('1. Operating voltage > 70% rated '
+        assert _attributes['reason'] == ('1. Operating voltage > 60% rated '
                                          'voltage in harsh environment.\n')
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("temperature_active", [48.7, 118.2])
 @pytest.mark.parametrize("environment_active_id",
@@ -315,10 +331,12 @@ def test_temperature_overstress_harsh_environment(temperature_active,
     elif temperature_active == 118.2:
         assert _attributes['overstress']
         assert _attributes['reason'] == ('1. Operating temperature within '
-                                         '25.0C of maximum rated '
+                                         '10.0C of maximum rated '
                                          'temperature.\n')
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [20.0, 12.0])
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])

@@ -101,15 +101,17 @@ def calculate_217f_part_count(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating inductor, hardware ID: ' \
-            '{0:d}, subcategory ID: {1:d}, type ID: {2:d}, and active ' \
+            '{0:d}, subcategory ID: {1:d}, family ID: {2:d}, and active ' \
             'environment ID: {3:d}.'.format(attributes['hardware_id'],
                                             attributes['subcategory_id'],
-                                            attributes['type_id'],
+                                            attributes['family_id'],
                                             attributes['environment_active_id'])
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'inductor, hardware ID: {0:d}, quality ID: ' \
+            '{1:d}.'.format(attributes['hardware_id'],
+                            attributes['quality_id'])
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
@@ -182,15 +184,20 @@ def calculate_217f_part_stress(**attributes):
     }
     _msg = ''
 
+    attributes = calculate_hot_spot_temperature(**attributes)
+
     # Calculate the base hazard rate.
-    _ref_temp = _dic_ref_temp[attributes['subcategory_id']][attributes[
-        'insulation_id']]
-    _f0 = _dic_factors[attributes['subcategory_id']][attributes[
-        'insulation_id']][0]
-    _f1 = _dic_factors[attributes['subcategory_id']][attributes[
-        'insulation_id']][1]
-    attributes['lambda_b'] = _f0 * exp(
-        ((attributes['temperature_hot_spot'] + 273.0) / _ref_temp)**_f1)
+    try:
+        _ref_temp = _dic_ref_temp[attributes['subcategory_id']][attributes[
+            'insulation_id']]
+        _f0 = _dic_factors[attributes['subcategory_id']][attributes[
+            'insulation_id']][0]
+        _f1 = _dic_factors[attributes['subcategory_id']][attributes[
+            'insulation_id']][1]
+        attributes['lambda_b'] = _f0 * exp(
+            ((attributes['temperature_hot_spot'] + 273.0) / _ref_temp)**_f1)
+    except (KeyError, ZeroDivisionError):
+        attributes['lambda_b'] = 0.0
 
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
@@ -198,20 +205,26 @@ def calculate_217f_part_stress(**attributes):
             '{0:d}'.format(attributes['hardware_id'])
 
     # Determine the quality factor (piQ).
-    if attributes['subcategory_id'] == 1:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][attributes[
-            'family_id']][attributes['quality_id'] - 1]
-    else:
-        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
-            attributes['quality_id'] - 1]
+    try:
+        if attributes['subcategory_id'] == 1:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['family_id']][attributes['quality_id'] - 1]
+        else:
+            attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+                attributes['quality_id'] - 1]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
             'inductor, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the environmental factor (piE).
-    attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-        attributes['environment_active_id'] - 1]
+    try:
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+            attributes['environment_active_id'] - 1]
+    except (KeyError, IndexError):
+        attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
@@ -261,12 +274,14 @@ def overstressed(**attributes):
         if attributes['voltage_ratio'] > 0.5:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating voltage > 50% rated voltage.\n")
+                _(u". Operating voltage > 50% rated voltage in harsh "
+                  u"environment.\n")
             _reason_num += 1
         if attributes['current_ratio'] > 0.6:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 60% rated current.\n")
+                _(u". Operating current > 60% rated current in harsh "
+                  u"environment.\n")
             _reason_num += 1
         if (attributes['temperature_rated_max'] -
                 attributes['temperature_hot_spot'] < 15.0):
@@ -279,12 +294,14 @@ def overstressed(**attributes):
         if attributes['voltage_ratio'] > 0.9:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating voltage > 90% rated voltage.\n")
+                _(u". Operating voltage > 90% rated voltage in mild "
+                  u"environment.\n")
             _reason_num += 1
         if attributes['current_ratio'] > 0.9:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 90% rated current.\n")
+                _(u". Operating current > 90% rated current in mild "
+                  u"environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason
