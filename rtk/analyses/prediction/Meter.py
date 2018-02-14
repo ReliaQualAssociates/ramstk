@@ -66,7 +66,7 @@ def calculate_217f_part_count(**attributes):
     try:
         _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
             attributes['type_id'] - 1]
-    except KeyError:
+    except (IndexError, KeyError):
         _lst_base_hr = [0.0]
 
     try:
@@ -76,12 +76,10 @@ def calculate_217f_part_count(**attributes):
         attributes['lambda_b'] = 0.0
 
     # Select the piQ.
-    if attributes['subcategory_id'] == 1:
-        try:
-            attributes['piQ'] = _dic_piQ[1][attributes['quality_id'] - 1]
-        except IndexError:
-            attributes['piQ'] = 0.0
-    else:
+    try:
+        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+            attributes['quality_id'] - 1]
+    except (KeyError, IndexError):
         attributes['piQ'] = 1.0
 
     # Confirm all inputs are within range.  If not, set the message.  The
@@ -89,15 +87,10 @@ def calculate_217f_part_count(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating meter, hardware ID: ' \
-            '{0:d}, subcategory ID: {1:d}, active environment ID: ' \
-            '{2:d}'.format(attributes['hardware_id'],
-                           attributes['subcategory_id'],
-                           attributes['environment_active_id'])
-
-    if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'meter, hardware ID: {0:d} and quality ID: ' \
-            '{1:d}'.format(attributes['hardware_id'], attributes['quality_id'])
+            '{0:d}, subcategory ID: {1:d}, type ID: {3:d}, and active ' \
+            'environment ID: {2:d}.\n'.format(
+                attributes['hardware_id'], attributes['subcategory_id'],
+                attributes['environment_active_id'], attributes['type_id'])
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (

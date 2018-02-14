@@ -49,14 +49,8 @@ PART_COUNT_LAMBDA_B = {
         ]
     }
 }
-PART_COUNT_PIQ = [0.25, 1.0, 10.0]
 
-ATTRIBUTES['category_id'] = 5
-ATTRIBUTES['environment_dormant_id'] = 3
-ATTRIBUTES['add_adj_factor'] = 0.0
-ATTRIBUTES['mult_adj_factor'] = 1.0
-ATTRIBUTES['duty_cycle'] = 100.0
-ATTRIBUTES['quantity'] = 1
+PART_COUNT_PIQ = [0.25, 1.0, 10.0]
 
 
 @pytest.mark.unit
