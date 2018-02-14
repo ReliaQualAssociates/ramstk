@@ -85,13 +85,6 @@ def calculate_217f_part_stress(**attributes):
     _lst_piQ = [1.0, 3.4]
     _msg = ''
 
-    # Calculate the temperature ratio.
-    try:
-        _temperature_ratio = (attributes['temperature_active'] /
-                              attributes['temperature_rated_max'])
-    except ZeroDivisionError:
-        _temperature_ratio = 1.0
-
     # Calculate the base hazard rate.
     attributes['lambda_b'] = 0.013 * attributes['frequency_operating']**0.23
 

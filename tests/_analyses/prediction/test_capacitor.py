@@ -8,6 +8,7 @@
 """Test class for the capacitor module."""
 
 import pytest
+from tests.data import HARDWARE_ATTRIBUTES, DORMANT_MULT
 
 from rtk.analyses.prediction import Capacitor, Component
 
@@ -16,272 +17,7 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
-ATTRIBUTES = {
-    'hazard_rate_percent': 0.0,
-    'voltage_ac_operating': 0.0,
-    'pressure_upstream': 0.0,
-    'frequency_operating': 0.0,
-    'type_id': 0,
-    'resistance': 0.0,
-    'friction': 0.0,
-    'length_compressed': 0.0,
-    'balance_id': 0,
-    'scale_parameter': 0.0,
-    'lubrication_id': 0,
-    'temperature_dormant': 25.0,
-    'Cmu': 0.0,
-    'ref_des': 'C1',
-    'hazard_rate_method_id': 1,
-    'lambdaBP': 0.0,
-    'Cm': 0.0,
-    'flow_operating': 0.0,
-    'temperature_case': 0.0,
-    'Cac': 0.0,
-    'surface_finish': 0.0,
-    'contact_form_id': 0,
-    'repairable': 0,
-    'parent_id': 4,
-    'alt_part_num': '',
-    'hazard_rate_logistics': 0.0,
-    'lambdaBD': 0.0,
-    'manufacturer_id': 0,
-    'hazard_rate_software': 0.0,
-    'shape_parameter': 0.0,
-    'total_power_dissipation': 0.0,
-    'current_rated': 0.0,
-    'cost_type_id': 0,
-    'power_operating': 0.0,
-    'pressure_downstream': 0.0,
-    'diameter_coil': 0.0,
-    'configuration_id': 0,
-    'meyer_hardness': 0.0,
-    'temperature_junction': 0.0,
-    'reliability_goal_measure_id': 0,
-    'Cgp': 0.0,
-    'lcn': '',
-    'Ce': 0.0,
-    'piR': 0.0,
-    'reliability_miss_variance': 0.0,
-    'piCYC': 0.0,
-    'piS': 0.0,
-    'name': '',
-    'construction_id': 0,
-    'level': 0,
-    'insert_id': 0,
-    'n_ten': 0,
-    'manufacturing_id': 0,
-    'Cgt': 0.0,
-    'cost_failure': 0.0,
-    'family_id': 0,
-    'load_id': 0,
-    'B1': 0.0,
-    'B2': 0.0,
-    'piNR': 0.0,
-    'revision_id': 1,
-    'hazard_rate_dormant': 0.0,
-    'comp_ref_des': 'S1:SS1:A1:C1',
-    'piTAPS': 0.0,
-    'operating_life': 0.0,
-    'hazard_rate_specified': 0.0,
-    'attachments': '',
-    'weight': 0.0,
-    'subcategory_id': 1,
-    'Csf': 0.0,
-    'Csc': 0.0,
-    'deflection': 0.0,
-    'filter_size': 0.0,
-    'reliability_goal': 0.0,
-    'cost': 0.0,
-    'material_id': 0,
-    'voltage_ratio': 0.0,
-    'availability_logistics': 1.0,
-    'Cst': 0.0,
-    'Csw': 0.0,
-    'Csv': 0.0,
-    'diameter_inner': 0.0,
-    'environment_active_id': 0,
-    'pressure_rated': 0.0,
-    'quality_id': 0,
-    'piCV': 0.0,
-    'hardware_id': 6,
-    'altitude_operating': 0.0,
-    'piCR': 0.0,
-    'thickness': 0.0,
-    'specification_id': 0,
-    'diameter_outer': 0.0,
-    'matching_id': 0,
-    'figure_number': '',
-    'hr_mission_variance': 0.0,
-    'piCD': 0.0,
-    'piCF': 0.0,
-    'particle_size': 0.0,
-    'reliability_mission': 1.0,
-    'environment_dormant_id': 0,
-    'n_elements': 0,
-    'hazard_rate_active': 5.0,
-    'casing_id': 0,
-    'mtbf_log_variance': 0.0,
-    'temperature_active': 35.0,
-    'Ccw': 0.0,
-    'Ccv': 0.0,
-    'Cpd': 0.0,
-    'Ccp': 0.0,
-    'Cpf': 0.0,
-    'Cs': 0.0,
-    'reason': u'',
-    'Ccs': 0.0,
-    'offset': 0.0,
-    'load_operating': 0.0,
-    'Ccf': 0.0,
-    'impact_id': 0,
-    'Cpv': 0.0,
-    'Cbl': 0.0,
-    'year_of_manufacture': 2017,
-    'n_wave_soldered': 0,
-    'category_id': 4,
-    'pressure_delta': 0.0,
-    'length': 0.0,
-    'cage_code': '',
-    'Cf': 0.0,
-    'load_design': 0.0,
-    'mtbf_logistics': 0.0,
-    'tagged_part': 0,
-    'nsn': '',
-    'temperature_hot_spot': 0.0,
-    'feature_size': 0.0,
-    'Clc': 0.0,
-    'hr_logistics_variance': 0.0,
-    'package_id': 0,
-    'technology_id': 0,
-    'n_cycles': 0,
-    'mtbf_spec_variance': 0.0,
-    'n_circuit_planes': 1,
-    'contact_gauge': 0,
-    'current_operating': 0.0,
-    'location_parameter': 0.0,
-    'water_per_cent': 0.0,
-    'cost_hour': 0.0,
-    'contact_rating_id': 0,
-    'misalignment_angle': 0.0,
-    'area': 0.0,
-    'add_adj_factor': 5.0,
-    'lambdaCYC': 0.0,
-    'rpm_design': 0.0,
-    'n_active_pins': 0,
-    'capacitance': 0.0,
-    'mission_time': 100.0,
-    'reliability_logistics': 1.0,
-    'lambda_b': 0.0,
-    'C2': 0.0,
-    'C1': 0.0,
-    'failure_distribution_id': 0,
-    'hazard_rate_model': u'',
-    'quantity': 1,
-    'pressure_contact': 0.0,
-    'part': 1,
-    'duty_cycle': 100.0,
-    'Crd': 0.0,
-    'voltage_rated': 0.0,
-    'n_hand_soldered': 0,
-    'hazard_rate_type_id': 1,
-    'current_ratio': 0.0,
-    'rpm_operating': 0.0,
-    'avail_mis_variance': 0.0,
-    'Ck': 0.0,
-    'mult_adj_factor': 1.0,
-    'Ci': 0.0,
-    'Ch': 0.0,
-    'Cn': 0.0,
-    'length_relaxed': 0.0,
-    'Cl': 0.0,
-    'Cc': 0.0,
-    'Cb': 0.0,
-    'theta_jc': 0.0,
-    'hr_dormant_variance': 0.0,
-    'Cg': 0.0,
-    'availability_mission': 1.0,
-    'voltage_dc_operating': 0.0,
-    'Cd': 0.0,
-    'power_ratio': 0.0,
-    'Cy': 0.0,
-    'Cbv': 0.0,
-    'Cbt': 0.0,
-    'reliability_log_variance': 0.0,
-    'overstress': 0,
-    'Cr': 0.0,
-    'Cq': 0.0,
-    'Cp': 0.0,
-    'Cw': 0.0,
-    'Cv': 0.0,
-    'Ct': 0.0,
-    'Cnw': 0.0,
-    'hr_specified_variance': 0.0,
-    'Cnp': 0.0,
-    'total_part_count': 0,
-    'Csz': 0.0,
-    'Calt': 0.0,
-    'contact_pressure': 0.0,
-    'insulation_id': 0,
-    'temperature_rated_max': 0.0,
-    'lambdaEOS': 0.0,
-    'flow_design': 0.0,
-    'years_in_production': 1,
-    'hazard_rate_mission': 0.0,
-    'avail_log_variance': 0.0,
-    'piK': 0.0,
-    'piL': 0.0,
-    'piM': 0.0,
-    'piN': 0.0,
-    'Cga': 0.0,
-    'piA': 0.0,
-    'piC': 0.0,
-    'piE': 0.0,
-    'piF': 0.0,
-    'temperature_rated_min': 0.0,
-    'A1': 0.0,
-    'A2': 0.0,
-    'page_number': '',
-    'piP': 0.0,
-    'piQ': 10.0,
-    'Cgs': 0.0,
-    'power_rated': 0.0,
-    'piT': 0.0,
-    'piU': 0.0,
-    'piV': 0.0,
-    'Cgv': 0.0,
-    'description': '',
-    'piPT': 0.0,
-    'viscosity_dynamic': 0.0,
-    'viscosity_design': 0.0,
-    'torque_id': 0,
-    'voltage_esd': 0.0,
-    'leakage_allowable': 0.0,
-    'hr_active_variance': 0.0,
-    'remarks': '',
-    'width_minimum': 0.0,
-    'mtbf_mission': 0.0,
-    'application_id': 0,
-    'piMFG': 0.0,
-    'Cgl': 0.0,
-    'piI': 0.0,
-    'spring_index': 0.0,
-    'mtbf_miss_variance': 0.0,
-    'mtbf_specified': 0.0,
-    'Cdc': 0.0,
-    'Cdl': 0.0,
-    'survival_analysis_id': 0,
-    'Cdt': 0.0,
-    'part_number': '',
-    'Cdw': 0.0,
-    'Cdp': 0.0,
-    'temperature_rise': 0.0,
-    'Cds': 0.0,
-    'clearance': 0.0,
-    'specification_number': '',
-    'Cdy': 0.0,
-    'diameter_wire': 0.0,
-    'service_id': 0
-}
+ATTRIBUTES = HARDWARE_ATTRIBUTES
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -368,50 +104,6 @@ PART_COUNT_LAMBDA_B = {
     ]
 }
 
-DORMANT_MULT = {
-    1: {
-        2: 0.1
-    },
-    2: {
-        2: 0.1
-    },
-    3: {
-        2: 0.1
-    },
-    4: {
-        2: 0.04,
-        3: 0.1
-    },
-    5: {
-        2: 0.04,
-        3: 0.1
-    },
-    6: {
-        1: 0.1,
-        2: 0.03
-    },
-    7: {
-        1: 0.1,
-        2: 0.03
-    },
-    8: {
-        1: 0.1,
-        2: 0.03
-    },
-    9: {
-        1: 0.1,
-        2: 0.03
-    },
-    10: {
-        1: 0.1,
-        2: 0.03
-    },
-    11: {
-        2: 0.4,
-        4: 0.2
-    }
-}
-
 PART_COUNT_PIQ = [0.030, 0.10, 0.30, 1.0, 3.0, 3.0, 10.0]
 
 ATTRIBUTES['environment_dormant_id'] = 3
@@ -431,7 +123,7 @@ ATTRIBUTES['quantity'] = 1
                          [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14])
 def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
                                             quality_id, environment_active_id):
-    """(TestCapacitorModule) calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
+    """calculate_mil_hdbk_217f_part_count() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 1
     ATTRIBUTES['subcategory_id'] = subcategory_id
     ATTRIBUTES['specification_id'] = specification_id
@@ -462,7 +154,7 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, specification_id,
 
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
-    """(TestCapacitorModule) calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
+    """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
     ATTRIBUTES['subcategory_id'] = 0
     ATTRIBUTES['specification_id'] = 1
     ATTRIBUTES['quality_id'] = 1
@@ -479,7 +171,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
 
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_specification():
-    """(TestCapacitorModule) calculate_mil_hdbk_217f_part_count() should return an error message when the specification ID is missing and needed."""
+    """calculate_mil_hdbk_217f_part_count() should return an error message when the specification ID is missing and needed."""
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['specification_id'] = 0
     ATTRIBUTES['quality_id'] = 1
@@ -496,7 +188,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_specification():
 
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
-    """(TestCapacitorModule) calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
+    """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
     ATTRIBUTES['subcategory_id'] = 1
     ATTRIBUTES['specification_id'] = 1
     ATTRIBUTES['environment_active_id'] = 100
@@ -514,7 +206,7 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
-    """(TestCapacitorModule) calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
+    """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['environment_active_id'] = 4
     ATTRIBUTES['subcategory_id'] = 1
@@ -545,7 +237,7 @@ def test_calculate_mil_hdbk_217f_part_stress():
 @pytest.mark.parametrize("environment_dormant_id", [1, 2, 3, 4])
 def test_calculate_dormant_hazard_rate(environment_active_id,
                                        environment_dormant_id):
-    """(TestCapacitorModule) calculate_dormant_hazard_rate() should return a dictionary of updated values on success."""
+    """calculate_dormant_hazard_rate() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_active'] = 1.005887691
     ATTRIBUTES['environment_active_id'] = environment_active_id
     ATTRIBUTES['environment_dormant_id'] = environment_dormant_id
@@ -578,7 +270,7 @@ def test_calculate_dormant_hazard_rate(environment_active_id,
                          [3, 5, 6, 7, 8, 9, 10, 12, 13, 14])
 def test_voltage_overstress_harsh_environment(voltage_rated,
                                               environment_active_id):
-    """(TestCapacitorModule) overstressed() should return True when voltage ratio > 0.6 in a harsh environment and False otherwise."""
+    """overstressed() should return True when voltage ratio > 0.6 in a harsh environment and False otherwise."""
     ATTRIBUTES['voltage_ac_operating'] = 0.005
     ATTRIBUTES['voltage_dc_operating'] = 10.0
     ATTRIBUTES['temperature_rated_max'] = 125.0
@@ -595,8 +287,8 @@ def test_voltage_overstress_harsh_environment(voltage_rated,
         assert _attributes['reason'] == ''
     elif voltage_rated == 12.0:
         assert _attributes['overstress']
-        assert _attributes['reason'] == ('1. Operating voltage > 60% rated '
-                                         'voltage.\n')
+        assert _attributes['reason'] == ('1. Operating voltage > 70% rated '
+                                         'voltage in harsh environment.\n')
 
 
 @pytest.mark.calculation
@@ -605,7 +297,7 @@ def test_voltage_overstress_harsh_environment(voltage_rated,
                          [3, 5, 6, 7, 8, 9, 10, 12, 13, 14])
 def test_temperature_overstress_harsh_environment(temperature_active,
                                                   environment_active_id):
-    """(TestCapacitorModule) overstressed() should return True when active temperature is within 10C of rated temperature in a harsh environment and False otherwise."""
+    """overstressed() should return True when active temperature is within 10C of rated temperature in a harsh environment and False otherwise."""
     ATTRIBUTES['voltage_rated'] = 20.0
     ATTRIBUTES['voltage_ac_operating'] = 0.005
     ATTRIBUTES['voltage_dc_operating'] = 10.0
@@ -623,7 +315,7 @@ def test_temperature_overstress_harsh_environment(temperature_active,
     elif temperature_active == 118.2:
         assert _attributes['overstress']
         assert _attributes['reason'] == ('1. Operating temperature within '
-                                         '10.0C of maximum rated '
+                                         '25.0C of maximum rated '
                                          'temperature.\n')
 
 
@@ -632,7 +324,7 @@ def test_temperature_overstress_harsh_environment(temperature_active,
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])
 def test_voltage_overstress_mild_environment(voltage_rated,
                                              environment_active_id):
-    """(TestCapacitorModule) overstressed() should return True when voltage ratio > 0.9 in a mild environment and False otherwise."""
+    """overstressed() should return True when voltage ratio > 0.9 in a mild environment and False otherwise."""
     ATTRIBUTES['voltage_ac_operating'] = 0.005
     ATTRIBUTES['voltage_dc_operating'] = 11.0
     ATTRIBUTES['temperature_rated_max'] = 125.0
@@ -650,4 +342,4 @@ def test_voltage_overstress_mild_environment(voltage_rated,
     elif voltage_rated == 12.0:
         assert _attributes['overstress']
         assert _attributes['reason'] == ('1. Operating voltage > 90% rated '
-                                         'voltage.\n')
+                                         'voltage in mild environment.\n')

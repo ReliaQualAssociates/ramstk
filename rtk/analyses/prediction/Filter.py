@@ -46,7 +46,7 @@ def calculate_217f_part_count(**attributes):
     try:
         attributes['lambda_b'] = _dic_lambda_b[attributes['type_id']][
             attributes['environment_active_id'] - 1]
-    except IndexError:
+    except (KeyError, IndexError):
         attributes['lambda_b'] = 0.0
 
     # Select the piQ.
@@ -60,14 +60,14 @@ def calculate_217f_part_count(**attributes):
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating filter, hardware ID: ' \
-            '{0:d}, subcategory ID: {1:d}, active environment ID: ' \
-            '{2:d}'.format(attributes['hardware_id'],
-                           attributes['subcategory_id'],
-                           attributes['environment_active_id'])
+            '{0:d}, type ID: {2:d}, active environment ID: ' \
+            '{1:d}'.format(attributes['hardware_id'],
+                           attributes['environment_active_id'],
+                           attributes['type_id'])
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'filter, hardware ID: {0:d} and quality ID: ' \
+            'filter, hardware ID: {0:d}, quality ID: ' \
             '{1:d}'.format(attributes['hardware_id'], attributes['quality_id'])
 
     # Calculate the hazard rate.
