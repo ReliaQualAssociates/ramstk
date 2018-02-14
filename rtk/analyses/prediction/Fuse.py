@@ -24,7 +24,7 @@ def calculate_217f_part_count(**attributes):
     :rtype: (dict, str)
     """
     # Dictionary containing MIL-HDBK-217FN2 parts count base hazard rates.
-    # Type ID is the key.  Index is the environment ID.
+    # Index is the environment ID.
     _lst_lambda_b = [
         0.01, 0.02, 0.06, 0.05, 0.11, 0.09, 0.12, 0.15, 0.18, 0.18, 0.009, 0.1,
         0.21, 2.3

@@ -31,7 +31,13 @@ PART_COUNT_LAMBDA_B = {
     3:
     [0.27, 0.54, 1.6, 1.1, 2.4, 1.9, 2.4, 3.0, 3.5, 3.0, 0.22, 1.9, 4.1, 32.0]
 }
+
 PART_COUNT_PIQ = [1.0, 2.9]
+
+ATTRIBUTES['add_adj_factor'] = 0.0
+ATTRIBUTES['mult_adj_factor'] = 1.0
+ATTRIBUTES['duty_cycle'] = 100.0
+ATTRIBUTES['quantity'] = 1
 
 
 @pytest.mark.unit
