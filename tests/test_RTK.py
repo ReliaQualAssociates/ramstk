@@ -5,32 +5,6 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 """
 This is the test class for testing the RTK module algorithms and models.
 """
@@ -39,10 +13,6 @@ import sys
 import os
 from os.path import isfile
 
-sys.path.insert(0,
-                os.path.abspath(
-                    os.path.join(os.path.dirname(__file__), '../rtk')))
-
 import logging
 
 from treelib import Tree
@@ -50,12 +20,12 @@ from treelib import Tree
 import unittest
 from nose.plugins.attrib import attr
 
-from Configuration import Configuration
-from RTK import Model, RTK, _initialize_loggers
-from dao.DAO import DAO
-from gui.gtk.mwi.ListBook import ListView
-from gui.gtk.mwi.ModuleBook import ModuleView
-from gui.gtk.mwi.WorkBook import WorkView
+from rtk.Configuration import Configuration
+from rtk.RTK import Model, RTK, _initialize_loggers
+from rtk.dao.DAO import DAO
+from rtk.gui.gtk.mwi.ListBook import ListBook
+from rtk.gui.gtk.mwi.ModuleBook import ModuleBook
+from rtk.gui.gtk.mwi.WorkBook import WorkBook
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -384,10 +354,10 @@ class TestRTKController(unittest.TestCase):
 
         self.assertTrue(isinstance(self.DUT, RTK))
         self.assertTrue(isinstance(self.DUT.rtk_model, Model))
-        self.assertTrue(isinstance(self.DUT.dic_books['listview'], ListView))
+        self.assertTrue(isinstance(self.DUT.dic_books['listbook'], ListBook))
         self.assertTrue(
-            isinstance(self.DUT.dic_books['moduleview'], ModuleView))
-        self.assertTrue(isinstance(self.DUT.dic_books['workview'], WorkView))
+            isinstance(self.DUT.dic_books['modulebook'], ModuleBook))
+        self.assertTrue(isinstance(self.DUT.dic_books['workbook'], WorkVook))
         self.assertEqual(self.DUT.dic_controllers['revision'], None)
         self.assertEqual(self.DUT.dic_controllers['function'], None)
         self.assertEqual(self.DUT.dic_controllers['requirement'], None)

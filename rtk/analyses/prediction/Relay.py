@@ -79,7 +79,7 @@ def calculate_217f_part_count(**attributes):
     try:
         _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
             attributes['type_id'] - 1]
-    except KeyError:
+    except (KeyError, IndexError):
         _lst_base_hr = [0.0]
 
     try:
@@ -98,17 +98,20 @@ def calculate_217f_part_count(**attributes):
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating relay, hardware ID: ' \
-            '{0:d}, subcategory ID: {1:d}, active environment ID: ' \
-            '{2:d}'.format(attributes['hardware_id'],
-                           attributes['subcategory_id'],
-                           attributes['environment_active_id'])
+        _msg = 'RTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating relay, hardware ID: {0:d}, subcategory ID: {1:d}, ' \
+            'type ID: {3:d}, and active environment ID: ' \
+            '{2:d}.\n'.format(attributes['hardware_id'],
+                              attributes['subcategory_id'],
+                              attributes['environment_active_id'],
+                              attributes['type_id'])
 
     if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'relay, hardware ID: {0:d} and quality ID: ' \
-            '{1:d}'.format(attributes['hardware_id'], attributes['quality_id'])
+        _msg = 'RTK WARNING: piQ is 0.0 when calculating ' \
+            'relay, hardware ID: {0:d}, subcategory ID: {2:d}, and quality ' \
+            'ID: {1:d}.'.format(attributes['hardware_id'],
+                                attributes['quality_id'],
+                                attributes['subcategory_id'])
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
@@ -235,11 +238,17 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
 
     # Determine the environmental factor (piE).
     if attributes['subcategory_id'] == 1:
-        attributes['piE'] = _dic_piE[1][_quality][
-            attributes['environment_active_id'] - 1]
+        try:
+            attributes['piE'] = _dic_piE[1][_quality][
+                attributes['environment_active_id'] - 1]
+        except IndexError:
+            attributes['piE'] = 0.0
     else:
-        attributes['piE'] = _dic_piE[2][attributes['environment_active_id']
-                                        - 1]
+        try:
+            attributes['piE'] = _dic_piE[2][attributes['environment_active_id']
+                                            - 1]
+        except (KeyError, IndexError):
+            attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
@@ -282,13 +291,15 @@ def overstressed(**attributes):
         if attributes['current_ratio'] > 0.75:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 75% rated current.\n")
+                _(u". Operating current > 75% rated current in harsh "
+                  u"environment.\n")
             _reason_num += 1
     else:
         if attributes['current_ratio'] > 0.9:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 90% rated current.\n")
+                _(u". Operating current > 90% rated current in mild "
+                  u"environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

@@ -19,6 +19,13 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
+ATTRIBUTES['category_id'] = 5
+ATTRIBUTES['environment_dormant_id'] = 3
+ATTRIBUTES['add_adj_factor'] = 0.0
+ATTRIBUTES['mult_adj_factor'] = 1.0
+ATTRIBUTES['duty_cycle'] = 100.0
+ATTRIBUTES['quantity'] = 1
+
 PART_COUNT_LAMBDA_B = {
     1: {
         1: [
@@ -369,7 +376,7 @@ def test_voltage_overstress_harsh_environment(voltage_rated,
 def test_current_overstress_harsh_environment(current_rated,
                                               environment_active_id):
     """overstressed() should return True when current ratio > 0.6 in a harsh environment and False otherwise."""
-    ATTRIBUTES['current_operating'] = 0.38
+    ATTRIBUTES['current_operating'] = 0.48
     ATTRIBUTES['current_rated'] = current_rated
     ATTRIBUTES['voltage_ac_operating'] = 0.02
     ATTRIBUTES['voltage_dc_operating'] = 6.0
