@@ -148,7 +148,7 @@ def calculate_217f_part_count(**attributes):
     try:
         if attributes['subcategory_id'] in [2, 6]:
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
-                attributes['type_id']]
+                attributes['specification_id']]
         else:
             _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']]
     except KeyError:
@@ -169,30 +169,21 @@ def calculate_217f_part_count(**attributes):
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        if (attributes['subcategory_id'] not in [11, 12] and
-                attributes['environment_active_id'] not in [8, 9, 12, 13, 14]):
-            _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
-                'calculating resistor, hardware ID: ' \
-                '{0:d}, subcategory ID: {1:d}, specification ID: {2:d}, ' \
-                'active environment ID: {3:d}, and quality ID: ' \
-                '{4:d}.'.format(attributes['hardware_id'],
-                                attributes['subcategory_id'],
-                                attributes['specification_id'],
-                                attributes['environment_active_id'],
-                                attributes['quality_id'])
-        else:
-            _msg = _msg + 'RTK INFO: Base hazard rate is 0.0 when ' \
-                'calculating resistor, hardware ID: ' \
-                '{0:d}, subcategory ID: {1:d}, and active environment ' \
-                'ID: {2:d}.  This is expected as the base hazard rate is ' \
-                'zero for this ' \
-                'environment.'.format(attributes['hardware_id'],
-                                      attributes['subcategory_id'],
-                                      attributes['environment_active_id'])
+        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
+            'calculating resistor, hardware ID: ' \
+            '{0:d}, subcategory ID: {1:d}, specification ID: {2:d}, ' \
+            'active environment ID: {3:d}, and quality ID: ' \
+            '{4:d}.\n'.format(attributes['hardware_id'],
+                              attributes['subcategory_id'],
+                              attributes['specification_id'],
+                              attributes['environment_active_id'],
+                              attributes['quality_id'])
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'resistor, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            'resistor, hardware ID: {0:d}, quality ID: ' \
+            '{1:d}.'.format(attributes['hardware_id'],
+                            attributes['quality_id'])
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
@@ -582,13 +573,15 @@ def overstressed(**attributes):
         if attributes['power_ratio'] > 0.50:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating power > 50% rated power.\n")
+                _(u". Operating power > 50% rated power in harsh "
+                  u"environment.\n")
             _reason_num += 1
     else:
         if attributes['power_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating power > 90% rated power.\n")
+                _(u". Operating power > 90% rated power in mild "
+                  u"environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason
