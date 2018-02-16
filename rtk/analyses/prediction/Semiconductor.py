@@ -224,20 +224,21 @@ def calculate_217f_part_count(**attributes):
         else:
             attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
                 attributes['quality_id'] - 1]
-    except KeyError:
+    except (KeyError, IndexError):
         attributes['piQ'] = 0.0
 
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + '\nRTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+        _msg = 'RTK WARNING: Base hazard rate is 0.0 when calculating ' \
+               'semiconductor, hardware ID: {0:d} and active environment ' \
+               'ID: {1:d}.\n'.format(
+                attributes['hardware_id'], attributes['environment_active_id'])
 
     if attributes['piQ'] <= 0.0:
-        _msg = _msg + '\nRTK WARNING: piQ is 0.0 when calculating ' \
-            'semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+        _msg = 'RTK WARNING: piQ is 0.0 when calculating semiconductor, ' \
+               'hardware ID: {0:d} and quality ID: {1:d}.'.format(
+                    attributes['hardware_id'], attributes['quality_id'])
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
@@ -465,7 +466,7 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
                 -_factors *
                 (1.0 /
                  (attributes['temperature_junction'] + 273.0) - 1.0 / 298.0))
-    except KeyError:
+    except (KeyError, IndexError):
         attributes['piT'] = 0.0
 
     # Retrieve the application factor (piA).
@@ -551,25 +552,27 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         else:
             attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
                 attributes['quality_id'] - 1]
-    except KeyError:
+    except (KeyError, IndexError):
         attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            'semiconductor, hardware ID: {0:d} and quality ID: ' \
+            '{1:d}.\n'.format(attributes['hardware_id'],
+                            attributes['quality_id'])
 
     # Retrieve the environmental factor (piE).
     try:
         attributes['piE'] = _dic_piE[attributes['subcategory_id']][
             attributes['environment_active_id'] - 1]
-    except KeyError:
+    except (KeyError, IndexError):
         attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
-            'semiconductor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            'semiconductor, hardware ID: {0:d} and active environment ID: ' \
+            '{1:d}.\n'.format(attributes['hardware_id'],
+                           attributes['environment_active_id'])
 
     # Calculate the active hazard rate.
     if attributes['subcategory_id'] == 1:
@@ -632,18 +635,20 @@ def overstressed(**attributes):
         if attributes['power_ratio'] > 0.70:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating power > 70% rated power.\n")
+                _(u". Operating power > 70% rated power in harsh "
+                  u"environment.\n")
             _reason_num += 1
         if attributes['temperature_junction'] > 125.0:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Junction temperature > 125.0C.\n")
+                _(u". Junction temperature > 125.0C in harsh environment.\n")
             _reason_num += 1
     else:
         if attributes['power_ratio'] > 0.90:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating power > 90% rated power.\n")
+                _(u". Operating power > 90% rated power in mild "
+                  u"environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

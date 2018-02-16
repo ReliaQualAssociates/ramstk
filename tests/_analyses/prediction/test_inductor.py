@@ -422,7 +422,7 @@ def test_temperature_overstress_harsh_environment(temperature_active,
     _attributes = Component.do_check_overstress(**_attributes)
 
     assert isinstance(_attributes, dict)
-    if temperature_active == 48.7:
+    if temperature_active == 28.7:
         assert not _attributes['overstress']
         assert _attributes['reason'] == ''
     elif temperature_active == 118.2:
