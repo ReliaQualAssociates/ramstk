@@ -468,7 +468,7 @@ def test_voltage_overstress_mild_environment(voltage_rated,
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])
 def test_current_overstress_mild_environment(current_rated,
                                              environment_active_id):
-    """overstressed() should return True when current ratio > 0.9 in a harsh environment and False otherwise."""
+    """overstressed() should return True when current ratio > 0.9 in a mild environment and False otherwise."""
     ATTRIBUTES['current_operating'] = 0.48
     ATTRIBUTES['current_rated'] = current_rated
     ATTRIBUTES['voltage_ac_operating'] = 0.02
