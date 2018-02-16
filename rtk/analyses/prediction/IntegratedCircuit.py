@@ -414,7 +414,10 @@ def calculate_217f_part_count(**attributes):
             '{0:d}'.format(attributes['hardware_id'])
 
     # Select the piQ.
-    attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
+    try:
+        attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
+    except IndexError:
+        attributes['piQ'] = 0.0
 
     if attributes['piQ'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
@@ -583,8 +586,8 @@ def calculate_217f_part_stress(**attributes):
              attributes['C2'] * attributes['piE'] + attributes['lambda_cyc']) *
             attributes['piQ'] * attributes['piL'])
     elif attributes['subcategory_id'] == 9:
-        attributes['piA'] = _dic_piA[attributes['type_id']][attributes[
-            'application_id']]
+        attributes['piA'] = _dic_piA[attributes['type_id']][
+            attributes['application_id'] - 1]
         attributes['hazard_rate_active'] = ((
             attributes['C1'] * attributes['piT'] * attributes['piA'] +
             attributes['C2'] * attributes['piE']) * attributes['piQ'] *

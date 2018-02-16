@@ -1,7 +1,7 @@
 #!/usr/bin/env python -O
 # -*- coding: utf-8 -*-
 #
-#       rtk.tests._hardware.TestPackage.sh is part of The RTK Project
+#       rtk.tests._hardware.TestPackage.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com

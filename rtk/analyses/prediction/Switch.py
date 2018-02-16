@@ -108,17 +108,21 @@ def calculate_217f_part_count(**attributes):
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
+        _msg = 'RTK WARNING: Base hazard rate is 0.0 when ' \
             'calculating switch, hardware ID: ' \
-            '{0:d}, subcategory ID: {1:d}, active environment ID: ' \
-            '{2:d}'.format(attributes['hardware_id'],
-                           attributes['subcategory_id'],
-                           attributes['environment_active_id'])
+            '{0:d}, subcategory ID: {1:d}, construction ID: {2:d}, and ' \
+            'active environment ID: ' \
+            '{3:d}.\n'.format(attributes['hardware_id'],
+                              attributes['subcategory_id'],
+                              attributes['construction_id'],
+                              attributes['environment_active_id'])
 
     if attributes['piQ'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-            'switch, hardware ID: {0:d} and quality ID: ' \
-            '{1:d}'.format(attributes['hardware_id'], attributes['quality_id'])
+        _msg = 'RTK WARNING: piQ is 0.0 when calculating ' \
+            'switch, hardware ID: {0:d}, subcategory ID: {2:d}, and quality ' \
+            'ID: {1:d}.'.format(attributes['hardware_id'],
+                                attributes['quality_id'],
+                                attributes['subcategory_id'])
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
@@ -158,12 +162,17 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         attributes['lambda_b'] = _dic_lambda_b[1][attributes[
             'construction_id']][attributes['quality_id'] - 1]
     elif attributes['subcategory_id'] in [2, 3]:
-        _lambda_bE = _dic_factors[attributes['subcategory_id']][
-            attributes['quality_id'] - 1][0]
-        _lambda_bC = _dic_factors[attributes['subcategory_id']][
-            attributes['quality_id'] - 1][1]
-        _lambda_b0 = _dic_factors[attributes['subcategory_id']][
-            attributes['quality_id'] - 1][2]
+        try:
+            _lambda_bE = _dic_factors[attributes['subcategory_id']][
+                attributes['quality_id'] - 1][0]
+            _lambda_bC = _dic_factors[attributes['subcategory_id']][
+                attributes['quality_id'] - 1][1]
+            _lambda_b0 = _dic_factors[attributes['subcategory_id']][
+                attributes['quality_id'] - 1][2]
+        except (IndexError, KeyError):
+            _lambda_bE = 0.0
+            _lambda_bC = 0.0
+            _lambda_b0 = 0.0
         if attributes['construction_id'] == 1:
             attributes['lambda_b'] = (
                 _lambda_bE + attributes['n_elements'] * _lambda_bC)
@@ -171,10 +180,14 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             attributes['lambda_b'] = (
                 _lambda_bE + attributes['n_elements'] * _lambda_b0)
     elif attributes['subcategory_id'] == 4:
-        _lambda_b1 = _dic_factors[attributes['subcategory_id']][attributes[
-            'quality_id']][0]
-        _lambda_b2 = _dic_factors[attributes['subcategory_id']][attributes[
-            'quality_id']][1]
+        try:
+            _lambda_b1 = _dic_factors[attributes['subcategory_id']][
+                attributes['quality_id'] - 1][0]
+            _lambda_b2 = _dic_factors[attributes['subcategory_id']][
+                attributes['quality_id'] - 1][1]
+        except (IndexError, KeyError):
+            _lambda_b1 = 0.0
+            _lambda_b2 = 0.0
         attributes['lambda_b'] = (
             _lambda_b1 + attributes['n_elements'] * _lambda_b2)
     elif attributes['subcategory_id'] == 5:
@@ -183,9 +196,8 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
         attributes['lambda_b'] = 0.0
 
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating switch, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+        _msg = 'RTK WARNING: Base hazard rate is 0.0 when calculating ' \
+               'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the quality factor (piQ).
     if attributes['subcategory_id'] == 5:
@@ -196,30 +208,33 @@ def calculate_217f_part_stress(**attributes):  # pylint: disable=R0912
             attributes['piQ'] = 0.0
 
         if attributes['piQ'] <= 0.0:
-            _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-                'switch, hardware ID: {0:d}'.format(attributes['hardware_id'])
+            _msg = 'RTK WARNING: piQ is 0.0 when calculating ' \
+                'switch, hardware ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the environmental factor (piE).
-    if attributes['subcategory_id'] == 5:
-        attributes['piE'] = [
-            1.0, 2.0, 15.0, 8.0, 27.0, 7.0, 9.0, 11.0, 12.0, 46.0, 0.5, 25.0,
-            67.0, 0.0
-        ][attributes['environment_active_id'] - 1]
-    else:
-        attributes['piE'] = [
-            1.0, 3.0, 18.0, 8.0, 29.0, 10.0, 18.0, 13.0, 22.0, 46.0, 0.5, 25.0,
-            67.0, 1200.0
-        ][attributes['environment_active_id'] - 1]
+    try:
+        if attributes['subcategory_id'] == 5:
+            attributes['piE'] = [
+                1.0, 2.0, 15.0, 8.0, 27.0, 7.0, 9.0, 11.0, 12.0, 46.0, 0.5,
+                25.0, 67.0, 0.0
+            ][attributes['environment_active_id'] - 1]
+        else:
+            attributes['piE'] = [
+                1.0, 3.0, 18.0, 8.0, 29.0, 10.0, 18.0, 13.0, 22.0, 46.0, 0.5,
+                25.0, 67.0, 1200.0
+            ][attributes['environment_active_id'] - 1]
+    except IndexError:
+        attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
-            'switch, hardware ID: {0:d}'.format(attributes['hardware_id'])
+        _msg = 'RTK WARNING: piE is 0.0 when calculating switch, hardware ' \
+               'ID: {0:d}.\n'.format(attributes['hardware_id'])
 
     # Determine the cycling factor (piCYC).
     if attributes['n_cycles'] <= 1:
         attributes['piCYC'] = 1.0
     else:
-        attributes['piCYC'] = attributes['n_cycles']
+        attributes['piCYC'] = float(attributes['n_cycles'])
 
     # Calculate the load stress factor (piL).
     if attributes['subcategory_id'] != 5:
@@ -286,13 +301,15 @@ def overstressed(**attributes):
         if attributes['current_ratio'] > 0.75:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 75% rated current.\n")
+                _(u". Operating current > 75% rated current in harsh "
+                  u"environment.\n")
             _reason_num += 1
     else:
         if attributes['current_ratio'] > 0.9:
             attributes['overstress'] = True
             _reason = _reason + str(_reason_num) + \
-                _(u". Operating current > 90% rated current.\n")
+                _(u". Operating current > 90% rated current in mild "
+                  u"environment.\n")
             _reason_num += 1
 
     attributes['reason'] = _reason

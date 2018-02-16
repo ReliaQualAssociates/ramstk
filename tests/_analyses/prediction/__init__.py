@@ -1,13 +1,1 @@
-from .TestCapacitor import TestCapacitorModule
-from .TestConnection import TestConnectionModule
-from .TestCrystal import TestCrystalModule
-from .TestFilter import TestFilterModule
-from .TestFuse import TestFuseModule
-from .TestInductor import TestInductorModule
-from .TestIntegratedCircuit import TestICModule
-from .TestLamp import TestLampModule
-from .TestMeter import TestMeterModule
-from .TestRelay import TestRelayModule
-from .TestResistor import TestResistorModule
-from .TestSemiconductor import TestSemiconductorModule
-from .TestSwitch import TestSwitchModule
+

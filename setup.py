@@ -14,8 +14,8 @@ install_requires = [
     'SQLAlchemy-Utils', 'statsmodels', 'treelib', 'xlrd', 'xlwt'
 ]
 tests_require = [
-    'bandit', 'flake8', 'pycodestyle', 'pydocstyle', 'pylint', 'nose',
-    'coverage', 'codacy-coverage', 'python-coveralls'
+    'pytest', 'bandit', 'flake8', 'pycodestyle', 'pydocstyle', 'pylint',
+    'nose', 'coverage', 'codacy-coverage', 'python-coveralls'
 ]
 
 
@@ -47,6 +47,7 @@ if __name__ == '__main__':
         url='https://github.com/weibullguy/rtk',
         python_requires='>=2.7, <4',
         install_requires=install_requires,
+        setup_requires=['pytest_runner'],
         tests_require=tests_require,
         keywords='reliability RAMS engineering quality safety',
         scripts=[],
