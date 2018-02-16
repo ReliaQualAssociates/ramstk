@@ -18,6 +18,7 @@ recursive-include docs *.html *.tar.xz
 exclude .pylintrc
 exclude tools
 exclude tests
+exclude Pipfile
 recursive-exclude config *.map
 recursive-exclude tests *.suites
 
