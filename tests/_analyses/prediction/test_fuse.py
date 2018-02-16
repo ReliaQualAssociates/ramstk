@@ -19,6 +19,12 @@ __copyright__ = 'Copyright 2014 Andrew "weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
+ATTRIBUTES['category_id'] = 10
+ATTRIBUTES['add_adj_factor'] = 0.0
+ATTRIBUTES['mult_adj_factor'] = 1.0
+ATTRIBUTES['duty_cycle'] = 100.0
+ATTRIBUTES['quantity'] = 1
+
 PART_COUNT_LAMBDA_B = [
     0.01, 0.02, 0.06, 0.05, 0.11, 0.09, 0.12, 0.15, 0.18, 0.18, 0.009, 0.1,
     0.21, 2.3
@@ -28,11 +34,6 @@ PART_STRESS_PIE = [
     1.0, 2.0, 8.0, 5.0, 11.0, 9.0, 12.0, 15.0, 18.0, 16.0, 0.9, 10.0, 21.0,
     230.0
 ]
-
-ATTRIBUTES['add_adj_factor'] = 0.0
-ATTRIBUTES['mult_adj_factor'] = 1.0
-ATTRIBUTES['duty_cycle'] = 100.0
-ATTRIBUTES['quantity'] = 1
 
 
 @pytest.mark.unit

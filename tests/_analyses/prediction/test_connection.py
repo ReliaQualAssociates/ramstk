@@ -8,7 +8,7 @@
 """Test class for the connection module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES, DORMANT_MULT
+from tests.data import HARDWARE_ATTRIBUTES
 
 from rtk.analyses.prediction import Component, Connection
 
@@ -18,6 +18,12 @@ __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014, 2018 Andrew "weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
+
+ATTRIBUTES['category_id'] = 8
+ATTRIBUTES['add_adj_factor'] = 0.0
+ATTRIBUTES['mult_adj_factor'] = 1.0
+ATTRIBUTES['duty_cycle'] = 100.0
+ATTRIBUTES['quantity'] = 1
 
 PART_COUNT_LAMBDA_B = {
     1: {
@@ -79,13 +85,9 @@ PART_COUNT_LAMBDA_B = {
 
 PART_COUNT_PIQ = [1.0, 2.0]
 
-ATTRIBUTES['category_id'] = 8
-ATTRIBUTES['add_adj_factor'] = 0.0
-ATTRIBUTES['mult_adj_factor'] = 1.0
-ATTRIBUTES['duty_cycle'] = 100.0
-ATTRIBUTES['quantity'] = 1
 
-
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("subcategory_id", [1, 2, 3, 4, 5])
 @pytest.mark.parametrize("type_id", [1, 2, 3, 4, 5, 6, 7])
@@ -126,6 +128,8 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
     assert _attributes['hazard_rate_active'] == lambda_b * piQ
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the subcategory ID is missing."""
@@ -143,6 +147,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     assert _attributes['hazard_rate_active'] == 0.0
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_type():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the type ID is missing and needed."""
@@ -160,6 +166,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     assert _attributes['hazard_rate_active'] == 0.0
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     """calculate_mil_hdbk_217f_part_count() should return an error message when the active environment ID is missing."""
@@ -178,6 +186,8 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     assert _attributes['hazard_rate_active'] == 0.0
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_mil_hdbk_217f_part_stress():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
@@ -211,6 +221,8 @@ def test_calculate_mil_hdbk_217f_part_stress():
     assert pytest.approx(_attributes['hazard_rate_active'], 0.1066535)
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 def test_calculate_insert_temperature():
     """Test the calculate_insert_temperature() function."""
@@ -224,39 +236,8 @@ def test_calculate_insert_temperature():
     assert pytest.approx(_attributes['temperature_rise'], 3.88315602448)
 
 
-@pytest.mark.calculation
-@pytest.mark.parametrize("environment_active_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-@pytest.mark.parametrize("environment_dormant_id", [1, 2, 3, 4])
-def test_calculate_dormant_hazard_rate(environment_active_id,
-                                       environment_dormant_id):
-    """calculate_dormant_hazard_rate() should return a dictionary of updated values on success."""
-    ATTRIBUTES['hazard_rate_active'] = 1.005887691
-    ATTRIBUTES['environment_active_id'] = environment_active_id
-    ATTRIBUTES['environment_dormant_id'] = environment_dormant_id
-
-    try:
-        dormant_mult = DORMANT_MULT[environment_active_id][ATTRIBUTES[
-            'environment_dormant_id']]
-    except KeyError:
-        dormant_mult = 0.0
-
-    _attributes, _msg = Component.do_calculate_dormant_hazard_rate(
-        **ATTRIBUTES)
-
-    assert isinstance(_attributes, dict)
-    try:
-        assert _msg == ''
-    except AssertionError:
-        assert _msg == ('RTK ERROR: Unknown active and/or dormant environment '
-                        'ID.  Active ID: {0:d}, '
-                        'Dormant ID: {1:d}').format(environment_active_id,
-                                                    environment_dormant_id)
-
-    assert pytest.approx(_attributes['hazard_rate_dormant'],
-                         ATTRIBUTES['hazard_rate_active'] * dormant_mult)
-
-
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [40.0, 20.0])
 @pytest.mark.parametrize("environment_active_id",
@@ -284,6 +265,8 @@ def test_voltage_overstress_harsh_environment(voltage_rated,
                                          'voltage in harsh environment.\n')
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("temperature_active", [48.7, 118.2])
 @pytest.mark.parametrize("environment_active_id",
@@ -312,6 +295,8 @@ def test_temperature_overstress_harsh_environment(temperature_active,
                                          'temperature.\n')
 
 
+@pytest.mark.unit
+@pytest.mark.hardware
 @pytest.mark.calculation
 @pytest.mark.parametrize("voltage_rated", [20.0, 12.0])
 @pytest.mark.parametrize("environment_active_id", [1, 2, 4, 11])

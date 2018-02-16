@@ -9,7 +9,7 @@
 """Test class for the integrated circuit module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES, DORMANT_MULT
+from tests.data import HARDWARE_ATTRIBUTES
 
 from rtk.analyses.prediction import IntegratedCircuit, Component
 
@@ -524,41 +524,6 @@ def test_calculate_mil_hdbk_217f_part_stress_gaas():
     assert _attributes['piQ'] == 1.0
     assert _attributes['piE'] == 4.0
     assert pytest.approx(_attributes['hazard_rate_active'], 0.1001327)
-
-
-@pytest.mark.unit
-@pytest.mark.hardware
-@pytest.mark.calculation
-@pytest.mark.parametrize("environment_active_id",
-                         [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11])
-@pytest.mark.parametrize("environment_dormant_id", [1, 2, 3, 4])
-def test_calculate_dormant_hazard_rate(environment_active_id,
-                                       environment_dormant_id):
-    """calculate_dormant_hazard_rate() should return a dictionary of updated values on success."""
-    ATTRIBUTES['hazard_rate_active'] = 1.005887691
-    ATTRIBUTES['environment_active_id'] = environment_active_id
-    ATTRIBUTES['environment_dormant_id'] = environment_dormant_id
-
-    try:
-        dormant_mult = DORMANT_MULT[environment_active_id][ATTRIBUTES[
-            'environment_dormant_id']]
-    except KeyError:
-        dormant_mult = 0.0
-
-    _attributes, _msg = Component.do_calculate_dormant_hazard_rate(
-        **ATTRIBUTES)
-
-    assert isinstance(_attributes, dict)
-    try:
-        assert _msg == ''
-    except AssertionError:
-        assert _msg == ('RTK ERROR: Unknown active and/or dormant environment '
-                        'ID.  Active ID: {0:d}, '
-                        'Dormant ID: {1:d}').format(environment_active_id,
-                                                    environment_dormant_id)
-
-    assert pytest.approx(_attributes['hazard_rate_dormant'],
-                         ATTRIBUTES['hazard_rate_active'] * dormant_mult)
 
 
 @pytest.mark.unit

@@ -19,6 +19,12 @@ __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
 ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
 
+ATTRIBUTES['category_id'] = 10
+ATTRIBUTES['add_adj_factor'] = 0.0
+ATTRIBUTES['mult_adj_factor'] = 1.0
+ATTRIBUTES['duty_cycle'] = 100.0
+ATTRIBUTES['quantity'] = 1
+
 PART_COUNT_LAMBDA_B = {
     1: [
         0.022, 0.044, 0.13, 0.088, 0.20, 0.15, 0.20, 0.24, 0.29, 0.24, 0.018,
@@ -33,11 +39,6 @@ PART_COUNT_LAMBDA_B = {
 }
 
 PART_COUNT_PIQ = [1.0, 2.9]
-
-ATTRIBUTES['add_adj_factor'] = 0.0
-ATTRIBUTES['mult_adj_factor'] = 1.0
-ATTRIBUTES['duty_cycle'] = 100.0
-ATTRIBUTES['quantity'] = 1
 
 
 @pytest.mark.unit
