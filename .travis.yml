@@ -14,4 +14,4 @@ script:
 
 # If build is successful, run coveralls.
 after_success:
-        - coveralls --data_file=tools/reports/coverage/coverage.xml
+    - coveralls --data_file=tools/reports/coverage/coverage.xml

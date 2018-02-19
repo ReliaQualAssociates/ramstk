@@ -5,23 +5,20 @@ include *.rc
 include *.txt
 include LICENSE
 
-recursive-include config *.ico
-recursive-include config *.png
 recursive-include docs *.md
 recursive-include docs *.py
 recursive-include docs *.rst
 recursive-include po *.pot
 recursive-include rtk *.py
-recursive-include config *.conf *.png *.sql *.xml
-recursive-include docs *.html *.tar.xz
+recursive-include config *.ico *.conf *.png *.sql *.xml
+recursive-include docs *.html
 
+exclude .coveragerc
 exclude .pylintrc
+exclude pytest.ini
 exclude tools
 exclude tests
 exclude Pipfile
-recursive-exclude config *.map
-recursive-exclude tests *.suites
-
 recursive-exclude rtk *.pyo
 recursive-exclude docs/api/_build *
 recursive-exclude docs/api/_temp *
