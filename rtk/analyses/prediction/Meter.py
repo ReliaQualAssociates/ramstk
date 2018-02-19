@@ -173,8 +173,11 @@ def calculate_217f_part_stress(**attributes):
                 'meter, hardware ID: {0:d}'.format(attributes['hardware_id'])
 
     # Determine the environmental factor (piE).
-    attributes['piE'] = _dic_piE[attributes['subcategory_id']][
-        attributes['environment_active_id'] - 1]
+    try:
+        attributes['piE'] = _dic_piE[attributes['subcategory_id']][
+            attributes['environment_active_id'] - 1]
+    except(IndexError, KeyError):
+        attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
         _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \

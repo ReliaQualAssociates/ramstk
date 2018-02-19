@@ -41,7 +41,7 @@ def calculate_217f_part_count(**attributes):
     try:
         attributes['lambda_b'] = _dic_lambda_b[attributes['application_id']][
             attributes['environment_active_id'] - 1]
-    except IndexError:
+    except (IndexError, KeyError):
         attributes['lambda_b'] = 0.0
 
     # Confirm all inputs are within range.  If not, set the message.  The

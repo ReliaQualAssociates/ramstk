@@ -33,27 +33,28 @@ def calculate(**attributes):
     elif attributes['hazard_rate_method_id'] == 2:
         attributes, _msg = do_calculate_217f_part_stress(**attributes)
 
+    attributes, _msg = do_calculate_dormant_hazard_rate(**attributes)
+    attributes = do_check_overstress(**attributes)
+
     if attributes['mult_adj_factor'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Multiplicative adjustment factor is 0.0 ' \
-            'when calculating resistor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            'when calculating hardware item, hardware ID: ' \
+            '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['duty_cycle'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: dty cycle is 0.0 when calculating ' \
-            'resistor, hardware ID: {0:d}'.format(attributes['hardware_id'])
+        _msg = _msg + 'RTK WARNING: Duty cycle is 0.0 when calculating ' \
+            'hardware item, hardware ID: ' \
+            '{0:d}.\n'.format(attributes['hardware_id'])
 
     if attributes['quantity'] < 1:
         _msg = _msg + 'RTK WARNING: Quantity is less than 1 when ' \
-            'calculating resistor, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+            'calculating hardware item, hardware ID: ' \
+            '{0:d}.\n'.format(attributes['hardware_id'])
 
     attributes['hazard_rate_active'] = (attributes['hazard_rate_active'] +
                                         attributes['add_adj_factor']) * \
         (attributes['duty_cycle'] / 100.0) * \
         attributes['mult_adj_factor'] * attributes['quantity']
-
-    attributes, _msg = do_calculate_dormant_hazard_rate(**attributes)
-    attributes = do_check_overstress(**attributes)
 
     return attributes, _msg
 

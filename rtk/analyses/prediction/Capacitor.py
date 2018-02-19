@@ -346,16 +346,19 @@ def calculate_217f_part_stress(**attributes):
     _msg = ''
 
     # Calculate the base hazard rate.
-    _ref_temp = _dic_ref_temp[attributes['temperature_rated_max']]
-    _f0 = _dic_factors[attributes['subcategory_id']][0]
-    _f1 = _dic_factors[attributes['subcategory_id']][1]
-    _f2 = _dic_factors[attributes['subcategory_id']][2]
-    _f3 = _dic_factors[attributes['subcategory_id']][3]
-    _f4 = _dic_factors[attributes['subcategory_id']][4]
-    attributes['lambda_b'] = _f0 * (
-        (attributes['voltage_ratio'] / _f1)**_f2 + 1.0) * exp(
-            _f3 *
-            ((attributes['temperature_active'] + 273.0) / _ref_temp)**_f4)
+    try:
+        _ref_temp = _dic_ref_temp[attributes['temperature_rated_max']]
+        _f0 = _dic_factors[attributes['subcategory_id']][0]
+        _f1 = _dic_factors[attributes['subcategory_id']][1]
+        _f2 = _dic_factors[attributes['subcategory_id']][2]
+        _f3 = _dic_factors[attributes['subcategory_id']][3]
+        _f4 = _dic_factors[attributes['subcategory_id']][4]
+        attributes['lambda_b'] = _f0 * (
+            (attributes['voltage_ratio'] / _f1)**_f2 + 1.0) * exp(
+                _f3 *
+                ((attributes['temperature_active'] + 273.0) / _ref_temp)**_f4)
+    except KeyError:
+        attributes['lambda_b'] = 0.0
 
     if attributes['lambda_b'] <= 0.0:
         _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \

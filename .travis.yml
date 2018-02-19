@@ -10,8 +10,8 @@ install:
 
 # Command to run tests.
 script:
-        - python setup.py test --addopts "-m unit"
+    - python setup.py test --addopts "-m unit"
 
 # If build is successful, run coveralls.
 after_success:
-    - coveralls
+        - coveralls --data_file=tools/reports/coverage/coverage.xml
