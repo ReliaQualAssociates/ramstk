@@ -8,8 +8,8 @@
 """Test class for the switch module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES
 
+from rtk.analyses.data import HARDWARE_ATTRIBUTES
 from rtk.analyses.prediction import Switch, Component
 
 __author__ = 'Andrew Rowland'

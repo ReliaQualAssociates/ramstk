@@ -8,8 +8,8 @@
 """Test class for the component module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES, DORMANT_MULT
 
+from rtk.analyses.data import HARDWARE_ATTRIBUTES, DORMANT_MULT
 from rtk.analyses.prediction import Component
 
 __author__ = 'Andrew Rowland'

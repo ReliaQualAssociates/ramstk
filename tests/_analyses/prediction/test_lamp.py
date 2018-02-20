@@ -8,8 +8,8 @@
 """Test class for the lamp module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES
 
+from rtk.analyses.data import HARDWARE_ATTRIBUTES
 from rtk.analyses.prediction import Lamp
 
 __author__ = 'Andrew Rowland'

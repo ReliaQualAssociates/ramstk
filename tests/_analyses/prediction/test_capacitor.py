@@ -8,8 +8,8 @@
 """Test class for the capacitor module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES
 
+from rtk.analyses.data import HARDWARE_ATTRIBUTES
 from rtk.analyses.prediction import Capacitor, Component
 
 __author__ = 'Andrew Rowland'
