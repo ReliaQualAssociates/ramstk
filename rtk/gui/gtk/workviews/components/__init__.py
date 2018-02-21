@@ -1,9 +1,9 @@
 from .Capacitor import CapacitorAssessmentInputs as wvwCapacitorAI
 from .Capacitor import CapacitorAssessmentResults as wvwCapacitorAR
-from .Connection import AssessmentInputs as wvwConnectionAI
-from .Connection import AssessmentResults as wvwConnectionAR
-from .Inductor import AssessmentInputs as wvwInductorAI
-from .Inductor import AssessmentResults as wvwInductorAR
+from .Connection import ConnectionAssessmentInputs as wvwConnectionAI
+from .Connection import ConnectionAssessmentResults as wvwConnectionAR
+from .Inductor import InductorAssessmentInputs as wvwInductorAI
+from .Inductor import InductorAssessmentResults as wvwInductorAR
 from .IntegratedCircuit import AssessmentInputs as wvwIntegratedCircuitAI
 from .IntegratedCircuit import AssessmentResults as wvwIntegratedCircuitAR
 from .Meter import AssessmentInputs as wvwMeterAI

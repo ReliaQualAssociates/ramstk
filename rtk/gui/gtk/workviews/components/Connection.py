@@ -326,7 +326,6 @@ class ConnectionAssessmentInputs(AssessmentInputs):
 
         if _attributes['hazard_rate_method_id'] == 1:
             self.cmbType.set_sensitive(True)
-
         else:
             if self._subcategory_id == 1:
                 self.cmbSpecification.set_sensitive(True)
@@ -733,8 +732,6 @@ class ConnectionAssessmentResults(AssessmentResults):
         self.put(self.txtPiK, _x_pos, _y_pos[3])
         self.put(self.txtPiP, _x_pos, _y_pos[4])
         self.put(self.txtPiC, _x_pos, _y_pos[5])
-
-        self.show_all()
 
         return None
 
