@@ -14,21 +14,24 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # Import other RTK modules.
+from rtk.Configuration import (
+    RTK_ACTIVE_ENVIRONMENTS, RTK_DORMANT_ENVIRONMENTS, RTK_HR_TYPES,
+    RTK_HR_MODELS, RTK_HR_DISTRIBUTIONS, RTK_COST_TYPES)
 from rtk.Utilities import boolean_to_integer
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
 from .WorkView import RTKWorkView
-from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
-    wvwCapacitorSR, wvwConnectionAI, wvwConnectionSI, wvwConnectionAR, \
-    wvwConnectionSR, wvwMiscellaneousAI, wvwMiscellaneousSI, \
-    wvwMiscellaneousAR, wvwMiscellaneousSR, wvwInductorAI, wvwInductorSI, \
-    wvwInductorAR, wvwInductorSR, wvwIntegratedCircuitAI, \
-    wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR, \
-    wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR, wvwRelayAI, wvwRelaySI, \
-    wvwRelayAR, wvwRelaySR, wvwResistorAI, wvwResistorSI, wvwResistorAR, \
-    wvwResistorSR, wvwSemiconductorAI, wvwSemiconductorSI, \
-    wvwSemiconductorAR, wvwSemiconductorSR, wvwSwitchAI, wvwSwitchSI, \
-    wvwSwitchAR, wvwSwitchSR
+from .components import (
+    wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, wvwCapacitorSR,
+    wvwConnectionAI, wvwConnectionSI, wvwConnectionAR, wvwConnectionSR,
+    wvwMiscellaneousAI, wvwMiscellaneousSI, wvwMiscellaneousAR,
+    wvwMiscellaneousSR, wvwInductorAI, wvwInductorSI, wvwInductorAR,
+    wvwInductorSR, wvwIntegratedCircuitAI, wvwIntegratedCircuitSI,
+    wvwIntegratedCircuitAR, wvwIntegratedCircuitSR, wvwMeterAI, wvwMeterSI,
+    wvwMeterAR, wvwMeterSR, wvwRelayAI, wvwRelaySI, wvwRelayAR, wvwRelaySR,
+    wvwResistorAI, wvwResistorSI, wvwResistorAR, wvwResistorSR,
+    wvwSemiconductorAI, wvwSemiconductorSI, wvwSemiconductorAR,
+    wvwSemiconductorSR, wvwSwitchAI, wvwSwitchSI, wvwSwitchAR, wvwSwitchSR)
 
 
 class GeneralData(RTKWorkView):
@@ -156,7 +159,7 @@ class GeneralData(RTKWorkView):
         _(u"Year Made:"),
         _(u"Quantity:"),
         _(u"Unit Cost:"),
-        _(u"Cost Calculation Method:")
+        _(u"Cost Method:")
     ], ["", _(u"Attachments:"), _(u"Remarks:")]]
 
     def __init__(self, controller):
@@ -423,25 +426,12 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        _model = self.cmbCategory.get_model()
-        _model.clear()
+        self.cmbCostType.do_load_combo(RTK_COST_TYPES)
 
         _data = []
         for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES:
             _data.append([self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES[_key]])
         self.cmbCategory.do_load_combo(_data)
-
-        _model = self.cmbCostType.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_COST_TYPE:
-            _data.append(
-                [self._mdcRTK.RTK_CONFIGURATION.RTK_COST_TYPE[_key][1]])
-        self.cmbCostType.do_load_combo(_data)
-
-        _model = self.cmbManufacturer.get_model()
-        _model.clear()
 
         _data = []
         for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_MANUFACTURERS:
@@ -1056,8 +1046,6 @@ class AssessmentInputs(RTKWorkView):
 
         # Initialize public scalar attributes.
         self.cmbActiveEnviron = rtk.RTKComboBox(
-            index=1,
-            simple=False,
             tooltip=_(u"The operating environment for the hardware item."))
         self.cmbDormantEnviron = rtk.RTKComboBox(
             tooltip=_(u"The storage environment for the hardware item."))
@@ -1280,54 +1268,11 @@ class AssessmentInputs(RTKWorkView):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        _model = self.cmbActiveEnviron.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS:
-            _data.append([
-                self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[_key][
-                    0], self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[
-                        _key][1],
-                self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[_key][3]
-            ])
-        self.cmbActiveEnviron.do_load_combo(_data, index=1, simple=False)
-
-        _model = self.cmbDormantEnviron.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_DORMANT_ENVIRONMENTS:
-            _data.append([
-                self._mdcRTK.RTK_CONFIGURATION.RTK_DORMANT_ENVIRONMENTS[_key][
-                    1]
-            ])
-        self.cmbDormantEnviron.do_load_combo(_data)
-
-        _model = self.cmbFailureDist.get_model()
-        _model.clear()
-
-        _data = [[_(u"1P Exponential")], [_(u"2P Exponential")],
-                 [_(u"Gaussian")], [_(u"Lognormal")], [_(u"2P Weibull")],
-                 [_(u"3P Weibull")]]
-        self.cmbFailureDist.do_load_combo(_data)
-
-        _model = self.cmbHRType.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_HR_TYPE:
-            _data.append([self._mdcRTK.RTK_CONFIGURATION.RTK_HR_TYPE[_key][1]])
-        self.cmbHRType.do_load_combo(_data)
-
-        _model = self.cmbHRMethod.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MODEL:
-            _data.append(
-                [self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MODEL[_key][0]])
-        self.cmbHRMethod.do_load_combo(_data)
+        self.cmbActiveEnviron.do_load_combo(RTK_ACTIVE_ENVIRONMENTS)
+        self.cmbDormantEnviron.do_load_combo(RTK_DORMANT_ENVIRONMENTS)
+        self.cmbHRType.do_load_combo(RTK_HR_TYPES)
+        self.cmbHRMethod.do_load_combo(RTK_HR_MODELS)
+        self.cmbFailureDist.do_load_combo(RTK_HR_DISTRIBUTIONS)
 
         # Build the assessment input page starting with the top left half.
         _hbox = gtk.HBox()

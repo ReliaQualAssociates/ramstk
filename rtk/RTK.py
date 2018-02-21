@@ -366,17 +366,6 @@ class Model(object):
         # Load dictionaries from RTKEnviron.                                  #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.environ_type == 'active').all():
-            configuration.RTK_ACTIVE_ENVIRONMENTS[_record.environ_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKEnviron).\
-                filter(RTKEnviron.environ_type == 'dormant').all():
-            configuration.RTK_DORMANT_ENVIRONMENTS[_record.environ_id] = \
-                _record.get_attributes()[1:]
-        configuration.RTK_DORMANT_ENVIRONMENTS = SortedDict(configuration.RTK_DORMANT_ENVIRONMENTS)
-
-        for _record in self.site_session.query(RTKEnviron).\
                 filter(RTKEnviron.environ_type == 'development').all():
             configuration.RTK_SW_DEV_ENVIRONMENTS[_record.environ_id] = \
                 _record.get_attributes()[1:]
@@ -413,12 +402,12 @@ class Model(object):
         for _record in self.site_session.query(RTKMethod).\
                 filter(RTKMethod.method_type == 'detection').all():
             configuration.RTK_DETECTION_METHODS[_record.method_id] = \
-                _record.get_attributes[1:]
+                _record.get_attributes()[1:]
 
         for _record in self.site_session.query(RTKMethod).\
                 filter(RTKMethod.method_type == 'test').all():
             configuration.RTK_SW_TEST_METHODS[_record.method_id] = \
-                _record.get_attributes[1:]
+                _record.get_attributes()[1:]
 
         # ------------------------------------------------------------------- #
         # Load dictionaries from RTKModel.                                    #
@@ -428,18 +417,13 @@ class Model(object):
             configuration.RTK_ALLOCATION_MODELS[_record.model_id] = \
                 _record.get_attributes()[1:]
 
-        for _record in self.site_session.query(RTKModel).\
-                filter(RTKModel.model_type == 'rprediction').all():
-            configuration.RTK_HR_MODEL[_record.model_id] = \
-                _record.get_attributes()[1:]
-
         # ------------------------------------------------------------------- #
         # Load the dictionaries from RTKPhase.                                #
         # ------------------------------------------------------------------- #
         for _record in self.site_session.query(RTKPhase).\
                 filter(RTKPhase.phase_type == 'lifecycle').all():
             configuration.RTK_LIFECYCLE[_record.phase_id] = \
-                _record.get_atrributes()[1:]
+                _record.get_attributes()[1:]
 
         for _record in self.site_session.query(RTKPhase).\
                 filter(RTKPhase.phase_type == 'development').all():
@@ -485,11 +469,6 @@ class Model(object):
         for _record in self.site_session.query(RTKType). \
                 filter(RTKType.type_type == 'cost').all():
             configuration.RTK_COST_TYPE[_record.type_id] = \
-                _record.get_attributes()[1:]
-
-        for _record in self.site_session.query(RTKType).\
-                filter(RTKType.type_type == 'mtbf').all():
-            configuration.RTK_HR_TYPE[_record.type_id] = \
                 _record.get_attributes()[1:]
 
         for _record in self.site_session.query(RTKType).\

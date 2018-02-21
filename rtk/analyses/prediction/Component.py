@@ -157,8 +157,7 @@ def do_calculate_dormant_hazard_rate(**attributes):
     Calculate the dormant hazard rate for a hardware item.
 
     All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for integrated
-    circuits).
+    Edition, Section 6.3.4, Table 6.3.4-1.
 
     +-------+--------+--------+-------+-------+-------+-------+
     |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
@@ -216,8 +215,8 @@ def do_calculate_dormant_hazard_rate(**attributes):
                 2: 0.04
             },
             11: {
-                2: 0.1,
-                4: 0.3
+                2: 0.3,
+                4: 0.1
             }
         },
         2: {
