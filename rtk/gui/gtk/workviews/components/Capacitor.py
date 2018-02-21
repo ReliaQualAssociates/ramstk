@@ -219,7 +219,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
         """
         Initialize an instance of the Capacitor assessment input view.
 
-        :param controller: the hardware data controller instance.
+        :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
                                 capacitor.
@@ -381,7 +381,7 @@ class CapacitorAssessmentInputs(AssessmentInputs):
 
     def _make_assessment_input_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment input page.
+        Make the Capacitor class gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -621,7 +621,7 @@ class CapacitorAssessmentResults(AssessmentResults):
         """
         Initialize an instance of the Capacitor assessment result view.
 
-        :param controller: the hardware data controller instance.
+        :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
                                 capacitor.

@@ -5,22 +5,25 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""Hardware Work View."""
+"""Connection Work View."""
 
 from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gtk
+from rtk.gui.gtk.rtk.Widget import _
+from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
+                                                        AssessmentResults)
 
 
-class AssessmentInputs(gtk.Fixed):
+class ConnectionAssessmentInputs(AssessmentInputs):
     """
-    Display Hardware assessment input attribute data in the RTK Work Book.
+    Display Connection assessment input attribute data in the RTK Work Book.
 
-    The Hardware assessment input view displays all the assessment inputs for
-    the selected Hardware item.  This includes, currently, inputs for
-    MIL-HDBK-217FN2.  The attributes of a Hardware assessment input view are:
+    The Connection assessment input view displays all the assessment inputs for
+    the selected connection.  This includes, currently, inputs for
+    MIL-HDBK-217FN2 parts count and part stress analysis.  The attributes of a
+    Connection assessment input view are:
 
     :cvar dict _dic_quality: dictionary of connector quality levels.  Key is
                              connector subcategory ID; values are lists of
@@ -34,17 +37,6 @@ class AssessmentInputs(gtk.Fixed):
                             key is connector type ID, second key is connector
                             specification ID; values are lists of insert
                             materials.
-
-    :cvar list _lst_labels: the text to use for the assessment input widget
-                            labels.
-
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-                                input widgets.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the connection
-                               currently being displayed.
 
     :ivar cmbType: select and display the type of the connection.
     :ivar cmbSpecification: select and display the governing specification of
@@ -68,31 +60,29 @@ class AssessmentInputs(gtk.Fixed):
 
     Callbacks signals in _lst_handler_id:
 
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | cmbQuality - `changed`                    |
-    +----------+-------------------------------------------+
-    |     1    | cmbType - `changed`                       |
-    +----------+-------------------------------------------+
-    |     2    | cmbSpecification - `changed`              |
-    +----------+-------------------------------------------+
-    |     3    | cmbInsert - `changed`                     |
-    +----------+-------------------------------------------+
-    |     4    | txtContactGauge - `changed`               |
-    +----------+-------------------------------------------+
-    |     5    | txtActivePins - `changed`                 |
-    +----------+-------------------------------------------+
-    |     6    | txtAmpsContact - `changed`                |
-    +----------+-------------------------------------------+
-    |     7    | txtMating - `changed`                     |
-    +----------+-------------------------------------------+
-    |     8    | txtNWave - `changed`                      |
-    +----------+-------------------------------------------+
-    |     9    | txtNHand - `changed`                      |
-    +----------+-------------------------------------------+
-    |    10    | txtNPlanes - `changed`                    |
-    +----------+-------------------------------------------+
+    +-------+-------------------------------------------+
+    | Index | Widget - Signal                           |
+    +=======+===========================================+
+    |   1   | cmbType - `changed`                       |
+    +-------+-------------------------------------------+
+    |   2   | cmbSpecification - `changed`              |
+    +-------+-------------------------------------------+
+    |   3   | cmbInsert - `changed`                     |
+    +-------+-------------------------------------------+
+    |   4   | txtContactGauge - `changed`               |
+    +-------+-------------------------------------------+
+    |   5   | txtActivePins - `changed`                 |
+    +-------+-------------------------------------------+
+    |   6   | txtAmpsContact - `changed`                |
+    +-------+-------------------------------------------+
+    |   7   | txtMating - `changed`                     |
+    +-------+-------------------------------------------+
+    |   8   | txtNWave - `changed`                      |
+    +-------+-------------------------------------------+
+    |   9   | txtNHand - `changed`                      |
+    +-------+-------------------------------------------+
+    |  10   | txtNPlanes - `changed`                    |
+    +-------+-------------------------------------------+
     """
 
     # Define private dict attributes.
@@ -174,54 +164,40 @@ class AssessmentInputs(gtk.Fixed):
         }
     }
 
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Connector Type:"),
-        _(u"Specification:"),
-        _(u"Insert Material:"),
-        _(u"Contact Gauge:"),
-        _(u"Active Pins:"),
-        _(u"Amperes/Contact:"),
-        _(u"Mating/Unmating Cycles (per 1000 hours):"),
-        _(u"Number of Wave Soldered PTH:"),
-        _(u"Number of Hand Soldered PTH:"),
-        _(u"Number of Circuit Planes:")
-    ]
-
     def __init__(self, controller, hardware_id, subcategory_id):
         """
         Initialize an instance of the Connection assessment input view.
 
-        :param controller: the hardware data controller instance.
+        :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
                                 connection.
         :param int subcategory_id: the ID of the connection subcategory.
         """
-        gtk.Fixed.__init__(self)
+        AssessmentInputs.__init__(self, controller, hardware_id,
+                                  subcategory_id)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
+        self._lst_labels.append(_(u"Connector Type:"))
+        self._lst_labels.append(_(u"Specification:"))
+        self._lst_labels.append(_(u"Insert Material:"))
+        self._lst_labels.append(_(u"Contact Gauge:"))
+        self._lst_labels.append(_(u"Active Pins:"))
+        self._lst_labels.append(_(u"Amperes/Contact:"))
+        self._lst_labels.append(_(u"Mating/Unmating Cycles (per 1000 hours):"))
+        self._lst_labels.append(_(u"Number of Wave Soldered PTH:"))
+        self._lst_labels.append(_(u"Number of Hand Soldered PTH:"))
+        self._lst_labels.append(_(u"Number of Circuit Planes:"))
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.cmbQuality = rtk.RTKComboBox(
-            index=0,
-            simple=True,
-            tooltip=_(u"The quality level of the connection."))
         self.cmbType = rtk.RTKComboBox(
             index=0,
             simple=False,
@@ -287,21 +263,15 @@ class AssessmentInputs(gtk.Fixed):
         """
         Load the connection RKTComboBox()s.
 
-        This method is used to load the specification RTKComboBox() whenever
-        the connection subcategory is changed.
-
         :param int subcategory_id: the newly selected connection subcategory ID.
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         _return = False
 
-        self._subcategory_id = subcategory_id
+        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
 
         # Load the quality level RTKComboBox().
-        _model = self.cmbQuality.get_model()
-        _model.clear()
-
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
         if _attributes['hazard_rate_method_id'] == 1:
@@ -314,15 +284,19 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbQuality.do_load_combo(_data)
 
         # Load the connector type RTKComboBox().
-        _model = self.cmbType.get_model()
-        _model.clear()
-
         try:
             _data = self._dic_type[self._subcategory_id]
         except KeyError:
             _data = []
-
         self.cmbType.do_load_combo(_data)
+
+        # Clear the remaining rtk.ComboBox()s.  These are loaded dynamically
+        # based on the selection made in other rtk.ComboBox()s.
+        _model = self.cmbSpecification.get_model()
+        _model.clear()
+
+        _model = self.cmbInsert.get_model()
+        _model.clear()
 
         return _return
 
@@ -338,7 +312,6 @@ class AssessmentInputs(gtk.Fixed):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.cmbQuality.set_sensitive(True)
         self.cmbSpecification.set_sensitive(False)
         self.cmbType.set_sensitive(False)
         self.cmbInsert.set_sensitive(False)
@@ -389,29 +362,18 @@ class AssessmentInputs(gtk.Fixed):
 
     def _make_assessment_input_page(self):
         """
-        Make the Hardware class gtk.Notebook() assessment input page.
+        Make the Connection class gtk.Notebook() assessment input page.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        _model = self.cmbSpecification.get_model()
-        _model.clear()
-
-        _model = self.cmbType.get_model()
-        _model.clear()
-
-        _model = self.cmbInsert.get_model()
-        _model.clear()
-
         self._do_load_comboboxes(self._subcategory_id)
         self._do_set_sensitive()
 
         # Build the container for connections.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
+        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
 
-        self.put(self.cmbQuality, _x_pos, _y_pos[0])
         self.put(self.cmbType, _x_pos, _y_pos[1])
         self.put(self.cmbSpecification, _x_pos, _y_pos[2])
         self.put(self.cmbInsert, _x_pos, _y_pos[3])
@@ -422,8 +384,6 @@ class AssessmentInputs(gtk.Fixed):
         self.put(self.txtNWave, _x_pos, _y_pos[8])
         self.put(self.txtNHand, _x_pos, _y_pos[9])
         self.put(self.txtNPlanes, _x_pos, _y_pos[10])
-
-        self.show_all()
 
         return None
 
@@ -443,9 +403,9 @@ class AssessmentInputs(gtk.Fixed):
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
             +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    2    | cmbSpecification |
-            +---------+------------------+---------+------------------+
             |    1    | cmbType          |    3    | cmbInsert        |
+            +---------+------------------+---------+------------------+
+            |    2    | cmbSpecification |         |                  |
             +---------+------------------+---------+------------------+
 
         :return: False if successful or True if an error is encountered.
@@ -455,22 +415,13 @@ class AssessmentInputs(gtk.Fixed):
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _model = combo.get_model()
-        _row = combo.get_active_iter()
+        _attributes = AssessmentInputs.on_combo_changed(self, combo, index)
 
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            if index == 0:
-                _attributes['quality_id'] = int(combo.get_active())
-            elif index == 1:
+        if _attributes:
+            if index == 1:
                 _attributes['type_id'] = int(combo.get_active())
 
                 # Load the specification RTKComboBox().
-                _model = self.cmbSpecification.get_model()
-                _model.clear()
-
                 try:
                     _data = self._dic_specification[_attributes['type_id']]
                 except KeyError:
@@ -481,9 +432,6 @@ class AssessmentInputs(gtk.Fixed):
                 _attributes['specification_id'] = int(combo.get_active())
 
                 # Load the connector insert material RTKComboBox().
-                _model = self.cmbInsert.get_model()
-                _model.clear()
-
                 try:
                     _data = self._dic_insert[_attributes['type_id']][
                         _attributes['specification_id']]
@@ -579,10 +527,7 @@ class AssessmentInputs(gtk.Fixed):
         """
         _return = False
 
-        self._hardware_id = module_id
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        _attributes = AssessmentInputs.on_select(self, module_id)
 
         # Load the subcategory RTKComboBox.  We need to block the quality and
         # connector type RTKComboBoxes otherwise loading them causes the
@@ -592,10 +537,6 @@ class AssessmentInputs(gtk.Fixed):
         self._do_load_comboboxes(_attributes['subcategory_id'])
         self.cmbQuality.handler_unblock(self._lst_handler_id[0])
         self.cmbType.handler_unblock(self._lst_handler_id[1])
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(_attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
 
         # We don't block the callback signal otherwise the specification
         # RTKComboBox() will not be loaded and set.
@@ -651,314 +592,18 @@ class AssessmentInputs(gtk.Fixed):
         return _return
 
 
-class StressInputs(gtk.Fixed):
+class ConnectionAssessmentResults(AssessmentResults):
     """
-    Display Connection stress input attribute data in the RTK Work Book.
-
-    The Connection stress input view displays all the assessment inputs for
-    the selected connection.  This includes, currently, stress inputs for
-    MIL-HDBK-217FN2.  The attributes of a connection stress input view are:
-
-    :cvar list _lst_labels: the text to use for the assessment input widget
-                            labels.
-
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-                                input widgets.
-
-    :ivar _dtc_data_controller: the Hardware BoM data controller instance.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the connection
-                               currently being displayed.
-
-    :ivar txtTemperatureRated: enter and display the maximum rated temperature
-                               of the connection.
-    :ivar txtVoltageRated: enter and display the rated voltage of the
-                           connection.
-    :ivar txtVoltageOperating: enter and display the operating voltage of the
-                               connector.
-    :ivar txtCurrentRated: enter and display the rated current of the
-                           connector.
-    :ivar txtCurrentOperating: enter and display the operating current of the
-                               connector.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtTemperatureRated - `changed`           |
-    +----------+-------------------------------------------+
-    |     1    | txtVoltageRated - `changed`               |
-    +----------+-------------------------------------------+
-    |     2    | txtVoltageOperating - `changed`           |
-    +----------+-------------------------------------------+
-    |     3    | txtCurrentRated - `changed`               |
-    +----------+-------------------------------------------+
-    |     4    | txtCurrentOperating - `changed`           |
-    +----------+-------------------------------------------+
-    """
-
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Minimum Rated Temperature (\u00B0C):"),
-        _(u"Knee Temperature (\u00B0C):"),
-        _(u"Maximum Rated Temperature (\u00B0C):"),
-        _(u"Rated Voltage (V):"),
-        _(u"Operating Voltage (V):"),
-        _(u"Rated Current (A):"),
-        _(u"Operating Current (A):")
-    ]
-
-    def __init__(self, controller, hardware_id, subcategory_id):
-        """
-        Initialize an instance of the Connection stress input view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                connection.
-        :param int subcategory_id: the ID of the connection subcategory.
-        """
-        gtk.Fixed.__init__(self)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_handler_id = []
-
-        # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.txtTemperatureKnee = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The break temperature (in \u00B0C) of the connector beyond "
-                u"which it must be derated."))
-        self.txtTemperatureRatedMin = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The minimum rated temperature (in \u00B0C) of the connector."
-            ))
-        self.txtTemperatureRatedMax = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The maximum rated temperature (in \u00B0C) of the connector."
-            ))
-        self.txtVoltageRated = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The rated voltage (in V) of the connector."))
-        self.txtVoltageOperating = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operating voltage (in V) of the connector."))
-        self.txtCurrentRated = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The rated current (in A) of the connector pins."))
-        self.txtCurrentOperating = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operating current (in A) of the connector pins."))
-
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMin.connect('changed', self._on_focus_out,
-                                                0))
-        self._lst_handler_id.append(
-            self.txtTemperatureKnee.connect('changed', self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMax.connect('changed', self._on_focus_out,
-                                                2))
-        self._lst_handler_id.append(
-            self.txtVoltageRated.connect('changed', self._on_focus_out, 3))
-        self._lst_handler_id.append(
-            self.txtVoltageOperating.connect('changed', self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtCurrentRated.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtCurrentOperating.connect('changed', self._on_focus_out, 6))
-
-        self._make_stress_input_page()
-        self.show_all()
-
-    def _make_stress_input_page(self):
-        """
-        Make the connection module stress input container.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        # Build the container for connections.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
-
-        self.put(self.txtTemperatureRatedMin, _x_pos, _y_pos[0])
-        self.put(self.txtTemperatureKnee, _x_pos, _y_pos[1])
-        self.put(self.txtTemperatureRatedMax, _x_pos, _y_pos[2])
-        self.put(self.txtVoltageRated, _x_pos, _y_pos[3])
-        self.put(self.txtVoltageOperating, _x_pos, _y_pos[4])
-        self.put(self.txtCurrentRated, _x_pos, _y_pos[5])
-        self.put(self.txtCurrentOperating, _x_pos, _y_pos[6])
-
-        self.show_all()
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RTKEntry() widgets..
-
-        This method is called by:
-
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
-
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
-                          associated with the data from the calling
-                          gtk.Widget().  Indices are:
-
-        +---------+------------------------+---------+---------------------+
-        |  Index  | Widget                 |  Index  | Widget              |
-        +=========+========================+=========+=====================+
-        |    0    | txtTemperatureRatedMin |    4    | txtVoltageOperating |
-        +---------+------------------------+---------+---------------------+
-        |    1    | txtTemperatureKnee     |    5    | txtCurrentRated     |
-        +---------+------------------------+---------+---------------------+
-        |    2    | txtTemperatureRatedMax |    6    | txtCurrentOperating |
-        +---------+------------------------+---------+---------------------+
-        |    3    | txtVoltageRated        |         |                     |
-        +---------+------------------------+---------+---------------------+
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-        _text = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            try:
-                _text = float(entry.get_text())
-            except ValueError:
-                _text = 0.0
-
-            if index == 0:
-                _attributes['temperature_rated_min'] = _text
-            elif index == 1:
-                _attributes['temperature_knee'] = _text
-            elif index == 2:
-                _attributes['temperature_rated_max'] = _text
-            elif index == 3:
-                _attributes['voltage_rated'] = _text
-            elif index == 4:
-                _attributes['voltage_dc_operating'] = _text
-            elif index == 5:
-                _attributes['current_rated'] = _text
-            elif index == 6:
-                _attributes['current_operating'] = _text
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return _return
-
-    def on_select(self, module_id=None):
-        """
-        Load the connection stress input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              connection.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._hardware_id = module_id
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        # We don't block the callback signal otherwise the style RTKComboBox()
-        # will not be loaded and set.
-        self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[0])
-        self.txtTemperatureRatedMin.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_min'])))
-        self.txtTemperatureRatedMin.handler_unblock(self._lst_handler_id[0])
-
-        self.txtTemperatureKnee.handler_block(self._lst_handler_id[1])
-        self.txtTemperatureKnee.set_text(
-            str(self.fmt.format(_attributes['temperature_knee'])))
-        self.txtTemperatureKnee.handler_unblock(self._lst_handler_id[1])
-
-        self.txtTemperatureRatedMax.handler_block(self._lst_handler_id[2])
-        self.txtTemperatureRatedMax.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_max'])))
-        self.txtTemperatureRatedMax.handler_unblock(self._lst_handler_id[2])
-
-        self.txtVoltageRated.handler_block(self._lst_handler_id[3])
-        self.txtVoltageRated.set_text(
-            str(self.fmt.format(_attributes['voltage_rated'])))
-        self.txtVoltageRated.handler_unblock(self._lst_handler_id[3])
-
-        self.txtVoltageOperating.handler_block(self._lst_handler_id[4])
-        self.txtVoltageOperating.set_text(
-            str(self.fmt.format(_attributes['voltage_dc_operating'])))
-        self.txtVoltageOperating.handler_unblock(self._lst_handler_id[4])
-
-        self.txtCurrentRated.handler_block(self._lst_handler_id[5])
-        self.txtCurrentRated.set_text(
-            str(self.fmt.format(_attributes['current_rated'])))
-        self.txtCurrentRated.handler_unblock(self._lst_handler_id[5])
-
-        self.txtCurrentOperating.handler_block(self._lst_handler_id[6])
-        self.txtCurrentOperating.set_text(
-            str(self.fmt.format(_attributes['current_operating'])))
-        self.txtCurrentOperating.handler_unblock(self._lst_handler_id[6])
-
-        return _return
-
-
-class AssessmentResults(gtk.Fixed):
-    """
-    Display connection assessment results attribute data in the RTK Work Book.
+    Display Connection assessment results attribute data in the RTK Work Book.
 
     The connection assessment result view displays all the assessment results
     for the selected connection.  This includes, currently, results for
     MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The
     attributes of a connection assessment result view are:
 
-    :cvar list _lst_labels: the text to use for the assessment results widget
-                            labels.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the connection
-                               currently being displayed.
-    :ivar _lblModel: the :class:`rtk.gui.gtk.rtk.Label.RTKLabel` to display
-                     the failure rate mathematical model used.
-
-    :ivar txtLambdaB: displays the base hazard rate of the connection.
     :ivar txtPiK: displays the capacitance factor for the connection.
     :ivar txtPiP: displays the configuration factor for the connection.
     :ivar txtPiC: displays the construction factor for the connection.
-    :ivar txtPiQ: displays the quality factor for the connection.
-    :ivar txtPiE: displays the environment factor for the connection.
     """
 
     # Define private dict attributes.
@@ -975,51 +620,36 @@ class AssessmentResults(gtk.Fixed):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
     }
 
-    # Define private list attributes.
-    _lst_labels = [
-        u"\u03BB<sub>b</sub>:", u"\u03C0<sub>K</sub>:", u"\u03C0<sub>P</sub>:",
-        u"\u03C0<sub>C</sub>:", u"\u03C0<sub>Q</sub>:", u"\u03C0<sub>E</sub>:"
-    ]
-
     def __init__(self, controller, hardware_id, subcategory_id):
         """
         Initialize an instance of the Connection assessment result view.
 
-        :param controller: the hardware data controller instance.
+        :param controller: the Hardware data controller instance.
         :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
         :param int hardware_id: the hardware ID of the currently selected
                                 connection.
         :param int subcategory_id: the ID of the connection subcategory.
         """
-        gtk.Fixed.__init__(self)
+        AssessmentResults.__init__(self, controller, hardware_id,
+                                   subcategory_id)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_labels.append(u"\u03C0<sub>K</sub>:")
+        self._lst_labels.append(u"\u03C0<sub>P</sub>:")
+        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        self._lblModel = rtk.RTKLabel(
-            '',
-            width=-1,
-            tooltip=_(u"The assessment model used to calculate the connection "
-                      u"failure rate."))
+        self._lblModel.set_tooltip_markup(
+            _(u"The assessment model used to calculate the connection failure "
+              u"rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.txtLambdaB = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The base hazard rate of the connection."))
         self.txtPiK = rtk.RTKEntry(
             width=125,
             editable=False,
@@ -1035,16 +665,6 @@ class AssessmentResults(gtk.Fixed):
             editable=False,
             bold=True,
             tooltip=_(u"The complexity factor for the connection."))
-        self.txtPiQ = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The quality factor for the connection."))
-        self.txtPiE = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The environment factor for the connection."))
 
         self._make_assessment_results_page()
         self.show_all()
@@ -1060,16 +680,11 @@ class AssessmentResults(gtk.Fixed):
         """
         _return = False
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
+        _attributes = AssessmentResults.do_load_page(self)
 
         self.txtPiK.set_text(str(self.fmt.format(_attributes['piK'])))
         self.txtPiP.set_text(str(self.fmt.format(_attributes['piP'])))
         self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
-        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
 
         return _return
 
@@ -1080,16 +695,13 @@ class AssessmentResults(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
+        _return = AssessmentResults.do_set_sensitive(self)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
         self.txtPiK.set_sensitive(False)
         self.txtPiP.set_sensitive(False)
         self.txtPiC.set_sensitive(False)
-        self.txtPiQ.set_sensitive(False)
-        self.txtPiE.set_sensitive(False)
 
         if _attributes['hazard_rate_method_id'] == 2:
             self.txtPiE.set_sensitive(True)
@@ -1113,35 +725,14 @@ class AssessmentResults(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        if _attributes['hazard_rate_method_id'] == 1:
-            self._lblModel.set_markup(
-                u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
-            self._lst_labels[0] = u"\u03BB<sub>g</sub>:"
-        else:
-            try:
-                self._lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self._lblModel.set_markup(_(u"Missing Model"))
-            self._lst_labels[0] = u"\u03BB<sub>b</sub>:"
-
         self._do_set_sensitive()
 
-        # Build the container for connections.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 35)
-        _x_pos += 50
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
 
-        self.put(self._lblModel, _x_pos, 5)
-        self.put(self.txtLambdaB, _x_pos, _y_pos[0])
-        self.put(self.txtPiK, _x_pos, _y_pos[1])
-        self.put(self.txtPiP, _x_pos, _y_pos[2])
-        self.put(self.txtPiC, _x_pos, _y_pos[3])
-        self.put(self.txtPiQ, _x_pos, _y_pos[4])
-        self.put(self.txtPiE, _x_pos, _y_pos[5])
+        self.put(self.txtPiK, _x_pos, _y_pos[3])
+        self.put(self.txtPiP, _x_pos, _y_pos[4])
+        self.put(self.txtPiC, _x_pos, _y_pos[5])
 
         self.show_all()
 
@@ -1161,262 +752,6 @@ class AssessmentResults(gtk.Fixed):
         self._hardware_id = module_id
 
         self._do_set_sensitive()
-        self._do_load_page()
-
-        return _return
-
-
-class StressResults(gtk.HPaned):
-    """
-    Display connection stress results attribute data in the RTK Work Book.
-
-    The connection stress result view displays all the stress results for the
-    selected connection.  This includes, currently, results for MIL-HDBK-217FN2
-    parts count and MIL-HDBK-217FN2 part stress methods.  The attributes of a
-    connection stress result view are:
-
-    :cvar list _lst_labels: the text to use for the sress results widget
-                            labels.
-
-    :ivar _dtc_data_controller: the Hardware BoM data controller instance.
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the connection
-                               currently being displayed.
-
-    :ivar pltDerate: matplotlib plot showing the design limits and operating
-                     point for the connector.
-    :ivar chkOverstress: the :py:class:`gtk.CheckButton` indicating whether or
-                         not the connector is overstressed.
-    :ivar txtReason: the :py:class:`rtk.gui.gtk.rtk.RTKTextView` displaying the
-                     reason or reasons the connector is overstressed.
-    :ivar txtVoltageRatio: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` displaying
-                           the operating to rated voltage ratio for the
-                           connector.
-    :ivar txtCurrentRatio: the :py:class:`rtk.gui.gtk.rtk.RTKEntry` displaying
-                           the operating to rated current ratio for the
-                           connector.
-    """
-
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Voltage Ratio:"),
-        _(u"Current Ratio:"),
-        _(u"Temperature Rise:"), "",
-        _(u"Overstress Reason:")
-    ]
-
-    def __init__(self, controller, hardware_id, subcategory_id):
-        """
-        Initialize an instance of the Connection assessment result view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                connection.
-        :param int subcategory_id: the ID of the connection subcategory.
-        """
-        gtk.HPaned.__init__(self)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_derate_criteria = [[0.7, 0.7, 0.0], [0.9, 0.9, 0.0]]
-
-        # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.pltDerate = rtk.RTKPlot()
-
-        self.chkOverstress = rtk.RTKCheckButton(
-            label=_(u"Overstressed"),
-            tooltip=_(u"Indicates whether or not the selected connection "
-                      u"is overstressed."))
-        self.txtReason = rtk.RTKTextView(
-            gtk.TextBuffer(),
-            width=250,
-            tooltip=_(u"The reason(s) the selected hardware item is "
-                      u"overstressed."))
-        self.txtVoltageRatio = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The ratio of operating voltage to rated voltage for "
-                      u"the connection."))
-        self.txtCurrentRatio = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The ratio of operating current to rated current for "
-                      u"the connection."))
-        self.txtTemperatureRise = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The temperature rise of the connector insert "
-                      u"(multi-pin connectors) or contacts (PCB connectors)."))
-
-        self.chkOverstress.set_sensitive(False)
-        self.txtReason.set_editable(False)
-        _bg_color = gtk.gdk.Color('#ADD8E6')
-        self.txtReason.modify_base(gtk.STATE_NORMAL, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_ACTIVE, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_PRELIGHT, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_SELECTED, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
-
-        self._make_stress_results_page()
-        self.show_all()
-
-        pub.subscribe(self._do_load_page, 'calculatedHardware')
-
-    def _do_load_derating_curve(self):
-        """
-        Load the benign and harsh environment derating curves.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        # Plot the derating curve.
-        _x = [
-            float(_attributes['temperature_rated_min']),
-            float(_attributes['temperature_rated_max']),
-            float(_attributes['temperature_rated_max'])
-        ]
-
-        self.pltDerate.axis.cla()
-        self.pltDerate.axis.grid(True, which='both')
-
-        self.pltDerate.do_load_plot(
-            x_values=_x,
-            y_values=self._lst_derate_criteria[0],
-            plot_type='scatter',
-            marker='r.-')
-
-        self.pltDerate.do_load_plot(
-            x_values=_x,
-            y_values=self._lst_derate_criteria[1],
-            plot_type='scatter',
-            marker='b.-')
-
-        self.pltDerate.do_load_plot(
-            x_values=[_attributes['temperature_active']],
-            y_values=[_attributes['voltage_ratio']],
-            plot_type='scatter',
-            marker='go')
-
-        self.pltDerate.do_load_plot(
-            x_values=[_attributes['temperature_active']],
-            y_values=[_attributes['current_ratio']],
-            plot_type='scatter',
-            marker='mo')
-
-        self.pltDerate.do_make_title(
-            _(u"Voltage and Current Derating Curve for {0:s} at {1:s}").format(
-                _attributes['part_number'], _attributes['ref_des']),
-            fontsize=12)
-        self.pltDerate.do_make_legend([
-            _(u"Harsh Environment"),
-            _(u"Mild Environment"),
-            _(u"Voltage Operating Point"),
-            _(u"Current Operating Point")
-        ])
-
-        self.pltDerate.do_make_labels(
-            _(u"Temperature (\u2070C)"), 0, -0.2, fontsize=10)
-        self.pltDerate.do_make_labels(
-            _(u"Voltage Ratio"), -1, 0, set_x=False, fontsize=10)
-
-        self.pltDerate.figure.canvas.draw()
-
-        return _return
-
-    def _do_load_page(self):
-        """
-        Load the connection assessment results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtVoltageRatio.set_text(
-            str(self.fmt.format(_attributes['voltage_ratio'])))
-        self.txtCurrentRatio.set_text(
-            str(self.fmt.format(_attributes['current_ratio'])))
-        self.txtTemperatureRise.set_text(
-            str(self.fmt.format(_attributes['temperature_rise'])))
-        self.chkOverstress.set_active(_attributes['overstress'])
-        _textbuffer = self.txtReason.do_get_buffer()
-        _textbuffer.set_text(_attributes['reason'])
-
-        self._do_load_derating_curve()
-
-        return _return
-
-    def _make_stress_results_page(self):
-        """
-        Make the connection gtk.Notebook() assessment results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # Create the left side.
-        _fixed = gtk.Fixed()
-        self.pack1(_fixed, True, True)
-
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, _fixed, 5, 35)
-        _x_pos += 50
-
-        _fixed.put(self.txtVoltageRatio, _x_pos, _y_pos[0])
-        _fixed.put(self.txtCurrentRatio, _x_pos, _y_pos[1])
-        _fixed.put(self.txtTemperatureRise, _x_pos, _y_pos[2])
-        _fixed.put(self.chkOverstress, _x_pos, _y_pos[3])
-        _fixed.put(self.txtReason.scrollwindow, _x_pos, _y_pos[4])
-
-        _fixed.show_all()
-
-        # Create the derating plot.
-        _frame = rtk.RTKFrame(label=_(u"Derating Curve and Operating Point"))
-        _frame.add(self.pltDerate.plot)
-        _frame.show_all()
-
-        self.pack2(_frame, True, True)
-
-        return _return
-
-    def on_select(self, module_id=None):
-        """
-        Load the connection assessment input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              connection.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._hardware_id = module_id
-
         self._do_load_page()
 
         return _return
