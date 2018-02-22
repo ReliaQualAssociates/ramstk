@@ -8,8 +8,8 @@ from .IntegratedCircuit import ICAssessmentInputs as wvwIntegratedCircuitAI
 from .IntegratedCircuit import ICAssessmentResults as wvwIntegratedCircuitAR
 from .Meter import MeterAssessmentInputs as wvwMeterAI
 from .Meter import MeterAssessmentResults as wvwMeterAR
-from .Miscellaneous import AssessmentInputs as wvwMiscellaneousAI
-from .Miscellaneous import AssessmentResults as wvwMiscellaneousAR
+from .Miscellaneous import MiscAssessmentInputs as wvwMiscellaneousAI
+from .Miscellaneous import MiscAssessmentResults as wvwMiscellaneousAR
 from .Relay import AssessmentInputs as wvwRelayAI
 from .Relay import AssessmentResults as wvwRelayAR
 from .Resistor import AssessmentInputs as wvwResistorAI
