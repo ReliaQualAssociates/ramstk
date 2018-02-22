@@ -11,14 +11,16 @@ from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gtk
+from rtk.gui.gtk.rtk.Widget import _
+from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
+                                                        AssessmentResults)
 
 
-class AssessmentInputs(gtk.Fixed):
+class ICAssessmentInputs(AssessmentInputs):
     """
     Display IC assessment input attribute data in the RTK Work Book.
 
-    The integrated circuit assessment input view displays all the assessment
+    The Integrated Circuit assessment input view displays all the assessment
     inputs for the selected integrated circuit.  This includes, currently,
     inputs for MIL-HDBK-217FN2.  The attributes of an integrated circuit
     assessment input view are:
@@ -27,16 +29,6 @@ class AssessmentInputs(gtk.Fixed):
                                 technologies.  Key is integrated circuit
                                 subcategory ID; values are lists of
                                 technologies.
-
-    :cvar list _lst_labels: the text to use for the assessment input widget
-                            labels.
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-                                input widgets.
-
-    :ivar int _hardware_id: the ID of the integrated circuit currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the integrated
-                               circuit currently being displayed.
 
     :ivar cmbApplication: select and display the application of the integrated
                           circuit.
@@ -71,43 +63,43 @@ class AssessmentInputs(gtk.Fixed):
 
     Callbacks signals in _lst_handler_id:
 
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | cmbQuality - `changed`                    |
-    +----------+-------------------------------------------+
-    |     1    | cmbApplication - `changed`                |
-    +----------+-------------------------------------------+
-    |     2    | cmbConstruction - `changed`               |
-    +----------+-------------------------------------------+
-    |     3    | cmbECC - `changed`                        |
-    +----------+-------------------------------------------+
-    |     4    | cmbManufacturing - `changed`              |
-    +----------+-------------------------------------------+
-    |     5    | cmbPackage - `changed`                    |
-    +----------+-------------------------------------------+
-    |     6    | cmbTechnology - `changed`                 |
-    +----------+-------------------------------------------+
-    |     7    | cmbType - `changed`                       |
-    +----------+-------------------------------------------+
-    |     8    | txtArea - `changed`                       |
-    +----------+-------------------------------------------+
-    |     9    | txtFeatureSize - `changed`                |
-    +----------+-------------------------------------------+
-    |    10    | txtNActivePins - `changed`                |
-    +----------+-------------------------------------------+
-    |    11    | txtNCycles - `changed`                    |
-    +----------+-------------------------------------------+
-    |    12    | txtNElements - `changed`                  |
-    +----------+-------------------------------------------+
-    |    13    | txtOperatingLife - `changed`              |
-    +----------+-------------------------------------------+
-    |    14    | txtThetaJC - `changed`                    |
-    +----------+-------------------------------------------+
-    |    15    | txtVoltageESD - `changed`                 |
-    +----------+-------------------------------------------+
-    |    16    | txtYearsInProduction - `changed`          |
-    +----------+-------------------------------------------+
+    +-------+-------------------------------------------+
+    | Index | Widget - Signal                           |
+    +=======+===========================================+
+    |   0   | cmbQuality - `changed`                    |
+    +-------+-------------------------------------------+
+    |   1   | cmbApplication - `changed`                |
+    +-------+-------------------------------------------+
+    |   2   | cmbConstruction - `changed`               |
+    +-------+-------------------------------------------+
+    |   3   | cmbECC - `changed`                        |
+    +-------+-------------------------------------------+
+    |   4   | cmbManufacturing - `changed`              |
+    +-------+-------------------------------------------+
+    |   5   | cmbPackage - `changed`                    |
+    +-------+-------------------------------------------+
+    |   6   | cmbTechnology - `changed`                 |
+    +-------+-------------------------------------------+
+    |   7   | cmbType - `changed`                       |
+    +-------+-------------------------------------------+
+    |   8   | txtArea - `changed`                       |
+    +-------+-------------------------------------------+
+    |   9   | txtFeatureSize - `changed`                |
+    +-------+-------------------------------------------+
+    |  10   | txtNActivePins - `changed`                |
+    +-------+-------------------------------------------+
+    |  11   | txtNCycles - `changed`                    |
+    +-------+-------------------------------------------+
+    |  12   | txtNElements - `changed`                  |
+    +-------+-------------------------------------------+
+    |  13   | txtOperatingLife - `changed`              |
+    +-------+-------------------------------------------+
+    |  14   | txtThetaJC - `changed`                    |
+    +-------+-------------------------------------------+
+    |  15   | txtVoltageESD - `changed`                 |
+    +-------+-------------------------------------------+
+    |  16   | txtYearsInProduction - `changed`          |
+    +-------+-------------------------------------------+
     """
 
     # Define private dict attributes.
@@ -130,27 +122,6 @@ class AssessmentInputs(gtk.Fixed):
         10: [[_(u"Logic and Custom")], [_(u"Gate Array")]]
     }
 
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Quality Level:"),
-        _(u"Package:"),
-        _(u"Die Area:"),
-        _(u"N Elements:"),
-        _(u"\u0398<sub>JC</sub>:"),
-        _(u"Active Pins:"),
-        _(u"Technology:"),
-        _(u"Years in Production:"),
-        _(u"Construction"),
-        _(u"Programming Cycles:"),
-        _(u"Operating Life:"),
-        _(u"Error Correction Code:"),
-        _(u"Application:"),
-        _(u"Device Type:"),
-        _(u"Feature Size:"),
-        _(u"Manufacturing Process:"),
-        _(u"ESD Threshold Voltage:")
-    ]
-
     def __init__(self, controller, hardware_id, subcategory_id):
         """
         Initialize an instance of the Integrated Circuit assessment input view.
@@ -162,29 +133,36 @@ class AssessmentInputs(gtk.Fixed):
         :param int subcategory_id: the ID of the integrated circuit
                                    subcategory.
         """
-        gtk.Fixed.__init__(self)
+        AssessmentInputs.__init__(self, controller, hardware_id,
+                                  subcategory_id)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
+        self._lst_labels.append(_(u"Package:"))
+        self._lst_labels.append(_(u"Die Area:"))
+        self._lst_labels.append(_(u"N Elements:"))
+        self._lst_labels.append(_(u"\u0398<sub>JC</sub>:"))
+        self._lst_labels.append(_(u"Active Pins:"))
+        self._lst_labels.append(_(u"Technology:"))
+        self._lst_labels.append(_(u"Years in Production:"))
+        self._lst_labels.append(_(u"Construction"))
+        self._lst_labels.append(_(u"Programming Cycles:"))
+        self._lst_labels.append(_(u"Operating Life:"))
+        self._lst_labels.append(_(u"Error Correction Code:"))
+        self._lst_labels.append(_(u"Application:"))
+        self._lst_labels.append(_(u"Device Type:"))
+        self._lst_labels.append(_(u"Feature Size:"))
+        self._lst_labels.append(_(u"Manufacturing Process:"))
+        self._lst_labels.append(_(u"ESD Threshold Voltage:"))
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.cmbQuality = rtk.RTKComboBox(
-            index=0,
-            simple=True,
-            tooltip=_(u"The quality level of the integrated circuit."))
         self.cmbApplication = rtk.RTKComboBox(
             index=0,
             simple=True,
@@ -300,55 +278,33 @@ class AssessmentInputs(gtk.Fixed):
         """
         _return = False
 
-        self._subcategory_id = subcategory_id
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
 
         # Load the quality level RTKComboBox().
-        _model = self.cmbQuality.get_model()
-        _model.clear()
-
         self.cmbQuality.do_load_combo([[_(u"Class S")], [_(u"Class B")],
                                        [_(u"Class B-1")]])
 
         # Load the application RTKComboBox().
-        _model = self.cmbApplication.get_model()
-        _model.clear()
-
         if _attributes['construction_id'] == 1:
             self.cmbApplication.do_load_combo(
                 [[_(u"Low Noise and Low Power (\u2264 100mW)")],
                  [_(u"Driver and High Power (> 100mW)")], [_(u"Unknown")]])
         else:
-            self.cmbApplication.do_load_combo(
-                [[_(u"All digital devices")]])
+            self.cmbApplication.do_load_combo([[_(u"All digital devices")]])
 
         # Load the Construction RTKComboBox().
-        _model = self.cmbConstruction.get_model()
-        _model.clear()
-
         self.cmbConstruction.do_load_combo([["FLOTOX"], [_(u"Textured Poly")]])
 
         # Load the error correction code RTKComboBox().
-        _model = self.cmbECC.get_model()
-        _model.clear()
-
         self.cmbECC.do_load_combo(
             [[_(u"No on-chip ECC")], [_(u"On-chip Hamming code")],
              [_(u"Two-Needs-One redundant cell approach")]])
 
         # Load the manufacturing process RTKComboBox().
-        _model = self.cmbManufacturing.get_model()
-        _model.clear()
-
         self.cmbManufacturing.do_load_combo([["QML or QPL"],
                                              ["Non-QML or non-QPL"]])
 
         # Load the package RTKComboBox().
-        _model = self.cmbPackage.get_model()
-        _model.clear()
-
         self.cmbPackage.do_load_combo([[
             _(u"Hermetic DIP w/ Solder or Weld Seal")
         ], [_(u"Hermetic Pin Grid Array (PGA)")], [
@@ -359,9 +315,6 @@ class AssessmentInputs(gtk.Fixed):
                                        [_(u"Nonhermetic SMT")]])
 
         # Load the technology RTKComboBox().
-        _model = self.cmbTechnology.get_model()
-        _model.clear()
-
         try:
             if _attributes['hazard_rate_method_id'] == 1:
                 if _attributes['subcategory_id'] == 9:
@@ -375,9 +328,6 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbTechnology.do_load_combo(_data)
 
         # Load the device type RTKComboBox().
-        _model = self.cmbType.get_model()
-        _model.clear()
-
         try:
             _data = self._dic_types[_attributes['subcategory_id']]
         except KeyError:
@@ -398,7 +348,6 @@ class AssessmentInputs(gtk.Fixed):
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.cmbQuality.set_sensitive(True)
         self.cmbApplication.set_sensitive(False)
         self.cmbConstruction.set_sensitive(False)
         self.cmbECC.set_sensitive(False)
@@ -406,7 +355,6 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbPackage.set_sensitive(False)
         self.cmbTechnology.set_sensitive(False)
         self.cmbType.set_sensitive(False)
-
         self.txtArea.set_sensitive(False)
         self.txtFeatureSize.set_sensitive(False)
         self.txtNActivePins.set_sensitive(False)
@@ -466,15 +414,12 @@ class AssessmentInputs(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Load the gtk.ComboBox() widgets.
         self._do_load_comboboxes(self._subcategory_id)
         self._do_set_sensitive()
 
-        # Build the container for integrated circuits.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
 
-        self.put(self.cmbQuality, _x_pos, _y_pos[0])
         self.put(self.cmbPackage, _x_pos, _y_pos[1])
         self.put(self.txtArea, _x_pos, _y_pos[2])
         self.put(self.txtNElements, _x_pos, _y_pos[3])
@@ -492,8 +437,6 @@ class AssessmentInputs(gtk.Fixed):
         self.put(self.cmbManufacturing, _x_pos, _y_pos[15])
         self.put(self.txtVoltageESD, _x_pos, _y_pos[16])
 
-        self.show_all()
-
         return None
 
     def _on_combo_changed(self, combo, index):
@@ -509,17 +452,17 @@ class AssessmentInputs(gtk.Fixed):
         :param int index: the position in the signal handler list associated
                           with the calling RTKComboBox().  Indices are:
 
-            +---------+------------------+---------+------------------+
-            |  Index  | Widget           |  Index  | Widget           |
-            +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    4    | cmbManufacturing |
-            +---------+------------------+---------+------------------+
-            |    1    | cmbApplication   |    5    | cmbPackage       |
-            +---------+------------------+---------+------------------+
-            |    2    | cmbConstruction  |    6    | cmbTechnology    |
-            +---------+------------------+---------+------------------+
-            |    3    | cmbECC           |    7    | cmbType          |
-            +---------+------------------+---------+------------------+
+            +-------+------------------+-------+------------------+
+            | Index | Widget           | Index | Widget           |
+            +=======+==================+=======+==================+
+            |   1   | cmbApplication   |   5   | cmbPackage       |
+            +-------+------------------+-------+------------------+
+            |   2   | cmbConstruction  |   6   | cmbTechnology    |
+            +-------+------------------+-------+------------------+
+            |   3   | cmbECC           |   7   | cmbType          |
+            +-------+------------------+-------+------------------+
+            |   4   | cmbManufacturing |       |                  |
+            +-------+------------------+-------+------------------+
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
@@ -528,16 +471,10 @@ class AssessmentInputs(gtk.Fixed):
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _model = combo.get_model()
-        _row = combo.get_active_iter()
+        _attributes = AssessmentInputs.on_combo_changed(self, combo, index)
 
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            if index == 0:
-                _attributes['quality_id'] = int(combo.get_active())
-            elif index == 1:
+        if _attributes:
+            if index == 1:
                 _attributes['application_id'] = int(combo.get_active())
             elif index == 2:
                 _attributes['construction_id'] = int(combo.get_active())
@@ -645,21 +582,11 @@ class AssessmentInputs(gtk.Fixed):
 
         self._hardware_id = module_id
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        #self._subcategory_id = _attributes['subcategory_id']
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(_attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
-
-        self._do_set_sensitive()
+        _attributes = AssessmentInputs.on_select(self, module_id)
 
         if self._subcategory_id == 10:
             self.cmbManufacturing.handler_block(self._lst_handler_id[4])
-            self.cmbManufacturing.set_active(
-                _attributes['manufacturing_id'])
+            self.cmbManufacturing.set_active(_attributes['manufacturing_id'])
             self.cmbManufacturing.handler_unblock(self._lst_handler_id[4])
 
             self.cmbType.handler_block(self._lst_handler_id[7])
@@ -764,419 +691,20 @@ class AssessmentInputs(gtk.Fixed):
                 self.txtYearsInProduction.handler_unblock(
                     self._lst_handler_id[16])
 
-        return _return
-
-
-class StressInputs(gtk.Fixed):
-    """
-    Display IC stress input attribute data in the RTK Work Book.
-
-    The Integrated Circuit stress input view displays all the assessment inputs
-    for the selected integrated circuit.  This includes, currently, stress
-    inputs for MIL-HDBK-217FN2.  The attributes of a integrated circuit stress
-    input view are:
-
-    :cvar list _lst_labels: the text to use for the assessment input widget
-                            labels.
-
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-                                input widgets.
-
-    :ivar _dtc_data_controller: the integrated circuit BoM data controller
-                                instance.
-
-    :ivar int _hardware_id: the ID of the integrated circuit item currently
-                            being displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the integrated
-                               circuit currently being displayed.
-
-    :ivar txtTemperatureCase: enter and display the temperature of the
-                              integrated circuit case.
-    :ivar txtTemperatureJunction: enter and display the junction temperature of
-                                  the integrated circuit.
-    :ivar txtTemperatureRatedMin: enter and display the minimum rated
-                                  temperature of the integrated circuit.
-    :ivar txtTemperatureKnee: enter and display the break temperature beyond
-                              which the integrated circuit must be derated.
-    :ivar txtTemperatureRatedMax: enter and display the maximum rated
-                                  temperature of the integrated circuit.
-    :ivar txtCurrentOperating: enter and display the operating current of the
-                               integrated circuit.
-    :ivar txtCurrentRated: enter and display the rated current of the
-                           integrated circuit.
-    :ivar txtPowerOperating: enter and display the operating power of the
-                             integrated circuit.
-    :ivar txtPowerRated: enter and display the rated power of the integrated
-                         circuit.
-    :ivar txtVoltageRated: enter and display the rated voltage of the
-                           integrated circuit.
-    :ivar txtVoltageAC: enter and display the operating ac voltage of the
-                        integrated circuit.
-    :ivar txtVoltageDC: enter and display the operating DC voltage of the
-                        integrated circuit.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtTemperatureCase - `changed`            |
-    +----------+-------------------------------------------+
-    |     1    | txtTemperatureJunction - `changed`        |
-    +----------+-------------------------------------------+
-    |     2    | txtTemperatureRatedMin - `changed`        |
-    +----------+-------------------------------------------+
-    |     3    | txtTemperatureKnee - `changed`            |
-    +----------+-------------------------------------------+
-    |     4    | txtTemperatureRatedMax - `changed`        |
-    +----------+-------------------------------------------+
-    |     5    | txtCurrentOperating - `changed`           |
-    +----------+-------------------------------------------+
-    |     6    | txtCurrentRated - `changed`               |
-    +----------+-------------------------------------------+
-    |     7    | txtPowerOperating - `changed`             |
-    +----------+-------------------------------------------+
-    |     8    | txtPowerRated - `changed`                 |
-    +----------+-------------------------------------------+
-    |     9    | txtVoltageRated - `changed`               |
-    +----------+-------------------------------------------+
-    |    10    | txtVoltageAC - `changed`                  |
-    +----------+-------------------------------------------+
-    |    11    | txtVoltageDC - `changed`                  |
-    +----------+-------------------------------------------+
-    """
-
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Case Temperature (\u00B0C):"),
-        _(u"Junction Temperature (\u00B0C):"),
-        _(u"Minimum Rated Temperature (\u00B0C):"),
-        _(u"Knee Temperature (\u00B0C):"),
-        _(u"Maximum Rated Temperature (\u00B0C):"),
-        _(u"Rated Current (A):"),
-        _(u"Operating Current (A):"),
-        _(u"Rated Power (W):"),
-        _(u"Operating Power (W):"),
-        _(u"Rated Voltage (V):"),
-        _(u"Operating ac Voltage (V):"),
-        _(u"Operating DC Voltage (V):")
-    ]
-
-    def __init__(self, controller, hardware_id, subcategory_id):
-        """
-        Initialize an instance of the Integrated Circuit stress input view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`rtk.hardware.IntegratedCircuitDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                integrated circuit.
-        :param int subcategory_id: the ID of the integrated circuit
-                                   subcategory.
-        """
-        gtk.Fixed.__init__(self)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_handler_id = []
-
-        # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.txtTemperatureCase = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The surface temperature (in \u00B0C) of the integrated "
-                u"circuit package."))
-        self.txtTemperatureJunction = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The worst case temperature (in \u00B0C) of the integrated "
-                u"circuit's internal junctions."))
-        self.txtTemperatureKnee = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The break temperature (in \u00B0C) of the integrated "
-                      u"circuit beyond which it must be derated."))
-        self.txtTemperatureRatedMin = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The minimum rated temperature (in \u00B0C) of the "
-                      u"integrated circuit."))
-        self.txtTemperatureRatedMax = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The maximum rated temperature (in \u00B0C) of the "
-                      u"integrated circuit."))
-        self.txtCurrentRated = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The rated current (in A) of the integreated circuit."))
-        self.txtCurrentOperating = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The operating current (in A) of the integreated circuit."))
-        self.txtPowerRated = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The rated power (in W) of the integrated circuit."))
-        self.txtPowerOperating = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operting power (in W) of the integrated circuit."))
-        self.txtVoltageRated = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The rated voltage (in V) of the integrated circuit."))
-        self.txtVoltageAC = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The operating ac voltage (in V) of the integrated circuit."))
-        self.txtVoltageDC = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The operating DC voltage (in V) of the integrated circuit."))
-
-        self._lst_handler_id.append(
-            self.txtTemperatureCase.connect('changed', self._on_focus_out, 0))
-        self._lst_handler_id.append(
-            self.txtTemperatureJunction.connect('changed', self._on_focus_out,
-                                                1))
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMin.connect('changed', self._on_focus_out,
-                                                2))
-        self._lst_handler_id.append(
-            self.txtTemperatureKnee.connect('changed', self._on_focus_out, 3))
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMax.connect('changed', self._on_focus_out,
-                                                4))
-        self._lst_handler_id.append(
-            self.txtCurrentOperating.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtCurrentRated.connect('changed', self._on_focus_out, 6))
-        self._lst_handler_id.append(
-            self.txtPowerOperating.connect('changed', self._on_focus_out, 7))
-        self._lst_handler_id.append(
-            self.txtPowerRated.connect('changed', self._on_focus_out, 8))
-        self._lst_handler_id.append(
-            self.txtVoltageRated.connect('changed', self._on_focus_out, 9))
-        self._lst_handler_id.append(
-            self.txtVoltageAC.connect('changed', self._on_focus_out, 10))
-        self._lst_handler_id.append(
-            self.txtVoltageDC.connect('changed', self._on_focus_out, 11))
-
-        self._make_stress_input_page()
-        self.show_all()
-
-    def _make_stress_input_page(self):
-        """
-        Make the integrated circuit module stress input container.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        # Build the container for integrated circuits.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
-
-        self.put(self.txtTemperatureCase, _x_pos, _y_pos[0])
-        self.put(self.txtTemperatureJunction, _x_pos, _y_pos[1])
-        self.put(self.txtTemperatureRatedMin, _x_pos, _y_pos[2])
-        self.put(self.txtTemperatureKnee, _x_pos, _y_pos[3])
-        self.put(self.txtTemperatureRatedMax, _x_pos, _y_pos[4])
-        self.put(self.txtCurrentRated, _x_pos, _y_pos[5])
-        self.put(self.txtCurrentOperating, _x_pos, _y_pos[6])
-        self.put(self.txtPowerRated, _x_pos, _y_pos[7])
-        self.put(self.txtPowerOperating, _x_pos, _y_pos[8])
-        self.put(self.txtVoltageRated, _x_pos, _y_pos[9])
-        self.put(self.txtVoltageAC, _x_pos, _y_pos[10])
-        self.put(self.txtVoltageDC, _x_pos, _y_pos[11])
-
-        self.show_all()
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RTKEntry() widgets..
-
-        This method is called by:
-
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
-
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
-        :param int index: the position in the signal handler ID list associated
-                          with the RTKEntry() calling this method.  Indices
-                          are:
-
-            +---------+------------------------+---------+-------------------+
-            |  Index  | Widget                 |  Index  | Widget            |
-            +=========+========================+=========+===================+
-            |    0    | txtTemperatureCase     |    6    | txtCurrentRated   |
-            +---------+------------------------+---------+-------------------+
-            |    1    | txtTemperatureJunction |    7    | txtPowerOperating |
-            +---------+------------------------+---------+-------------------+
-            |    2    | txtTemperatureRatedMin |    8    | txtPowerRated     |
-            +---------+------------------------+---------+-------------------+
-            |    3    | txtTemperatureKnee     |    8    | txtVoltageRated   |
-            +---------+------------------------+---------+-------------------+
-            |    4    | txtTemperatureRatedMax |   10    | txtVoltageAC      |
-            +---------+------------------------+---------+-------------------+
-            |    5    | txtCurrentOperating    |   11    | txtVoltageDC      |
-            +---------+------------------------+---------+-------------------+
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-        _text = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            try:
-                _text = float(entry.get_text())
-            except ValueError:
-                _text = 0.0
-
-            if index == 0:
-                _attributes['temperature_case'] = _text
-            elif index == 1:
-                _attributes['temperature_junction'] = _text
-            elif index == 2:
-                _attributes['temperature_rated_min'] = _text
-            elif index == 3:
-                _attributes['temperature_knee'] = _text
-            elif index == 4:
-                _attributes['temperature_rated_max'] = _text
-            elif index == 5:
-                _attributes['current_operating'] = _text
-            elif index == 6:
-                _attributes['current_rated'] = _text
-            elif index == 7:
-                _attributes['power_operating'] = _text
-            elif index == 8:
-                _attributes['power_rated'] = _text
-            elif index == 9:
-                _attributes['voltage_rated'] = _text
-            elif index == 10:
-                _attributes['voltage_ac_operating'] = _text
-            elif index == 11:
-                _attributes['voltage_dc_operating'] = _text
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return _return
-
-    def on_select(self, module_id=None):
-        """
-        Load the integrated circuit stress input work view widgets.
-
-        :param int module_id: the integrated circuit ID of the selected/edited
-                              integrated circuit.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._hardware_id = module_id
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtTemperatureCase.handler_block(self._lst_handler_id[0])
-        self.txtTemperatureCase.set_text(
-            str(self.fmt.format(_attributes['temperature_case'])))
-        self.txtTemperatureCase.handler_unblock(self._lst_handler_id[0])
-
-        self.txtTemperatureJunction.handler_block(self._lst_handler_id[1])
-        self.txtTemperatureJunction.set_text(
-            str(self.fmt.format(_attributes['temperature_junction'])))
-        self.txtTemperatureJunction.handler_unblock(self._lst_handler_id[1])
-
-        self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[2])
-        self.txtTemperatureRatedMin.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_min'])))
-        self.txtTemperatureRatedMin.handler_unblock(self._lst_handler_id[2])
-
-        self.txtTemperatureKnee.handler_block(self._lst_handler_id[3])
-        self.txtTemperatureKnee.set_text(
-            str(self.fmt.format(_attributes['temperature_knee'])))
-        self.txtTemperatureKnee.handler_unblock(self._lst_handler_id[3])
-
-        self.txtTemperatureRatedMax.handler_block(self._lst_handler_id[4])
-        self.txtTemperatureRatedMax.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_max'])))
-        self.txtTemperatureRatedMax.handler_unblock(self._lst_handler_id[4])
-
-        self.txtCurrentRated.handler_block(self._lst_handler_id[6])
-        self.txtCurrentRated.set_text(
-            str(self.fmt.format(_attributes['current_rated'])))
-        self.txtCurrentRated.handler_unblock(self._lst_handler_id[6])
-
-        self.txtCurrentOperating.handler_block(self._lst_handler_id[5])
-        self.txtCurrentOperating.set_text(
-            str(self.fmt.format(_attributes['current_operating'])))
-        self.txtCurrentOperating.handler_unblock(self._lst_handler_id[5])
-
-        self.txtPowerRated.handler_block(self._lst_handler_id[8])
-        self.txtPowerRated.set_text(
-            str(self.fmt.format(_attributes['power_rated'])))
-        self.txtPowerRated.handler_unblock(self._lst_handler_id[8])
-
-        self.txtPowerOperating.handler_block(self._lst_handler_id[7])
-        self.txtPowerOperating.set_text(
-            str(self.fmt.format(_attributes['power_operating'])))
-        self.txtPowerOperating.handler_unblock(self._lst_handler_id[7])
-
-        self.txtVoltageRated.handler_block(self._lst_handler_id[9])
-        self.txtVoltageRated.set_text(
-            str(self.fmt.format(_attributes['voltage_rated'])))
-        self.txtVoltageRated.handler_unblock(self._lst_handler_id[9])
-
-        self.txtVoltageAC.handler_block(self._lst_handler_id[10])
-        self.txtVoltageAC.set_text(
-            str(self.fmt.format(_attributes['voltage_ac_operating'])))
-        self.txtVoltageAC.handler_unblock(self._lst_handler_id[10])
-
-        self.txtVoltageDC.handler_block(self._lst_handler_id[11])
-        self.txtVoltageDC.set_text(
-            str(self.fmt.format(_attributes['voltage_dc_operating'])))
-        self.txtVoltageDC.handler_unblock(self._lst_handler_id[11])
+        self._do_set_sensitive()
 
         return _return
 
 
-class AssessmentResults(gtk.Fixed):
+class ICAssessmentResults(AssessmentResults):
     """
     Display IC assessment results attribute data in the RTK Work Book.
 
-    The integrated circuit assessment result view displays all the assessment
+    The Integrated Circuit assessment result view displays all the assessment
     results for the selected integrated circuit.  This includes, currently,
     results for MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress
     methods.  The attributes of a integrated circuit assessment result view
     are:
-
-    :cvar list _lst_labels: the text to use for the assessment results widget
-                            labels.
-
-    :ivar int _hardware_id: the ID of the integrated circuit item currently
-                            being displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the integrated
-                               circuit currently being displayed.
-    :ivar _lblModel: the :class:`rtk.gui.gtk.rtk.Label.RTKLabel` to display
-                     the failure rate mathematical model used.
 
     :ivar txtC1: displays the die complexity hazard rate of the integrated
                  circuit.
@@ -1225,16 +753,6 @@ class AssessmentResults(gtk.Fixed):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>BD</sub>\u03C0<sub>MFG</sub>\u03C0<sub>T</sub>\u03C0<sub>CD</sub> + \u03BB<sub>BP</sub>\u03C0<sub>E</sub>\u03C0<sub>Q</sub>\u03C0<sub>PT</sub> + \u03BB<sub>EOS</sub></span>"
     }
 
-    # Define private list attributes.
-    _lst_labels = [
-        u"", u"C1:", u"\u03C0<sub>T</sub>:", u"C2:", u"\u03C0<sub>E</sub>:",
-        u"\u03C0<sub>Q</sub>:", u"\u03C0<sub>L</sub>:",
-        u"\u03BB<sub>CYC</sub>:", u"\u03BB<sub>BD</sub>",
-        u"\u03C0<sub>MFG</sub>", u"\u03C0<sub>CD</sub>",
-        u"\u03BB<sub>BP</sub>", u"\u03C0<sub>PT</sub>",
-        u"\u03BB<sub>EOS</sub>", u"\u03C0<sub>A</sub>"
-    ]
-
     def __init__(self, controller, hardware_id, subcategory_id):
         """
         Initialize an instance of the Integrated Circuit assessment result view.
@@ -1245,35 +763,35 @@ class AssessmentResults(gtk.Fixed):
                                 integrated circuit.
         :param int subcategory_id: the ID of the integrated circuit subcategory.
         """
-        gtk.Fixed.__init__(self)
+        AssessmentResults.__init__(self, controller, hardware_id,
+                                   subcategory_id)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_labels.append(u"C1:")
+        self._lst_labels.append(u"\u03C0<sub>T</sub>:")
+        self._lst_labels.append(u"C2:")
+        self._lst_labels.append(u"\u03C0<sub>L</sub>:")
+        self._lst_labels.append(u"\u03BB<sub>CYC</sub>:")
+        self._lst_labels.append(u"\u03BB<sub>BD</sub>")
+        self._lst_labels.append(u"\u03C0<sub>MFG</sub>")
+        self._lst_labels.append(u"\u03C0<sub>CD</sub>")
+        self._lst_labels.append(u"\u03BB<sub>BP</sub>")
+        self._lst_labels.append(u"\u03C0<sub>PT</sub>")
+        self._lst_labels.append(u"\u03BB<sub>EOS</sub>")
+        self._lst_labels.append(u"\u03C0<sub>A</sub>")
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        self._lblModel = rtk.RTKLabel(
-            '',
-            width=-1,
-            tooltip=_(u"The assessment model used to calculate the integrated "
-                      u"circuit failure rate."))
+        self._lblModel.set_tooltip_markup(
+            _(u"The assessment model used to calculate the integrated circuit "
+              u"failure rate."))
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.txtLambdaB = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The base hazard rate for the integrated circuit."))
         self.txtC1 = rtk.RTKEntry(
             width=125,
             editable=False,
@@ -1295,16 +813,6 @@ class AssessmentResults(gtk.Fixed):
             editable=False,
             bold=True,
             tooltip=_(u"The construction factor for the integrated circuit."))
-        self.txtPiE = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The environment factor for the integrated circuit."))
-        self.txtPiQ = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The quality factor for the integrated circuit."))
         self.txtPiL = rtk.RTKEntry(
             width=125,
             editable=False,
@@ -1371,16 +879,11 @@ class AssessmentResults(gtk.Fixed):
         """
         _return = False
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
+        _attributes = AssessmentResults.do_load_page(self)
 
-        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
         self.txtC1.set_text(str(self.fmt.format(_attributes['C1'])))
         self.txtPiT.set_text(str(self.fmt.format(_attributes['piT'])))
         self.txtC2.set_text(str(self.fmt.format(_attributes['C2'])))
-        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
         self.txtPiL.set_text(str(self.fmt.format(_attributes['piL'])))
         self.txtLambdaCYC.set_text(
             str(self.fmt.format(_attributes['lambdaCYC'])))
@@ -1404,17 +907,13 @@ class AssessmentResults(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
+        _return = AssessmentResults.do_set_sensitive(self)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.txtLambdaB.set_sensitive(False)
-        self.txtLambdaB.set_visible(True)
         self.txtC1.set_sensitive(False)
         self.txtPiT.set_sensitive(False)
         self.txtC2.set_sensitive(False)
-        self.txtPiE.set_sensitive(False)
         self.txtPiL.set_sensitive(False)
         self.txtLambdaCYC.set_sensitive(False)
         self.txtLambdaBD.set_sensitive(False)
@@ -1463,38 +962,14 @@ class AssessmentResults(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        if _attributes['hazard_rate_method_id'] == 1:
-            if self._subcategory_id == 10:
-                self._lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            else:
-                self._lblModel.set_markup(
-                    u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                    u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
-                self._lst_labels[0] = u"\u03BB<sub>g</sub>:"
-        else:
-            try:
-                self._lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self._lblModel.set_markup(_(u"Missing Model"))
-
         self._do_set_sensitive()
 
-        # Build the container for integrated circuits.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 35)
-        _x_pos += 50
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
 
-        self.put(self._lblModel, _x_pos, 5)
-        self.put(self.txtLambdaB, _x_pos, _y_pos[0])
-        self.put(self.txtC1, _x_pos, _y_pos[1])
-        self.put(self.txtPiT, _x_pos, _y_pos[2])
-        self.put(self.txtC2, _x_pos, _y_pos[3])
-        self.put(self.txtPiE, _x_pos, _y_pos[4])
-        self.put(self.txtPiQ, _x_pos, _y_pos[5])
+        self.put(self.txtC1, _x_pos, _y_pos[3])
+        self.put(self.txtPiT, _x_pos, _y_pos[4])
+        self.put(self.txtC2, _x_pos, _y_pos[5])
         self.put(self.txtPiL, _x_pos, _y_pos[6])
         self.put(self.txtLambdaCYC, _x_pos, _y_pos[7])
         self.put(self.txtLambdaBD, _x_pos, _y_pos[8])
@@ -1504,8 +979,6 @@ class AssessmentResults(gtk.Fixed):
         self.put(self.txtPiPT, _x_pos, _y_pos[12])
         self.put(self.txtLambdaEOS, _x_pos, _y_pos[13])
         self.put(self.txtPiA, _x_pos, _y_pos[14])
-
-        self.show_all()
 
         return None
 
@@ -1523,244 +996,6 @@ class AssessmentResults(gtk.Fixed):
         self._hardware_id = module_id
 
         self._do_set_sensitive()
-        self._do_load_page()
-
-        return _return
-
-
-class StressResults(gtk.HPaned):
-    """
-    Display IC stress results attribute data in the RTK Work Book.
-
-    The integrated circuit stress result view displays all the stress results
-    for the selected integrated circuit.  This includes, currently, results
-    for MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.
-    The attributes of an integrated circuit stress result view are:
-
-    :cvar list _lst_labels: the text to use for the sress results widget
-                            labels.
-
-    :ivar int _hardware_id: the ID of the integrated circuit item currently
-                            being displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the integrated
-                               circuit currently being displayed.
-
-    :ivar cmbSpecification: select and display the governing specification of
-                            the integrated circuit.
-    :ivar cmbStyle: select and display the style of the integrated circuit.
-    :ivar cmbConfiguration: select and display the configuration of the
-                            integrated circuit.
-    :ivar cmbConstruction: select and display the method of construction of the
-                           integrated circuit.
-    :ivar txtCapacitance: enter and display the capacitance rating of the
-                          integrated circuit.
-    :ivar txtESR: enter and display the equivalent series resistance.
-    """
-
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Current Ratio:"),
-        _(u"Voltage Ratio:"), "",
-        _(u"Overstress Reason:")
-    ]
-
-    def __init__(self, controller, hardware_id, subcategory_id):
-        """
-        Initialize an instance of the Integrated Circuit assessment result view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`rtk.hardware.IntegratedCircuitDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                integrated circuit.
-        :param int subcategory_id: the ID of the integrated circuit
-                                   subcategory.
-        """
-        gtk.HPaned.__init__(self)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_derate_criteria = [[0.8, 0.8, 0.0], [0.9, 0.9, 0.0]]
-
-        # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.pltDerate = rtk.RTKPlot()
-
-        self.chkOverstress = rtk.RTKCheckButton(
-            label=_(u"Overstressed"),
-            tooltip=_(
-                u"Indicates whether or not the selected integrated circuit "
-                u"is overstressed."))
-        self.txtReason = rtk.RTKTextView(
-            gtk.TextBuffer(),
-            width=250,
-            tooltip=_(u"The reason(s) the selected hardware item is "
-                      u"overstressed."))
-        self.txtCurrentRatio = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The ratio of operating current to rated current for "
-                      u"the integrated circuit."))
-        self.txtVoltageRatio = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The ratio of operating voltage to rated voltage for "
-                      u"the integrated circuit."))
-
-        self.chkOverstress.set_sensitive(False)
-        self.txtReason.set_editable(False)
-        _bg_color = gtk.gdk.Color('#ADD8E6')
-        self.txtReason.modify_base(gtk.STATE_NORMAL, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_ACTIVE, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_PRELIGHT, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_SELECTED, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
-
-        self._make_stress_results_page()
-        self.show_all()
-
-        pub.subscribe(self._do_load_page, 'calculatedHardware')
-
-    def _do_load_derating_curve(self):
-        """
-        Load the benign and harsh environment derating curves.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        # Plot the derating curve.
-        _x = [
-            float(_attributes['temperature_rated_min']),
-            float(_attributes['temperature_knee']),
-            float(_attributes['temperature_rated_max'])
-        ]
-
-        self.pltDerate.axis.cla()
-        self.pltDerate.axis.grid(True, which='both')
-
-        self.pltDerate.do_load_plot(
-            x_values=_x,
-            y_values=self._lst_derate_criteria[0],
-            plot_type='scatter',
-            marker='r.-')
-
-        self.pltDerate.do_load_plot(
-            x_values=_x,
-            y_values=self._lst_derate_criteria[1],
-            plot_type='scatter',
-            marker='b.-')
-
-        self.pltDerate.do_load_plot(
-            x_values=[_attributes['temperature_active']],
-            y_values=[_attributes['voltage_ratio']],
-            plot_type='scatter',
-            marker='go')
-
-        self.pltDerate.do_make_title(
-            _(u"Voltage Derating Curve for {0:s} at {1:s}").format(
-                _attributes['part_number'], _attributes['ref_des']),
-            fontsize=12)
-        self.pltDerate.do_make_legend([
-            _(u"Harsh Environment"),
-            _(u"Mild Environment"),
-            _(u"Voltage Operating Point")
-        ])
-
-        self.pltDerate.do_make_labels(
-            _(u"Temperature (\u2070C)"), 0, -0.2, fontsize=10)
-        self.pltDerate.do_make_labels(
-            _(u"Voltage Ratio"), -1, 0, set_x=False, fontsize=10)
-
-        self.pltDerate.figure.canvas.draw()
-
-        return _return
-
-    def _do_load_page(self):
-        """
-        Load the integrated circuit stress results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtCurrentRatio.set_text(
-            str(self.fmt.format(_attributes['current_ratio'])))
-        self.txtVoltageRatio.set_text(
-            str(self.fmt.format(_attributes['voltage_ratio'])))
-        self.chkOverstress.set_active(_attributes['overstress'])
-        _textbuffer = self.txtReason.do_get_buffer()
-        _textbuffer.set_text(_attributes['reason'])
-
-        self._do_load_derating_curve()
-
-        return _return
-
-    def _make_stress_results_page(self):
-        """
-        Make the integrated circuit gtk.Notebook() assessment results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # Create the left side.
-        _fixed = gtk.Fixed()
-        self.pack1(_fixed, True, True)
-
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, _fixed, 5, 35)
-        _x_pos += 50
-
-        _fixed.put(self.txtCurrentRatio, _x_pos, _y_pos[0])
-        _fixed.put(self.txtVoltageRatio, _x_pos, _y_pos[1])
-        _fixed.put(self.chkOverstress, _x_pos, _y_pos[2])
-        _fixed.put(self.txtReason.scrollwindow, _x_pos, _y_pos[3])
-
-        _fixed.show_all()
-
-        # Create the derating plot.
-        _frame = rtk.RTKFrame(label=_(u"Derating Curve and Operating Point"))
-        _frame.add(self.pltDerate.plot)
-        _frame.show_all()
-
-        self.pack2(_frame, True, True)
-
-        return _return
-
-    def on_select(self, module_id=None):
-        """
-        Load the integrated circuit assessment input work view widgets.
-
-        :param int module_id: the hardware ID of the selected/edited
-                              integrated circuit.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._hardware_id = module_id
-
         self._do_load_page()
 
         return _return

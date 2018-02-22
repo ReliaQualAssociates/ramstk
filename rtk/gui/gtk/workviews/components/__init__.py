@@ -4,8 +4,8 @@ from .Connection import ConnectionAssessmentInputs as wvwConnectionAI
 from .Connection import ConnectionAssessmentResults as wvwConnectionAR
 from .Inductor import InductorAssessmentInputs as wvwInductorAI
 from .Inductor import InductorAssessmentResults as wvwInductorAR
-from .IntegratedCircuit import AssessmentInputs as wvwIntegratedCircuitAI
-from .IntegratedCircuit import AssessmentResults as wvwIntegratedCircuitAR
+from .IntegratedCircuit import ICAssessmentInputs as wvwIntegratedCircuitAI
+from .IntegratedCircuit import ICAssessmentResults as wvwIntegratedCircuitAR
 from .Meter import AssessmentInputs as wvwMeterAI
 from .Meter import AssessmentResults as wvwMeterAR
 from .Miscellaneous import AssessmentInputs as wvwMiscellaneousAI
