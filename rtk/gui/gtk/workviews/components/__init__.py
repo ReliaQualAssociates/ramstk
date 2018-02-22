@@ -6,8 +6,8 @@ from .Inductor import InductorAssessmentInputs as wvwInductorAI
 from .Inductor import InductorAssessmentResults as wvwInductorAR
 from .IntegratedCircuit import ICAssessmentInputs as wvwIntegratedCircuitAI
 from .IntegratedCircuit import ICAssessmentResults as wvwIntegratedCircuitAR
-from .Meter import AssessmentInputs as wvwMeterAI
-from .Meter import AssessmentResults as wvwMeterAR
+from .Meter import MeterAssessmentInputs as wvwMeterAI
+from .Meter import MeterAssessmentResults as wvwMeterAR
 from .Miscellaneous import AssessmentInputs as wvwMiscellaneousAI
 from .Miscellaneous import AssessmentResults as wvwMiscellaneousAR
 from .Relay import AssessmentInputs as wvwRelayAI
