@@ -10,16 +10,18 @@ from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk import rtk
-from rtk.gui.gtk.rtk.Widget import _, gtk
+from rtk.gui.gtk.rtk.Widget import _
+from rtk.gui.gtk.workviews.components.Component import (AssessmentInputs,
+                                                        AssessmentResults)
 
 
-class AssessmentInputs(gtk.Fixed):
+class ResistorAssessmentInputs(AssessmentInputs):
     """
-    Display Hardware assessment input attribute data in the RTK Work Book.
+    Display Resistor assessment input attribute data in the RTK Work Book.
 
-    The Hardware assessment input view displays all the assessment inputs for
-    the selected Hardware item.  This includes, currently, inputs for
-    MIL-HDBK-217FN2.  The attributes of a Hardware assessment input view are:
+    The Resistor assessment input view displays all the assessment inputs for
+    the selected resistor.  This includes, currently, inputs for
+    MIL-HDBK-217FN2.  The attributes of a Resistor assessment input view are:
 
     :cvar dict _dic_specifications: dictionary of resistor MIL-SPECs.  Key is
                                     resistor subcategory ID; values are lists
@@ -27,17 +29,6 @@ class AssessmentInputs(gtk.Fixed):
     :cvar dict _dic_styles: dictionary of resistor styles defined in the
                             MIL-SPECs.  Key is resistor subcategory ID; values
                             are lists of styles.
-
-    :cvar list _lst_labels: the text to use for the assessment input widget
-                            labels.
-
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-                                input widgets.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the resistor
-                               currently being displayed.
 
     :ivar cmbSpecification: select and display the governing specification of
                             the resistor.
@@ -50,23 +41,23 @@ class AssessmentInputs(gtk.Fixed):
 
     Callbacks signals in _lst_handler_id:
 
-    +----------+------------------------------+
-    | Position | Widget - Signal              |
-    +==========+==============================+
-    |     0    | cmbQuality - `changed`       |
-    +----------+------------------------------+
-    |     1    | cmbSpecification - `changed` |
-    +----------+------------------------------+
-    |     2    | cmbType - `changed`          |
-    +----------+------------------------------+
-    |     3    | cmbStyle - `changed`         |
-    +----------+------------------------------+
-    |     4    | cmbConstruction - `changed`  |
-    +----------+------------------------------+
-    |     5    | txtResistance - `changed`    |
-    +----------+------------------------------+
-    |     6    | txtNElements - `changed`     |
-    +----------+------------------------------+
+    +-------+------------------------------+
+    | Index | Widget - Signal              |
+    +=======+==============================+
+    |   0   | cmbQuality - `changed`       |
+    +-------+------------------------------+
+    |   1   | cmbSpecification - `changed` |
+    +-------+------------------------------+
+    |   2   | cmbType - `changed`          |
+    +-------+------------------------------+
+    |   3   | cmbStyle - `changed`         |
+    +-------+------------------------------+
+    |   4   | cmbConstruction - `changed`  |
+    +-------+------------------------------+
+    |   5   | txtResistance - `changed`    |
+    +-------+------------------------------+
+    |   6   | txtNElements - `changed`     |
+    +-------+------------------------------+
     """
 
     # Define private dict attributes.
@@ -135,17 +126,6 @@ class AssessmentInputs(gtk.Fixed):
         12: [[_(u"Enclosed")], [_(u"Unenclosed")]]
     }
 
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Resistance (\u03A9):"),
-        _(u"Quality Level:"),
-        _(u"Specification:"),
-        _(u"Type:"),
-        _(u"Style:"),
-        _(u"Construction:"),
-        _(u"Number of Elements:")
-    ]
-
     def __init__(self, controller, hardware_id, subcategory_id):
         """
         Initialize an instance of the Resistor assessment input view.
@@ -161,24 +141,20 @@ class AssessmentInputs(gtk.Fixed):
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
-        self._lst_handler_id = []
+        self._lst_labels.append(_(u"Resistance (\u03A9):"))
+        self._lst_labels.append(_(u"Specification:"))
+        self._lst_labels.append(_(u"Type:"))
+        self._lst_labels.append(_(u"Style:"))
+        self._lst_labels.append(_(u"Construction:"))
+        self._lst_labels.append(_(u"Number of Elements:"))
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
 
         # Initialize public dictionary attributes.
 
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.cmbQuality = rtk.RTKComboBox(
-            index=0,
-            simple=True,
-            tooltip=_(u"The quality level of the resistor."))
         self.cmbSpecification = rtk.RTKComboBox(
             index=0,
             simple=True,
@@ -191,7 +167,6 @@ class AssessmentInputs(gtk.Fixed):
             index=0,
             simple=True,
             tooltip=_(u"The method of construction of the resistor."))
-
         self.txtResistance = rtk.RTKEntry(
             width=125,
             tooltip=_(u"The resistance (in \u03A9) of the resistor."))
@@ -221,10 +196,7 @@ class AssessmentInputs(gtk.Fixed):
 
     def _do_load_comboboxes(self, subcategory_id):
         """
-        Load the specification RKTComboBox().
-
-        This method is used to load the specification RTKComboBox() whenever
-        the resistor subcategory is changed.
+        Load the Resisotr RKTComboBox()s.
 
         :param int subcategory_id: the newly selected resistor subcategory ID.
         :return: False if successful or True if an error is encountered.
@@ -232,14 +204,9 @@ class AssessmentInputs(gtk.Fixed):
         """
         _return = False
 
-        self._subcategory_id = subcategory_id
+        _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
 
         # Load the quality level RTKComboBox().
-        _model = self.cmbQuality.get_model()
-        _model.clear()
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
         if _attributes['hazard_rate_method_id'] == 1:
             _data = ["S", "R", "P", "M", ["MIL-SPEC"], [_(u"Lower")]]
         else:
@@ -250,9 +217,6 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbQuality.do_load_combo(_data)
 
         # Load the specification RTKComboBox().
-        _model = self.cmbSpecification.get_model()
-        _model.clear()
-
         try:
             _data = self._dic_specifications[self._subcategory_id]
         except KeyError:
@@ -260,9 +224,6 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbSpecification.do_load_combo(_data)
 
         # Load the type RTKComboBox().
-        _model = self.cmbType.get_model()
-        _model.clear()
-
         if _attributes['hazard_rate_method_id'] == 1:
             try:
                 _data = self._dic_types[self._subcategory_id]
@@ -273,9 +234,6 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbType.do_load_combo(_data)
 
         # Load the style RTKComboBox().
-        _model = self.cmbStyle.get_model()
-        _model.clear()
-
         try:
             _data = self._dic_styles[_attributes['subcategory_id']][_attributes['specification_id']]
         except (KeyError, IndexError):
@@ -283,9 +241,6 @@ class AssessmentInputs(gtk.Fixed):
         self.cmbStyle.do_load_combo(_data)
 
         # Load the construction RTKComboBox().
-        _model = self.cmbConstruction.get_model()
-        _model.clear()
-
         try:
             _data = self._dic_construction[self._subcategory_id]
         except KeyError:
@@ -343,16 +298,13 @@ class AssessmentInputs(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        # Load the gtk.ComboBox() widgets.
         self._do_load_comboboxes(self._subcategory_id)
         self._do_set_sensitive()
 
-        # Build the container for resistors.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
+        # Build the container for inductors.
+        _x_pos, _y_pos = AssessmentInputs.make_assessment_input_page(self)
 
-        self.put(self.txtResistance, _x_pos, _y_pos[0])
-        self.put(self.cmbQuality, _x_pos, _y_pos[1])
+        self.put(self.txtResistance, _x_pos, _y_pos[1])
         self.put(self.cmbSpecification, _x_pos, _y_pos[2])
         self.put(self.cmbType, _x_pos, _y_pos[3])
         self.put(self.cmbStyle, _x_pos, _y_pos[4])
@@ -379,11 +331,9 @@ class AssessmentInputs(gtk.Fixed):
             +---------+------------------+---------+------------------+
             |  Index  | Widget           |  Index  | Widget           |
             +=========+==================+=========+==================+
-            |    0    | cmbQuality       |    4    | cmbStyle         |
+            |    1    | cmbSpecification |    3    | cmbStyle         |
             +---------+------------------+---------+------------------+
-            |    1    | cmbSpecification |    5    | cmbConstruction  |
-            +---------+------------------+---------+------------------+
-            |    2    | cmbType          |         |                  |
+            |    2    | cmbType          |    4    | cmbConstruction  |
             +---------+------------------+---------+------------------+
 
         :return: False if successful or True if an error is encountered.
@@ -393,16 +343,10 @@ class AssessmentInputs(gtk.Fixed):
 
         combo.handler_block(self._lst_handler_id[index])
 
-        _model = combo.get_model()
-        _row = combo.get_active_iter()
+        _attributes = AssessmentInputs.on_combo_changed(self, combo, index)
 
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            if index == 0:
-                _attributes['quality_id'] = int(combo.get_active())
-            elif index == 1:
+        if _attributes:
+            if index == 1:
                 _attributes['specification_id'] = int(combo.get_active())
             elif index == 2:
                 _attributes['type_id'] = int(combo.get_active())
@@ -482,12 +426,7 @@ class AssessmentInputs(gtk.Fixed):
 
         self._hardware_id = module_id
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.cmbQuality.handler_block(self._lst_handler_id[0])
-        self.cmbQuality.set_active(_attributes['quality_id'])
-        self.cmbQuality.handler_unblock(self._lst_handler_id[0])
+        _attributes = AssessmentInputs.on_select(self, module_id)
 
         self.cmbType.handler_block(self._lst_handler_id[2])
         self.cmbType.set_active(_attributes['type_id'])
@@ -521,322 +460,21 @@ class AssessmentInputs(gtk.Fixed):
         return _return
 
 
-class StressInputs(gtk.Fixed):
+class ResistorAssessmentResults(AssessmentResults):
     """
-    Display Resistor stress input attribute data in the RTK Work Book.
+    Display Resistor assessment results attribute data in the RTK Work Book.
 
-    The Resistor stress input view displays all the assessment inputs for
-    the selected resistor.  This includes, currently, stress inputs for
-    MIL-HDBK-217FN2.  The attributes of a resistor stress input view are:
-
-    :cvar list _lst_labels: the text to use for the assessment input widget
-                            labels.
-
-    :ivar list _lst_handler_id: the list of signal handler IDs for each of the
-                                input widgets.
-
-    :ivar _dtc_data_controller: the Hardware BoM data controller instance.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the resistor
-                               currently being displayed.
-
-    :ivar txtTemperatureRatedMin: enter and display the minimum rated
-                                  temperature of the resistor.
-    :ivar txtTemperatureKnee: enter and display the temperature above which
-                              the resistor must be derated.
-    :ivar txtTemperatureRatedMax: enter and display the maximum rated
-                                  temperature of the resistor.
-    :ivar txtPowerRated: enter and display the rated power of the resistor.
-    :ivar txtPowerOperating; enter and display the operating power of the
-                             resistor.
-    :ivar txtVoltageRated: enter and display the rated voltage of the
-                           resistor.
-    :ivar txtVoltageOperating: enter and display the operating voltage of the
-                               resistor.
-
-    Callbacks signals in _lst_handler_id:
-
-    +----------+-------------------------------------------+
-    | Position | Widget - Signal                           |
-    +==========+===========================================+
-    |     0    | txtTemperatureRatedMin - `changed`        |
-    +----------+-------------------------------------------+
-    |     1    | txtTemperatureKnee - `changed`            |
-    +----------+-------------------------------------------+
-    |     2    | txtTemperatureRatedMax - `changed`        |
-    +----------+-------------------------------------------+
-    |     3    | txtPowerRated - `changed`                 |
-    +----------+-------------------------------------------+
-    |     4    | txtPowerOperating - `changed`             |
-    +----------+-------------------------------------------+
-    |     5    | txtVoltageRated - `changed`               |
-    +----------+-------------------------------------------+
-    |     6    | txtVoltageOperating - `changed`           |
-    +----------+-------------------------------------------+
-    """
-
-    # Define private list attributes.
-    _lst_labels = [
-        _(u"Minimum Rated Temperature (\u00B0C):"),
-        _(u"Knee Temperature (\u00B0C):"),
-        _(u"Maximum Rated Temperature (\u00B0C):"),
-        _(u"Rated Power (W):"),
-        _(u"Operating Power (W):"),
-        _(u"Rated Voltage (V):"),
-        _(u"Operating Voltage (V):")
-    ]
-
-    def __init__(self, controller, hardware_id, subcategory_id):
-        """
-        Initialize an instance of the Resistor stress input view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                resistor.
-        :param int subcategory_id: the ID of the resistor subcategory.
-        """
-        gtk.Fixed.__init__(self)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_handler_id = []
-
-        # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.txtTemperatureRatedMin = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The minimum rated temperature (in \u00B0C) of the resistor.")
-        )
-        self.txtTemperatureKnee = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The break temperature (in \u00B0C) of the resistor beyond "
-                u"which it must be derated."))
-        self.txtTemperatureRatedMax = rtk.RTKEntry(
-            width=125,
-            tooltip=_(
-                u"The maximum rated temperature (in \u00B0C) of the resistor.")
-        )
-        self.txtPowerRated = rtk.RTKEntry(
-            width=125, tooltip=_(u"The rated power (in W) of the resistor."))
-        self.txtPowerOperating = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operating power (in W) of the resistor."))
-        self.txtVoltageRated = rtk.RTKEntry(
-            width=125, tooltip=_(u"The rated voltage (in V) of the resistor."))
-        self.txtVoltageOperating = rtk.RTKEntry(
-            width=125,
-            tooltip=_(u"The operating voltage (in V) of the resistor."))
-
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMin.connect('changed', self._on_focus_out,
-                                                0))
-        self._lst_handler_id.append(
-            self.txtTemperatureKnee.connect('changed', self._on_focus_out, 1))
-        self._lst_handler_id.append(
-            self.txtTemperatureRatedMax.connect('changed', self._on_focus_out,
-                                                2))
-        self._lst_handler_id.append(
-            self.txtPowerRated.connect('changed', self._on_focus_out, 3))
-        self._lst_handler_id.append(
-            self.txtPowerOperating.connect('changed', self._on_focus_out, 4))
-        self._lst_handler_id.append(
-            self.txtVoltageRated.connect('changed', self._on_focus_out, 5))
-        self._lst_handler_id.append(
-            self.txtVoltageOperating.connect('changed', self._on_focus_out, 6))
-
-        self._make_stress_input_page()
-        self.show_all()
-
-    def _make_stress_input_page(self):
-        """
-        Make the resistor module stress input container.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        # Build the container for resistors.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 5)
-        _x_pos += 50
-
-        self.put(self.txtTemperatureRatedMin, _x_pos, _y_pos[0])
-        self.put(self.txtTemperatureKnee, _x_pos, _y_pos[1])
-        self.put(self.txtTemperatureRatedMax, _x_pos, _y_pos[2])
-        self.put(self.txtPowerRated, _x_pos, _y_pos[3])
-        self.put(self.txtPowerOperating, _x_pos, _y_pos[4])
-        self.put(self.txtVoltageRated, _x_pos, _y_pos[5])
-        self.put(self.txtVoltageOperating, _x_pos, _y_pos[6])
-
-        self.show_all()
-
-        return None
-
-    def _on_focus_out(self, entry, index):
-        """
-        Retrieve changes made in RTKEntry() widgets..
-
-        This method is called by:
-
-            * RTKEntry() 'changed' signal
-            * RTKTextView() 'changed' signal
-
-        :param entry: the RTKEntry() or RTKTextView() that called the method.
-        :type entry: :class:`rtk.gui.gtk.rtk.RTKEntry` or
-                     :class:`rtk.gui.gtk.rtk.RTKTextView`
-        :param int index: the position in the Hardware class gtk.TreeModel()
-                          associated with the data from the calling
-                          gtk.Widget().  Indices are:
-
-            +-------+------------------------+-------+---------------------+
-            | Index | Widget                 | Index | Widget              |
-            +=======+========================+=======+=====================+
-            |   0   | txtTemperatureRatedMin |   4   | txtPowerOperating   |
-            +-------+------------------------+-------+---------------------+
-            |   1   | txtTemperatureKnee     |   5   | txtVoltageRated     |
-            +-------+------------------------+-------+---------------------+
-            |   2   | txtTemperatureRatedMax |   6   | txtVoltageOperating |
-            +-------+------------------------+-------+---------------------+
-            |   3   | txtPowerRated          |       |                     |
-            +-------+------------------------+-------+---------------------+
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-        _text = ''
-
-        entry.handler_block(self._lst_handler_id[index])
-
-        if self._dtc_data_controller is not None:
-            _attributes = self._dtc_data_controller.request_get_attributes(
-                self._hardware_id)
-
-            try:
-                _text = float(entry.get_text())
-            except ValueError:
-                _text = 0.0
-
-            if index == 0:
-                _attributes['temperature_rated_min'] = _text
-            elif index == 1:
-                _attributes['temperature_knee'] = _text
-            elif index == 2:
-                _attributes['temperature_rated_max'] = _text
-            elif index == 3:
-                _attributes['power_rated'] = _text
-            elif index == 4:
-                _attributes['power_operating'] = _text
-            elif index == 5:
-                _attributes['voltage_rated'] = _text
-            elif index == 6:
-                _attributes['voltage_dc_operating'] = _text
-
-            self._dtc_data_controller.request_set_attributes(
-                self._hardware_id, _attributes)
-
-        entry.handler_unblock(self._lst_handler_id[index])
-
-        return _return
-
-    def on_select(self, module_id=None):
-        """
-        Load the resistor stress input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              resistor.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._hardware_id = module_id
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        # We don't block the callback signal otherwise the style RTKComboBox()
-        # will not be loaded and set.
-        self.txtTemperatureRatedMin.handler_block(self._lst_handler_id[0])
-        self.txtTemperatureRatedMin.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_min'])))
-        self.txtTemperatureRatedMin.handler_unblock(self._lst_handler_id[0])
-
-        self.txtTemperatureKnee.handler_block(self._lst_handler_id[1])
-        self.txtTemperatureKnee.set_text(
-            str(self.fmt.format(_attributes['temperature_knee'])))
-        self.txtTemperatureKnee.handler_unblock(self._lst_handler_id[1])
-
-        self.txtTemperatureRatedMax.handler_block(self._lst_handler_id[2])
-        self.txtTemperatureRatedMax.set_text(
-            str(self.fmt.format(_attributes['temperature_rated_max'])))
-        self.txtTemperatureRatedMax.handler_unblock(self._lst_handler_id[2])
-
-        self.txtPowerRated.handler_block(self._lst_handler_id[3])
-        self.txtPowerRated.set_text(
-            str(self.fmt.format(_attributes['power_rated'])))
-        self.txtPowerRated.handler_unblock(self._lst_handler_id[3])
-
-        self.txtPowerOperating.handler_block(self._lst_handler_id[4])
-        self.txtPowerOperating.set_text(
-            str(self.fmt.format(_attributes['power_operating'])))
-        self.txtPowerOperating.handler_unblock(self._lst_handler_id[4])
-
-        self.txtVoltageRated.handler_block(self._lst_handler_id[5])
-        self.txtVoltageRated.set_text(
-            str(self.fmt.format(_attributes['voltage_rated'])))
-        self.txtVoltageRated.handler_unblock(self._lst_handler_id[5])
-
-        self.txtVoltageOperating.handler_block(self._lst_handler_id[6])
-        self.txtVoltageOperating.set_text(
-            str(self.fmt.format(_attributes['voltage_dc_operating'])))
-        self.txtVoltageOperating.handler_unblock(self._lst_handler_id[6])
-
-        return _return
-
-
-class AssessmentResults(gtk.Fixed):
-    """
-    Display resistor assessment results attribute data in the RTK Work Book.
-
-    The resistor assessment result view displays all the assessment results
+    The Resistor assessment result view displays all the assessment results
     for the selected resistor.  This includes, currently, results for
     MIL-HDBK-217FN2 parts count and MIL-HDBK-217FN2 part stress methods.  The
-    attributes of a resistor assessment result view are:
+    attributes of a Resistor assessment result view are:
 
-    :cvar list _lst_labels: the text to use for the assessment results widget
-                            labels.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the resistor
-                               currently being displayed.
-    :ivar _lblModel: the :class:`rtk.gui.gtk.rtk.Label.RTKLabel` to display
-                     the failure rate mathematical model used.
-
-    :ivar txtLambdaB: displays the base hazard rate of the resistor.
     :ivar txtPiR: displays the resistance factor for the resistor.
     :ivar txtPiT: displays the temperature factor for the resistor.
     :ivar txtPiNR: displays the number of resistors factor for the resistor.
     :ivar txtPiTAPS: displays the potentiometer taps factor for the resistor.
     :ivar txtPiV: displays the voltage factor for the resistor.
     :ivar txtPiC: displays the construction class factor for the resistor.
-    :ivar txtPiQ: displays the quality factor for the resistor.
-    :ivar txtPiE: displays the environment factor for the resistor.
     """
 
     # Define private dict attributes.
@@ -873,14 +511,6 @@ class AssessmentResults(gtk.Fixed):
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>TAPS</sub>\u03C0<sub>R</sub>\u03C0<sub>V</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>"
     }
 
-    # Define private list attributes.
-    _lst_labels = [
-        u"\u03BB<sub>b</sub>:", u"\u03C0<sub>R</sub>:", u"\u03C0<sub>T</sub>:",
-        u"\u03C0<sub>NR</sub>:", u"\u03C0<sub>TAPS</sub>",
-        u"\u03C0<sub>V</sub>", u"\u03C0<sub>C</sub>", u"\u03C0<sub>Q</sub>:",
-        u"\u03C0<sub>E</sub>:"
-    ]
-
     def __init__(self, controller, hardware_id, subcategory_id):
         """
         Initialize an instance of the Resistor assessment result view.
@@ -891,20 +521,20 @@ class AssessmentResults(gtk.Fixed):
                                 resistor.
         :param int subcategory_id: the ID of the resistor subcategory.
         """
-        gtk.Fixed.__init__(self)
+        AssessmentResults.__init__(self, controller, hardware_id, subcategory_id)
 
         # Initialize private dictionary attributes.
 
         # Initialize private list attributes.
+        self._lst_labels.append(u"\u03C0<sub>R</sub>:")
+        self._lst_labels.append(u"\u03C0<sub>T</sub>:")
+        self._lst_labels.append(u"\u03C0<sub>NR</sub>:")
+        self._lst_labels.append(u"\u03C0<sub>TAPS</sub>")
+        self._lst_labels.append(u"\u03C0<sub>V</sub>:")
+        self._lst_labels.append(u"\u03C0<sub>C</sub>:")
 
         # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        self._lblModel = rtk.RTKLabel(
-            '',
-            tooltip=_(u"The assessment model used to calculate the resistor "
+        self._lblModel.set_tooltip_markup(_(u"The assessment model used to calculate the resistor "
                       u"failure rate."))
 
         # Initialize public dictionary attributes.
@@ -912,13 +542,6 @@ class AssessmentResults(gtk.Fixed):
         # Initialize public list attributes.
 
         # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.txtLambdaB = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The base hazard rate of the resistor."))
         self.txtPiR = rtk.RTKEntry(
             width=125,
             editable=False,
@@ -949,16 +572,6 @@ class AssessmentResults(gtk.Fixed):
             editable=False,
             bold=True,
             tooltip=_(u"The construction class factor for the resistor."))
-        self.txtPiQ = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The quality factor for the resistor."))
-        self.txtPiE = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The environment factor for the resistor."))
 
         self._make_assessment_results_page()
         self.show_all()
@@ -974,10 +587,7 @@ class AssessmentResults(gtk.Fixed):
         """
         _return = False
 
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtLambdaB.set_text(str(self.fmt.format(_attributes['lambda_b'])))
+        _attributes = AssessmentResults.do_load_page(self)
 
         self.txtPiR.set_text(str(self.fmt.format(_attributes['piR'])))
         self.txtPiT.set_text(str(self.fmt.format(_attributes['piT'])))
@@ -985,8 +595,6 @@ class AssessmentResults(gtk.Fixed):
         self.txtPiTAPS.set_text(str(self.fmt.format(_attributes['piTAPS'])))
         self.txtPiV.set_text(str(self.fmt.format(_attributes['piV'])))
         self.txtPiC.set_text(str(self.fmt.format(_attributes['piC'])))
-        self.txtPiQ.set_text(str(self.fmt.format(_attributes['piQ'])))
-        self.txtPiE.set_text(str(self.fmt.format(_attributes['piE'])))
 
         return _return
 
@@ -997,19 +605,16 @@ class AssessmentResults(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _return = False
-
+        _return = AssessmentResults.do_set_sensitive(self)
         _attributes = self._dtc_data_controller.request_get_attributes(
             self._hardware_id)
 
-        self.txtPiQ.set_sensitive(True)
         self.txtPiR.set_sensitive(False)
         self.txtPiT.set_sensitive(False)
         self.txtPiNR.set_sensitive(False)
         self.txtPiTAPS.set_sensitive(False)
         self.txtPiV.set_sensitive(False)
         self.txtPiC.set_sensitive(False)
-        self.txtPiE.set_sensitive(False)
 
         if _attributes['hazard_rate_method_id'] == 2:
             self.txtPiE.set_sensitive(True)
@@ -1033,40 +638,17 @@ class AssessmentResults(gtk.Fixed):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        if _attributes['hazard_rate_method_id'] == 1:
-            self._lblModel.set_markup(
-                u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
-                u"\u03BB<sub>g</sub>\u03C0<sub>Q</sub></span>")
-            self._lst_labels[0] = u"\u03BB<sub>g</sub>:"
-        else:
-            try:
-                self._lblModel.set_markup(
-                    self._dic_part_stress[self._subcategory_id])
-            except KeyError:
-                self._lblModel.set_markup(_(u"Missing Model"))
-            self._lst_labels[0] = u"\u03BB<sub>b</sub>:"
-
         self._do_set_sensitive()
 
-        # Build the container for resistors.
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, self, 5, 35)
-        _x_pos += 50
+        # Build the container for capacitors.
+        _x_pos, _y_pos = AssessmentResults.make_assessment_results_page(self)
 
-        self.put(self._lblModel, _x_pos, 5)
-        self.put(self.txtLambdaB, _x_pos, _y_pos[0])
-        self.put(self.txtPiR, _x_pos, _y_pos[1])
-        self.put(self.txtPiT, _x_pos, _y_pos[2])
-        self.put(self.txtPiNR, _x_pos, _y_pos[3])
-        self.put(self.txtPiTAPS, _x_pos, _y_pos[4])
-        self.put(self.txtPiV, _x_pos, _y_pos[5])
-        self.put(self.txtPiC, _x_pos, _y_pos[6])
-        self.put(self.txtPiQ, _x_pos, _y_pos[7])
-        self.put(self.txtPiE, _x_pos, _y_pos[8])
-
-        self.show_all()
+        self.put(self.txtPiR, _x_pos, _y_pos[3])
+        self.put(self.txtPiT, _x_pos, _y_pos[4])
+        self.put(self.txtPiNR, _x_pos, _y_pos[5])
+        self.put(self.txtPiTAPS, _x_pos, _y_pos[6])
+        self.put(self.txtPiV, _x_pos, _y_pos[7])
+        self.put(self.txtPiC, _x_pos, _y_pos[8])
 
         return None
 
@@ -1084,222 +666,6 @@ class AssessmentResults(gtk.Fixed):
         self._hardware_id = module_id
 
         self._do_set_sensitive()
-        self._do_load_page()
-
-        return _return
-
-
-class StressResults(gtk.HPaned):
-    """
-    Display resistor stress results attribute data in the RTK Work Book.
-
-    The resistor stress result view displays all the stress results for the
-    selected resistor.  This includes, currently, results for MIL-HDBK-217FN2
-    parts count and MIL-HDBK-217FN2 part stress methods.  The attributes of a
-    resistor stress result view are:
-
-    :cvar list _lst_labels: the text to use for the sress results widget
-                            labels.
-
-    :ivar int _hardware_id: the ID of the Hardware item currently being
-                            displayed.
-    :ivar int _subcategory_id: the ID of the subcategory for the resistor
-                               currently being displayed.
-
-    :ivar chkOverstress: indicates whether or not the resistor is overstresed.
-    :ivar txtPowerRatio: display the power ratio of the resistor.
-    :ivar txtReason: display the reason(s) a resistor is overstressed.
-    """
-
-    # Define private list attributes.
-    _lst_labels = [_(u"Voltage Ratio:"), "", _(u"Overstress Reason:")]
-
-    def __init__(self, controller, hardware_id, subcategory_id):
-        """
-        Initialize an instance of the Resistor assessment result view.
-
-        :param controller: the hardware data controller instance.
-        :type controller: :class:`rtk.hardware.Controller.HardwareBoMDataController`
-        :param int hardware_id: the hardware ID of the currently selected
-                                resistor.
-        :param int subcategory_id: the ID of the resistor subcategory.
-        """
-        gtk.HPaned.__init__(self)
-
-        # Initialize private dictionary attributes.
-
-        # Initialize private list attributes.
-        self._lst_derate_criteria = [[0.6, 0.6, 0.0], [0.9, 0.9, 0.0]]
-
-        # Initialize private scalar attributes.
-        self._dtc_data_controller = controller
-        self._hardware_id = hardware_id
-        self._subcategory_id = subcategory_id
-
-        # Initialize public dictionary attributes.
-
-        # Initialize public list attributes.
-
-        # Initialize public scalar attributes.
-        self.fmt = None
-
-        self.pltDerate = rtk.RTKPlot()
-
-        self.chkOverstress = rtk.RTKCheckButton(
-            label=_(u"Overstressed"),
-            tooltip=_(u"Indicates whether or not the selected resistor "
-                      u"is overstressed."))
-        self.txtReason = rtk.RTKTextView(
-            gtk.TextBuffer(),
-            width=250,
-            tooltip=_(u"The reason(s) the selected hardware item is "
-                      u"overstressed."))
-        self.txtPowerRatio = rtk.RTKEntry(
-            width=125,
-            editable=False,
-            bold=True,
-            tooltip=_(u"The ratio of operating power to rated power for "
-                      u"the resistor."))
-
-        self.chkOverstress.set_sensitive(False)
-        self.txtReason.set_editable(False)
-        _bg_color = gtk.gdk.Color('#ADD8E6')
-        self.txtReason.modify_base(gtk.STATE_NORMAL, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_ACTIVE, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_PRELIGHT, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_SELECTED, _bg_color)
-        self.txtReason.modify_base(gtk.STATE_INSENSITIVE, _bg_color)
-
-        self._make_stress_results_page()
-        self.show_all()
-
-        pub.subscribe(self._do_load_page, 'calculatedHardware')
-
-    def _do_load_derating_curve(self):
-        """
-        Load the benign and harsh environment derating curves.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        # Plot the derating curve.
-        _x = [
-            float(_attributes['temperature_rated_min']),
-            float(_attributes['temperature_knee']),
-            float(_attributes['temperature_rated_max'])
-        ]
-
-        self.pltDerate.axis.cla()
-        self.pltDerate.axis.grid(True, which='both')
-
-        self.pltDerate.do_load_plot(
-            x_values=_x,
-            y_values=self._lst_derate_criteria[0],
-            plot_type='scatter',
-            marker='r.-')
-
-        self.pltDerate.do_load_plot(
-            x_values=_x,
-            y_values=self._lst_derate_criteria[1],
-            plot_type='scatter',
-            marker='b.-')
-
-        self.pltDerate.do_load_plot(
-            x_values=[_attributes['temperature_active']],
-            y_values=[_attributes['power_ratio']],
-            plot_type='scatter',
-            marker='go')
-
-        self.pltDerate.do_make_title(
-            _(u"Voltage Derating Curve for {0:s} at {1:s}").format(
-                _attributes['part_number'], _attributes['ref_des']),
-            fontsize=12)
-        self.pltDerate.do_make_legend([
-            _(u"Harsh Environment"),
-            _(u"Mild Environment"),
-            _(u"Power Operating Point")
-        ])
-
-        self.pltDerate.do_make_labels(
-            _(u"Temperature (\u2070C)"), 0, -0.2, fontsize=10)
-        self.pltDerate.do_make_labels(
-            _(u"Power Ratio"), -1, 0, set_x=False, fontsize=10)
-
-        self.pltDerate.figure.canvas.draw()
-
-        return _return
-
-    def _do_load_page(self):
-        """
-        Load the resistor assessment results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
-
-        self.txtPowerRatio.set_text(
-            str(self.fmt.format(_attributes['power_ratio'])))
-        self.chkOverstress.set_active(_attributes['overstress'])
-        _textbuffer = self.txtReason.do_get_buffer()
-        _textbuffer.set_text(_attributes['reason'])
-
-        self._do_load_derating_curve()
-
-        return _return
-
-    def _make_stress_results_page(self):
-        """
-        Make the resistor gtk.Notebook() assessment results page.
-
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        # Create the left side.
-        _fixed = gtk.Fixed()
-        self.pack1(_fixed, True, True)
-
-        _x_pos, _y_pos = rtk.make_label_group(self._lst_labels, _fixed, 5, 35)
-        _x_pos += 50
-
-        _fixed.put(self.txtPowerRatio, _x_pos, _y_pos[0])
-        _fixed.put(self.chkOverstress, _x_pos, _y_pos[1])
-        _fixed.put(self.txtReason.scrollwindow, _x_pos, _y_pos[2])
-
-        _fixed.show_all()
-
-        # Create the derating plot.
-        _frame = rtk.RTKFrame(label=_(u"Derating Curve and Operating Point"))
-        _frame.add(self.pltDerate.plot)
-        _frame.show_all()
-
-        self.pack2(_frame, True, True)
-
-        return _return
-
-    def on_select(self, module_id=None):
-        """
-        Load the resistor assessment input work view widgets.
-
-        :param int module_id: the Hardware ID of the selected/edited
-                              resistor.
-        :return: False if successful or True if an error is encountered.
-        :rtype: bool
-        """
-        _return = False
-
-        self._hardware_id = module_id
-
         self._do_load_page()
 
         return _return

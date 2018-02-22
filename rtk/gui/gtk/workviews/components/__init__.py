@@ -12,8 +12,8 @@ from .Miscellaneous import MiscAssessmentInputs as wvwMiscellaneousAI
 from .Miscellaneous import MiscAssessmentResults as wvwMiscellaneousAR
 from .Relay import RelayAssessmentInputs as wvwRelayAI
 from .Relay import RelayAssessmentResults as wvwRelayAR
-from .Resistor import AssessmentInputs as wvwResistorAI
-from .Resistor import AssessmentResults as wvwResistorAR
+from .Resistor import ResistorAssessmentInputs as wvwResistorAI
+from .Resistor import ResistorAssessmentResults as wvwResistorAR
 from .Semiconductor import AssessmentInputs as wvwSemiconductorAI
 from .Semiconductor import AssessmentResults as wvwSemiconductorAR
 from .Switch import AssessmentInputs as wvwSwitchAI
