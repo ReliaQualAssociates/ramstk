@@ -123,8 +123,6 @@ class MeterAssessmentInputs(AssessmentInputs):
         _attributes = AssessmentInputs.do_load_comboboxes(self, subcategory_id)
 
         # Load the quality level RTKComboBox().
-        _attributes = self._dtc_data_controller.request_get_attributes(
-            self._hardware_id)
         if _attributes['hazard_rate_method_id'] == 1:
             _data = [["MIL-SPEC"], [_(u"Lower")]]
         else:
@@ -249,6 +247,8 @@ class MeterAssessmentInputs(AssessmentInputs):
         self.cmbType.handler_block(self._lst_handler_id[2])
         self.cmbType.set_active(_attributes['type_id'])
         self.cmbType.handler_unblock(self._lst_handler_id[2])
+
+        self._do_set_sensitive()
 
         return _return
 
