@@ -95,11 +95,11 @@ def do_calculate_217f_part_count(**attributes):
     elif attributes['category_id'] == 10:
         if attributes['subcategory_id'] == 1:
             attributes, __ = Crystal.calculate_217f_part_count(**attributes)
-        elif attributes['subcategory_id'] == 2:
+        elif attributes['subcategory_id'] == 4:
             attributes, __ = Lamp.calculate_217f_part_count(**attributes)
         elif attributes['subcategory_id'] == 3:
             attributes, __ = Fuse.calculate_217f_part_count(**attributes)
-        elif attributes['subcategory_id'] == 4:
+        elif attributes['subcategory_id'] == 2:
             attributes, __ = Filter.calculate_217f_part_count(**attributes)
 
     return attributes, _msg
@@ -142,11 +142,11 @@ def do_calculate_217f_part_stress(**attributes):
     elif attributes['category_id'] == 10:
         if attributes['subcategory_id'] == 1:
             attributes, _msg = Crystal.calculate_217f_part_stress(**attributes)
-        elif attributes['subcategory_id'] == 2:
+        elif attributes['subcategory_id'] == 4:
             attributes, _msg = Lamp.calculate_217f_part_stress(**attributes)
         elif attributes['subcategory_id'] == 3:
             attributes, _msg = Fuse.calculate_217f_part_stress(**attributes)
-        elif attributes['subcategory_id'] == 4:
+        elif attributes['subcategory_id'] == 2:
             attributes, _msg = Filter.calculate_217f_part_stress(**attributes)
 
     return attributes, _msg

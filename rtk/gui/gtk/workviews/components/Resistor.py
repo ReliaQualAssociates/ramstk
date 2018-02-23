@@ -136,7 +136,7 @@ class ResistorAssessmentInputs(AssessmentInputs):
                                 resistor.
         :param int subcategory_id: the ID of the resistor subcategory.
         """
-        gtk.Fixed.__init__(self)
+        AssessmentInputs.__init__(self, controller, hardware_id, subcategory_id)
 
         # Initialize private dictionary attributes.
 

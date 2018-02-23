@@ -158,21 +158,21 @@ class MiscAssessmentInputs(AssessmentInputs):
         self.txtFrequency.set_sensitive(False)
         self.txtUtilization.set_sensitive(False)
 
-        if self._subcategory_id == 2:
+        if self._subcategory_id == 4:  # Lamp
             self.cmbApplication.set_sensitive(True)
-        elif self._subcategory_id == 4:
+        elif self._subcategory_id == 2:  # Filter
             self.cmbType.set_sensitive(True)
 
         if _attributes['hazard_rate_method_id'] == 1:
-            if self._subcategory_id in [1, 4]:
+            if self._subcategory_id in [1, 2]:  # Crystal or filter
                 self.cmbQuality.set_sensitive(True)
         elif _attributes['hazard_rate_method_id'] == 2:
-            if self._subcategory_id == 1:
+            if self._subcategory_id == 1:  # Crystal
                 self.cmbQuality.set_sensitive(True)
                 self.txtFrequency.set_sensitive(True)
-            elif self._subcategory_id == 2:
+            elif self._subcategory_id == 4:  # Lamp
                 self.txtUtilization.set_sensitive(True)
-            elif self._subcategory_id == 4:
+            elif self._subcategory_id == 2:  # Filter
                 self.cmbQuality.set_sensitive(True)
 
         return _return
@@ -308,22 +308,22 @@ class MiscAssessmentInputs(AssessmentInputs):
 
         _attributes = AssessmentInputs.on_select(self, module_id)
 
-        if self._subcategory_id == 2:
+        if self._subcategory_id == 4:  # Lamp
             self.cmbApplication.handler_block(self._lst_handler_id[1])
             self.cmbApplication.set_active(_attributes['application_id'])
             self.cmbApplication.handler_unblock(self._lst_handler_id[1])
-        elif self._subcategory_id == 4:
+        elif self._subcategory_id == 2:  # Filter
             self.cmbType.handler_block(self._lst_handler_id[2])
             self.cmbType.set_active(_attributes['type_id'])
             self.cmbType.handler_unblock(self._lst_handler_id[2])
 
         if _attributes['hazard_rate_method_id'] == 2:
-            if self._subcategory_id == 1:
+            if self._subcategory_id == 1:  # Crystal
                 self.txtFrequency.handler_block(self._lst_handler_id[3])
                 self.txtFrequency.set_text(
                     str(self.fmt.format(_attributes['frequency_operating'])))
                 self.txtFrequency.handler_unblock(self._lst_handler_id[3])
-            elif self._subcategory_id == 2:
+            elif self._subcategory_id == 4:  # Lamp
                 self.txtUtilization.handler_block(self._lst_handler_id[4])
                 self.txtUtilization.set_text(
                     str(self.fmt.format(_attributes['duty_cycle'])))
@@ -419,6 +419,12 @@ class MiscAssessmentResults(AssessmentResults):
         self.txtPiU.set_text(str(self.fmt.format(_attributes['piU'])))
         self.txtPiA.set_text(str(self.fmt.format(_attributes['piA'])))
 
+        if (_attributes['hazard_rate_method_id'] == 1
+                and _attributes['subcategory_id'] in [3, 4]):
+            self._lblModel.set_markup(
+                u"<span foreground=\"blue\">\u03BB<sub>EQUIP</sub> = "
+                u"\u03BB<sub>g</sub></span>")
+
         return _return
 
     def _do_set_sensitive(self):
@@ -438,13 +444,13 @@ class MiscAssessmentResults(AssessmentResults):
         self.txtPiE.set_sensitive(True)
 
         if _attributes['hazard_rate_method_id'] == 1:
-            if self._subcategory_id in [1, 4]:
+            if self._subcategory_id in [1, 2]:
                 self.txtPiQ.set_sensitive(True)
             self.txtPiE.set_sensitive(False)
         elif _attributes['hazard_rate_method_id'] == 2:
-            if self._subcategory_id in [1, 4]:
+            if self._subcategory_id in [1, 2]:
                 self.txtPiQ.set_sensitive(True)
-            elif self._subcategory_id == 2:
+            elif self._subcategory_id == 4:
                 self.txtPiU.set_sensitive(True)
                 self.txtPiA.set_sensitive(True)
 

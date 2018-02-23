@@ -1,6 +1,0 @@
-revision _revision/TestPackage.py
-function _function/TestPackage.py
-analyses.fmea _fmea/TestPackage.py
-requirement _requirement/TestPackage.py
-validation _validation/TestPackage.py
-hardware _hardware/TestPackage.py

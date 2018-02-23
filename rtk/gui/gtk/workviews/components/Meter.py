@@ -56,13 +56,13 @@ class MeterAssessmentInputs(AssessmentInputs):
     # Define private dict attributes.
     # Quality levels; key is the subcategory ID.
     _dic_quality = {
-        1: [["MIL-SPEC"], [_(u"Lower")]],
         2: [["MIL-SPEC"], [_(u"Lower")]],
+        1: [["MIL-SPEC"], [_(u"Lower")]],
     }
     # Meter types; key is the subcategory ID.
     _dic_types = {
-        1: [[_(u"Direct Current")], [_(u"Alternating Current")]],
-        2: [[_(u"AC")], [_(u"Inverter Driver")], [_(u"Commutator DC")]]
+        1: [[_(u"AC")], [_(u"Inverter Driver")], [_(u"Commutator DC")]],
+        2: [[_(u"Direct Current")], [_(u"Alternating Current")]]
     }
 
     def __init__(self, controller, hardware_id, subcategory_id):
@@ -161,7 +161,7 @@ class MeterAssessmentInputs(AssessmentInputs):
         self.cmbApplication.set_sensitive(False)
 
         if (_attributes['hazard_rate_method_id'] == 2
-                and _attributes['subcategory_id'] == 1):
+                and _attributes['subcategory_id'] == 2):
             self.cmbApplication.set_sensitive(True)
 
         return _return
@@ -270,9 +270,9 @@ class MeterAssessmentResults(AssessmentResults):
 
     # Define private dict attributes.
     _dic_part_stress = {
-        1:
-        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
         2:
+        u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>A</sub>\u03C0<sub>F</sub>\u03C0<sub>Q</sub>\u03C0<sub>E</sub></span>",
+        1:
         u"<span foreground=\"blue\">\u03BB<sub>p</sub> = \u03BB<sub>b</sub>\u03C0<sub>T</sub>\u03C0<sub>E</sub></span>"
     }
 
@@ -361,10 +361,10 @@ class MeterAssessmentResults(AssessmentResults):
 
         if _attributes['hazard_rate_method_id'] == 2:
             self.txtPiE.set_sensitive(True)
-            if self._subcategory_id == 1:
+            if self._subcategory_id == 2:
                 self.txtPiA.set_sensitive(True)
                 self.txtPiF.set_sensitive(True)
-            elif self._subcategory_id == 2:
+            elif self._subcategory_id == 1:
                 self.txtPiT.set_sensitive(True)
                 self.txtPiQ.set_sensitive(False)
 

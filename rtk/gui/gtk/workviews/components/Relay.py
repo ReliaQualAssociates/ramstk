@@ -257,21 +257,6 @@ class RelayAssessmentInputs(AssessmentInputs):
         # Load the contact rating RTKComboBox().
         self.cmbContactRating.do_load_combo(self._lst_contact_rating)
 
-        # Load the application RTKComboBox().
-        try:
-            _data = self._dic_application[_attributes['contact_rating_id']]
-        except KeyError:
-            _data = []
-        self.cmbApplication.do_load_combo(_data)
-
-        # Load the construction RTKComboBox().
-        try:
-            _data = self._dic_construction[_attributes['contact_rating_id']][
-                _attributes['application_id']]
-        except KeyError:
-            _data = []
-        self.cmbConstruction.do_load_combo(_data)
-
         return _return
 
     def _do_set_sensitive(self):
@@ -369,13 +354,22 @@ class RelayAssessmentInputs(AssessmentInputs):
                 _attributes['contact_form_id'] = int(combo.get_active())
             elif index == 4:
                 _attributes['contact_rating_id'] = int(combo.get_active())
-                self._do_load_application_combo(
-                    _attributes['contact_rating_id'])
+                # Load the application RTKComboBox().
+                try:
+                    _data = self._dic_application[_attributes[
+                        'contact_rating_id']]
+                except KeyError:
+                    _data = []
+                self.cmbApplication.do_load_combo(_data)
             elif index == 5:
                 _attributes['application_id'] = int(combo.get_active())
-                self._do_load_construction_combo(
-                    _attributes['contact_rating_id'],
-                    _attributes['application_id'])
+                # Load the construction RTKComboBox().
+                try:
+                    _data = self._dic_construction[_attributes[
+                        'contact_rating_id']][_attributes['application_id']]
+                except KeyError:
+                    _data = []
+                self.cmbConstruction.do_load_combo(_data)
             elif index == 6:
                 _attributes['construction_id'] = int(combo.get_active())
 
@@ -465,13 +459,23 @@ class RelayAssessmentInputs(AssessmentInputs):
 
             self.cmbContactRating.handler_block(self._lst_handler_id[4])
             self.cmbContactRating.set_active(_attributes['contact_rating_id'])
-            self._do_load_application_combo(_attributes['contact_rating_id'])
+            # Load the application RTKComboBox().
+            try:
+                _data = self._dic_application[_attributes['contact_rating_id']]
+            except KeyError:
+                _data = []
+            self.cmbApplication.do_load_combo(_data)
             self.cmbContactRating.handler_unblock(self._lst_handler_id[4])
 
             self.cmbApplication.handler_block(self._lst_handler_id[5])
             self.cmbApplication.set_active(_attributes['application_id'])
-            self._do_load_construction_combo(_attributes['contact_rating_id'],
-                                             _attributes['application_id'])
+            # Load the construction RTKComboBox().
+            try:
+                _data = self._dic_construction[_attributes[
+                    'contact_rating_id']][_attributes['application_id']]
+            except KeyError:
+                _data = []
+            self.cmbConstruction.do_load_combo(_data)
             self.cmbApplication.handler_unblock(self._lst_handler_id[5])
 
             self.cmbConstruction.handler_block(self._lst_handler_id[6])

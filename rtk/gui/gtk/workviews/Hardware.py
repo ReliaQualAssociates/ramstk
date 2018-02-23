@@ -774,15 +774,23 @@ class GeneralData(RTKWorkView):
         # Disable the category RTKCombo() if the hardware item is not a part.
         if _attributes['part'] == 1:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
+            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
 
             self.cmbCategory.set_active(_attributes['category_id'])
 
             self.cmbSubcategory.handler_block(self._lst_handler_id[5])
+            self._do_load_subcategory(_attributes['category_id'])
             self.cmbSubcategory.set_active(_attributes['subcategory_id'])
             self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
         else:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
+            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
+
+            # Clear the subcategory RTKComboBox() always so it is empty
+            # whenever an assembly is selected.
+            _model = self.cmbSubcategory.get_model()
+            _model.clear()
 
         self.chkRepairable.handler_block(self._lst_handler_id[0])
         self.chkRepairable.set_active(_attributes['repairable'])
