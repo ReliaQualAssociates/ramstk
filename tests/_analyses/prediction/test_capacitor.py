@@ -9,7 +9,7 @@
 
 import pytest
 
-from rtk.analyses.data import HARDWARE_ATTRIBUTES
+from rtk.analyses import data
 from rtk.analyses.prediction import Capacitor, Component
 
 __author__ = 'Andrew Rowland'
@@ -17,7 +17,7 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2014 Andrew "Weibullguy" Rowland'
 
-ATTRIBUTES = HARDWARE_ATTRIBUTES.copy()
+ATTRIBUTES = data.HARDWARE_ATTRIBUTES.copy()
 
 ATTRIBUTES['environment_dormant_id'] = 3
 ATTRIBUTES['add_adj_factor'] = 0.0

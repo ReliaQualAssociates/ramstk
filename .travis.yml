@@ -10,7 +10,7 @@ install:
 
 # Command to run tests.
 script:
-    - python setup.py test --addopts "-m unit"
+    - python setup.py test
 
 # If build is successful, run coveralls.
 after_success:
