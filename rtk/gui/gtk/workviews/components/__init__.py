@@ -16,5 +16,5 @@ from .Resistor import ResistorAssessmentInputs as wvwResistorAI
 from .Resistor import ResistorAssessmentResults as wvwResistorAR
 from .Semiconductor import SemiconductorAssessmentInputs as wvwSemiconductorAI
 from .Semiconductor import SemiconductorAssessmentResults as wvwSemiconductorAR
-from .Switch import AssessmentInputs as wvwSwitchAI
-from .Switch import AssessmentResults as wvwSwitchAR
+from .Switch import SwitchAssessmentInputs as wvwSwitchAI
+from .Switch import SwitchAssessmentResults as wvwSwitchAR
