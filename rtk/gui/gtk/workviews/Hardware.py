@@ -14,21 +14,20 @@ from pubsub import pub
 from sortedcontainers import SortedDict
 
 # Import other RTK modules.
+from rtk.Configuration import (
+    RTK_ACTIVE_ENVIRONMENTS, RTK_DORMANT_ENVIRONMENTS, RTK_HR_TYPES,
+    RTK_HR_MODELS, RTK_HR_DISTRIBUTIONS, RTK_COST_TYPES)
 from rtk.Utilities import boolean_to_integer
 from rtk.gui.gtk import rtk
 from rtk.gui.gtk.rtk.Widget import _, gtk
+from rtk.gui.gtk.workviews.components import Component
 from .WorkView import RTKWorkView
-from .components import wvwCapacitorAI, wvwCapacitorSI, wvwCapacitorAR, \
-    wvwCapacitorSR, wvwConnectionAI, wvwConnectionSI, wvwConnectionAR, \
-    wvwConnectionSR, wvwMiscellaneousAI, wvwMiscellaneousSI, \
-    wvwMiscellaneousAR, wvwMiscellaneousSR, wvwInductorAI, wvwInductorSI, \
-    wvwInductorAR, wvwInductorSR, wvwIntegratedCircuitAI, \
-    wvwIntegratedCircuitSI, wvwIntegratedCircuitAR, wvwIntegratedCircuitSR, \
-    wvwMeterAI, wvwMeterSI, wvwMeterAR, wvwMeterSR, wvwRelayAI, wvwRelaySI, \
-    wvwRelayAR, wvwRelaySR, wvwResistorAI, wvwResistorSI, wvwResistorAR, \
-    wvwResistorSR, wvwSemiconductorAI, wvwSemiconductorSI, \
-    wvwSemiconductorAR, wvwSemiconductorSR, wvwSwitchAI, wvwSwitchSI, \
-    wvwSwitchAR, wvwSwitchSR
+from .components import (
+    wvwCapacitorAI, wvwCapacitorAR, wvwConnectionAI, wvwConnectionAR,
+    wvwInductorAI, wvwInductorAR, wvwIntegratedCircuitAI,
+    wvwIntegratedCircuitAR, wvwMeterAI, wvwMeterAR, wvwMiscellaneousAI,
+    wvwMiscellaneousAR, wvwRelayAI, wvwRelayAR, wvwResistorAI, wvwResistorAR,
+    wvwSemiconductorAI, wvwSemiconductorAR, wvwSwitchAI, wvwSwitchAR)
 
 
 class GeneralData(RTKWorkView):
@@ -156,7 +155,7 @@ class GeneralData(RTKWorkView):
         _(u"Year Made:"),
         _(u"Quantity:"),
         _(u"Unit Cost:"),
-        _(u"Cost Calculation Method:")
+        _(u"Cost Method:")
     ], ["", _(u"Attachments:"), _(u"Remarks:")]]
 
     def __init__(self, controller):
@@ -423,25 +422,12 @@ class GeneralData(RTKWorkView):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        _model = self.cmbCategory.get_model()
-        _model.clear()
+        self.cmbCostType.do_load_combo(RTK_COST_TYPES)
 
         _data = []
         for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES:
             _data.append([self._mdcRTK.RTK_CONFIGURATION.RTK_CATEGORIES[_key]])
         self.cmbCategory.do_load_combo(_data)
-
-        _model = self.cmbCostType.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_COST_TYPE:
-            _data.append(
-                [self._mdcRTK.RTK_CONFIGURATION.RTK_COST_TYPE[_key][1]])
-        self.cmbCostType.do_load_combo(_data)
-
-        _model = self.cmbManufacturer.get_model()
-        _model.clear()
 
         _data = []
         for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_MANUFACTURERS:
@@ -788,15 +774,23 @@ class GeneralData(RTKWorkView):
         # Disable the category RTKCombo() if the hardware item is not a part.
         if _attributes['part'] == 1:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
+            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_ON)
 
             self.cmbCategory.set_active(_attributes['category_id'])
 
             self.cmbSubcategory.handler_block(self._lst_handler_id[5])
+            self._do_load_subcategory(_attributes['category_id'])
             self.cmbSubcategory.set_active(_attributes['subcategory_id'])
             self.cmbSubcategory.handler_unblock(self._lst_handler_id[5])
 
         else:
             self.cmbCategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
+            self.cmbSubcategory.set_button_sensitivity(gtk.SENSITIVITY_OFF)
+
+            # Clear the subcategory RTKComboBox() always so it is empty
+            # whenever an assembly is selected.
+            _model = self.cmbSubcategory.get_model()
+            _model.clear()
 
         self.chkRepairable.handler_block(self._lst_handler_id[0])
         self.chkRepairable.set_active(_attributes['repairable'])
@@ -1056,8 +1050,6 @@ class AssessmentInputs(RTKWorkView):
 
         # Initialize public scalar attributes.
         self.cmbActiveEnviron = rtk.RTKComboBox(
-            index=1,
-            simple=False,
             tooltip=_(u"The operating environment for the hardware item."))
         self.cmbDormantEnviron = rtk.RTKComboBox(
             tooltip=_(u"The storage environment for the hardware item."))
@@ -1280,54 +1272,11 @@ class AssessmentInputs(RTKWorkView):
         :rtype: bool
         """
         # Load the gtk.ComboBox() widgets.
-        _model = self.cmbActiveEnviron.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS:
-            _data.append([
-                self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[_key][
-                    0], self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[
-                        _key][1],
-                self._mdcRTK.RTK_CONFIGURATION.RTK_ACTIVE_ENVIRONMENTS[_key][3]
-            ])
-        self.cmbActiveEnviron.do_load_combo(_data, index=1, simple=False)
-
-        _model = self.cmbDormantEnviron.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_DORMANT_ENVIRONMENTS:
-            _data.append([
-                self._mdcRTK.RTK_CONFIGURATION.RTK_DORMANT_ENVIRONMENTS[_key][
-                    1]
-            ])
-        self.cmbDormantEnviron.do_load_combo(_data)
-
-        _model = self.cmbFailureDist.get_model()
-        _model.clear()
-
-        _data = [[_(u"1P Exponential")], [_(u"2P Exponential")],
-                 [_(u"Gaussian")], [_(u"Lognormal")], [_(u"2P Weibull")],
-                 [_(u"3P Weibull")]]
-        self.cmbFailureDist.do_load_combo(_data)
-
-        _model = self.cmbHRType.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_HR_TYPE:
-            _data.append([self._mdcRTK.RTK_CONFIGURATION.RTK_HR_TYPE[_key][1]])
-        self.cmbHRType.do_load_combo(_data)
-
-        _model = self.cmbHRMethod.get_model()
-        _model.clear()
-
-        _data = []
-        for _key in self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MODEL:
-            _data.append(
-                [self._mdcRTK.RTK_CONFIGURATION.RTK_HR_MODEL[_key][0]])
-        self.cmbHRMethod.do_load_combo(_data)
+        self.cmbActiveEnviron.do_load_combo(RTK_ACTIVE_ENVIRONMENTS)
+        self.cmbDormantEnviron.do_load_combo(RTK_DORMANT_ENVIRONMENTS)
+        self.cmbHRType.do_load_combo(RTK_HR_TYPES)
+        self.cmbHRMethod.do_load_combo(RTK_HR_MODELS)
+        self.cmbFailureDist.do_load_combo(RTK_HR_DISTRIBUTIONS)
 
         # Build the assessment input page starting with the top left half.
         _hbox = gtk.HBox()
@@ -1625,76 +1574,49 @@ class AssessmentInputs(RTKWorkView):
         for _child in self.scwOperatingStress.get_children():
             self.scwOperatingStress.remove(_child)
 
+        _component_si = Component.StressInputs(self._dtc_data_controller,
+                                               self._hardware_id,
+                                               _attributes['subcategory_id'])
         # Add the appropriate component-specific work view to the
         # gtk.ScrolledWindow()s.
         if _attributes['category_id'] == 1:
             _component_ai = wvwIntegratedCircuitAI(
                 self._dtc_data_controller, self._hardware_id,
                 _attributes['subcategory_id'])
-            _component_si = wvwIntegratedCircuitSI(
-                self._dtc_data_controller, self._hardware_id,
-                _attributes['subcategory_id'])
         elif _attributes['category_id'] == 2:
             _component_ai = wvwSemiconductorAI(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-            _component_si = wvwSemiconductorSI(self._dtc_data_controller,
                                                self._hardware_id,
                                                _attributes['subcategory_id'])
         elif _attributes['category_id'] == 3:
             _component_ai = wvwResistorAI(self._dtc_data_controller,
                                           self._hardware_id,
                                           _attributes['subcategory_id'])
-            _component_si = wvwResistorSI(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
         elif _attributes['category_id'] == 4:
             _component_ai = wvwCapacitorAI(self._dtc_data_controller,
-                                           self._hardware_id,
-                                           _attributes['subcategory_id'])
-            _component_si = wvwCapacitorSI(self._dtc_data_controller,
                                            self._hardware_id,
                                            _attributes['subcategory_id'])
         elif _attributes['category_id'] == 5:
             _component_ai = wvwInductorAI(self._dtc_data_controller,
                                           self._hardware_id,
                                           _attributes['subcategory_id'])
-            _component_si = wvwInductorSI(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
         elif _attributes['category_id'] == 6:
             _component_ai = wvwRelayAI(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
-            _component_si = wvwRelaySI(self._dtc_data_controller,
                                        self._hardware_id,
                                        _attributes['subcategory_id'])
         elif _attributes['category_id'] == 7:
             _component_ai = wvwSwitchAI(self._dtc_data_controller,
                                         self._hardware_id,
                                         _attributes['subcategory_id'])
-            _component_si = wvwSwitchSI(self._dtc_data_controller,
-                                        self._hardware_id,
-                                        _attributes['subcategory_id'])
         elif _attributes['category_id'] == 8:
             _component_ai = wvwConnectionAI(self._dtc_data_controller,
-                                            self._hardware_id,
-                                            _attributes['subcategory_id'])
-            _component_si = wvwConnectionSI(self._dtc_data_controller,
                                             self._hardware_id,
                                             _attributes['subcategory_id'])
         elif _attributes['category_id'] == 9:
             _component_ai = wvwMeterAI(self._dtc_data_controller,
                                        self._hardware_id,
                                        _attributes['subcategory_id'])
-            _component_si = wvwMeterSI(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
         elif _attributes['category_id'] == 10:
             _component_ai = wvwMiscellaneousAI(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-            _component_si = wvwMiscellaneousSI(self._dtc_data_controller,
                                                self._hardware_id,
                                                _attributes['subcategory_id'])
 
@@ -2361,76 +2283,49 @@ class AssessmentResults(RTKWorkView):
         for _child in self.scwStress.get_children():
             self.scwStress.remove(_child)
 
+        _component_sr = Component.StressResults(self._dtc_data_controller,
+                                                self._hardware_id,
+                                                _attributes['subcategory_id'])
         # Add the appropriate component-specific work view to the
         # gtk.ScrolledWindow()s.
         if _attributes['category_id'] == 1:
             _component_ar = wvwIntegratedCircuitAR(
                 self._dtc_data_controller, self._hardware_id,
                 _attributes['subcategory_id'])
-            _component_sr = wvwIntegratedCircuitSR(
-                self._dtc_data_controller, self._hardware_id,
-                _attributes['subcategory_id'])
         elif _attributes['category_id'] == 2:
             _component_ar = wvwSemiconductorAR(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-            _component_sr = wvwSemiconductorSR(self._dtc_data_controller,
                                                self._hardware_id,
                                                _attributes['subcategory_id'])
         elif _attributes['category_id'] == 3:
             _component_ar = wvwResistorAR(self._dtc_data_controller,
                                           self._hardware_id,
                                           _attributes['subcategory_id'])
-            _component_sr = wvwResistorSR(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
         elif _attributes['category_id'] == 4:
             _component_ar = wvwCapacitorAR(self._dtc_data_controller,
-                                           self._hardware_id,
-                                           _attributes['subcategory_id'])
-            _component_sr = wvwCapacitorSR(self._dtc_data_controller,
                                            self._hardware_id,
                                            _attributes['subcategory_id'])
         elif _attributes['category_id'] == 5:
             _component_ar = wvwInductorAR(self._dtc_data_controller,
                                           self._hardware_id,
                                           _attributes['subcategory_id'])
-            _component_sr = wvwInductorSR(self._dtc_data_controller,
-                                          self._hardware_id,
-                                          _attributes['subcategory_id'])
         elif _attributes['category_id'] == 6:
             _component_ar = wvwRelayAR(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
-            _component_sr = wvwRelaySR(self._dtc_data_controller,
                                        self._hardware_id,
                                        _attributes['subcategory_id'])
         elif _attributes['category_id'] == 7:
             _component_ar = wvwSwitchAR(self._dtc_data_controller,
                                         self._hardware_id,
                                         _attributes['subcategory_id'])
-            _component_sr = wvwSwitchSR(self._dtc_data_controller,
-                                        self._hardware_id,
-                                        _attributes['subcategory_id'])
         elif _attributes['category_id'] == 8:
             _component_ar = wvwConnectionAR(self._dtc_data_controller,
-                                            self._hardware_id,
-                                            _attributes['subcategory_id'])
-            _component_sr = wvwConnectionSR(self._dtc_data_controller,
                                             self._hardware_id,
                                             _attributes['subcategory_id'])
         elif _attributes['category_id'] == 9:
             _component_ar = wvwMeterAR(self._dtc_data_controller,
                                        self._hardware_id,
                                        _attributes['subcategory_id'])
-            _component_sr = wvwMeterSR(self._dtc_data_controller,
-                                       self._hardware_id,
-                                       _attributes['subcategory_id'])
         elif _attributes['category_id'] == 10:
             _component_ar = wvwMiscellaneousAR(self._dtc_data_controller,
-                                               self._hardware_id,
-                                               _attributes['subcategory_id'])
-            _component_sr = wvwMiscellaneousSR(self._dtc_data_controller,
                                                self._hardware_id,
                                                _attributes['subcategory_id'])
 

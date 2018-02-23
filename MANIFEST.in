@@ -3,6 +3,9 @@ include *.md
 include *.py
 include *.rc
 include *.txt
+include .coveragerc
+include .pylintrc
+include pytest.ini
 include LICENSE
 
 recursive-include docs *.md
@@ -13,16 +16,13 @@ recursive-include rtk *.py
 recursive-include config *.ico *.conf *.png *.sql *.xml
 recursive-include docs *.html
 
-exclude .coveragerc
-exclude .pylintrc
-exclude pytest.ini
-exclude tools
 exclude tests
+exclude tools
 exclude Pipfile
 recursive-exclude rtk *.pyo
 recursive-exclude docs/api/_build *
 recursive-exclude docs/api/_temp *
 recursive-exclude docs/api/source *
 recursive-exclude po *.mo
-recursive-exclude tests *
 recursive-exclude tools *
+recursive-exclude tests *

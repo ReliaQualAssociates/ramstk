@@ -8,12 +8,9 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for the semiconductor module."""
 
-import unittest
-from nose.plugins.attrib import attr
-
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES
 
+from rtk.analyses.data import HARDWARE_ATTRIBUTES
 from rtk.analyses.prediction import Semiconductor, Component
 
 __author__ = 'Andrew Rowland'
@@ -429,43 +426,3 @@ def test_voltage_overstress_mild_environment(power_rated,
         assert _attributes['overstress']
         assert _attributes['reason'] == ('1. Operating power > 90% rated '
                                          'power in mild environment.\n')
-
-
-
-
-
-
-
-
-class TestSemiconductorModule(unittest.TestCase):
-    """Class for testing the Semiconductor module functions."""
-
-    @attr(all=True, unit=True)
-    def test03a_overstressed_mild_env(self):
-        """(TestSemiconductorModule) overstressed() should return overstress=False and reason='' on success without an overstressed condition in non-harsh environment."""
-        self._attributes['environment_active_id'] = 1
-        self._attributes['voltage_ac_operating'] = 0.005
-        self._attributes['voltage_dc_operating'] = 10.0
-        self._attributes['voltage_rated'] = 20.0
-        self._attributes['power_operating'] = 0.5
-        self._attributes['power_rated'] = 0.75
-
-        _attributes = Semiconductor.overstressed(**self._attributes)
-
-        self.assertTrue(isinstance(_attributes, dict))
-        self.assertFalse(_attributes['overstress'])
-        self.assertEqual(_attributes['reason'], '')
-        self.assertAlmostEqual(_attributes['voltage_ratio'], 0.50025)
-        self.assertAlmostEqual(_attributes['power_ratio'], 0.6666667)
-
-    @attr(all=True, unit=True)
-    def test03b_overstressed_mild_env_power_margin(self):
-        """(TestSemiconductorModule) overstressed() should return overstress=True on success with operating power too close to rated in a non-harsh environment."""
-        self._attributes['power_operating'] = 0.7
-
-        _attributes = Semiconductor.overstressed(**self._attributes)
-
-        self.assertTrue(isinstance(_attributes, dict))
-        self.assertTrue(_attributes['overstress'])
-        self.assertEqual(_attributes['reason'],
-                         '1. Operating power > 90% rated power.\n')

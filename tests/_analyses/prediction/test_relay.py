@@ -8,8 +8,8 @@
 """Test class for the relay module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES, DORMANT_MULT
 
+from rtk.analyses.data import HARDWARE_ATTRIBUTES
 from rtk.analyses.prediction import Relay, Component
 
 __author__ = 'Andrew Rowland'

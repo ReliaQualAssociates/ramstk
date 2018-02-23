@@ -1,39 +1,10 @@
-#!/usr/bin/env python
-"""
-This file contains configuration information and methods for RTK.
-"""
 # -*- coding: utf-8 -*-
 #
 #       rtk.Configuration.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions are met:
-#
-# 1. Redistributions of source code must retain the above copyright notice,
-#    this list of conditions and the following disclaimer.
-#
-# 2. Redistributions in binary form must reproduce the above copyright notice,
-#    this list of conditions and the following disclaimer in the documentation
-#    and/or other materials provided with the distribution.
-#
-# 3. Neither the name of the copyright holder nor the names of its contributors
-#    may be used to endorse or promote products derived from this software
-#    without specific prior written permission.
-#
-#    THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-#    "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-#    LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
-#    PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER
-#    OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
-#    EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
-#    PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR
-#    PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF
-#    LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING
-#    NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
-#    SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+"""Configuration information and methods for RTK."""
 
 import ConfigParser
 from os import environ, path, makedirs, name
@@ -42,7 +13,7 @@ from os import environ, path, makedirs, name
 import gettext
 
 # Import other RTK modules.
-import Utilities
+import rtk.Utilities as Utilities
 
 _ = gettext.gettext
 
@@ -51,11 +22,35 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2007 - 2015 Andrew "Weibullguy" Rowland'
 
+# Define global list constants.
+RTK_ACTIVE_ENVIRONMENTS = [[_(u"Ground, Benign")], [_(u"Ground, Fixed")], [
+    _(u"Ground, Mobile")
+], [_(u"Naval, Sheltered")], [_(u"Naval, Unsheltered")], [
+    _(u"Airborne, Inhabited, Cargo")
+], [_(u"Airborne, Inhabited, Fighter")], [_(u"Airborne, Uninhabited, Cargo")],
+                           [_(u"Airborne, Uninhabited, Fighter")], [
+                               _(u"Airborne, Rotary Wing")
+                           ], [_(u"Space, Flight")], [_(u"Missile, Flight")],
+                           [_(u"Missile, Launch")]]
+RTK_DORMANT_ENVIRONMENTS = [[_(u"Airborne")], [_(u"Ground")], [_(u"Naval")],
+                            [_(u"Space")]]
+
+RTK_HR_TYPES = [[_(u"Assessed")], [_(u"Defined, Hazard Rate")],
+                [_(u"Defined, MTBF")], [_(u"Defined, Distribution")]]
+RTK_HR_MODELS = [[_(u"MIL-HDBK-217F Parts Count")],
+                 [_(u"MIL-HDBK-217F Parts Stress")], [_(u"NSWC-11")]]
+RTK_HR_DISTRIBUTIONS = [[_(u"1P Exponential")], [_(u"2P Exponential")],
+                        [_(u"Gaussian")], [_(u"Lognormal")],
+                        [_(u"2P Weibull")], [_(u"3P Weibull")]]
+
+RTK_COST_TYPES = [[_(u"Defined")], [_(u"Calculated")]]
+
 
 class Configuration(object):
-    """
-    The RTK configuration class.  Class attributes of the Configuration class
-    are:
+    r"""
+    RTK configuration class.
+
+    Class attributes of the Configuration class are:
 
     :cvar dict RTK_FORMAT_FILE: Dictionary containing the path to the format
                                 files to use for various widgets.  Keys for
@@ -331,8 +326,6 @@ class Configuration(object):
     RTK_ACTION_CATEGORY = {}
     RTK_INCIDENT_CATEGORY = {}
     RTK_SEVERITY = {}
-    RTK_ACTIVE_ENVIRONMENTS = {}
-    RTK_DORMANT_ENVIRONMENTS = {}
     RTK_SW_DEV_ENVIRONMENTS = {}
     RTK_AFFINITY_GROUPS = {}
     RTK_WORKGROUPS = {}
@@ -372,7 +365,7 @@ class Configuration(object):
     RTK_MODULES = {}
     RTK_PAGE_NUMBER = {}
 
-    # Define public list class attributes.
+    # Define global list class attributes.
     RTK_CONTROL_TYPES = []
     RTK_RISK_POINTS = [4, 10]
 
@@ -404,24 +397,21 @@ class Configuration(object):
     RTK_OS = ''
 
     def __init__(self):
-        """
-        Method to initialize the RTK configuration parser.
-        """
-
-        self._lst_colors = ['revisionfg', 'functionfg', 'requirementfg',
-                            'hardwarefg', 'partfg', 'overstressfg', 'taggedfg',
-                            'nofrmodelfg', 'softwarefg', 'incidentfg',
-                            'validationfg', 'testfg', 'survivalfg',
-                            'revisionbg', 'functionbg', 'requirementbg',
-                            'hardwarebg', 'partbg', 'overstressbg', 'taggedbg',
-                            'softwarebg', 'incidentbg', 'validationbg',
-                            'testbg', 'survivalbg', 'stakeholderbg',
-                            'stakeholderfg']
-        self._lst_format_files = ['revision', 'function', 'requirement',
-                                  'hardware', 'software', 'incident',
-                                  'validation', 'testing', 'part', 'sia',
-                                  'fmeca', 'rgincident', 'stakeholder',
-                                  'dataset', 'risk', 'ffmeca', 'sfmeca']
+        """Initialize the RTK configuration parser."""
+        self._lst_colors = [
+            'revisionfg', 'functionfg', 'requirementfg', 'hardwarefg',
+            'partfg', 'overstressfg', 'taggedfg', 'nofrmodelfg', 'softwarefg',
+            'incidentfg', 'validationfg', 'testfg', 'survivalfg', 'revisionbg',
+            'functionbg', 'requirementbg', 'hardwarebg', 'partbg',
+            'overstressbg', 'taggedbg', 'softwarebg', 'incidentbg',
+            'validationbg', 'testbg', 'survivalbg', 'stakeholderbg',
+            'stakeholderfg'
+        ]
+        self._lst_format_files = [
+            'revision', 'function', 'requirement', 'hardware', 'software',
+            'incident', 'validation', 'testing', 'part', 'sia', 'fmeca',
+            'rgincident', 'stakeholder', 'dataset', 'risk', 'ffmeca', 'sfmeca'
+        ]
 
         if name == 'posix':
             self.RTK_OS = 'Linux'
@@ -445,12 +435,11 @@ class Configuration(object):
 
     def set_site_variables(self):
         """
-        Method to set the site configuration variables.
+        Set the site configuration variables.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         # Prefer user-specific directories in their $HOME directory over the
         # system-wide directories.
         if Utilities.dir_exists(self.RTK_HOME_DIR + '/.config/RTK'):
@@ -478,24 +467,22 @@ class Configuration(object):
 
     def set_user_variables(self):
         """
-        Method to set the user-specific configuration variables.
+        Set the user-specific configuration variables.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         self.RTK_PROG_CONF = self.RTK_CONF_DIR + '/RTK.conf'
 
         return False
 
     def _create_site_configuration(self):
         """
-        Method to create the default site configuration file.
+        Create the default site configuration file.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         _config = ConfigParser.ConfigParser()
@@ -533,12 +520,11 @@ class Configuration(object):
 
     def create_user_configuration(self):
         """
-        Method to create the default user configuration file.
+        Create the default user configuration file.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         import glob
         from distutils import dir_util, file_util
 
@@ -686,12 +672,11 @@ class Configuration(object):
 
     def write_configuration(self):
         """
-        Method to write changes to the user's configuration file.
+        Write changes to the user's configuration file.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         if Utilities.file_exists(self.RTK_PROG_CONF):
@@ -744,12 +729,11 @@ class Configuration(object):
 
     def _read_site_configuration(self):
         """
-        Method to read the site configuration file.
+        Read the site configuration file.
 
         :return: False of successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # Try to read the user's configuration file.  If it doesn't exist,
@@ -770,12 +754,11 @@ class Configuration(object):
 
     def read_configuration(self):
         """
-        Method to read the configuration file.
+        Read the configuration file.
 
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         # Try to read the user's configuration file.  If it doesn't exist,

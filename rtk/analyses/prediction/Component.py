@@ -95,11 +95,11 @@ def do_calculate_217f_part_count(**attributes):
     elif attributes['category_id'] == 10:
         if attributes['subcategory_id'] == 1:
             attributes, __ = Crystal.calculate_217f_part_count(**attributes)
-        elif attributes['subcategory_id'] == 2:
+        elif attributes['subcategory_id'] == 4:
             attributes, __ = Lamp.calculate_217f_part_count(**attributes)
         elif attributes['subcategory_id'] == 3:
             attributes, __ = Fuse.calculate_217f_part_count(**attributes)
-        elif attributes['subcategory_id'] == 4:
+        elif attributes['subcategory_id'] == 2:
             attributes, __ = Filter.calculate_217f_part_count(**attributes)
 
     return attributes, _msg
@@ -142,11 +142,11 @@ def do_calculate_217f_part_stress(**attributes):
     elif attributes['category_id'] == 10:
         if attributes['subcategory_id'] == 1:
             attributes, _msg = Crystal.calculate_217f_part_stress(**attributes)
-        elif attributes['subcategory_id'] == 2:
+        elif attributes['subcategory_id'] == 4:
             attributes, _msg = Lamp.calculate_217f_part_stress(**attributes)
         elif attributes['subcategory_id'] == 3:
             attributes, _msg = Fuse.calculate_217f_part_stress(**attributes)
-        elif attributes['subcategory_id'] == 4:
+        elif attributes['subcategory_id'] == 2:
             attributes, _msg = Filter.calculate_217f_part_stress(**attributes)
 
     return attributes, _msg
@@ -157,8 +157,7 @@ def do_calculate_dormant_hazard_rate(**attributes):
     Calculate the dormant hazard rate for a hardware item.
 
     All conversion factors come from Reliability Toolkit: Commercial Practices
-    Edition, Section 6.3.4, Table 6.3.4-1 (reproduced below for integrated
-    circuits).
+    Edition, Section 6.3.4, Table 6.3.4-1.
 
     +-------+--------+--------+-------+-------+-------+-------+
     |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
@@ -216,8 +215,8 @@ def do_calculate_dormant_hazard_rate(**attributes):
                 2: 0.04
             },
             11: {
-                2: 0.1,
-                4: 0.3
+                2: 0.3,
+                4: 0.1
             }
         },
         2: {

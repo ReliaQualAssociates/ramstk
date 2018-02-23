@@ -8,8 +8,8 @@
 """Test class for the meter module."""
 
 import pytest
-from tests.data import HARDWARE_ATTRIBUTES
 
+from rtk.analyses.data import HARDWARE_ATTRIBUTES
 from rtk.analyses.prediction import Meter
 
 __author__ = 'Andrew Rowland'

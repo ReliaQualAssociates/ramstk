@@ -1,0 +1,37 @@
+[run]
+branch = True
+cover_pylib = False
+omit =
+    */.local/*
+    */.virtualenv/*
+    */gui/*
+    */__gui/*
+    */_assistants_/*
+    */_reports_/*
+    */tests/*
+    __init__.py
+    conf.py
+    setup.py
+
+[report]
+omit =
+    */.local/*
+    */.virtualenvs/*
+    */gui/*
+    */__gui/*
+    */_assistants_/*
+    */_reports_/*
+    */tests/*
+    __init__.py
+    conf.py
+    setup.py
+exclude_lines =
+    pragma: no cover
+    import
+    if self._test
+    if __name__ == __main__:
+show_missing = True
+
+[html]
+directory = tools/reports/coverage/html
+title = "RTK Test Coverage Report"

@@ -2,7 +2,7 @@
 # tests.  All global variable names should be in ALL_CAPS.  To use the data and
 # constants in this file, add the following to the file containing tests:
 #
-#    from tests.data import <DATA OR VARIABLE TO USE>
+#    from rtk.analyses.data import <DATA OR VARIABLE TO USE>
 
 # This is a dictionary of baseline hardware attributes.  Use the following
 # statement in each test file using this dictionary:

@@ -117,25 +117,9 @@ RTK_CATEGORIES = {
 }
 
 RTK_ENVIRONS = {
-    0: ('GB', 'Ground, Benign', 'active', 0.5, 1.0),
-    1: ('GF', 'Ground, Fixed', 'active', 2.0, 1.0),
-    2: ('GM', 'Ground, Mobile', 'active', 4.0, 1.0),
-    3: ('NS', 'Naval, Sheltered', 'active', 4.0, 1.0),
-    4: ('NU', 'Naval, Unsheltered', 'active', 6.0, 1.0),
-    5: ('AIC', 'Airborne, Inhabited, Cargo', 'active', 4.0, 1.0),
-    6: ('AIF', 'Airborne, Inhabited, Fighter', 'active', 5.0, 1.0),
-    7: ('AUC', 'Airborne, Uninhabited, Cargo', 'active', 5.0, 1.0),
-    8: ('AUF', 'Airborne, Uninhabited, Fighter', 'active', 8.0, 1.0),
-    9: ('ARW', 'Airborne, Rotary Wing', 'active', 8.0, 1.0),
-    10: ('SF', 'Space, Flight', 'active', 0.5, 1.0),
-    11: ('MF', 'Missile, Flight', 'active', 5.0, 1.0),
-    12: ('ML', 'Missile, Launch', 'active', 12.0, 1.0),
-    13: ('GND', 'Ground', 'dormant', 1.0, 1.0),
-    14: ('NVL', 'Naval', 'dormant', 1.0, 1.0),
-    15: ('AIR', 'Airborne', 'dormant', 1.0, 1.0),
-    16: ('ORG', 'Organic', 'development', 1.0, 0.76),
-    17: ('SD', 'Semi-Detached', 'development', 1.0, 1.0),
-    18: ('EMB', 'Embedded', 'development', 1.0, 1.3)
+    17: ('ORG', 'Organic', 'development', 1.0, 0.76),
+    18: ('SD', 'Semi-Detached', 'development', 1.0, 1.0),
+    19: ('EMB', 'Embedded', 'development', 1.0, 1.3)
 }
 
 RTK_GROUPS = {
@@ -183,10 +167,7 @@ RTK_MODELS = {
     1: ('ARINC Apportionment', 'allocation'),
     2: ('AGREE Apportionment', 'allocation'),
     3: ('Feasibility of Objectives', 'allocation'),
-    4: ('Repairable Systems Apportionment', 'allocation'),
-    5: ('MIL-HDBK-217F Parts Count', 'rprediction'),
-    6: ('MIL-HDBK-217F Parts Stress', 'rprediction'),
-    7: ('NSWC-11', 'rprediction')
+    4: ('Repairable Systems Apportionment', 'allocation')
 }
 
 RTK_PHASES = {
@@ -363,11 +344,6 @@ RTK_SUBCATEGORIES = [
 ]
 
 RTK_TYPES = {
-    0: ('CALC', 'Calculated', 'cost'),
-    1: ('DEF', 'Defined', 'cost'),
-    2: ('ASS', 'Assessed', 'mtbf'),
-    3: ('DHR', 'Defined, Hazard Rate', 'mtbf'),
-    4: ('DMT', 'Defined, MTBF', 'mtbf'),
     5: ('ASS', 'Assessed', 'mttr'),
     6: ('DEF', 'Defined', 'mttr'),
     7: ('PLN', 'Planning', 'incident'),

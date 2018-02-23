@@ -12,6 +12,7 @@
 *.geanyprj
 *.tox
 *.e5s
+*.geany
 
 # Python specific directories and files to ignore
 dist/
@@ -28,7 +29,7 @@ target/
 *.log
 *.txt
 *.xls*
-.coverage*
+.coverage
 *html
 _build/
 docs/developer

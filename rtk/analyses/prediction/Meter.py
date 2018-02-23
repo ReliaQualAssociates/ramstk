@@ -33,14 +33,14 @@ def calculate_217f_part_count(**attributes):
     # list is selected by the type ID.  The hazard rate to use is selected from
     # the list depending on the active environment.
     _dic_lambda_b = {
-        1: [[
+        2: [[
             0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4,
             0.0, 0.0
         ], [
             0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2,
             0.0, 0.0
         ]],
-        2: [[
+        1: [[
             10.0, 20.0, 120.0, 70.0, 180.0, 50.0, 80.0, 160.0, 250.0, 260.0,
             5.0, 140.0, 380.0, 0.0
         ], [
@@ -59,7 +59,7 @@ def calculate_217f_part_count(**attributes):
     #   1. Non-MIL
     #
     # The quality_id attribute is used to select the proper value of piQ.
-    _dic_piQ = {1: [1.0, 3.4]}
+    _dic_piQ = {2: [1.0, 3.4]}
     _msg = ''
 
     # Select the base hazard rate.
@@ -112,11 +112,11 @@ def calculate_217f_part_stress(**attributes):
     """
     _dic_lambda_b = {1: 0.09, 2: [20.0, 30.0, 80.0]}
     _dic_piE = {
-        1: [
+        2: [
             1.0, 4.0, 25.0, 12.0, 35.0, 28.0, 42.0, 58.0, 73.0, 60.0, 1.1,
             60.0, 0.0, 0.0
         ],
-        2: [
+        1: [
             1.0, 2.0, 12.0, 7.0, 18.0, 5.0, 8.0, 16.0, 25.0, 26.0, 0.5, 14.0,
             38.0, 0.0
         ]
@@ -133,9 +133,9 @@ def calculate_217f_part_stress(**attributes):
         _temperature_ratio = 1.0
 
     # Calculate the base hazard rate.
-    if attributes['subcategory_id'] == 1:
+    if attributes['subcategory_id'] == 2:
         attributes['lambda_b'] = _dic_lambda_b[1]
-    elif attributes['subcategory_id'] == 2:
+    elif attributes['subcategory_id'] == 1:
         attributes['lambda_b'] = _dic_lambda_b[2][attributes['type_id'] - 1]
     else:
         attributes['lambda_b'] = 0.0
@@ -146,12 +146,12 @@ def calculate_217f_part_stress(**attributes):
             '{0:d}'.format(attributes['hardware_id'])
 
     # Determine the application factor (piA) and function factor (piF).
-    if attributes['subcategory_id'] == 1:
+    if attributes['subcategory_id'] == 2:
         attributes['piA'] = (1.7 if (attributes['type_id']) - (1) else 1.0)
         attributes['piF'] = _lst_piF[attributes['application_id'] - 1]
 
     # Determine the temperature stress factor (piT).
-    if attributes['subcategory_id'] == 2:
+    if attributes['subcategory_id'] == 1:
         if _temperature_ratio > 0.0 and _temperature_ratio <= 0.5:
             attributes['piT'] = 0.5
         elif _temperature_ratio > 0.5 and _temperature_ratio <= 0.6:
@@ -162,7 +162,7 @@ def calculate_217f_part_stress(**attributes):
             attributes['piT'] = 1.0
 
     # Determine the quality factor (piQ).
-    if attributes['subcategory_id'] == 1:
+    if attributes['subcategory_id'] == 2:
         try:
             attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
         except (KeyError, IndexError):
@@ -186,11 +186,11 @@ def calculate_217f_part_stress(**attributes):
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (
         attributes['lambda_b'] * attributes['piE'])
-    if attributes['subcategory_id'] == 1:
+    if attributes['subcategory_id'] == 2:
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] * attributes['piA'] *
             attributes['piF'] * attributes['piQ'])
-    elif attributes['subcategory_id'] == 2:
+    elif attributes['subcategory_id'] == 1:
         attributes['hazard_rate_active'] = (
             attributes['hazard_rate_active'] * attributes['piT'])
 
