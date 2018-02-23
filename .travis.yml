@@ -4,9 +4,8 @@ python:
 
 # Command to install dependencies.
 install:
-    - pip install -U pip
-    - pip install --only-binary=numpy,scipy -r requirements.txt
-    - pip install .
+    - "pip install -U pip"
+    - "pip install --only-binary=numpy,scipy -r requirements.txt"
 
 # Command to run tests.
 script:
