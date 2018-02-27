@@ -28,13 +28,6 @@ ATTRIBUTES['quantity'] = 1
 
 PART_COUNT_LAMBDA_B = {
     1: [[
-        0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4, 0.0,
-        0.0
-    ], [
-        0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2, 0.0,
-        0.0
-    ]],
-    2: [[
         10.0, 20.0, 120.0, 70.0, 180.0, 50.0, 80.0, 160.0, 250.0, 260.0, 5.0,
         140.0, 380.0, 0.0
     ], [
@@ -43,10 +36,17 @@ PART_COUNT_LAMBDA_B = {
     ], [
         40.0, 80.0, 480.0, 280.0, 720.0, 200.0, 320.0, 640.0, 1000.0, 1040.0,
         20.0, 560.0, 1520.0, 0.0
+    ]],
+    2: [[
+        0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4, 0.0,
+        0.0
+    ], [
+        0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2, 0.0,
+        0.0
     ]]
 }
 
-PART_COUNT_PIQ = {1: [1.0, 3.4]}
+PART_COUNT_PIQ = {2: [1.0, 3.4]}
 
 
 @pytest.mark.unit
@@ -84,8 +84,8 @@ def test_calculate_mil_hdbk_217f_part_count(subcategory_id, type_id,
         assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when '
                         'calculating meter, hardware ID: 6, subcategory '
                         'ID: {0:d}, type ID: {2:d}, and active environment '
-                        'ID: {1:d}.\n').format(subcategory_id,
-                                               environment_active_id, type_id)
+                        'ID: {1:d}.').format(subcategory_id,
+                                             environment_active_id, type_id)
     else:
         assert _msg == ''
     assert _attributes['lambda_b'] == lambda_b
@@ -106,9 +106,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_subcategory():
     _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == ('RTK WARNING: Base hazard rate is 0.0 when calculating '
-                    'meter, hardware ID: 6, subcategory ID: 0, type '
-                    'ID: 1, and active environment ID: 1.\n')
+    assert _msg == ("RTK WARNING: Base hazard rate is 0.0 when calculating "
+                    "meter, hardware ID: 6, subcategory ID: 0, type "
+                    "ID: 1, and active environment ID: 1.")
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -127,10 +127,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_type():
     _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RTK WARNING: Base hazard rate is 0.0 when calculating '
-        'meter, hardware ID: 6, subcategory ID: 1, type ID: 10, and '
-        'active environment ID: 1.\n')
+    assert _msg == ("RTK WARNING: Base hazard rate is 0.0 when calculating "
+                    "meter, hardware ID: 6, subcategory ID: 1, type ID: 10, "
+                    "and active environment ID: 1.")
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'], 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -149,10 +148,9 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
     _attributes, _msg = Meter.calculate_217f_part_count(**ATTRIBUTES)
 
     assert isinstance(_attributes, dict)
-    assert _msg == (
-        'RTK WARNING: Base hazard rate is 0.0 when calculating '
-        'meter, hardware ID: 6, subcategory ID: 1, type ID: 1, and '
-        'active environment ID: 100.\n')
+    assert _msg == ("RTK WARNING: Base hazard rate is 0.0 when calculating "
+                    "meter, hardware ID: 6, subcategory ID: 1, type ID: 1, "
+                    "and active environment ID: 100.")
     assert _attributes['lambda_b'] == 0.0
     assert _attributes['piQ'] == 1.0
     assert _attributes['hazard_rate_active'] == 0.0
@@ -161,11 +159,40 @@ def test_calculate_mil_hdbk_217f_part_count_missing_environment():
 @pytest.mark.unit
 @pytest.mark.hardware
 @pytest.mark.calculation
-def test_calculate_mil_hdbk_217f_part_stress():
+def test_calculate_mil_hdbk_217f_part_stress_elapsed_time_meter():
     """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
     ATTRIBUTES['hazard_rate_method_id'] = 2
     ATTRIBUTES['environment_active_id'] = 4
     ATTRIBUTES['subcategory_id'] = 1
+    ATTRIBUTES['type_id'] = 2
+    ATTRIBUTES['application_id'] = 2
+    ATTRIBUTES['construction_id'] = 1
+    ATTRIBUTES['temperature_active'] = 32.0
+    ATTRIBUTES['temperature_rated_max'] = 85.0
+    ATTRIBUTES['quality_id'] = 1
+    ATTRIBUTES['temperature_active'] = 32.0
+    ATTRIBUTES['power_operating'] = 4.2
+    ATTRIBUTES['weight'] = 0.75
+
+    _attributes, _msg = Meter.calculate_217f_part_stress(**ATTRIBUTES)
+
+    assert isinstance(_attributes, dict)
+    assert _msg == ("RTK WARNING: piQ is 0.0 when calculating meter, "
+                    "hardware ID: 6, quality ID: 1.")
+    assert pytest.approx(_attributes['lambda_b'], 0.09)
+    assert _attributes['piQ'] == 0.0
+    assert _attributes['piE'] == 7.0
+    assert pytest.approx(_attributes['hazard_rate_active'], 1.836)
+
+
+@pytest.mark.unit
+@pytest.mark.hardware
+@pytest.mark.calculation
+def test_calculate_mil_hdbk_217f_part_stress_panel_meter():
+    """calculate_mil_hdbk_217f_part_stress() should return a dictionary of updated values on success."""
+    ATTRIBUTES['hazard_rate_method_id'] = 2
+    ATTRIBUTES['environment_active_id'] = 4
+    ATTRIBUTES['subcategory_id'] = 2
     ATTRIBUTES['type_id'] = 2
     ATTRIBUTES['application_id'] = 2
     ATTRIBUTES['construction_id'] = 1

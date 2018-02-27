@@ -58,3 +58,4 @@ coverage.xml
 # Override settings for some specific files.
 !/license.txt
 !/requirements.txt
+/.gtm/

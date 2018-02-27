@@ -26,20 +26,13 @@ def calculate_217f_part_count(**attributes):
     # Dictionary containing MIL-HDBK-217FN2 parts count base hazard rates.
     # First key is the subcategory_id.  Current subcategory IDs are:
     #
-    #    1. Panel
-    #    2. Elapsed time
+    #    1. Elapsed Time
+    #    2. Panel
     #
     # These keys return a list of base hazard rate lists.  The proper internal
     # list is selected by the type ID.  The hazard rate to use is selected from
     # the list depending on the active environment.
     _dic_lambda_b = {
-        2: [[
-            0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4,
-            0.0, 0.0
-        ], [
-            0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2,
-            0.0, 0.0
-        ]],
         1: [[
             10.0, 20.0, 120.0, 70.0, 180.0, 50.0, 80.0, 160.0, 250.0, 260.0,
             5.0, 140.0, 380.0, 0.0
@@ -49,11 +42,18 @@ def calculate_217f_part_count(**attributes):
         ], [
             40.0, 80.0, 480.0, 280.0, 720.0, 200.0, 320.0, 640.0, 1000.0,
             1040.0, 20.0, 560.0, 1520.0, 0.0
+        ]],
+        2: [[
+            0.09, 0.36, 2.3, 1.1, 3.2, 2.5, 3.8, 5.2, 6.6, 5.4, 0.099, 5.4,
+            0.0, 0.0
+        ], [
+            0.15, 0.61, 2.8, 1.8, 5.4, 4.3, 6.4, 8.9, 11.0, 9.2, 0.17, 9.2,
+            0.0, 0.0
         ]]
     }
 
     # List containing piQ values for parts count method.  The list positions
-    # corrspond to the following quality levels:
+    # correspond to the following quality levels:
     #
     #   0. MIL-SPEC
     #   1. Non-MIL
@@ -64,15 +64,9 @@ def calculate_217f_part_count(**attributes):
 
     # Select the base hazard rate.
     try:
-        _lst_base_hr = _dic_lambda_b[attributes['subcategory_id']][
-            attributes['type_id'] - 1]
+        attributes['lambda_b'] = _dic_lambda_b[attributes['subcategory_id']][
+            attributes['type_id'] - 1][attributes['environment_active_id'] - 1]
     except (IndexError, KeyError):
-        _lst_base_hr = [0.0]
-
-    try:
-        attributes['lambda_b'] = _lst_base_hr[
-            attributes['environment_active_id'] - 1]
-    except IndexError:
         attributes['lambda_b'] = 0.0
 
     # Select the piQ.
@@ -85,12 +79,11 @@ def calculate_217f_part_count(**attributes):
     # Confirm all inputs are within range.  If not, set the message.  The
     # hazard rate will be calculated anyway, but will be zero.
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating meter, hardware ID: ' \
-            '{0:d}, subcategory ID: {1:d}, type ID: {3:d}, and active ' \
-            'environment ID: {2:d}.\n'.format(
-                attributes['hardware_id'], attributes['subcategory_id'],
-                attributes['environment_active_id'], attributes['type_id'])
+        _msg = ("RTK WARNING: Base hazard rate is 0.0 when calculating "
+                "meter, hardware ID: {0:d}, subcategory ID: {1:d}, type "
+                "ID: {3:d}, and active environment ID: {2:d}.").format(
+                    attributes['hardware_id'], attributes['subcategory_id'],
+                    attributes['environment_active_id'], attributes['type_id'])
 
     # Calculate the hazard rate.
     attributes['hazard_rate_active'] = (
@@ -110,7 +103,7 @@ def calculate_217f_part_stress(**attributes):
              dictionary with updated values and the error message, if any.
     :rtype: (dict, str)
     """
-    _dic_lambda_b = {1: 0.09, 2: [20.0, 30.0, 80.0]}
+    _dic_lambda_b = {1: [20.0, 30.0, 80.0], 2: 0.09}
     _dic_piE = {
         2: [
             1.0, 4.0, 25.0, 12.0, 35.0, 28.0, 42.0, 58.0, 73.0, 60.0, 1.1,
@@ -121,8 +114,8 @@ def calculate_217f_part_stress(**attributes):
             38.0, 0.0
         ]
     }
+    _dic_piQ = {2: [1.0, 3.4]}
     _lst_piF = [1.0, 1.0, 2.8]
-    _lst_piQ = [1.0, 3.4]
     _msg = ''
 
     # Calculate the temperature ratio.
@@ -133,17 +126,16 @@ def calculate_217f_part_stress(**attributes):
         _temperature_ratio = 1.0
 
     # Calculate the base hazard rate.
-    if attributes['subcategory_id'] == 2:
-        attributes['lambda_b'] = _dic_lambda_b[1]
-    elif attributes['subcategory_id'] == 1:
-        attributes['lambda_b'] = _dic_lambda_b[2][attributes['type_id'] - 1]
+    if attributes['subcategory_id'] == 1:
+        attributes['lambda_b'] = _dic_lambda_b[1][attributes['type_id'] - 1]
+    elif attributes['subcategory_id'] == 2:
+        attributes['lambda_b'] = _dic_lambda_b[2]
     else:
         attributes['lambda_b'] = 0.0
 
     if attributes['lambda_b'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: Base hazard rate is 0.0 when ' \
-            'calculating meter, hardware ID: ' \
-            '{0:d}'.format(attributes['hardware_id'])
+        _msg = ("RTK WARNING: Base hazard rate is 0.0 when calculating meter, "
+                "hardware ID: {0:d}.").format(attributes['hardware_id'])
 
     # Determine the application factor (piA) and function factor (piF).
     if attributes['subcategory_id'] == 2:
@@ -162,26 +154,27 @@ def calculate_217f_part_stress(**attributes):
             attributes['piT'] = 1.0
 
     # Determine the quality factor (piQ).
-    if attributes['subcategory_id'] == 2:
-        try:
-            attributes['piQ'] = _lst_piQ[attributes['quality_id'] - 1]
-        except (KeyError, IndexError):
-            attributes['piQ'] = 0.0
+    try:
+        attributes['piQ'] = _dic_piQ[attributes['subcategory_id']][
+            attributes['quality_id'] - 1]
+    except (KeyError, IndexError):
+        attributes['piQ'] = 0.0
 
-        if attributes['piQ'] <= 0.0:
-            _msg = _msg + 'RTK WARNING: piQ is 0.0 when calculating ' \
-                'meter, hardware ID: {0:d}'.format(attributes['hardware_id'])
+    if attributes['piQ'] <= 0.0:
+        _msg = ("RTK WARNING: piQ is 0.0 when calculating meter, hardware ID: "
+                "{0:d}, quality ID: {1:d}.").format(attributes['hardware_id'],
+                                                    attributes['quality_id'])
 
     # Determine the environmental factor (piE).
     try:
         attributes['piE'] = _dic_piE[attributes['subcategory_id']][
             attributes['environment_active_id'] - 1]
-    except(IndexError, KeyError):
+    except (IndexError, KeyError):
         attributes['piE'] = 0.0
 
     if attributes['piE'] <= 0.0:
-        _msg = _msg + 'RTK WARNING: piE is 0.0 when calculating ' \
-            'meter, hardware ID: {0:d}'.format(attributes['hardware_id'])
+        _msg = ("RTK WARNING: piE is 0.0 when calculating meter, hardware ID: "
+                "{0:d}").format(attributes['hardware_id'])
 
     # Calculate the active hazard rate.
     attributes['hazard_rate_active'] = (

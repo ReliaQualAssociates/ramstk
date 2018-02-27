@@ -159,15 +159,18 @@ def do_calculate_dormant_hazard_rate(**attributes):
     All conversion factors come from Reliability Toolkit: Commercial Practices
     Edition, Section 6.3.4, Table 6.3.4-1.
 
-    +-------+--------+--------+-------+-------+-------+-------+
-    |Ground |Airborne|Airborne|Naval  |Naval  |Space  |Space  |
-    |Active |Active  |Active  |Active |Active |Active |Active |
-    |to     |to      |to      |to     |to     |to     |to     |
-    |Ground |Airborne|Ground  |Naval  |Ground |Space  |Ground |
-    |Passive|Passive |Passive |Passive|Passive|Passive|Passive|
-    +=======+========+========+=======+=======+=======+=======+
-    | 0.08  |  0.06  |  0.04  | 0.06  | 0.05  | 0.10  | 0.30  |
-    +-------+--------+--------+-------+-------+-------+-------+
+    Active environments are:
+        1 - 3: Ground
+        4 - 5: Naval
+        6 - 10: Airborne
+        11: Space
+        12 - 13: Missile (no conversion factors)
+
+    Dormant environments are:
+        1: Airborne
+        2: Ground
+        3: Naval
+        4: Space
 
     :return: (attributes, _msg); the keyword argument (hardware attribute)
              dictionary with updated values and the error message, if any.

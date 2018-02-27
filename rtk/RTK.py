@@ -32,55 +32,55 @@ except ImportError:
 # pylint: disable=E0401
 from Configuration import Configuration
 import Utilities
-from dao.DAO import DAO
-from dao.RTKProgramInfo import RTKProgramInfo
-from dao.RTKApplication import RTKApplication
-from dao.RTKCategory import RTKCategory
-from dao.RTKCriticality import RTKCriticality
-from dao.RTKDistribution import RTKDistribution
-from dao.RTKEnviron import RTKEnviron
-from dao.RTKFailureMode import RTKFailureMode
-from dao.RTKGroup import RTKGroup
-from dao.RTKHazards import RTKHazards
-from dao.RTKLevel import RTKLevel
-from dao.RTKManufacturer import RTKManufacturer
-from dao.RTKMethod import RTKMethod
-from dao.RTKModel import RTKModel
-from dao.RTKPhase import RTKPhase
-from dao.RTKRPN import RTKRPN
-from dao.RTKSiteInfo import RTKSiteInfo
-from dao.RTKStakeholders import RTKStakeholders
-from dao.RTKStatus import RTKStatus
-from dao.RTKSubCategory import RTKSubCategory
-from dao.RTKType import RTKType
-from dao.RTKUnit import RTKUnit
-from dao.RTKUser import RTKUser
+from rtk.dao.DAO import DAO
+from rtk.dao.RTKProgramInfo import RTKProgramInfo
+from rtk.dao.RTKApplication import RTKApplication
+from rtk.dao.RTKCategory import RTKCategory
+from rtk.dao.RTKCriticality import RTKCriticality
+from rtk.dao.RTKDistribution import RTKDistribution
+from rtk.dao.RTKEnviron import RTKEnviron
+from rtk.dao.RTKFailureMode import RTKFailureMode
+from rtk.dao.RTKGroup import RTKGroup
+from rtk.dao.RTKHazards import RTKHazards
+from rtk.dao.RTKLevel import RTKLevel
+from rtk.dao.RTKManufacturer import RTKManufacturer
+from rtk.dao.RTKMethod import RTKMethod
+from rtk.dao.RTKModel import RTKModel
+from rtk.dao.RTKPhase import RTKPhase
+from rtk.dao.RTKRPN import RTKRPN
+from rtk.dao.RTKSiteInfo import RTKSiteInfo
+from rtk.dao.RTKStakeholders import RTKStakeholders
+from rtk.dao.RTKStatus import RTKStatus
+from rtk.dao.RTKSubCategory import RTKSubCategory
+from rtk.dao.RTKType import RTKType
+from rtk.dao.RTKUnit import RTKUnit
+from rtk.dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
-from revision import dtcRevision
-from usage import dtcUsageProfile
-from failure_definition import dtcFailureDefinition
-from function import dtcFunction
-from analyses.fmea import dtcFMEA
-from requirement import dtcRequirement
-from stakeholder import dtcStakeholder
-from hardware import dtcHardwareBoM
-# from analyses.allocation.Allocation import Allocation
-# from analyses.hazard.Hazard import Hazard
-# from analyses.similar_item.SimilarItem import SimilarItem
-# from analyses.pof.PhysicsOfFailure import PoF
-# from software.BoM import BoM as SoftwareBoM
-# from testing.Testing import Testing
-# from testing.growth.Growth import Growth
-from validation import dtcValidation
-# from incident.Incident import Incident
-# from incident.action.Action import Action
-# from incident.component.Component import Component
-# from survival.Survival import Survival
+from rtk.revision import dtcRevision
+from rtk.usage import dtcUsageProfile
+from rtk.failure_definition import dtcFailureDefinition
+from rtk.function import dtcFunction
+from rtk.analyses.fmea import dtcFMEA
+from rtk.requirement import dtcRequirement
+from rtk.stakeholder import dtcStakeholder
+from rtk.hardware import dtcHardwareBoM
+# from rtk.analyses.allocation.Allocation import Allocation
+# from rtk.analyses.hazard.Hazard import Hazard
+# from rtk.analyses.similar_item.SimilarItem import SimilarItem
+# from rtk.analyses.pof.PhysicsOfFailure import PoF
+# from rtk.software.BoM import BoM as SoftwareBoM
+# from rtk.testing.Testing import Testing
+# from rtk.testing.growth.Growth import Growth
+from rtk.validation import dtcValidation
+# from rtk.incident.Incident import Incident
+# from rtk.incident.action.Action import Action
+# from rtk.incident.component.Component import Component
+# from rtk.survival.Survival import Survival
 
-import gui.gtk.rtk.Widget as Widgets
-from gui.gtk.mwi import ListBook
-from gui.gtk.mwi import ModuleBook
-from gui.gtk.mwi import WorkBook
+import rtk.gui.gtk.rtk.Widget as Widgets
+from rtk.gui.gtk.mwi import ListBook
+from rtk.gui.gtk.mwi import ModuleBook
+from rtk.gui.gtk.mwi import WorkBook
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
