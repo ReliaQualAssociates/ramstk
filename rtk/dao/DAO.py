@@ -69,7 +69,7 @@ from .RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
 from .RTKOpStress import RTKOpStress
 from .RTKProgramInfo import RTKProgramInfo
-from .RTKReliability import RTKReliability  
+from .RTKReliability import RTKReliability
 from .RTKRequirement import RTKRequirement
 from .RTKRevision import RTKRevision
 from .RTKSimilarItem import RTKSimilarItem
@@ -153,7 +153,6 @@ class DAO(object):
         :return: False if successful or True if an error is encountered.
         :rtype: bool
         """
-
         _return = False
 
         if not self.engine.dialect.has_table(self.engine.connect(),
@@ -406,15 +405,12 @@ class DAO(object):
 
         return False
 
-    def db_create_program(self, database, session):
+    def db_create_program(self, database):
         """
         Method to create a new RTK Program database.
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
-        :param session: the SQLAlchemy scoped_session instance used to
-                        communicate with the RTK Program database.
-        :type session: :py:class:`sqlalchemy.orm.scoped_session`
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
@@ -432,8 +428,8 @@ class DAO(object):
         _revision.description = _(u"Initial Revision")
         self.db_add([
             _revision,
-        ], session)
-        session.commit()
+        ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKMission.__table__)
         _mission = RTKMission()
@@ -442,8 +438,8 @@ class DAO(object):
         _mission.description = _(u"Default Mission")
         self.db_add([
             _mission,
-        ], session)
-        session.commit()
+        ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKMissionPhase.__table__)
         _phase = RTKMissionPhase()
@@ -452,8 +448,8 @@ class DAO(object):
         _phase.description = _(u"Default Mission Phase 1")
         self.db_add([
             _phase,
-        ], session)
-        session.commit()
+        ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKEnvironment.__table__)
         self._db_table_create(RTKFailureDefinition.__table__)
@@ -469,12 +465,30 @@ class DAO(object):
         _hardware.description = _(u"System")
         self.db_add([
             _hardware,
-        ], session)
-        session.commit()
+        ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKAllocation.__table__)
         _allocation = RTKAllocation()
         _allocation.hardware_id = _hardware.hardware_id
+        _allocation.parent_id = 0
+        self.db_add([
+            _allocation,
+        ], self.session)
+
+        _hardware = RTKHardware()
+        _hardware.revision_id = _revision.revision_id
+        _hardware.hardware_id = 2
+        _hardware.description = _(u"Sub-System")
+        self.db_add([
+            _hardware,
+        ], self.session)
+        _allocation = RTKAllocation()
+        _allocation.hardware_id = _hardware.hardware_id
+        _allocation.parent_id = 1
+        self.db_add([
+            _allocation,
+        ], self.session)
 
         self._db_table_create(RTKHazardAnalysis.__table__)
         _hazard = RTKHazardAnalysis()
@@ -488,8 +502,8 @@ class DAO(object):
         _reliability = RTKReliability()
         _reliability.hardware_id = _hardware.hardware_id
         self.db_add([_allocation, _hazard, _similar_item, _reliability],
-                    session)
-        session.commit()
+                    self.session)
+        self.session.commit()
 
         self._db_table_create(RTKMilHdbkF.__table__)
         self._db_table_create(RTKNSWC.__table__)
@@ -511,8 +525,8 @@ class DAO(object):
         _software.description = _(u"System Software")
         self.db_add([
             _software,
-        ], session)
-        session.commit()
+        ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKSoftwareDevelopment.__table__)
         for i in range(43):
@@ -521,8 +535,8 @@ class DAO(object):
             _sw_development.question_id = i
             self.db_add([
                 _sw_development,
-            ], session)
-        session.commit()
+            ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKSoftwareReview.__table__)
         for i in range(50):
@@ -532,7 +546,7 @@ class DAO(object):
             _sw_review.type = 'SRR'
             self.db_add([
                 _sw_review,
-            ], session)
+            ], self.session)
         for i in range(38):
             _sw_review = RTKSoftwareReview()
             _sw_review.software_id = _software.software_id
@@ -540,7 +554,7 @@ class DAO(object):
             _sw_review.type = 'PDR'
             self.db_add([
                 _sw_review,
-            ], session)
+            ], self.session)
         for i in range(35):
             _sw_review = RTKSoftwareReview()
             _sw_review.software_id = _software.software_id
@@ -548,7 +562,7 @@ class DAO(object):
             _sw_review.type = 'CDR'
             self.db_add([
                 _sw_review,
-            ], session)
+            ], self.session)
         for i in range(24):
             _sw_review = RTKSoftwareReview()
             _sw_review.software_id = _software.software_id
@@ -556,8 +570,8 @@ class DAO(object):
             _sw_review.type = 'TRR'
             self.db_add([
                 _sw_review,
-            ], session)
-        session.commit()
+            ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKSoftwareTest.__table__)
         for i in range(21):
@@ -566,8 +580,8 @@ class DAO(object):
             _sw_test.technique_id = i
             self.db_add([
                 _sw_test,
-            ], session)
-        session.commit()
+            ], self.session)
+        self.session.commit()
 
         self._db_table_create(RTKValidation.__table__)
         self._db_table_create(RTKIncident.__table__)
