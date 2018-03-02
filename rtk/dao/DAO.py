@@ -459,18 +459,18 @@ class DAO(object):
         self._db_table_create(RTKMatrix.__table__)
 
         self._db_table_create(RTKHardware.__table__)
-        _hardware = RTKHardware()
-        _hardware.revision_id = _revision.revision_id
-        _hardware.hardware_id = 1
-        _hardware.description = _(u"System")
+        _system = RTKHardware()
+        _system.revision_id = _revision.revision_id
+        _system.hardware_id = 1
+        _system.description = "Test System"
         self.db_add([
-            _hardware,
+            _system,
         ], self.session)
         self.session.commit()
 
         self._db_table_create(RTKAllocation.__table__)
         _allocation = RTKAllocation()
-        _allocation.hardware_id = _hardware.hardware_id
+        _allocation.hardware_id = _system.hardware_id
         _allocation.parent_id = 0
         self.db_add([
             _allocation,
@@ -514,83 +514,8 @@ class DAO(object):
         self._db_table_create(RTKCause.__table__)
         self._db_table_create(RTKControl.__table__)
         self._db_table_create(RTKAction.__table__)
-        self._db_table_create(RTKOpLoad.__table__)
-        self._db_table_create(RTKOpStress.__table__)
-        self._db_table_create(RTKTestMethod.__table__)
-
-        self._db_table_create(RTKSoftware.__table__)
-        _software = RTKSoftware()
-        _software.revision_id = _revision.revision_id
-        _software.software_id = 1
-        _software.description = _(u"System Software")
-        self.db_add([
-            _software,
-        ], self.session)
-        self.session.commit()
-
-        self._db_table_create(RTKSoftwareDevelopment.__table__)
-        for i in range(43):
-            _sw_development = RTKSoftwareDevelopment()
-            _sw_development.software_id = _software.software_id
-            _sw_development.question_id = i
-            self.db_add([
-                _sw_development,
-            ], self.session)
-        self.session.commit()
-
-        self._db_table_create(RTKSoftwareReview.__table__)
-        for i in range(50):
-            _sw_review = RTKSoftwareReview()
-            _sw_review.software_id = _software.software_id
-            _sw_review.question_id = i
-            _sw_review.type = 'SRR'
-            self.db_add([
-                _sw_review,
-            ], self.session)
-        for i in range(38):
-            _sw_review = RTKSoftwareReview()
-            _sw_review.software_id = _software.software_id
-            _sw_review.question_id = i
-            _sw_review.type = 'PDR'
-            self.db_add([
-                _sw_review,
-            ], self.session)
-        for i in range(35):
-            _sw_review = RTKSoftwareReview()
-            _sw_review.software_id = _software.software_id
-            _sw_review.question_id = i
-            _sw_review.type = 'CDR'
-            self.db_add([
-                _sw_review,
-            ], self.session)
-        for i in range(24):
-            _sw_review = RTKSoftwareReview()
-            _sw_review.software_id = _software.software_id
-            _sw_review.question_id = i
-            _sw_review.type = 'TRR'
-            self.db_add([
-                _sw_review,
-            ], self.session)
-        self.session.commit()
-
-        self._db_table_create(RTKSoftwareTest.__table__)
-        for i in range(21):
-            _sw_test = RTKSoftwareTest()
-            _sw_test.software_id = _software.software_id
-            _sw_test.technique_id = i
-            self.db_add([
-                _sw_test,
-            ], self.session)
-        self.session.commit()
 
         self._db_table_create(RTKValidation.__table__)
-        self._db_table_create(RTKIncident.__table__)
-        self._db_table_create(RTKIncidentDetail.__table__)
-        self._db_table_create(RTKIncidentAction.__table__)
-        self._db_table_create(RTKTest.__table__)
-        self._db_table_create(RTKGrowthTest.__table__)
-        self._db_table_create(RTKSurvival.__table__)
-        self._db_table_create(RTKSurvivalData.__table__)
 
         return False
 
@@ -681,14 +606,14 @@ class DAO(object):
         return _error_code, _msg
 
     @staticmethod
-    def db_query(query, session):
+    def db_query(query, session=None):
         """
-        Method to exceute an SQL query against the connected database.
+        Method to execute an SQL query against the connected database.
 
         :param str query: the SQL query string to execute
         :param session: the SQLAlchemy scoped_session instance used to
                         communicate with the RTK Program database.
-        :type session: :py:class:`sqlalchemy.orm.scoped_session`
+        :type session: :class:`sqlalchemy.orm.scoped_session`
         :return:
         :rtype: str
         """

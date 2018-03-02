@@ -4,19 +4,14 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKAllocation Table
-===============================================================================
-"""
-
+"""RTKAllocation Table."""
 
 from sqlalchemy import Column, Float, ForeignKey, Integer
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKAllocation(RTK_BASE):
@@ -62,74 +57,91 @@ class RTKAllocation(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKAllocation data model
-        attributes.
+        Retrieve the current values of the RTKAllocation data model attributes.
 
-        :return: (hardware_id, availability_alloc, env_factor, goal_measure_id,
+        :return: {hardware_id, availability_alloc, env_factor, goal_measure_id,
                   hazard_rate_alloc, hazard_rate_goal, included, int_factor,
                   method_id, mtbf_alloc, mtbf_goal, n_sub_systems,
                   n_sub_elements, parent_id, percent_wt_factor,
                   reliability_alloc, reliability_goal, op_time_factor,
-                  soa_factor, weight_factor)
-        :rtype: tuple
+                  soa_factor, weight_factor} pairs.
+        :rtype: dict
         """
-
-        _attributes = (self.hardware_id, self.availability_alloc,
-                       self.env_factor, self.goal_measure_id,
-                       self.hazard_rate_alloc, self.hazard_rate_goal,
-                       self.included, self.int_factor, self.method_id,
-                       self.mtbf_alloc, self.mtbf_goal, self.n_sub_systems,
-                       self.n_sub_elements, self.parent_id,
-                       self.percent_weight_factor, self.reliability_alloc,
-                       self.reliability_goal, self.op_time_factor,
-                       self.soa_factor, self.weight_factor)
+        _attributes = {
+            'hardware_id': self.hardware_id,
+            'availability_alloc': self.availability_alloc,
+            'env_factor': self.env_factor,
+            'goal_measure_id': self.goal_measure_id,
+            'hazard_rate_alloc': self.hazard_rate_alloc,
+            'hazard_rate_goal': self.hazard_rate_goal,
+            'included': self.included,
+            'int_factor': self.int_factor,
+            'method_id': self.method_id,
+            'mtbf_alloc': self.mtbf_alloc,
+            'mtbf_goal': self.mtbf_goal,
+            'n_sub_systems': self.n_sub_systems,
+            'n_sub_elements': self.n_sub_elements,
+            'parent_id': self.parent_id,
+            'percent_weight_factor': self.percent_weight_factor,
+            'reliability_alloc': self.reliability_alloc,
+            'reliability_goal': self.reliability_goal,
+            'op_time_factor': self.op_time_factor,
+            'soa_factor': self.soa_factor,
+            'weight_factor': self.weight_factor
+        }
 
         return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the RTKAllocation data model attributes.
+        Set the RTKAllocation data model attributes.
 
         :param tuple attributes: tuple of values to assign to the instance
                                 attributes.
         :return: (_error_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKAllocation {0:d} attributes.". \
                format(self.hardware_id)
 
         try:
             self.availability_alloc = float(
-                none_to_default(attributes[0], 0.0))
-            self.env_factor = int(none_to_default(attributes[1], 1))
-            self.goal_measure_id = int(none_to_default(attributes[2], 0))
-            self.hazard_rate_alloc = float(none_to_default(attributes[3], 0.0))
-            self.hazard_rate_goal = float(none_to_default(attributes[4], 0.0))
-            self.included = int(none_to_default(attributes[5], 1))
-            self.int_factor = int(none_to_default(attributes[6], 1))
-            self.method_id = int(none_to_default(attributes[7], 1))
-            self.mtbf_alloc = float(none_to_default(attributes[8], 0.0))
-            self.mtbf_goal = float(none_to_default(attributes[9], 0.0))
-            self.n_sub_systems = int(none_to_default(attributes[10], 1))
-            self.n_sub_elements = int(none_to_default(attributes[11], 1))
-            self.parent_id = int(none_to_default(attributes[12], 1))
+                none_to_default(attributes['availability_alloc'], 0.0))
+            self.env_factor = int(none_to_default(attributes['env_factor'], 1))
+            self.goal_measure_id = int(
+                none_to_default(attributes['goal_measure_id'], 0))
+            self.hazard_rate_alloc = float(
+                none_to_default(attributes['hazard_rate_alloc'], 0.0))
+            self.hazard_rate_goal = float(
+                none_to_default(attributes['hazard_rate_goal'], 0.0))
+            self.included = int(none_to_default(attributes['included'], 1))
+            self.int_factor = int(none_to_default(attributes['int_factor'], 1))
+            self.method_id = int(none_to_default(attributes['method_id'], 1))
+            self.mtbf_alloc = float(
+                none_to_default(attributes['mtbf_alloc'], 0.0))
+            self.mtbf_goal = float(
+                none_to_default(attributes['mtbf_goal'], 0.0))
+            self.n_sub_systems = int(
+                none_to_default(attributes['n_sub_systems'], 1))
+            self.n_sub_elements = int(
+                none_to_default(attributes['n_sub_elements'], 1))
+            self.parent_id = int(none_to_default(attributes['parent_id'], 1))
             self.percent_weight_factor = float(
-                none_to_default(attributes[13], 0.0))
+                none_to_default(attributes['percent_weight_factor'], 0.0))
             self.reliability_alloc = float(
-                none_to_default(attributes[14], 0.0))
-            self.reliability_goal = float(none_to_default(attributes[15], 1.0))
-            self.op_time_factor = int(none_to_default(attributes[16], 1))
-            self.soa_factor = int(none_to_default(attributes[17], 1))
-            self.weight_factor = float(none_to_default(attributes[18], 1))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKAllocation.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKAllocation attributes."
+                none_to_default(attributes['reliability_alloc'], 0.0))
+            self.reliability_goal = float(
+                none_to_default(attributes['reliability_goal'], 1.0))
+            self.op_time_factor = int(
+                none_to_default(attributes['op_time_factor'], 1))
+            self.soa_factor = int(none_to_default(attributes['soa_factor'], 1))
+            self.weight_factor = float(
+                none_to_default(attributes['weight_factor'], 1))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKAllocation.set_attributes().".format(_err)
 
         return _error_code, _msg
