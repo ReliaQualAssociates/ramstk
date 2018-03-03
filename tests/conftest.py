@@ -21,11 +21,13 @@ def test_dao():
 
 
 @pytest.fixture(scope='session')
-def test_loggers():
+def test_configuration():
     """Create loggers to use for testing."""
     configuration = Configuration()
 
-    configuration.DEBUG_LOG = \
+    configuration.RTK_DEBUG_LOG = \
         Utilities.create_logger("RTK.debug", 'DEBUG', '/tmp/RTK_debug.log')
-    configuration.USER_LOG = \
+    configuration.RTK_USER_LOG = \
         Utilities.create_logger("RTK.user", 'INFO', '/tmp/RTK_user.log')
+
+    yield configuration

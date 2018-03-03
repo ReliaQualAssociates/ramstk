@@ -13,7 +13,7 @@ from treelib import Tree
 
 from rtk.dao import DAO
 from rtk.dao import RTKAllocation
-from rtk.analyses.allocation import dtmAllocation
+from rtk.analyses.allocation import dtmAllocation, dtcAllocation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -290,3 +290,132 @@ def test_foo_apportionment(test_dao):
     assert _children[1].data.reliability_alloc == pytest.approx(0.9999859)
     assert _children[2].data.reliability_alloc == pytest.approx(0.9999397)
     assert _children[3].data.reliability_alloc == pytest.approx(0.9998257)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_create_allocation_data_controller(test_dao, test_configuration):
+    """ __init__ should return instance of Allocation data controller. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+
+    assert isinstance(DUT, dtcAllocation)
+    assert isinstance(DUT._dtm_data_model, dtmAllocation)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_select_all(test_dao, test_configuration):
+    """ request_select_all() should return a Tree of RTKAllocation data models. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+
+    _tree = DUT.request_select_all(1)
+
+    assert isinstance(_tree, Tree)
+    assert isinstance(_tree.get_node(2).data, RTKAllocation)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_select(test_dao, test_configuration):
+    """ request_select() should return an RTKAllocation data model. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert isinstance(DUT.request_select(2), RTKAllocation)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_non_existent_id(test_dao, test_configuration):
+    """ request_select() should return None when requesting an Allocation that doesn't exist. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert DUT.request_select(100) is None
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_insert(test_dao, test_configuration):
+    """ request_insert() should return False on success. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert not DUT.request_insert(revision_id=1, hardware_id=10, parent_id=1)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_delete(test_dao, test_configuration):
+    """ request_delete() should return False on success. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert not DUT.request_delete(10)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_delete_non_existent_id(test_dao, test_configuration):
+    """ request_delete() should return True when attempting to delete a non-existent Allocation. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert DUT.request_delete(100)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_update(test_dao, test_configuration):
+    """ request_update() should return False on success. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert not DUT.request_update(2)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_update_non_existent_id(test_dao, test_configuration):
+    """ request_update() should return True when attempting to save a non-existent Allocation. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert DUT.request_update(100)
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_update_all(test_dao, test_configuration):
+    """ request_update_all() should return False on success. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    assert not DUT.request_update_all()
+
+
+@pytest.mark.integration
+@pytest.mark.hardware
+@pytest.mark.allocation
+def test_request_calculate(test_dao, test_configuration):
+    """ request_calculate() should return False on success. """
+    DUT = dtcAllocation(test_dao, test_configuration, test='True')
+    DUT.request_select_all(1)
+
+    DUT.request_select(1).reliability_goal = 0.99975
+
+    # The [parent, child 1, child 2, child 3, child 4] hazard rates.
+    _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
+
+    assert not DUT.request_calculate(1, _hazard_rates)
+
