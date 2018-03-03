@@ -40,7 +40,9 @@ ATTRIBUTES = {
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_rtkallocation_create(test_dao):
     """__init__() should create an RTKAllocation model."""
     _session = test_dao.RTK_SESSION(
@@ -65,7 +67,7 @@ def test_rtkallocation_create(test_dao):
     assert DUT.mission_time == 100.0
     assert DUT.mtbf_alloc == 0.0
     assert DUT.mtbf_goal == 0.0
-    assert DUT.n_sub_systems == 1
+    assert DUT.n_sub_systems == 2
     assert DUT.n_sub_elements == 1
     assert DUT.parent_id == 0
     assert DUT.percent_weight_factor == 0.0
@@ -77,7 +79,9 @@ def test_rtkallocation_create(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_get_attributes(test_dao):
     """get_attributes() should return a dict of attribute values."""
     _session = test_dao.RTK_SESSION(
@@ -101,7 +105,7 @@ def test_get_attributes(test_dao):
     assert _attributes['mission_time'] == 100.0
     assert _attributes['mtbf_alloc'] == 0.0
     assert _attributes['mtbf_goal'] == 0.0
-    assert _attributes['n_sub_systems'] == 1
+    assert _attributes['n_sub_systems'] == 2
     assert _attributes['n_sub_elements'] == 1
     assert _attributes['parent_id'] == 0
     assert _attributes['percent_weight_factor'] == 0.0
@@ -113,7 +117,9 @@ def test_get_attributes(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_set_attributes(test_dao):
     """set_attributes() should return a zero error code on success."""
     _session = test_dao.RTK_SESSION(
@@ -127,7 +133,9 @@ def test_set_attributes(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_set_attributes_too_few_passed(test_dao):
     """set_attributes() should return a 40 error code when passed a dict with missing attributes."""
     _session = test_dao.RTK_SESSION(
@@ -163,7 +171,9 @@ def test_set_attributes_too_few_passed(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_equal_apportionment(test_dao):
     """equal_apportionment() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -178,7 +188,9 @@ def test_equal_apportionment(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_equal_apportionment_divide_by_zero(test_dao):
     """equal_apportionment() should return True on failure."""
     _session = test_dao.RTK_SESSION(
@@ -193,7 +205,9 @@ def test_equal_apportionment_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_agree_apportionment(test_dao):
     """agree_apportionment() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -208,7 +222,9 @@ def test_agree_apportionment(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_agree_apportionment_divide_by_zero(test_dao):
     """agree_apportionment() should return True on failure."""
     _session = test_dao.RTK_SESSION(
@@ -223,7 +239,9 @@ def test_agree_apportionment_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_arinc_apportionment(test_dao):
     """arinc_apportionment() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -239,7 +257,9 @@ def test_arinc_apportionment(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_arinc_apportionment_divide_by_zero(test_dao):
     """arinc_apportionment() should return True on failure."""
     _session = test_dao.RTK_SESSION(
@@ -255,7 +275,9 @@ def test_arinc_apportionment_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_foo_apportionment(test_dao):
     """foo_apportionment() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -276,7 +298,9 @@ def test_foo_apportionment(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_foo_apportionment_divide_by_zero(test_dao):
     """foo_apportionment() should return True on failure."""
     _session = test_dao.RTK_SESSION(
@@ -297,7 +321,9 @@ def test_foo_apportionment_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_calculate_reliability_goal(test_dao):
     """calculate_goals() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -313,7 +339,9 @@ def test_calculate_reliability_goal(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_calculate_reliability_goal_divide_by_zero(test_dao):
     """calculate_goals() should return True on failure."""
     _session = test_dao.RTK_SESSION(
@@ -329,7 +357,9 @@ def test_calculate_reliability_goal_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_calculate_hazard_rate_goal(test_dao):
     """calculate_goals() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -345,7 +375,9 @@ def test_calculate_hazard_rate_goal(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_calculate_hazard_rate_goal_divide_by_zero(test_dao):
     """calculate_goals() should return True on failure."""
     _session = test_dao.RTK_SESSION(
@@ -361,7 +393,9 @@ def test_calculate_hazard_rate_goal_divide_by_zero(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_calculate_mtbf_goal(test_dao):
     """calculate_goals() should return False on success."""
     _session = test_dao.RTK_SESSION(
@@ -377,7 +411,9 @@ def test_calculate_mtbf_goal(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.database
 @pytest.mark.hardware
+@pytest.mark.allocation
 def test_calculate_mtbf_goal_divide_by_zero(test_dao):
     """calculate_goals() should return True on failure."""
     _session = test_dao.RTK_SESSION(
