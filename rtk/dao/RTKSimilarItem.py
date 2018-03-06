@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKSimilarItem.py is part of The RTK Project
+#       rtk.dao.programdb.RTKSimilarItem.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKSimilarItem Table
-===============================================================================
-"""
+"""RTKSimilarItem Table."""
 
 from sqlalchemy import BLOB, Column, Float, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 # pylint: disable=R0902
@@ -29,6 +25,11 @@ class RTKSimilarItem(RTK_BASE):
     __tablename__ = 'rtk_similar_item'
     __table_args__ = {'extend_existing': True}
 
+    revision_id = Column(
+        'fld_revision_id',
+        Integer,
+        ForeignKey('rtk_revision.fld_revision_id'),
+        nullable=False)
     hardware_id = Column(
         'fld_hardware_id',
         Integer,
@@ -96,10 +97,9 @@ class RTKSimilarItem(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKSimilarItem data model
-        attributes.
+        Retrieve current values of the RTKSimilarItem data model attributes.
 
-        :return: (hardware_id, change_description_1, change_description_2,
+        :return: {hardware_id, change_description_1, change_description_2,
                   change_description_3, change_description_4,
                   change_description_5, change_description_6,
                   change_description_7, change_description_8,
@@ -114,111 +114,448 @@ class RTKSimilarItem(RTK_BASE):
                   temperature_to, user_blob_1, user_blob_2, user_blob_3,
                   user_blob_4, user_blob_5, user_float_1, user_float_2,
                   user_float_3, user_float_4, user_float_5, user_int_1,
-                  user_int_2, user_int_3, user_int_4, user_int_5)
+                  user_int_2, user_int_3, user_int_4, user_int_5}
         :rtype: tuple
         """
+        _attributes = {
+            'hardware_id': self.hardware_id,
+            'change_description_1': self.change_description_1,
+            'change_description_2': self.change_description_2,
+            'change_description_3': self.change_description_3,
+            'change_description_4': self.change_description_4,
+            'change_description_5': self.change_description_5,
+            'change_description_6': self.change_description_6,
+            'change_description_7': self.change_description_7,
+            'change_description_8': self.change_description_8,
+            'change_description_9': self.change_description_9,
+            'change_description_10': self.change_description_10,
+            'change_factor_1': self.change_factor_1,
+            'change_factor_2': self.change_factor_2,
+            'change_factor_3': self.change_factor_3,
+            'change_factor_4': self.change_factor_4,
+            'change_factor_5': self.change_factor_5,
+            'change_factor_6': self.change_factor_6,
+            'change_factor_7': self.change_factor_7,
+            'change_factor_8': self.change_factor_8,
+            'change_factor_9': self.change_factor_9,
+            'change_factor_10': self.change_factor_10,
+            'environment_from_id': self.environment_from_id,
+            'environment_to_id': self.environment_to_id,
+            'function_1': self.function_1,
+            'function_2': self.function_2,
+            'function_3': self.function_3,
+            'function_4': self.function_4,
+            'function_5': self.function_5,
+            'method_id': self.method_id,
+            'parent_id': self.parent_id,
+            'quality_from_id': self.quality_from_id,
+            'quality_to_id': self.quality_to_id,
+            'result_1': self.result_1,
+            'result_2': self.result_2,
+            'result_3': self.result_3,
+            'result_4': self.result_4,
+            'result_5': self.result_5,
+            'temperature_from': self.temperature_from,
+            'temperature_to': self.temperature_to,
+            'user_blob_1': self.user_blob_1,
+            'user_blob_2': self.user_blob_2,
+            'user_blob_3': self.user_blob_3,
+            'user_blob_4': self.user_blob_4,
+            'user_blob_5': self.user_blob_5,
+            'user_float_1': self.user_float_1,
+            'user_float_2': self.user_float_2,
+            'user_float_3': self.user_float_3,
+            'user_float_4': self.user_float_4,
+            'user_float_5': self.user_float_5,
+            'user_int_1': self.user_int_1,
+            'user_int_2': self.user_int_2,
+            'user_int_3': self.user_int_3,
+            'user_int_4': self.user_int_4,
+            'user_int_5': self.user_int_5
+        }
 
-        _values = (self.hardware_id, self.change_description_1,
-                   self.change_description_2, self.change_description_3,
-                   self.change_description_4, self.change_description_5,
-                   self.change_description_6, self.change_description_7,
-                   self.change_description_8, self.change_description_9,
-                   self.change_description_10, self.change_factor_1,
-                   self.change_factor_2, self.change_factor_3,
-                   self.change_factor_4, self.change_factor_5,
-                   self.change_factor_6, self.change_factor_7,
-                   self.change_factor_8, self.change_factor_9,
-                   self.change_factor_10, self.environment_from_id,
-                   self.environment_to_id, self.function_1, self.function_2,
-                   self.function_3, self.function_4, self.function_5,
-                   self.method_id, self.parent_id, self.quality_from_id,
-                   self.quality_to_id, self.result_1, self.result_2,
-                   self.result_3, self.result_4, self.result_5,
-                   self.temperature_from, self.temperature_to,
-                   self.user_blob_1, self.user_blob_2, self.user_blob_3,
-                   self.user_blob_4, self.user_blob_5, self.user_float_1,
-                   self.user_float_2, self.user_float_3, self.user_float_4,
-                   self.user_float_5, self.user_int_1, self.user_int_2,
-                   self.user_int_3, self.user_int_4, self.user_int_5)
-
-        return _values
+        return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the RTKSimilarItem data model attributes.
+        Set the RTKSimilarItem data model attributes.
 
         :param tuple attributes: tuple of values to assign to the instance
                                  attributes.
-        :return: (_code, _msg); the error code and error message.
+        :return: (_error_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKSimilarItem {0:d} attributes.". \
                format(self.hardware_id)
 
         try:
-            self.change_description_1 = str(none_to_default(attributes[0], ''))
-            self.change_description_2 = str(none_to_default(attributes[1], ''))
-            self.change_description_3 = str(none_to_default(attributes[2], ''))
-            self.change_description_4 = str(none_to_default(attributes[3], ''))
-            self.change_description_5 = str(none_to_default(attributes[4], ''))
-            self.change_description_6 = str(none_to_default(attributes[5], ''))
-            self.change_description_7 = str(none_to_default(attributes[6], ''))
-            self.change_description_8 = str(none_to_default(attributes[7], ''))
-            self.change_description_9 = str(none_to_default(attributes[8], ''))
+            self.change_description_1 = str(
+                none_to_default(attributes['change_description_1'], ''))
+            self.change_description_2 = str(
+                none_to_default(attributes['change_description_2'], ''))
+            self.change_description_3 = str(
+                none_to_default(attributes['change_description_3'], ''))
+            self.change_description_4 = str(
+                none_to_default(attributes['change_description_4'], ''))
+            self.change_description_5 = str(
+                none_to_default(attributes['change_description_5'], ''))
+            self.change_description_6 = str(
+                none_to_default(attributes['change_description_6'], ''))
+            self.change_description_7 = str(
+                none_to_default(attributes['change_description_7'], ''))
+            self.change_description_8 = str(
+                none_to_default(attributes['change_description_8'], ''))
+            self.change_description_9 = str(
+                none_to_default(attributes['change_description_9'], ''))
             self.change_description_10 = str(
-                none_to_default(attributes[9], ''))
-            self.change_factor_1 = float(none_to_default(attributes[10], 1.0))
-            self.change_factor_2 = float(none_to_default(attributes[11], 1.0))
-            self.change_factor_3 = float(none_to_default(attributes[12], 1.0))
-            self.change_factor_4 = float(none_to_default(attributes[13], 1.0))
-            self.change_factor_5 = float(none_to_default(attributes[14], 1.0))
-            self.change_factor_6 = float(none_to_default(attributes[15], 1.0))
-            self.change_factor_7 = float(none_to_default(attributes[16], 1.0))
-            self.change_factor_8 = float(none_to_default(attributes[17], 1.0))
-            self.change_factor_9 = float(none_to_default(attributes[18], 1.0))
-            self.change_factor_10 = float(none_to_default(attributes[19], 1.0))
-            self.environment_from_id = int(none_to_default(attributes[20], 0))
-            self.environment_to_id = int(none_to_default(attributes[21], 0))
-            self.function_1 = str(none_to_default(attributes[22], ''))
-            self.function_2 = str(none_to_default(attributes[23], ''))
-            self.function_3 = str(none_to_default(attributes[24], ''))
-            self.function_4 = str(none_to_default(attributes[25], ''))
-            self.function_5 = str(none_to_default(attributes[26], ''))
-            self.method_id = int(none_to_default(attributes[27], 0))
-            self.parent_id = int(none_to_default(attributes[28], 0))
-            self.quality_from_id = int(none_to_default(attributes[29], 0))
-            self.quality_to_id = int(none_to_default(attributes[30], 0))
-            self.result_1 = float(none_to_default(attributes[31], 0))
-            self.result_2 = float(none_to_default(attributes[32], 0))
-            self.result_3 = float(none_to_default(attributes[33], 0))
-            self.result_4 = float(none_to_default(attributes[34], 0))
-            self.result_5 = float(none_to_default(attributes[35], 0))
-            self.temperature_from = float(none_to_default(attributes[36], 0))
-            self.temperature_to = float(none_to_default(attributes[37], 0))
-            self.user_blob_1 = str(none_to_default(attributes[38], ''))
-            self.user_blob_2 = str(none_to_default(attributes[39], ''))
-            self.user_blob_3 = str(none_to_default(attributes[40], ''))
-            self.user_blob_4 = str(none_to_default(attributes[41], ''))
-            self.user_blob_5 = str(none_to_default(attributes[42], ''))
-            self.user_float_1 = float(none_to_default(attributes[43], 0.0))
-            self.user_float_2 = float(none_to_default(attributes[44], 0.0))
-            self.user_float_3 = float(none_to_default(attributes[45], 0.0))
-            self.user_float_4 = float(none_to_default(attributes[46], 0.0))
-            self.user_float_5 = float(none_to_default(attributes[47], 0.0))
-            self.user_int_1 = int(none_to_default(attributes[48], 0))
-            self.user_int_2 = int(none_to_default(attributes[49], 0))
-            self.user_int_3 = int(none_to_default(attributes[50], 0))
-            self.user_int_4 = int(none_to_default(attributes[51], 0))
-            self.user_int_5 = int(none_to_default(attributes[52], 0))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKSimilarItem.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKSimilarItem attributes."
+                none_to_default(attributes['change_description_10'], ''))
+            self.change_factor_1 = float(
+                none_to_default(attributes['change_factor_1'], 1.0))
+            self.change_factor_2 = float(
+                none_to_default(attributes['change_factor_2'], 1.0))
+            self.change_factor_3 = float(
+                none_to_default(attributes['change_factor_3'], 1.0))
+            self.change_factor_4 = float(
+                none_to_default(attributes['change_factor_4'], 1.0))
+            self.change_factor_5 = float(
+                none_to_default(attributes['change_factor_5'], 1.0))
+            self.change_factor_6 = float(
+                none_to_default(attributes['change_factor_6'], 1.0))
+            self.change_factor_7 = float(
+                none_to_default(attributes['change_factor_7'], 1.0))
+            self.change_factor_8 = float(
+                none_to_default(attributes['change_factor_8'], 1.0))
+            self.change_factor_9 = float(
+                none_to_default(attributes['change_factor_9'], 1.0))
+            self.change_factor_10 = float(
+                none_to_default(attributes['change_factor_10'], 1.0))
+            self.environment_from_id = int(
+                none_to_default(attributes['environment_from_id'], 0))
+            self.environment_to_id = int(
+                none_to_default(attributes['environment_to_id'], 0))
+            self.function_1 = str(
+                none_to_default(attributes['function_1'], ''))
+            self.function_2 = str(
+                none_to_default(attributes['function_2'], ''))
+            self.function_3 = str(
+                none_to_default(attributes['function_3'], ''))
+            self.function_4 = str(
+                none_to_default(attributes['function_4'], ''))
+            self.function_5 = str(
+                none_to_default(attributes['function_5'], ''))
+            self.method_id = int(none_to_default(attributes['method_id'], 0))
+            self.parent_id = int(none_to_default(attributes['parent_id'], 0))
+            self.quality_from_id = int(
+                none_to_default(attributes['quality_from_id'], 0))
+            self.quality_to_id = int(
+                none_to_default(attributes['quality_to_id'], 0))
+            self.result_1 = float(none_to_default(attributes['result_1'], 0))
+            self.result_2 = float(none_to_default(attributes['result_2'], 0))
+            self.result_3 = float(none_to_default(attributes['result_3'], 0))
+            self.result_4 = float(none_to_default(attributes['result_4'], 0))
+            self.result_5 = float(none_to_default(attributes['result_5'], 0))
+            self.temperature_from = float(
+                none_to_default(attributes['temperature_from'], 0))
+            self.temperature_to = float(
+                none_to_default(attributes['temperature_to'], 0))
+            self.user_blob_1 = str(
+                none_to_default(attributes['user_blob_1'], ''))
+            self.user_blob_2 = str(
+                none_to_default(attributes['user_blob_2'], ''))
+            self.user_blob_3 = str(
+                none_to_default(attributes['user_blob_3'], ''))
+            self.user_blob_4 = str(
+                none_to_default(attributes['user_blob_4'], ''))
+            self.user_blob_5 = str(
+                none_to_default(attributes['user_blob_5'], ''))
+            self.user_float_1 = float(
+                none_to_default(attributes['user_float_1'], 0.0))
+            self.user_float_2 = float(
+                none_to_default(attributes['user_float_2'], 0.0))
+            self.user_float_3 = float(
+                none_to_default(attributes['user_float_3'], 0.0))
+            self.user_float_4 = float(
+                none_to_default(attributes['user_float_4'], 0.0))
+            self.user_float_5 = float(
+                none_to_default(attributes['user_float_5'], 0.0))
+            self.user_int_1 = int(none_to_default(attributes['user_int_1'], 0))
+            self.user_int_2 = int(none_to_default(attributes['user_int_2'], 0))
+            self.user_int_3 = int(none_to_default(attributes['user_int_3'], 0))
+            self.user_int_4 = int(none_to_default(attributes['user_int_4'], 0))
+            self.user_int_5 = int(none_to_default(attributes['user_int_5'], 0))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKSimilarItem.set_attributes().".format(_err)
 
         return _error_code, _msg
+
+    def topic_633(self, hazard_rate):
+        """
+        Calculate the Similar Item analysis using Topic 6.3.3 approach.
+
+        This method calculates the new hazard rate using the approach found
+        in The Reliability Toolkit: Commercial Practices Edition, Topic 6.3.3.
+
+        :param float hazard_rate: the current hazard rate of the hardware item
+                                  being calculated.
+        :return: False on success or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        _environment_convert = {
+            (1, 1): 1.0,
+            (1, 2): 0.2,
+            (1, 3): 0.3,
+            (1, 4): 0.3,
+            (1, 5): 0.1,
+            (1, 6): 1.1,
+            (2, 1): 5.0,
+            (2, 2): 1.0,
+            (2, 3): 1.4,
+            (2, 4): 1.4,
+            (2, 5): 0.5,
+            (2, 6): 5.0,
+            (3, 1): 3.3,
+            (3, 2): 0.7,
+            (3, 3): 1.0,
+            (3, 4): 1.0,
+            (3, 5): 0.3,
+            (3, 6): 3.3,
+            (4, 1): 3.3,
+            (4, 2): 0.7,
+            (4, 3): 1.0,
+            (4, 4): 1.0,
+            (4, 5): 0.3,
+            (4, 6): 3.3,
+            (5, 1): 10.0,
+            (5, 2): 2.0,
+            (5, 3): 3.3,
+            (5, 4): 3.3,
+            (5, 5): 1.0,
+            (5, 6): 10.0,
+            (6, 1): 0.9,
+            (6, 2): 0.2,
+            (6, 3): 0.3,
+            (6, 4): 0.3,
+            (6, 5): 0.1,
+            (6, 6): 1.0
+        }
+        _quality_convert = {
+            (1, 1): 1.0,
+            (1, 2): 0.8,
+            (1, 3): 0.5,
+            (1, 4): 0.2,
+            (2, 1): 1.3,
+            (2, 2): 1.0,
+            (2, 3): 0.6,
+            (2, 4): 0.3,
+            (3, 1): 2.0,
+            (3, 2): 1.7,
+            (3, 3): 1.0,
+            (3, 4): 0.4,
+            (4, 1): 5.0,
+            (4, 2): 3.3,
+            (4, 3): 2.5,
+            (4, 4): 1.0
+        }
+        _temperature_convert = {
+            (10.0, 10.0): 1.0,
+            (10.0, 20.0): 0.9,
+            (10.0, 30.0): 0.8,
+            (10.0, 40.0): 0.8,
+            (10.0, 50.0): 0.7,
+            (10.0, 60.0): 0.5,
+            (10.0, 70.0): 0.4,
+            (20.0, 10.0): 1.1,
+            (20.0, 20.0): 1.0,
+            (20.0, 30.0): 0.9,
+            (20.0, 40.0): 0.8,
+            (20.0, 50.0): 0.7,
+            (20.0, 60.0): 0.6,
+            (20.0, 70.0): 0.5,
+            (30.0, 10.0): 1.2,
+            (30.0, 20.0): 1.1,
+            (30.0, 30.0): 1.0,
+            (30.0, 40.0): 0.9,
+            (30.0, 50.0): 0.8,
+            (30.0, 60.0): 0.6,
+            (30.0, 70.0): 0.5,
+            (40.0, 10.0): 1.3,
+            (40.0, 20.0): 1.2,
+            (40.0, 30.0): 1.1,
+            (40.0, 40.0): 1.0,
+            (40.0, 50.0): 0.9,
+            (40.0, 60.0): 0.7,
+            (40.0, 70.0): 0.6,
+            (50.0, 10.0): 1.5,
+            (50.0, 20.0): 1.4,
+            (50.0, 30.0): 1.2,
+            (50.0, 40.0): 1.1,
+            (50.0, 50.0): 1.0,
+            (50.0, 60.0): 0.8,
+            (50.0, 70.0): 0.7,
+            (60.0, 10.0): 1.9,
+            (60.0, 20.0): 1.7,
+            (60.0, 30.0): 1.6,
+            (60.0, 40.0): 1.5,
+            (60.0, 50.0): 1.2,
+            (60.0, 60.0): 1.0,
+            (60.0, 70.0): 0.8,
+            (70.0, 10.0): 2.4,
+            (70.0, 20.0): 2.2,
+            (70.0, 30.0): 1.9,
+            (70.0, 40.0): 1.8,
+            (70.0, 50.0): 1.5,
+            (70.0, 60.0): 1.2,
+            (70.0, 70.0): 1.0
+        }
+
+        # Convert user-supplied temperatures to whole values used in Topic 633.
+        self.temperature_from = round(self.temperature_from / 10.0) * 10.0
+        self.temperature_to = round(self.temperature_to / 10.0) * 10.0
+
+        try:
+            self.change_factor_1 = _quality_convert[(self.quality_from_id,
+                                                     self.quality_to_id)]
+        except KeyError:
+            self.change_factor_1 = 1.0
+            _return = True
+
+        try:
+            self.change_factor_2 = _environment_convert[(
+                self.environment_from_id, self.environment_to_id)]
+        except KeyError:
+            self.change_factor_2 = 1.0
+            _return = True
+
+        try:
+            self.change_factor_3 = _temperature_convert[(self.temperature_from,
+                                                         self.temperature_to)]
+        except KeyError:
+            self.change_factor_3 = 1.0
+            _return = True
+
+        self.result_1 = hazard_rate / (
+            self.change_factor_1 * self.change_factor_2 * self.change_factor_3)
+
+        return _return
+
+    def user_defined(self, hazard_rate):
+        """
+        Calculate the user-defined similar item analysis.
+
+        :param float hazard_rate: the current hazard rate of the hardware item
+                                  being calculated.
+        :return: False if successful or True if an error is encountered.
+        :rtype: bool
+        """
+        _return = False
+
+        # Create list of safe functions.
+        _safe_list = [
+            'hr', 'pi1', 'pi3', 'pi3', 'pi4', 'pi5', 'pi6', 'pi7', 'pi8',
+            'pi9', 'pi10', 'uf1', 'uf2', 'uf3', 'uf4', 'uf5', 'ui1', 'ui2',
+            'ui3', 'ui4', 'ui5', 'equation1', 'equation2', 'equation3',
+            'equation4', 'equation5', 'res1', 'res2', 'res3', 'res4', 'res5'
+        ]
+
+        # Use the list to filter the local namespace
+        _sia = dict([(k, locals().get(k, None)) for k in _safe_list])
+
+        # Get the assembly failure intensity.
+        _sia['hr'] = hazard_rate
+
+        # Get the change factor values.
+        _sia['pi1'] = self.change_factor_1
+        _sia['pi2'] = self.change_factor_2
+        _sia['pi3'] = self.change_factor_3
+        _sia['pi4'] = self.change_factor_4
+        _sia['pi5'] = self.change_factor_5
+        _sia['pi6'] = self.change_factor_6
+        _sia['pi7'] = self.change_factor_7
+        _sia['pi8'] = self.change_factor_8
+        _sia['pi9'] = self.change_factor_9
+        _sia['pi10'] = self.change_factor_10
+
+        # Get the user-defined float and integer values.
+        _sia['uf1'] = self.user_float_1
+        _sia['uf2'] = self.user_float_2
+        _sia['uf3'] = self.user_float_3
+        _sia['uf4'] = self.user_float_4
+        _sia['uf5'] = self.user_float_5
+        _sia['ui1'] = self.user_int_1
+        _sia['ui2'] = self.user_int_2
+        _sia['ui3'] = self.user_int_3
+        _sia['ui4'] = self.user_int_4
+        _sia['ui5'] = self.user_int_5
+
+        # Get the user-defined functions.
+        _sia['equation1'] = self.function_1
+        _sia['equation2'] = self.function_2
+        _sia['equation3'] = self.function_3
+        _sia['equation4'] = self.function_4
+        _sia['equation5'] = self.function_5
+
+        # Get the existing results.  This allows the use of the results
+        # fields to be manually set to a float values by the user.
+        # Essentially creating five more user-defined float values.
+        _sia['res1'] = self.result_1
+        _sia['res2'] = self.result_2
+        _sia['res3'] = self.result_3
+        _sia['res4'] = self.result_4
+        _sia['res5'] = self.result_5
+
+        _keys = _sia.keys()
+        _values = _sia.values()
+
+        for _index, _key in enumerate(_keys):
+            vars()[_key] = _values[_index]
+
+        try:
+            self.result_1 = eval(_sia['equation1'], {"__builtins__": None},
+                                 _sia)
+        except SyntaxError:
+            self.result_1 = 0.0
+            _return = True
+
+        try:
+            self.result_2 = eval(_sia['equation2'], {"__builtins__": None},
+                                 _sia)
+        except SyntaxError:
+            self.result_2 = 0.0
+            _return = True
+
+        try:
+            self.result_3 = eval(_sia['equation3'], {"__builtins__": None},
+                                 _sia)
+        except SyntaxError:
+            self.result_3 = 0.0
+            _return = True
+
+        try:
+            self.result_4 = eval(_sia['equation4'], {"__builtins__": None},
+                                 _sia)
+        except SyntaxError:
+            self.result_4 = 0.0
+            _return = True
+
+        try:
+            self.result_5 = eval(_sia['equation5'], {"__builtins__": None},
+                                 _sia)
+        except SyntaxError:
+            self.result_5 = 0.0
+            _return = True
+
+        # If all the equations are set and _return is True, then there is a
+        # real issue.  Otherwise, _return was set just because one or more
+        # equations was empty and it is a false True.
+        if (_return and _sia['equation1'] != '' or _sia['equation2'] != ''
+                or _sia['equation3'] != '' or _sia['equation4'] != ''
+                or _sia['equation5'] != ''):
+            _return = False
+
+        return _return

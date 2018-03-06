@@ -67,7 +67,7 @@ def test_rtkallocation_create(test_dao):
     assert DUT.mission_time == 100.0
     assert DUT.mtbf_alloc == 0.0
     assert DUT.mtbf_goal == 0.0
-    assert DUT.n_sub_systems == 2
+    assert DUT.n_sub_systems == 1
     assert DUT.n_sub_elements == 1
     assert DUT.parent_id == 0
     assert DUT.percent_weight_factor == 0.0
@@ -105,7 +105,7 @@ def test_get_attributes(test_dao):
     assert _attributes['mission_time'] == 100.0
     assert _attributes['mtbf_alloc'] == 0.0
     assert _attributes['mtbf_goal'] == 0.0
-    assert _attributes['n_sub_systems'] == 2
+    assert _attributes['n_sub_systems'] == 1
     assert _attributes['n_sub_elements'] == 1
     assert _attributes['parent_id'] == 0
     assert _attributes['percent_weight_factor'] == 0.0
