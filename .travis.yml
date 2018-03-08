@@ -10,7 +10,7 @@ before_install:
 
 # Command to run tests.
 script:
-    - "python setup.py test"
+    - "python setup.py develop && python setup.py test"
 
 # If build is successful, run coveralls.
 after_success:

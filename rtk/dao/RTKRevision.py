@@ -8,11 +8,11 @@
 
 
 from sqlalchemy import BLOB, Column, Float, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKRevision(RTK_BASE):
@@ -30,6 +30,7 @@ class RTKRevision(RTK_BASE):
         * One-to-Many relationship with rtk_incident.
         * One-to-Many relationship with rtk_survival.
         * One-to-Many relationship with rtk_matrix.
+        * One-to-Many relationship with rtk_hazard_analysis.
         * One-to-Many relationship with rtk_program_status.
     """
 
@@ -101,6 +102,7 @@ class RTKRevision(RTK_BASE):
     test = relationship('RTKTest', back_populates='revision')
     survival = relationship('RTKSurvival', back_populates='revision')
     matrix = relationship('RTKMatrix', back_populates='revision')
+    hazard = relationship('RTKHazardAnalysis', back_populates='revision')
     program_status = relationship(
         'RTKProgramStatus', back_populates='revision')
 

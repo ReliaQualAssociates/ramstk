@@ -228,6 +228,7 @@ class DAO(object):
 
         self._db_table_create(RTKAllocation.__table__)
         self._db_table_create(RTKSimilarItem.__table__)
+        self._db_table_create(RTKHazardAnalysis.__table__)
         _allocation = RTKAllocation()
         _allocation.revision_id = _revision.revision_id
         _allocation.hardware_id = _system.hardware_id
@@ -236,8 +237,11 @@ class DAO(object):
         _similaritem.revision_id = _revision.revision_id
         _similaritem.hardware_id = _system.hardware_id
         _similaritem.parent_id = 0
+        _hazardanalysis = RTKHazardAnalysis()
+        _hazardanalysis.revision_id = _revision.revision_id
+        _hazardanalysis.hardware_id = _system.hardware_id
         self.db_add([
-            _allocation, _similaritem
+            _allocation, _similaritem, _hazardanalysis
         ], self.session)
 
         for i in [1, 2, 3, 4]:
@@ -270,14 +274,14 @@ class DAO(object):
             _similaritem.revision_id = _revision.revision_id
             _similaritem.hardware_id = i + 1
             _similaritem.parent_id = _system.hardware_id
-            self.db_add([
-                _allocation, _similaritem
-            ], self.session)
+            _hazardanalysis = RTKHazardAnalysis()
+            _hazardanalysis.revision_id = _revision.revision_id
+            _hazardanalysis.hardware_id = i + 1
 
             self._db_table_create(RTKReliability.__table__)
             _reliability = RTKReliability()
             _reliability.hardware_id = i + 1
-            self.db_add([_allocation, _reliability], self.session)
+            self.db_add([_allocation, _similaritem, _hazardanalysis, _reliability], self.session)
 
         for i in [5, 6, 7]:
             _allocation = RTKAllocation()
@@ -288,10 +292,13 @@ class DAO(object):
             _similaritem.revision_id = _revision.revision_id
             _similaritem.hardware_id = i + 1
             _similaritem.parent_id = 2
+            _hazardanalysis = RTKHazardAnalysis()
+            _hazardanalysis.revision_id = _revision.revision_id
+            _hazardanalysis.hardware_id = i + 1
 
             _reliability = RTKReliability()
             _reliability.hardware_id = i + 1
-            self.db_add([_allocation, _reliability, _similaritem], self.session)
+            self.db_add([_allocation, _similaritem, _hazardanalysis, _reliability], self.session)
 
         self.session.commit()
 
