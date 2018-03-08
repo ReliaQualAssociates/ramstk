@@ -61,8 +61,7 @@ class HazardAnalysisDataController(RTKDataController):
         """
         _hardware_id = kwargs['hardware_id']
         _error_code, _msg = self._dtm_data_model.insert(
-            revision_id=revision_id,
-            hardware_id=_hardware_id)
+            revision_id=revision_id, hardware_id=_hardware_id)
 
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)

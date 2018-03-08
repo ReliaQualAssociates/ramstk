@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKMechanism.py is part of The RTK Project
+#       rtk.dao.programdb.RTKMechanism.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
@@ -9,12 +9,12 @@
 import gettext
 
 from sqlalchemy import Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
 
 from rtk.Utilities import none_to_default, OutOfRangeError
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
@@ -74,10 +74,10 @@ class RTKMechanism(RTK_BASE):
         """
         Retrieve the current values of the Mechanism data model attributes.
 
-        :return: (mode_id, mechanism_id, description, pof_include, rpn,
+        :return: {mode_id, mechanism_id, description, pof_include, rpn,
                   rpn_detection, rpn_detection_new, rpn_new, rpn_occurrence,
-                  rpn_occurrence_new)
-        :rtype: tuple
+                  rpn_occurrence_new} pairs
+        :rtype: dict
         """
         _attributes = {
             'mode_id': self.mode_id,
