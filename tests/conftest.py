@@ -4,9 +4,21 @@ import rtk.Utilities as Utilities
 from rtk.Configuration import Configuration
 from rtk.dao import DAO
 
-TESTDB = 'TestDB.rtk'
-TESTDB_PATH = "/tmp/{}".format(TESTDB)
+TESTDB_PATH = '/tmp/TestDB.rtk'
+TEST_COMMON_DB_PATH = '/tmp/TestCommonDB.rtk'
 TEST_DATABASE_URI = 'sqlite:///' + TESTDB_PATH
+TEST_COMMON_DB_URI = 'sqlite:///' + TEST_COMMON_DB_PATH
+
+
+@pytest.fixture(scope='session')
+def test_common_dao():
+    """Create a test DAO object for testing against an RTK Common DB."""
+    # Create and populate an RTK Program test database.
+    dao = DAO()
+    dao.db_connect(TEST_COMMON_DB_URI)
+    #dao.db_create_common(TEST_COMMON_DB_URI)
+
+    yield dao
 
 
 @pytest.fixture(scope='session')

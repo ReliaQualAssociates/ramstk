@@ -12,7 +12,6 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-
 from rtk.Utilities import none_to_default, OutOfRangeError
 from rtk.dao.RTKCommonDB import RTK_BASE
 

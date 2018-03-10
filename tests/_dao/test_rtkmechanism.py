@@ -6,12 +6,6 @@
 # All rights reserved.
 """Test class for testing the RTKMechanism module algorithms and models."""
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import scoped_session, sessionmaker
-
-import unittest
-from nose.plugins.attrib import attr
-
 import pytest
 
 from rtk.Utilities import OutOfRangeError
@@ -22,8 +16,18 @@ __email__ = 'andrew.rowland@reliaqual.com'
 __organization__ = 'ReliaQual Associates, LLC'
 __copyright__ = 'Copyright 2017 Andrew "weibullguy" Rowland'
 
-
-ATTRIBUTES = {'rpn_new': 0, 'rpn_occurrence_new': 0, 'rpn_occurrence': 0, 'mode_id': 1, 'description': u'Test Failure Mechanism #1', 'rpn_detection_new': 0, 'rpn_detection': 0, 'rpn': 0, 'mechanism_id': 1, 'pof_include': 1}
+ATTRIBUTES = {
+    'rpn_new': 0,
+    'rpn_occurrence_new': 0,
+    'rpn_occurrence': 0,
+    'mode_id': 1,
+    'description': u'Test Failure Mechanism #1',
+    'rpn_detection_new': 0,
+    'rpn_detection': 0,
+    'rpn': 0,
+    'mechanism_id': 1,
+    'pof_include': 1
+}
 
 
 @pytest.mark.integration
@@ -160,13 +164,13 @@ def test_calculate_rpn_out_of_range_severity_inputs(test_dao):
     DUT.rpn_occurrence = 7
     DUT.rpn_occurrence_new = 5
 
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(0, 1)
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(11, 1)
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 0)
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 11)
 
 
@@ -182,10 +186,10 @@ def test_calculate_rpn_out_of_range_occurrence_inputs(test_dao):
     DUT = _session.query(RTKMechanism).first()
 
     DUT.rpn_occurrence = 0
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 1)
     DUT.rpn_occurrence = 11
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 1)
 
 
@@ -201,10 +205,10 @@ def test_calculate_rpn_out_of_range_new_occurrence_inputs(test_dao):
     DUT = _session.query(RTKMechanism).first()
 
     DUT.rpn_occurrence_new = 0
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 1)
     DUT.rpn_occurrence_new = 11
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 1)
 
 
@@ -220,10 +224,10 @@ def test_calculate_rpn_out_of_range_detection_inputs(test_dao):
     DUT = _session.query(RTKMechanism).first()
 
     DUT.rpn_detection = 0
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 10)
     DUT.rpn_detection = 11
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 10)
 
 
@@ -239,10 +243,10 @@ def test_calculate_rpn_out_of_range_new_detection_inputs(test_dao):
     DUT = _session.query(RTKMechanism).first()
 
     DUT.rpn_detection_new = 0
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 10)
     DUT.rpn_detection_new = 11
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(1, 10)
 
 
@@ -262,5 +266,5 @@ def test_calculate_rpn_out_of_range_result(test_dao):
     DUT.rpn_occurrence = -7
     DUT.rpn_occurrence_new = 5
 
-    with pytest.raises(OutOfRangeError) as e_info:
+    with pytest.raises(OutOfRangeError):
         DUT.calculate_rpn(8, 4)
