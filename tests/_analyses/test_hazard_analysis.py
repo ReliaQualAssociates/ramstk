@@ -163,8 +163,10 @@ def test_update_non_existent_id(test_dao):
     _error_code, _msg = DUT.update(100)
 
     assert _error_code == 2207
-    assert _msg == ("RTK ERROR: Attempted to save non-existent Hazard Analysis "
-                    "ID 100.")
+    assert _msg == (
+        "RTK ERROR: Attempted to save non-existent Hazard Analysis "
+        "ID 100.")
+
 
 @pytest.mark.integration
 @pytest.mark.hardware
@@ -326,4 +328,3 @@ def test_request_calculate(test_dao, test_configuration):
     DUT.request_select_all(1)
 
     assert not DUT.request_calculate('4.4')
-

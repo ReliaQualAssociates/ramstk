@@ -6,7 +6,6 @@ python:
 before_install:
     - "pip install -U pip"
     - "pip install --only-binary=numpy,scipy -r requirements.txt"
-    - "pip install ."
 
 # Command to run tests.
 script:

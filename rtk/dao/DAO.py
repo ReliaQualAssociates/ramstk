@@ -208,7 +208,18 @@ class DAO(object):
 
         self._db_table_create(RTKEnvironment.__table__)
         self._db_table_create(RTKFailureDefinition.__table__)
+
         self._db_table_create(RTKFunction.__table__)
+        _function = RTKFunction()
+        _function.revision_id = _revision.revision_id
+        self.db_add([
+            _function,
+        ], self.session)
+
+        self._db_table_create(RTKMode.__table__)
+        self._db_table_create(RTKControl.__table__)
+        self._db_table_create(RTKAction.__table__)
+
         self._db_table_create(RTKRequirement.__table__)
         self._db_table_create(RTKStakeholder.__table__)
         self._db_table_create(RTKMatrix.__table__)
@@ -229,6 +240,11 @@ class DAO(object):
         self._db_table_create(RTKAllocation.__table__)
         self._db_table_create(RTKSimilarItem.__table__)
         self._db_table_create(RTKHazardAnalysis.__table__)
+        self._db_table_create(RTKMechanism.__table__)
+        self._db_table_create(RTKCause.__table__)
+        self._db_table_create(RTKOpLoad.__table__)
+        self._db_table_create(RTKOpStress.__table__)
+        self._db_table_create(RTKTestMethod.__table__)
         _allocation = RTKAllocation()
         _allocation.revision_id = _revision.revision_id
         _allocation.hardware_id = _system.hardware_id
@@ -240,9 +256,45 @@ class DAO(object):
         _hazardanalysis = RTKHazardAnalysis()
         _hazardanalysis.revision_id = _revision.revision_id
         _hazardanalysis.hardware_id = _system.hardware_id
+        _mode = RTKMode()
+        _mode.function_id = 0
+        _mode.hardware_id = _system.hardware_id
+        _mode.description = 'System Test Failure Mode'
         self.db_add([
-            _allocation, _similaritem, _hazardanalysis
+            _allocation, _similaritem, _hazardanalysis, _mode
         ], self.session)
+
+        # Build a Hardware FMEA for the system.
+        _mechanism = RTKMechanism()
+        _mechanism.mode_id = _mode.mode_id
+        _mechanism.description = 'Test Failure Mechanism #1'
+        self.db_add([_mechanism], self.session)
+        _cause = RTKCause()
+        _cause.mechanism_id = _mechanism.mechanism_id
+        _cause.description = 'Test Failure Cause #1'
+        self.db_add([_cause], self.session)
+        _control = RTKControl()
+        _control.mode_id = _mode.mode_id
+        _control.cause_id = _cause.cause_id
+        _control.description = 'Test FMEA Control #1'
+        _action = RTKAction()
+        _action.mode_id = _mode.mode_id
+        _action.cause_id = _cause.cause_id
+        _action.action_recommended = 'Test FMEA Recommended Action #1'
+
+        # Build the PoF for the system.
+        _opload = RTKOpLoad()
+        _opload.mechanism_id = _mechanism.mechanism_id
+        _opload.description = 'Test Operating Load'
+        self.db_add([_control, _action, _opload], self.session)
+        _opstress = RTKOpStress()
+        _opstress.load_id = _opload.load_id
+        _opstress.description = 'Test Operating Stress'
+        self.db_add([_opstress], self.session)
+        _testmethod = RTKTestMethod()
+        _testmethod.stress_id = _opstress.stress_id
+        _testmethod.description = 'Test Test Method'
+        self.db_add([_testmethod], self.session)
 
         for i in [1, 2, 3, 4]:
             _hardware = RTKHardware()
@@ -306,11 +358,7 @@ class DAO(object):
         self._db_table_create(RTKNSWC.__table__)
         self._db_table_create(RTKDesignElectric.__table__)
         self._db_table_create(RTKDesignMechanic.__table__)
-        self._db_table_create(RTKMode.__table__)
-        self._db_table_create(RTKMechanism.__table__)
-        self._db_table_create(RTKCause.__table__)
-        self._db_table_create(RTKControl.__table__)
-        self._db_table_create(RTKAction.__table__)
+
         self._db_table_create(RTKValidation.__table__)
 
         return False

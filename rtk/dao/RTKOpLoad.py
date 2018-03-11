@@ -1,10 +1,10 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKOpLoad.py is part of The RTK Project
+#       rtk.dao.programdb.RTKOpLoad.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""RTKOpLoad Table."""
+"""RTKOpLoad Table Module."""
 
 from sqlalchemy import Column, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
@@ -48,43 +48,42 @@ class RTKOpLoad(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKOpLoad data model
-        attributes.
+        Retrieve the current values of the RTKOpLoad data model attributes.
 
-        :return: (mechanism_id, load_id, description, damage_model,
-                  priority_id)
-        :rtype: tuple
+        :return: {mechanism_id, load_id, description, damage_model,
+                  priority_id} pairs
+        :rtype: dict
         """
 
-        _attributes = (self.mechanism_id, self.load_id, self.description,
-                       self.damage_model, self.priority_id)
+        _attributes = {'mechanism_id': self.mechanism_id,
+        'load_id':self.load_id,
+        'description':self.description,
+        'damage_model':self.damage_model,
+        'priority_id':self.priority_id}
 
         return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the RTKOpLoad data model attributes.
+        Set the RTKOpLoad data model attributes.
 
-        :param tuple attributes: values to assign to instance attributes.
+        :param dict attributes: values to assign to instance attributes.
         :return: (_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKOpLoad {0:d} attributes.". \
                format(self.load_id)
 
         try:
-            self.description = str(none_to_default(attributes[0], ''))
-            self.damage_model = int(none_to_default(attributes[1], 0))
-            self.priority_id = int(none_to_default(attributes[2], 0))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKOpLoad.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKOpLoad attributes."
+            self.description = str(none_to_default(attributes['description'], ''))
+            self.damage_model = int(none_to_default(attributes['damage_model'], 0))
+            self.priority_id = int(none_to_default(attributes['priority_id'], 0))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKOpLoad.set_attributes().".format(_err)
+
 
         return _error_code, _msg

@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKOpStress.py is part of The RTK Project
+#       rtk.dao.programdb.RTKOpStress.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKOpStress Table
-===============================================================================
-"""
+"""RTKOpStress Table."""
 
 from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKOpStress(RTK_BASE):
@@ -23,6 +19,7 @@ class RTKOpStress(RTK_BASE):
     Class to represent the table rtk_op_stress in the RTK Program database.
 
     This table shares a Many-to-One relationship with rtk_op_load.
+    This table shares a One-to-Many relationship with rtk_test_method.
     """
 
     __tablename__ = 'rtk_op_stress'
@@ -53,45 +50,45 @@ class RTKOpStress(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the Mode data model
-        attributes.
+        Retrieve the current values of the Op Stress data model attributes.
 
-        :return: (load_id, stress_id, description, load_history,
-                  measurable_parameter, remarks)
+        :return: {load_id, stress_id, description, load_history,
+                  measurable_parameter, remarks} pairs
         :rtype: tuple
         """
-
-        _attributes = (self.load_id, self.stress_id, self.description,
-                       self.load_history, self.measurable_parameter,
-                       self.remarks)
+        _attributes = {
+            'load_id': self.load_id,
+            'stress_id': self.stress_id,
+            'description': self.description,
+            'load_history': self.load_history,
+            'measurable_parameter': self.measurable_parameter,
+            'remarks': self.remarks
+        }
 
         return _attributes
 
     def set_attributes(self, values):
         """
-        Method to set the Stress data model attributes.
+        Set the Stress data model attributes.
 
-        :param tuple values: values to assign to instance attributes.
+        :param dict values: values to assign to instance attributes.
         :return: (_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKOpStress {0:d} attributes.". \
                format(self.stress_id)
 
         try:
-            self.description = str(none_to_default(values[0], ''))
-            self.load_history = int(none_to_default(values[1], 0))
-            self.measurable_parameter = int(none_to_default(values[2], 0))
-            self.remarks = str(none_to_default(values[3], ''))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKOpStress.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKOpStress attributes."
+            self.description = str(none_to_default(values['description'], ''))
+            self.load_history = int(none_to_default(values['load_history'], 0))
+            self.measurable_parameter = int(
+                none_to_default(values['measurable_parameter'], 0))
+            self.remarks = str(none_to_default(values['remarks'], ''))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKOpStress.set_attributes().".format(_err)
 
         return _error_code, _msg

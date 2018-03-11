@@ -1,21 +1,17 @@
 # -*- coding: utf-8 -*-
 #
-#       rtk.dao.RTKTestMethod.py is part of The RTK Project
+#       rtk.dao.programdb.RTKTestMethod.py is part of The RTK Project
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-===============================================================================
-The RTKTestMethod Table
-===============================================================================
-"""
+"""RTKTestMethod Table."""
 
 from sqlalchemy import BLOB, Column, ForeignKey, Integer, String
-from sqlalchemy.orm import relationship  
+from sqlalchemy.orm import relationship
 
 # Import other RTK modules.
-from rtk.Utilities import error_handler, none_to_default  
-from rtk.dao.RTKCommonDB import RTK_BASE  
+from rtk.Utilities import none_to_default
+from rtk.dao.RTKCommonDB import RTK_BASE
 
 
 class RTKTestMethod(RTK_BASE):
@@ -50,43 +46,44 @@ class RTKTestMethod(RTK_BASE):
 
     def get_attributes(self):
         """
-        Method to retrieve the current values of the RTKTestMethod data model
-        attributes.
+        Retrieve the current values of the RTKTestMethod data model attributes.
 
-        :return: (stress_id, test_id, description, boundary_conditions,
-                  remarks)
-        :rtype: tuple
+        :return: {stress_id, test_id, description, boundary_conditions,
+                  remarks} pairs
+        :rtype: dict
         """
-
-        _attributes = (self.stress_id, self.test_id, self.description,
-                       self.boundary_conditions, self.remarks)
+        _attributes = {
+            'stress_id': self.stress_id,
+            'test_id': self.test_id,
+            'description': self.description,
+            'boundary_conditions': self.boundary_conditions,
+            'remarks': self.remarks
+        }
 
         return _attributes
 
     def set_attributes(self, attributes):
         """
-        Method to set the RTKTestMethod data model attributes.
+        Set the RTKTestMethod data model attributes.
 
-        :param tuple attributes: values to assign to instance attributes.
+        :param dict attributes: values to assign to instance attributes.
         :return: (_error_code, _msg); the error code and error message.
         :rtype: tuple
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating RTKTestMethod {0:d} attributes.". \
                format(self.test_id)
 
         try:
-            self.description = str(none_to_default(attributes[0], ''))
-            self.boundary_conditions = str(none_to_default(attributes[1], ''))
-            self.remarks = str(none_to_default(attributes[2], ''))
-        except IndexError as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Insufficient number of input values to " \
-                   "RTKTestMethod.set_attributes()."
-        except (TypeError, ValueError) as _err:
-            _error_code = error_handler(_err.args)
-            _msg = "RTK ERROR: Incorrect data type when converting one or " \
-                   "more RTKTestMethod attributes."
+            self.description = str(
+                none_to_default(attributes['description'], ''))
+            self.boundary_conditions = str(
+                none_to_default(attributes['boundary_conditions'], ''))
+            self.remarks = str(none_to_default(attributes['remarks'], ''))
+        except KeyError as _err:
+            _error_code = 40
+            _msg = "RTK ERROR: Missing attribute {0:s} in attribute " \
+                   "dictionary passed to " \
+                   "RTKTestMethod.set_attributes().".format(_err)
 
         return _error_code, _msg
