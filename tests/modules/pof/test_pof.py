@@ -14,7 +14,7 @@ import pytest
 from rtk.dao import (RTKMechanism, RTKOpLoad, RTKOpStress, RTKTestMethod)
 from rtk.analyses.pof import (dtcPoF, dtmOpLoad, dtmOpStress, dtmTestMethod,
                               dtmPoF)
-from rtk.analyses.fmea import dtmMechanism
+from rtk.modules.fmea import dtmMechanism
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

@@ -6,17 +6,11 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test class for testing the FMEA and PoF failure Mechanism class."""
 
-import unittest
-from nose.plugins.attrib import attr
-
-from sqlalchemy.orm import scoped_session
 from treelib import Tree
 
 import pytest
 
-import rtk.Utilities as Utilities
-from rtk.Configuration import Configuration
-from rtk.analyses.fmea import dtmMechanism
+from rtk.modules.fmea import dtmMechanism
 from rtk.dao import DAO
 from rtk.dao import RTKMechanism
 
@@ -44,9 +38,9 @@ def test_create_mechanism_data_model(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_select_all(test_dao):
-    """select_all() should return a treelib Tree() on success when selecting Mechanisms."""
+    """ select_all() should return a treelib Tree() on success when selecting Mechanisms. """
     DUT = dtmMechanism(test_dao)
-    _tree = DUT.select_all(1)
+    _tree = DUT.select_all(2)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(1).data, RTKMechanism)
@@ -57,9 +51,9 @@ def test_select_all(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_select(test_dao):
-    """select() should return an instance of the RTKMechanism data model on success."""
+    """ select() should return an instance of the RTKMechanism data model on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(1)
+    DUT.select_all(2)
 
     _mechanism = DUT.select(1)
 
@@ -73,9 +67,9 @@ def test_select(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_select_non_existent_id(test_dao):
-    """select() should return None when a non-existent Mechanism ID is requested."""
+    """ select() should return None when a non-existent Mechanism ID is requested. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(1)
+    DUT.select_all(2)
 
     _mechanism = DUT.select('100')
 
@@ -87,16 +81,16 @@ def test_select_non_existent_id(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_insert(test_dao):
-    """insert() should return a zero error code on success."""
+    """ insert() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(1)
+    DUT.select_all(2)
 
-    _error_code, _msg = DUT.insert(mode_id=1)
+    _error_code, _msg = DUT.insert(mode_id=2)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
                     "Program database.")
-    assert DUT.last_id == 2
+    assert DUT.last_id == 4
 
 
 @pytest.mark.integration
@@ -104,9 +98,9 @@ def test_insert(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_delete(test_dao):
-    """delete() should return a zero error code on success."""
+    """ delete() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(1)
+    DUT.select_all(2)
 
     _error_code, _msg = DUT.delete(DUT.last_id)
 
@@ -120,9 +114,9 @@ def test_delete(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_delete_non_existent_id(test_dao):
-    """delete() should return a non-zero error code when passed a Mechanism ID that doesn't exist."""
+    """ elete() should return a non-zero error code when passed a Mechanism ID that doesn't exist. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(1)
+    DUT.select_all(2)
 
     _error_code, _msg = DUT.delete(300)
 
@@ -136,9 +130,9 @@ def test_delete_non_existent_id(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_update(test_dao):
-    """update() should return a zero error code on success."""
+    """ update() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(1)
+    DUT.select_all(2)
 
     _mechanism = DUT.select(1)
     _mechanism.pof_include = 1
@@ -154,14 +148,15 @@ def test_update(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_update_non_existent_id(test_dao):
-    """update() should return a non-zero error code when passed an Mechanism ID that doesn't exist."""
+    """ update() should return a non-zero error code when passed an Mechanism ID that doesn't exist. """
     DUT = dtmMechanism(test_dao)
     DUT.select_all(1)
 
     _error_code, _msg = DUT.update(100)
 
     assert _error_code == 2006
-    assert _msg == ("RTK ERROR: Attempted to save non-existent Mechanism ID 100.")
+    assert _msg == (
+        "RTK ERROR: Attempted to save non-existent Mechanism ID 100.")
 
 
 @pytest.mark.integration
@@ -169,7 +164,7 @@ def test_update_non_existent_id(test_dao):
 @pytest.mark.fmea
 @pytest.mark.pof
 def test_update_all(test_dao):
-    """update_all() should return a zero error code on success."""
+    """ update_all() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
     DUT.select_all(1)
 

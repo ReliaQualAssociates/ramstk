@@ -60,7 +60,7 @@ from rtk.modules.revision import dtcRevision
 from rtk.usage import dtcUsageProfile
 from rtk.failure_definition import dtcFailureDefinition
 from rtk.function import dtcFunction
-from rtk.analyses.fmea import dtcFMEA
+from rtk.modules.fmea import dtcFMEA
 from rtk.requirement import dtcRequirement
 from rtk.stakeholder import dtcStakeholder
 from rtk.hardware import dtcHardwareBoM

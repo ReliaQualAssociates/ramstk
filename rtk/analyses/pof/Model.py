@@ -10,7 +10,7 @@ from treelib import tree
 
 # Import other RTK modules.
 from rtk.datamodels import RTKDataModel
-from rtk.analyses.fmea import dtmMechanism
+from rtk.modules.fmea import dtmMechanism
 from rtk.dao import RTKMechanism, RTKOpLoad, RTKOpStress, RTKTestMethod
 
 
