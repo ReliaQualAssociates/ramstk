@@ -69,6 +69,7 @@ from .RTKNSWC import RTKNSWC
 from .RTKOpLoad import RTKOpLoad
 from .RTKOpStress import RTKOpStress
 from .RTKProgramInfo import RTKProgramInfo
+from .RTKProgramStatus import RTKProgramStatus
 from .RTKReliability import RTKReliability
 from .RTKRequirement import RTKRequirement
 from .RTKRevision import RTKRevision
@@ -176,6 +177,7 @@ class DAO(object):
             return True
 
         self._db_table_create(RTKProgramInfo.__table__)
+        self._db_table_create(RTKProgramStatus.__table__)
 
         self._db_table_create(RTKRevision.__table__)
         _revision = RTKRevision()
@@ -359,6 +361,25 @@ class DAO(object):
         self._db_table_create(RTKDesignElectric.__table__)
         self._db_table_create(RTKDesignMechanic.__table__)
 
+        # Create tables for Software analyses.
+        self._db_table_create(RTKSoftware.__table__)
+        self._db_table_create(RTKSoftwareDevelopment.__table__)
+        self._db_table_create(RTKSoftwareReview.__table__)
+        self._db_table_create(RTKSoftwareTest.__table__)
+
+        # Create tables for Incidents.
+        self._db_table_create(RTKIncident.__table__)
+        self._db_table_create(RTKIncidentAction.__table__)
+        self._db_table_create(RTKIncidentDetail.__table__)
+
+        # Create table for Testing.
+        self._db_table_create(RTKTest.__table__)
+
+        # Create tables for Survival Analysis.
+        self._db_table_create(RTKSurvival.__table__)
+        self._db_table_create(RTKSurvivalData.__table__)
+
+        # Create table for Verification and Validation.
         self._db_table_create(RTKValidation.__table__)
 
         return False

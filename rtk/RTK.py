@@ -56,7 +56,7 @@ from rtk.dao.RTKType import RTKType
 from rtk.dao.RTKUnit import RTKUnit
 from rtk.dao.RTKUser import RTKUser
 # from datamodels.matrix.Matrix import Matrix
-from rtk.revision import dtcRevision
+from rtk.modules.revision import dtcRevision
 from rtk.usage import dtcUsageProfile
 from rtk.failure_definition import dtcFailureDefinition
 from rtk.function import dtcFunction
