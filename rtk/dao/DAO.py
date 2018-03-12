@@ -212,15 +212,34 @@ class DAO(object):
         self._db_table_create(RTKFailureDefinition.__table__)
 
         self._db_table_create(RTKFunction.__table__)
+        self._db_table_create(RTKMode.__table__)
+        self._db_table_create(RTKControl.__table__)
+        self._db_table_create(RTKAction.__table__)
         _function = RTKFunction()
         _function.revision_id = _revision.revision_id
         self.db_add([
             _function,
         ], self.session)
 
-        self._db_table_create(RTKMode.__table__)
-        self._db_table_create(RTKControl.__table__)
-        self._db_table_create(RTKAction.__table__)
+        _mode = RTKMode()
+        _mode.function_id = _function.function_id
+        _mode.hardware_id = -1
+        _mode.description = 'Function Test Failure Mode'
+        self.db_add([
+            _mode,
+        ], self.session)
+        _control = RTKControl()
+        _control.mode_id = _mode.mode_id
+        _control.cause_id = 0
+        _control.description = 'Test Functional FMEA Control #1'
+        _action = RTKAction()
+        _action.mode_id = _mode.mode_id
+        _action.cause_id = 0
+        _action.action_recommended = ("Test Functional FMEA Recommended "
+                                      "Action #1")
+        self.db_add([
+            _control, _action
+        ], self.session)
 
         self._db_table_create(RTKRequirement.__table__)
         self._db_table_create(RTKStakeholder.__table__)
@@ -259,7 +278,7 @@ class DAO(object):
         _hazardanalysis.revision_id = _revision.revision_id
         _hazardanalysis.hardware_id = _system.hardware_id
         _mode = RTKMode()
-        _mode.function_id = 0
+        _mode.function_id = -1
         _mode.hardware_id = _system.hardware_id
         _mode.description = 'System Test Failure Mode'
         self.db_add([
