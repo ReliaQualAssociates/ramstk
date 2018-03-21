@@ -59,7 +59,7 @@ from rtk.dao.RTKUser import RTKUser
 from rtk.modules.revision import dtcRevision
 from rtk.usage import dtcUsageProfile
 from rtk.failure_definition import dtcFailureDefinition
-from rtk.function import dtcFunction
+from rtk.modules.function import dtcFunction
 from rtk.modules.fmea import dtcFMEA
 from rtk.requirement import dtcRequirement
 from rtk.stakeholder import dtcStakeholder

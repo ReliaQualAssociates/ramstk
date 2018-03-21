@@ -215,31 +215,33 @@ class DAO(object):
         self._db_table_create(RTKMode.__table__)
         self._db_table_create(RTKControl.__table__)
         self._db_table_create(RTKAction.__table__)
-        _function = RTKFunction()
-        _function.revision_id = _revision.revision_id
-        self.db_add([
-            _function,
-        ], self.session)
+        _dic_rows = {}
+        for i in [1,2,3]:
+            _function = RTKFunction()
+            _function.revision_id = _revision.revision_id
+            _function.function_code = "FUNC-000{0:d}".format(i)
+            self.db_add([_function], self.session)
 
-        _mode = RTKMode()
-        _mode.function_id = _function.function_id
-        _mode.hardware_id = -1
-        _mode.description = 'Function Test Failure Mode'
-        self.db_add([
-            _mode,
-        ], self.session)
-        _control = RTKControl()
-        _control.mode_id = _mode.mode_id
-        _control.cause_id = 0
-        _control.description = 'Test Functional FMEA Control #1'
-        _action = RTKAction()
-        _action.mode_id = _mode.mode_id
-        _action.cause_id = 0
-        _action.action_recommended = ("Test Functional FMEA Recommended "
-                                      "Action #1")
-        self.db_add([
-            _control, _action
-        ], self.session)
+            _mode = RTKMode()
+            _mode.function_id = _function.function_id
+            _mode.hardware_id = -1
+            _mode.description = ("Test Functional Failure Mode #{0:d}").format(i)
+            self.db_add([
+                _mode,
+            ], self.session)
+            _control = RTKControl()
+            _control.mode_id = _mode.mode_id
+            _control.cause_id = 0
+            _control.description = ("Test Functional FMEA Control #{0:d}").format(i)
+            _action = RTKAction()
+            _action.mode_id = _mode.mode_id
+            _action.cause_id = 0
+            _action.action_recommended = ("Test Functional FMEA Recommended "
+                                          "Action #{0:d}").format(i)
+            self.db_add([
+                _control, _action
+            ], self.session)
+            _dic_rows[i] = _function.function_id
 
         self._db_table_create(RTKRequirement.__table__)
         self._db_table_create(RTKStakeholder.__table__)
@@ -253,6 +255,8 @@ class DAO(object):
         _system.revision_id = _revision.revision_id
         _system.hardware_id = 1
         _system.description = "Test System"
+        _system.ref_des = "S1"
+        _system.comp_ref_des = "S1"
         self.db_add([
             _system,
         ], self.session)
@@ -317,25 +321,33 @@ class DAO(object):
         _testmethod.description = 'Test Test Method'
         self.db_add([_testmethod], self.session)
 
+        _dic_cols = {1:_system.hardware_id}
         for i in [1, 2, 3, 4]:
-            _hardware = RTKHardware()
-            _hardware.revision_id = _revision.revision_id
-            _hardware.hardware_id = i + 1
-            _hardware.parent_id = _system.hardware_id
-            _hardware.description = "Test Sub-System {0:d}".format(i)
+            _subsystem = RTKHardware()
+            _subsystem.revision_id = _revision.revision_id
+            _subsystem.hardware_id = i + 1
+            _subsystem.parent_id = _system.hardware_id
+            _subsystem.ref_des = "SS{0:d}".format(i)
+            _subsystem.comp_ref_des = "S1:SS{0:d}".format(i)
+            _subsystem.description = "Test Sub-System {0:d}".format(i)
             self.db_add([
-                _hardware,
+                _subsystem,
             ], self.session)
+            _dic_cols[i + 1] = _subsystem.hardware_id
+
             if i == 1:
                 for j in [5, 6, 7]:
                     _assembly = RTKHardware()
                     _assembly.revision_id = _revision.revision_id
                     _assembly.hardware_id = j + 1
-                    _assembly.parent_id = _hardware.hardware_id
-                    _assembly.description = "Test Assembly {0:d}".format(j + 1)
+                    _assembly.parent_id = _subsystem.hardware_id
+                    _assembly.ref_des = "A{0:d}".format(j - 4)
+                    _assembly.comp_ref_des = "S1:SS1:A{0:d}".format(j - 4)
+                    _assembly.description = "Test Assembly {0:d}".format(j - 4)
                     self.db_add([
                         _assembly,
                     ], self.session)
+                    _dic_cols[j + 1] = _assembly.hardware_id
         self.session.commit()
 
         for i in [1, 2, 3]:
@@ -379,6 +391,19 @@ class DAO(object):
         self._db_table_create(RTKNSWC.__table__)
         self._db_table_create(RTKDesignElectric.__table__)
         self._db_table_create(RTKDesignMechanic.__table__)
+
+        for _ckey in _dic_cols:
+            for _rkey in _dic_rows:
+                _matrix = RTKMatrix()
+                _matrix.revision_id = _revision.revision_id
+                _matrix.matrix_id = 1
+                _matrix.matrix_type = 'fnctn_hrdwr'
+                _matrix.column_id = _ckey
+                _matrix.column_item_id = _dic_cols[_ckey]
+                _matrix.row_id = _ckey
+                _matrix.row_item_id = _dic_rows[_rkey]
+                self.db_add([_matrix], self.session)
+        self.session.commit()
 
         # Create tables for Software analyses.
         self._db_table_create(RTKSoftware.__table__)

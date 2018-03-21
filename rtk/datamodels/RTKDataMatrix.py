@@ -197,7 +197,7 @@ class RTKDataMatrix(object):
         Insert a row or a column into the matrix.
 
         :param int item_id: the ID of the row or column item to insert into the
-                            Matrix.
+                            Matrix (this is the .
         :param str heading: the heading for the new row or column.
         :keyword bool row: indicates whether to insert a row (default) or a
                            column.
