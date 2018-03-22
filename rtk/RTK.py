@@ -64,10 +64,10 @@ from rtk.modules.fmea import dtcFMEA
 from rtk.requirement import dtcRequirement
 from rtk.stakeholder import dtcStakeholder
 from rtk.hardware import dtcHardwareBoM
-# from rtk.analyses.allocation.Allocation import Allocation
-# from rtk.analyses.hazard.Hazard import Hazard
-# from rtk.analyses.similar_item.SimilarItem import SimilarItem
-# from rtk.analyses.pof.PhysicsOfFailure import PoF
+from rtk.modules.allocation import dtcAllocation
+# from rtk.modules.hazops import dtcHazard
+# from rtk.modules.similar_item.SimilarItem import dtcSimilarItem
+# from rtk.modules.pof import dtcPoF
 # from rtk.software.BoM import BoM as SoftwareBoM
 # from rtk.testing.Testing import Testing
 # from rtk.testing.growth.Growth import Growth
@@ -783,7 +783,8 @@ class RTK(object):
             # self.dic_controllers['fmea'] = FMEA()
             self.dic_controllers['stakeholder'] = dtcStakeholder(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['allocation'] = Allocation()
+            self.dic_controllers['allocation'] = Allocation(
+               self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
             # self.dic_controllers['hazard'] = Hazard()
             # self.dic_controllers['similaritem'] = SimilarItem()
             # self.dic_controllers['pof'] = PoF()

@@ -40,7 +40,7 @@ def test_create_mechanism_data_model(test_dao):
 def test_select_all(test_dao):
     """ select_all() should return a treelib Tree() on success when selecting Mechanisms. """
     DUT = dtmMechanism(test_dao)
-    _tree = DUT.select_all(2)
+    _tree = DUT.select_all(4)
 
     assert isinstance(_tree, Tree)
     assert isinstance(_tree.get_node(1).data, RTKMechanism)
@@ -53,7 +53,7 @@ def test_select_all(test_dao):
 def test_select(test_dao):
     """ select() should return an instance of the RTKMechanism data model on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(2)
+    DUT.select_all(4)
 
     _mechanism = DUT.select(1)
 
@@ -69,7 +69,7 @@ def test_select(test_dao):
 def test_select_non_existent_id(test_dao):
     """ select() should return None when a non-existent Mechanism ID is requested. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(2)
+    DUT.select_all(4)
 
     _mechanism = DUT.select('100')
 
@@ -83,9 +83,9 @@ def test_select_non_existent_id(test_dao):
 def test_insert(test_dao):
     """ insert() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(2)
+    DUT.select_all(4)
 
-    _error_code, _msg = DUT.insert(mode_id=2)
+    _error_code, _msg = DUT.insert(mode_id=4)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
@@ -100,7 +100,7 @@ def test_insert(test_dao):
 def test_delete(test_dao):
     """ delete() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(2)
+    DUT.select_all(4)
 
     _error_code, _msg = DUT.delete(DUT.last_id)
 
@@ -116,7 +116,7 @@ def test_delete(test_dao):
 def test_delete_non_existent_id(test_dao):
     """ elete() should return a non-zero error code when passed a Mechanism ID that doesn't exist. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(2)
+    DUT.select_all(4)
 
     _error_code, _msg = DUT.delete(300)
 
@@ -132,7 +132,7 @@ def test_delete_non_existent_id(test_dao):
 def test_update(test_dao):
     """ update() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
-    DUT.select_all(2)
+    DUT.select_all(4)
 
     _mechanism = DUT.select(1)
     _mechanism.pof_include = 1
@@ -171,4 +171,4 @@ def test_update_all(test_dao):
     _error_code, _msg = DUT.update_all()
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")
+    assert _msg == ("RTK SUCCESS: Saving all Mechanisms in the FMEA.")

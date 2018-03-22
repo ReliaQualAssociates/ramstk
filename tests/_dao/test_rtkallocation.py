@@ -6,6 +6,7 @@
 """Test class for testing the RTKAllocation module algorithms and models."""
 
 import pytest
+from _pytest.mark import MarkInfo
 
 from rtk.dao.RTKAllocation import RTKAllocation
 
@@ -67,7 +68,7 @@ def test_rtkallocation_create(test_dao):
     assert DUT.mission_time == 100.0
     assert DUT.mtbf_alloc == 0.0
     assert DUT.mtbf_goal == 0.0
-    if pytest.mark.name == 'allocation':
+    if hasattr(test_rtkallocation_create, 'allocation'):
         assert DUT.n_sub_systems == 1
     else:
         assert DUT.n_sub_systems == 2
@@ -108,7 +109,7 @@ def test_get_attributes(test_dao):
     assert _attributes['mission_time'] == 100.0
     assert _attributes['mtbf_alloc'] == 0.0
     assert _attributes['mtbf_goal'] == 0.0
-    if pytest.mark.name == 'allocation':
+    if hasattr(test_get_attributes, 'allocation'):
         assert _attributes['n_sub_systems'] == 1
     else:
         assert _attributes['n_sub_systems'] == 2

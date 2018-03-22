@@ -50,7 +50,7 @@ def test_select_all_hardware(test_dao):
     _tree = DUT.select_all(1, functional=False)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKMode)
+    assert isinstance(_tree.get_node(4).data, RTKMode)
 
 
 @pytest.mark.integration
@@ -60,10 +60,10 @@ def test_select(test_dao):
     """ select() should return an instance of the RTKMode data model on success. """
     DUT = dtmMode(test_dao)
     DUT.select_all(1, functional=False)
-    _mode = DUT.select(2)
+    _mode = DUT.select(4)
 
     assert isinstance(_mode, RTKMode)
-    assert _mode.mode_id == 2
+    assert _mode.mode_id == 4
     assert _mode.description == ("System Test Failure Mode")
 
 
@@ -148,10 +148,10 @@ def test_update(test_dao):
     DUT = dtmMode(test_dao)
     DUT.select_all(1, functional=False)
 
-    _mode = DUT.select(2)
+    _mode = DUT.select(4)
     _mode.isolation_method = 'Method to isolate the failure.'
 
-    _error_code, _msg = DUT.update(2)
+    _error_code, _msg = DUT.update(4)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")

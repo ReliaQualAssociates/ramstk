@@ -11,9 +11,8 @@ import pytest
 
 from treelib import Tree
 
-from rtk.dao import DAO
-from rtk.dao import RTKAllocation
-from rtk.analyses.allocation import dtmAllocation, dtcAllocation
+from rtk.dao import DAO, RTKAllocation
+from rtk.modules.allocation import dtmAllocation, dtcAllocation
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

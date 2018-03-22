@@ -98,7 +98,7 @@ def test_select_mode(test_dao):
 
     _entity = DUT.select('0.1')
     assert isinstance(_entity, RTKMode)
-    assert _entity.description == ("Function Test Failure Mode")
+    assert _entity.description == ("Test Functional Failure Mode #1")
 
 
 @pytest.mark.integration
@@ -109,7 +109,7 @@ def test_select_mechanism(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    _entity = DUT.select('0.2.1')
+    _entity = DUT.select('0.4.1')
 
     assert isinstance(_entity, RTKMechanism)
     assert _entity.description == 'Test Failure Mechanism #1'
@@ -123,7 +123,7 @@ def test_select_cause(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    _entity = DUT.select('0.2.1.1')
+    _entity = DUT.select('0.4.1.1')
 
     assert isinstance(_entity, RTKCause)
     assert _entity.description == 'Test Failure Cause #1'
@@ -150,7 +150,7 @@ def test_select_control_hardware(test_dao):
     """ select() should return an instance of RTKControl when selecting from a hardware FMEA on success. """
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
-    _entity = DUT.select('0.2.1.1.02')
+    _entity = DUT.select('0.4.1.1.04')
 
     assert isinstance(_entity, RTKControl)
     assert _entity.description == 'Functional FMEA control.'
@@ -179,7 +179,7 @@ def test_select_action_hardware(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    _entity = DUT.select('0.2.1.1.2')
+    _entity = DUT.select('0.4.1.1.4')
     print DUT.tree.nodes
     assert isinstance(_entity, RTKAction)
     assert _entity.action_recommended == 'Do this stuff and do it now!!'
@@ -263,17 +263,17 @@ def test_insert_mechanism(test_dao):
     DUT.select_all(1, functional=False)
 
     _error_code, _msg = DUT.insert(
-        entity_id=1, parent_id='0.2', level='mechanism')
+        entity_id=4, parent_id='0.4', level='mechanism')
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
-    _node_id = '0.2.' + str(DUT.dtm_mechanism.last_id)
+    _node_id = '0.4.' + str(DUT.dtm_mechanism.last_id)
 
     _mechanism = DUT.select(_node_id)
 
     assert isinstance(_mechanism, RTKMechanism)
-    assert _mechanism.mode_id == 1
+    assert _mechanism.mode_id == 4
     assert _mechanism.mechanism_id == DUT.dtm_mechanism.last_id
 
     _tree_mechanism = DUT.tree.get_node(_node_id)
@@ -290,13 +290,13 @@ def test_insert_cause(test_dao):
     DUT.select_all(1, functional=False)
 
     _error_code, _msg = DUT.insert(
-        entity_id=1, parent_id='0.2.1', level='cause')
+        entity_id=1, parent_id='0.4.1', level='cause')
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
 
-    _node_id = '0.2.1.' + str(DUT.dtm_cause.last_id)
+    _node_id = '0.4.1.' + str(DUT.dtm_cause.last_id)
 
     _cause = DUT.select(_node_id)
 
@@ -345,18 +345,18 @@ def test_insert_control_hardware(test_dao):
     DUT.select_all(1, functional=False)
 
     _error_code, _msg = DUT.insert(
-        entity_id=2, parent_id='0.2.1.1', level='control')
+        entity_id=1, parent_id='0.4.1.1', level='control')
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
-    _node_id = '0.2.1.1.0' + str(DUT.dtm_control.last_id)
+    _node_id = '0.4.1.1.0' + str(DUT.dtm_control.last_id)
 
     _control = DUT.select(_node_id)
 
     assert isinstance(_control, RTKControl)
     assert _control.mode_id == -1
-    assert _control.cause_id == 2
+    assert _control.cause_id == 1
 
     _tree_control = DUT.tree.get_node(_node_id)
     assert isinstance(_tree_control.data, RTKControl)
@@ -399,12 +399,12 @@ def test_insert_action_hardware(test_dao):
     DUT.select_all(1, functional=False)
 
     _error_code, _msg = DUT.insert(
-        entity_id=1, parent_id='0.2.1.1', level='action')
+        entity_id=1, parent_id='0.4.1.1', level='action')
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK Program "
                     "database.")
-    _node_id = '0.2.1.1.' + str(DUT.dtm_action.last_id)
+    _node_id = '0.4.1.1.' + str(DUT.dtm_action.last_id)
 
     _action = DUT.select(_node_id)
 
@@ -534,15 +534,15 @@ def test_calculate_criticality(test_dao):
     """ calculate_criticality() returns a zero error code on success. """
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
-    _mode = DUT.select('0.2')
-
+    _mode = DUT.select('0.4')
+    print _mode.get_attributes()
     _mode.mode_ratio = 0.4
     _mode.mode_op_time = 100.0
     _mode.effect_probability = 1.0
     _error_code, _msg = DUT.calculate_criticality(0.00001)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Calculating failure mode 4 criticality.")
+    assert _msg == ("RTK SUCCESS: Calculating failure mode 6 criticality.")
     assert _mode.mode_criticality == pytest.approx(0.0004)
 
 
@@ -554,7 +554,7 @@ def test_calculate_mechanism_rpn(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    for _node in DUT.tree.children('0.2'):
+    for _node in DUT.tree.children('0.4'):
         _mechanism = _node.data
         _attributes = _mechanism.get_attributes()
         _attributes['rpn_detection'] = 4
@@ -563,11 +563,10 @@ def test_calculate_mechanism_rpn(test_dao):
         _attributes['rpn_occurrence_new'] = 5
         _mechanism.set_attributes(_attributes)
 
-    _error_code, _msg = DUT.calculate_rpn('0.2', 7, 4)
+    _error_code, _msg = DUT.calculate_rpn('0.4', 7, 4)
 
     assert _error_code == 0
-    assert _msg == ("RTK SUCCESS: Calculating failure mechanism {0:d} RPN.").\
-                         format(DUT.dtm_mechanism.last_id)
+    assert _msg == ("RTK SUCCESS: Calculating failure mechanism 2 RPN.")
     assert _mechanism.rpn == 196
     assert _mechanism.rpn_new == 60
 
@@ -580,7 +579,7 @@ def test_calculate_cause_rpn(test_dao):
     DUT = dtmFMEA(test_dao)
     DUT.select_all(1, functional=False)
 
-    for _node in DUT.tree.children('0.2.1'):
+    for _node in DUT.tree.children('0.4.1'):
         _cause = _node.data
         _attributes = _cause.get_attributes()
         _attributes['rpn_detection'] = 4
@@ -589,7 +588,7 @@ def test_calculate_cause_rpn(test_dao):
         _attributes['rpn_occurrence_new'] = 5
         _cause.set_attributes(_attributes)
 
-    _error_code, _msg = DUT.calculate_rpn('0.2.1', 7, 4)
+    _error_code, _msg = DUT.calculate_rpn('0.4.1', 7, 4)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Calculating failure cause {0:d} RPN.").\
@@ -659,7 +658,7 @@ def test_request_insert_mechanism(test_dao, test_configuration):
     DUT = dtcFMEA(test_dao, test_configuration, test=True)
     DUT.request_select_all(1, functional=False)
 
-    assert not DUT.request_insert(1, '0.2', 'mechanism')
+    assert not DUT.request_insert(4, '0.4', 'mechanism')
 
 
 @pytest.mark.integration

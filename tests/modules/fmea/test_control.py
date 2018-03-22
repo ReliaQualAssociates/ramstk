@@ -51,7 +51,7 @@ def test_select_all_hardware(test_dao):
     _tree = DUT.select_all(1, functional=False)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKControl)
+    assert isinstance(_tree.get_node(4).data, RTKControl)
 
 
 @pytest.mark.integration
@@ -61,10 +61,10 @@ def test_select(test_dao):
     """ select() should return an instance of the RTKControl data model on success. """
     DUT = dtmControl(test_dao)
     DUT.select_all(1, functional=False)
-    _control = DUT.select(2)
+    _control = DUT.select(4)
 
     assert isinstance(_control, RTKControl)
-    assert _control.control_id == 2
+    assert _control.control_id == 4
 
 
 @pytest.mark.integration
@@ -147,10 +147,10 @@ def test_update(test_dao):
     DUT = dtmControl(test_dao)
     DUT.select_all(1, functional=False)
 
-    _control = DUT.select(2)
+    _control = DUT.select(4)
     _control.description = 'Functional FMEA control.'
 
-    _error_code, _msg = DUT.update(2)
+    _error_code, _msg = DUT.update(4)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")

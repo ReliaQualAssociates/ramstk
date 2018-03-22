@@ -53,7 +53,7 @@ def test_select_all_hardware(test_dao):
     _tree = DUT.select_all(1, functional=False)
 
     assert isinstance(_tree, Tree)
-    assert isinstance(_tree.get_node(2).data, RTKAction)
+    assert isinstance(_tree.get_node(4).data, RTKAction)
 
 
 @pytest.mark.integration
@@ -63,10 +63,10 @@ def test_select(test_dao):
     """ select() should return an instance of the RTKAction data model on success. """
     DUT = dtmAction(test_dao)
     DUT.select_all(1, functional=False)
-    _action = DUT.select(2)
+    _action = DUT.select(4)
 
     assert isinstance(_action, RTKAction)
-    assert _action.action_id == 2
+    assert _action.action_id == 4
     assert _action.action_due_date == date.today() + timedelta(days=30)
 
 
@@ -150,10 +150,10 @@ def test_update(test_dao):
     DUT = dtmAction(test_dao)
     DUT.select_all(1, functional=False)
 
-    _action = DUT.tree.get_node(2).data
+    _action = DUT.tree.get_node(4).data
     _action.action_recommended = 'Do this stuff and do it now!!'
 
-    _error_code, _msg = DUT.update(2)
+    _error_code, _msg = DUT.update(4)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Updating the RTK Program database.")

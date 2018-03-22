@@ -231,11 +231,11 @@ class DAO(object):
             ], self.session)
             _control = RTKControl()
             _control.mode_id = _mode.mode_id
-            _control.cause_id = 0
+            _control.cause_id = -1
             _control.description = ("Test Functional FMEA Control #{0:d}").format(i)
             _action = RTKAction()
             _action.mode_id = _mode.mode_id
-            _action.cause_id = 0
+            _action.cause_id = -1
             _action.action_recommended = ("Test Functional FMEA Recommended "
                                           "Action #{0:d}").format(i)
             self.db_add([
@@ -299,11 +299,11 @@ class DAO(object):
         _cause.description = 'Test Failure Cause #1'
         self.db_add([_cause], self.session)
         _control = RTKControl()
-        _control.mode_id = _mode.mode_id
+        _control.mode_id = -1
         _control.cause_id = _cause.cause_id
         _control.description = 'Test FMEA Control #1'
         _action = RTKAction()
-        _action.mode_id = _mode.mode_id
+        _action.mode_id = -1
         _action.cause_id = _cause.cause_id
         _action.action_recommended = 'Test FMEA Recommended Action #1'
 

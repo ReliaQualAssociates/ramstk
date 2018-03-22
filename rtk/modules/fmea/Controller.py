@@ -75,16 +75,12 @@ class FMEADataController(RTKDataController):
         """
         _error_code, _msg = self._dtm_data_model.insert(
             entity_id=entity_id, parent_id=parent_id, level=level)
-
+        self._dtm_data_model.tree.show()
         if _error_code == 0:
             self._configuration.RTK_USER_LOG.info(_msg)
-
-            if not self._test:
-                pub.sendMessage(
-                    'insertedFunction', function_id=self.dtm_function.last_id)
         else:
-            _msg = _msg + '  Failed to add a new Function to the RTK ' \
-                'Program database.'
+            _msg = _msg + '  Failed to add a new {0:s} to the RTK ' \
+                'Program database.'.format(level)
             self._configuration.RTK_DEBUG_LOG.error(_msg)
 
         return RTKDataController.do_handle_results(self, _error_code, _msg,

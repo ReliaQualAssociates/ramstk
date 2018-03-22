@@ -6,14 +6,14 @@
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
 """Test Class for Function data model and data controller."""
 
+import pytest
+
 from treelib import Tree
 import pandas as pd
 
-import pytest
-
-from rtk.datamodels import RTKDataMatrix
-from rtk.modules.function import dtcFunction, dtmFunction
 from rtk.dao import DAO, RTKFunction
+from rtk.modules.function import dtcFunction, dtmFunction
+from rtk.datamodels import RTKDataMatrix
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
