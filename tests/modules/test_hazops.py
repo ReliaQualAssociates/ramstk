@@ -11,9 +11,8 @@ import pytest
 
 from treelib import Tree
 
-from rtk.dao import DAO
-from rtk.dao import RTKHazardAnalysis
-from rtk.analyses.hazard import dtmHazardAnalysis, dtcHazardAnalysis
+from rtk.dao import DAO, RTKHazardAnalysis
+from rtk.modules.hazops import dtmHazardAnalysis, dtcHazardAnalysis
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'
