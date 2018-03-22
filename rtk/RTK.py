@@ -66,7 +66,7 @@ from rtk.stakeholder import dtcStakeholder
 from rtk.hardware import dtcHardwareBoM
 from rtk.modules.allocation import dtcAllocation
 # from rtk.modules.hazops import dtcHazard
-# from rtk.modules.similar_item.SimilarItem import dtcSimilarItem
+from rtk.modules.similar_item import dtcSimilarItem
 # from rtk.modules.pof import dtcPoF
 # from rtk.software.BoM import BoM as SoftwareBoM
 # from rtk.testing.Testing import Testing

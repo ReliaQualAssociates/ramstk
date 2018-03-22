@@ -13,7 +13,7 @@ from treelib import Tree
 
 from rtk.dao import DAO
 from rtk.dao import RTKSimilarItem
-from rtk.analyses.similar_item import dtmSimilarItem, dtcSimilarItem
+from rtk.modules.similar_item import dtmSimilarItem, dtcSimilarItem
 
 __author__ = 'Andrew Rowland'
 __email__ = 'andrew.rowland@reliaqual.com'

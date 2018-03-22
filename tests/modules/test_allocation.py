@@ -165,6 +165,7 @@ def test_update_non_existent_id(test_dao):
     assert _msg == ("RTK ERROR: Attempted to save non-existent Allocation "
                     "ID 100.")
 
+
 @pytest.mark.integration
 @pytest.mark.hardware
 @pytest.mark.allocation
@@ -273,7 +274,7 @@ def test_foo_apportionment(test_dao):
     _parent.hazard_rate_goal = 2.5003126e-06
     _children = DUT.select_children(1)
 
-    i= 1
+    i = 1
     for _child in _children:
         _child.data.int_factor = 2 * i
         _child.data.soa_factor = 3 * i
@@ -417,4 +418,3 @@ def test_request_calculate(test_dao, test_configuration):
     _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
 
     assert not DUT.request_calculate(1, _hazard_rates)
-
