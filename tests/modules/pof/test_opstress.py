@@ -10,7 +10,7 @@ from treelib import Tree
 
 import pytest
 
-from rtk.analyses.pof import dtmOpStress
+from rtk.modules.pof import dtmOpStress
 from rtk.dao import DAO
 from rtk.dao import RTKOpStress
 

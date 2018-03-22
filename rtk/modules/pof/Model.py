@@ -538,7 +538,7 @@ class PhysicsOfFailureDataModel(RTKDataModel):
         """
         Retrieve and build the PhysicsOfFailure tree for Parent ID.
 
-        :param str parent_id: the Mechanism ID to retrieve the PhysicsOfFailure
+        :param str parent_id: the Mode ID to retrieve the PhysicsOfFailure
                               and build trees for.
         :return: tree; the PhysicsOfFailure treelib Tree().
         :rtype: :class:`treelib.Tree`

@@ -77,10 +77,23 @@ def test_select_non_existent_id(test_dao):
 
 
 @pytest.mark.integration
+@pytest.mark.pof
+def test_insert_1(test_dao):
+    """ insert() should return a zero error code on success. """
+    DUT = dtmMechanism(test_dao)
+    DUT.select_all(4)
+
+    _error_code, _msg = DUT.insert(mode_id=4)
+
+    assert _error_code == 0
+    assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
+                    "Program database.")
+    assert DUT.last_id == 2
+
+
 @pytest.mark.hardware
 @pytest.mark.fmea
-@pytest.mark.pof
-def test_insert(test_dao):
+def test_insert_2(test_dao):
     """ insert() should return a zero error code on success. """
     DUT = dtmMechanism(test_dao)
     DUT.select_all(4)
@@ -102,6 +115,7 @@ def test_delete(test_dao):
     DUT = dtmMechanism(test_dao)
     DUT.select_all(4)
 
+    __, __ = DUT.insert(mode_id=4)
     _error_code, _msg = DUT.delete(DUT.last_id)
 
     assert _error_code == 0
