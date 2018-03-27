@@ -13,6 +13,8 @@ from pubsub import pub
 
 # Import other RTK modules.
 from rtk.gui.gtk.rtk import RTKBook
+
+from rtk.gui.gtk.workviews import wvwAllocation
 from rtk.gui.gtk.workviews import wvwFMEA
 from rtk.gui.gtk.workviews import wvwFunctionGD, wvwFunctionAR
 from rtk.gui.gtk.workviews import wvwRevisionGD, wvwRevisionAR
@@ -54,6 +56,7 @@ class WorkBook(RTKBook):  # pylint: disable=R0904
             [wvwRequirementGD(controller),
              wvwRequirementAnalysis(controller)],
             'hardware': [wvwHardwareGD(controller),
+                         wvwAllocation(controller),
                          wvwHardwareAI(controller),
                          wvwHardwareAR(controller)],
             'validation':

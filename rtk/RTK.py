@@ -780,14 +780,14 @@ class RTK(object):
                 self.RTK_CONFIGURATION,
                 test=False,
                 functional=True)
-            # self.dic_controllers['fmea'] = FMEA()
+            # self.dic_controllers['fmea'] = dtcFMEA()
             self.dic_controllers['stakeholder'] = dtcStakeholder(
                 self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            self.dic_controllers['allocation'] = Allocation(
+            self.dic_controllers['allocation'] = dtcAllocation(
                self.rtk_model.program_dao, self.RTK_CONFIGURATION, test=False)
-            # self.dic_controllers['hazard'] = Hazard()
-            # self.dic_controllers['similaritem'] = SimilarItem()
-            # self.dic_controllers['pof'] = PoF()
+            # self.dic_controllers['hazard'] = dtcHazard()
+            # self.dic_controllers['similaritem'] = dtcSimilarItem()
+            # self.dic_controllers['pof'] = dtcPoF()
             # self.dic_controllers['growth'] = Growth()
             # self.dic_controllers['action'] = Action()
             # self.dic_controllers['component'] = Component()

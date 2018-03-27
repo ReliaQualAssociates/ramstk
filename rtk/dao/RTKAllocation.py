@@ -119,7 +119,8 @@ class RTKAllocation(RTK_BASE):
         try:
             self.availability_alloc = float(
                 none_to_default(attributes['availability_alloc'], 0.0))
-            self.duty_cycle = float(none_to_default(attributes['duty_cycle'], 100.0))
+            self.duty_cycle = float(
+                none_to_default(attributes['duty_cycle'], 100.0))
             self.env_factor = int(none_to_default(attributes['env_factor'], 1))
             self.goal_measure_id = int(
                 none_to_default(attributes['goal_measure_id'], 0))
@@ -130,7 +131,8 @@ class RTKAllocation(RTK_BASE):
             self.included = int(none_to_default(attributes['included'], 1))
             self.int_factor = int(none_to_default(attributes['int_factor'], 1))
             self.method_id = int(none_to_default(attributes['method_id'], 1))
-            self.mission_time = float(none_to_default(attributes['mission_time'], 100.0))
+            self.mission_time = float(
+                none_to_default(attributes['mission_time'], 100.0))
             self.mtbf_alloc = float(
                 none_to_default(attributes['mtbf_alloc'], 0.0))
             self.mtbf_goal = float(

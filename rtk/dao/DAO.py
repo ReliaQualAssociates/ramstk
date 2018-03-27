@@ -4,9 +4,7 @@
 #
 # All rights reserved.
 # Copyright 2007 - 2017 Andrew Rowland andrew.rowland <AT> reliaqual <DOT> com
-"""
-The Data Access Object (DAO) Package.
-"""
+"""Data Access Object (DAO) Package."""
 
 import gettext
 
@@ -97,9 +95,7 @@ __copyright__ = 'Copyright 2007 - 2015 Andrew "weibullguy" Rowland'
 
 
 class DAO(object):
-    """
-    This is the data access controller class.
-    """
+    """This is the data access controller class."""
 
     RTK_SESSION = sessionmaker()
 
@@ -109,9 +105,7 @@ class DAO(object):
     session = None
 
     def __init__(self):
-        """
-        Method to initialize an instance of the DAO controller.
-        """
+        """Initialize an instance of the DAO controller."""
 
         # Initialize private dictionary instance attributes.
 
@@ -127,8 +121,7 @@ class DAO(object):
 
     def db_connect(self, database):
         """
-        Method to perform database connection using database settings from
-        the configuration file.
+        Connect to the database using settings from the configuration file.
 
         :param str database: the absolute path to the database to connect to.
         :return: False if successful, True if an error occurs.
@@ -147,7 +140,7 @@ class DAO(object):
 
     def _db_table_create(self, table):
         """
-        Method to check if the passed table exists and create it if not.
+        Check if the passed table exists and create it if not.
 
         :param table: the table to check for.
         :return: False if successful or True if an error is encountered.
@@ -163,14 +156,13 @@ class DAO(object):
 
     def db_create_program(self, database):
         """
-        Method to create a new RTK Program database.
+        Create a new RTK Program database.
 
         :param str database: the RFC1738 URL path to the database to connect
                              with.
         :return: False if successful or True if an error occurs.
         :rtype: bool
         """
-
         try:
             create_database(database)
         except IOError:
@@ -216,7 +208,7 @@ class DAO(object):
         self._db_table_create(RTKControl.__table__)
         self._db_table_create(RTKAction.__table__)
         _dic_rows = {}
-        for i in [1,2,3]:
+        for i in [1, 2, 3]:
             _function = RTKFunction()
             _function.revision_id = _revision.revision_id
             _function.function_code = "FUNC-000{0:d}".format(i)
@@ -225,22 +217,22 @@ class DAO(object):
             _mode = RTKMode()
             _mode.function_id = _function.function_id
             _mode.hardware_id = -1
-            _mode.description = ("Test Functional Failure Mode #{0:d}").format(i)
+            _mode.description = (
+                "Test Functional Failure Mode #{0:d}").format(i)
             self.db_add([
                 _mode,
             ], self.session)
             _control = RTKControl()
             _control.mode_id = _mode.mode_id
             _control.cause_id = -1
-            _control.description = ("Test Functional FMEA Control #{0:d}").format(i)
+            _control.description = (
+                "Test Functional FMEA Control #{0:d}").format(i)
             _action = RTKAction()
             _action.mode_id = _mode.mode_id
             _action.cause_id = -1
             _action.action_recommended = ("Test Functional FMEA Recommended "
                                           "Action #{0:d}").format(i)
-            self.db_add([
-                _control, _action
-            ], self.session)
+            self.db_add([_control, _action], self.session)
             _dic_rows[i] = _function.function_id
 
         self._db_table_create(RTKRequirement.__table__)
@@ -250,6 +242,10 @@ class DAO(object):
         # Create tables for Hardware analyses.
         self._db_table_create(RTKHardware.__table__)
         self._db_table_create(RTKReliability.__table__)
+        self._db_table_create(RTKMilHdbkF.__table__)
+        self._db_table_create(RTKNSWC.__table__)
+        self._db_table_create(RTKDesignElectric.__table__)
+        self._db_table_create(RTKDesignMechanic.__table__)
 
         _system = RTKHardware()
         _system.revision_id = _revision.revision_id
@@ -270,6 +266,14 @@ class DAO(object):
         self._db_table_create(RTKOpLoad.__table__)
         self._db_table_create(RTKOpStress.__table__)
         self._db_table_create(RTKTestMethod.__table__)
+        _reliability = RTKReliability()
+        _reliability.hardware_id = _system.hardware_id
+        _mil_hdbk_217 = RTKMilHdbkF()
+        _mil_hdbk_217.hardware_id = _system.hardware_id
+        _design_electric = RTKDesignElectric()
+        _design_electric.hardware_id = _system.hardware_id
+        _design_mechanic = RTKDesignMechanic()
+        _design_mechanic.hardware_id = _system.hardware_id
         _allocation = RTKAllocation()
         _allocation.revision_id = _revision.revision_id
         _allocation.hardware_id = _system.hardware_id
@@ -286,6 +290,7 @@ class DAO(object):
         _mode.hardware_id = _system.hardware_id
         _mode.description = 'System Test Failure Mode'
         self.db_add([
+            _reliability, _mil_hdbk_217, _design_electric, _design_mechanic,
             _allocation, _similaritem, _hazardanalysis, _mode
         ], self.session)
 
@@ -321,7 +326,7 @@ class DAO(object):
         _testmethod.description = 'Test Test Method'
         self.db_add([_testmethod], self.session)
 
-        _dic_cols = {1:_system.hardware_id}
+        _dic_cols = {1: _system.hardware_id}
         for i in [1, 2, 3, 4]:
             _subsystem = RTKHardware()
             _subsystem.revision_id = _revision.revision_id
@@ -350,7 +355,7 @@ class DAO(object):
                     _dic_cols[j + 1] = _assembly.hardware_id
         self.session.commit()
 
-        for i in [1, 2, 3]:
+        for i in [1, 2, 3, 4]:
             _allocation = RTKAllocation()
             _allocation.revision_id = _revision.revision_id
             _allocation.hardware_id = i + 1
@@ -362,11 +367,18 @@ class DAO(object):
             _hazardanalysis = RTKHazardAnalysis()
             _hazardanalysis.revision_id = _revision.revision_id
             _hazardanalysis.hardware_id = i + 1
-
-            self._db_table_create(RTKReliability.__table__)
             _reliability = RTKReliability()
             _reliability.hardware_id = i + 1
-            self.db_add([_allocation, _similaritem, _hazardanalysis, _reliability], self.session)
+            _mil_hdbk_217 = RTKMilHdbkF()
+            _mil_hdbk_217.hardware_id = i + 1
+            _design_electric = RTKDesignElectric()
+            _design_electric.hardware_id = i + 1
+            _design_mechanic = RTKDesignMechanic()
+            _design_mechanic.hardware_id = i + 1
+            self.db_add([
+                _allocation, _similaritem, _hazardanalysis, _reliability,
+                _mil_hdbk_217, _design_electric, _design_mechanic
+            ], self.session)
 
         for i in [5, 6, 7]:
             _allocation = RTKAllocation()
@@ -383,14 +395,18 @@ class DAO(object):
 
             _reliability = RTKReliability()
             _reliability.hardware_id = i + 1
-            self.db_add([_allocation, _similaritem, _hazardanalysis, _reliability], self.session)
+            _mil_hdbk_217 = RTKMilHdbkF()
+            _mil_hdbk_217.hardware_id = i + 1
+            _design_electric = RTKDesignElectric()
+            _design_electric.hardware_id = i + 1
+            _design_mechanic = RTKDesignMechanic()
+            _design_mechanic.hardware_id = i + 1
+            self.db_add([
+                _allocation, _similaritem, _hazardanalysis, _reliability,
+                _mil_hdbk_217, _design_electric, _design_mechanic
+            ], self.session)
 
         self.session.commit()
-
-        self._db_table_create(RTKMilHdbkF.__table__)
-        self._db_table_create(RTKNSWC.__table__)
-        self._db_table_create(RTKDesignElectric.__table__)
-        self._db_table_create(RTKDesignMechanic.__table__)
 
         for _ckey in _dic_cols:
             for _rkey in _dic_rows:
@@ -431,7 +447,7 @@ class DAO(object):
     @staticmethod
     def db_add(item, session):
         """
-        Method to add a new item to the RTK Program database.
+        Add a new item to the RTK Program database.
 
         :param item: the object to add to the RTK Program database.
         :param session: the SQLAlchemy scoped_session instance used to
@@ -441,7 +457,6 @@ class DAO(object):
                                       message.
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Adding one or more items to the RTK Program " \
                "database."
@@ -462,7 +477,7 @@ class DAO(object):
     @staticmethod
     def db_update(session):
         """
-        Method to update the RTK Program database with any pending changes.
+        Update the RTK Program database with any pending changes.
 
         :param session: the SQLAlchemy scoped_session instance used to
                         communicate with the RTK Program database.
@@ -471,7 +486,6 @@ class DAO(object):
                                       message.
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Updating the RTK Program database."
 
@@ -488,7 +502,7 @@ class DAO(object):
     @staticmethod
     def db_delete(item, session):
         """
-        Method to delete a record from the RTK Program database.
+        Delete a record from the RTK Program database.
 
         :param item: the item to remove from the RTK Program database.
         :type item: Object()
@@ -499,7 +513,6 @@ class DAO(object):
                                       message.
         :rtype: (int, str)
         """
-
         _error_code = 0
         _msg = "RTK SUCCESS: Deleting an item from the RTK Program database."
 
@@ -517,7 +530,7 @@ class DAO(object):
     @staticmethod
     def db_query(query, session=None):
         """
-        Method to execute an SQL query against the connected database.
+        Execute an SQL query against the connected database.
 
         :param str query: the SQL query string to execute
         :param session: the SQLAlchemy scoped_session instance used to
@@ -526,19 +539,16 @@ class DAO(object):
         :return:
         :rtype: str
         """
-
         return session.execute(query)
 
     @property
     def db_last_id(self):
         """
-        Method to retrieve the value of the last ID column from a table in the
-        RTK Program database.
+        Retrieve the value of the last ID column from a table in the database.
 
         :return: _last_id; the last value of the ID column.
         :rtype: int
         """
-        # TODO: Write the db_last_id method if needed, else remove from file.
         _last_id = 0
-
+        # TODO: Write the db_last_id method if needed, else remove from file.
         return _last_id

@@ -96,12 +96,12 @@ def test_insert(test_dao):
     DUT = dtmAllocation(test_dao)
     DUT.select_all(1)
 
-    _error_code, _msg = DUT.insert(revision_id=1, hardware_id=5, parent_id=1)
+    _error_code, _msg = DUT.insert(revision_id=1, hardware_id=9, parent_id=1)
 
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Adding one or more items to the RTK "
                     "Program database.")
-    assert DUT.last_id == 8
+    assert DUT.last_id == 9
 
 
 @pytest.mark.integration
@@ -117,6 +117,7 @@ def test_delete(test_dao):
     assert _error_code == 0
     assert _msg == ("RTK SUCCESS: Deleting an item from the RTK Program "
                     "database.")
+    assert DUT.last_id == 8
 
 
 @pytest.mark.integration
@@ -417,4 +418,4 @@ def test_request_calculate(test_dao, test_configuration):
     # The [parent, child 1, child 2, child 3, child 4] hazard rates.
     _hazard_rates = [0.005862, 0.000392, 0.000168, 0.0000982, 0.000212]
 
-    assert not DUT.request_calculate(1, _hazard_rates)
+    assert not DUT.request_calculate(1)

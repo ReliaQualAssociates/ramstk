@@ -8,6 +8,7 @@
 
 from .WorkView import RTKWorkView
 
+from .Allocation import Allocation as wvwAllocation
 from .Revision import GeneralData as wvwRevisionGD
 from .Revision import AssessmentResults as wvwRevisionAR
 from .Function import GeneralData as wvwFunctionGD

@@ -197,7 +197,10 @@ class AllocationDataModel(RTKDataModel):
 
         _parent = self.select(node_id)
         _children = self.select_children(node_id)
-        _parent.n_sub_systems = len(_children)
+        _parent.n_sub_systems = 0
+        for _child in _children:
+            if _child.data.included:
+                _parent.n_sub_systems += 1
 
         # Calculate the parent goals.
         if not _parent.calculate_goals():
